@@ -26,8 +26,8 @@ before_install:
 #  - Rscript -e 'install.packages("tensorflow")'
 #  - Rscript -e 'install.packages("keras")'
   - gh_binary_install stnava/ITKR stnava/ANTsRCore stnava/ANTsR
+  - Rscript -e 'devtools::install_github("rstudio/tensorflow")'
   - travis_run_cache
-
 
 jobs:
   include:
