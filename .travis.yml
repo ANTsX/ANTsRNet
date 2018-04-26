@@ -1,9 +1,12 @@
 language: r
 warnings_are_errors: false
 cache:
+  packages: true
   - packages
   - ccache
-warnings_are_errors: true
+  directories:
+    - $HOME/.cache/pip
+
 bioc_required: false
 cran: http://cran.rstudio.com
 allow_failures:
@@ -12,6 +15,15 @@ allow_failures:
 latex: false
 compiler: clang
 osx_image: xcode9
+
+env:
+  global:
+    - TENSORFLOW_TEST_EXAMPLES="0"
+
+before_script:
+  - pip2.7 install --upgrade --ignore-installed --user travis pip setuptools wheel virtualenv
+  - R CMD INSTALL .
+  - R -e 'tensorflow::install_tensorflow()'
 
 before_install:
   - export PACKAGE_NAME=ANTsRNet
