@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/ANTsX/ANTsRNet.png?branch=master)](https://travis-ci.org/ANTsX/ANTsRNet)
+
 # ANTsRNet
 
 A collection of well-known deep learning architectures ported to the R language.
@@ -16,7 +18,7 @@ And tools for basic medical image processing.
     * [O. Ronneberger, P. Fischer, and T. Brox.  U-Net: Convolutional Networks for Biomedical Image Segmentation](https://arxiv.org/abs/1505.04597)
     * [Fausto Milletari, Nassir Navab, Seyed-Ahmad Ahmadi. V-Net: Fully Convolutional Neural Networks for Volumetric Medical Image Segmentation](https://arxiv.org/pdf/1606.04797.pdf)
 
-## Image classification 
+## Image classification
 
 * AlexNet (2-D, 3-D)
     * [A. Krizhevsky, and I. Sutskever, and G. Hinton. ImageNet Classification with Deep Convolutional Neural Networks.](http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf)
@@ -32,11 +34,11 @@ And tools for basic medical image processing.
 
 ## Object detection
 
-* Single Shot MultiBox Detector (2-D, 3-D) 
+* Single Shot MultiBox Detector (2-D, 3-D)
     * [W. Liu, D. Anguelov, D. Erhan, C. Szegedy, S. Reed, C-Y. Fu, and A. Berg.  SSD: Single Shot MultiBox Detector.](https://arxiv.org/abs/1512.02325)
-    * SSD7: small 7-layer architecture 
+    * SSD7: small 7-layer architecture
     * SSD300/SSD512: porting of original architectures
- 
+
 # Misc topics
 
 * Optimizers
@@ -55,7 +57,7 @@ And tools for basic medical image processing.
     * [Joseph Redmon, Ali Farhadi.  YOLO9000: Better, Faster, Stronger](https://arxiv.org/abs/1612.08242)
     * [Implementation](https://github.com/ykamikawa/yolov2)
 * deconvnet.R
-* ResNet and AlexNet use lambda layers so those models aren't writeable to file (h5 format).  So we need to redo to rewrite to json or something else.  At least I think that's the problem. 
+* ResNet and AlexNet use lambda layers so those models aren't writeable to file (h5 format).  So we need to redo to rewrite to json or something else.  At least I think that's the problem.
 * Need to go through and make sure that the 'tf' vs. 'th' ordering is accounted for.  Currently, tensorflow is assumed.  Should work with theano but need to check this.  Actually, given that Theano is [no longer in active development](https://groups.google.com/forum/#!topic/theano-users/7Poq8BZutbY), perhaps we should just stick with a tensorflow backend.
 
 ****************
@@ -65,10 +67,10 @@ And tools for basic medical image processing.
 
 ## Hardware
 
-* Computer 
+* Computer
     * iMac (27-inch, Mid 2011)
     * Processor 3.4 GHz Intel Core i7
-    * Memory 16 GB 1333 MHz DDR3 
+    * Memory 16 GB 1333 MHz DDR3
     * macOS High Sierra (Version 10.13.2)
 * GPU
     * [NVIDIA Titan Xp](https://www.nvidia.com/en-us/titan/titan-xp/)
@@ -116,7 +118,7 @@ __Update (April 11, 2018):__ The recent MacOSx update (10.13.4) broke the eGPU c
     * tensorflow-cpu on Mac Pro (Late 2013):  ~56 seconds / epoch
     * tensorflow-gpu (the described set-up):  ~2 seconds / epoch
 
-* During a run a kernel panic resulted in the computer shutting down.  When it came back on, the GPU was no longer recognized but was listed as a "NVIDIA chip" in the "About this mac" --> "System Report" --> "Graphics/Displays".  Reinstalling the web driver and eGPU support didn't bring it back but then I read where I needed to 
+* During a run a kernel panic resulted in the computer shutting down.  When it came back on, the GPU was no longer recognized but was listed as a "NVIDIA chip" in the "About this mac" --> "System Report" --> "Graphics/Displays".  Reinstalling the web driver and eGPU support didn't bring it back but then I read where I needed to
     1. unplug the eGPU
     2. Boot into OSX
     3. Login
