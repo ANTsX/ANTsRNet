@@ -20,6 +20,7 @@ before_script:
   - wget -O travis_helpers.sh http://bit.ly/travis_helpers
   - source travis_helpers.sh
   - rm travis_helpers.sh
+  - echo YESSAH
   - install_deps_no_suggests
   - Rscript -e 'install.packages("rsvd")'
   - Rscript -e 'install.packages("magic")'
