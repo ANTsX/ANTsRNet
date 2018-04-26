@@ -35,7 +35,6 @@ before_install:
   - Rscript -e 'install.packages("magic")'
   - Rscript -e 'install.packages("psych")'
   - Rscript -e 'install.packages("RcppEigen")'
-#  - Rscript -e 'install.packages("tensorflow")'
 #  - Rscript -e 'install.packages("keras")'
   - gh_binary_install stnava/ITKR stnava/ANTsRCore stnava/ANTsR
   - Rscript -e 'devtools::install_github("rstudio/tensorflow")'
