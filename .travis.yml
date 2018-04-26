@@ -1,0 +1,51 @@
+language: r
+sudo: false
+cache:
+  - packages
+  - ccache
+warnings_are_errors: true
+bioc_required: false
+cran: http://cran.rstudio.com
+allow_failures:
+  - os: osx
+
+latex: false
+compiler: clang
+osx_image: xcode9
+
+before_install:
+  - export PACKAGE_NAME=ANTsRNet
+  - wget -O travis_helpers.sh http://bit.ly/travis_helpers
+  - source travis_helpers.sh
+  - rm travis_helpers.sh
+  - Rscript -e 'install.packages("rsvd")'
+  - Rscript -e 'install.packages("magic")'
+  - Rscript -e 'install.packages("psych")'
+  - Rscript -e 'install.packages("RcppEigen")'
+  - Rscript -e 'install.packages("tensorflow")'
+  - Rscript -e 'install.packages("keras")'
+  - gh_binary_install stnava/ITKR stnava/ANTsRCore stnava/ANTsR
+  - travis_run_cache
+
+
+jobs:
+  include:
+    - name: "linux"
+      os: linux
+    - name: "OSX"
+      os: osx
+
+after_failure:
+  - cat ${PACKAGE_NAME}.Rcheck/00install.out
+  - cat ${PACKAGE_NAME}.Rcheck/00check.log
+
+after_success:
+  - cat ${PACKAGE_NAME}.Rcheck/00install.out
+  - cat ${PACKAGE_NAME}.Rcheck/00check.log
+
+notifications:
+  email:
+    recipients:
+    - stnava@gmail.com
+    on_success: change
+    on_failure: always

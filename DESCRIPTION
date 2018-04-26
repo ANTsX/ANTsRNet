@@ -1,0 +1,28 @@
+Package: ANTsRNet
+Type: Package
+Title: Neural networks for medical image processing
+Version: 1.0
+Date: 2018-04-25
+Authors@R: c(
+    person(c("Nicholas", "J"), "Tustison", role = c("aut", "cre"), email = "ntustison@gmail.com"),
+    person(c("Brian", "B"), "Avants", role = "ctb", email = "NA")
+    )
+Maintainer: Nicholas J. Tustison <ntustison@gmail.com>
+Description: Deep learning tools for medical image processing.
+License: Apache License (>=2.0)
+LazyLoad: yes
+Depends:
+    R (>= 2.10),
+    methods,
+    R6
+Imports:
+    ANTsR,
+    ANTsRCore,
+    knitr,
+    magrittr
+Suggests:
+    keras,
+    magick,
+    tensorflow
+VignetteBuilder: knitr
+RoxygenNote: 6.0.1
