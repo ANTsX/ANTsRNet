@@ -1,62 +1,20 @@
+# R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 language: r
+
+dist: trusty
+sudo: false
 warnings_are_errors: false
-cache:
-  packages: true
-  - packages
-  - ccache
-  directories:
-    - $HOME/.cache/pip
-
-bioc_required: false
-cran: http://cran.rstudio.com
-allow_failures:
-  - os: osx
-
-latex: false
-compiler: clang
-osx_image: xcode9
 
 env:
   global:
-    - TENSORFLOW_TEST_EXAMPLES="0"
+    - TENSORFLOW_TEST_EXAMPLES="1"
 
+cache:
+  packages: true
+  directories:
+    - $HOME/.cache/pip
 
-before_install:
-  - export PACKAGE_NAME=ANTsRNet
-  - wget -O travis_helpers.sh http://bit.ly/travis_helpers
-  - source travis_helpers.sh
-  - rm travis_helpers.sh
-  - install_deps_no_suggests
-  - Rscript -e 'install.packages("rsvd")'
-  - Rscript -e 'install.packages("magic")'
-  - Rscript -e 'install.packages("psych")'
-  - Rscript -e 'install.packages("RcppEigen")'
-#  - Rscript -e 'install.packages("keras")'
-  - gh_binary_install stnava/ITKR stnava/ANTsRCore stnava/ANTsR
-  - Rscript -e 'devtools::install_github("rstudio/tensorflow")'
-  - travis_run_cache
+before_script:
   - pip2.7 install --upgrade --ignore-installed --user travis pip setuptools wheel virtualenv
   - R CMD INSTALL .
   - R -e 'tensorflow::install_tensorflow()'
-
-jobs:
-  include:
-    - name: "linux"
-      os: linux
-    - name: "OSX"
-      os: osx
-
-after_failure:
-  - cat ${PACKAGE_NAME}.Rcheck/00install.out
-  - cat ${PACKAGE_NAME}.Rcheck/00check.log
-
-after_success:
-  - cat ${PACKAGE_NAME}.Rcheck/00install.out
-  - cat ${PACKAGE_NAME}.Rcheck/00check.log
-
-notifications:
-  email:
-    recipients:
-    - stnava@gmail.com
-    on_success: change
-    on_failure: always
