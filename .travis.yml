@@ -20,10 +20,6 @@ env:
   global:
     - TENSORFLOW_TEST_EXAMPLES="0"
 
-before_script:
-  - pip2.7 install --upgrade --ignore-installed --user travis pip setuptools wheel virtualenv
-  - R CMD INSTALL .
-  - R -e 'tensorflow::install_tensorflow()'
 
 before_install:
   - export PACKAGE_NAME=ANTsRNet
@@ -39,6 +35,9 @@ before_install:
   - gh_binary_install stnava/ITKR stnava/ANTsRCore stnava/ANTsR
   - Rscript -e 'devtools::install_github("rstudio/tensorflow")'
   - travis_run_cache
+  - pip2.7 install --upgrade --ignore-installed --user travis pip setuptools wheel virtualenv
+  - R CMD INSTALL .
+  - R -e 'tensorflow::install_tensorflow()'
 
 jobs:
   include:
