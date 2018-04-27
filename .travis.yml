@@ -11,8 +11,6 @@ env:
 
 cache:
   packages: true
-  directories:
-    - $HOME/.cache/pip
 
 before_install:
   - export PACKAGE_NAME=ANTsRNet
