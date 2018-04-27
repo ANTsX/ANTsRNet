@@ -7,7 +7,7 @@ warnings_are_errors: false
 
 env:
   global:
-    - TENSORFLOW_TEST_EXAMPLES="1"
+    - TENSORFLOW_TEST_EXAMPLES="0"
 
 cache:
   packages: true
@@ -20,14 +20,13 @@ before_install:
   - source travis_helpers.sh
   - rm travis_helpers.sh
   - echo "YESSAH"
-  - install_deps_no_suggests
   - Rscript -e 'install.packages("rsvd")'
   - Rscript -e 'install.packages("magic")'
   - Rscript -e 'install.packages("psych")'
   - Rscript -e 'install.packages("RcppEigen")'
 #  - Rscript -e 'install.packages("tensorflow")'
 #  - Rscript -e 'install.packages("keras")'
-  - gh_binary_install stnava/ITKR stnava/ANTsRCore stnava/ANTsR
+  - gh_binary_install ANTsX/ITKR ANTsX/ANTsRCore ANTsX/ANTsR
 
 before_script:
   - pip2.7 install --upgrade --ignore-installed --user travis pip setuptools wheel virtualenv
