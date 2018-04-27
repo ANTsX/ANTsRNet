@@ -27,8 +27,4 @@ before_install:
 #  - Rscript -e 'install.packages("tensorflow")'
 #  - Rscript -e 'install.packages("keras")'
   - gh_binary_install  stnava/ITKR ANTsX/ANTsRCore ANTsX/ANTsR
-
-before_script:
-  - pip2.7 install --upgrade --ignore-installed --user travis pip setuptools wheel virtualenv
-  - R CMD INSTALL .
-  - R -e 'tensorflow::install_tensorflow()'
+  - Rscript -e 'devtools::install_github( "rstudio/tensorflow" )'
