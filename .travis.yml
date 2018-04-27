@@ -14,13 +14,12 @@ cache:
   directories:
     - $HOME/.cache/pip
 
-
-before_script:
+before_install
   - export PACKAGE_NAME=ANTsRNet
   - wget -O travis_helpers.sh http://bit.ly/travis_helpers
   - source travis_helpers.sh
   - rm travis_helpers.sh
-  - echo YESSAH
+  - echo "YESSAH"
   - install_deps_no_suggests
   - Rscript -e 'install.packages("rsvd")'
   - Rscript -e 'install.packages("magic")'
@@ -29,6 +28,8 @@ before_script:
 #  - Rscript -e 'install.packages("tensorflow")'
 #  - Rscript -e 'install.packages("keras")'
   - gh_binary_install stnava/ITKR stnava/ANTsRCore stnava/ANTsR
+
+before_script:
   - pip2.7 install --upgrade --ignore-installed --user travis pip setuptools wheel virtualenv
   - R CMD INSTALL .
   - R -e 'tensorflow::install_tensorflow()'
