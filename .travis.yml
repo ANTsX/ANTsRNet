@@ -14,7 +14,7 @@ cache:
   directories:
     - $HOME/.cache/pip
 
-before_install
+before_install:
   - export PACKAGE_NAME=ANTsRNet
   - wget -O travis_helpers.sh http://bit.ly/travis_helpers
   - source travis_helpers.sh
