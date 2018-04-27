@@ -26,7 +26,7 @@ before_install:
   - Rscript -e 'install.packages("RcppEigen")'
 #  - Rscript -e 'install.packages("tensorflow")'
 #  - Rscript -e 'install.packages("keras")'
-  - gh_binary_install ANTsX/ANTsRCore ANTsX/ANTsR
+  - gh_binary_install  stnava/ITKR ANTsX/ANTsRCore ANTsX/ANTsR
 
 before_script:
   - pip2.7 install --upgrade --ignore-installed --user travis pip setuptools wheel virtualenv
