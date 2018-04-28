@@ -12,17 +12,28 @@ Description: Deep learning tools for medical image processing.
 License: Apache License (>=2.0)
 LazyLoad: yes
 Depends:
-    R (>= 2.10),
-    methods,
-    R6
+    R (>= 3.2)
 Imports:
     ANTsR,
     ANTsRCore,
     knitr,
-    magrittr
+    reticulate (>= 1.6.0.9002),
+    tensorflow (>= 1.5),
+    tfruns (>= 1.0),
+    magrittr,
+    zeallot,
+    methods,
+    R6
 Suggests:
+    ggplot2,
     keras,
     magick,
-    tensorflow
-VignetteBuilder: knitr
+    rmarkdown,
+    tensorflow,
+    testthat
+Remotes:
+    rstudio/reticulate
+SystemRequirements: Keras >= 2.0 (https://keras.io)
+Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.0.1
+VignetteBuilder: knitr
