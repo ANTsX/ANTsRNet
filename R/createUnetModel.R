@@ -103,7 +103,6 @@
 #'  save_model_hdf5( unetModel, filepath = 'unetModel.h5' )
 #'  save_model_weights_hdf5( unetModel, filepath = 'unetModelWeights.h5' ) )
 #' }
-#' @import keras
 
 createUnetModel2D <- function( inputImageSize, 
                                numberOfClassificationLabels = 1,
@@ -282,7 +281,6 @@ createUnetModel2D <- function( inputImageSize,
 #'  save_model_hdf5( unetModel, filepath = 'unetModel.h5' )
 #'  save_model_weights_hdf5( unetModel, filepath = 'unetModelWeights.h5' ) )
 #' }
-#' @import keras
 
 createUnetModel3D <- function( inputImageSize, 
                                numberOfClassificationLabels = 1,

@@ -66,7 +66,6 @@
 #' predictedData <- denseNetModel %>% predict( X_test, verbose = 1 )
 #' 
 #' }
-#' @import keras
 
 createDenseNetModel2D <- function( inputImageSize, 
                                    numberOfClassificationLabels = 1000,
@@ -252,7 +251,6 @@ createDenseNetModel2D <- function( inputImageSize,
 #' predictedData <- denseNetModel %>% predict( X_test, verbose = 1 )
 #' 
 #' }
-#' @import keras
 
 createDenseNetModel3D <- function( inputImageSize, 
                                    numberOfClassificationLabels = 1000,

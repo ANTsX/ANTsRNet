@@ -48,7 +48,6 @@
 #' library( keras )
 #' 
 #' }
-#' @import keras
 
 createSsdModel2D <- function( inputImageSize, 
                               numberOfClassificationLabels,
@@ -538,7 +537,6 @@ createSsdModel2D <- function( inputImageSize,
 #' library( keras )
 #' 
 #' }
-#' @import keras
 
 createSsdModel3D <- function( inputImageSize, 
                               numberOfClassificationLabels,

@@ -17,6 +17,7 @@ Imports:
     ANTsR,
     ANTsRCore,
     knitr,
+    keras,
     reticulate (>= 1.6.0.9002),
     tensorflow (>= 1.5),
     tfruns (>= 1.0),
@@ -26,7 +27,6 @@ Imports:
     R6
 Suggests:
     ggplot2,
-    keras,
     magick,
     rmarkdown,
     testthat

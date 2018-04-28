@@ -60,7 +60,6 @@
 #' predictedData <- alexNetModel %>% predict( X_test, verbose = 1 )
 #' 
 #' }
-#' @import keras
 
 createAlexNetModel2D <- function( inputImageSize, 
                                   numberOfClassificationLabels = 1000,
@@ -282,7 +281,6 @@ createAlexNetModel2D <- function( inputImageSize,
 #' predictedData <- alexNetModel %>% predict( X_test, verbose = 1 )
 #' 
 #' }
-#' @import keras
 
 createAlexNetModel3D <- function( inputImageSize, 
                                   numberOfClassificationLabels = 1000,

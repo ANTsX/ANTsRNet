@@ -61,7 +61,6 @@
 #' predictedData <- googLeNetModel %>% predict( X_test, verbose = 1 )
 #' 
 #' }
-#' @import keras
 
 createGoogLeNetModel2D <- function( inputImageSize, 
                                     numberOfClassificationLabels = 1000

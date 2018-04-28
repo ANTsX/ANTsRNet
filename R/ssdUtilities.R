@@ -36,7 +36,6 @@
 #' library( keras )
 #' 
 #' }
-#' @import keras
 
 lossSsd <- R6::R6Class( "LossSSD",
 
