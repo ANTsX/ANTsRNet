@@ -9,10 +9,9 @@ decodeSsd3D(yPredicted, imageSize, confidenceThreshold = 0.5,
 }
 \arguments{
 \item{yPredicted}{The predicted output produced by the SSD model expected to
-be an array of shape\preformatted{    `(batchSize, numberOfBoxes, numberOfClasses + 6 + 6 + 6)`
-}
-
-where the additional 4's along the third dimension correspond to the box
+be an array of shape (\code{batchSize}, \code{numberOfBoxes},
+\code{numberOfClasses} + 6 + 6 + 6)
+where the additional 6's along the third dimension correspond to the box
 coordinates (centerx, centery, width, height), dummy variables, and the variances.
 \code{numberOfClasses} includes the background class.}
 
@@ -21,19 +20,19 @@ classification value required for a given box to be considered a "positive
 prediction."  A lower value will result in better recall while a higher
 value yields higher precision results.  Default = 0.5.}
 
-\item{overlapThreshold}{'NULL' or a float between 0 and 1.  If 'NULL' then
-no non-maximum suppression will be performed.  Otherwise, a greedy non-
-maximal suppression is performed following confidence thresholding.  In
-other words all boxes with Jaccard similarities > \code{overlapThreshold} will
-be removed from the set of predictions.   Default = 0.45.}
+\item{overlapThreshold}{\code{NULL} or a float between 0 and 1.  If
+\code{NULL} then no non-maximum suppression will be performed.  Otherwise, a
+greedy non-maximal suppression is performed following confidence thresholding.
+In other words all boxes with Jaccard similarities > \code{overlapThreshold}
+will be removed from the set of predictions.   Default = 0.45.}
 
 \item{inputImageSize}{3-D vector specifying the spatial domain of the input
 images.}
 }
 \value{
 a list of length \code{batchSize} where each element comprises a 2-D
-array where each row describes a single box using the following six elements\preformatted{     `(classId, confidenceValue, xmin, xmax, ymin, ymax, zmin, zmax)`
-}
+array where each row describes a single box using the following six elements
+(classId, confidenceValue, xmin, xmax, ymin, ymax, zmin, zmax).
 }
 \description{
 Function for translating the predictions from the SSD model output to
@@ -43,9 +42,9 @@ boxes, (centerx, centery, width, height), for subsequent usage.
 This particular implementation was heavily influenced by the following
 python and R implementations:
 
-https://github.com/pierluigiferrari/ssd_keras
-https://github.com/rykov8/ssd_keras
-https://github.com/gsimchoni/ssdkeras
+\url{https://github.com/pierluigiferrari/ssd_keras}
+\url{https://github.com/rykov8/ssd_keras}
+\url{https://github.com/gsimchoni/ssdkeras}
 }
 \author{
 Tustison NJ

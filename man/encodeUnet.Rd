@@ -7,11 +7,11 @@
 encodeUnet(groundTruthSegmentations, segmentationLabels)
 }
 \arguments{
-\item{groundTruthSegmentations}{an array of shape\preformatted{  (batchSize, width, height, <depth>)
-}}
+\item{groundTruthSegmentations}{an array of shape (\code{batchSize}, \code{width},
+\code{height}, \code{<depth>})}
 
 \item{segmentationLabels}{vector of segmentation labels.  Note that a
-background label (typically '0') needs to be included.}
+background label (typically 0) needs to be included.}
 }
 \value{
 an n-D array of shape

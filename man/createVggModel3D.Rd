@@ -22,18 +22,18 @@ for each layer.}
 
 \item{lowestResolution}{number of filters at the beginning.}
 
-\item{convolutionKernelSize}{2-d vector definining the kernel size
+\item{convolutionKernelSize}{3-d vector definining the kernel size
 during the encoding path}
 
-\item{poolSize}{2-d vector defining the region for each pooling layer.}
+\item{poolSize}{3-d vector defining the region for each pooling layer.}
 
-\item{strides}{2-d vector describing the stride length in each direction.}
+\item{strides}{3-d vector describing the stride length in each direction.}
 
 \item{denseUnits}{integer for the number of units in the last layers.}
 
 \item{dropoutRate}{float between 0 and 1 to use between dense layers.}
 
-\item{style}{'16' or '19' for VGG16 or VGG19, respectively.}
+\item{style}{\verb{'16'} or \verb{'19'} for VGG16 or VGG19, respectively.}
 }
 \value{
 a VGG keras model to be used with subsequent fitting
@@ -48,12 +48,12 @@ Large-Scale Image Recognition
 
 available here:
 
-https://arxiv.org/abs/1409.1556
+\url{https://arxiv.org/abs/1409.1556}
 
 This particular implementation was influenced by the following python
 implementation:
 
-https://gist.github.com/baraldilorenzo/8d096f48a1be4a2d660d
+\url{https://gist.github.com/baraldilorenzo/8d096f48a1be4a2d660d}
 }
 \examples{
 # Simple examples, must run successfully and quickly. These will be tested.

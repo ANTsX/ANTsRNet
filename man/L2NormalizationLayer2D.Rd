@@ -23,12 +23,7 @@ to See Better.
 
 available here:
 
-https://arxiv.org/abs/1506.04579
-
-Note that tine input shape is:
-
-Theano:  \link{batchSize, channelSize, widthSize, heightSize}
-tensorflow:  \link{batchSize, widthSize, heightSize, channelSize}
+\code{https://arxiv.org/abs/1506.04579}
 }
 \author{
 Tustison NJ

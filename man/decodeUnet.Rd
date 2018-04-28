@@ -7,8 +7,8 @@
 decodeUnet(yPredicted, domainImage)
 }
 \arguments{
-\item{yPredicted}{an array of shape\preformatted{    `(batchSize, width, height, <depth>, numberOfSegmentationLabels)`
-}}
+\item{yPredicted}{an array of shape (\code{batchSize}, \code{width},
+\code{height}, \code{<depth>}, \code{numberOfSegmentationLabels})}
 
 \item{domainImage}{image definining the geometry of the returned probability
 images.}

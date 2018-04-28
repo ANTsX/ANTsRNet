@@ -9,9 +9,8 @@ decodeSsd2D(yPredicted, imageSize, confidenceThreshold = 0.5,
 }
 \arguments{
 \item{yPredicted}{The predicted output produced by the SSD model expected to
-be an array of shape\preformatted{    `(batchSize, numberOfBoxes, numberOfClasses + 4 + 4 + 4)`
-}
-
+be an array of shape (\code{batchSize}, \code{numberOfBoxes},
+\code{numberOfClasses} + 4 + 4 + 4)
 where the additional 4's along the third dimension correspond to the box
 coordinates (centerx, centery, width, height), dummy variables, and the variances.
 \code{numberOfClasses} includes the background class.}
@@ -32,8 +31,8 @@ be removed from the set of predictions.   Default = 0.45.}
 }
 \value{
 a list of length \code{batchSize} where each element comprises a 2-D
-array where each row describes a single box using the following six elements\preformatted{     `(classId, confidenceValue, xmin, xmax, ymin, ymax)`
-}
+array where each row describes a single box using the following six elements
+(classId, confidenceValue, xmin, xmax, ymin, ymax)
 }
 \description{
 Function for translating the predictions from the SSD model output to
@@ -43,9 +42,9 @@ boxes, (centerx, centery, width, height), for subsequent usage.
 This particular implementation was heavily influenced by the following
 python and R implementations:
 
-https://github.com/pierluigiferrari/ssd_keras
-https://github.com/rykov8/ssd_keras
-https://github.com/gsimchoni/ssdkeras
+\url{https://github.com/pierluigiferrari/ssd_keras}
+\url{https://github.com/rykov8/ssd_keras}
+\url{https://github.com/gsimchoni/ssdkeras}
 }
 \author{
 Tustison NJ

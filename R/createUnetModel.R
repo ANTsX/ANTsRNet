@@ -3,16 +3,16 @@
 #' Creates a keras model of the U-net deep learning architecture for image 
 #' segmentation.  More information is provided at the authors' website:
 #' 
-#'         https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/
+#'         \url{https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/}
 #' 
 #' with the paper available here:
 #' 
-#'         https://arxiv.org/abs/1505.04597
+#'         \url{https://arxiv.org/abs/1505.04597}
 #'
 #' This particular implementation was influenced by the following python 
 #' implementation: 
 #' 
-#'         https://github.com/joelthelion/ultrasound-nerve-segmentation       
+#'         \url{https://github.com/joelthelion/ultrasound-nerve-segmentation}
 #'
 #' @param inputImageSize Used for specifying the input tensor shape.  The
 #' shape (or dimension) of that tensor is the image dimensions followed by
@@ -22,7 +22,7 @@
 #' @param layers a vector determining the number of 'filters' defined at
 #' for each layer.
 #' @param lowestResolution number of filters at the beginning and end of 
-#' the 'U'.
+#' the \verb{'U'}.
 #' @param convolutionKernelSize 2-d vector defining the kernel size 
 #' during the encoding path
 #' @param deconvolutionKernelSize 2-d vector defining the kernel size 
@@ -181,16 +181,16 @@ createUnetModel2D <- function( inputImageSize,
 #' Creates a keras model of the U-net deep learning architecture for image 
 #' segmentation.  More information is provided at the authors' website:
 #' 
-#'         https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/
+#'         \url{https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/}
 #' 
 #' with the paper available here:
 #' 
-#'         https://arxiv.org/abs/1505.04597
+#'         \url{https://arxiv.org/abs/1505.04597}
 #'
 #' This particular implementation was influenced by the following python 
 #' implementation: 
 #' 
-#'         https://github.com/joelthelion/ultrasound-nerve-segmentation       
+#'         \url{https://github.com/joelthelion/ultrasound-nerve-segmentation}
 #'
 #' @param inputImageSize Used for specifying the input tensor shape.  The
 #' shape (or dimension) of that tensor is the image dimensions followed by
@@ -200,7 +200,7 @@ createUnetModel2D <- function( inputImageSize,
 #' @param layers a vector determining the number of 'filters' defined at
 #' for each layer.
 #' @param lowestResolution number of filters at the beginning and end of 
-#' the 'U'.
+#' the \verb{'U'}.
 #' @param convolutionKernelSize 3-d vector defining the kernel size 
 #' during the encoding path
 #' @param deconvolutionKernelSize 3-d vector defining the kernel size 

@@ -32,7 +32,7 @@
 #' @param aspectRatiosPerLayer A list containing one aspect ratio list for
 #' each predictor layer.  The default lists follows the original 
 #' implementation except each aspect ratio is defined as a character string
-#' (e.g. '1:2').
+#' (e.g. \verb{'1:2'}).
 #' @param variances A list of 4 floats > 0 with scaling factors for the encoded 
 #' predicted box coordinates. A variance value of 1.0 would apply no scaling at 
 #' all to the predictions, while values in (0,1) upscale the encoded 
@@ -94,16 +94,15 @@ createSsdModel2D <- function( inputImageSize,
   scales <- seq( from = minScale, to = maxScale, 
     length.out = numberOfPredictorLayers + 1 )
 
-  # For each of the ``numberOfClassificationLabels``, we predict confidence 
+  # For each of the \code{numberOfClassificationLabels}, we predict confidence 
   # values for each box.  This translates into each confidence predictor 
-  # having a depth of  ``numberOfBoxesPerLayer`` * 
-  # ``numberOfClassificationLabels``.
+  # having a depth of  \code{numberOfBoxesPerLayer * numberOfClassificationLabels}.
   boxClasses <- list()
 
-  # For each box we need to predict the 2^imageDimension coordinates.  The 
+  # For each box we need to predict the 2 * imageDimension coordinates.  The 
   # output shape of these localization layers is:
-  # ( batchSize, imageHeight, imageWidth, 
-  #      numberOfBoxesPerLayer * 2^imageDimension )
+  # \code{( batchSize, imageHeight, imageWidth, 
+  #      numberOfBoxesPerLayer * 2 * imageDimension )}
   boxLocations <- list()
 
   imageDimension <- 2
@@ -398,7 +397,7 @@ createSsdModel2D <- function( inputImageSize,
     } 
 
   # Generate the anchor boxes.  Output shape of anchor boxes =
-  #   ``( batch, height, width, numberOfBoxes, 8 )``
+  #   \code{( batch, height, width, numberOfBoxes, 8L )}
   anchorBoxes <- list()
   anchorBoxLayers <- list()
   predictorSizes <- list()
@@ -436,8 +435,8 @@ createSsdModel2D <- function( inputImageSize,
   anchorBoxLayersReshaped <- list()
   for( i in 1:length( boxClasses ) )
     {
-    # reshape ``( batch, height, width, numberOfBoxes * numberOfClasses )``
-    #   to ``(batch, height * width * numberOfBoxes, numberOfClasses )``
+    # reshape \code{( batch, height, width, numberOfBoxes * numberOfClasses )}
+    #   to \code{(batch, height * width * numberOfBoxes, numberOfClasses )}
     inputShape <- K$int_shape( boxClasses[[i]] )
     numberOfBoxes <- 
       as.integer( inputShape[[4]] / numberOfClassificationLabels )
@@ -446,14 +445,14 @@ createSsdModel2D <- function( inputImageSize,
       target_shape = c( -1, numberOfClassificationLabels ), 
       name = paste0( layerNames[i], "_conf_reshape" ) )
 
-    # reshape ``( batch, height, width, numberOfBoxes * 4 )``
-    #   to `( batch, height * width * numberOfBoxes, 4 )`
+    # reshape \code{( batch, height, width, numberOfBoxes * 4 )}
+    #   to \code{( batch, height * width * numberOfBoxes, 4 )}
     boxLocationsReshaped[[i]] <- boxLocations[[i]] %>% layer_reshape( 
       target_shape = c( -1, 4 ), 
       name = paste0( layerNames[i], "_loc_reshape" ) )
 
-    # reshape ``( batch, height, width, numberOfBoxes * 8 )``
-    #   to `( batch, height * width * numberOfBoxes, 8 )`
+    # reshape \code{( batch, height, width, numberOfBoxes * 8 )}
+    #   to \code{( batch, height * width * numberOfBoxes, 8 )}
     anchorBoxLayersReshaped[[i]] <- anchorBoxLayers[[i]] %>% layer_reshape( 
       target_shape = c( -1, 8 ), 
       name = paste0( layerNames[i], "_priorbox_reshape" ) )
@@ -490,7 +489,7 @@ createSsdModel2D <- function( inputImageSize,
 #' 
 #' available here:
 #' 
-#'         https://arxiv.org/abs/1512.02325
+#'         \url{https://arxiv.org/abs/1512.02325}
 #'
 #' This particular implementation was influenced by the following python 
 #' and R implementations: 
@@ -514,7 +513,7 @@ createSsdModel2D <- function( inputImageSize,
 #' @param aspectRatiosPerLayer A list containing one aspect ratio list for
 #' each predictor layer.  The default lists follows the original 
 #' implementation except each aspect ratio is defined as a character string
-#' (e.g. '1:1:2').
+#' (e.g. \verb{'1:1:2'}).
 #' @param variances A list of 4 floats > 0 with scaling factors for the encoded 
 #' predicted box coordinates. A variance value of 1.0 would apply no scaling at 
 #' all to the predictions, while values in (0,1) upscale the encoded 
@@ -576,16 +575,15 @@ createSsdModel3D <- function( inputImageSize,
   scales <- seq( from = minScale, to = maxScale, 
     length.out = numberOfPredictorLayers + 1 )
 
-  # For each of the ``numberOfClassificationLabels``, we predict confidence 
+  # For each of the \code{numberOfClassificationLabels}, we predict confidence 
   # values for each box.  This translates into each confidence predictor 
-  # having a depth of  ``numberOfBoxesPerLayer`` * 
-  # ``numberOfClassificationLabels``.
+  # having a depth of  \code{numberOfBoxesPerLayer * numberOfClassificationLabels}.
   boxClasses <- list()
 
-  # For each box we need to predict the 2^imageDimension coordinates.  The 
+  # For each box we need to predict the 2 * imageDimension coordinates.  The 
   # output shape of these localization layers is:
-  # ( batchSize, imageHeight, imageWidth, 
-  #      numberOfBoxesPerLayer * 2^imageDimension )
+  # \code{( batchSize, imageHeight, imageWidth, 
+  #      numberOfBoxesPerLayer * 2 * imageDimension )}
   boxLocations <- list()
 
   imageDimension <- 3
@@ -883,7 +881,7 @@ createSsdModel3D <- function( inputImageSize,
     } 
 
   # Generate the anchor boxes.  Output shape of anchor boxes =
-  #   ``( batch, height, width, numberOfBoxes, 8 )``
+  #   \code{( batch, height, width, depth, numberOfBoxes, 12L )}
   anchorBoxes <- list()
   anchorBoxLayers <- list()
   predictorSizes <- list()
@@ -915,14 +913,14 @@ createSsdModel3D <- function( inputImageSize,
     anchorBoxes[[i]] <- anchorBoxGenerator$anchorBoxesArray
     }
 
-  # Reshape the box confidence values, box locations, and 
+  # Reshape the box confidence values, box locations 
   boxClassesReshaped <- list()
   boxLocationsReshaped <- list()
   anchorBoxLayersReshaped <- list()
   for( i in 1:length( boxClasses ) )
     {
-    # reshape ``( batch, height, width, depth, numberOfBoxes * numberOfClasses )``
-    #   to ``(batch, height * width * depth * numberOfBoxes, numberOfClasses )``
+    # reshape \code{( batch, height, width, depth, numberOfBoxes * numberOfClasses )}
+    #   to \code{(batch, height * width * depth * numberOfBoxes, numberOfClasses )}
     inputShape <- K$int_shape( boxClasses[[i]] )
     numberOfBoxes <- 
       as.integer( inputShape[[4]] / numberOfClassificationLabels )
@@ -931,14 +929,14 @@ createSsdModel3D <- function( inputImageSize,
       target_shape = c( -1, numberOfClassificationLabels ), 
       name = paste0( layerNames[i], "_conf_reshape" ) )
 
-    # reshape ``( batch, height, width, depth, numberOfBoxes * 6 )``
-    #   to `( batch, height * width * depth, numberOfBoxes, 6 )`
+    # reshape \code{( batch, height, width, depth, numberOfBoxes * 6L )}
+    #   to \code{( batch, height * width * depth * numberOfBoxes, 6L )}
     boxLocationsReshaped[[i]] <- boxLocations[[i]] %>% layer_reshape( 
       target_shape = c( -1, 6L ), 
       name = paste0( layerNames[i], "_loc_reshape" ) )
 
-    # reshape ``( batch, height, width, depth, numberOfBoxes * 12 )``
-    #   to `( batch, height * width * depth * numberOfBoxes, 12 )`
+    # reshape \code{( batch, height, width, depth, numberOfBoxes * 12 )}
+    #   to \code{( batch, height * width * depth * numberOfBoxes, 12 )}
     anchorBoxLayersReshaped[[i]] <- anchorBoxLayers[[i]] %>% layer_reshape( 
       target_shape = c( -1, 12L ), 
       name = paste0( layerNames[i], "_priorbox_reshape" ) )

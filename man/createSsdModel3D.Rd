@@ -34,7 +34,7 @@ factors between the smallest and the largest are linearly interpolated.}
 \item{aspectRatiosPerLayer}{A list containing one aspect ratio list for
 each predictor layer.  The default lists follows the original
 implementation except each aspect ratio is defined as a character string
-(e.g. '1:1:2').}
+(e.g. \verb{'1:1:2'}).}
 
 \item{variances}{A list of 4 floats > 0 with scaling factors for the encoded
 predicted box coordinates. A variance value of 1.0 would apply no scaling at
@@ -55,7 +55,7 @@ SSD: Single Shot MultiBox Detector.
 
 available here:
 
-https://arxiv.org/abs/1512.02325
+\url{https://arxiv.org/abs/1512.02325}
 
 This particular implementation was influenced by the following python
 and R implementations:

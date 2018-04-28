@@ -8,18 +8,18 @@
 #' 
 #' available here:
 #' 
-#'         https://arxiv.org/abs/1512.02325
+#'         \url{https://arxiv.org/abs/1512.02325}
 #'
 #' This particular implementation was heavily influenced by the following 
 #' python and R implementations: 
 #' 
-#'         https://github.com/pierluigiferrari/ssd_keras/blob/master/keras_loss_function/keras_ssd_loss.py
-#'         https://github.com/gsimchoni/ssdkeras/blob/master/R/ssd_loss.R
+#'         \url{https://github.com/pierluigiferrari/ssd_keras/blob/master/keras_loss_function/keras_ssd_loss.py}
+#'         \url{https://github.com/gsimchoni/ssdkeras/blob/master/R/ssd_loss.R}
 #'
 #' @param dimension Image dimensionality.
 #' @param backgroundRatio The maximum ratio of background to foreround
 #' for weighting in the loss function.  Is rounded to the nearest integer.
-#' Default is '3'.
+#' Default is 3.
 #' @param minNumberOfBackgroundBoxes The minimum number of background boxes
 #' to use in loss computation *per batch*.  Should reflect a value in 
 #' proportion to the batch size.  Default is 0.
@@ -44,7 +44,6 @@ lossSsd <- R6::R6Class( "LossSSD",
                          
     numberOfClassificationLabels = NULL,
 
-    # Can we generalize beyond tensorflow?
     tf = tensorflow::tf,
 
     initialize = function( dimension = 2L, backgroundRatio = 3L, 
@@ -174,12 +173,10 @@ lossSsd <- R6::R6Class( "LossSSD",
 #' from/to centroids/width
 #'
 #' @param boxes A vector or 2-D array where each row corresponds to a single box 
-#' consisting of the format 
-#'     (xmin,xmax,ymin,ymax) or 
-#'     (centerx,centery,width,height) for 2-D
-#'     (xmin,xmax,ymin,ymax,zmin,zmax) or 
-#'     (centerx,centery,centerz,width,height,depth) for 3-D.
-#' @param type either \'minmax2centroids\' or \'centroids2minmax\'
+#' consisting of the format (xmin,xmax,ymin,ymax) or (centerx,centery,width,height) 
+#' for 2-D vs. (xmin,xmax,ymin,ymax,zmin,zmax) or 
+#' (centerx,centery,centerz,width,height,depth) for 3-D.
+#' @param type either \verb{'minmax2centroids'} or \verb{'centroids2minmax'}
 #'
 #' @return a vector or 2-D array with the converted coordinates
 #' @author Tustison NJ
@@ -367,17 +364,14 @@ jaccardSimilarity <- function( boxes1, boxes2 )
 #'
 #' Renders boxes on objects within rasterized images.
 #'
-#' @param image standard image using something like jpeg::readJPEG.
-#' @param boxes a data frame or comprising where each row has the following
-#' format:
-#'
-#'          xmin, xmax, ymin, ymax
-#'
-#' @param boxColors Optional scalar or vector of length = ``numberOfBoxes`` 
+#' @param image standard image using something like \pkg{jpeg::readJPEG}.
+#' @param boxes a data frame or comprising where each row has the
+#' format: xmin, xmax, ymin, ymax.
+#' @param boxColors Optional scalar or vector of length = \code{numberOfBoxes}
 #' used for determining the colors of the different boxes.
-#' @param confidenceValues Optional vector of length = ``numberOfBoxes`` where
-#' each element is in the range [0, 1].  Used for determining border width.
-#' @param captions Optional vector of length = ``numberOfBoxes`` where
+#' @param confidenceValues Optional vector of length = \code{numberOfBoxes} where
+#' each element is in the range \verb{[0, 1]}.  Used for determining border width.
+#' @param captions Optional vector of length = \code{numberOfBoxes} where
 #' each element is the caption rendered with each box.
 #'
 #' @author Tustison NJ
@@ -389,7 +383,7 @@ drawRectangles <- function( image, boxes, boxColors = "red",
 
   # Need to flip the y-axis due to the way rectangles are superimposed on
   # the rasterized image.  Also, we rescale the spatial domain to
-  # [0, 1] x [0, 1], again, because of the pecularities of the plotting 
+  # \verb{[0, 1] x [0, 1]}, again, because of the pecularities of the plotting 
   # functionality in R.
 
   if( is.null( dim( boxes ) ) )
@@ -450,32 +444,26 @@ drawRectangles <- function( image, boxes, boxColors = "red",
 #' This particular implementation was heavily influenced by the following 
 #' python and R implementations: 
 #' 
-#'         https://github.com/pierluigiferrari/ssd_keras  
-#'         https://github.com/rykov8/ssd_keras
-#'         https://github.com/gsimchoni/ssdkeras
+#'         \url{https://github.com/pierluigiferrari/ssd_keras}
+#'         \url{https://github.com/rykov8/ssd_keras}
+#'         \url{https://github.com/gsimchoni/ssdkeras}
 #'
 #' @param groundTruthLabels A list of length `batchSize` that contains one 
 #' 2-D array per image.  Each 2-D array has k rows where each row corresponds
-#' to a single box consisting of the format 
-#' 
-#'          classId, (xmin,xmax,ymin,ymax)
-#'
-#' Note that `classId` must be greater than 0 since 0 is reserved for the 
+#' to a single box consisting of the format (classId,xmin,xmax,ymin,ymax).
+#' Note that \verb{classId} must be greater than 0 since 0 is reserved for the 
 #' background label.
 #' @param anchorBoxes a list of 2-D arrays where each element comprises the
 #' anchor boxes for a specific aspect ratios layer.  The row of each 2-D array
-#' comprises a single box specified in the form
-#'
-#'          (xmin,xmax,ymin,ymax)
-#'
+#' comprises a single box specified in the form (xmin,xmax,ymin,ymax).
 #' @param imageSize 2-D vector specifying the spatial domain of the input 
 #' images.
 #' @param variances A list of 4 floats > 0 with scaling factors (actually it's 
 #' not factors but divisors to be precise) for the encoded predicted box 
 #' coordinates. A variance value of 1.0 would apply no scaling at all to the 
-#' predictions, while values in (0,1) upscale the encoded predictions and 
+#' predictions, while values in \verb{(0, 1)} upscale the encoded predictions and 
 #' values greater than 1.0 downscale the encoded predictions. These are the same
-#' variances used to construct the model. Default = c( 1.0, 1.0, 1.0, 1.0 )
+#' variances used to construct the model. Default = \code{c( 1.0, 1.0, 1.0, 1.0 )}
 #' @param foregroundThreshold float between 0 and 1 determining the min threshold 
 #' for matching an anchor box with a ground truth box and, thus, labeling an anchor 
 #' box as a non-background class.  If an anchor box exceeds the ``backgroundThreshold`` 
@@ -486,9 +474,8 @@ drawRectangles <- function( image, boxes, boxColors = "red",
 #' ``backgroundThreshold`` but does not meet the foregroundThreshold for a ground
 #' truth box, then it is ignored during training.  Default = 0.2.
 #'
-#' @return a 3-D array of shape 
-#'      
-#'         `(batchSize, numberOfBoxes, numberOfClasses + 4 + 4 + 4)`
+#' @return a 3-D array of shape (\code{batchSize}, \code{numberOfBoxes}, 
+#' \code{numberOfClasses} + 4 + 4 + 4)
 #'
 #' where the additional 4's along the third dimension correspond to 
 #' the 4 predicted box coordinate offsets, the 4 coordinates for
@@ -570,7 +557,7 @@ encodeSsd2D <- function( groundTruthLabels, anchorBoxes, imageSize,
         
       # check to see which boxes exceed the background threshold and are no 
       # longer potential background boxes.  Also, clear out those background 
-      # boxes from the ``similarities`` list.
+      # boxes from the \code{imilarities} list.
       backgroundBoxes[similarities >= backgroundThreshold] <- 0
       similarities <- similarities * availableBoxes
 
@@ -623,18 +610,16 @@ encodeSsd2D <- function( groundTruthLabels, anchorBoxes, imageSize,
 #' This particular implementation was heavily influenced by the following 
 #' python and R implementations: 
 #' 
-#'         https://github.com/pierluigiferrari/ssd_keras  
-#'         https://github.com/rykov8/ssd_keras
-#'         https://github.com/gsimchoni/ssdkeras
+#'         \url{https://github.com/pierluigiferrari/ssd_keras}
+#'         \url{https://github.com/rykov8/ssd_keras}
+#'         \url{https://github.com/gsimchoni/ssdkeras}
 #'
 #' @param yPredicted The predicted output produced by the SSD model expected to
-#' be an array of shape
-#'
-#'         `(batchSize, numberOfBoxes, numberOfClasses + 4 + 4 + 4)`
-#'
+#' be an array of shape (\code{batchSize}, \code{numberOfBoxes}, 
+#' \code{numberOfClasses} + 4 + 4 + 4)
 #' where the additional 4's along the third dimension correspond to the box 
 #' coordinates (centerx, centery, width, height), dummy variables, and the variances.
-#' ``numberOfClasses`` includes the background class.
+#' \code{numberOfClasses} includes the background class.
 #' @param imageSize 2-D vector specifying the spatial domain of the input 
 #' images.
 #' @param confidenceThreshold  Float between 0 and 1.  The minimum 
@@ -644,13 +629,12 @@ encodeSsd2D <- function( groundTruthLabels, anchorBoxes, imageSize,
 #' @param overlapThreshold  'NULL' or a float between 0 and 1.  If 'NULL' then
 #' no non-maximum suppression will be performed.  Otherwise, a greedy non-
 #' maximal suppression is performed following confidence thresholding.  In
-#' other words all boxes with Jaccard similarities > ``overlapThreshold`` will
+#' other words all boxes with Jaccard similarities > \code{overlapThreshold} will
 #' be removed from the set of predictions.   Default = 0.45.
 #'
-#' @return a list of length ``batchSize`` where each element comprises a 2-D
+#' @return a list of length \code{batchSize} where each element comprises a 2-D
 #' array where each row describes a single box using the following six elements
-#' 
-#'          `(classId, confidenceValue, xmin, xmax, ymin, ymax)`
+#' (classId, confidenceValue, xmin, xmax, ymin, ymax)
 #'
 #' @author Tustison NJ
 
@@ -751,12 +735,8 @@ decodeSsd2D <- function( yPredicted, imageSize, confidenceThreshold = 0.5,
 #'
 #' available here:
 #'
-#'         https://arxiv.org/abs/1506.04579
+#'         \code{https://arxiv.org/abs/1506.04579}
 #'
-#' Note that tine input shape is:
-#' 
-#'    Theano:  [batchSize, channelSize, widthSize, heightSize]
-#'    tensorflow:  [batchSize, widthSize, heightSize, channelSize]
 #'
 #' @param scale feature scale (default = 20).
 #' @return output tensor with the same shape as the input.
@@ -820,11 +800,7 @@ layer_l2_normalization_2d <- function( object, scale = 20, name = NULL,
 
 #' Anchor box layer for SSD architecture (2-D).  
 #' 
-#' Anchor (or prior) boxes for SSD architecture (2-D).  The input shape is
-#' defined as 
-#'
-#'     Theano:  \[batchSize, channelSize, widthSize, heightSize\]
-#'     tensorflow:  \[batchSize, widthSize, heightSize, channelSize\]
+#' Anchor (or prior) boxes for SSD architecture (2-D).  
 #'
 #' @param imageSize size of the input image.
 #' @param scale scale of each box (in pixels).
@@ -1027,7 +1003,7 @@ create_layer( AnchorBoxLayer2D, object,
 #'
 #' Function for translating the min/max ground truth box coordinates to 
 #' something expected by the SSD network.  This is a SSD-specific analog
-#' for keras::to_categorical().  For each image in the batch, we compare
+#' for \pkg{keras::to_categorical()}.  For each image in the batch, we compare
 #' the ground truth boxes for that image with all the anchor boxes.  If 
 #' the overlap measure exceeds a specific threshold, we write the ground
 #' truth box coordinates and class to the specific position of the matched
@@ -1039,9 +1015,9 @@ create_layer( AnchorBoxLayer2D, object,
 #' This particular implementation was heavily influenced by the following 
 #' python and R implementations: 
 #' 
-#'         https://github.com/pierluigiferrari/ssd_keras  
-#'         https://github.com/rykov8/ssd_keras
-#'         https://github.com/gsimchoni/ssdkeras
+#'         \url{https://github.com/pierluigiferrari/ssd_keras}
+#'         \url{https://github.com/rykov8/ssd_keras}
+#'         \url{https://github.com/gsimchoni/ssdkeras}
 #'
 #' @param groundTruthLabels A list of length `batchSize` that contains one 
 #' 2-D array per image.  Each 2-D array has k rows where each row corresponds
@@ -1053,10 +1029,7 @@ create_layer( AnchorBoxLayer2D, object,
 #' background label.
 #' @param anchorBoxes a list of 2-D arrays where each element comprises the
 #' anchor boxes for a specific aspect ratios layer.  The row of each 2-D array
-#' comprises a single box specified in the form
-#'
-#'          (xmin,xmax,ymin,ymax,zmin,zmax)
-#'
+#' comprises a single box specified in the for (xmin,xmax,ymin,ymax,zmin,zmax).
 #' @param imageSize 3-D vector specifying the spatial domain of the input 
 #' images.
 #' @param variances A list of 6 floats > 0 with scaling factors (actually it's 
@@ -1064,7 +1037,8 @@ create_layer( AnchorBoxLayer2D, object,
 #' coordinates. A variance value of 1.0 would apply no scaling at all to the 
 #' predictions, while values in (0,1) upscale the encoded predictions and 
 #' values greater than 1.0 downscale the encoded predictions. These are the same
-#' variances used to construct the model. Default = c( 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 )
+#' variances used to construct the model. Default = 
+#' \code{c( 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 )}
 #' @param foregroundThreshold float between 0 and 1 determining the min threshold 
 #' for matching an anchor box with a ground truth box and, thus, labeling an anchor 
 #' box as a non-background class.  If an anchor box exceeds the ``backgroundThreshold`` 
@@ -1072,13 +1046,11 @@ create_layer( AnchorBoxLayer2D, object,
 #' during training.  Default = 0.5.
 #' @param backgroundThreshold float between 0 and 1 determining the max threshold 
 #' for labeling an anchor box as `background`.  If an anchor box exceeds the 
-#' ``backgroundThreshold`` but does not meet the foregroundThreshold for a ground
+#' \code{backgroundThreshold} but does not meet the foregroundThreshold for a ground
 #' truth box, then it is ignored during training.  Default = 0.2.
 #'
-#' @return a 3-D array of shape 
-#'      
-#'         `(batchSize, numberOfBoxes, numberOfClasses + 6 + 6 + 6)`
-#'
+#' @return a 3-D array of shape (\code{batchSize}, \code{numberOfBoxes}, 
+#' \code{numberOfClasses} + 6 + 6 + 6)
 #' where the additional 6's along the third dimension correspond to 
 #' the 6 predicted box coordinate offsets, the 6 coordinates for
 #' the anchor boxes, and the 6 variance values.
@@ -1213,34 +1185,31 @@ encodeSsd3D <- function( groundTruthLabels, anchorBoxes, imageSize,
 #' This particular implementation was heavily influenced by the following 
 #' python and R implementations: 
 #' 
-#'         https://github.com/pierluigiferrari/ssd_keras  
-#'         https://github.com/rykov8/ssd_keras
-#'         https://github.com/gsimchoni/ssdkeras
+#'         \url{https://github.com/pierluigiferrari/ssd_keras}
+#'         \url{https://github.com/rykov8/ssd_keras}
+#'         \url{https://github.com/gsimchoni/ssdkeras}
 #'
 #' @param yPredicted The predicted output produced by the SSD model expected to
-#' be an array of shape
-#'
-#'         `(batchSize, numberOfBoxes, numberOfClasses + 6 + 6 + 6)`
-#'
-#' where the additional 4's along the third dimension correspond to the box 
+#' be an array of shape (\code{batchSize}, \code{numberOfBoxes}, 
+#' \code{numberOfClasses} + 6 + 6 + 6)
+#' where the additional 6's along the third dimension correspond to the box 
 #' coordinates (centerx, centery, width, height), dummy variables, and the variances.
-#' ``numberOfClasses`` includes the background class.
+#' \code{numberOfClasses} includes the background class.
 #' @param inputImageSize 3-D vector specifying the spatial domain of the input 
 #' images.
 #' @param confidenceThreshold  Float between 0 and 1.  The minimum 
 #' classification value required for a given box to be considered a "positive
 #' prediction."  A lower value will result in better recall while a higher 
 #' value yields higher precision results.  Default = 0.5.
-#' @param overlapThreshold  'NULL' or a float between 0 and 1.  If 'NULL' then
-#' no non-maximum suppression will be performed.  Otherwise, a greedy non-
-#' maximal suppression is performed following confidence thresholding.  In
-#' other words all boxes with Jaccard similarities > ``overlapThreshold`` will
-#' be removed from the set of predictions.   Default = 0.45.
+#' @param overlapThreshold  \code{NULL} or a float between 0 and 1.  If 
+#' \code{NULL} then no non-maximum suppression will be performed.  Otherwise, a 
+#' greedy non-maximal suppression is performed following confidence thresholding.  
+#' In other words all boxes with Jaccard similarities > \code{overlapThreshold} 
+#' will be removed from the set of predictions.   Default = 0.45.
 #'
-#' @return a list of length ``batchSize`` where each element comprises a 2-D
+#' @return a list of length \code{batchSize} where each element comprises a 2-D
 #' array where each row describes a single box using the following six elements
-#' 
-#'          `(classId, confidenceValue, xmin, xmax, ymin, ymax, zmin, zmax)`
+#' (classId, confidenceValue, xmin, xmax, ymin, ymax, zmin, zmax).
 #'
 #' @author Tustison NJ
 
@@ -1342,7 +1311,7 @@ decodeSsd3D <- function( yPredicted, imageSize, confidenceThreshold = 0.5,
 #'
 #' available here:
 #'
-#'         https://arxiv.org/abs/1506.04579
+#'         \url{https://arxiv.org/abs/1506.04579}
 #'
 #' @param scale feature scale (default = 20).
 #' @return output tensor with the same shape as the input.

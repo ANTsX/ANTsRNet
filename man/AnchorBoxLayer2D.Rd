@@ -27,15 +27,7 @@ In the last dimension, the first 4 values correspond to the
 2-D coordinates of the bounding boxes and the other 4 are the variances.
 }
 \description{
-Anchor (or prior) boxes for SSD architecture (2-D).  The input shape is
-defined as
-}
-\details{
-Theano:  [batchSize, channelSize, widthSize, heightSize]
-tensorflow:  [batchSize, widthSize, heightSize, channelSize]
-
-[batchSize, channelSize, widthSize, heightSize]: R:batchSize,%20channelSize,%20widthSize,%20heightSize%5C
-[batchSize, widthSize, heightSize, channelSize]: R:batchSize,%20widthSize,%20heightSize,%20channelSize%5C
+Anchor (or prior) boxes for SSD architecture (2-D).
 }
 \author{
 Tustison NJ

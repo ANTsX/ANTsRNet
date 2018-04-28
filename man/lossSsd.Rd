@@ -13,7 +13,7 @@ lossSsd
 
 \item{backgroundRatio}{The maximum ratio of background to foreround
 for weighting in the loss function.  Is rounded to the nearest integer.
-Default is '3'.}
+Default is 3.}
 
 \item{minNumberOfBackgroundBoxes}{The minimum number of background boxes
 to use in loss computation \emph{per batch}.  Should reflect a value in
@@ -37,13 +37,13 @@ SSD: Single Shot MultiBox Detector.
 
 available here:
 
-https://arxiv.org/abs/1512.02325
+\url{https://arxiv.org/abs/1512.02325}
 
 This particular implementation was heavily influenced by the following
 python and R implementations:
 
-https://github.com/pierluigiferrari/ssd_keras/blob/master/keras_loss_function/keras_ssd_loss.py
-https://github.com/gsimchoni/ssdkeras/blob/master/R/ssd_loss.R
+\url{https://github.com/pierluigiferrari/ssd_keras/blob/master/keras_loss_function/keras_ssd_loss.py}
+\url{https://github.com/gsimchoni/ssdkeras/blob/master/R/ssd_loss.R}
 }
 \author{
 Tustison NJ

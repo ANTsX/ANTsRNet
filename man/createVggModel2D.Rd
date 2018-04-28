@@ -17,7 +17,7 @@ the number of channels (e.g., red, green, and blue).  The batch size
 
 \item{numberOfClassificationLabels}{Number of segmentation labels.}
 
-\item{layers}{a vector determining the number of 'filters' defined at
+\item{layers}{a vector determining the number of filters defined at
 for each layer.}
 
 \item{lowestResolution}{number of filters at the beginning.}
@@ -33,7 +33,7 @@ during the encoding path}
 
 \item{dropoutRate}{float between 0 and 1 to use between dense layers.}
 
-\item{style}{'16' or '19' for VGG16 or VGG19, respectively.}
+\item{style}{\verb{'16'} or \verb{'19'} for VGG16 or VGG19, respectively.}
 }
 \value{
 a VGG keras model to be used with subsequent fitting
@@ -48,12 +48,12 @@ Large-Scale Image Recognition
 
 available here:
 
-https://arxiv.org/abs/1409.1556
+\url{https://arxiv.org/abs/1409.1556}
 
 This particular implementation was influenced by the following python
 implementation:
 
-https://gist.github.com/baraldilorenzo/8d096f48a1be4a2d660d
+\url{https://gist.github.com/baraldilorenzo/8d096f48a1be4a2d660d}
 }
 \examples{
 # Simple examples, must run successfully and quickly. These will be tested.

@@ -8,17 +8,16 @@ drawRectangles(image, boxes, boxColors = "red", confidenceValues = NULL,
   captions = NULL)
 }
 \arguments{
-\item{image}{standard image using something like jpeg::readJPEG.}
+\item{image}{standard image using something like \pkg{jpeg::readJPEG}.}
 
-\item{boxes}{a data frame or comprising where each row has the following
-format:\preformatted{     xmin, xmax, ymin, ymax
-}}
+\item{boxes}{a data frame or comprising where each row has the
+format: xmin, xmax, ymin, ymax.}
 
 \item{boxColors}{Optional scalar or vector of length = \code{numberOfBoxes}
 used for determining the colors of the different boxes.}
 
 \item{confidenceValues}{Optional vector of length = \code{numberOfBoxes} where
-each element is in the range \link{0, 1}.  Used for determining border width.}
+each element is in the range \verb{[0, 1]}.  Used for determining border width.}
 
 \item{captions}{Optional vector of length = \code{numberOfBoxes} where
 each element is the caption rendered with each box.}

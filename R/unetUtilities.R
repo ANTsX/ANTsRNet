@@ -1,19 +1,19 @@
 #' Model loss function for multilabel problems--- multilabel dice coefficient
 #'  
-#' Taken the keras loss function (losses.R):
+#' Based on the keras loss function (losses.R):
 #' 
-#'    https://github.com/rstudio/keras/blob/master/R/losses.R
+#'    \url{https://github.com/rstudio/keras/blob/master/R/losses.R}
 #' 
 #' @param y_true True labels (Tensor) 
-#' @param y_pred Predictions (Tensor of the same shape as `y_true`)
+#' @param y_pred Predictions (Tensor of the same shape as \code{y_true})
 #' 
-#' @details Loss functions are to be supplied in the `loss` parameter of the 
-#' [compile()] function.
+#' @details Loss functions are to be supplied in the loss parameter of the 
+#' \code{compile()} function.
 #' 
 #' Loss functions can be specified either using the name of a built in loss
-#' function (e.g. 'loss = binary_crossentropy'), a reference to a built in loss
-#' function (e.g. 'loss = loss_binary_crossentropy()') or by passing an
-#' artitrary function that returns a scalar for each data-point.
+#' function (e.g. \code{loss = binary_crossentropy}), a reference to a built in loss
+#' function (e.g. \code{loss = binary_crossentropy()}) or by passing an
+#' arbitrary function that returns a scalar for each data-point.
 #' The actual optimized objective is the mean of the output array across all
 #' datapoints.
 
@@ -28,7 +28,7 @@ multilabel_dice_coefficient <- function( y_true, y_pred )
   y_dims <- unlist( K$int_shape( y_pred ) )
   numberOfLabels <- y_dims[length( y_dims )]
 
-  # Unlike native R, indexing starts at '0'.  However, we are 
+  # Unlike native R, indexing starts at 0.  However, we are 
   # assuming the background is 0 so we skip index 0.
 
   if( length( y_dims ) == 3 )
@@ -91,12 +91,10 @@ attr( loss_multilabel_dice_coefficient_error, "py_function_name" ) <-
 #' Function for translating the segmentations to something readable by the 
 #' optimization process.
 #'
-#' @param groundTruthSegmentations an array of shape
-#'
-#'       (batchSize, width, height, <depth>)
-#'
+#' @param groundTruthSegmentations an array of shape (\code{batchSize}, \code{width}, 
+#' \code{height}, \code{<depth>})
 #' @param segmentationLabels vector of segmentation labels.  Note that a
-#' background label (typically '0') needs to be included.
+#' background label (typically 0) needs to be included.
 #'
 #' @return an n-D array of shape 
 #' \eqn{ batchSize \times width \times height \times <depth> \times numberOfSegmentationLabels }
@@ -143,9 +141,8 @@ encodeUnet <- function( groundTruthSegmentations, segmentationLabels )
 #' Function for translating the U-net predictions to ANTsR probability 
 #' images.
 #'
-#' @param yPredicted an array of shape
-#'
-#'         `(batchSize, width, height, <depth>, numberOfSegmentationLabels)`
+#' @param yPredicted an array of shape (\code{batchSize}, \code{width}, 
+#' \code{height}, \code{<depth>}, \code{numberOfSegmentationLabels})
 #'
 #' @param domainImage image definining the geometry of the returned probability
 #' images.

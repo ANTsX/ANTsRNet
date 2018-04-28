@@ -18,8 +18,7 @@ background label.}
 
 \item{anchorBoxes}{a list of 2-D arrays where each element comprises the
 anchor boxes for a specific aspect ratios layer.  The row of each 2-D array
-comprises a single box specified in the form\preformatted{     (xmin,xmax,ymin,ymax,zmin,zmax)
-}}
+comprises a single box specified in the for (xmin,xmax,ymin,ymax,zmin,zmax).}
 
 \item{imageSize}{3-D vector specifying the spatial domain of the input
 images.}
@@ -29,7 +28,8 @@ not factors but divisors to be precise) for the encoded predicted box
 coordinates. A variance value of 1.0 would apply no scaling at all to the
 predictions, while values in (0,1) upscale the encoded predictions and
 values greater than 1.0 downscale the encoded predictions. These are the same
-variances used to construct the model. Default = c( 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 )}
+variances used to construct the model. Default =
+\code{c( 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 )}}
 
 \item{foregroundThreshold}{float between 0 and 1 determining the min threshold
 for matching an anchor box with a ground truth box and, thus, labeling an anchor
@@ -43,9 +43,8 @@ for labeling an anchor box as \code{background}.  If an anchor box exceeds the
 truth box, then it is ignored during training.  Default = 0.2.}
 }
 \value{
-a 3-D array of shape\preformatted{    `(batchSize, numberOfBoxes, numberOfClasses + 6 + 6 + 6)`
-}
-
+a 3-D array of shape (\code{batchSize}, \code{numberOfBoxes},
+\code{numberOfClasses} + 6 + 6 + 6)
 where the additional 6's along the third dimension correspond to
 the 6 predicted box coordinate offsets, the 6 coordinates for
 the anchor boxes, and the 6 variance values.
@@ -53,7 +52,7 @@ the anchor boxes, and the 6 variance values.
 \description{
 Function for translating the min/max ground truth box coordinates to
 something expected by the SSD network.  This is a SSD-specific analog
-for keras::to_categorical().  For each image in the batch, we compare
+for \pkg{keras::to_categorical()}.  For each image in the batch, we compare
 the ground truth boxes for that image with all the anchor boxes.  If
 the overlap measure exceeds a specific threshold, we write the ground
 truth box coordinates and class to the specific position of the matched
@@ -66,9 +65,9 @@ is higher that the specified negative threshold.
 This particular implementation was heavily influenced by the following
 python and R implementations:
 
-https://github.com/pierluigiferrari/ssd_keras
-https://github.com/rykov8/ssd_keras
-https://github.com/gsimchoni/ssdkeras
+\url{https://github.com/pierluigiferrari/ssd_keras}
+\url{https://github.com/rykov8/ssd_keras}
+\url{https://github.com/gsimchoni/ssdkeras}
 }
 \author{
 Tustison NJ

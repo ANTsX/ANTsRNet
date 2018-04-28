@@ -21,7 +21,7 @@ the number of channels (e.g., red, green, and blue).  The batch size
 for each layer.}
 
 \item{lowestResolution}{number of filters at the beginning and end of
-the 'U'.}
+the \verb{'U'}.}
 
 \item{convolutionKernelSize}{3-d vector defining the kernel size
 during the encoding path}
@@ -41,16 +41,16 @@ Creates a keras model of the U-net deep learning architecture for image
 segmentation.  More information is provided at the authors' website:
 }
 \details{
-https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/
+\url{https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/}
 
 with the paper available here:
 
-https://arxiv.org/abs/1505.04597
+\url{https://arxiv.org/abs/1505.04597}
 
 This particular implementation was influenced by the following python
 implementation:
 
-https://github.com/joelthelion/ultrasound-nerve-segmentation
+\url{https://github.com/joelthelion/ultrasound-nerve-segmentation}
 }
 \examples{
 # Simple examples, must run successfully and quickly. These will be tested.

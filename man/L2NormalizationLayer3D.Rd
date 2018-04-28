@@ -23,7 +23,7 @@ to See Better.
 
 available here:
 
-https://arxiv.org/abs/1506.04579
+\url{https://arxiv.org/abs/1506.04579}
 }
 \author{
 Tustison NJ

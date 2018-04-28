@@ -4,7 +4,7 @@
 \alias{multilabel_dice_coefficient}
 \title{Model loss function for multilabel problems--- multilabel dice coefficient
 
-Taken the keras loss function (losses.R):}
+Based on the keras loss function (losses.R):}
 \usage{
 multilabel_dice_coefficient(y_true, y_pred)
 }
@@ -14,16 +14,16 @@ multilabel_dice_coefficient(y_true, y_pred)
 \item{y_pred}{Predictions (Tensor of the same shape as \code{y_true})}
 }
 \description{
-https://github.com/rstudio/keras/blob/master/R/losses.R
+\url{https://github.com/rstudio/keras/blob/master/R/losses.R}
 }
 \details{
-Loss functions are to be supplied in the \code{loss} parameter of the
-\code{\link[=compile]{compile()}} function.
+Loss functions are to be supplied in the loss parameter of the
+\code{compile()} function.
 
 Loss functions can be specified either using the name of a built in loss
-function (e.g. 'loss = binary_crossentropy'), a reference to a built in loss
-function (e.g. 'loss = loss_binary_crossentropy()') or by passing an
-artitrary function that returns a scalar for each data-point.
+function (e.g. \code{loss = binary_crossentropy}), a reference to a built in loss
+function (e.g. \code{loss = binary_crossentropy()}) or by passing an
+arbitrary function that returns a scalar for each data-point.
 The actual optimized objective is the mean of the output array across all
 datapoints.
 }

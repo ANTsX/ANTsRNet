@@ -29,13 +29,13 @@ factors between the smallest and the largest are linearly interpolated.}
 \item{aspectRatiosPerLayer}{A list containing one aspect ratio list for
 each predictor layer.  The default lists follows the original
 implementation except each aspect ratio is defined as a character string
-(e.g. '1:1:2').}
+(e.g., \verb{'1:1:2'}).}
 
 \item{variances}{A list of 6 floats > 0 with scaling factors for the encoded
 predicted box coordinates. A variance value of 1.0 would apply no scaling at
 all to the predictions, while values in (0, 1) upscale the encoded predictions
 and values greater than 1.0 downscale the encoded predictions. Defaults to
-c( 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 )}
+\code{c( 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 )}}
 }
 \value{
 an SSD keras model
@@ -50,13 +50,13 @@ SSD: Single Shot MultiBox Detector.
 
 available here:
 
-https://arxiv.org/abs/1512.02325
+\url{https://arxiv.org/abs/1512.02325}
 
 This particular implementation was influenced by the following python
 and R implementations:
 
-https://github.com/pierluigiferrari/ssd_keras
-https://github.com/gsimchoni/ssdkeras
+\url{https://github.com/pierluigiferrari/ssd_keras}
+\url{https://github.com/gsimchoni/ssdkeras}
 }
 \author{
 Tustison NJ
