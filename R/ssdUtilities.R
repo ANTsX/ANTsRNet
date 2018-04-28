@@ -36,6 +36,7 @@
 #' library( keras )
 #' 
 #' }
+#' @import keras
 
 lossSsd <- R6::R6Class( "LossSSD",
 
@@ -195,6 +196,7 @@ lossSsd <- R6::R6Class( "LossSSD",
 #' \dontrun{ 
 #' 
 #' }
+
 convertCoordinates <- function( boxes, type = 'minmax2centroids' ) 
 {
   convertedBoxes <- boxes
@@ -404,6 +406,7 @@ jaccardSimilarity <- function( boxes1, boxes2 )
 #' \dontrun{ 
 #' 
 #' }
+#' @importFrom graphics rasterImage rect
 
 drawRectangles <- function( image, boxes, boxColors = "red", 
   confidenceValues = NULL, captions = NULL )
