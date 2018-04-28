@@ -168,9 +168,6 @@ lossSsd <- R6::R6Class( "LossSSD",
       totalLoss <- ( classLoss + self$alpha * localizationLoss ) / 
         self$tf$maximum( 1.0, numberOfForegroundBoxes ) 
 
-      self$tf$Print( classLoss, data = list( classLoss, localizationLoss ), message = "Woke\n" )
-      self$tf$Print( localizationLoss, data = list( classLoss, localizationLoss ), message = "Woke2\n" )
-
       return( totalLoss )
       }
     )
