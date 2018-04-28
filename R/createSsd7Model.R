@@ -39,13 +39,6 @@
 #'
 #' @return an SSD keras model
 #' @author Tustison NJ
-#' @examples
-#'
-#' \dontrun{ 
-#' 
-#' library( keras )
-#' 
-#' }
 
 createSsd7Model2D <- function( inputImageSize, 
                               numberOfClassificationLabels,
@@ -254,13 +247,6 @@ createSsd7Model2D <- function( inputImageSize,
 #'
 #' @return an SSD keras model
 #' @author Tustison NJ
-#' @examples
-#'
-#' \dontrun{ 
-#' 
-#' library( keras )
-#' 
-#' }
 
 createSsd7Model3D <- function( inputImageSize, 
                               numberOfClassificationLabels,

@@ -26,12 +26,6 @@ each element is the caption rendered with each box.}
 \description{
 Renders boxes on objects within rasterized images.
 }
-\examples{
-
-\dontrun{ 
-
-}
-}
 \author{
 Tustison NJ
 }

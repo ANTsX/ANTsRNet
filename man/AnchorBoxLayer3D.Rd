@@ -18,32 +18,16 @@ AnchorBoxLayer3D
 \item{aspectRatios}{vector describing the geometries of the anchor
 boxes for this layer.}
 
-\item{variances}{explained here:
-https://github.com/rykov8/ssd_keras/issues/53
-
-Input shape:}
+\item{variances}{explained at \url{https://github.com/rykov8/ssd_keras/issues/53}}
 }
 \value{
 a 6-D tensor with shape
-\link{batchSize, widthSize, heightSize, depthSize, numberOfBoxes, 12}
+\eqn{ batchSize \times widthSize \times heightSize \times depthSize \times numberOfBoxes \times 12 }
 In the last dimension, the first 6 values correspond to the
 3-D coordinates of the bounding boxes and the other 6 are the variances.
 }
 \description{
-Anchor (or prior) boxes for SSD architecture (3-D).  The input shape is
-defined as
-}
-\details{
-Theano:  \link{batchSize, channelSize, widthSize, heightSize, depthSize}
-tensorflow:  \link{batchSize, widthSize, heightSize, depthSize, channelSize}
-}
-\examples{
-
-\dontrun{ 
-
-library( keras )
-
-}
+Anchor (or prior) boxes for SSD architecture (3-D).
 }
 \author{
 Tustison NJ

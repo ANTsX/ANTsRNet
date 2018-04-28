@@ -13,12 +13,7 @@
 #' Loss functions can be specified either using the name of a built in loss
 #' function (e.g. 'loss = binary_crossentropy'), a reference to a built in loss
 #' function (e.g. 'loss = loss_binary_crossentropy()') or by passing an
-#' artitrary function that returns a scalar for each data-point and takes the
-#' following two arguments: 
-#' 
-#' - `y_true` True labels (Tensor) 
-#' - `y_pred` Predictions (Tensor of the same shape as `y_true`)
-#' 
+#' artitrary function that returns a scalar for each data-point.
 #' The actual optimized objective is the mean of the output array across all
 #' datapoints.
 
@@ -27,14 +22,6 @@ multilabel_dice_coefficient <- function( y_true, y_pred )
   smoothingFactor <- 1.0
 
   K <- keras::backend()  
-
-  # We set the dimension ordering to 'tf' since that is what I'm using to 
-  # test this implementation although someone might want to use a Theano
-  # backend.  Note the difference in ordering is:
-  #  Theano (2D):      [batchSize, channelSize, widthSize, heightSize]
-  #  tensorflow (2D):  [batchSize, widthSize, heightSize, channelSize]
-  #  Theano (3D):      [batchSize, channelSize, widthSize, heightSize, depthSize]
-  #  tensorflow (3D):  [batchSize, widthSize, heightSize, depthSize, channelSize]
 
   K$set_image_data_format( 'channels_last' )
 
@@ -112,17 +99,9 @@ attr( loss_multilabel_dice_coefficient_error, "py_function_name" ) <-
 #' background label (typically '0') needs to be included.
 #'
 #' @return an n-D array of shape 
-#'      
-#'         `(batchSize, width, height, <depth>, numberOfSegmentationLabels)`
+#' \eqn{ batchSize \times width \times height \times <depth> \times numberOfSegmentationLabels }
 #'
 #' @author Tustison NJ
-#' @examples
-#'
-#' \dontrun{ 
-#' 
-#' library( keras )
-#' 
-#' }
 
 encodeUnet <- function( groundTruthSegmentations, segmentationLabels )
   {
@@ -174,13 +153,6 @@ encodeUnet <- function( groundTruthSegmentations, segmentationLabels )
 #' @return a list of list of probability images.
 #'
 #' @author Tustison NJ
-#' @examples
-#'
-#' \dontrun{ 
-#' 
-#' library( keras )
-#' 
-#' }
 
 decodeUnet <- function( yPredicted, domainImage )
   {

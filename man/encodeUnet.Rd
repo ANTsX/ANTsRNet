@@ -14,20 +14,12 @@ encodeUnet(groundTruthSegmentations, segmentationLabels)
 background label (typically '0') needs to be included.}
 }
 \value{
-an n-D array of shape\preformatted{    `(batchSize, width, height, <depth>, numberOfSegmentationLabels)`
-}
+an n-D array of shape
+\eqn{ batchSize \times width \times height \times <depth> \times numberOfSegmentationLabels }
 }
 \description{
 Function for translating the segmentations to something readable by the
 optimization process.
-}
-\examples{
-
-\dontrun{ 
-
-library( keras )
-
-}
 }
 \author{
 Tustison NJ

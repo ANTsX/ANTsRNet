@@ -20,14 +20,6 @@ a list of list of probability images.
 Function for translating the U-net predictions to ANTsR probability
 images.
 }
-\examples{
-
-\dontrun{ 
-
-library( keras )
-
-}
-}
 \author{
 Tustison NJ
 }

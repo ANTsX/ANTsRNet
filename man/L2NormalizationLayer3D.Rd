@@ -24,19 +24,6 @@ to See Better.
 available here:
 
 https://arxiv.org/abs/1506.04579
-
-Note that tine input shape is:
-
-Theano:  \link{batchSize, channelSize, widthSize, heightSize, depthSize}
-tensorflow:  \link{batchSize, widthSize, heightSize, depthSize, channelSize}
-}
-\examples{
-
-\dontrun{ 
-
-library( keras )
-
-}
 }
 \author{
 Tustison NJ

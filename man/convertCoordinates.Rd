@@ -23,12 +23,6 @@ a vector or 2-D array with the converted coordinates
 Function for converting box coordinates to/from min/max representation
 from/to centroids/width
 }
-\examples{
-
-\dontrun{ 
-
-}
-}
 \author{
 Tustison NJ
 }

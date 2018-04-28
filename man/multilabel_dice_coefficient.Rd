@@ -23,13 +23,7 @@ Loss functions are to be supplied in the \code{loss} parameter of the
 Loss functions can be specified either using the name of a built in loss
 function (e.g. 'loss = binary_crossentropy'), a reference to a built in loss
 function (e.g. 'loss = loss_binary_crossentropy()') or by passing an
-artitrary function that returns a scalar for each data-point and takes the
-following two arguments:
-\itemize{
-\item \code{y_true} True labels (Tensor)
-\item \code{y_pred} Predictions (Tensor of the same shape as \code{y_true})
-}
-
+artitrary function that returns a scalar for each data-point.
 The actual optimized objective is the mean of the output array across all
 datapoints.
 }

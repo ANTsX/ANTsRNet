@@ -29,13 +29,6 @@
 #'
 #' @return an SSD loss function
 #' @author Tustison NJ
-#' @examples
-#'
-#' \dontrun{ 
-#' 
-#' library( keras )
-#' 
-#' }
 
 lossSsd <- R6::R6Class( "LossSSD",
 
@@ -190,11 +183,6 @@ lossSsd <- R6::R6Class( "LossSSD",
 #'
 #' @return a vector or 2-D array with the converted coordinates
 #' @author Tustison NJ
-#' @examples
-#'
-#' \dontrun{ 
-#' 
-#' }
 
 convertCoordinates <- function( boxes, type = 'minmax2centroids' ) 
 {
@@ -329,13 +317,6 @@ convertCoordinates <- function( boxes, type = 'minmax2centroids' )
 #'
 #' @return the Jaccard simliarity
 #' @author Tustison NJ
-#' @examples
-#'
-#' \dontrun{ 
-#' 
-#' library( keras )
-#' 
-#' }
 
 jaccardSimilarity <- function( boxes1, boxes2 )
   {
@@ -400,11 +381,6 @@ jaccardSimilarity <- function( boxes1, boxes2 )
 #' each element is the caption rendered with each box.
 #'
 #' @author Tustison NJ
-#' @examples
-#'
-#' \dontrun{ 
-#' 
-#' }
 #' @importFrom graphics rasterImage rect
 
 drawRectangles <- function( image, boxes, boxColors = "red", 
@@ -519,13 +495,6 @@ drawRectangles <- function( image, boxes, boxColors = "red",
 #' the anchor boxes, and the 4 variance values.
 #'
 #' @author Tustison NJ
-#' @examples
-#'
-#' \dontrun{ 
-#' 
-#' library( keras )
-#' 
-#' }
 
 encodeSsd2D <- function( groundTruthLabels, anchorBoxes, imageSize,
   variances = rep( 1.0, 4 ), foregroundThreshold = 0.5, 
@@ -684,13 +653,6 @@ encodeSsd2D <- function( groundTruthLabels, anchorBoxes, imageSize,
 #'          `(classId, confidenceValue, xmin, xmax, ymin, ymax)`
 #'
 #' @author Tustison NJ
-#' @examples
-#'
-#' \dontrun{ 
-#' 
-#' library( keras )
-#' 
-#' }
 
 decodeSsd2D <- function( yPredicted, imageSize, confidenceThreshold = 0.5, 
   overlapThreshold = 0.45 )
@@ -800,13 +762,6 @@ decodeSsd2D <- function( yPredicted, imageSize, confidenceThreshold = 0.5,
 #' @return output tensor with the same shape as the input.
 #'
 #' @author Tustison NJ
-#' @examples
-#'
-#' \dontrun{ 
-#' 
-#' library( keras )
-#' 
-#' }
 
 L2NormalizationLayer2D <- R6::R6Class( "L2NormalizationLayer2D",
                                 
@@ -868,32 +823,22 @@ layer_l2_normalization_2d <- function( object, scale = 20, name = NULL,
 #' Anchor (or prior) boxes for SSD architecture (2-D).  The input shape is
 #' defined as 
 #'
-#'     Theano:  [batchSize, channelSize, widthSize, heightSize]
-#'     tensorflow:  [batchSize, widthSize, heightSize, channelSize]
+#'     Theano:  \[batchSize, channelSize, widthSize, heightSize\]
+#'     tensorflow:  \[batchSize, widthSize, heightSize, channelSize\]
 #'
 #' @param imageSize size of the input image.
 #' @param scale scale of each box (in pixels).
 #' @param nextScale next scale of each box (in pixels).
 #' @param aspectRatios vector describing the geometries of the anchor
 #' boxes for this layer.
-#' @param variances explained here:
-#'            https://github.com/rykov8/ssd_keras/issues/53
-#'
-#' Input shape:
+#' @param variances explained at \url{https://github.com/rykov8/ssd_keras/issues/53}
 #'
 #' @return a 5-D tensor with shape
-#'     [batchSize, widthSize, heightSize, numberOfBoxes, 8]
+#' \eqn{ batchSize \times widthSize \times heightSize \times numberOfBoxes \times 8 }
 #' In the last dimension, the first 4 values correspond to the
 #' 2-D coordinates of the bounding boxes and the other 4 are the variances.
 #'
 #' @author Tustison NJ
-#' @examples
-#'
-#' \dontrun{ 
-#' 
-#' library( keras )
-#' 
-#' }
 
 AnchorBoxLayer2D <- R6::R6Class( "AnchorBoxLayer2D",
                                 
@@ -923,9 +868,6 @@ AnchorBoxLayer2D <- R6::R6Class( "AnchorBoxLayer2D",
       aspectRatios = c( '1:1', '2:1', '1:2' ), variances = 1.0 )
       {
       K <- keras::backend()  
-
-      #  Theano:  [batchSize, channelSize, widthSize, heightSize]
-      #  tensorflow:  [batchSize, widthSize, heightSize, channelSize]
 
       if( K$image_data_format() == "channels_last" )
         {
@@ -1142,13 +1084,6 @@ create_layer( AnchorBoxLayer2D, object,
 #' the anchor boxes, and the 6 variance values.
 #'
 #' @author Tustison NJ
-#' @examples
-#'
-#' \dontrun{ 
-#' 
-#' library( keras )
-#' 
-#' }
 
 encodeSsd3D <- function( groundTruthLabels, anchorBoxes, imageSize,
   variances = rep( 1.0, 6 ), foregroundThreshold = 0.5, 
@@ -1225,7 +1160,7 @@ encodeSsd3D <- function( groundTruthLabels, anchorBoxes, imageSize,
         
       # check to see which boxes exceed the background threshold and are no 
       # longer potential background boxes.  Also, clear out those background 
-      # boxes from the ``similarities`` list.
+      # boxes from the similarities list.
       backgroundBoxes[similarities >= backgroundThreshold] <- 0
       similarities <- similarities * availableBoxes
 
@@ -1308,13 +1243,6 @@ encodeSsd3D <- function( groundTruthLabels, anchorBoxes, imageSize,
 #'          `(classId, confidenceValue, xmin, xmax, ymin, ymax, zmin, zmax)`
 #'
 #' @author Tustison NJ
-#' @examples
-#'
-#' \dontrun{ 
-#' 
-#' library( keras )
-#' 
-#' }
 
 decodeSsd3D <- function( yPredicted, imageSize, confidenceThreshold = 0.5, 
   overlapThreshold = 0.45 )
@@ -1416,22 +1344,10 @@ decodeSsd3D <- function( yPredicted, imageSize, confidenceThreshold = 0.5,
 #'
 #'         https://arxiv.org/abs/1506.04579
 #'
-#' Note that tine input shape is:
-#' 
-#'    Theano:  [batchSize, channelSize, widthSize, heightSize, depthSize]
-#'    tensorflow:  [batchSize, widthSize, heightSize, depthSize, channelSize]
-#'
 #' @param scale feature scale (default = 20).
 #' @return output tensor with the same shape as the input.
 #'
 #' @author Tustison NJ
-#' @examples
-#'
-#' \dontrun{ 
-#' 
-#' library( keras )
-#' 
-#' }
 
 L2NormalizationLayer3D <- R6::R6Class( "L2NormalizationLayer3D",
                                 
@@ -1491,35 +1407,21 @@ layer_l2_normalization_3d <- function( object, scale = 20, name = NULL,
 
 #' Anchor box layer for SSD architecture (3-D).  
 #' 
-#' Anchor (or prior) boxes for SSD architecture (3-D).  The input shape is
-#' defined as 
-#'
-#'     Theano:  [batchSize, channelSize, widthSize, heightSize, depthSize]
-#'     tensorflow:  [batchSize, widthSize, heightSize, depthSize, channelSize]
+#' Anchor (or prior) boxes for SSD architecture (3-D).  
 #'
 #' @param imageSize size of the input image.
 #' @param scale scale of each box (in pixels).
 #' @param nextScale next scale of each box (in pixels).
 #' @param aspectRatios vector describing the geometries of the anchor
 #' boxes for this layer.
-#' @param variances explained here:
-#'            https://github.com/rykov8/ssd_keras/issues/53
-#'
-#' Input shape:
+#' @param variances explained at \url{https://github.com/rykov8/ssd_keras/issues/53}
 #'
 #' @return a 6-D tensor with shape
-#'     [batchSize, widthSize, heightSize, depthSize, numberOfBoxes, 12]
+#' \eqn{ batchSize \times widthSize \times heightSize \times depthSize \times numberOfBoxes \times 12 }
 #' In the last dimension, the first 6 values correspond to the
 #' 3-D coordinates of the bounding boxes and the other 6 are the variances.
 #'
 #' @author Tustison NJ
-#' @examples
-#'
-#' \dontrun{ 
-#' 
-#' library( keras )
-#' 
-#' }
 
 AnchorBoxLayer3D <- R6::R6Class( "AnchorBoxLayer3D",
                                 
@@ -1548,10 +1450,8 @@ AnchorBoxLayer3D <- R6::R6Class( "AnchorBoxLayer3D",
     initialize = function( imageSize, scale, nextScale,
       aspectRatios = c( '1:1:1', '2:1:1', '1:2:1', '1:1:2' ), variances = 1.0 )
       {
-      K <- keras::backend()  
 
-      #  Theano:  [batchSize, channelSize, widthSize, depthSize, heightSize]
-      #  tensorflow:  [batchSize, widthSize, heightSize, depthSize, channelSize]
+      K <- keras::backend()  
 
       if( K$image_data_format() == "channels_last" )
         {

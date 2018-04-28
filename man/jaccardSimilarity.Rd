@@ -22,14 +22,6 @@ the Jaccard simliarity
 Function for determinining the Jaccard or iou (intersection over union)
 similarity measure between two sets of boxes.
 }
-\examples{
-
-\dontrun{ 
-
-library( keras )
-
-}
-}
 \author{
 Tustison NJ
 }

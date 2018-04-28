@@ -45,14 +45,6 @@ python and R implementations:
 https://github.com/pierluigiferrari/ssd_keras/blob/master/keras_loss_function/keras_ssd_loss.py
 https://github.com/gsimchoni/ssdkeras/blob/master/R/ssd_loss.R
 }
-\examples{
-
-\dontrun{ 
-
-library( keras )
-
-}
-}
 \author{
 Tustison NJ
 }

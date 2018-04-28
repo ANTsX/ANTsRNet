@@ -57,14 +57,6 @@ and R implementations:
 https://github.com/pierluigiferrari/ssd_keras
 https://github.com/gsimchoni/ssdkeras
 }
-\examples{
-
-\dontrun{ 
-
-library( keras )
-
-}
-}
 \author{
 Tustison NJ
 }

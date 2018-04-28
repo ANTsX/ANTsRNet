@@ -30,14 +30,6 @@ Note that tine input shape is:
 Theano:  \link{batchSize, channelSize, widthSize, heightSize}
 tensorflow:  \link{batchSize, widthSize, heightSize, channelSize}
 }
-\examples{
-
-\dontrun{ 
-
-library( keras )
-
-}
-}
 \author{
 Tustison NJ
 }
