@@ -22,7 +22,7 @@ for each layer.}
 
 \item{lowestResolution}{number of filters at the beginning.}
 
-\item{convolutionKernelSize}{2-d vector definining the kernel size 
+\item{convolutionKernelSize}{2-d vector definining the kernel size
 during the encoding path}
 
 \item{poolSize}{2-d vector defining the region for each pooling layer.}
@@ -39,18 +39,18 @@ during the encoding path}
 a VGG keras model to be used with subsequent fitting
 }
 \description{
-Creates a keras model of the Vgg deep learning architecture for image 
+Creates a keras model of the Vgg deep learning architecture for image
 recognition based on the paper
 }
 \details{
-K. Simonyan and A. Zisserman, Very Deep Convolutional Networks for 
-  Large-Scale Image Recognition
+K. Simonyan and A. Zisserman, Very Deep Convolutional Networks for
+Large-Scale Image Recognition
 
 available here:
 
 https://arxiv.org/abs/1409.1556
 
-This particular implementation was influenced by the following python 
+This particular implementation was influenced by the following python
 implementation:
 
 https://gist.github.com/baraldilorenzo/8d096f48a1be4a2d660d

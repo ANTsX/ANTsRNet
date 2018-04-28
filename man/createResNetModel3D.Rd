@@ -22,23 +22,23 @@ for each layer.}
 \item{residualBlockSchedule}{vector defining the how many residual blocks
 repeats.}
 
-\item{lowestResolution}{number of filters at the beginning and end of 
+\item{lowestResolution}{number of filters at the beginning and end of
 the 'U'.}
 
-\item{cardinality}{perform  ResNet (cardinality = 1) or ResNeXt 
+\item{cardinality}{perform  ResNet (cardinality = 1) or ResNeXt
 (cardinality != 1 but powers of 2---try '32' )}
 }
 \value{
 an ResNet keras model
 }
 \description{
-Creates a keras model of the ResNet deep learning architecture for image 
+Creates a keras model of the ResNet deep learning architecture for image
 classification.  The paper is available here:
 }
 \details{
 https://arxiv.org/abs/1512.03385
 
-This particular implementation was influenced by the following python 
+This particular implementation was influenced by the following python
 implementation:
 
 https://gist.github.com/mjdietzx/0cb95922aac14d446a6530f87b3a04ce

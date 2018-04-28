@@ -7,20 +7,18 @@
 encodeY(groundTruthSegmentations, segmentationLabels)
 }
 \arguments{
-\item{groundTruthSegmentations}{an array of shape
-
-      (batchSize, width, height, <depth>)}
+\item{groundTruthSegmentations}{an array of shape\preformatted{  (batchSize, width, height, <depth>)
+}}
 
 \item{segmentationLabels}{vector of segmentation labels.  Note that a
 background label (typically '0') needs to be included.}
 }
 \value{
-an n-D array of shape 
-     
-        `(batchSize, width, height, <depth>, numberOfSegmentationLabels)`
+an n-D array of shape\preformatted{    `(batchSize, width, height, <depth>, numberOfSegmentationLabels)`
+}
 }
 \description{
-Function for translating the segmentations to something readable by the 
+Function for translating the segmentations to something readable by the
 optimization process.
 }
 \examples{

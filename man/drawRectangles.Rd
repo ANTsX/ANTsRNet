@@ -11,17 +11,16 @@ drawRectangles(image, boxes, boxColors = "red", confidenceValues = NULL,
 \item{image}{standard image using something like jpeg::readJPEG.}
 
 \item{boxes}{a data frame or comprising where each row has the following
-format:
+format:\preformatted{     xmin, xmax, ymin, ymax
+}}
 
-         xmin, xmax, ymin, ymax}
-
-\item{boxColors}{Optional scalar or vector of length = ``numberOfBoxes`` 
+\item{boxColors}{Optional scalar or vector of length = \code{numberOfBoxes}
 used for determining the colors of the different boxes.}
 
-\item{confidenceValues}{Optional vector of length = ``numberOfBoxes`` where
-each element is in the range [0, 1].  Used for determining border width.}
+\item{confidenceValues}{Optional vector of length = \code{numberOfBoxes} where
+each element is in the range \link{0, 1}.  Used for determining border width.}
 
-\item{captions}{Optional vector of length = ``numberOfBoxes`` where
+\item{captions}{Optional vector of length = \code{numberOfBoxes} where
 each element is the caption rendered with each box.}
 }
 \description{

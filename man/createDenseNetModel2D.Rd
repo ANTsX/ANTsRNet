@@ -6,7 +6,7 @@
 \usage{
 createDenseNetModel2D(inputImageSize, numberOfClassificationLabels = 1000,
   numberOfFilters = 16, depth = 7, numberOfDenseBlocks = 1,
-  growthRate = 12, dropoutRate = 0.2, weightDecay = 1e-04)
+  growthRate = 12, dropoutRate = 0.2, weightDecay = 0.0001)
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
@@ -19,7 +19,7 @@ the number of channels (e.g., red, green, and blue).  The batch size
 \item{depth}{number of layers---must be equal to 3 * N + 4 where
 N is an integer (default = 7).}
 
-\item{numberOfDenseBlocks}{number of dense blocks to add to the end 
+\item{numberOfDenseBlocks}{number of dense blocks to add to the end
 (default = 1).}
 
 \item{growthRate}{number of filters to add for each dense block layer
@@ -33,18 +33,18 @@ N is an integer (default = 7).}
 an DenseNet keras model
 }
 \description{
-Creates a keras model of the DenseNet deep learning architecture for image 
+Creates a keras model of the DenseNet deep learning architecture for image
 recognition based on the paper
 }
 \details{
-G. Huang, Z. Liu, K. Weinberger, and L. van der Maaten. Densely Connected 
-  Convolutional Networks Networks
+G. Huang, Z. Liu, K. Weinberger, and L. van der Maaten. Densely Connected
+Convolutional Networks Networks
 
 available here:
 
 https://arxiv.org/abs/1608.06993
 
-This particular implementation was influenced by the following python 
+This particular implementation was influenced by the following python
 implementation:
 
 https://github.com/tdeboissiere/DeepLearningImplementations/blob/master/DenseNet/densenet.py

@@ -18,21 +18,21 @@ the number of channels (e.g., red, green, and blue).  The batch size
 a GoogLeNet keras model
 }
 \description{
-Creates a keras model of the GoogLeNet deep learning architecture for image 
+Creates a keras model of the GoogLeNet deep learning architecture for image
 recognition based on the paper
 }
 \details{
-C. Szegedy, W. Liu, Y. Jia, P. Sermanet, S. Reed, D. Anguelov, D. Erhan, V. Vanhoucke, 
-  A. Rabinovich, Going Deeper with Convolutions
-C. Szegedy, V. Vanhoucke, S. Ioffe, J. Shlens, and Z. Wojna. Rethinking the Inception 
-  Architecture for Computer Vision
+C. Szegedy, W. Liu, Y. Jia, P. Sermanet, S. Reed, D. Anguelov, D. Erhan, V. Vanhoucke,
+A. Rabinovich, Going Deeper with Convolutions
+C. Szegedy, V. Vanhoucke, S. Ioffe, J. Shlens, and Z. Wojna. Rethinking the Inception
+Architecture for Computer Vision
 
 available here:
 
 https://arxiv.org/abs/1409.4842
-        https://arxiv.org/abs/1512.00567
+https://arxiv.org/abs/1512.00567
 
-This particular implementation was influenced by the following python 
+This particular implementation was influenced by the following python
 implementation:
 
 https://github.com/fchollet/deep-learning-models/blob/master/inception_v3.py

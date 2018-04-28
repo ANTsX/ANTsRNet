@@ -19,13 +19,13 @@ AnchorBoxLayer3D
 boxes for this layer.}
 
 \item{variances}{explained here:
-           https://github.com/rykov8/ssd_keras/issues/53
+https://github.com/rykov8/ssd_keras/issues/53
 
 Input shape:}
 }
 \value{
 a 6-D tensor with shape
-    [batchSize, widthSize, heightSize, depthSize, numberOfBoxes, 12]
+\link{batchSize, widthSize, heightSize, depthSize, numberOfBoxes, 12}
 In the last dimension, the first 6 values correspond to the
 3-D coordinates of the bounding boxes and the other 6 are the variances.
 }
@@ -34,8 +34,8 @@ Anchor (or prior) boxes for SSD architecture (3-D).  The input shape is
 defined as
 }
 \details{
-Theano:  [batchSize, channelSize, widthSize, heightSize, depthSize]
-    tensorflow:  [batchSize, widthSize, heightSize, depthSize, channelSize]
+Theano:  \link{batchSize, channelSize, widthSize, heightSize, depthSize}
+tensorflow:  \link{batchSize, widthSize, heightSize, depthSize, channelSize}
 }
 \examples{
 

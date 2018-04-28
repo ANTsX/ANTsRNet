@@ -18,8 +18,8 @@ output tensor with the same shape as the input.
 L2 2-D normalization layer for SSD300/512 architecture described in
 }
 \details{
-Wei Liu, Andrew Rabinovich, and Alexander C. Berg.  ParseNet: Looking Wider 
-    to See Better.
+Wei Liu, Andrew Rabinovich, and Alexander C. Berg.  ParseNet: Looking Wider
+to See Better.
 
 available here:
 
@@ -27,8 +27,8 @@ https://arxiv.org/abs/1506.04579
 
 Note that tine input shape is:
 
-Theano:  [batchSize, channelSize, widthSize, heightSize]
-   tensorflow:  [batchSize, widthSize, heightSize, channelSize]
+Theano:  \link{batchSize, channelSize, widthSize, heightSize}
+tensorflow:  \link{batchSize, widthSize, heightSize, channelSize}
 }
 \examples{
 

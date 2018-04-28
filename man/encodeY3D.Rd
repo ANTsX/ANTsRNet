@@ -8,70 +8,67 @@ encodeY3D(groundTruthLabels, anchorBoxes, imageSize, variances = rep(1, 6),
   foregroundThreshold = 0.5, backgroundThreshold = 0.2)
 }
 \arguments{
-\item{groundTruthLabels}{A list of length `batchSize` that contains one 
+\item{groundTruthLabels}{A list of length \code{batchSize} that contains one
 2-D array per image.  Each 2-D array has k rows where each row corresponds
-to a single box consisting of the format 
+to a single box consisting of the format\preformatted{     classId, (xmin,xmax,ymin,ymax,zmin,zmax)
+}
 
-         classId, (xmin,xmax,ymin,ymax,zmin,zmax)
-
-Note that `classId` must be greater than 0 since 0 is reserved for the 
+Note that \code{classId} must be greater than 0 since 0 is reserved for the
 background label.}
 
 \item{anchorBoxes}{a list of 2-D arrays where each element comprises the
 anchor boxes for a specific aspect ratios layer.  The row of each 2-D array
-comprises a single box specified in the form
+comprises a single box specified in the form\preformatted{     (xmin,xmax,ymin,ymax,zmin,zmax)
+}}
 
-         (xmin,xmax,ymin,ymax,zmin,zmax)}
-
-\item{variances}{A list of 6 floats > 0 with scaling factors (actually it's 
-not factors but divisors to be precise) for the encoded predicted box 
-coordinates. A variance value of 1.0 would apply no scaling at all to the 
-predictions, while values in (0,1) upscale the encoded predictions and 
+\item{variances}{A list of 6 floats > 0 with scaling factors (actually it's
+not factors but divisors to be precise) for the encoded predicted box
+coordinates. A variance value of 1.0 would apply no scaling at all to the
+predictions, while values in (0,1) upscale the encoded predictions and
 values greater than 1.0 downscale the encoded predictions. These are the same
 variances used to construct the model. Default = c( 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 )}
 
-\item{foregroundThreshold}{float between 0 and 1 determining the min threshold 
-for matching an anchor box with a ground truth box and, thus, labeling an anchor 
-box as a non-background class.  If an anchor box exceeds the ``backgroundThreshold`` 
-but does not meet the foregroundThreshold for a ground truth box, then it is ignored 
+\item{foregroundThreshold}{float between 0 and 1 determining the min threshold
+for matching an anchor box with a ground truth box and, thus, labeling an anchor
+box as a non-background class.  If an anchor box exceeds the \code{backgroundThreshold}
+but does not meet the foregroundThreshold for a ground truth box, then it is ignored
 during training.  Default = 0.5.}
 
-\item{backgroundThreshold}{float between 0 and 1 determining the max threshold 
-for labeling an anchor box as `background`.  If an anchor box exceeds the 
-``backgroundThreshold`` but does not meet the foregroundThreshold for a ground
+\item{backgroundThreshold}{float between 0 and 1 determining the max threshold
+for labeling an anchor box as \code{background}.  If an anchor box exceeds the
+\code{backgroundThreshold} but does not meet the foregroundThreshold for a ground
 truth box, then it is ignored during training.  Default = 0.2.}
 
-\item{inputImageSize}{3-D vector specifying the spatial domain of the input 
+\item{inputImageSize}{3-D vector specifying the spatial domain of the input
 images.}
 }
 \value{
-a 3-D array of shape 
-     
-        `(batchSize, numberOfBoxes, numberOfClasses + 6 + 6 + 6)`
+a 3-D array of shape\preformatted{    `(batchSize, numberOfBoxes, numberOfClasses + 6 + 6 + 6)`
+}
 
-where the additional 6's along the third dimension correspond to 
+where the additional 6's along the third dimension correspond to
 the 6 predicted box coordinate offsets, the 6 coordinates for
 the anchor boxes, and the 6 variance values.
 }
 \description{
-Function for translating the min/max ground truth box coordinates to 
+Function for translating the min/max ground truth box coordinates to
 something expected by the SSD network.  This is a SSD-specific analog
 for keras::to_categorical().  For each image in the batch, we compare
-the ground truth boxes for that image with all the anchor boxes.  If 
+the ground truth boxes for that image with all the anchor boxes.  If
 the overlap measure exceeds a specific threshold, we write the ground
 truth box coordinates and class to the specific position of the matched
-anchor box.  Note that the background class will be assigned to all the 
+anchor box.  Note that the background class will be assigned to all the
 anchor boxes for which there was no match with any ground truth box.
 However, an exception to this are the anchor boxes whose overlap measure
 is higher that the specified negative threshold.
 }
 \details{
-This particular implementation was heavily influenced by the following 
+This particular implementation was heavily influenced by the following
 python and R implementations:
 
-https://github.com/pierluigiferrari/ssd_keras  
-        https://github.com/rykov8/ssd_keras
-        https://github.com/gsimchoni/ssdkeras
+https://github.com/pierluigiferrari/ssd_keras
+https://github.com/rykov8/ssd_keras
+https://github.com/gsimchoni/ssdkeras
 }
 \examples{
 

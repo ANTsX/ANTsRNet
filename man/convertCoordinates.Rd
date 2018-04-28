@@ -7,20 +7,20 @@
 convertCoordinates(boxes, type = "minmax2centroids")
 }
 \arguments{
-\item{boxes}{A vector or 2-D array where each row corresponds to a single box 
-consisting of the format 
-    (xmin,xmax,ymin,ymax) or 
-    (centerx,centery,width,height) for 2-D
-    (xmin,xmax,ymin,ymax,zmin,zmax) or 
-    (centerx,centery,centerz,width,height,depth) for 3-D.}
+\item{boxes}{A vector or 2-D array where each row corresponds to a single box
+consisting of the format
+(xmin,xmax,ymin,ymax) or
+(centerx,centery,width,height) for 2-D
+(xmin,xmax,ymin,ymax,zmin,zmax) or
+(centerx,centery,centerz,width,height,depth) for 3-D.}
 
-\item{type}{either \'minmax2centroids\' or \'centroids2minmax\'}
+\item{type}{either 'minmax2centroids' or 'centroids2minmax'}
 }
 \value{
 a vector or 2-D array with the converted coordinates
 }
 \description{
-Function for converting box coordinates to/from min/max representation 
+Function for converting box coordinates to/from min/max representation
 from/to centroids/width
 }
 \examples{

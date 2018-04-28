@@ -7,15 +7,14 @@
 decodeY(yPredicted, domainImage)
 }
 \arguments{
-\item{yPredicted}{an array of shape
-
-        `(batchSize, width, height, <depth>, numberOfSegmentationLabels)`}
+\item{yPredicted}{an array of shape\preformatted{    `(batchSize, width, height, <depth>, numberOfSegmentationLabels)`
+}}
 }
 \value{
 a list of list of probability images.
 }
 \description{
-Function for translating the U-net predictions to ANTsR probability 
+Function for translating the U-net predictions to ANTsR probability
 images.
 }
 \examples{

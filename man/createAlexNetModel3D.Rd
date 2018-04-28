@@ -19,22 +19,22 @@ the number of channels (e.g., red, green, and blue).  The batch size
 an AlexNet keras model
 }
 \description{
-Creates a keras model of the AlexNet deep learning architecture for image 
+Creates a keras model of the AlexNet deep learning architecture for image
 recognition based on the paper
 }
 \details{
-A. Krizhevsky, and I. Sutskever, and G. Hinton. ImageNet Classification 
-  with Deep Convolutional Neural Networks.
+A. Krizhevsky, and I. Sutskever, and G. Hinton. ImageNet Classification
+with Deep Convolutional Neural Networks.
 
 available here:
 
 http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf
 
-This particular implementation was influenced by the following python 
+This particular implementation was influenced by the following python
 implementation:
 
-https://github.com/duggalrahul/AlexNet-Experiments-Keras/     
-        https://github.com/lunardog/convnets-keras/
+https://github.com/duggalrahul/AlexNet-Experiments-Keras/
+https://github.com/lunardog/convnets-keras/
 }
 \examples{
 

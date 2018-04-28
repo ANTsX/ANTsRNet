@@ -9,45 +9,43 @@ decodeY3D(yPredicted, imageSize, confidenceThreshold = 0.5,
 }
 \arguments{
 \item{yPredicted}{The predicted output produced by the SSD model expected to
-be an array of shape
+be an array of shape\preformatted{    `(batchSize, numberOfBoxes, numberOfClasses + 6 + 6 + 6)`
+}
 
-        `(batchSize, numberOfBoxes, numberOfClasses + 6 + 6 + 6)`
-
-where the additional 4's along the third dimension correspond to the box 
+where the additional 4's along the third dimension correspond to the box
 coordinates (centerx, centery, width, height), dummy variables, and the variances.
-``numberOfClasses`` includes the background class.}
+\code{numberOfClasses} includes the background class.}
 
-\item{confidenceThreshold}{Float between 0 and 1.  The minimum 
+\item{confidenceThreshold}{Float between 0 and 1.  The minimum
 classification value required for a given box to be considered a "positive
-prediction."  A lower value will result in better recall while a higher 
+prediction."  A lower value will result in better recall while a higher
 value yields higher precision results.  Default = 0.5.}
 
 \item{overlapThreshold}{'NULL' or a float between 0 and 1.  If 'NULL' then
 no non-maximum suppression will be performed.  Otherwise, a greedy non-
 maximal suppression is performed following confidence thresholding.  In
-other words all boxes with Jaccard similarities > ``overlapThreshold`` will
+other words all boxes with Jaccard similarities > \code{overlapThreshold} will
 be removed from the set of predictions.   Default = 0.45.}
 
-\item{inputImageSize}{3-D vector specifying the spatial domain of the input 
+\item{inputImageSize}{3-D vector specifying the spatial domain of the input
 images.}
 }
 \value{
-a list of length ``batchSize`` where each element comprises a 2-D
-array where each row describes a single box using the following six elements
-
-         `(classId, confidenceValue, xmin, xmax, ymin, ymax, zmin, zmax)`
+a list of length \code{batchSize} where each element comprises a 2-D
+array where each row describes a single box using the following six elements\preformatted{     `(classId, confidenceValue, xmin, xmax, ymin, ymax, zmin, zmax)`
+}
 }
 \description{
 Function for translating the predictions from the SSD model output to
 boxes, (centerx, centery, width, height), for subsequent usage.
 }
 \details{
-This particular implementation was heavily influenced by the following 
+This particular implementation was heavily influenced by the following
 python and R implementations:
 
-https://github.com/pierluigiferrari/ssd_keras  
-        https://github.com/rykov8/ssd_keras
-        https://github.com/gsimchoni/ssdkeras
+https://github.com/pierluigiferrari/ssd_keras
+https://github.com/rykov8/ssd_keras
+https://github.com/gsimchoni/ssdkeras
 }
 \examples{
 

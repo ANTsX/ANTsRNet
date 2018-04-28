@@ -16,47 +16,47 @@ shape (or dimension) of that tensor is the image dimensions followed by
 the number of channels (e.g., red, green, and blue).  The batch size
 (i.e., number of training images) is not specified a priori.}
 
-\item{numberOfClassificationLabels}{Number of classification labels. 
+\item{numberOfClassificationLabels}{Number of classification labels.
 Needs to include the background as one of the labels.}
 
-\item{minScale}{The smallest scaling factor for the size of the anchor 
+\item{minScale}{The smallest scaling factor for the size of the anchor
 boxes as a fraction of the shorter side of the input images.}
 
-\item{maxScale}{The largest scaling factor for the size of the anchor 
-boxes as a fraction of the shorter side of the input images. All scaling 
+\item{maxScale}{The largest scaling factor for the size of the anchor
+boxes as a fraction of the shorter side of the input images. All scaling
 factors between the smallest and the largest are linearly interpolated.}
 
 \item{aspectRatiosPerLayer}{A list containing one aspect ratio list for
-each predictor layer.  The default lists follows the original 
+each predictor layer.  The default lists follows the original
 implementation except each aspect ratio is defined as a character string
 (e.g. '1:1:2').}
 
-\item{variances}{A list of 6 floats > 0 with scaling factors for the encoded 
-predicted box coordinates. A variance value of 1.0 would apply no scaling at 
-all to the predictions, while values in (0, 1) upscale the encoded predictions 
-and values greater than 1.0 downscale the encoded predictions. Defaults to 
+\item{variances}{A list of 6 floats > 0 with scaling factors for the encoded
+predicted box coordinates. A variance value of 1.0 would apply no scaling at
+all to the predictions, while values in (0, 1) upscale the encoded predictions
+and values greater than 1.0 downscale the encoded predictions. Defaults to
 c( 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 )}
 }
 \value{
 an SSD keras model
 }
 \description{
-Creates a keras model of the SSD 7 deep learning architecture for 
+Creates a keras model of the SSD 7 deep learning architecture for
 object detection based on the paper
 }
 \details{
-W. Liu, D. Anguelov, D. Erhan, C. Szegedy, S. Reed, C-Y. Fu, A. Berg. 
-    SSD: Single Shot MultiBox Detector.
+W. Liu, D. Anguelov, D. Erhan, C. Szegedy, S. Reed, C-Y. Fu, A. Berg.
+SSD: Single Shot MultiBox Detector.
 
 available here:
 
 https://arxiv.org/abs/1512.02325
 
-This particular implementation was influenced by the following python 
+This particular implementation was influenced by the following python
 and R implementations:
 
-https://github.com/pierluigiferrari/ssd_keras     
-        https://github.com/gsimchoni/ssdkeras
+https://github.com/pierluigiferrari/ssd_keras
+https://github.com/gsimchoni/ssdkeras
 }
 \examples{
 
