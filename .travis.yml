@@ -40,4 +40,4 @@ before_install:
 #  - Rscript -e 'install.packages("tensorflow")'
 #  - Rscript -e 'install.packages("keras")'
   - gh_binary_install  stnava/ITKR ANTsX/ANTsRCore ANTsX/ANTsR
-  - Rscript -e 'devtools::install_github( "rstudio/tensorflow" )'
+#  - Rscript -e 'devtools::install_github( "rstudio/tensorflow" )'
