@@ -29,7 +29,6 @@ Suggests:
     keras,
     magick,
     rmarkdown,
-    tensorflow,
     testthat
 Remotes:
     rstudio/reticulate
