@@ -124,7 +124,7 @@ attr( loss_multilabel_dice_coefficient_error, "py_function_name" ) <-
 #' 
 #' }
 
-encodeY <- function( groundTruthSegmentations, segmentationLabels )
+encodeUnet <- function( groundTruthSegmentations, segmentationLabels )
   {
   numberOfLabels <- length( segmentationLabels )
 
@@ -168,6 +168,9 @@ encodeY <- function( groundTruthSegmentations, segmentationLabels )
 #'
 #'         `(batchSize, width, height, <depth>, numberOfSegmentationLabels)`
 #'
+#' @param domainImage image definining the geometry of the returned probability
+#' images.
+#'
 #' @return a list of list of probability images.
 #'
 #' @author Tustison NJ
@@ -179,7 +182,7 @@ encodeY <- function( groundTruthSegmentations, segmentationLabels )
 #' 
 #' }
 
-decodeY <- function( yPredicted, domainImage )
+decodeUnet <- function( yPredicted, domainImage )
   {
   batchSize <- dim( yPredicted )[1]
   numberOfSegmentationLabels <- tail( dim( yPredicted ), 1 )

@@ -9,6 +9,8 @@
 lossSsd
 }
 \arguments{
+\item{dimension}{Image dimensionality.}
+
 \item{backgroundRatio}{The maximum ratio of background to foreround
 for weighting in the loss function.  Is rounded to the nearest integer.
 Default is '3'.}
@@ -19,6 +21,8 @@ proportion to the batch size.  Default is 0.}
 
 \item{alpha}{Weighting factor for the localization loss in total loss
 computation.}
+
+\item{numberOfClassificationLabels}{number of classes including background.}
 }
 \value{
 an SSD loss function

@@ -16,6 +16,7 @@
 #'         https://github.com/pierluigiferrari/ssd_keras/blob/master/keras_loss_function/keras_ssd_loss.py
 #'         https://github.com/gsimchoni/ssdkeras/blob/master/R/ssd_loss.R
 #'
+#' @param dimension Image dimensionality.
 #' @param backgroundRatio The maximum ratio of background to foreround
 #' for weighting in the loss function.  Is rounded to the nearest integer.
 #' Default is '3'.
@@ -24,6 +25,7 @@
 #' proportion to the batch size.  Default is 0.
 #' @param alpha Weighting factor for the localization loss in total loss 
 #' computation.
+#' @param numberOfClassificationLabels number of classes including background.
 #'
 #' @return an SSD loss function
 #' @author Tustison NJ
@@ -488,7 +490,7 @@ drawRectangles <- function( image, boxes, boxColors = "red",
 #'
 #'          (xmin,xmax,ymin,ymax)
 #'
-#' @param inputImageSize 2-D vector specifying the spatial domain of the input 
+#' @param imageSize 2-D vector specifying the spatial domain of the input 
 #' images.
 #' @param variances A list of 4 floats > 0 with scaling factors (actually it's 
 #' not factors but divisors to be precise) for the encoded predicted box 
@@ -523,7 +525,7 @@ drawRectangles <- function( image, boxes, boxColors = "red",
 #' 
 #' }
 
-encodeY2D <- function( groundTruthLabels, anchorBoxes, imageSize,
+encodeSsd2D <- function( groundTruthLabels, anchorBoxes, imageSize,
   variances = rep( 1.0, 4 ), foregroundThreshold = 0.5, 
   backgroundThreshold = 0.2 )
   {
@@ -662,7 +664,7 @@ encodeY2D <- function( groundTruthLabels, anchorBoxes, imageSize,
 #' where the additional 4's along the third dimension correspond to the box 
 #' coordinates (centerx, centery, width, height), dummy variables, and the variances.
 #' ``numberOfClasses`` includes the background class.
-#' @param inputImageSize 2-D vector specifying the spatial domain of the input 
+#' @param imageSize 2-D vector specifying the spatial domain of the input 
 #' images.
 #' @param confidenceThreshold  Float between 0 and 1.  The minimum 
 #' classification value required for a given box to be considered a "positive
@@ -688,7 +690,7 @@ encodeY2D <- function( groundTruthLabels, anchorBoxes, imageSize,
 #' 
 #' }
 
-decodeY2D <- function( yPredicted, imageSize, confidenceThreshold = 0.5, 
+decodeSsd2D <- function( yPredicted, imageSize, confidenceThreshold = 0.5, 
   overlapThreshold = 0.45 )
   {
   np <- reticulate::import( "numpy" )  
@@ -1111,7 +1113,7 @@ create_layer( AnchorBoxLayer2D, object,
 #'
 #'          (xmin,xmax,ymin,ymax,zmin,zmax)
 #'
-#' @param inputImageSize 3-D vector specifying the spatial domain of the input 
+#' @param imageSize 3-D vector specifying the spatial domain of the input 
 #' images.
 #' @param variances A list of 6 floats > 0 with scaling factors (actually it's 
 #' not factors but divisors to be precise) for the encoded predicted box 
@@ -1146,7 +1148,7 @@ create_layer( AnchorBoxLayer2D, object,
 #' 
 #' }
 
-encodeY3D <- function( groundTruthLabels, anchorBoxes, imageSize,
+encodeSsd3D <- function( groundTruthLabels, anchorBoxes, imageSize,
   variances = rep( 1.0, 6 ), foregroundThreshold = 0.5, 
   backgroundThreshold = 0.2 )
   {
@@ -1312,7 +1314,7 @@ encodeY3D <- function( groundTruthLabels, anchorBoxes, imageSize,
 #' 
 #' }
 
-decodeY3D <- function( yPredicted, imageSize, confidenceThreshold = 0.5, 
+decodeSsd3D <- function( yPredicted, imageSize, confidenceThreshold = 0.5, 
   overlapThreshold = 0.45 )
   {
   np <- reticulate::import( "numpy" )  
