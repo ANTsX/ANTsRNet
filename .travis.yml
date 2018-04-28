@@ -1,31 +1,18 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 language: r
-r:
-  - release
-  - dev
 
 dist: trusty
 sudo: false
-warnings_are_errors: false
-
-r_build_args: --no-build-vignettes --no-manual
-env:
-  global:
-  - R_BUILD_ARGS=" --no-build-vignettes --no-manual "
-  - R_CHECK_ARGS=" --timings --as-cran"
-  - R_CHECK_TIME="TRUE"
-  - R_CHECK_TESTS="TRUE"
-  - _R_CHECK_TIMINGS_="0"
-  - _R_CHECK_FORCE_SUGGESTS_="0"
-  - BOOTSTRAP_LATEX=1
-  # - WARNINGS_ARE_ERRORS=0
 
 env:
-  global:
-    - TENSORFLOW_TEST_EXAMPLES="0"
+  - KERAS_BACKEND="tensorflow"
+  - KERAS_IMPLEMENTATION="tensorflow"
 
 cache:
   packages: true
+  directories:
+    - $HOME/.keras
+    - $HOME/.cache/pip
 
 before_install:
   - export PACKAGE_NAME=ANTsRNet
@@ -37,7 +24,9 @@ before_install:
   - Rscript -e 'install.packages("magic")'
   - Rscript -e 'install.packages("psych")'
   - Rscript -e 'install.packages("RcppEigen")'
-#  - Rscript -e 'install.packages("tensorflow")'
-#  - Rscript -e 'install.packages("keras")'
   - gh_binary_install  stnava/ITKR ANTsX/ANTsRCore ANTsX/ANTsR
-#  - Rscript -e 'devtools::install_github( "rstudio/tensorflow" )'
+
+before_script:
+  - pip2.7 install --upgrade --ignore-installed --user travis pip setuptools wheel virtualenv
+  - pip2.7 install --upgrade --ignore-installed --user travis keras h5py pyyaml requests Pillow scipy theano
+  - R -e 'tensorflow::install_tensorflow()'
