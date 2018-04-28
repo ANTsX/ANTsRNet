@@ -48,6 +48,7 @@
 #' library( keras )
 #' 
 #' }
+#' @import keras
 
 createSsdModel2D <- function( inputImageSize, 
                               numberOfClassificationLabels,
@@ -66,10 +67,6 @@ createSsdModel2D <- function( inputImageSize,
                               style = 300
                             )
 {
-  if( !usePkg( "keras" ) )
-    {
-    stop( "Please install the keras package." )
-    }
 
   if( style != 300 && style != 512 )
     {
@@ -541,6 +538,7 @@ createSsdModel2D <- function( inputImageSize,
 #' library( keras )
 #' 
 #' }
+#' @import keras
 
 createSsdModel3D <- function( inputImageSize, 
                               numberOfClassificationLabels,
@@ -559,10 +557,6 @@ createSsdModel3D <- function( inputImageSize,
                               style = 300
                             )
 {
-  if( !usePkg( "keras" ) )
-    {
-    stop( "Please install the keras package." )
-    }
 
   if( style != 300 && style != 512 )
     {

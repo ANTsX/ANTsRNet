@@ -61,6 +61,7 @@
 #' predictedData <- resNetModel %>% predict( X_test, verbose = 1 )
 #' 
 #' }
+#' @import keras
 
 createResNetModel2D <- function( inputImageSize, 
                                  numberOfClassificationLabels = 1000,
@@ -70,10 +71,6 @@ createResNetModel2D <- function( inputImageSize,
                                  cardinality = 1
                                )
 {
-  if( !usePkg( "keras" ) )
-    {
-    stop( "Please install the keras package." )
-    }
 
   addCommonLayers <- function( model )
     {
@@ -255,6 +252,7 @@ createResNetModel2D <- function( inputImageSize,
 #' predictedData <- resNetModel %>% predict( X_test, verbose = 1 )
 #' 
 #' }
+#' @import keras
 
 createResNetModel3D <- function( inputImageSize, 
                                  numberOfClassificationLabels = 1000,
@@ -264,10 +262,6 @@ createResNetModel3D <- function( inputImageSize,
                                  cardinality = 1
                                )
 {
-  if( !usePkg( "keras" ) )
-    {
-    stop( "Please install the keras package." )
-    }
 
   addCommonLayers <- function( model )
     {

@@ -66,6 +66,7 @@
 #' predictedData <- denseNetModel %>% predict( X_test, verbose = 1 )
 #' 
 #' }
+#' @import keras
 
 createDenseNetModel2D <- function( inputImageSize, 
                                    numberOfClassificationLabels = 1000,
@@ -77,10 +78,6 @@ createDenseNetModel2D <- function( inputImageSize,
                                    weightDecay = 1e-4
                                  )
 {
-  if( !usePkg( "keras" ) )
-    {
-    stop( "Please install the keras package." )
-    }
 
   convolutionFactory2D <- function( model, numberOfFilters, kernelSize = c( 3, 3 ), 
                                     dropoutRate = 0.0, weightDecay = 1e-4 )
@@ -255,6 +252,7 @@ createDenseNetModel2D <- function( inputImageSize,
 #' predictedData <- denseNetModel %>% predict( X_test, verbose = 1 )
 #' 
 #' }
+#' @import keras
 
 createDenseNetModel3D <- function( inputImageSize, 
                                    numberOfClassificationLabels = 1000,
@@ -266,10 +264,6 @@ createDenseNetModel3D <- function( inputImageSize,
                                    weightDecay = 1e-4
                                  )
 {
-  if( !usePkg( "keras" ) )
-    {
-    stop( "Please install the keras package." )
-    }
 
   convolutionFactory3D <- function( model, numberOfFilters, kernelSize = c( 3, 3, 3 ), 
                                     dropoutRate = 0.0, weightDecay = 1e-4 )

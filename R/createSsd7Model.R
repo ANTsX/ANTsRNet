@@ -46,6 +46,7 @@
 #' library( keras )
 #' 
 #' }
+#' @import keras
 
 createSsd7Model2D <- function( inputImageSize, 
                               numberOfClassificationLabels,
@@ -60,11 +61,6 @@ createSsd7Model2D <- function( inputImageSize,
                               variances = rep( 1.0, 4 )
                             )
 {
-  
-  if( !usePkg( "keras" ) )
-    {
-    stop( "Please install the keras package." )
-    }
 
   K <- keras::backend()  
 
@@ -266,6 +262,7 @@ createSsd7Model2D <- function( inputImageSize,
 #' library( keras )
 #' 
 #' }
+#' @import keras
 
 createSsd7Model3D <- function( inputImageSize, 
                               numberOfClassificationLabels,
@@ -280,10 +277,6 @@ createSsd7Model3D <- function( inputImageSize,
                               variances = rep( 1.0, 6 )
                             )
 {
-  if( !usePkg( "keras" ) )
-    {
-    stop( "Please install the keras package." )
-    }
 
   K <- keras::backend()  
 

@@ -60,6 +60,7 @@
 #' predictedData <- alexNetModel %>% predict( X_test, verbose = 1 )
 #' 
 #' }
+#' @import keras
 
 createAlexNetModel2D <- function( inputImageSize, 
                                   numberOfClassificationLabels = 1000,
@@ -67,10 +68,6 @@ createAlexNetModel2D <- function( inputImageSize,
                                   dropoutRate = 0.0
                                 )
 {
-  if( !usePkg( "keras" ) )
-    {
-    stop( "Please install the keras package." )
-    }
 
   splitTensor2D <- function( axis = 4, ratioSplit = 1, idSplit = 1  )
     {
@@ -285,6 +282,7 @@ createAlexNetModel2D <- function( inputImageSize,
 #' predictedData <- alexNetModel %>% predict( X_test, verbose = 1 )
 #' 
 #' }
+#' @import keras
 
 createAlexNetModel3D <- function( inputImageSize, 
                                   numberOfClassificationLabels = 1000,
@@ -292,10 +290,6 @@ createAlexNetModel3D <- function( inputImageSize,
                                   dropoutRate = 0.0
                                 )
 {
-  if( !usePkg( "keras" ) )
-    {
-    stop( "Please install the keras package." )
-    }
 
   splitTensor3D <- function( axis = 5, ratioSplit = 1, idSplit = 1  )
     {
