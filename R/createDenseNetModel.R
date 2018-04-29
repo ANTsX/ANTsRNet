@@ -20,6 +20,7 @@
 #' the number of channels (e.g., red, green, and blue).  The batch size
 #' (i.e., number of training images) is not specified a priori. 
 #' @param numberOfClassificationLabels Number of segmentation labels.
+#' @param numberOfFilters number of filters
 #' @param depth number of layers---must be equal to 3 * N + 4 where
 #' N is an integer (default = 7). 
 #' @param numberOfDenseBlocks number of dense blocks to add to the end 
@@ -205,6 +206,7 @@ createDenseNetModel2D <- function( inputImageSize,
 #' the number of channels (e.g., red, green, and blue).  The batch size
 #' (i.e., number of training images) is not specified a priori. 
 #' @param numberOfClassificationLabels Number of segmentation labels.
+#' @param numberOfFilters number of filters
 #' @param depth number of layers---must be equal to 3 * N + 4 where
 #' N is an integer (default = 7). 
 #' @param numberOfDenseBlocks number of dense blocks to add to the end 

@@ -15,7 +15,7 @@ Anchor box layer for SSD architecture (2-D).
 }
 \section{Usage}{
 
-\preformatted{anchorBoxGenerator <- AnchorBoxLayer2d$new( imageSize,
+\preformatted{anchorBoxGenerator <- AnchorBoxLayer2D$new( imageSize,
      scale, nextScale, aspectRatios = c( '1:1', '2:1', '1:2' ), 
      variances = 1.0 )
 

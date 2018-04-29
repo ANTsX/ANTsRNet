@@ -16,6 +16,8 @@ the number of channels (e.g., red, green, and blue).  The batch size
 
 \item{numberOfClassificationLabels}{Number of segmentation labels.}
 
+\item{numberOfFilters}{number of filters}
+
 \item{depth}{number of layers---must be equal to 3 * N + 4 where
 N is an integer (default = 7).}
 

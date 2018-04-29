@@ -21,6 +21,9 @@
 #' the number of channels (e.g., red, green, and blue).  The batch size
 #' (i.e., number of training images) is not specified a priori. 
 #' @param numberOfClassificationLabels Number of segmentation labels.  
+#' @param numberOfDenseUnits number of dense units.
+#' @param droputRate optional regularization parameter between \verb{[0, 1]}.
+#' Default = 0.0.
 #'
 #' @return an AlexNet keras model
 #' @author Tustison NJ
@@ -41,7 +44,7 @@
 #' inputImageSize <- c( dim( mnistData$train$x )[2:3], 1 )
 #' 
 #' alexNetModel <- createAlexNetModel2D( inputImageSize = inputImageSize, 
-#'   numberOfClassificationLabels = numberOfLabels, denseUnits = 4096,
+#'   numberOfClassificationLabels = numberOfLabels, numberOfDenseUnits = 4096,
 #'   dropoutRate = 0.0 )
 #' 
 #' alexNetModel %>% compile( loss = 'categorical_crossentropy',
@@ -63,7 +66,7 @@
 
 createAlexNetModel2D <- function( inputImageSize, 
                                   numberOfClassificationLabels = 1000,
-                                  denseUnits = 4096,
+                                  numberOfDenseUnits = 4096,
                                   dropoutRate = 0.0
                                 )
 {
@@ -201,12 +204,12 @@ createAlexNetModel2D <- function( inputImageSize,
   outputs <- outputs %>% 
     layer_max_pooling_2d( pool_size = c( 3, 3 ), strides = c( 2, 2 ) )
   outputs <- outputs %>% layer_flatten()
-  outputs <- outputs %>% layer_dense( units = denseUnits, activation = 'relu' )
+  outputs <- outputs %>% layer_dense( units = numberOfDenseUnits, activation = 'relu' )
   if( dropoutRate > 0.0 )
     {
     outputs <- outputs %>% layer_dropout( rate = dropoutRate )
     }
-  outputs <- outputs %>% layer_dense( units = denseUnits, activation = 'relu' )
+  outputs <- outputs %>% layer_dense( units = numberOfDenseUnits, activation = 'relu' )
   if( dropoutRate > 0.0 )
     {
     outputs <- outputs %>% layer_dropout( rate = dropoutRate )
@@ -242,6 +245,9 @@ createAlexNetModel2D <- function( inputImageSize,
 #' the number of channels (e.g., red, green, and blue).  The batch size
 #' (i.e., number of training images) is not specified a priori. 
 #' @param numberOfClassificationLabels Number of segmentation labels.  
+#' @param numberOfDenseUnits number of dense units.
+#' @param droputRate optional regularization parameter between \verb{[0, 1]}.
+#' Default = 0.0.
 #'
 #' @return an AlexNet keras model 
 #' @author Tustison NJ
@@ -262,7 +268,7 @@ createAlexNetModel2D <- function( inputImageSize,
 #' inputImageSize <- c( dim( mnistData$train$x )[2:3], 1 )
 #' 
 #' alexNetModel <- createAlexNetModel2D( inputImageSize = inputImageSize, 
-#'   numberOfClassificationLabels = numberOfLabels, denseUnits = 4096,
+#'   numberOfClassificationLabels = numberOfLabels, numberOfDenseUnits = 4096,
 #'   dropoutRate = 0.0 )
 #' 
 #' alexNetModel %>% compile( loss = 'categorical_crossentropy',
@@ -284,7 +290,7 @@ createAlexNetModel2D <- function( inputImageSize,
 
 createAlexNetModel3D <- function( inputImageSize, 
                                   numberOfClassificationLabels = 1000,
-                                  denseUnits = 4096,
+                                  numberOfDenseUnits = 4096,
                                   dropoutRate = 0.0
                                 )
 {
@@ -423,12 +429,14 @@ createAlexNetModel3D <- function( inputImageSize,
   outputs <- outputs %>% layer_max_pooling_3d( pool_size = c( 3, 3, 3 ), 
     strides = c( 2, 2, 2 ) )
   outputs <- outputs %>% layer_flatten()
-  outputs <- outputs %>% layer_dense( units = denseUnits, activation = 'relu' )
+  outputs <- outputs %>% layer_dense( units = numberOfDenseUnits, 
+    activation = 'relu' )
   if( dropoutRate > 0.0 )
     {
     outputs <- outputs %>% layer_dropout( rate = dropoutRate )
     }
-  outputs <- outputs %>% layer_dense( units = denseUnits, activation = 'relu' )
+  outputs <- outputs %>% layer_dense( units = numberOfDenseUnits, 
+    activation = 'relu' )
   if( dropoutRate > 0.0 )
     {
     outputs <- outputs %>% layer_dropout( rate = dropoutRate )

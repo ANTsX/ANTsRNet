@@ -15,6 +15,9 @@ where the additional 6's along the third dimension correspond to the box
 coordinates (centerx, centery, width, height), dummy variables, and the variances.
 \code{numberOfClasses} includes the background class.}
 
+\item{imageSize}{3-D vector specifying the spatial domain of the input
+images.}
+
 \item{confidenceThreshold}{Float between 0 and 1.  The minimum
 classification value required for a given box to be considered a "positive
 prediction."  A lower value will result in better recall while a higher
@@ -25,9 +28,6 @@ value yields higher precision results.  Default = 0.5.}
 greedy non-maximal suppression is performed following confidence thresholding.
 In other words all boxes with Jaccard similarities > \code{overlapThreshold}
 will be removed from the set of predictions.   Default = 0.45.}
-
-\item{inputImageSize}{3-D vector specifying the spatial domain of the input
-images.}
 }
 \value{
 a list of length \code{batchSize} where each element comprises a 2-D

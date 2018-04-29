@@ -5,7 +5,7 @@
 \title{3-D implementation of the AlexNet deep learning architecture.}
 \usage{
 createAlexNetModel3D(inputImageSize, numberOfClassificationLabels = 1000,
-  denseUnits = 4096, dropoutRate = 0)
+  numberOfDenseUnits = 4096, dropoutRate = 0)
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
@@ -14,6 +14,11 @@ the number of channels (e.g., red, green, and blue).  The batch size
 (i.e., number of training images) is not specified a priori.}
 
 \item{numberOfClassificationLabels}{Number of segmentation labels.}
+
+\item{numberOfDenseUnits}{number of dense units.}
+
+\item{droputRate}{optional regularization parameter between \verb{[0, 1]}.
+Default = 0.0.}
 }
 \value{
 an AlexNet keras model
@@ -53,7 +58,7 @@ Y_train <- keras::to_categorical( mnistData$train$y, numberOfLabels )
 inputImageSize <- c( dim( mnistData$train$x )[2:3], 1 )
 
 alexNetModel <- createAlexNetModel2D( inputImageSize = inputImageSize, 
-  numberOfClassificationLabels = numberOfLabels, denseUnits = 4096,
+  numberOfClassificationLabels = numberOfLabels, numberOfDenseUnits = 4096,
   dropoutRate = 0.0 )
 
 alexNetModel \%>\% compile( loss = 'categorical_crossentropy',

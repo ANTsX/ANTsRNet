@@ -38,6 +38,7 @@
 #' all to the predictions, while values in (0,1) upscale the encoded 
 #' predictions and values greater than 1.0 downscale the encoded predictions. 
 #' Defaults to 1.0.
+#' @param style 300 or 512
 #'
 #' @return an SSD keras model
 #' @author Tustison NJ
@@ -519,6 +520,7 @@ createSsdModel2D <- function( inputImageSize,
 #' all to the predictions, while values in (0,1) upscale the encoded 
 #' predictions and values greater than 1.0 downscale the encoded predictions. 
 #' Defaults to 1.0.
+#' @param style 300 or 512
 #'
 #' @return an SSD keras model
 #' @author Tustison NJ

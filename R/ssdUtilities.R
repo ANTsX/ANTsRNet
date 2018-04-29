@@ -826,7 +826,7 @@ layer_l2_normalization_2d <- function( object, scale = 20, name = NULL,
 #' @docType class
 #' 
 #' @section Usage:
-#' \preformatted{anchorBoxGenerator <- AnchorBoxLayer2d$new( imageSize,
+#' \preformatted{anchorBoxGenerator <- AnchorBoxLayer2D$new( imageSize,
 #'      scale, nextScale, aspectRatios = c( '1:1', '2:1', '1:2' ), 
 #'      variances = 1.0 )
 #'
@@ -870,7 +870,7 @@ layer_l2_normalization_2d <- function( object, scale = 20, name = NULL,
 NULL
 
 #' @export
-AnchorBoxLayer2D <- R6Class( "AnchorBoxLayer2D",
+AnchorBoxLayer2D <- R6::R6Class( "AnchorBoxLayer2D",
                                 
   inherit = KerasLayer,
 
@@ -1249,7 +1249,7 @@ encodeSsd3D <- function( groundTruthLabels, anchorBoxes, imageSize,
 #' where the additional 6's along the third dimension correspond to the box 
 #' coordinates (centerx, centery, width, height), dummy variables, and the variances.
 #' \code{numberOfClasses} includes the background class.
-#' @param inputImageSize 3-D vector specifying the spatial domain of the input 
+#' @param imageSize 3-D vector specifying the spatial domain of the input 
 #' images.
 #' @param confidenceThreshold  Float between 0 and 1.  The minimum 
 #' classification value required for a given box to be considered a "positive
@@ -1433,7 +1433,7 @@ layer_l2_normalization_3d <- function( object, scale = 20, name = NULL,
 #' @docType class
 #' 
 #' @section Usage:
-#' \preformatted{anchorBoxGenerator <- AnchorBoxLayer3d$new( imageSize,
+#' \preformatted{anchorBoxGenerator <- AnchorBoxLayer3D$new( imageSize,
 #'      scale, nextScale, aspectRatios = c( '1:1:1', '2:1:1', '1:2:1', '1:1:2' ), 
 #'      variances = 1.0 )
 #'

@@ -41,6 +41,8 @@ predicted box coordinates. A variance value of 1.0 would apply no scaling at
 all to the predictions, while values in (0,1) upscale the encoded
 predictions and values greater than 1.0 downscale the encoded predictions.
 Defaults to 1.0.}
+
+\item{style}{300 or 512}
 }
 \value{
 an SSD keras model
