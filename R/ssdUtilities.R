@@ -398,7 +398,7 @@ jaccardSimilarity <- function( boxes1, boxes2 )
 #' each element is the caption rendered with each box.
 #'
 #' @author Tustison NJ
-#' @importFrom graphics rasterImage rect plot.new test
+#' @importFrom graphics rasterImage rect plot.new text
 
 drawRectangles <- function( image, boxes, boxColors = "red", 
   confidenceValues = NULL, captions = NULL )
