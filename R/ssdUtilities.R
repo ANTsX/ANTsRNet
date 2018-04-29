@@ -1,6 +1,5 @@
 #' Loss function for the SSD deep learning architecture. 
 #' 
-#'
 #' Creates an R6 class object for use with the SSD deep learning architecture
 #' based on the paper
 #' 
@@ -14,7 +13,7 @@
 #' @docType class
 #' 
 #' @section Usage:
-#' \preformatted{ssdLoss <- lossSsd$new( dimension = 2L, backgroundRatio = 3L, 
+#' \preformatted{ssdLoss <- LossSSD$new( dimension = 2L, backgroundRatio = 3L, 
 #'   minNumberOfBackgroundBoxes = 0L,  alpha = 1.0, 
 #'   numberOfClassificationLabels )
 #'

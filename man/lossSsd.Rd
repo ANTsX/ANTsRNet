@@ -21,7 +21,7 @@ available here:
 }
 \section{Usage}{
 
-\preformatted{ssdLoss <- lossSsd$new( dimension = 2L, backgroundRatio = 3L, 
+\preformatted{ssdLoss <- LossSSD$new( dimension = 2L, backgroundRatio = 3L, 
   minNumberOfBackgroundBoxes = 0L,  alpha = 1.0, 
   numberOfClassificationLabels )
 
