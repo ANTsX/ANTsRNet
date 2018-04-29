@@ -52,7 +52,7 @@
 NULL
 
 #' @export
-lossSsd <- R6::R6Class( "LossSSD",
+LossSSD <- R6::R6Class( "LossSSD",
 
   public = list( 
       
