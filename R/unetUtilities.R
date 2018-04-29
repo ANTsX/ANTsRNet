@@ -16,7 +16,7 @@
 #' arbitrary function that returns a scalar for each data-point.
 #' The actual optimized objective is the mean of the output array across all
 #' datapoints.
-
+#' @export
 multilabel_dice_coefficient <- function( y_true, y_pred )
 {
   smoothingFactor <- 1.0
@@ -100,7 +100,7 @@ attr( loss_multilabel_dice_coefficient_error, "py_function_name" ) <-
 #' \eqn{ batchSize \times width \times height \times <depth> \times numberOfSegmentationLabels }
 #'
 #' @author Tustison NJ
-
+#' @export
 encodeUnet <- function( groundTruthSegmentations, segmentationLabels )
   {
   numberOfLabels <- length( segmentationLabels )
@@ -152,7 +152,7 @@ encodeUnet <- function( groundTruthSegmentations, segmentationLabels )
 #' @author Tustison NJ
 #' @importFrom utils tail
 #' @importFrom ANTsRCore as.antsImage
-
+#' @export
 decodeUnet <- function( yPredicted, domainImage )
   {
   batchSize <- dim( yPredicted )[1]

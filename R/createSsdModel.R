@@ -44,7 +44,7 @@
 #' @author Tustison NJ
 #' @importFrom utils head
 #' @import keras
-
+#' @export
 createSsdModel2D <- function( inputImageSize, 
                               numberOfClassificationLabels,
                               l2Regularization = 0.0005,
@@ -528,7 +528,7 @@ createSsdModel2D <- function( inputImageSize,
 #' @author Tustison NJ
 #' @importFrom utils head
 #' @import keras
-
+#' @export
 createSsdModel3D <- function( inputImageSize, 
                               numberOfClassificationLabels,
                               l2Regularization = 0.0005,

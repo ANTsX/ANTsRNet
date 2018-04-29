@@ -68,7 +68,7 @@
 #' 
 #' }
 #' @import keras
-
+#' @export
 createDenseNetModel2D <- function( inputImageSize, 
                                    numberOfClassificationLabels = 1000,
                                    numberOfFilters = 16, 
@@ -255,7 +255,7 @@ createDenseNetModel2D <- function( inputImageSize,
 #' 
 #' }
 #' @import keras
-
+#' @export
 createDenseNetModel3D <- function( inputImageSize, 
                                    numberOfClassificationLabels = 1000,
                                    numberOfFilters = 16, 

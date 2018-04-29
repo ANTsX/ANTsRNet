@@ -62,7 +62,7 @@
 #' 
 #' }
 #' @import keras
-
+#' @export
 createGoogLeNetModel2D <- function( inputImageSize, 
                                     numberOfClassificationLabels = 1000
                                   )

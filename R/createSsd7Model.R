@@ -40,7 +40,7 @@
 #' @return an SSD keras model
 #' @author Tustison NJ
 #' @import keras
-
+#' @export
 createSsd7Model2D <- function( inputImageSize, 
                               numberOfClassificationLabels,
                               minScale = 0.08,
@@ -248,7 +248,7 @@ createSsd7Model2D <- function( inputImageSize,
 #' @return an SSD keras model
 #' @author Tustison NJ
 #' @import keras
-
+#' @export
 createSsd7Model3D <- function( inputImageSize, 
                               numberOfClassificationLabels,
                               minScale = 0.08,

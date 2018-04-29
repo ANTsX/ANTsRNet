@@ -62,7 +62,7 @@
 #' 
 #' }
 #' @import keras
-
+#' @export
 createResNetModel2D <- function( inputImageSize, 
                                  numberOfClassificationLabels = 1000,
                                  layers = 1:4, 
@@ -253,7 +253,7 @@ createResNetModel2D <- function( inputImageSize,
 #' 
 #' }
 #' @import keras
-
+#' @export
 createResNetModel3D <- function( inputImageSize, 
                                  numberOfClassificationLabels = 1000,
                                  layers = 1:4, 

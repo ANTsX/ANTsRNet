@@ -202,7 +202,7 @@ LossSSD <- R6::R6Class( "LossSSD",
 #'
 #' @return a vector or 2-D array with the converted coordinates
 #' @author Tustison NJ
-
+#' @export
 convertCoordinates <- function( boxes, type = 'minmax2centroids' ) 
 {
   convertedBoxes <- boxes
@@ -398,7 +398,7 @@ jaccardSimilarity <- function( boxes1, boxes2 )
 #'
 #' @author Tustison NJ
 #' @importFrom graphics rasterImage rect plot.new text
-
+#' @export
 drawRectangles <- function( image, boxes, boxColors = "red", 
   confidenceValues = NULL, captions = NULL )
   {
@@ -504,7 +504,7 @@ drawRectangles <- function( image, boxes, boxColors = "red",
 #' the anchor boxes, and the 4 variance values.
 #'
 #' @author Tustison NJ
-
+#' @export
 encodeSsd2D <- function( groundTruthLabels, anchorBoxes, imageSize,
   variances = rep( 1.0, 4 ), foregroundThreshold = 0.5, 
   backgroundThreshold = 0.2 )
@@ -659,7 +659,7 @@ encodeSsd2D <- function( groundTruthLabels, anchorBoxes, imageSize,
 #' (classId, confidenceValue, xmin, xmax, ymin, ymax)
 #'
 #' @author Tustison NJ
-
+#' @export
 decodeSsd2D <- function( yPredicted, imageSize, confidenceThreshold = 0.5, 
   overlapThreshold = 0.45 )
   {
@@ -1136,7 +1136,7 @@ create_layer( AnchorBoxLayer2D, object,
 #' the anchor boxes, and the 6 variance values.
 #'
 #' @author Tustison NJ
-
+#' @export
 encodeSsd3D <- function( groundTruthLabels, anchorBoxes, imageSize,
   variances = rep( 1.0, 6 ), foregroundThreshold = 0.5, 
   backgroundThreshold = 0.2 )
@@ -1292,7 +1292,7 @@ encodeSsd3D <- function( groundTruthLabels, anchorBoxes, imageSize,
 #' (classId, confidenceValue, xmin, xmax, ymin, ymax, zmin, zmax).
 #'
 #' @author Tustison NJ
-
+#' @export
 decodeSsd3D <- function( yPredicted, imageSize, confidenceThreshold = 0.5, 
   overlapThreshold = 0.45 )
   {

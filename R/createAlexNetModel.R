@@ -64,7 +64,7 @@
 #' 
 #' }
 #' @import keras
-
+#' @export
 createAlexNetModel2D <- function( inputImageSize, 
                                   numberOfClassificationLabels = 1000,
                                   numberOfDenseUnits = 4096,
@@ -289,7 +289,7 @@ createAlexNetModel2D <- function( inputImageSize,
 #' 
 #' }
 #' @import keras
-
+#' @export
 createAlexNetModel3D <- function( inputImageSize, 
                                   numberOfClassificationLabels = 1000,
                                   numberOfDenseUnits = 4096,

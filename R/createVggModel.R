@@ -105,7 +105,7 @@
 #'  save_model_weights_hdf5( unetModel, filepath = 'unetModelWeights.h5' ) )
 #' }
 #' @import keras
-
+#' @export
 createVggModel2D <- function( inputImageSize, 
                                numberOfClassificationLabels = 1000,
                                layers = c( 1, 2, 3, 4, 4 ), 
@@ -293,7 +293,7 @@ createVggModel2D <- function( inputImageSize,
 #'  save_model_weights_hdf5( unetModel, filepath = 'unetModelWeights.h5' ) )
 #' }
 #' @import keras
-
+#' @export
 createVggModel3D <- function( inputImageSize, 
                                numberOfClassificationLabels = 1000,
                                layers = c( 1, 2, 3, 4, 4 ), 
