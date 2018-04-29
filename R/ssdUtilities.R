@@ -1,4 +1,5 @@
-#' Loss function for the SSD deep learning architecture.
+#' Loss function for the SSD deep learning architecture. 
+#' 
 #'
 #' Creates an R6 class object for use with the SSD deep learning architecture
 #' based on the paper
@@ -10,26 +11,48 @@
 #' 
 #'         \url{https://arxiv.org/abs/1512.02325}
 #'
-#' This particular implementation was heavily influenced by the following 
-#' python and R implementations: 
+#' @docType class
 #' 
-#'         \url{https://github.com/pierluigiferrari/ssd_keras/blob/master/keras_loss_function/keras_ssd_loss.py}
-#'         \url{https://github.com/gsimchoni/ssdkeras/blob/master/R/ssd_loss.R}
+#' @section Usage:
+#' \preformatted{ssdLoss <- lossSsd$new( dimension = 2L, backgroundRatio = 3L, 
+#'   minNumberOfBackgroundBoxes = 0L,  alpha = 1.0, 
+#'   numberOfClassificationLabels )
 #'
-#' @param dimension Image dimensionality.
-#' @param backgroundRatio The maximum ratio of background to foreround
-#' for weighting in the loss function.  Is rounded to the nearest integer.
-#' Default is 3.
-#' @param minNumberOfBackgroundBoxes The minimum number of background boxes
-#' to use in loss computation *per batch*.  Should reflect a value in 
-#' proportion to the batch size.  Default is 0.
-#' @param alpha Weighting factor for the localization loss in total loss 
-#' computation.
-#' @param numberOfClassificationLabels number of classes including background.
+#' ssdLoss$smooth_l1_loss( y_true, y_pred )
+#' ssdLoss$log_loss( y_true, y_pred )
+#' ssdLoss$compute_loss( y_true, y_pred )
+#' }
+#'
+#' @section Arguments:
+#' \describe{
+#'  \item{ssdLoss}{A \code{process} object.}
+#'  \item{dimension}{image dimensionality.}
+#'  \item{backgroundRatio}{The maximum ratio of background to foreround
+#'    for weighting in the loss function.  Is rounded to the nearest integer.
+#'    Default is 3.}
+#'  \item{minNumberOfBackgroundBoxes}{The minimum number of background boxes
+#'    to use in loss computation *per batch*.  Should reflect a value in 
+#'    proportion to the batch size.  Default is 0.}
+#'  \item{alpha}{Weighting factor for the localization loss in total loss 
+#'    computation.}
+#'  \item{numberOfClassificationLabels}{number of classes including background.}
+#' }
+#'
+#' @section Details:
+#'   \code{$smooth_l1_loss} smooth loss
+#'
+#'   \code{$log_loss} log loss
+#'
+#'   \code{$compute_loss} computes total loss.
+#'
+#' @author Tustison NJ
 #'
 #' @return an SSD loss function
-#' @author Tustison NJ
+#'
+#' @name LossSSD
+NULL
 
+#' @export
 lossSsd <- R6::R6Class( "LossSSD",
 
   public = list( 
@@ -800,23 +823,54 @@ layer_l2_normalization_2d <- function( object, scale = 20, name = NULL,
 
 #' Anchor box layer for SSD architecture (2-D).  
 #' 
-#' Anchor (or prior) boxes for SSD architecture (2-D).  
+#' @docType class
+#' 
+#' @section Usage:
+#' \preformatted{anchorBoxGenerator <- AnchorBoxLayer2d$new( imageSize,
+#'      scale, nextScale, aspectRatios = c( '1:1', '2:1', '1:2' ), 
+#'      variances = 1.0 )
 #'
-#' @param imageSize size of the input image.
-#' @param scale scale of each box (in pixels).
-#' @param nextScale next scale of each box (in pixels).
-#' @param aspectRatios vector describing the geometries of the anchor
-#' boxes for this layer.
-#' @param variances explained at \url{https://github.com/rykov8/ssd_keras/issues/53}
+#' anchorBoxGenerator$call( x, mask = NULL ) 
+#' anchorBoxGenerator$compute_output_shape( input_shape ) 
+#' }
+#'
+#' @section Arguments:
+#' \describe{
+#'  \item{anchorBoxGenerator}{A \code{process} object.}
+#'  \item{imageSize}{size of the input image.}
+#'  \item{scale}{scale of each box (in pixels).}
+#'  \item{nextScale}{next scale of each box (in pixels).}
+#'  \item{aspectRatios}{vector describing the geometries of the anchor boxes 
+#'    for this layer.}
+#'  \item{variances}{a list of 4 floats > 0 with scaling factors for the encoded 
+#'    predicted box coordinates. A variance value of 1.0 would apply no scaling at 
+#'    all to the predictions, while values in (0,1) upscale the encoded 
+#'    predictions and values greater than 1.0 downscale the encoded predictions. 
+#'    Defaults to 1.0.}
+#'  \item{x}{}
+#'  \item{mask}{}
+#'  \item{input_shape}{}
+#' }
+#'
+#' @section Details:
+#'   \code{$initialize} instantiates a new class.
+#'
+#'   \code{$call} main body.
+#'
+#'   \code{$compute_output_shape} computes the output shape.
+#'
+#' @author Tustison NJ
 #'
 #' @return a 5-D tensor with shape
 #' \eqn{ batchSize \times widthSize \times heightSize \times numberOfBoxes \times 8 }
 #' In the last dimension, the first 4 values correspond to the
 #' 2-D coordinates of the bounding boxes and the other 4 are the variances.
 #'
-#' @author Tustison NJ
+#' @name AnchorBoxLayer2D
+NULL
 
-AnchorBoxLayer2D <- R6::R6Class( "AnchorBoxLayer2D",
+#' @export
+AnchorBoxLayer2D <- R6Class( "AnchorBoxLayer2D",
                                 
   inherit = KerasLayer,
 
@@ -1376,24 +1430,55 @@ layer_l2_normalization_3d <- function( object, scale = 20, name = NULL,
 
 #' Anchor box layer for SSD architecture (3-D).  
 #' 
-#' Anchor (or prior) boxes for SSD architecture (3-D).  
+#' @docType class
+#' 
+#' @section Usage:
+#' \preformatted{anchorBoxGenerator <- AnchorBoxLayer3d$new( imageSize,
+#'      scale, nextScale, aspectRatios = c( '1:1:1', '2:1:1', '1:2:1', '1:1:2' ), 
+#'      variances = 1.0 )
 #'
-#' @param imageSize size of the input image.
-#' @param scale scale of each box (in pixels).
-#' @param nextScale next scale of each box (in pixels).
-#' @param aspectRatios vector describing the geometries of the anchor
-#' boxes for this layer.
-#' @param variances explained at \url{https://github.com/rykov8/ssd_keras/issues/53}
+#' anchorBoxGenerator$call( x, mask = NULL ) 
+#' anchorBoxGenerator$compute_output_shape( input_shape ) 
+#' }
+#'
+#' @section Arguments:
+#' \describe{
+#'  \item{anchorBoxGenerator}{A \code{process} object.}
+#'  \item{imageSize}{size of the input image.}
+#'  \item{scale}{scale of each box (in pixels).}
+#'  \item{nextScale}{next scale of each box (in pixels).}
+#'  \item{aspectRatios}{vector describing the geometries of the anchor boxes 
+#'    for this layer.}
+#'  \item{variances}{a list of 6 floats > 0 with scaling factors for the encoded 
+#'    predicted box coordinates. A variance value of 1.0 would apply no scaling at 
+#'    all to the predictions, while values in (0,1) upscale the encoded 
+#'    predictions and values greater than 1.0 downscale the encoded predictions. 
+#'    Defaults to 1.0.}
+#'  \item{x}{}
+#'  \item{mask}{}
+#'  \item{input_shape}{}
+#' }
+#'
+#' @section Details:
+#'   \code{$initialize} instantiates a new class.
+#'
+#'   \code{$call} main body.
+#'
+#'   \code{$compute_output_shape} computes the output shape.
+#'
+#' @author Tustison NJ
 #'
 #' @return a 6-D tensor with shape
 #' \eqn{ batchSize \times widthSize \times heightSize \times depthSize \times numberOfBoxes \times 12 }
 #' In the last dimension, the first 6 values correspond to the
 #' 3-D coordinates of the bounding boxes and the other 6 are the variances.
 #'
-#' @author Tustison NJ
+#' @name AnchorBoxLayer3D
+NULL
 
+#' @export
 AnchorBoxLayer3D <- R6::R6Class( "AnchorBoxLayer3D",
-                                
+
   inherit = KerasLayer,
 
   public = list(
