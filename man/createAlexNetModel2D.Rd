@@ -17,7 +17,7 @@ the number of channels (e.g., red, green, and blue).  The batch size
 
 \item{numberOfDenseUnits}{number of dense units.}
 
-\item{droputRate}{optional regularization parameter between \verb{[0, 1]}.
+\item{dropoutRate}{optional regularization parameter between \verb{[0, 1]}.
 Default = 0.0.}
 }
 \value{

@@ -22,7 +22,7 @@
 #' (i.e., number of training images) is not specified a priori. 
 #' @param numberOfClassificationLabels Number of segmentation labels.  
 #' @param numberOfDenseUnits number of dense units.
-#' @param droputRate optional regularization parameter between \verb{[0, 1]}.
+#' @param dropoutRate optional regularization parameter between \verb{[0, 1]}.
 #' Default = 0.0.
 #'
 #' @return an AlexNet keras model
@@ -63,6 +63,7 @@
 #' predictedData <- alexNetModel %>% predict( X_test, verbose = 1 )
 #' 
 #' }
+#' @import keras
 
 createAlexNetModel2D <- function( inputImageSize, 
                                   numberOfClassificationLabels = 1000,
@@ -246,7 +247,7 @@ createAlexNetModel2D <- function( inputImageSize,
 #' (i.e., number of training images) is not specified a priori. 
 #' @param numberOfClassificationLabels Number of segmentation labels.  
 #' @param numberOfDenseUnits number of dense units.
-#' @param droputRate optional regularization parameter between \verb{[0, 1]}.
+#' @param dropoutRate optional regularization parameter between \verb{[0, 1]}.
 #' Default = 0.0.
 #'
 #' @return an AlexNet keras model 
@@ -287,6 +288,7 @@ createAlexNetModel2D <- function( inputImageSize,
 #' predictedData <- alexNetModel %>% predict( X_test, verbose = 1 )
 #' 
 #' }
+#' @import keras
 
 createAlexNetModel3D <- function( inputImageSize, 
                                   numberOfClassificationLabels = 1000,

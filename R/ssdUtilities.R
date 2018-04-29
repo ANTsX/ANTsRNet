@@ -398,7 +398,7 @@ jaccardSimilarity <- function( boxes1, boxes2 )
 #' each element is the caption rendered with each box.
 #'
 #' @author Tustison NJ
-#' @importFrom graphics rasterImage rect
+#' @importFrom graphics rasterImage rect plot.new test
 
 drawRectangles <- function( image, boxes, boxColors = "red", 
   confidenceValues = NULL, captions = NULL )
@@ -760,12 +760,42 @@ decodeSsd2D <- function( yPredicted, imageSize, confidenceThreshold = 0.5,
 #'
 #'         \code{https://arxiv.org/abs/1506.04579}
 #'
+#' @docType class
+#' 
+#' @section Usage:
+#' \preformatted{layer <- L2NormalizationLayer2D$new( scale )
 #'
-#' @param scale feature scale (default = 20).
-#' @return output tensor with the same shape as the input.
+#' layer$call( x, mask = NULL ) 
+#' layer$build( input_shape )
+#' layer$compute_output_shape( input_shape ) 
+#' }
+#'
+#' @section Arguments:
+#' \describe{
+#'  \item{layer}{A \code{process} object.}
+#'  \item{scale}{feature scale.  Default = 20}
+#'  \item{x}{}
+#'  \item{mask}{}
+#'  \item{input_shape}{}
+#' }
+#'
+#' @section Details:
+#'   \code{$initialize} instantiates a new class.
+#'  
+#'   \code{$build} 
+#'
+#'   \code{$call} main body.
+#'
+#'   \code{$compute_output_shape} computes the output shape.
 #'
 #' @author Tustison NJ
+#'
+#' @return output tensor with the same shape as the input.
+#'
+#' @name L2NormalizationLayer2D
+NULL
 
+#' @export
 L2NormalizationLayer2D <- R6::R6Class( "L2NormalizationLayer2D",
                                 
   inherit = KerasLayer,
@@ -1075,10 +1105,7 @@ create_layer( AnchorBoxLayer2D, object,
 #'
 #' @param groundTruthLabels A list of length `batchSize` that contains one 
 #' 2-D array per image.  Each 2-D array has k rows where each row corresponds
-#' to a single box consisting of the format 
-#' 
-#'          classId, (xmin,xmax,ymin,ymax,zmin,zmax)
-#'
+#' to a single box consisting of the format (classId,xmin,xmax,ymin,ymax,zmin,zmax).
 #' Note that `classId` must be greater than 0 since 0 is reserved for the 
 #' background label.
 #' @param anchorBoxes a list of 2-D arrays where each element comprises the
@@ -1365,13 +1392,44 @@ decodeSsd3D <- function( yPredicted, imageSize, confidenceThreshold = 0.5,
 #'
 #' available here:
 #'
-#'         \url{https://arxiv.org/abs/1506.04579}
+#'         \code{https://arxiv.org/abs/1506.04579}
 #'
-#' @param scale feature scale (default = 20).
-#' @return output tensor with the same shape as the input.
+#' @docType class
+#' 
+#' @section Usage:
+#' \preformatted{layer <- L2NormalizationLayer3D$new( scale )
+#'
+#' layer$call( x, mask = NULL ) 
+#' layer$build( input_shape )
+#' layer$compute_output_shape( input_shape ) 
+#' }
+#'
+#' @section Arguments:
+#' \describe{
+#'  \item{layer}{A \code{process} object.}
+#'  \item{scale}{feature scale.  Default = 20}
+#'  \item{x}{}
+#'  \item{mask}{}
+#'  \item{input_shape}{}
+#' }
+#'
+#' @section Details:
+#'   \code{$initialize} instantiates a new class.
+#'  
+#'   \code{$build} 
+#'
+#'   \code{$call} main body.
+#'
+#'   \code{$compute_output_shape} computes the output shape.
 #'
 #' @author Tustison NJ
+#'
+#' @return output tensor with the same shape as the input.
+#'
+#' @name L2NormalizationLayer3D
+NULL
 
+#' @export
 L2NormalizationLayer3D <- R6::R6Class( "L2NormalizationLayer3D",
                                 
   inherit = KerasLayer,

@@ -61,6 +61,7 @@
 #' predictedData <- resNetModel %>% predict( X_test, verbose = 1 )
 #' 
 #' }
+#' @import keras
 
 createResNetModel2D <- function( inputImageSize, 
                                  numberOfClassificationLabels = 1000,
@@ -251,6 +252,7 @@ createResNetModel2D <- function( inputImageSize,
 #' predictedData <- resNetModel %>% predict( X_test, verbose = 1 )
 #' 
 #' }
+#' @import keras
 
 createResNetModel3D <- function( inputImageSize, 
                                  numberOfClassificationLabels = 1000,

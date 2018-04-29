@@ -150,6 +150,8 @@ encodeUnet <- function( groundTruthSegmentations, segmentationLabels )
 #' @return a list of list of probability images.
 #'
 #' @author Tustison NJ
+#' @importFrom utils tail
+#' @importFrom ANTsRCore as.antsImage
 
 decodeUnet <- function( yPredicted, domainImage )
   {

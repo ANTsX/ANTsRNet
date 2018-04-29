@@ -42,6 +42,8 @@
 #'
 #' @return an SSD keras model
 #' @author Tustison NJ
+#' @importFrom utils head
+#' @import keras
 
 createSsdModel2D <- function( inputImageSize, 
                               numberOfClassificationLabels,
@@ -524,6 +526,8 @@ createSsdModel2D <- function( inputImageSize,
 #'
 #' @return an SSD keras model
 #' @author Tustison NJ
+#' @importFrom utils head
+#' @import keras
 
 createSsdModel3D <- function( inputImageSize, 
                               numberOfClassificationLabels,
@@ -908,7 +912,7 @@ createSsdModel3D <- function( inputImageSize,
     # We calculate the anchor box values again to return as output for 
     # encoding Y_train.  I'm guessing there's a better way to do this 
     # but it's the cleanest I've found.
-    anchorBoxGenerator <- AnchorBoxLayer3d$new( imageSize = imageSize,
+    anchorBoxGenerator <- AnchorBoxLayer3D$new( imageSize = imageSize,
       scales[i], scales[i + 1],
       aspectRatios = aspectRatiosPerLayer[[i]], variances = variances )
     anchorBoxGenerator$call( boxLocations[[i]] )  

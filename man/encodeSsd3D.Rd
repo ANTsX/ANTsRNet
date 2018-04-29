@@ -10,9 +10,7 @@ encodeSsd3D(groundTruthLabels, anchorBoxes, imageSize, variances = rep(1, 6),
 \arguments{
 \item{groundTruthLabels}{A list of length \code{batchSize} that contains one
 2-D array per image.  Each 2-D array has k rows where each row corresponds
-to a single box consisting of the format\preformatted{     classId, (xmin,xmax,ymin,ymax,zmin,zmax)
-}
-
+to a single box consisting of the format (classId,xmin,xmax,ymin,ymax,zmin,zmax).
 Note that \code{classId} must be greater than 0 since 0 is reserved for the
 background label.}
 
