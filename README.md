@@ -6,11 +6,7 @@ A collection of well-known deep learning architectures ported to the R language.
 
 And tools for basic medical image processing.
 
-## R package dependencies
-
-* [ANTsR](https://github.com/stnava/ANTsR)
-* [keras](https://github.com/rstudio/keras) (install from github: ``devtools::install_github( "rstudio/keras")``)
-* abind
+Examples avaiable at [ANTsRNetExamples](https://github.com/ntustison/ANTsRNetExamples).
 
 ## Image segmentation
 
