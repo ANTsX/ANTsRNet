@@ -6,6 +6,11 @@
 \usage{
 loss_multilabel_dice_coefficient_error(y_true, y_pred)
 }
+\arguments{
+\item{y_true}{true encoded labels}
+
+\item{y_pred}{predicted encoded labels}
+}
 \description{
 Multilabel dice loss function.
 }
