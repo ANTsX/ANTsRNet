@@ -79,6 +79,10 @@ multilabel_dice_coefficient <- function( y_true, y_pred )
 attr( multilabel_dice_coefficient, "py_function_name" ) <- 
   "multilabel_dice_coefficient"
 
+#' Multilabel dice loss function.
+#' 
+#' @rdname loss_multilabel_dice_coefficient_error 
+#' @export
 loss_multilabel_dice_coefficient_error <- function( y_true, y_pred )
 {
   return( -multilabel_dice_coefficient( y_true, y_pred ) )
