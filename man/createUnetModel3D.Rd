@@ -7,7 +7,7 @@
 createUnetModel3D(inputImageSize, numberOfClassificationLabels = 1,
   layers = 1:4, lowestResolution = 32, convolutionKernelSize = c(3, 3, 3),
   deconvolutionKernelSize = c(2, 2, 2), poolSize = c(2, 2, 2),
-  strides = c(2, 2, 2))
+  strides = c(2, 2, 2), dropoutRate = 0)
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
@@ -32,6 +32,8 @@ during the decoding}
 \item{poolSize}{3-d vector defining the region for each pooling layer.}
 
 \item{strides}{3-d vector describing the stride length in each direction.}
+
+\item{dropoutRate}{float between 0 and 1 to use between dense layers.}
 }
 \value{
 a u-net keras model to be used with subsequent fitting

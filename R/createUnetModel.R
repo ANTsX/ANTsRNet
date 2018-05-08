@@ -29,6 +29,7 @@
 #' during the decoding 
 #' @param poolSize 2-d vector defining the region for each pooling layer.
 #' @param strides 2-d vector describing the stride length in each direction.
+#' @param dropoutRate float between 0 and 1 to use between dense layers.
 #'
 #' @return a u-net keras model to be used with subsequent fitting
 #' @author Tustison NJ
@@ -112,7 +113,8 @@ createUnetModel2D <- function( inputImageSize,
                                convolutionKernelSize = c( 3, 3 ), 
                                deconvolutionKernelSize = c( 2, 2 ), 
                                poolSize = c( 2, 2 ), 
-                               strides = c( 2, 2 )
+                               strides = c( 2, 2 ),
+                               dropoutRate = 0.0
                              )
 {
 
@@ -133,6 +135,11 @@ createUnetModel2D <- function( inputImageSize,
       conv <- pool %>% layer_conv_2d( filters = numberOfFilters, 
         kernel_size = convolutionKernelSize, activation = 'relu', padding = 'same' )
       }
+    if( dropoutRate > 0.0 )
+      {
+      conv %>% layer_dropout( rate = dropoutRate )
+      }
+
     encodingConvolutionLayers[[i]] <- conv %>% layer_conv_2d( 
       filters = numberOfFilters, kernel_size = convolutionKernelSize, 
       activation = 'relu', padding = 'same' )
@@ -157,12 +164,23 @@ createUnetModel2D <- function( inputImageSize,
       axis = 3
       )
 
-    outputs <- outputs %>% layer_conv_2d( filters = numberOfFilters, 
-      kernel_size = convolutionKernelSize, activation = 'relu', padding = 'same' )  %>%
-      layer_conv_2d( filters = numberOfFilters, kernel_size = convolutionKernelSize, 
-      activation = 'relu', padding = 'same'  )  
+    if( dropoutRate > 0.0 )
+      {
+      outputs <- outputs %>% 
+        layer_conv_2d( filters = numberOfFilters, kernel_size = convolutionKernelSize, 
+          activation = 'relu', padding = 'same'  )  %>%
+        layer_dropout( rate = dropoutRate ) %>% 
+        layer_conv_2d( filters = numberOfFilters, kernel_size = convolutionKernelSize, 
+          activation = 'relu', padding = 'same'  )  
+      } else {
+      outputs <- outputs %>% 
+        layer_conv_2d( filters = numberOfFilters, kernel_size = convolutionKernelSize, 
+          activation = 'relu', padding = 'same'  )  %>%
+        layer_conv_2d( filters = numberOfFilters, kernel_size = convolutionKernelSize, 
+          activation = 'relu', padding = 'same'  )  
+      }
     }
-  if( numberOfClassificationLabels == 1 )  
+  if( numberOfClassificationLabels == 2 )  
     {
     outputs <- outputs %>% layer_conv_2d( filters = numberOfClassificationLabels, 
       kernel_size = c( 1, 1 ), activation = 'sigmoid' )
@@ -208,6 +226,7 @@ createUnetModel2D <- function( inputImageSize,
 #' during the decoding 
 #' @param poolSize 3-d vector defining the region for each pooling layer.
 #' @param strides 3-d vector describing the stride length in each direction.
+#' @param dropoutRate float between 0 and 1 to use between dense layers.
 #'
 #' @return a u-net keras model to be used with subsequent fitting
 #' @author Tustison NJ
@@ -291,7 +310,8 @@ createUnetModel3D <- function( inputImageSize,
                                convolutionKernelSize = c( 3, 3, 3 ), 
                                deconvolutionKernelSize = c( 2, 2, 2 ), 
                                poolSize = c( 2, 2, 2 ), 
-                               strides = c( 2, 2, 2 )
+                               strides = c( 2, 2, 2 ),
+                               dropoutRate = 0.0
                              )
 {
 
@@ -312,6 +332,11 @@ createUnetModel3D <- function( inputImageSize,
       conv <- pool %>% layer_conv_3d( filters = numberOfFilters, 
         kernel_size = convolutionKernelSize, activation = 'relu', padding = 'same' )
       }
+    if( dropoutRate > 0.0 )
+      {
+      conv %>% layer_dropout( rate = dropoutRate )
+      }
+
     encodingConvolutionLayers[[i]] <- conv %>% layer_conv_3d( 
       filters = numberOfFilters, kernel_size = convolutionKernelSize, 
       activation = 'relu', padding = 'same' )
@@ -328,7 +353,8 @@ createUnetModel3D <- function( inputImageSize,
   outputs <- encodingConvolutionLayers[[length( layers )]]
   for( i in 2:length( layers ) )
     {
-    numberOfFilters <- lowestResolution * 2 ^ ( length( layers ) - layers[i] )    
+    numberOfFilters <- lowestResolution * 2 ^ ( length( layers ) - layers[i] )
+
     outputs <- layer_concatenate( list( outputs %>%  
       layer_conv_3d_transpose( filters = numberOfFilters, 
         kernel_size = deconvolutionKernelSize, strides = strides, padding = 'same' ),
@@ -336,12 +362,23 @@ createUnetModel3D <- function( inputImageSize,
       axis = 3
       )
 
-    outputs <- outputs %>% layer_conv_3d( filters = numberOfFilters, 
-      kernel_size = convolutionKernelSize, activation = 'relu', padding = 'same'  )  %>%
-      layer_conv_3d( filters = numberOfFilters, 
-        kernel_size = convolutionKernelSize, activation = 'relu', padding = 'same'  )  
-    }
-  if( numberOfClassificationLabels == 1 )  
+    if( dropoutRate > 0.0 )
+      {
+      outputs <- outputs %>% 
+        layer_conv_3d( filters = numberOfFilters, kernel_size = convolutionKernelSize, 
+          activation = 'relu', padding = 'same'  )  %>%
+        layer_dropout( rate = dropoutRate ) %>% 
+        layer_conv_3d( filters = numberOfFilters, kernel_size = convolutionKernelSize, 
+          activation = 'relu', padding = 'same'  )  
+      } else {
+      outputs <- outputs %>% 
+        layer_conv_3d( filters = numberOfFilters, kernel_size = convolutionKernelSize, 
+          activation = 'relu', padding = 'same'  )  %>%
+        layer_conv_3d( filters = numberOfFilters, kernel_size = convolutionKernelSize, 
+          activation = 'relu', padding = 'same'  )  
+      }
+    }  
+  if( numberOfClassificationLabels == 2 )  
     {
     outputs <- outputs %>% layer_conv_3d( filters = numberOfClassificationLabels, 
       kernel_size = c( 1, 1, 1 ), activation = 'sigmoid' )
