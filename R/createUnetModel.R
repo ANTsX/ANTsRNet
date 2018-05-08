@@ -137,7 +137,7 @@ createUnetModel2D <- function( inputImageSize,
       }
     if( dropoutRate > 0.0 )
       {
-      conv %>% layer_dropout( rate = dropoutRate )
+      conv <- conv %>% layer_dropout( rate = dropoutRate )
       }
 
     encodingConvolutionLayers[[i]] <- conv %>% layer_conv_2d( 
@@ -334,7 +334,7 @@ createUnetModel3D <- function( inputImageSize,
       }
     if( dropoutRate > 0.0 )
       {
-      conv %>% layer_dropout( rate = dropoutRate )
+      conv <- conv %>% layer_dropout( rate = dropoutRate )
       }
 
     encodingConvolutionLayers[[i]] <- conv %>% layer_conv_3d( 
