@@ -130,10 +130,12 @@ createUnetModel2D <- function( inputImageSize,
     if( i == 1 )
       {
       conv <- inputs %>% layer_conv_2d( filters = numberOfFilters, 
-        kernel_size = convolutionKernelSize, activation = 'relu', padding = 'same' )
+        kernel_size = convolutionKernelSize, activation = 'relu', 
+        padding = 'same' )
       } else {
       conv <- pool %>% layer_conv_2d( filters = numberOfFilters, 
-        kernel_size = convolutionKernelSize, activation = 'relu', padding = 'same' )
+        kernel_size = convolutionKernelSize, activation = 'relu', 
+        padding = 'same' )
       }
     if( dropoutRate > 0.0 )
       {
@@ -147,7 +149,8 @@ createUnetModel2D <- function( inputImageSize,
     if( i < length( layers ) )
       {
       pool <- encodingConvolutionLayers[[i]] %>% 
-        layer_max_pooling_2d( pool_size = poolSize, strides = strides )
+        layer_max_pooling_2d( pool_size = poolSize, strides = strides,
+        padding = 'same' )
       }
     }
 
@@ -156,10 +159,11 @@ createUnetModel2D <- function( inputImageSize,
   outputs <- encodingConvolutionLayers[[length( layers )]]
   for( i in 2:length( layers ) )
     {
-    numberOfFilters <- lowestResolution * 2 ^ ( length( layers ) - layers[i] )    
-    outputs <- layer_concatenate( list( outputs %>%  
-      layer_conv_2d_transpose( filters = numberOfFilters, 
-        kernel_size = deconvolutionKernelSize, strides = strides, padding = 'same' ),
+    numberOfFilters <- lowestResolution * 2 ^ ( length( layers ) - layers[i] )
+    outputs <- layer_concatenate( list( outputs %>%
+      layer_conv_2d_transpose( filters = numberOfFilters,
+        kernel_size = deconvolutionKernelSize, strides = strides,
+        padding = 'same' ),
       encodingConvolutionLayers[[length( layers ) - i + 1]] ),
       axis = 3
       )
@@ -167,26 +171,32 @@ createUnetModel2D <- function( inputImageSize,
     if( dropoutRate > 0.0 )
       {
       outputs <- outputs %>% 
-        layer_conv_2d( filters = numberOfFilters, kernel_size = convolutionKernelSize, 
-          activation = 'relu', padding = 'same'  )  %>%
+        layer_conv_2d( filters = numberOfFilters, 
+          kernel_size = convolutionKernelSize, 
+          activation = 'relu', padding = 'same' ) %>%
         layer_dropout( rate = dropoutRate ) %>% 
-        layer_conv_2d( filters = numberOfFilters, kernel_size = convolutionKernelSize, 
+        layer_conv_2d( filters = numberOfFilters, 
+          kernel_size = convolutionKernelSize, 
           activation = 'relu', padding = 'same'  )  
       } else {
       outputs <- outputs %>% 
-        layer_conv_2d( filters = numberOfFilters, kernel_size = convolutionKernelSize, 
-          activation = 'relu', padding = 'same'  )  %>%
-        layer_conv_2d( filters = numberOfFilters, kernel_size = convolutionKernelSize, 
-          activation = 'relu', padding = 'same'  )  
+        layer_conv_2d( filters = numberOfFilters, 
+          kernel_size = convolutionKernelSize, 
+          activation = 'relu', padding = 'same' ) %>%
+        layer_conv_2d( filters = numberOfFilters, 
+          kernel_size = convolutionKernelSize, 
+          activation = 'relu', padding = 'same' )  
       }
     }
   if( numberOfClassificationLabels == 2 )  
     {
-    outputs <- outputs %>% layer_conv_2d( filters = numberOfClassificationLabels, 
-      kernel_size = c( 1, 1 ), activation = 'sigmoid' )
+    outputs <- outputs %>% 
+      layer_conv_2d( filters = numberOfClassificationLabels, 
+        kernel_size = c( 1, 1 ), activation = 'sigmoid' )
     } else {
-    outputs <- outputs %>% layer_conv_2d( filters = numberOfClassificationLabels, 
-      kernel_size = c( 1, 1 ), activation = 'softmax' )
+    outputs <- outputs %>% 
+      layer_conv_2d( filters = numberOfClassificationLabels, 
+        kernel_size = c( 1, 1 ), activation = 'softmax' )
     }
     
   unetModel <- keras_model( inputs = inputs, outputs = outputs )
@@ -327,10 +337,12 @@ createUnetModel3D <- function( inputImageSize,
     if( i == 1 )
       {
       conv <- inputs %>% layer_conv_3d( filters = numberOfFilters, 
-        kernel_size = convolutionKernelSize, activation = 'relu', padding = 'same' )
+        kernel_size = convolutionKernelSize, activation = 'relu', 
+        padding = 'same' )
       } else {
       conv <- pool %>% layer_conv_3d( filters = numberOfFilters, 
-        kernel_size = convolutionKernelSize, activation = 'relu', padding = 'same' )
+        kernel_size = convolutionKernelSize, activation = 'relu', 
+        padding = 'same' )
       }
     if( dropoutRate > 0.0 )
       {
@@ -344,7 +356,8 @@ createUnetModel3D <- function( inputImageSize,
     if( i < length( layers ) )
       {
       pool <- encodingConvolutionLayers[[i]] %>% 
-        layer_max_pooling_3d( pool_size = poolSize, strides = strides )
+        layer_max_pooling_3d( pool_size = poolSize, strides = strides,
+        padding = 'same' )
       }
     }
 
@@ -357,7 +370,8 @@ createUnetModel3D <- function( inputImageSize,
 
     outputs <- layer_concatenate( list( outputs %>%  
       layer_conv_3d_transpose( filters = numberOfFilters, 
-        kernel_size = deconvolutionKernelSize, strides = strides, padding = 'same' ),
+        kernel_size = deconvolutionKernelSize, strides = strides, 
+        padding = 'same' ),
       encodingConvolutionLayers[[length( layers ) - i + 1]] ),
       axis = 3
       )
@@ -365,26 +379,32 @@ createUnetModel3D <- function( inputImageSize,
     if( dropoutRate > 0.0 )
       {
       outputs <- outputs %>% 
-        layer_conv_3d( filters = numberOfFilters, kernel_size = convolutionKernelSize, 
-          activation = 'relu', padding = 'same'  )  %>%
+        layer_conv_3d( filters = numberOfFilters, 
+          kernel_size = convolutionKernelSize, activation = 'relu', 
+          padding = 'same' )  %>%
         layer_dropout( rate = dropoutRate ) %>% 
-        layer_conv_3d( filters = numberOfFilters, kernel_size = convolutionKernelSize, 
-          activation = 'relu', padding = 'same'  )  
+        layer_conv_3d( filters = numberOfFilters, 
+          kernel_size = convolutionKernelSize, activation = 'relu', 
+          padding = 'same' )  
       } else {
       outputs <- outputs %>% 
-        layer_conv_3d( filters = numberOfFilters, kernel_size = convolutionKernelSize, 
+        layer_conv_3d( filters = numberOfFilters, 
+          kernel_size = convolutionKernelSize, 
           activation = 'relu', padding = 'same'  )  %>%
-        layer_conv_3d( filters = numberOfFilters, kernel_size = convolutionKernelSize, 
+        layer_conv_3d( filters = numberOfFilters, 
+          kernel_size = convolutionKernelSize, 
           activation = 'relu', padding = 'same'  )  
       }
     }  
   if( numberOfClassificationLabels == 2 )  
     {
-    outputs <- outputs %>% layer_conv_3d( filters = numberOfClassificationLabels, 
-      kernel_size = c( 1, 1, 1 ), activation = 'sigmoid' )
+    outputs <- outputs %>% 
+      layer_conv_3d( filters = numberOfClassificationLabels, 
+        kernel_size = c( 1, 1, 1 ), activation = 'sigmoid' )
     } else {
-    outputs <- outputs %>% layer_conv_3d( filters = numberOfClassificationLabels, 
-      kernel_size = c( 1, 1, 1 ), activation = 'softmax' )
+    outputs <- outputs %>% 
+      layer_conv_3d( filters = numberOfClassificationLabels, 
+        kernel_size = c( 1, 1, 1 ), activation = 'softmax' )
     }
 
   unetModel <- keras_model( inputs = inputs, outputs = outputs )
