@@ -160,10 +160,12 @@ createUnetModel2D <- function( inputImageSize,
   for( i in 2:length( layers ) )
     {
     numberOfFilters <- lowestResolution * 2 ^ ( length( layers ) - layers[i] )
-    outputs <- layer_concatenate( list( outputs %>%
+    deconvolution <- outputs %>%
       layer_conv_2d_transpose( filters = numberOfFilters,
-        kernel_size = deconvolutionKernelSize, strides = strides,
-        padding = 'same' ),
+        kernel_size = deconvolutionKernelSize,
+        padding = 'same' )
+    deconvolution <- deconvolution %>% layer_upsampling_2d( size = poolSize )
+    outputs <- layer_concatenate( list( deconvolution,
       encodingConvolutionLayers[[length( layers ) - i + 1]] ),
       axis = 3
       )
@@ -367,15 +369,16 @@ createUnetModel3D <- function( inputImageSize,
   for( i in 2:length( layers ) )
     {
     numberOfFilters <- lowestResolution * 2 ^ ( length( layers ) - layers[i] )
-
-    outputs <- layer_concatenate( list( outputs %>%  
-      layer_conv_3d_transpose( filters = numberOfFilters, 
-        kernel_size = deconvolutionKernelSize, strides = strides, 
-        padding = 'same' ),
+    deconvolution <- outputs %>%
+      layer_conv_2d_transpose( filters = numberOfFilters,
+        kernel_size = deconvolutionKernelSize,
+        padding = 'same' )
+    deconvolution <- deconvolution %>% layer_upsampling_2d( size = poolSize )
+    outputs <- layer_concatenate( list( deconvolution,
       encodingConvolutionLayers[[length( layers ) - i + 1]] ),
-      axis = 3
+      axis = 4
       )
-
+      
     if( dropoutRate > 0.0 )
       {
       outputs <- outputs %>% 
