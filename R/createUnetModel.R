@@ -45,6 +45,7 @@
 #   # to use kmeans segmentation to define the "ground-truth" segmentations.
 #'  
 #'  segmentationLabels <- c( 1, 2, 3 )
+#'  numberOfLabels <- length( segmentationLabels )
 #'  
 #'  images <- list()
 #'  kmeansSegs <- list()
@@ -64,7 +65,7 @@
 #'    trainingMaskArrays[[i]] <- as.array( mask )
 #'    }
 #'  
-#'  # reshape the training data to the format expected by keras
+#'  # Reshape the training data to the format expected by keras
 #'  
 #'  trainingLabelData <- abind( trainingMaskArrays, along = 3 )  
 #'  trainingLabelData <- aperm( trainingLabelData, c( 3, 1, 2 ) )
@@ -72,20 +73,24 @@
 #'  trainingData <- abind( trainingImageArrays, along = 3 )   
 #'  trainingData <- aperm( trainingData, c( 3, 1, 2 ) )
 #'  
-#'  # Perform an easy normalization which is important for U-net. 
+#'  # Perform a simple normalization which is important for U-net. 
 #'  # Other normalization methods might further improve results.
 #'  
 #'  trainingData <- ( trainingData - mean( trainingData ) ) / sd( trainingData )
+#'  X_train <- array( trainingData, dim = c( dim( trainingData ), 1 ) )
 #'
-#'  X_train <- array( trainingData, dim = c( dim( trainingData ), 
-#'    numberOfClassificationLabels = length( segmentationLabels ) ) )
-#'  Y_train <- array( trainingLabelData, dim = c( dim( trainingData ), 
-#'    numberOfClassificationLabels = length( segmentationLabels ) ) )
+#'  trainingLabelData <- abind( trainingMaskArrays, along = 3 )  
+#'  trainingLabelData <- aperm( trainingLabelData, c( 3, 1, 2 ) )
+#'  Y_train <- encodeUnet( trainingLabelData, segmentationLabels )
 #'  
 #'  # Create the model
 #'  
-#'  unetModel <- createUnetModel2D( dim( trainingImageArrays[[1]] ), 
+#'  unetModel <- createUnetModel2D( c( dim( trainingImageArrays[[1]] ), 1 ), 
 #'    numberOfClassificationLabels = numberOfLabels, layers = 1:4 )
+#' 
+#'  unetModel %>% compile( loss = loss_multilabel_dice_coefficient_error,
+#'    optimizer = optimizer_adam( lr = 0.0001 ),  
+#'    metrics = c( multilabel_dice_coefficient ) )
 #'  
 #'  # Fit the model
 #'  
@@ -94,7 +99,6 @@
 #'                 callbacks = list( 
 #'                   callback_model_checkpoint( paste0( baseDirectory, "weights.h5" ), 
 #'                      monitor = 'val_loss', save_best_only = TRUE ),
-#'                 #  callback_early_stopping( patience = 2, monitor = 'loss' ),
 #'                   callback_reduce_lr_on_plateau( monitor = "val_loss", factor = 0.1 )
 #'                 ), 
 #'                 validation_split = 0.2 )
@@ -273,7 +277,7 @@ createUnetModel2D <- function( inputImageSize,
 #'    trainingMaskArrays[[i]] <- as.array( mask )
 #'    }
 #'  
-#'  # reshape the training data to the format expected by keras
+#'  # Reshape the training data to the format expected by keras
 #'  
 #'  trainingLabelData <- abind( trainingMaskArrays, along = 3 )  
 #'  trainingLabelData <- aperm( trainingLabelData, c( 3, 1, 2 ) )
@@ -281,20 +285,24 @@ createUnetModel2D <- function( inputImageSize,
 #'  trainingData <- abind( trainingImageArrays, along = 3 )   
 #'  trainingData <- aperm( trainingData, c( 3, 1, 2 ) )
 #'  
-#'  # Perform an easy normalization which is important for U-net. 
+#'  # Perform a simple normalization which is important for U-net. 
 #'  # Other normalization methods might further improve results.
 #'  
 #'  trainingData <- ( trainingData - mean( trainingData ) ) / sd( trainingData )
+#'  X_train <- array( trainingData, dim = c( dim( trainingData ), 1 ) )
 #'
-#'  X_train <- array( trainingData, dim = c( dim( trainingData ), 
-#'    numberOfClassificationLabels = length( segmentationLabels ) ) )
-#'  Y_train <- array( trainingLabelData, dim = c( dim( trainingData ), 
-#'    numberOfClassificationLabels = length( segmentationLabels ) ) )
+#'  trainingLabelData <- abind( trainingMaskArrays, along = 3 )  
+#'  trainingLabelData <- aperm( trainingLabelData, c( 3, 1, 2 ) )
+#'  Y_train <- encodeUnet( trainingLabelData, segmentationLabels )
 #'  
-#'  # Create the model (3-D function is a straightforward analog)
+#'  # Create the model
 #'  
-#'  unetModel <- createUnetModel2D( dim( trainingImageArrays[[1]] ), 
+#'  unetModel <- createUnetModel2D( c( dim( trainingImageArrays[[1]] ), 1 ), 
 #'    numberOfClassificationLabels = numberOfLabels, layers = 1:4 )
+#' 
+#'  unetModel %>% compile( loss = loss_multilabel_dice_coefficient_error,
+#'    optimizer = optimizer_adam( lr = 0.0001 ),  
+#'    metrics = c( multilabel_dice_coefficient ) )
 #'  
 #'  # Fit the model
 #'  
@@ -303,7 +311,6 @@ createUnetModel2D <- function( inputImageSize,
 #'                 callbacks = list( 
 #'                   callback_model_checkpoint( paste0( baseDirectory, "weights.h5" ), 
 #'                      monitor = 'val_loss', save_best_only = TRUE ),
-#'                 #  callback_early_stopping( patience = 2, monitor = 'loss' ),
 #'                   callback_reduce_lr_on_plateau( monitor = "val_loss", factor = 0.1 )
 #'                 ), 
 #'                 validation_split = 0.2 )
