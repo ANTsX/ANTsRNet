@@ -370,15 +370,15 @@ createUnetModel3D <- function( inputImageSize,
     {
     numberOfFilters <- lowestResolution * 2 ^ ( length( layers ) - layers[i] )
     deconvolution <- outputs %>%
-      layer_conv_2d_transpose( filters = numberOfFilters,
+      layer_conv_3d_transpose( filters = numberOfFilters,
         kernel_size = deconvolutionKernelSize,
         padding = 'same' )
-    deconvolution <- deconvolution %>% layer_upsampling_2d( size = poolSize )
+    deconvolution <- deconvolution %>% layer_upsampling_3d( size = poolSize )
     outputs <- layer_concatenate( list( deconvolution,
       encodingConvolutionLayers[[length( layers ) - i + 1]] ),
       axis = 4
       )
-      
+
     if( dropoutRate > 0.0 )
       {
       outputs <- outputs %>% 
