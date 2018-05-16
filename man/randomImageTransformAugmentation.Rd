@@ -52,6 +52,7 @@ happens.
 }
 \examples{
 
+library( ANTsR )
 i1 = antsImageRead( getANTsRData( "r16" ) )
 i2 = antsImageRead( getANTsRData( "r64" ) )
 s1 = thresholdImage( i1, "Otsu", 3 )
