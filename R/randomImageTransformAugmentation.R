@@ -28,12 +28,12 @@
 #' @author Avants BB
 #' @examples
 #'
-#' i1 = antsImageRead( getnANTsRData( "r16" ) )
-#' i2 = antsImageRead( getnANTsRData( "r64" ) )
+#' i1 = antsImageRead( getANTsRData( "r16" ) )
+#' i2 = antsImageRead( getANTsRData( "r64" ) )
 #' s1 = thresholdImage( i1, "Otsu", 3 )
 #' s2 = thresholdImage( i2, "Otsu", 3 )
 #' rand = randomImageTransformAugmentation( i1,
-#'   list( i1, i2 ),  list( s1, s2 ) )
+#'   list( list(i1), list(i2) ),  list( s1, s2 ) )
 #'
 #' @export randomImageTransformAugmentation
 randomImageTransformAugmentation <- function(
