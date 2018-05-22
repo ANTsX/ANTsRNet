@@ -37,6 +37,7 @@ Examples avaiable at [ANTsRNetExamples](https://github.com/ntustison/ANTsRNetExa
 
 ## Image super-resolution
 
+* [Python implementation](https://github.com/titu1994/Image-Super-Resolution/blob/master/models.py)
 * Super-resolution convolutional neural network (SRCNN) (2-D, 3-D)
     * [Chao Dong, Chen Change Loy, Kaiming He, and Xiaoou Tang.  Image Super-Resolution Using Deep Convolutional Networks.](https://arxiv.org/abs/1501.00092)
 * Expanded super-resolution (ESRCNN) (2-D, 3-D)
