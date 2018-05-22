@@ -19,10 +19,9 @@
 #' the number of channels (e.g., red, green, and blue).  The batch size
 #' (i.e., number of training images) is not specified a priori. 
 #' @param numberOfClassificationLabels Number of segmentation labels.  
-#' @param layers a vector determining the number of 'filters' defined at
-#' for each layer.
-#' @param lowestResolution number of filters at the beginning and end of 
-#' the \verb{'U'}.
+#' @param numberOfLayers number of encoding/decoding layers.
+#' @param numberOfFiltersAtBaseLayer number of filters at the beginning and end
+#' of the \verb{'U'}.  Doubles at each descending/ascending layer.
 #' @param convolutionKernelSize 2-d vector defining the kernel size 
 #' during the encoding path
 #' @param deconvolutionKernelSize 2-d vector defining the kernel size 
@@ -30,6 +29,7 @@
 #' @param poolSize 2-d vector defining the region for each pooling layer.
 #' @param strides 2-d vector describing the stride length in each direction.
 #' @param dropoutRate float between 0 and 1 to use between dense layers.
+#' @param mode 'classification' or 'regression'.  Default = 'classification'.
 #'
 #' @return a u-net keras model to be used with subsequent fitting
 #' @author Tustison NJ
@@ -86,7 +86,7 @@
 #'  # Create the model
 #'  
 #'  unetModel <- createUnetModel2D( c( dim( trainingImageArrays[[1]] ), 1 ), 
-#'    numberOfClassificationLabels = numberOfLabels, layers = 1:4 )
+#'    numberOfClassificationLabels = numberOfLabels )
 #' 
 #'  unetModel %>% compile( loss = loss_multilabel_dice_coefficient_error,
 #'    optimizer = optimizer_adam( lr = 0.0001 ),  
@@ -112,13 +112,14 @@
 #' @export
 createUnetModel2D <- function( inputImageSize, 
                                numberOfClassificationLabels = 1,
-                               layers = 1:4, 
-                               lowestResolution = 32, 
+                               numberOfLayers = 4, 
+                               numberOfFiltersAtBaseLayer = 32, 
                                convolutionKernelSize = c( 3, 3 ), 
                                deconvolutionKernelSize = c( 2, 2 ), 
                                poolSize = c( 2, 2 ), 
                                strides = c( 2, 2 ),
-                               dropoutRate = 0.0
+                               dropoutRate = 0.0,
+                               mode = 'classification'
                              )
 {
 
@@ -127,9 +128,9 @@ createUnetModel2D <- function( inputImageSize,
   # Encoding path  
 
   encodingConvolutionLayers <- list()
-  for( i in 1:length( layers ) )
+  for( i in 1:numberOfLayers )
     {
-    numberOfFilters <- lowestResolution * 2 ^ ( layers[i] - 1 )
+    numberOfFilters <- numberOfFiltersAtBaseLayer * 2 ^ ( i - 1 )
 
     if( i == 1 )
       {
@@ -150,7 +151,7 @@ createUnetModel2D <- function( inputImageSize,
       filters = numberOfFilters, kernel_size = convolutionKernelSize, 
       activation = 'relu', padding = 'same' )
     
-    if( i < length( layers ) )
+    if( i < numberOfLayers )
       {
       pool <- encodingConvolutionLayers[[i]] %>% 
         layer_max_pooling_2d( pool_size = poolSize, strides = strides,
@@ -160,17 +161,17 @@ createUnetModel2D <- function( inputImageSize,
 
   # Decoding path 
 
-  outputs <- encodingConvolutionLayers[[length( layers )]]
-  for( i in 2:length( layers ) )
+  outputs <- encodingConvolutionLayers[[numberOfLayers]]
+  for( i in 2:numberOfLayers )
     {
-    numberOfFilters <- lowestResolution * 2 ^ ( length( layers ) - layers[i] )
+    numberOfFilters <- numberOfFiltersAtBaseLayer * 2 ^ ( numberOfLayers - i )
     deconvolution <- outputs %>%
       layer_conv_2d_transpose( filters = numberOfFilters,
         kernel_size = deconvolutionKernelSize,
         padding = 'same' )
     deconvolution <- deconvolution %>% layer_upsampling_2d( size = poolSize )
     outputs <- layer_concatenate( list( deconvolution,
-      encodingConvolutionLayers[[length( layers ) - i + 1]] ),
+      encodingConvolutionLayers[[numberOfLayers - i + 1]] ),
       axis = 3
       )
 
@@ -194,15 +195,24 @@ createUnetModel2D <- function( inputImageSize,
           activation = 'relu', padding = 'same' )  
       }
     }
-  if( numberOfClassificationLabels == 2 )  
+  if( mode == 'classification' )  
     {
+    if( numberOfClassificationLabels == 2 )  
+      {
+      outputs <- outputs %>% 
+        layer_conv_2d( filters = numberOfClassificationLabels, 
+          kernel_size = c( 1, 1 ), activation = 'sigmoid' )
+      } else {
+      outputs <- outputs %>% 
+        layer_conv_2d( filters = numberOfClassificationLabels, 
+          kernel_size = c( 1, 1 ), activation = 'softmax' )
+      }    
+    } else if( mode == 'regression' ) {
     outputs <- outputs %>% 
       layer_conv_2d( filters = numberOfClassificationLabels, 
-        kernel_size = c( 1, 1 ), activation = 'sigmoid' )
+        kernel_size = c( 1, 1, 1 ), activation = 'tanh' )
     } else {
-    outputs <- outputs %>% 
-      layer_conv_2d( filters = numberOfClassificationLabels, 
-        kernel_size = c( 1, 1 ), activation = 'softmax' )
+    stop( 'Error: unrecognized mode.' )  
     }
     
   unetModel <- keras_model( inputs = inputs, outputs = outputs )
@@ -232,10 +242,9 @@ createUnetModel2D <- function( inputImageSize,
 #' the number of channels (e.g., red, green, and blue).  The batch size
 #' (i.e., number of training images) is not specified a priori. 
 #' @param numberOfClassificationLabels Number of segmentation labels.  
-#' @param layers a vector determining the number of 'filters' defined at
-#' for each layer.
-#' @param lowestResolution number of filters at the beginning and end of 
-#' the \verb{'U'}.
+#' @param numberOfLayers number of encoding/decoding layers.
+#' @param numberOfFiltersAtBaseLayer number of filters at the beginning and end
+#' of the \verb{'U'}.  Doubles at each descending/ascending layer.
 #' @param convolutionKernelSize 3-d vector defining the kernel size 
 #' during the encoding path
 #' @param deconvolutionKernelSize 3-d vector defining the kernel size 
@@ -243,6 +252,7 @@ createUnetModel2D <- function( inputImageSize,
 #' @param poolSize 3-d vector defining the region for each pooling layer.
 #' @param strides 3-d vector describing the stride length in each direction.
 #' @param dropoutRate float between 0 and 1 to use between dense layers.
+#' @param mode 'classification' or 'regression'.  Default = 'classification'.
 #'
 #' @return a u-net keras model to be used with subsequent fitting
 #' @author Tustison NJ
@@ -298,7 +308,7 @@ createUnetModel2D <- function( inputImageSize,
 #'  # Create the model
 #'  
 #'  unetModel <- createUnetModel2D( c( dim( trainingImageArrays[[1]] ), 1 ), 
-#'    numberOfClassificationLabels = numberOfLabels, layers = 1:4 )
+#'    numberOfClassificationLabels = numberOfLabels )
 #' 
 #'  unetModel %>% compile( loss = loss_multilabel_dice_coefficient_error,
 #'    optimizer = optimizer_adam( lr = 0.0001 ),  
@@ -324,13 +334,14 @@ createUnetModel2D <- function( inputImageSize,
 #' @export
 createUnetModel3D <- function( inputImageSize, 
                                numberOfClassificationLabels = 1,
-                               layers = 1:4, 
-                               lowestResolution = 32, 
+                               numberOfLayers = 4, 
+                               numberOfFiltersAtBaseLayer = 32, 
                                convolutionKernelSize = c( 3, 3, 3 ), 
                                deconvolutionKernelSize = c( 2, 2, 2 ), 
                                poolSize = c( 2, 2, 2 ), 
                                strides = c( 2, 2, 2 ),
-                               dropoutRate = 0.0
+                               dropoutRate = 0.0,
+                               mode = 'classification'
                              )
 {
 
@@ -339,9 +350,9 @@ createUnetModel3D <- function( inputImageSize,
   # Encoding path  
 
   encodingConvolutionLayers <- list()
-  for( i in 1:length( layers ) )
+  for( i in 1:numberOfLayers )
     {
-    numberOfFilters <- lowestResolution * 2 ^ ( layers[i] - 1 )
+    numberOfFilters <- numberOfFiltersAtBaseLayer * 2 ^ ( i - 1 )
 
     if( i == 1 )
       {
@@ -362,7 +373,7 @@ createUnetModel3D <- function( inputImageSize,
       filters = numberOfFilters, kernel_size = convolutionKernelSize, 
       activation = 'relu', padding = 'same' )
     
-    if( i < length( layers ) )
+    if( i < numberOfLayers )
       {
       pool <- encodingConvolutionLayers[[i]] %>% 
         layer_max_pooling_3d( pool_size = poolSize, strides = strides,
@@ -372,17 +383,17 @@ createUnetModel3D <- function( inputImageSize,
 
   # Decoding path 
 
-  outputs <- encodingConvolutionLayers[[length( layers )]]
-  for( i in 2:length( layers ) )
+  outputs <- encodingConvolutionLayers[[numberOfLayers]]
+  for( i in 2:numberOfLayers )
     {
-    numberOfFilters <- lowestResolution * 2 ^ ( length( layers ) - layers[i] )
+    numberOfFilters <- numberOfFiltersAtBaseLayer * 2 ^ ( numberOfLayers - i )
     deconvolution <- outputs %>%
       layer_conv_3d_transpose( filters = numberOfFilters,
         kernel_size = deconvolutionKernelSize,
         padding = 'same' )
     deconvolution <- deconvolution %>% layer_upsampling_3d( size = poolSize )
     outputs <- layer_concatenate( list( deconvolution,
-      encodingConvolutionLayers[[length( layers ) - i + 1]] ),
+      encodingConvolutionLayers[[numberOfLayers - i + 1]] ),
       axis = 4
       )
 
@@ -406,17 +417,26 @@ createUnetModel3D <- function( inputImageSize,
           activation = 'relu', padding = 'same'  )  
       }
     }  
-  if( numberOfClassificationLabels == 2 )  
+  if( mode == 'classification' )  
     {
+    if( numberOfClassificationLabels == 2 )  
+      {
+      outputs <- outputs %>% 
+        layer_conv_3d( filters = numberOfClassificationLabels, 
+          kernel_size = c( 1, 1, 1 ), activation = 'sigmoid' )
+      } else {
+      outputs <- outputs %>% 
+        layer_conv_3d( filters = numberOfClassificationLabels, 
+          kernel_size = c( 1, 1, 1 ), activation = 'softmax' )
+      }
+    } else if( mode == 'regression' ) {
     outputs <- outputs %>% 
       layer_conv_3d( filters = numberOfClassificationLabels, 
-        kernel_size = c( 1, 1, 1 ), activation = 'sigmoid' )
+        kernel_size = c( 1, 1, 1 ), activation = 'tanh' )
     } else {
-    outputs <- outputs %>% 
-      layer_conv_3d( filters = numberOfClassificationLabels, 
-        kernel_size = c( 1, 1, 1 ), activation = 'softmax' )
+    stop( 'Error: unrecognized mode.' )  
     }
-
+      
   unetModel <- keras_model( inputs = inputs, outputs = outputs )
 
   return( unetModel )

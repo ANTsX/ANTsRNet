@@ -5,9 +5,10 @@
 \title{3-D image segmentation implementation of the U-net deep learning architecture.}
 \usage{
 createUnetModel3D(inputImageSize, numberOfClassificationLabels = 1,
-  layers = 1:4, lowestResolution = 32, convolutionKernelSize = c(3, 3, 3),
-  deconvolutionKernelSize = c(2, 2, 2), poolSize = c(2, 2, 2),
-  strides = c(2, 2, 2), dropoutRate = 0)
+  numberOfLayers = 4, numberOfFiltersAtBaseLayer = 32,
+  convolutionKernelSize = c(3, 3, 3), deconvolutionKernelSize = c(2, 2, 2),
+  poolSize = c(2, 2, 2), strides = c(2, 2, 2), dropoutRate = 0,
+  mode = "classification")
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
@@ -17,11 +18,10 @@ the number of channels (e.g., red, green, and blue).  The batch size
 
 \item{numberOfClassificationLabels}{Number of segmentation labels.}
 
-\item{layers}{a vector determining the number of 'filters' defined at
-for each layer.}
+\item{numberOfLayers}{number of encoding/decoding layers.}
 
-\item{lowestResolution}{number of filters at the beginning and end of
-the \verb{'U'}.}
+\item{numberOfFiltersAtBaseLayer}{number of filters at the beginning and end
+of the \verb{'U'}.  Doubles at each descending/ascending layer.}
 
 \item{convolutionKernelSize}{3-d vector defining the kernel size
 during the encoding path}
@@ -34,6 +34,8 @@ during the decoding}
 \item{strides}{3-d vector describing the stride length in each direction.}
 
 \item{dropoutRate}{float between 0 and 1 to use between dense layers.}
+
+\item{mode}{'classification' or 'regression'.  Default = 'classification'.}
 }
 \value{
 a u-net keras model to be used with subsequent fitting
@@ -105,7 +107,7 @@ implementation:
  # Create the model
  
  unetModel <- createUnetModel2D( c( dim( trainingImageArrays[[1]] ), 1 ), 
-   numberOfClassificationLabels = numberOfLabels, layers = 1:4 )
+   numberOfClassificationLabels = numberOfLabels )
 
  unetModel \%>\% compile( loss = loss_multilabel_dice_coefficient_error,
    optimizer = optimizer_adam( lr = 0.0001 ),  
