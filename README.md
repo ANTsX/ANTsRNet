@@ -39,7 +39,7 @@ Examples avaiable at [ANTsRNetExamples](https://github.com/ntustison/ANTsRNetExa
 
 * Super-resolution convolutional neural network (SRCNN) (2-D, 3-D)
     * [Chao Dong, Chen Change Loy, Kaiming He, and Xiaoou Tang.  Image Super-Resolution Using Deep Convolutional Networks.](https://arxiv.org/abs/1501.00092)
-* Expanded super-resolution (2-D, 3-D)
+* Expanded super-resolution (ESRCNN) (2-D, 3-D)
 * Denoising auto encoder super-resolution (2-D, 3-D)
 * ResNet super-resolution (SRResNet) (2-D, 3-D)
     * [Christian Ledig, Lucas Theis, Ferenc Huszar, Jose Caballero, Andrew Cunningham, Alejandro Acosta, Andrew Aitken, Alykhan Tejani, Johannes Totz, Zehan Wang, and Wenzhe Shi.  Photo-Realistic Single Image Super-Resolution Using a Generative Adversarial Network](https://arxiv.org/abs/1609.04802)
