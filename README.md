@@ -11,8 +11,8 @@ Examples avaiable at [ANTsRNetExamples](https://github.com/ntustison/ANTsRNetExa
 ## Image segmentation
 
 * U-Net (2-D) or V-Net (3-D) with a [multi-label Dice loss function](https://github.com/ntustison/ANTsRNet/blob/master/Models/createUnetModel.R#L1-L91)
-    * [O. Ronneberger, P. Fischer, and T. Brox.  U-Net: Convolutional Networks for Biomedical Image Segmentation](https://arxiv.org/abs/1505.04597)
-    * [Fausto Milletari, Nassir Navab, Seyed-Ahmad Ahmadi. V-Net: Fully Convolutional Neural Networks for Volumetric Medical Image Segmentation](https://arxiv.org/pdf/1606.04797.pdf)
+    * [O. Ronneberger, P. Fischer, and T. Brox.  U-Net: Convolutional Networks for Biomedical Image Segmentation.](https://arxiv.org/abs/1505.04597)
+    * [Fausto Milletari, Nassir Navab, Seyed-Ahmad Ahmadi. V-Net: Fully Convolutional Neural Networks for Volumetric Medical Image Segmentation.](https://arxiv.org/pdf/1606.04797.pdf)
 
 ## Image classification
 
@@ -39,8 +39,8 @@ Examples avaiable at [ANTsRNetExamples](https://github.com/ntustison/ANTsRNetExa
 
 * Super-resolution convolutional neural network (SRCNN) (2-D, 3-D)
     * [Chao Dong, Chen Change Loy, Kaiming He, and Xiaoou Tang.  Image Super-Resolution Using Deep Convolutional Networks.](https://arxiv.org/abs/1501.00092)
-* Expanded super-resolution (2-D, 3-D)
-* Denoising auto encoder super-resolution (2-D, 3-D)
-* Deep denoise super-resolution (2-D, 3-D) 
-    * [Xiao-Jiao Mao, Chunhua Shen, and Yu-Bin Yang. Image Restoration Using Convolutional Auto-encoders with Symmetric Skip Connections](https://arxiv.org/abs/1606.08921)
-* ResNet super-resolution (2-D, 3-D)
+* Expanded super-resolution (ESRCNN) (2-D, 3-D)
+    * [Chao Dong, Chen Change Loy, Kaiming He, and Xiaoou Tang.  Image Super-Resolution Using Deep Convolutional Networks.](https://arxiv.org/abs/1501.00092)
+* Denoising auto encoder super-resolution (DSRCNN) (2-D, 3-D)
+* ResNet super-resolution (SRResNet) (2-D, 3-D)
+    * [Christian Ledig, Lucas Theis, Ferenc Huszar, Jose Caballero, Andrew Cunningham, Alejandro Acosta, Andrew Aitken, Alykhan Tejani, Johannes Totz, Zehan Wang, and Wenzhe Shi.  Photo-Realistic Single Image Super-Resolution Using a Generative Adversarial Network.](https://arxiv.org/abs/1609.04802)
