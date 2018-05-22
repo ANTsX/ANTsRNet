@@ -39,3 +39,8 @@ Examples avaiable at [ANTsRNetExamples](https://github.com/ntustison/ANTsRNetExa
 
 * Super-resolution convolutional neural network (SRCNN) (2-D, 3-D)
     * [Chao Dong, Chen Change Loy, Kaiming He, and Xiaoou Tang.  Image Super-Resolution Using Deep Convolutional Networks.](https://arxiv.org/abs/1501.00092)
+* Expanded super-resolution (2-D, 3-D)
+* Denoising auto encoder super-resolution (2-D, 3-D)
+* Deep Denoise super-resolution (2-D, 3-D) 
+    * [Xiao-Jiao Mao, Chunhua Shen, and Yu-Bin Yang. Image Restoration Using Convolutional Auto-encoders with Symmetric Skip Connections](https://arxiv.org/abs/1606.08921)
+    
