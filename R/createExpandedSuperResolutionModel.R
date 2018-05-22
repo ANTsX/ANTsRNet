@@ -117,9 +117,9 @@ createExpandedSuperResolutionModel3D <- function( inputImageSize,
         layer_conv_3d( filters = numberOfFilters[i], activation = 'relu', 
           kernel_size = convolutionKernelSizes[[i]], padding = 'same' )
       } else {
-        averagingConvolutionLayers[[i-1]] <- outputs %>% 
-          layer_conv_3d( filters = numberOfFilters[i], activation = 'relu', 
-            kernel_size = convolutionKernelSizes[[i]], padding = 'same' )
+      averagingConvolutionLayers[[i-1]] <- outputs %>% 
+        layer_conv_3d( filters = numberOfFilters[i], activation = 'relu', 
+          kernel_size = convolutionKernelSizes[[i]], padding = 'same' )
       }
     }  
   outputs <- layer_average( averagingConvolutionLayers )
