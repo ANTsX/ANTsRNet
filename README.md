@@ -43,4 +43,4 @@ Examples avaiable at [ANTsRNetExamples](https://github.com/ntustison/ANTsRNetExa
 * Denoising auto encoder super-resolution (2-D, 3-D)
 * Deep denoise super-resolution (2-D, 3-D) 
     * [Xiao-Jiao Mao, Chunhua Shen, and Yu-Bin Yang. Image Restoration Using Convolutional Auto-encoders with Symmetric Skip Connections](https://arxiv.org/abs/1606.08921)
-    
+* ResNet super-resolution (2-D, 3-D)
