@@ -108,7 +108,7 @@ createResNetSuperResolutionModel3D <- function( inputImageSize,
   numberOfResidualBlocks = 5 )
 {
 
-  residualBlock2D <- function( model, numberOfFilters, convolutionKernelSize )
+  residualBlock3D <- function( model, numberOfFilters, convolutionKernelSize )
     {
     block <- model %>% layer_conv_3d( filters = numberOfFilters, 
       kernel_size = convolutionKernelSize, activation = 'linear', 
@@ -125,7 +125,7 @@ createResNetSuperResolutionModel3D <- function( inputImageSize,
     return( block )
     }
 
-  upscaleBlock2D <- function( model, numberOfFilters, convolutionKernelSize )
+  upscaleBlock3D <- function( model, numberOfFilters, convolutionKernelSize )
     {
     block <- model %>% layer_upsampling_3d()
     block <- block %>% layer_conv_3d( filters = numberOfFilters,
