@@ -32,7 +32,7 @@ framework based on the following python implementation:
 \url{https://github.com/titu1994/Image-Super-Resolution}
 }
 \examples{
-\dontrun{ 
+\dontrun{
 }
 }
 \author{

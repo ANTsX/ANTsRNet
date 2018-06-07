@@ -14,7 +14,7 @@ randomImageTransformAugmentation(imageDomain, predictorImageList,
 \item{imageDomain}{defines the spatial domain for all images.  NOTE: if the
 input images do not match the spatial domain of the domain image, we
 internally resample the target to the domain.  This may have unexpected
-consequences if you are now aware of this.  This operation will test
+consequences if you are not aware of this.  This operation will test
 \code{antsImagePhysicalSpaceConsistency} then call
 \code{resampleImageToTarget} upon failure.}
 
@@ -60,6 +60,9 @@ s2 = thresholdImage( i2, "Otsu", 3 )
 rand = randomImageTransformAugmentation( i1,
   list( list(i1), list(i2) ),  list( s1, s2 ) )
 
+}
+\seealso{
+\code{\link{randomImageTransformBatchGenerator}}
 }
 \author{
 Avants BB

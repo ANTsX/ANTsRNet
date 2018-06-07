@@ -7,7 +7,7 @@
 #' @param imageDomain defines the spatial domain for all images.  NOTE: if the
 #' input images do not match the spatial domain of the domain image, we
 #' internally resample the target to the domain.  This may have unexpected
-#' consequences if you are now aware of this.  This operation will test
+#' consequences if you are not aware of this.  This operation will test
 #' \code{antsImagePhysicalSpaceConsistency} then call
 #' \code{resampleImageToTarget} upon failure.
 #' @param predictorImageList list of lists of image predictors
@@ -26,6 +26,10 @@
 #' @param directoryName where to write to disk (optional)
 #' @return list (if no directory set) or boolean for success, failure
 #' @author Avants BB
+#' @seealso \code{\link{randomImageTransformBatchGenerator}}
+#' @importFrom ANTsRCore getAntsrTransformFixedParameters iMath resampleImageToTarget applyAntsrTransform antsImagePhysicalSpaceConsistency antsrTransformFromDisplacementField makeImage smoothImage setAntsrTransformFixedParameters getAntsrTransformParameters setAntsrTransformParameters readAntsrTransform createAntsrTransform randomMask mergeChannels
+#' @importFrom ANTsR composeTransformsToField
+#' @importFrom stats rnorm
 #' @examples
 #'
 #' library( ANTsR )
@@ -81,10 +85,10 @@ randomImageTransformAugmentation <- function(
 
   randAff <- function( img, fixedParams, txtype = 'Affine', sdAffine ) {
     loctx <- createAntsrTransform(
-      precision="float", type="AffineTransform", dim=img@dimension )
+      precision="float", type="AffineTransform", dimension=img@dimension )
     setAntsrTransformFixedParameters( loctx, fixedParams )
     idparams = getAntsrTransformParameters( loctx )
-    noisemat = rnorm( length(idparams), mean=0, sd=sdAffine )
+    noisemat = stats::rnorm( length(idparams), mean=0, sd=sdAffine )
     if ( txtype == 'Translation' )
       noisemat[ 1:(length(idparams) - img@dimension ) ] = 0
     idparams = idparams + noisemat
