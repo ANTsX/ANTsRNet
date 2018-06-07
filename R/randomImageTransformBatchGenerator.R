@@ -38,6 +38,8 @@
 #'
 #' \code{spatialSmoothing} spatial smoothing for simulated deformation
 #'
+#' \code{toCategorical} boolean vector denoting whether the outcome class is categorical or not
+#'
 #' @section Methods:
 #' \code{$new()} Initialize the class in default empty or filled form.
 #'
@@ -59,7 +61,8 @@
 #'   imageList = predictors,
 #'   outcomeImageList = outcomes,
 #'   transformType = "Affine",
-#'   imageDomain = i1
+#'   imageDomain = i1,
+#'   toCategorical = TRUE
 #'   )
 #' testBatchGenFunction = trainingData$generate( 2 )
 #' myout = testBatchGenFunction( )
@@ -70,6 +73,7 @@ NULL
 
 
 #' @importFrom R6 R6Class
+#' @importFrom keras to_categorical
 #' @export
 randomImageTransformBatchGenerator <- R6::R6Class(
   "randomImageTransformBatchGenerator",
@@ -90,14 +94,17 @@ public = list(
 
     spatialSmoothing = 3,
 
+    toCategorical = FALSE,
+
     initialize = function( imageList = NULL, outcomeImageList = NULL,
       transformType = NULL, imageDomain = NULL, sdAffine = 1,
-      nControlPoints = 100, spatialSmoothing = 3 )
+      nControlPoints = 100, spatialSmoothing = 3, toCategorical = FALSE )
       {
 
       self$sdAffine <- sdAffine
       self$nControlPoints <- nControlPoints
       self$spatialSmoothing <- spatialSmoothing
+      self$toCategorical <- toCategorical
 
       if( !usePkg( "ANTsR" ) )
         {
@@ -184,9 +191,10 @@ public = list(
 
           }
 
-# FIXME - i skip the code below b/c the targes may not be segmentations
-#        segmentationLabels <- sort( unique( as.vector( batchY ) ) )
-#      encodedBatchY <- encodeY( batchY, segmentationLabels )
+        if ( self$toCategorical[ 1 ] ) {
+          segmentationLabels <- sort( unique( as.vector( batchY ) ) )
+          batchY <- encodeUnet( batchY, segmentationLabels )
+          }
 
         return( list( batchX=batchX, batchY=batchY ) )
         }

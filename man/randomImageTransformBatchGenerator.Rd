@@ -43,6 +43,8 @@ This operation will test
 \code{nControlPoints} number of control points for simulated deformation
 
 \code{spatialSmoothing} spatial smoothing for simulated deformation
+
+\code{toCategorical} boolean vector denoting whether the outcome class is categorical or not
 }
 
 \section{Methods}{
@@ -66,7 +68,8 @@ trainingData <- randomImageTransformBatchGenerator$new(
   imageList = predictors,
   outcomeImageList = outcomes,
   transformType = "Affine",
-  imageDomain = i1
+  imageDomain = i1,
+  toCategorical = TRUE
   )
 testBatchGenFunction = trainingData$generate( 2 )
 myout = testBatchGenFunction( )
