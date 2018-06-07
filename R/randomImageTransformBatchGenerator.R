@@ -178,7 +178,6 @@ public = list(
             }
           print( dim(warpedArrayX))
           if ( imageDim == 2 ) {
-            print('ass')
             batchX[i,,,1] <- warpedArrayX # FIXME make work for multiple channels
             batchY[i,,] <- warpedArrayY
             }
