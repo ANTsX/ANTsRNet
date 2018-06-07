@@ -53,7 +53,7 @@ This operation will test
 }
 
 \examples{
-\dontrun{
+
 library( ANTsR )
 i1 = antsImageRead( getANTsRData( "r16" ) )
 i2 = antsImageRead( getANTsRData( "r64" ) )
@@ -63,14 +63,13 @@ s2 = thresholdImage( i2, "Otsu", 3 )
 predictors = list( list(i1), list(i2), list(i1), list(i2) )
 outcomes = list( s1, s2,  s1, s2 )
 trainingData <- randomImageTransformBatchGenerator$new(
-  imageList = iii,
-  outcomeImageList = kkk,
+  imageList = predictors,
+  outcomeImageList = outcomes,
   transformType = "Affine",
   imageDomain = i1
   )
 testBatchGenFunction = trainingData$generate( 2 )
 myout = testBatchGenFunction( )
-}
 
 }
 \seealso{
