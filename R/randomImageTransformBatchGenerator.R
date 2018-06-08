@@ -183,7 +183,7 @@ public = list(
             batchX[i,,,, 1] <- warpedArrayX # FIXME make work for multiple channels
             batchY[i,,,] <- warpedArrayY
             }
-          print( dim(warpedArrayX))
+
           if ( imageDim == 2 ) {
             batchX[i,,,1] <- warpedArrayX # FIXME make work for multiple channels
             batchY[i,,] <- warpedArrayY
@@ -193,10 +193,8 @@ public = list(
 
         if ( self$toCategorical[ 1 ] ) {
           segmentationLabels <- sort( unique( as.vector( batchY ) ) )
-          batchY <- encodeUnet( batchY, segmentationLabels )
-          }
-
-        return( list( batchX=batchX, batchY=batchY ) )
+          return( list(  batchX, encodeUnet( batchY, segmentationLabels ) ) )
+          } else return( list(  batchX, batchY ) )
         }
       }
     )
