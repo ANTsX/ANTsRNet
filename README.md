@@ -49,9 +49,14 @@ Examples available at [ANTsRNetExamples](https://github.com/ntustison/ANTsRNetEx
 
 ## Installation
 
-* Dependencies
-    * Tensorflow
-    * Keras
+* R package dependencies
+    * tensorflow
+    * keras
+    * Rcpp
+    * yaml
+    * config
+    * reticulate
+    * processx
 * ANTsRNet Installation:
     * Option 1:    
        ``` 
