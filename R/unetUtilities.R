@@ -109,7 +109,7 @@ attr( loss_multilabel_dice_coefficient_error, "py_function_name" ) <-
 #' @author Tustison NJ
 #' @export
 encodeUnet <- function( groundTruthSegmentations, segmentationLabels )
-  {
+{
   numberOfLabels <- length( segmentationLabels )
 
   dimSegmentations <- dim( groundTruthSegmentations )
@@ -140,7 +140,7 @@ encodeUnet <- function( groundTruthSegmentations, segmentationLabels )
     }
 
   return( yEncoded ) 
-  }
+}
 
 
 #' Decoding function for Y_predicted
@@ -150,7 +150,6 @@ encodeUnet <- function( groundTruthSegmentations, segmentationLabels )
 #'
 #' @param yPredicted an array of shape (\code{batchSize}, \code{width}, 
 #' \code{height}, \code{<depth>}, \code{numberOfSegmentationLabels})
-#'
 #' @param domainImage image definining the geometry of the returned probability
 #' images.
 #'
@@ -161,7 +160,7 @@ encodeUnet <- function( groundTruthSegmentations, segmentationLabels )
 #' @importFrom ANTsRCore as.antsImage
 #' @export
 decodeUnet <- function( yPredicted, domainImage )
-  {
+{
   batchSize <- dim( yPredicted )[1]
   numberOfSegmentationLabels <- tail( dim( yPredicted ), 1 )
 
@@ -189,7 +188,7 @@ decodeUnet <- function( yPredicted, domainImage )
     batchProbabilityImages[[i]] <- probabilityImages
     }
   return( batchProbabilityImages ) 
-  }
+}
 
 
 
