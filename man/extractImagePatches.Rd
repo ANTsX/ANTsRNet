@@ -2,11 +2,8 @@
 % Please edit documentation in R/superResolutionUtilities.R
 \name{extractImagePatches}
 \alias{extractImagePatches}
-\alias{extractImagePatches}
 \title{Extract 2-D or 3-D image patches.}
 \usage{
-extractImagePatches(image, patchSize, maxNumberOfPatches = "all")
-
 extractImagePatches(image, patchSize, maxNumberOfPatches = "all")
 }
 \arguments{
@@ -16,32 +13,17 @@ extractImagePatches(image, patchSize, maxNumberOfPatches = "all")
 
 \item{maxNumberOfPatches}{Maximum number of patches returned.  If
 "all" is specified, then all overlapping patches are extracted.}
-
-\item{image}{Input ANTs image}
-
-\item{patchSize}{Width, height, and depth (if 3-D) of patches.}
-
-\item{maxNumberOfPatches}{Maximum number of patches returned.  If
-"all" is specified, then all overlapping patches are extracted.}
 }
 \value{
 a randomly selected list of patches.
-
-a randomly selected list of patches.
 }
 \description{
-Extract 2-D or 3-D image patches.
-
 Extract 2-D or 3-D image patches.
 }
 \examples{
 \dontrun{ 
 }
-\dontrun{ 
-}
 }
 \author{
-Tustison NJ
-
 Tustison NJ
 }
