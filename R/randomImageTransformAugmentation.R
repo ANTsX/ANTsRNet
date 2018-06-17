@@ -108,7 +108,7 @@ randomImageTransformAugmentation <- function(
     mdval = 5, # dilation of point image
     sdval = 5, # standard deviation for noise image
     smval = spatialSmoothing, # smoothing of each component
-    ncomp = 6  # number of compositions
+    ncomp = 10  # number of compositions
     ) {
     # generate random points within the image domain
     mymask = img * 0 + 1
@@ -119,6 +119,7 @@ randomImageTransformAugmentation <- function(
         makeImage( mymask, rnorm( sum( mymask  ), sd=sdval ))
       bb = iMath( randMask, "MD", mdval ) %>% smoothImage( smval )
       fields[[ k ]] =  bb
+      # * ( iMath( img, "Grad", 1.5 ) %>% iMath("Normalize") )
       }
     warpTx = antsrTransformFromDisplacementField( mergeChannels( fields ) )
     for ( i in 1:ncomp ) fields[[ i ]] = warpTx
