@@ -200,5 +200,7 @@ reconstructImageFromPatches <- function( patchList, domainImage )
     } else {
     stop( "Unsupported dimensionality.\n" )  
     }
+
+  return( as.antsImage( imageArray, reference = domainImage ) )  
 }
 
