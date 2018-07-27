@@ -27,7 +27,6 @@ Imports:
     R6
 Suggests:
     ggplot2,
-    magick,
     rmarkdown,
     testthat
 Remotes:
