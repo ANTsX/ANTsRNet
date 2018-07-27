@@ -56,6 +56,7 @@ createResNetSuperResolutionModel2D <- function( inputImageSize,
       convolutionKernelSize )
     }
   outputs <- layer_add( list( residualBlocks, outputs ) )
+
   upscaleBlock2D <- function( model, numberOfFilters, convolutionKernelSize )
     {
     block <- model %>% layer_upsampling_2d()
@@ -64,6 +65,7 @@ createResNetSuperResolutionModel2D <- function( inputImageSize,
       padding = 'same' )
     return( block )
     }
+
   outputs <- upscaleBlock2D( outputs, numberOfFilters,
     convolutionKernelSize )
 
@@ -146,15 +148,17 @@ createResNetSuperResolutionModel3D <- function( inputImageSize,
       convolutionKernelSize )
     }
   outputs <- layer_add( list( residualBlocks, outputs ) )
+
   upscaleBlock2D <- function( model, numberOfFilters, convolutionKernelSize )
     {
-    block <- model %>% layer_upsampling_2d()
-    block <- block %>% layer_conv_2d( filters = numberOfFilters,
+    block <- model %>% layer_upsampling_3d()
+    block <- block %>% layer_conv_3d( filters = numberOfFilters,
       kernel_size = convolutionKernelSize, activation = 'relu',
       padding = 'same' )
     return( block )
     }
-outputs <- upscaleBlock2D( outputs, numberOfFilters,
+
+  outputs <- upscaleBlock3D( outputs, numberOfFilters,
     convolutionKernelSize )
 
   numberOfChannels <- tail( inputImageSize, 1 )
