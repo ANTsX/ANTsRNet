@@ -6,6 +6,12 @@ A collection of well-known deep learning architectures ported to the R language 
 
 Examples available at [ANTsRNetExamples](https://github.com/ntustison/ANTsRNetExamples).
 
+## Publications
+
+* __Nicholas J. Tustison__, Brian B. Avants, Zixuan Lin, Xue Feng, Nicholas Cullen, Jaime F. Mata, Lucia Flors, James C. Gee, Talissa A. Altes, John P. Mugler III, and Kun Qing.  Convolutional Neural Networks with Template-Based Data Augmentation for Functional Lung Image Quantification, _Academic Radiology_. [Accepted](https://github.com/ntustison/DeepVentNet)
+
+# Available architectures
+
 ## Image segmentation
 
 * U-Net (2-D) or V-Net (3-D) with a [multi-label Dice loss function](https://github.com/ntustison/ANTsRNet/blob/master/Models/createUnetModel.R#L1-L91)
