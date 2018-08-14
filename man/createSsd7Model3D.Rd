@@ -5,10 +5,11 @@
 \title{3-D implementation of the SSD 7 deep learning architecture.}
 \usage{
 createSsd7Model3D(inputImageSize, numberOfClassificationLabels,
-  minScale = 0.08, maxScale = 0.96, aspectRatiosPerLayer = list(c("1:1:1",
-  "2:1:1", "1:2:1", "1:1:2"), c("1:1:1", "2:1:1", "1:2:1", "1:1:2"), c("1:1:1",
-  "2:1:1", "1:2:1", "1:1:2"), c("1:1:1", "2:1:1", "1:2:1", "1:1:2")),
-  variances = rep(1, 6))
+  minScale = 0.08, maxScale = 0.96,
+  aspectRatiosPerLayer = list(c("1:1:1", "2:1:1", "1:2:1", "1:1:2"),
+  c("1:1:1", "2:1:1", "1:2:1", "1:1:2"), c("1:1:1", "2:1:1", "1:2:1",
+  "1:1:2"), c("1:1:1", "2:1:1", "1:2:1", "1:1:2")), variances = rep(1,
+  6))
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The

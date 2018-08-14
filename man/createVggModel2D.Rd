@@ -6,8 +6,8 @@
 \usage{
 createVggModel2D(inputImageSize, numberOfClassificationLabels = 1000,
   layers = c(1, 2, 3, 4, 4), lowestResolution = 64,
-  convolutionKernelSize = c(3, 3), poolSize = c(2, 2), strides = c(2, 2),
-  denseUnits = 4096, dropoutRate = 0, style = 19)
+  convolutionKernelSize = c(3, 3), poolSize = c(2, 2), strides = c(2,
+  2), denseUnits = 4096, dropoutRate = 0, style = 19)
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The

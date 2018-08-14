@@ -6,8 +6,8 @@
 \usage{
 createUnetModel3D(inputImageSize, numberOfClassificationLabels = 1,
   numberOfLayers = 4, numberOfFiltersAtBaseLayer = 32,
-  convolutionKernelSize = c(3, 3, 3), deconvolutionKernelSize = c(2, 2, 2),
-  poolSize = c(2, 2, 2), strides = c(2, 2, 2), dropoutRate = 0,
+  convolutionKernelSize = c(3, 3, 3), deconvolutionKernelSize = c(2, 2,
+  2), poolSize = c(2, 2, 2), strides = c(2, 2, 2), dropoutRate = 0,
   mode = "classification")
 }
 \arguments{

@@ -5,8 +5,8 @@
 \title{2-D implementation of the expanded image super resolution architecture.}
 \usage{
 createExpandedSuperResolutionModel2D(inputImageSize,
-  convolutionKernelSizes = list(c(9, 9), c(1, 1), c(3, 3), c(5, 5), c(5, 5)),
-  numberOfFilters = c(64, 32, 32, 32))
+  convolutionKernelSizes = list(c(9, 9), c(1, 1), c(3, 3), c(5, 5), c(5,
+  5)), numberOfFilters = c(64, 32, 32, 32))
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The

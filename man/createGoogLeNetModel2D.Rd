@@ -4,7 +4,8 @@
 \alias{createGoogLeNetModel2D}
 \title{2-D implementation of the GoogLeNet deep learning architecture.}
 \usage{
-createGoogLeNetModel2D(inputImageSize, numberOfClassificationLabels = 1000)
+createGoogLeNetModel2D(inputImageSize,
+  numberOfClassificationLabels = 1000)
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The

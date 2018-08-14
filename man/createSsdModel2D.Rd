@@ -6,10 +6,10 @@
 \usage{
 createSsdModel2D(inputImageSize, numberOfClassificationLabels,
   l2Regularization = 0.0005, minScale = 0.1, maxScale = 0.9,
-  aspectRatiosPerLayer = list(c("1:1", "2:1", "1:2"), c("1:1", "2:1", "1:2",
-  "3:1", "1:3"), c("1:1", "2:1", "1:2", "3:1", "1:3"), c("1:1", "2:1", "1:2",
-  "3:1", "1:3"), c("1:1", "2:1", "1:2"), c("1:1", "2:1", "1:2")),
-  variances = rep(1, 4), style = 300)
+  aspectRatiosPerLayer = list(c("1:1", "2:1", "1:2"), c("1:1", "2:1",
+  "1:2", "3:1", "1:3"), c("1:1", "2:1", "1:2", "3:1", "1:3"), c("1:1",
+  "2:1", "1:2", "3:1", "1:3"), c("1:1", "2:1", "1:2"), c("1:1", "2:1",
+  "1:2")), variances = rep(1, 4), style = 300)
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The

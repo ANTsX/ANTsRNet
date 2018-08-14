@@ -4,8 +4,8 @@
 \alias{encodeSsd2D}
 \title{Encoding function for 2-D Y_train}
 \usage{
-encodeSsd2D(groundTruthLabels, anchorBoxes, imageSize, variances = rep(1, 4),
-  foregroundThreshold = 0.5, backgroundThreshold = 0.2)
+encodeSsd2D(groundTruthLabels, anchorBoxes, imageSize, variances = rep(1,
+  4), foregroundThreshold = 0.5, backgroundThreshold = 0.2)
 }
 \arguments{
 \item{groundTruthLabels}{A list of length \code{batchSize} that contains one

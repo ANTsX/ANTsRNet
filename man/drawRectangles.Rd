@@ -4,8 +4,8 @@
 \alias{drawRectangles}
 \title{Plotting function for 2-D object detection visualization.}
 \usage{
-drawRectangles(image, boxes, boxColors = "red", confidenceValues = NULL,
-  captions = NULL)
+drawRectangles(image, boxes, boxColors = "red",
+  confidenceValues = NULL, captions = NULL)
 }
 \arguments{
 \item{image}{standard image using something like \pkg{jpeg::readJPEG}.}

@@ -5,8 +5,8 @@
 \title{2-D implementation of the deep denoise image super resolution architecture.}
 \usage{
 createDeepDenoiseSuperResolutionModel2D(inputImageSize, layers = 2,
-  lowestResolution = 64, convolutionKernelSize = c(3, 3), poolSize = c(2,
-  2), strides = c(2, 2))
+  lowestResolution = 64, convolutionKernelSize = c(3, 3),
+  poolSize = c(2, 2), strides = c(2, 2))
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
