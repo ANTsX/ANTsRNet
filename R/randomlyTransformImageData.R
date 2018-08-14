@@ -146,9 +146,8 @@ randomlyTransformImageData <- function( referenceImage,
 
   # Get the fixed parameters from the reference image.
 
-  referenceRegistration <- antsRegistration( fixedImage = referenceImage, 
-    movingImage = referenceImage, typeofTransform = 'Rigid', 
-    regIterations = c( 1, 0 ) )
+  referenceRegistration <- antsRegistration( referenceImage, referenceImage, 
+    typeofTransform = 'Rigid', regIterations = c( 1, 0 ) )
   referenceTransform <- readAntsrTransform( 
     referenceRegistration$fwdtransforms[1], referenceImage@dimension )
   fixedParameters = getAntsrTransformFixedParameters( referenceTransform )
@@ -186,13 +185,13 @@ randomlyTransformImageData <- function( referenceImage,
       }
 
     transforms <- c()
-    if( typeOfTransform == 'Deformation' )
+    if( transformType == 'Deformation' )
       {
       deformableTransform <- createRandomDisplacementFieldTransform(     
         referenceImage, numberOfControlPoints, spatialSmoothing )
       transforms <- c( deformableTransform )
       }  
-    if( typeOfTransform == 'AffineAndDeformation' )
+    if( transformType == 'AffineAndDeformation' )
       {
       deformableTransform <- createRandomDisplacementFieldTransform(     
         referenceImage, numberOfControlPoints, spatialSmoothing )
@@ -200,10 +199,10 @@ randomlyTransformImageData <- function( referenceImage,
         fixedParameters, 'affine', sdAffine )  
       transforms <- c( deformableTransform, linearTransform )
       }  
-    if( typeOfTransform %in% admissibleTransforms[1:4] )
+    if( transformType %in% admissibleTransforms[1:4] )
       {
       linearTransform <- createRandomLinearTransform( referenceImage, 
-        fixedParameters, typeOfTransform, sdAffine )
+        fixedParameters, transformType, sdAffine )
       transforms <- c( linearTransform )
       }
 

@@ -60,8 +60,8 @@ images.  The reference image domain defines the space in which this happens.
 library( ANTsR )
 image1 <- antsImageRead( getANTsRData( "r16" ) )
 image2 <- antsImageRead( getANTsRData( "r64" ) )
-segmentation1 <- thresholdImage( i1, "Otsu", 3 )
-segmentation2 <- thresholdImage( i2, "Otsu", 3 )
+segmentation1 <- thresholdImage( image1, "Otsu", 3 )
+segmentation2 <- thresholdImage( image2, "Otsu", 3 )
 data <- randomlyTransformImageData( image1,
   list( list( image1 ), list( image2 ) ),  
   list( segmentation1, segmentation2 ) )
