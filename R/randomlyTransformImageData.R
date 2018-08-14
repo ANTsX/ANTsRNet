@@ -51,7 +51,7 @@
 randomlyTransformImageData <- function( referenceImage,
   inputImageList, segmentationImageList = NA, numberOfSimulations = 10,
   transformType = 'affine', inputImageInterpolator = 'linear',
-  segmentationImageInterpolator = 'genericLabel',
+  segmentationImageInterpolator = 'nearestNeighbor',
   numberOfControlPoints = 100, sdAffine = 1.0, 
   spatialSmoothing = 3.0 )
 {
@@ -155,7 +155,8 @@ randomlyTransformImageData <- function( referenceImage,
   numberOfSubjects <- length( inputImageList )   
   numberOfImagesPerSubject <- length( inputImageList[[1]] )
 
-  randomIndices <- sample( numberOfSubjects, size = numberOfSimulations )
+  randomIndices <- sample( numberOfSubjects, size = numberOfSimulations, 
+    replace = TRUE )
 
   simulatedImageList <- list()
   simulatedSegmentationImageList <- list()
@@ -163,7 +164,7 @@ randomlyTransformImageData <- function( referenceImage,
     {
     singleSubjectImageList <- inputImageList[[randomIndices[i]]] 
     singleSubjectSegmentationImage <- NA
-    if( !is.na( segmentationImageList ) )
+    if( !is.na( segmentationImageList[[1]] ) )
       {
       singleSubjectSegmentationImage <- segmentationImageList[[randomIndices[i]]]
       }
@@ -223,7 +224,7 @@ randomlyTransformImageData <- function( referenceImage,
       }    
     }
 
-  if( is.na( segmentationImageList ) )
+  if( is.na( segmentationImageList[[1]] ) )
     {
     return( list( simulatedImageList = simulatedImageList ) )  
     }

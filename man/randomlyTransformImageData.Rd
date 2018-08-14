@@ -7,7 +7,7 @@
 randomlyTransformImageData(referenceImage, inputImageList,
   segmentationImageList = NA, numberOfSimulations = 10,
   transformType = "affine", inputImageInterpolator = "linear",
-  segmentationImageInterpolator = "genericLabel",
+  segmentationImageInterpolator = "nearestNeighbor",
   numberOfControlPoints = 100, sdAffine = 1, spatialSmoothing = 3)
 }
 \arguments{
