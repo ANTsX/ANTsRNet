@@ -10,15 +10,15 @@ Examples available at [ANTsRNetExamples](https://github.com/ntustison/ANTsRNetEx
 
 * __Nicholas J. Tustison__, Brian B. Avants, Zixuan Lin, Xue Feng, Nicholas Cullen, Jaime F. Mata, Lucia Flors, James C. Gee, Talissa A. Altes, John P. Mugler III, and Kun Qing.  Convolutional Neural Networks with Template-Based Data Augmentation for Functional Lung Image Quantification, _Academic Radiology_. [Accepted](https://github.com/ntustison/DeepVentNet)
 
-# Available architectures
+## Available architectures
 
-## Image segmentation
+### Image segmentation
 
 * U-Net (2-D) or V-Net (3-D) with a [multi-label Dice loss function](https://github.com/ntustison/ANTsRNet/blob/master/Models/createUnetModel.R#L1-L91)
     * [O. Ronneberger, P. Fischer, and T. Brox.  U-Net: Convolutional Networks for Biomedical Image Segmentation.](https://arxiv.org/abs/1505.04597)
     * [Fausto Milletari, Nassir Navab, Seyed-Ahmad Ahmadi. V-Net: Fully Convolutional Neural Networks for Volumetric Medical Image Segmentation.](https://arxiv.org/pdf/1606.04797.pdf)
 
-## Image classification
+### Image classification
 
 * AlexNet (2-D, 3-D)
     * [A. Krizhevsky, and I. Sutskever, and G. Hinton. ImageNet Classification with Deep Convolutional Neural Networks.](http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf)
@@ -32,14 +32,14 @@ Examples available at [ANTsRNetExamples](https://github.com/ntustison/ANTsRNetEx
 * DenseNet (2-D, 3-D)
     * [G. Huang, Z. Liu, K. Weinberger, and L. van der Maaten. Densely Connected Convolutional Networks Networks.](https://arxiv.org/abs/1608.06993)
 
-## Object detection
+### Object detection
 
 * Single Shot MultiBox Detector (SSD) (2-D, 3-D)
     * [W. Liu, D. Anguelov, D. Erhan, C. Szegedy, S. Reed, C-Y. Fu, and A. Berg.  SSD: Single Shot MultiBox Detector.](https://arxiv.org/abs/1512.02325)
     * SSD7: small 7-layer architecture
     * SSD300/SSD512: porting of original architectures
 
-## Image super-resolution
+### Image super-resolution
 
 * Super-resolution convolutional neural network (SRCNN) (2-D, 3-D)
     * [Chao Dong, Chen Change Loy, Kaiming He, and Xiaoou Tang.  Image Super-Resolution Using Deep Convolutional Networks.](https://arxiv.org/abs/1501.00092)
