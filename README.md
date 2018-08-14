@@ -8,7 +8,7 @@ Examples available at [ANTsRNetExamples](https://github.com/ntustison/ANTsRNetEx
 
 ## Publications
 
-* __Nicholas J. Tustison__, Brian B. Avants, Zixuan Lin, Xue Feng, Nicholas Cullen, Jaime F. Mata, Lucia Flors, James C. Gee, Talissa A. Altes, John P. Mugler III, and Kun Qing.  Convolutional Neural Networks with Template-Based Data Augmentation for Functional Lung Image Quantification, _Academic Radiology_. [Accepted](https://github.com/ntustison/DeepVentNet)
+* Nicholas J. Tustison, Brian B. Avants, Zixuan Lin, Xue Feng, Nicholas Cullen, Jaime F. Mata, Lucia Flors, James C. Gee, Talissa A. Altes, John P. Mugler III, and Kun Qing.  Convolutional Neural Networks with Template-Based Data Augmentation for Functional Lung Image Quantification, _Academic Radiology_. [Accepted](https://github.com/ntustison/DeepVentNet)
 
 ## Available architectures
 
