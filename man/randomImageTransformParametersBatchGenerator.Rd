@@ -6,7 +6,7 @@
 \description{
 This R6 class can be used to generate parameters to affine and other
 transformations applied to an input image population.
-The class calls \code{\link{randomImageTransformParameterAugmentation}}.
+The class calls \code{\link{randomImageTransformParametersAugmentation}}.
 }
 \section{Usage}{
 
