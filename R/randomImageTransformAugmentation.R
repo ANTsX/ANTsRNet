@@ -23,6 +23,7 @@
 #' @param spatialSmoothing spatial smoothing for simulated deformation
 #' @param composeToField defaults to FALSE, will return deformation fields
 #' otherwise i.e. maps any transformation to a single deformation field.
+#' @param numberOfCompositions integer greater than or equal to one
 #' @param directoryName where to write to disk (optional)
 #' @return list (if no directory set) or boolean for success, failure
 #' @author Avants BB
@@ -52,6 +53,7 @@ randomImageTransformAugmentation <- function(
   nControlPoints = 100, # for deformation
   spatialSmoothing = 3, # for deformation
   composeToField = FALSE, # maps any transformation to single deformation field
+  numberOfCompositions = 4,
   directoryName )
 {
 
@@ -108,7 +110,7 @@ randomImageTransformAugmentation <- function(
     mdval = 5, # dilation of point image
     sdval = 5, # standard deviation for noise image
     smval = spatialSmoothing, # smoothing of each component
-    ncomp = 10  # number of compositions
+    ncomp = numberOfCompositions  # number of compositions
     ) {
     # generate random points within the image domain
     mymask = img * 0 + 1
@@ -122,6 +124,7 @@ randomImageTransformAugmentation <- function(
       # * ( iMath( img, "Grad", 1.5 ) %>% iMath("Normalize") )
       }
     warpTx = antsrTransformFromDisplacementField( mergeChannels( fields ) )
+    fields = list( )
     for ( i in 1:ncomp ) fields[[ i ]] = warpTx
     return( fields )
     # return( applyAntsrTransform( fields, data = img, reference = img ) )
