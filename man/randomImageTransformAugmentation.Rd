@@ -8,7 +8,7 @@ randomImageTransformAugmentation(imageDomain, predictorImageList,
   outcomeImageList, n = 8, typeOfTransform = "Affine",
   interpolator = c("linear", "nearestNeighbor"), sdAffine = 1,
   nControlPoints = 100, spatialSmoothing = 3, composeToField = FALSE,
-  directoryName)
+  numberOfCompositions = 4, directoryName)
 }
 \arguments{
 \item{imageDomain}{defines the spatial domain for all images.  NOTE: if the
@@ -39,6 +39,8 @@ outcome images respectively}
 
 \item{composeToField}{defaults to FALSE, will return deformation fields
 otherwise i.e. maps any transformation to a single deformation field.}
+
+\item{numberOfCompositions}{integer greater than or equal to one}
 
 \item{directoryName}{where to write to disk (optional)}
 }
