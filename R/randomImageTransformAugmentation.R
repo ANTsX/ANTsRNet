@@ -11,11 +11,11 @@
 #' \code{antsImagePhysicalSpaceConsistency} then call
 #' \code{resampleImageToTarget} upon failure.
 #' @param predictorImageList list of lists of image predictors
-#' @param outcomeImageList list of image outcomes
+#' @param outcomeImageList optional list of image outcomes
 #' @param n number of simulations to run
 #' @param typeOfTransform one of the following options
 #'   \code{c("Translation","Rigid","ScaleShear","Affine","Deformation",
-#'   "AffineAndDeformation")}
+#'   "AffineAndDeformation", "DeformationBasis")}
 #' @param interpolator nearestNeighbor or linear (string) for predictor and
 #' outcome images respectively
 #' @param sdAffine roughly controls deviation from identity matrix
@@ -24,6 +24,7 @@
 #' @param composeToField defaults to FALSE, will return deformation fields
 #' otherwise i.e. maps any transformation to a single deformation field.
 #' @param numberOfCompositions integer greater than or equal to one
+#' @param deformationBasis list containing deformationBasis set
 #' @param directoryName where to write to disk (optional)
 #' @return list (if no directory set) or boolean for success, failure
 #' @author Avants BB
@@ -54,12 +55,13 @@ randomImageTransformAugmentation <- function(
   spatialSmoothing = 3, # for deformation
   composeToField = FALSE, # maps any transformation to single deformation field
   numberOfCompositions = 4,
+  deformationBasis,
   directoryName )
 {
 
   admissibleTx = c(
     "Translation","Rigid","ScaleShear","Affine","Deformation",
-    "AffineAndDeformation")
+    "AffineAndDeformation", "DeformationBasis" )
   if ( missing( directoryName ) ) returnList = TRUE else returnList = FALSE
   if ( !(typeOfTransform %in% admissibleTx ) )
     stop("!(typeOfTransform %in% admissibleTx ) - see help")
@@ -110,7 +112,8 @@ randomImageTransformAugmentation <- function(
     mdval = 5, # dilation of point image
     sdval = 5, # standard deviation for noise image
     smval = spatialSmoothing, # smoothing of each component
-    ncomp = numberOfCompositions  # number of compositions
+    ncomp = numberOfCompositions,  # number of compositions,
+    deformationBasis
     ) {
     # generate random points within the image domain
     mymask = img * 0 + 1
@@ -188,6 +191,185 @@ randomImageTransformAugmentation <- function(
       outputPredictorList = outputPredictorList,
       outputOutcomeList = outputOutcomeList,
       outputRandomTransformList = outputRandomTransformList
+      )
+    )
+}
+
+
+
+
+
+
+
+
+
+
+
+#' Generate transform parameters and transformed images
+#'
+#' The function will apply rigid, affine or deformable maps to an input set of
+#' training images.  The reference image domain defines the space in which this
+#' happens.  The outcome here is the transform parameters themselves.  This
+#' is intended for use with low-dimensional transformations.
+#'
+#' @param imageDomain defines the spatial domain for all images.  NOTE: if the
+#' input images do not match the spatial domain of the domain image, we
+#' internally resample the target to the domain.  This may have unexpected
+#' consequences if you are not aware of this.  This operation will test
+#' \code{antsImagePhysicalSpaceConsistency} then call
+#' \code{resampleImageToTarget} upon failure.
+#' @param predictorImageList list of lists of image predictors
+#' @param n number of simulations to run
+#' @param typeOfTransform one of the following options
+#'   \code{c("Translation","Rigid","ScaleShear","Affine", "DeformationBasis")}
+#' @param interpolator nearestNeighbor or linear (string) for predictor images
+#' @param sdTransform roughly controls deviation from identity parameters
+#' @param spatialSmoothing spatial smoothing for simulated deformation
+#' @param numberOfCompositions integer greater than or equal to one
+#' @param deformationBasis list containing deformationBasis set
+#' @param deformationBasisMeans list containing deformationBasis set means
+#' @param deformationBasisSDs list containing deformationBasis standard deviations
+#' @return list of transformed images and transform parameters
+#' @author Avants BB
+#' @seealso \code{\link{randomImageTransformParametersBatchGenerator}}
+#' @examples
+#'
+#' library( ANTsR )
+#' i1 = antsImageRead( getANTsRData( "r16" ) )
+#' i2 = antsImageRead( getANTsRData( "r64" ) )
+#' s1 = thresholdImage( i1, "Otsu", 3 )
+#' s2 = thresholdImage( i2, "Otsu", 3 )
+#' rand = randomImageTransformParametersAugmentation( i1,
+#'   list( i1, i2 ) )
+#'
+#' @export randomImageTransformParametersAugmentation
+randomImageTransformParametersAugmentation <- function(
+  imageDomain,
+  predictorImageList,
+  n = 8,
+  typeOfTransform = 'Affine',
+  interpolator = 'linear',
+  sdTransform = 1, # deviance from identity
+  spatialSmoothing = 3, # for deformation
+  numberOfCompositions = 4,
+  deformationBasis,
+  deformationBasisMeans, # mean values
+  deformationBasisSDs  )  # sd values
+{
+  admissibleTx = c(
+    "Translation","Rigid","ScaleShear","Affine", "DeformationBasis" )
+  if ( !(typeOfTransform %in% admissibleTx ) )
+    stop("!(typeOfTransform %in% admissibleTx ) - see help")
+  if ( typeOfTransform == "DeformationBasis" & missing( deformationBasis ) )
+    stop("deformationBasis is missing")
+  outputPredictorList = list()
+  outputParameterList = list()
+
+  if ( ! missing( deformationBasis ) & missing( deformationBasisMeans ) )
+    deformationBasisMeans = rep( 0, length( DeformationBasis ))
+
+  if ( ! missing( deformationBasis ) & missing( deformationBasisSDs ) )
+    deformationBasisSDs = rep( sdTransform, length( DeformationBasis ))
+
+  # get some reference parameters by a 0 iteration mapping
+  refreg = antsRegistration( imageDomain, imageDomain,
+    typeofTransform='Rigid', regIterations=c(1,0) )
+  reftx = readAntsrTransform( refreg$fwdtransforms[1], imageDomain@dimension )
+  fxparam = getAntsrTransformFixedParameters( reftx )
+
+  # polar decomposition of X
+  polarX <- function( X )
+    {
+    x_svd <- svd( X )
+    P <- x_svd$u %*% diag(x_svd$d) %*% t(x_svd$u)
+    Z <- x_svd$u %*% t(x_svd$v)
+    if ( det( Z ) < 0 ) Z = Z * (-1)
+    return(list(P = P, Z = Z, Xtilde = P %*% Z))
+    }
+
+  randAff <- function( img, fixedParams, txtype = 'Affine', sdAffine ) {
+    loctx <- createAntsrTransform(
+      precision="float", type="AffineTransform", dimension=img@dimension )
+    setAntsrTransformFixedParameters( loctx, fixedParams )
+    idparams = getAntsrTransformParameters( loctx )
+    noisemat = stats::rnorm( length(idparams), mean=0, sd=sdAffine )
+    if ( txtype == 'Translation' )
+      noisemat[ 1:(length(idparams) - img@dimension ) ] = 0
+    idparams = idparams + noisemat
+    idmat = matrix( idparams[ 1:(length(idparams) - img@dimension ) ],
+      ncol = img@dimension )
+    idmat = polarX( idmat )
+    if ( txtype == "Rigid" ) idmat = idmat$Z
+    if ( txtype == "Affine" ) idmat = idmat$Xtilde
+    if ( txtype == "ScaleShear" ) idmat = idmat$P
+    idparams[ 1:(length(idparams) - img@dimension ) ] = as.numeric( idmat )
+    setAntsrTransformParameters( loctx, idparams )
+    return( loctx )
+    }
+
+  basisParameters <- function(
+    deformationBasisMeans, # mean values
+    deformationBasisSDs    # sd values
+    ) {
+    parameters = rep( 0, length( deformationBasisMeans ) )
+    for ( k in 1:length( parameters ) ) {
+      parameters[ k ] = rnorm( 1, deformationBasisMeans[k],
+        deformationBasisSDs[k] )
+      }
+    return( parameters )
+  }
+
+  basisWarp <- function(
+    smval = spatialSmoothing, # smoothing of each component
+    ncomp = numberOfCompositions,  # number of compositions,
+    deformationBasis,  # basis set of deformations
+    betaParameters    # beta values
+    ) {
+    # generate random points within the image domain
+    mergedField = deformationBasis[[1]] * betaParameters[1]
+    for ( k in 2:length( deformationBasis ) ) {
+      mergedField = mergedField + deformationBasis[[k]] * betaParameters[k]
+      }
+    if ( smval > 0 )
+      mergedField = smoothImage( mergedField, smval )
+    warpTx = antsrTransformFromDisplacementField( mergedField )
+    fields = list( )
+    for ( i in 1:ncomp ) fields[[ i ]] = warpTx
+    return( fields )
+  }
+
+  for ( i in 1:n ) {
+    # for each run, randomly select an input image
+    selimg = sample( 1:length(predictorImageList) )[1]
+    locimgpredictors = predictorImageList[[ selimg ]]
+    if (
+     ! antsImagePhysicalSpaceConsistency(imageDomain, locimgpredictors )  ) {
+      locimgpredictors =
+          resampleImageToTarget( locimgpredictors, imageDomain,
+            interpType =  interpolator[1] )
+      }
+    # get simulated data
+    if ( typeOfTransform == 'DeformationBasis' ) {
+      params = basisParameters( deformationBasisMeans, deformationBasisSDs )
+      loctx = basisWarp( spatialSmoothing, numberOfCompositions,
+        deformationBasis, params  )
+      }
+    if ( typeOfTransform %in% admissibleTx[1:4] ) {
+      loctx = randAff( imageDomain, fxparam,  typeOfTransform, sdTransform )
+      params = getAntsrTransformParameters( loctx )
+      }
+    # pass to output
+    locimgpredictors =
+      applyAntsrTransform( loctx, locimgpredictors, imageDomain,
+        interpolation =  interpolator[1] )
+    outputPredictorList[[i]] = locimgpredictors
+    outputParameterList[[i]] = params
+    }
+
+  return(
+    list(
+      outputPredictorList = outputPredictorList,
+      outputParameterList = outputParameterList
       )
     )
 }

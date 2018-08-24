@@ -8,7 +8,7 @@ randomImageTransformAugmentation(imageDomain, predictorImageList,
   outcomeImageList, n = 8, typeOfTransform = "Affine",
   interpolator = c("linear", "nearestNeighbor"), sdAffine = 1,
   nControlPoints = 100, spatialSmoothing = 3, composeToField = FALSE,
-  numberOfCompositions = 4, directoryName)
+  numberOfCompositions = 4, deformationBasis, directoryName)
 }
 \arguments{
 \item{imageDomain}{defines the spatial domain for all images.  NOTE: if the
@@ -20,13 +20,13 @@ consequences if you are not aware of this.  This operation will test
 
 \item{predictorImageList}{list of lists of image predictors}
 
-\item{outcomeImageList}{list of image outcomes}
+\item{outcomeImageList}{optional list of image outcomes}
 
 \item{n}{number of simulations to run}
 
 \item{typeOfTransform}{one of the following options
 \code{c("Translation","Rigid","ScaleShear","Affine","Deformation",
-  "AffineAndDeformation")}}
+  "AffineAndDeformation", "DeformationBasis")}}
 
 \item{interpolator}{nearestNeighbor or linear (string) for predictor and
 outcome images respectively}
@@ -41,6 +41,8 @@ outcome images respectively}
 otherwise i.e. maps any transformation to a single deformation field.}
 
 \item{numberOfCompositions}{integer greater than or equal to one}
+
+\item{deformationBasis}{list containing deformationBasis set}
 
 \item{directoryName}{where to write to disk (optional)}
 }
