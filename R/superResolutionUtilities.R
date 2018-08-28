@@ -63,34 +63,35 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all' )
 
   imageArray <- as.array( image )
 
-  patches = list()
+  patches <- list()
 
   if( tolower( maxNumberOfPatches ) == 'all' )
     {
+    count <- 1
     if( dimensionality == 2 )
       {
-      for( i in patchSize[1]:( inputImageSize[1] - patchSize[1] + 1 ) )
+      for( i in seq_len( imageSize[1] - patchSize[1] + 1 ) )
         {
-        for( j in patchSize[2]:( inputImageSize[2] - patchSize[2] + 1 ) )
+        for( j in seq_len( imageSize[2] - patchSize[2] + 1 ) )
           {
           startIndex <- c( i, j )
           endIndex <- startIndex + patchSize - 1
           patches[[count]] <- 
-            imageArray[startIndex[1]:endIndex[1],startIndex[2]:endIndex[2]]
+            imageArray[startIndex[1]:endIndex[1], startIndex[2]:endIndex[2]]
           count <- count + 1  
           }
         }  
       } else if( dimensionality == 3 ) {
-      for( i in patchSize[1]:( inputImageSize[1] - patchSize[1] + 1 ) )
+      for( i in seq_len( imageSize[1] - patchSize[1] + 1 ) )
         {
-        for( j in patchSize[2]:( inputImageSize[2] - patchSize[2] + 1 ) )
+        for( j in seq_len( imageSize[2] - patchSize[2] + 1 ) )
           {
-          for( k in patchSize[3]:( inputImageSize[3] - patchSize[3] + 1 ) )
+          for( k in seq_len( imageSize[3] - patchSize[3] + 1 ) )
             {
             startIndex <- c( i, j, k )
             endIndex <- startIndex + patchSize - 1
             patches[[count]] <- imageArray[startIndex[1]:endIndex[1],
-              startIndex[2]:endIndex[2],startIndex[3]:endIndex[3]]
+              startIndex[2]:endIndex[2], startIndex[3]:endIndex[3]]
             count <- count + 1  
             }  
           }
@@ -111,10 +112,10 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all' )
       if( dimensionality == 2 )
         {
         patches[[i]] <- 
-          imageArray[startIndex[1]:endIndex[1],startIndex[2]:endIndex[2]]
+          imageArray[startIndex[1]:endIndex[1], startIndex[2]:endIndex[2]]
         } else if( dimensionality == 3 ) {
         patches[[i]] <- imageArray[startIndex[1]:endIndex[1],
-          startIndex[2]:endIndex[2],startIndex[3]:endIndex[3]]
+          startIndex[2]:endIndex[2], startIndex[3]:endIndex[3]]
         } else {
         stop( "Unsupported dimensionality.\n" )  
         }
