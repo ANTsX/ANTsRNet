@@ -200,7 +200,51 @@ randomImageTransformAugmentation <- function(
 
 
 
-
+#' Generate a deformable map from basis
+#'
+#' The function will generate a deformable transformation (via exponential map)
+#' from a basis of deformations.
+#'
+#' @param deformationBasis list containing deformationBasis set
+#' @param betaParameters vector containing deformationBasis set parameters
+#' @param numberOfCompositions integer greater than or equal to one
+#' @param spatialSmoothing spatial smoothing for generated deformation
+#' @return list of fields
+#' @author Avants BB
+#' @seealso \code{\link{randomImageTransformParametersBatchGenerator}}
+#' @examples
+#'
+#' library( ANTsR )
+#' i1 = ri( 1 ) %>% resampleImage( 4 )
+#' i2 = ri( 2 ) %>% resampleImage( 4 )
+#' reg = antsRegistration( i1, i2, 'SyN' )
+#' w =  composeTransformsToField( i1, reg$fwd )
+#' bw = basisWarp( list( w, w ), c( 0.25, 0.25 ), 2, 0 )
+#' bwApp = applyAntsrTransformToImage( bw, i2, i1 )
+#' bw = basisWarp( list( w, w ), c( 0.25, 0.25 )*(-1.0), 2, 0 ) # inverse
+#' bwApp = applyAntsrTransformToImage( bw, i1, i2 )
+#'
+#' @export basisWarp
+basisWarp <- function(
+  deformationBasis,  # basis set of deformations
+  betaParameters,   # beta values
+  numberOfCompositions = 2,  # number of compositions,
+  spatialSmoothing = 0 # smoothing of each component
+  ) {
+  if ( length( betaParameters ) != length( deformationBasis ) )
+    stop( "length( betaParameters ) != length( deformationBasis )" )
+  # generate random points within the image domain
+  mergedField = deformationBasis[[1]] * betaParameters[1]
+  for ( k in 2:length( deformationBasis ) ) {
+    mergedField = mergedField + deformationBasis[[k]] * betaParameters[k]
+    }
+  if ( spatialSmoothing > 0 )
+    mergedField = smoothImage( mergedField, spatialSmoothing )
+  warpTx = antsrTransformFromDisplacementField( mergedField )
+  fields = list( )
+  for ( i in 1:numberOfCompositions ) fields[[ i ]] = warpTx
+  return( fields )
+}
 
 
 
@@ -266,10 +310,10 @@ randomImageTransformParametersAugmentation <- function(
   outputParameterList = list()
 
   if ( ! missing( deformationBasis ) & missing( deformationBasisMeans ) )
-    deformationBasisMeans = rep( 0, length( DeformationBasis ))
+    deformationBasisMeans = rep( 0, length( deformationBasis ))
 
   if ( ! missing( deformationBasis ) & missing( deformationBasisSDs ) )
-    deformationBasisSDs = rep( sdTransform, length( DeformationBasis ))
+    deformationBasisSDs = rep( sdTransform, length( deformationBasis ))
 
   # get some reference parameters by a 0 iteration mapping
   refreg = antsRegistration( imageDomain, imageDomain,
@@ -319,25 +363,6 @@ randomImageTransformParametersAugmentation <- function(
     return( parameters )
   }
 
-  basisWarp <- function(
-    smval = spatialSmoothing, # smoothing of each component
-    ncomp = numberOfCompositions,  # number of compositions,
-    deformationBasis,  # basis set of deformations
-    betaParameters    # beta values
-    ) {
-    # generate random points within the image domain
-    mergedField = deformationBasis[[1]] * betaParameters[1]
-    for ( k in 2:length( deformationBasis ) ) {
-      mergedField = mergedField + deformationBasis[[k]] * betaParameters[k]
-      }
-    if ( smval > 0 )
-      mergedField = smoothImage( mergedField, smval )
-    warpTx = antsrTransformFromDisplacementField( mergedField )
-    fields = list( )
-    for ( i in 1:ncomp ) fields[[ i ]] = warpTx
-    return( fields )
-  }
-
   for ( i in 1:n ) {
     # for each run, randomly select an input image
     selimg = sample( 1:length(predictorImageList) )[1]
@@ -351,8 +376,8 @@ randomImageTransformParametersAugmentation <- function(
     # get simulated data
     if ( typeOfTransform == 'DeformationBasis' ) {
       params = basisParameters( deformationBasisMeans, deformationBasisSDs )
-      loctx = basisWarp( spatialSmoothing, numberOfCompositions,
-        deformationBasis, params  )
+      loctx = basisWarp( deformationBasis, params, numberOfCompositions,
+        spatialSmoothing )
       }
     if ( typeOfTransform %in% admissibleTx[1:4] ) {
       loctx = randAff( imageDomain, fxparam,  typeOfTransform, sdTransform )

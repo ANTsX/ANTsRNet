@@ -21,7 +21,7 @@ a randomly selected list of patches.
 Extract 2-D or 3-D image patches.
 }
 \examples{
-\dontrun{ 
+\dontrun{
 }
 }
 \author{
