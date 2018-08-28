@@ -213,7 +213,7 @@ randomImageTransformAugmentation <- function(
 #' @author Avants BB
 #' @seealso \code{\link{randomImageTransformParametersBatchGenerator}}
 #' @examples
-#'
+#' \dontrun{
 #' library( ANTsR )
 #' i1 = ri( 1 ) %>% resampleImage( 4 )
 #' i2 = ri( 2 ) %>% resampleImage( 4 )
@@ -223,7 +223,7 @@ randomImageTransformAugmentation <- function(
 #' bwApp = applyAntsrTransformToImage( bw, i2, i1 )
 #' bw = basisWarp( list( w, w ), c( 0.25, 0.25 )*(-1.0), 2, 0 ) # inverse
 #' bwApp = applyAntsrTransformToImage( bw, i1, i2 )
-#'
+#' }
 #' @export basisWarp
 basisWarp <- function(
   deformationBasis,  # basis set of deformations

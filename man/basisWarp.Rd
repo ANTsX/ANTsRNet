@@ -24,7 +24,7 @@ The function will generate a deformable transformation (via exponential map)
 from a basis of deformations.
 }
 \examples{
-
+\dontrun{
 library( ANTsR )
 i1 = ri( 1 ) \%>\% resampleImage( 4 )
 i2 = ri( 2 ) \%>\% resampleImage( 4 )
@@ -34,7 +34,7 @@ bw = basisWarp( list( w, w ), c( 0.25, 0.25 ), 2, 0 )
 bwApp = applyAntsrTransformToImage( bw, i2, i1 )
 bw = basisWarp( list( w, w ), c( 0.25, 0.25 )*(-1.0), 2, 0 ) # inverse
 bwApp = applyAntsrTransformToImage( bw, i1, i2 )
-
+}
 }
 \seealso{
 \code{\link{randomImageTransformParametersBatchGenerator}}
