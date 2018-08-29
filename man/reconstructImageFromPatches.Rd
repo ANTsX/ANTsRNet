@@ -19,7 +19,7 @@ an ANTs image.
 Reconstruct image from a list of patches.
 }
 \examples{
-\dontrun{ 
+\dontrun{
 }
 }
 \author{

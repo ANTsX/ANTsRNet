@@ -2,9 +2,7 @@
 % Please edit documentation in R/superResolutionUtilities.R
 \name{peak_signal_to_noise_ratio}
 \alias{peak_signal_to_noise_ratio}
-\title{Model loss function for super-resolution---peak-signal-to-noise ratio.
-
-Based on the keras loss function (losses.R):}
+\title{Model loss function for super-resolution---peak-signal-to-noise ratio.}
 \usage{
 peak_signal_to_noise_ratio(y_true, y_pred)
 }
@@ -14,9 +12,11 @@ peak_signal_to_noise_ratio(y_true, y_pred)
 \item{y_pred}{Predictions (Tensor of the same shape as \code{y_true})}
 }
 \description{
-\url{https://github.com/rstudio/keras/blob/master/R/losses.R}
+Based on the keras loss function (losses.R):
 }
 \details{
+\url{https://github.com/rstudio/keras/blob/master/R/losses.R}
+
 Loss functions are to be supplied in the loss parameter of the
 \code{compile()} function.
 }
