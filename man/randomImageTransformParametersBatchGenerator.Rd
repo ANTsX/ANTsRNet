@@ -34,15 +34,13 @@ This operation will test
 \code{antsImagePhysicalSpaceConsistency} then call
 \code{resampleImageToTarget} upon failure.
 
-\code{sdTransform} roughly controls deviation from identity matrix
-
 \code{spatialSmoothing} spatial smoothing for simulated deformation
 
 \code{numberOfCompositions} number of compositions
 
 \code{deformationBasis} list of basis deformations
-\code{deformationBasisMeans} vector of basis deformations means
-\code{deformationBasisSDs} vector of basis deformations sds
+\code{txParamMeans} vector of basis deformations means
+\code{txParamSDs} vector of basis deformations sds
 }
 
 \section{Methods}{
@@ -64,7 +62,7 @@ predictors = list( i1, i2, i2, i1 )
 trainingData <- randomImageTransformParametersBatchGenerator$new(
   imageList = predictors,
   transformType = "Affine",
-  imageDomain = i1
+  imageDomain = i1, txParamMeans=c(1,0,0,1,0,0), txParamSDs=diag(6)*0.01
   )
 testBatchGenFunction = trainingData$generate( 2 )
 myout = testBatchGenFunction( )
