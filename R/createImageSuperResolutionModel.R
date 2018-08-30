@@ -44,7 +44,7 @@ createImageSuperResolutionModel2D <- function( inputImageSize,
   inputs <- layer_input( shape = inputImageSize )
 
   outputs <- inputs
-  for( i in 1:( numberOfConvolutionLayers - 1 ) )
+  for( i in seq_len( numberOfConvolutionLayers - 1 ) )
     {
     outputs <- outputs %>% layer_conv_2d( filters = numberOfFilters[i], 
       kernel_size = convolutionKernelSizes[[i]], activation = 'relu', padding = 'same' )
@@ -107,7 +107,7 @@ createImageSuperResolutionModel3D <- function( inputImageSize,
   inputs <- layer_input( shape = inputImageSize )
 
   outputs <- inputs
-  for( i in 1:( numberOfConvolutionLayers - 1 ) )
+  for( i in seq_len( numberOfConvolutionLayers - 1 ) )
     {
     outputs <- outputs %>% layer_conv_3d( filters = numberOfFilters[i], 
       kernel_size = convolutionKernelSizes[[i]], activation = 'relu', padding = 'same' )

@@ -49,14 +49,14 @@ attr( loss_peak_signal_to_noise_ratio_error, "py_function_name" ) <-
 #' @export
 extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all' )
 {
-  inputImageSize <- dim( image )
-  dimensionality <- length( inputImageSize )
-
-  if( length( inputImageSize ) != length( patchSize ) )
+  imageSize <- dim( image )
+  dimensionality <- length( imageSize )
+  
+  if( length( imageSize ) != length( patchSize ) )
     {
     stop( "Mismatch between the image size and the specified patch size.\n" )
     }
-  if( any( patchSize > inputImageSize ) )
+  if( any( patchSize > imageSize ) ) 
     {
     stop( "Patch size is greater than the image size.\n")
     }
@@ -70,9 +70,9 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all' )
     count <- 1
     if( dimensionality == 2 )
       {
-      for( i in seq_len( inputImageSize[1] - patchSize[1] + 1 ) )
+      for( i in seq_len( imageSize[1] - patchSize[1] + 1 ) )
         {
-        for( j in seq_len( inputImageSize[2] - patchSize[2] + 1 ) )
+        for( j in seq_len( imageSize[2] - patchSize[2] + 1 ) )
           {
           startIndex <- c( i, j )
           endIndex <- startIndex + patchSize - 1
@@ -82,11 +82,11 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all' )
           }
         }
       } else if( dimensionality == 3 ) {
-      for( i in seq_len( inputImageSize[1] - patchSize[1] + 1 ) )
+      for( i in seq_len( imageSize[1] - patchSize[1] + 1 ) )
         {
-        for( j in seq_len( inputImageSize[2] - patchSize[2] + 1 ) )
+        for( j in seq_len( imageSize[2] - patchSize[2] + 1 ) )
           {
-          for( k in seq_len( inputImageSize[3] - patchSize[3] + 1 ) )
+          for( k in seq_len( imageSize[3] - patchSize[3] + 1 ) )
             {
             startIndex <- c( i, j, k )
             endIndex <- startIndex + patchSize - 1
@@ -101,11 +101,11 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all' )
       }
     } else {
     startIndex <- rep( 0, dimensionality )
-    for( i in 1:maxNumberOfPatches )
+    for( i in seq_len( maxNumberOfPatches ) )
       {
-      for( d in 1:dimensionality )
+      for( d in seq_len( dimensionality ) )
         {
-        startIndex[d] <- sample.int( 1, inputImageSize[d] - patchSize[d] + 1 )
+        startIndex[d] <- sample.int( imageSize[d] - patchSize[d] + 1, 1 )
         }
 
       endIndex <- startIndex + patchSize - 1
@@ -140,7 +140,8 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all' )
 reconstructImageFromPatches <- function( patchList, domainImage )
 {
   imageSize <- dim( domainImage )
-  dimensionality <- length( imageSize )
+  dimensionality <- length( imageSize )  
+  patchSize <- dim( patchList[[1]] )
 
   numberOfPatches <- 1
   for( d in 1:dimensionality )
@@ -153,11 +154,10 @@ reconstructImageFromPatches <- function( patchList, domainImage )
     stop( "Not the right number of patches.\n" )
     }
 
-  patchSize <- dim( patchList[[1]] )
-
   imageArray <- array( data = 0, dim = imageSize )
-
-  if( dimensionality == 2 )
+  
+  count <- 1
+  if( dimensionality == 2 )  
     {
     for( i in seq_len( imageSize[1] - patchSize[1] + 1 ) )
       {
@@ -165,16 +165,25 @@ reconstructImageFromPatches <- function( patchList, domainImage )
         {
         startIndex <- c( i, j )
         endIndex <- startIndex + patchSize - 1
-
-        factor <- min( i, patchSize[1], imageSize[1] - i - 1 ) *
-          min( j, patchSize[2], imageSize[2] - j - 1 )
-
-        imageArray[startIndex[1]:endIndex[1],startIndex[2]:endIndex[2]] <-
-          imageArray[startIndex[1]:endIndex[1],startIndex[2]:endIndex[2]] +
-          patchList[[count]] / factor
-        count <- count + 1
+        
+        imageArray[startIndex[1]:endIndex[1], startIndex[2]:endIndex[2]] <- 
+          imageArray[startIndex[1]:endIndex[1], startIndex[2]:endIndex[2]] + 
+          patchList[[count]]
+        count <- count + 1  
         }
-      }
+      }  
+
+    for( i in seq_len( imageSize[1] ) )
+      {
+      for( j in seq_len( imageSize[2] ) )
+        {
+        factor <- min( i, patchSize[1], imageSize[1] - i + 1 ) * 
+          min( j, patchSize[2], imageSize[2] - j + 1 ) 
+
+        imageArray[i, j] <- imageArray[i, j] / factor
+        }
+      }  
+
     } else if( dimensionality == 3 ) {
     for( i in seq_len( imageSize[1] - patchSize[1] + 1 ) )
       {
@@ -185,17 +194,29 @@ reconstructImageFromPatches <- function( patchList, domainImage )
           startIndex <- c( i, j, k )
           endIndex <- startIndex + patchSize - 1
 
-          factor <- min( i, patchSize[1], imageSize[1] - i - 1 ) *
-            min( j, patchSize[2], imageSize[2] - j - 1 ) *
-            min( k, patchSize[3], imageSize[3] - k - 1 )
+          imageArray[startIndex[1]:endIndex[1],
+            startIndex[2]:endIndex[2], startIndex[3]:endIndex[3]] <- 
+            imageArray[startIndex[1]:endIndex[1],
+            startIndex[2]:endIndex[2], startIndex[3]:endIndex[3]] +
+            patchList[[count]]
+          count <- count + 1  
+          }  
+        }
+      }
 
-          imageArray[startIndex[1]:endIndex[1],
-            startIndex[2]:endIndex[2],startIndex[3]:endIndex[3]] <-
-          imageArray[startIndex[1]:endIndex[1],
-            startIndex[2]:endIndex[2],startIndex[3]:endIndex[3]] +
-          patchList[[count]] / factor
-          count <- count + 1
-          }
+    for( i in seq_len( imageSize[1] ) )
+      {
+      for( j in seq_len( imageSize[2] ) )
+        {
+        for( k in seq_len( imageSize[3] ) )
+          {
+          factor <- min( i, patchSize[1], imageSize[1] - i + 1 ) * 
+            min( j, patchSize[2], imageSize[2] - j + 1 ) *
+            min( k, patchSize[3], imageSize[3] - k + 1 )
+
+          imageArray[i, j, k] <- imageArray[i, j, k] / factor
+          count <- count + 1  
+          }  
         }
       }
     } else {
