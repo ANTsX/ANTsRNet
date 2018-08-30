@@ -70,9 +70,9 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all' )
     count <- 1
     if( dimensionality == 2 )
       {
-      for( i in seq_len( inputImageSize[1] - patchSize[1] + 1 ) )
+      for( i in seq_len( imageSize[1] - patchSize[1] + 1 ) )
         {
-        for( j in seq_len( inputImageSize[2] - patchSize[2] + 1 ) )
+        for( j in seq_len( imageSize[2] - patchSize[2] + 1 ) )
           {
           startIndex <- c( i, j )
           endIndex <- startIndex + patchSize - 1
@@ -82,11 +82,11 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all' )
           }
         }
       } else if( dimensionality == 3 ) {
-      for( i in seq_len( inputImageSize[1] - patchSize[1] + 1 ) )
+      for( i in seq_len( imageSize[1] - patchSize[1] + 1 ) )
         {
-        for( j in seq_len( inputImageSize[2] - patchSize[2] + 1 ) )
+        for( j in seq_len( imageSize[2] - patchSize[2] + 1 ) )
           {
-          for( k in seq_len( inputImageSize[3] - patchSize[3] + 1 ) )
+          for( k in seq_len( imageSize[3] - patchSize[3] + 1 ) )
             {
             startIndex <- c( i, j, k )
             endIndex <- startIndex + patchSize - 1
