@@ -15,7 +15,7 @@ peak_signal_to_noise_ratio <- function( y_true, y_pred )
 {
   K <- keras::backend()
 
-  return( 10 * K$log( K$mean( K$square( y_pred - y_true ) ) ) / K$log( 10 ) )
+  return( -10.0 * K$log( K$mean( K$square( y_pred - y_true ) ) ) / K$log( 10.0 ) )
 }
 attr( peak_signal_to_noise_ratio, "py_function_name" ) <-
   "peak_signal_to_noise_ratio"
