@@ -24,6 +24,7 @@ Imports:
     magrittr,
     zeallot,
     methods,
+    mvtnorm,
     R6
 Suggests:
     ggplot2,

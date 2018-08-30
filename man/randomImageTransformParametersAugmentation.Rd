@@ -6,8 +6,8 @@
 \usage{
 randomImageTransformParametersAugmentation(imageDomain, predictorImageList,
   n = 8, typeOfTransform = "Affine", interpolator = "linear",
-  sdTransform = 1, spatialSmoothing = 3, numberOfCompositions = 4,
-  deformationBasis, deformationBasisMeans, deformationBasisSDs)
+  spatialSmoothing = 3, numberOfCompositions = 4, deformationBasis,
+  txParamMeans, txParamSDs)
 }
 \arguments{
 \item{imageDomain}{defines the spatial domain for all images.  NOTE: if the
@@ -26,17 +26,15 @@ consequences if you are not aware of this.  This operation will test
 
 \item{interpolator}{nearestNeighbor or linear (string) for predictor images}
 
-\item{sdTransform}{roughly controls deviation from identity parameters}
-
 \item{spatialSmoothing}{spatial smoothing for simulated deformation}
 
 \item{numberOfCompositions}{integer greater than or equal to one}
 
 \item{deformationBasis}{list containing deformationBasis set}
 
-\item{deformationBasisMeans}{list containing deformationBasis set means}
+\item{txParamMeans}{list containing deformationBasis set means}
 
-\item{deformationBasisSDs}{list containing deformationBasis standard deviations}
+\item{txParamSDs}{list containing deformationBasis standard deviations}
 }
 \value{
 list of transformed images and transform parameters
@@ -55,7 +53,7 @@ i2 = antsImageRead( getANTsRData( "r64" ) )
 s1 = thresholdImage( i1, "Otsu", 3 )
 s2 = thresholdImage( i2, "Otsu", 3 )
 rand = randomImageTransformParametersAugmentation( i1,
-  list( i1, i2 ) )
+  list( i1, i2 ), txParamMeans=c(1,0,0,1), txParamSDs=diag(4)*0.01 )
 
 }
 \seealso{

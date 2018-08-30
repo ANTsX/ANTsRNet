@@ -29,6 +29,7 @@
 #' @return list (if no directory set) or boolean for success, failure
 #' @author Avants BB
 #' @seealso \code{\link{randomImageTransformBatchGenerator}}
+#' @importFrom mvtnorm rmvnorm
 #' @importFrom ANTsRCore getAntsrTransformFixedParameters iMath resampleImageToTarget applyAntsrTransform antsImagePhysicalSpaceConsistency antsrTransformFromDisplacementField makeImage smoothImage setAntsrTransformFixedParameters getAntsrTransformParameters setAntsrTransformParameters readAntsrTransform createAntsrTransform randomMask mergeChannels
 #' @importFrom ANTsR composeTransformsToField
 #' @importFrom stats rnorm
@@ -162,10 +163,10 @@ randomImageTransformAugmentation <- function(
       for ( kk in 1:length( locimgpredictors ) )
         locimgpredictors[[kk]] =
           applyAntsrTransform( loctx, locimgpredictors[[kk]], imageDomain,
-            interpolation =  interpolator[1] )
+            interpolation =  interpolator[1] )  - imageDomain * 0
       locimgoutcome =
         applyAntsrTransform( loctx, locimgoutcome[[1]], imageDomain,
-                  interpolation =  interpolator[2] )
+                  interpolation =  interpolator[2] ) - imageDomain * 0
       outputPredictorList[[i]] = locimgpredictors
       outputOutcomeList[[i]] = locimgoutcome
       outputRandomTransformList[[i]] = loctx
@@ -267,12 +268,11 @@ basisWarp <- function(
 #' @param typeOfTransform one of the following options
 #'   \code{c("Translation","Rigid","ScaleShear","Affine", "DeformationBasis")}
 #' @param interpolator nearestNeighbor or linear (string) for predictor images
-#' @param sdTransform roughly controls deviation from identity parameters
 #' @param spatialSmoothing spatial smoothing for simulated deformation
 #' @param numberOfCompositions integer greater than or equal to one
 #' @param deformationBasis list containing deformationBasis set
-#' @param deformationBasisMeans list containing deformationBasis set means
-#' @param deformationBasisSDs list containing deformationBasis standard deviations
+#' @param txParamMeans list containing deformationBasis set means
+#' @param txParamSDs list containing deformationBasis standard deviations
 #' @return list of transformed images and transform parameters
 #' @author Avants BB
 #' @seealso \code{\link{randomImageTransformParametersBatchGenerator}}
@@ -284,7 +284,7 @@ basisWarp <- function(
 #' s1 = thresholdImage( i1, "Otsu", 3 )
 #' s2 = thresholdImage( i2, "Otsu", 3 )
 #' rand = randomImageTransformParametersAugmentation( i1,
-#'   list( i1, i2 ) )
+#'   list( i1, i2 ), txParamMeans=c(1,0,0,1), txParamSDs=diag(4)*0.01 )
 #'
 #' @export randomImageTransformParametersAugmentation
 randomImageTransformParametersAugmentation <- function(
@@ -293,12 +293,11 @@ randomImageTransformParametersAugmentation <- function(
   n = 8,
   typeOfTransform = 'Affine',
   interpolator = 'linear',
-  sdTransform = 1, # deviance from identity
   spatialSmoothing = 3, # for deformation
   numberOfCompositions = 4,
   deformationBasis,
-  deformationBasisMeans, # mean values
-  deformationBasisSDs  )  # sd values
+  txParamMeans, # mean values
+  txParamSDs  )  # sd values
 {
   admissibleTx = c(
     "Translation","Rigid","ScaleShear","Affine", "DeformationBasis" )
@@ -309,11 +308,10 @@ randomImageTransformParametersAugmentation <- function(
   outputPredictorList = list()
   outputParameterList = list()
 
-  if ( ! missing( deformationBasis ) & missing( deformationBasisMeans ) )
-    deformationBasisMeans = rep( 0, length( deformationBasis ))
-
-  if ( ! missing( deformationBasis ) & missing( deformationBasisSDs ) )
-    deformationBasisSDs = rep( sdTransform, length( deformationBasis ))
+  if ( missing( txParamMeans ) )
+    stop( "Must pass prior mean for transformations")
+  if ( missing( txParamSDs ) )
+    stop( "Must pass prior covariance matrix for transformations")
 
   # get some reference parameters by a 0 iteration mapping
   refreg = antsRegistration( imageDomain, imageDomain,
@@ -331,35 +329,37 @@ randomImageTransformParametersAugmentation <- function(
     return(list(P = P, Z = Z, Xtilde = P %*% Z))
     }
 
-  randAff <- function( img, fixedParams, txtype = 'Affine', sdAffine ) {
-    loctx <- createAntsrTransform(
-      precision="float", type="AffineTransform", dimension=img@dimension )
-    setAntsrTransformFixedParameters( loctx, fixedParams )
-    idparams = getAntsrTransformParameters( loctx )
-    noisemat = stats::rnorm( length(idparams), mean=0, sd=sdAffine )
-    if ( txtype == 'Translation' )
-      noisemat[ 1:(length(idparams) - img@dimension ) ] = 0
-    idparams = idparams + noisemat
-    idmat = matrix( idparams[ 1:(length(idparams) - img@dimension ) ],
-      ncol = img@dimension )
-    idmat = polarX( idmat )
-    if ( txtype == "Rigid" ) idmat = idmat$Z
-    if ( txtype == "Affine" ) idmat = idmat$Xtilde
-    if ( txtype == "ScaleShear" ) idmat = idmat$P
-    idparams[ 1:(length(idparams) - img@dimension ) ] = as.numeric( idmat )
-    setAntsrTransformParameters( loctx, idparams )
-    return( loctx )
+  randAff <- function( img, fixedParams, txtype = 'Affine',
+    txParamMeans, txParamSDs ) {
+      loctx <- createAntsrTransform(
+        precision="float", type="AffineTransform", dimension=img@dimension )
+      setAntsrTransformFixedParameters( loctx, fixedParams )
+      idparams = getAntsrTransformParameters( loctx )
+      noisemat = mvtnorm::rmvnorm( 1, txParamMeans, txParamSDs )
+      idmat = polarX( matrix( noisemat[1:(img@dimension^2) ], nrow=img@dimension ))
+      if ( txtype == "Rigid" ) idmat = idmat$Z
+      if ( txtype == "Affine" ) idmat = idmat$Xtilde
+      if ( txtype == "ScaleShear" ) idmat = idmat$P
+      idparams[ 1:(img@dimension^2) ] = as.numeric( idmat )
+      setAntsrTransformParameters( loctx, idparams )
+      return( loctx )
     }
 
   basisParameters <- function(
-    deformationBasisMeans, # mean values
-    deformationBasisSDs    # sd values
+    txParamMeans, # mean values
+    txParamSDs    # sd values
     ) {
-    parameters = rep( 0, length( deformationBasisMeans ) )
-    for ( k in 1:length( parameters ) ) {
-      parameters[ k ] = rnorm( 1, deformationBasisMeans[k],
-        deformationBasisSDs[k] )
-      }
+    parameters = rep( 0, length( txParamMeans ) )
+    if ( is.vector( txParamSDs ) )
+      for ( k in 1:length( parameters ) ) {
+        parameters[ k ] = rnorm( 1, txParamMeans[k],
+          txParamSDs[k] )
+        }
+    if ( is.matrix( txParamSDs ) )
+      for ( k in 1:length( parameters ) ) {
+        parameters[ k ] = mvtnorm::rmvnorm( 1, txParamMeans,
+          txParamSDs )
+        }
     return( parameters )
   }
 
@@ -375,18 +375,19 @@ randomImageTransformParametersAugmentation <- function(
       }
     # get simulated data
     if ( typeOfTransform == 'DeformationBasis' ) {
-      params = basisParameters( deformationBasisMeans, deformationBasisSDs )
+      params = basisParameters( txParamMeans, txParamSDs )
       loctx = basisWarp( deformationBasis, params, numberOfCompositions,
         spatialSmoothing )
       }
     if ( typeOfTransform %in% admissibleTx[1:4] ) {
-      loctx = randAff( imageDomain, fxparam,  typeOfTransform, sdTransform )
+      loctx = randAff( imageDomain, fxparam,  typeOfTransform,
+        txParamMeans, txParamSDs )
       params = getAntsrTransformParameters( loctx )
       }
     # pass to output
     locimgpredictors =
       applyAntsrTransform( loctx, locimgpredictors, imageDomain,
-        interpolation =  interpolator[1] )
+        interpolation =  interpolator[1] ) - imageDomain * 0
     outputPredictorList[[i]] = locimgpredictors
     outputParameterList[[i]] = params
     }

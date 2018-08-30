@@ -233,15 +233,13 @@ public = list(
 #' \code{antsImagePhysicalSpaceConsistency} then call
 #' \code{resampleImageToTarget} upon failure.
 #'
-#' \code{sdTransform} roughly controls deviation from identity matrix
-#'
 #' \code{spatialSmoothing} spatial smoothing for simulated deformation
 #'
 #' \code{numberOfCompositions} number of compositions
 #'
 #' \code{deformationBasis} list of basis deformations
-#' \code{deformationBasisMeans} vector of basis deformations means
-#' \code{deformationBasisSDs} vector of basis deformations sds
+#' \code{txParamMeans} vector of basis deformations means
+#' \code{txParamSDs} vector of basis deformations sds
 #'
 
 #' @section Methods:
@@ -263,7 +261,7 @@ public = list(
 #' trainingData <- randomImageTransformParametersBatchGenerator$new(
 #'   imageList = predictors,
 #'   transformType = "Affine",
-#'   imageDomain = i1
+#'   imageDomain = i1, txParamMeans=c(1,0,0,1,0,0), txParamSDs=diag(6)*0.01
 #'   )
 #' testBatchGenFunction = trainingData$generate( 2 )
 #' myout = testBatchGenFunction( )
@@ -283,34 +281,31 @@ public = list(
     imageDomain = NULL,
     imageList = NULL,
     transformType = NULL,
-    sdTransform = 1,
     spatialSmoothing = 3,
     numberOfCompositions = 4,
     deformationBasis = NULL,
-    deformationBasisMeans = NULL,
-    deformationBasisSDs = NULL,
+    txParamMeans = NULL,
+    txParamSDs = NULL,
 
     initialize = function(
       imageDomain = NULL,
       imageList = NULL,
       transformType = NULL,
-      sdTransform = 1,
       spatialSmoothing = 3,
       numberOfCompositions = 4,
       deformationBasis = NULL,
-      deformationBasisMeans = NULL,
-      deformationBasisSDs = NULL
+      txParamMeans = NULL,
+      txParamSDs = NULL
       )
       {
       self$imageDomain <- imageDomain
       self$imageList <- imageList
       self$transformType <- transformType
-      self$sdTransform <- sdTransform
       self$spatialSmoothing <- spatialSmoothing
       self$numberOfCompositions <- numberOfCompositions
       self$deformationBasis <- deformationBasis
-      self$deformationBasisMeans <- deformationBasisMeans
-      self$deformationBasisSDs <- deformationBasisSDs
+      self$txParamMeans <- txParamMeans
+      self$txParamSDs <- txParamSDs
 
       if( !usePkg( "ANTsR" ) )
         {
@@ -353,12 +348,11 @@ public = list(
           n = batchSize, # generates n random samples from the inputs
           typeOfTransform = self$transformType,
           interpolator = 'linear',
-          sdTransform = self$sdTransform,
           spatialSmoothing = self$spatialSmoothing,
           numberOfCompositions = self$numberOfCompositions,
           deformationBasis = self$deformationBasis,
-          deformationBasisMeans = self$deformationBasisMeans,
-          deformationBasisSDs = self$deformationBasisSDs )
+          txParamMeans = self$txParamMeans,
+          txParamSDs = self$txParamSDs )
         gc()
         imageSize <- dim( randITX$outputPredictorList[[1]] )
         paramsSize = length( randITX$outputParameterList[[1]] )
