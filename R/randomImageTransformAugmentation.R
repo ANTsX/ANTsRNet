@@ -341,6 +341,8 @@ randomImageTransformParametersAugmentation <- function(
       if ( txtype == "Affine" ) idmat = idmat$Xtilde
       if ( txtype == "ScaleShear" ) idmat = idmat$P
       idparams[ 1:(img@dimension^2) ] = as.numeric( idmat )
+      txparams = noisemat[  c( length(noisemat)-img@dimension +1):length(noisemat) ]
+      idparams[  c( length(noisemat)-img@dimension +1):length(noisemat) ] = txparams
       setAntsrTransformParameters( loctx, idparams )
       return( loctx )
     }
