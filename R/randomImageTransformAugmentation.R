@@ -73,10 +73,14 @@ randomImageTransformAugmentation <- function(
   }
 
   # get some reference parameters by a 0 iteration mapping
-  refreg = antsRegistration( imageDomain, imageDomain,
-    typeofTransform='Rigid', regIterations=c(1,0) )
-  reftx = readAntsrTransform( refreg$fwdtransforms[1], imageDomain@dimension )
-  fxparam = getAntsrTransformFixedParameters( reftx )
+#  refreg = antsRegistration( imageDomain, imageDomain,
+#    typeofTransform='Translation', affIterations=c(1) )
+#  reftx = readAntsrTransform( refreg$fwdtransforms[1], imageDomain@dimension )
+  fxparam = getCenterOfMass( imageDomain  )
+#  print( fxparam )
+#  print( getAntsrTransformFixedParameters( reftx ) )
+#  reftx = readAntsrTransform( refreg$fwdtransforms[1], imageDomain@dimension )
+#  fxparam = getAntsrTransformFixedParameters( reftx )
 
   # polar decomposition of X
   polarX <- function( X )
@@ -314,10 +318,12 @@ randomImageTransformParametersAugmentation <- function(
     stop( "Must pass prior covariance matrix for transformations")
 
   # get some reference parameters by a 0 iteration mapping
-  refreg = antsRegistration( imageDomain, imageDomain,
-    typeofTransform='Rigid', regIterations=c(1,0) )
-  reftx = readAntsrTransform( refreg$fwdtransforms[1], imageDomain@dimension )
-  fxparam = getAntsrTransformFixedParameters( reftx )
+#  refreg = antsRegistration( imageDomain, imageDomain,
+#    typeofTransform='Translation', affIterations=c(1) )
+#  reftx = readAntsrTransform( refreg$fwdtransforms[1], imageDomain@dimension )
+  fxparam = getCenterOfMass( imageDomain  )
+#  print( fxparam )
+#  print( getAntsrTransformFixedParameters( reftx ) )
 
   # polar decomposition of X
   polarX <- function( X )
