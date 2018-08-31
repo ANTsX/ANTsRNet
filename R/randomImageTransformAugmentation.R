@@ -358,10 +358,7 @@ randomImageTransformParametersAugmentation <- function(
           txParamSDs[k] )
         }
     if ( is.matrix( txParamSDs ) )
-      for ( k in 1:length( parameters ) ) {
-        parameters[ k ] = mvtnorm::rmvnorm( 1, txParamMeans,
-          txParamSDs )
-        }
+      parameters = mvtnorm::rmvnorm( 1, txParamMeans, txParamSDs )
     return( parameters )
   }
 
