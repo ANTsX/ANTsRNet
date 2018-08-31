@@ -5,7 +5,7 @@
 \title{2-D implementation of the SSD deep learning architecture.}
 \usage{
 createSsdModel2D(inputImageSize, numberOfClassificationLabels,
-  l2Regularization = 5e-04, minScale = 0.1, maxScale = 0.9,
+  l2Regularization = 0.0005, minScale = 0.1, maxScale = 0.9,
   aspectRatiosPerLayer = list(c("1:1", "2:1", "1:2"), c("1:1", "2:1",
   "1:2", "3:1", "1:3"), c("1:1", "2:1", "1:2", "3:1", "1:3"), c("1:1",
   "2:1", "1:2", "3:1", "1:3"), c("1:1", "2:1", "1:2"), c("1:1", "2:1",
