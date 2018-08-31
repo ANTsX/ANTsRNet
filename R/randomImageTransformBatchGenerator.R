@@ -176,8 +176,8 @@ public = list(
           # FIXME - make this work for multiple feature inputs
           # and multiple target outputs
           warpedArrayX <- as.array( randITX$outputPredictorList[[i]][[1]] )
-          warpedArrayX <- ( warpedArrayX - min( as.vector( warpedArrayX ) ) ) /
-            ( max( as.vector( warpedArrayX ) ) - min( as.vector( warpedArrayX ) ) )
+#          warpedArrayX <- ( warpedArrayX - min( as.vector( warpedArrayX ) ) ) /
+#            ( max( as.vector( warpedArrayX ) ) - min( as.vector( warpedArrayX ) ) )
           warpedArrayY <- as.array( randITX$outputOutcomeList[[i]] )
           if ( imageDim == 3 ) {
             batchX[i,,,, 1] <- warpedArrayX # FIXME make work for multiple channels
@@ -369,14 +369,15 @@ public = list(
           {
 
           warpedArrayX <- as.array( randITX$outputPredictorList[[i]] )
-          warpedArrayX <- ( warpedArrayX - min( as.vector( warpedArrayX ) ) ) /
-            ( max( as.vector( warpedArrayX ) ) - min( as.vector( warpedArrayX ) ) )
+#          warpedArrayX <- ( warpedArrayX - min( as.vector( warpedArrayX ) ) ) /
+#            ( max( as.vector( warpedArrayX ) ) - min( as.vector( warpedArrayX ) ) )
           if ( imageDim == 3 ) {
             batchX[i,,,, 1] <- warpedArrayX # FIXME make work for multiple channels
             }
 
           if ( imageDim == 2 ) {
             batchX[i,,,1] <- warpedArrayX # FIXME make work for multiple channels
+#            batchX[i,,,1] <- warpedArrayX - as.array( self$imageDomain )# FIXME make work for multiple channels
             }
           batchY[i,] <- randITX$outputParameterList[[i]]
 
