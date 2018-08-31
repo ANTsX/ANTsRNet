@@ -30,6 +30,7 @@
 #' @author Avants BB
 #' @seealso \code{\link{randomImageTransformBatchGenerator}}
 #' @importFrom mvtnorm rmvnorm
+#' @importFrom ANTsR getCenterOfMass
 #' @importFrom ANTsRCore getAntsrTransformFixedParameters iMath resampleImageToTarget applyAntsrTransform antsImagePhysicalSpaceConsistency antsrTransformFromDisplacementField makeImage smoothImage setAntsrTransformFixedParameters getAntsrTransformParameters setAntsrTransformParameters readAntsrTransform createAntsrTransform randomMask mergeChannels
 #' @importFrom ANTsR composeTransformsToField
 #' @importFrom stats rnorm
@@ -76,7 +77,7 @@ randomImageTransformAugmentation <- function(
 #  refreg = antsRegistration( imageDomain, imageDomain,
 #    typeofTransform='Translation', affIterations=c(1) )
 #  reftx = readAntsrTransform( refreg$fwdtransforms[1], imageDomain@dimension )
-  fxparam = getCenterOfMass( imageDomain  )
+  fxparam = ANTsR::getCenterOfMass( imageDomain  )
 #  print( fxparam )
 #  print( getAntsrTransformFixedParameters( reftx ) )
 #  reftx = readAntsrTransform( refreg$fwdtransforms[1], imageDomain@dimension )
