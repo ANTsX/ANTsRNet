@@ -67,6 +67,6 @@ Examples available at [ANTsRNetExamples](https://github.com/ntustison/ANTsRNetEx
 
 * Nicholas J. Tustison, Brian B. Avants, Zixuan Lin, Xue Feng, Nicholas Cullen, Jaime F. Mata, Lucia Flors, James C. Gee, Talissa A. Altes, John P. Mugler III, and Kun Qing.  Convolutional Neural Networks with Template-Based Data Augmentation for Functional Lung Image Quantification, _Academic Radiology_. [Accepted](https://github.com/ntustison/DeepVentNet)
 
-
+* Andrew T. Grainger, Nicholas J. Tustison, Kun Qing, Rene Roy, Stuart S. Berr, and Weibin Shi.  Deep learning-based quantification of abdominal fat on magnetic resonance images. _PLOS ONE_.  [Accepted](https://bitbucket.org/atg3qz/unet_fat_mri/src/master/)
 
 
