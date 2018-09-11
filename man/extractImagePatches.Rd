@@ -4,7 +4,8 @@
 \alias{extractImagePatches}
 \title{Extract 2-D or 3-D image patches.}
 \usage{
-extractImagePatches(image, patchSize, maxNumberOfPatches = "all")
+extractImagePatches(image, patchSize, maxNumberOfPatches = "all",
+  randomSeed)
 }
 \arguments{
 \item{image}{Input ANTs image}
@@ -13,6 +14,9 @@ extractImagePatches(image, patchSize, maxNumberOfPatches = "all")
 
 \item{maxNumberOfPatches}{Maximum number of patches returned.  If
 "all" is specified, then all overlapping patches are extracted.}
+
+\item{randomSeed}{integer seed that allows reproducible patch extraction
+across runs.}
 }
 \value{
 a randomly selected list of patches.
@@ -21,8 +25,13 @@ a randomly selected list of patches.
 Extract 2-D or 3-D image patches.
 }
 \examples{
-\dontrun{
-}
+
+library( ANTsR )
+i = ri( 1 )
+patchSet1 = extractImagePatches( i, c( 32, 32 ), 10, randomSeed = 0 )
+patchSet2 = extractImagePatches( i, c( 32, 32 ), 10, randomSeed = 1 )
+patchSet3 = extractImagePatches( i, c( 32, 32 ), 10, randomSeed = 0 )
+
 }
 \author{
 Tustison NJ
