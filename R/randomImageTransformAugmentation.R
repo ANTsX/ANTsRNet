@@ -4,12 +4,13 @@
 #' training images.  The reference image domain defines the space in which this
 #' happens.
 #'
-#' @param imageDomain defines the spatial domain for all images.  NOTE: if the
+#' @param imageDomain defines default spatial domain for images. NOTE: if the
 #' input images do not match the spatial domain of the domain image, we
 #' internally resample the target to the domain.  This may have unexpected
 #' consequences if you are not aware of this.  This operation will test
 #' \code{antsImagePhysicalSpaceConsistency} then call
-#' \code{resampleImageToTarget} upon failure.
+#' \code{resampleImageToTarget} upon failure.  The domain will, by default,
+#' be applied to outcome images if imageDomainY is not set.
 #' @param predictorImageList list of lists of image predictors
 #' @param outcomeImageList optional list of image outcomes
 #' @param n number of simulations to run
@@ -26,6 +27,7 @@
 #' @param numberOfCompositions integer greater than or equal to one
 #' @param deformationBasis list containing deformationBasis set
 #' @param directoryName where to write to disk (optional)
+#' @param imageDomainY optional spatial domain for outcome images.
 #' @return list (if no directory set) or boolean for success, failure
 #' @author Avants BB
 #' @seealso \code{\link{randomImageTransformBatchGenerator}}
@@ -58,8 +60,10 @@ randomImageTransformAugmentation <- function(
   composeToField = FALSE, # maps any transformation to single deformation field
   numberOfCompositions = 4,
   deformationBasis,
-  directoryName )
+  directoryName,
+  imageDomainY )
 {
+  if ( missing( imageDomainY ) ) imageDomainY = imageDomain
 
   admissibleTx = c(
     "Translation","Rigid","ScaleShear","Affine","Deformation",
@@ -145,7 +149,7 @@ randomImageTransformAugmentation <- function(
     selimg = sample( 1:length(predictorImageList) )[1]
     locimgpredictors = predictorImageList[ selimg ][[1]]
     locimgoutcome = outcomeImageList[ selimg ]
-    if (  ! antsImagePhysicalSpaceConsistency(imageDomain,locimgoutcome[[1]]) |
+    if (  ! antsImagePhysicalSpaceConsistency(imageDomainY,locimgoutcome[[1]]) |
      ! antsImagePhysicalSpaceConsistency(imageDomain,locimgpredictors[[1]])  ) {
       for ( kk in 1:length( locimgpredictors ) )
         locimgpredictors[[kk]] =
@@ -170,8 +174,8 @@ randomImageTransformAugmentation <- function(
           applyAntsrTransform( loctx, locimgpredictors[[kk]], imageDomain,
             interpolation =  interpolator[1] )  - imageDomain * 0
       locimgoutcome =
-        applyAntsrTransform( loctx, locimgoutcome[[1]], imageDomain,
-                  interpolation =  interpolator[2] ) - imageDomain * 0
+        applyAntsrTransform( loctx, locimgoutcome[[1]], imageDomainY,
+                  interpolation =  interpolator[2] ) - imageDomainY * 0
       outputPredictorList[[i]] = locimgpredictors
       outputOutcomeList[[i]] = locimgoutcome
       outputRandomTransformList[[i]] = loctx

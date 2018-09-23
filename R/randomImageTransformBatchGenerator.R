@@ -39,6 +39,7 @@
 #' \code{spatialSmoothing} spatial smoothing for simulated deformation
 #'
 #' \code{toCategorical} boolean vector denoting whether the outcome class is categorical or not
+#' \code{imageDomainY} optional domain for outcome images
 #'
 #' @section Methods:
 #' \code{$new()} Initialize the class in default empty or filled form.
@@ -96,9 +97,12 @@ public = list(
 
     toCategorical = FALSE,
 
+    imageDomainY = NULL,
+
     initialize = function( imageList = NULL, outcomeImageList = NULL,
       transformType = NULL, imageDomain = NULL, sdAffine = 1,
-      nControlPoints = 100, spatialSmoothing = 3, toCategorical = FALSE )
+      nControlPoints = 100, spatialSmoothing = 3, toCategorical = FALSE,
+      imageDomainY = NULL )
       {
 
       self$sdAffine <- sdAffine
@@ -138,6 +142,14 @@ public = list(
         } else {
         self$imageDomain <- imageDomain
         }
+
+      if( is.null( imageDomainY ) )
+        {
+        self$imageDomainY <- self$imageDomain
+        } else {
+        self$imageDomainY <- imageDomainY
+        }
+
       },
 
     generate = function( batchSize = 32L )
@@ -158,16 +170,18 @@ public = list(
           sdAffine = self$sdAffine,
           nControlPoints = self$nControlPoints,
           spatialSmoothing = self$spatialSmoothing,
-          composeToField = FALSE )
+          composeToField = FALSE,
+          imageDomainY = self$imageDomainY )
         gc()
         imageSize <- dim( randITX$outputPredictorList[[1]][[1]] )
+        imageSizeY <- dim( self$imageDomainY )
         imageDim = length( imageSize )
         nChannels = length( self$imageList[[1]] ) # FIXME make work for multiple input features and multiple output features
         nChannelsY = 1
         xdims = c( batchSize, imageSize, nChannels )
-        ydims = c( batchSize, imageSize )
+        ydims = c( batchSize, imageSizeY )
         if ( ! self$toCategorical[ 1 ]  )
-          ydims = c( batchSize, imageSize, nChannelsY )
+          ydims = c( batchSize, imageSizeY, nChannelsY )
  	      batchX <- array( data = 0, dim = xdims )
         batchY <- array( data = 0, dim = ydims )
 

@@ -45,6 +45,7 @@ This operation will test
 \code{spatialSmoothing} spatial smoothing for simulated deformation
 
 \code{toCategorical} boolean vector denoting whether the outcome class is categorical or not
+\code{imageDomainY} optional domain for outcome images
 }
 
 \section{Methods}{

@@ -8,15 +8,17 @@ randomImageTransformAugmentation(imageDomain, predictorImageList,
   outcomeImageList, n = 8, typeOfTransform = "Affine",
   interpolator = c("linear", "nearestNeighbor"), sdAffine = 1,
   nControlPoints = 100, spatialSmoothing = 3, composeToField = FALSE,
-  numberOfCompositions = 4, deformationBasis, directoryName)
+  numberOfCompositions = 4, deformationBasis, directoryName,
+  imageDomainY)
 }
 \arguments{
-\item{imageDomain}{defines the spatial domain for all images.  NOTE: if the
+\item{imageDomain}{defines default spatial domain for images. NOTE: if the
 input images do not match the spatial domain of the domain image, we
 internally resample the target to the domain.  This may have unexpected
 consequences if you are not aware of this.  This operation will test
 \code{antsImagePhysicalSpaceConsistency} then call
-\code{resampleImageToTarget} upon failure.}
+\code{resampleImageToTarget} upon failure.  The domain will, by default,
+be applied to outcome images if imageDomainY is not set.}
 
 \item{predictorImageList}{list of lists of image predictors}
 
@@ -45,6 +47,8 @@ otherwise i.e. maps any transformation to a single deformation field.}
 \item{deformationBasis}{list containing deformationBasis set}
 
 \item{directoryName}{where to write to disk (optional)}
+
+\item{imageDomainY}{optional spatial domain for outcome images.}
 }
 \value{
 list (if no directory set) or boolean for success, failure

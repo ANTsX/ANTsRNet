@@ -58,7 +58,9 @@ createResNetSuperResolutionModel2D <- function( inputImageSize,
     kernel_size = convolutionKernelSize, activation = 'relu',
     padding = 'same' )
 
-  residualBlocks <- residualBlock2D( outputs )
+  residualBlocks <- residualBlock2D( outputs,
+    numberOfFilters = numberOfFilters,
+    convolutionKernelSize = convolutionKernelSize )
   for( i in seq_len( numberOfResidualBlocks ) )
     {
     residualBlocks <- residualBlock2D( residualBlocks, numberOfFilters,
