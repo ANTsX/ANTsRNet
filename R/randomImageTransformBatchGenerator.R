@@ -162,44 +162,43 @@ public = list(
         gc()
         imageSize <- dim( randITX$outputPredictorList[[1]][[1]] )
         imageDim = length( imageSize )
-        nChannels = 1 # FIXME make work for multiple input features and multiple output features
+        nChannels = length( self$imageList[[1]] ) # FIXME make work for multiple input features and multiple output features
+        nChannelsY = 1
         xdims = c( batchSize, imageSize, nChannels )
         ydims = c( batchSize, imageSize )
-	if ( ! self$toCategorical[ 1 ]  ) 
-          ydims = c( batchSize, imageSize, nChannels )
- 	batchX <- array( data = 0, dim = xdims )
+        if ( ! self$toCategorical[ 1 ]  )
+          ydims = c( batchSize, imageSize, nChannelsY )
+ 	      batchX <- array( data = 0, dim = xdims )
         batchY <- array( data = 0, dim = ydims )
 
         currentPassCount <<- currentPassCount + batchSize
 
         for( i in seq_len( batchSize ) )
           {
-
           # FIXME - make this work for multiple feature inputs
           # and multiple target outputs
-          warpedArrayX <- as.array( randITX$outputPredictorList[[i]][[1]] )
-#          warpedArrayX <- ( warpedArrayX - min( as.vector( warpedArrayX ) ) ) /
-#            ( max( as.vector( warpedArrayX ) ) - min( as.vector( warpedArrayX ) ) )
-          warpedArrayY <- as.array( randITX$outputOutcomeList[[i]] )
-          if ( imageDim == 3 ) {
-            batchX[i,,,, 1] <- warpedArrayX # FIXME make work for multiple channels
-	    if ( ! self$toCategorical[ 1 ]  ) batchY[i,,,,1] <- warpedArrayY else batchY[i,,,] <- warpedArrayY
-  	    }
+          for ( chan in 1:nChannels ) {
+            warpedArrayX <- as.array( randITX$outputPredictorList[[i]][[chan]] )
+            warpedArrayY <- as.array( randITX$outputOutcomeList[[i]] )
+            if ( imageDim == 3 ) {
+              batchX[i,,,, chan] <- warpedArrayX # FIXME make work for multiple channels
+            if ( ! self$toCategorical[ 1 ]  ) batchY[i,,,,1] <- warpedArrayY else batchY[i,,,] <- warpedArrayY
+  	        }
 
-          if ( imageDim == 2 ) {
-            batchX[i,,,1] <- warpedArrayX # FIXME make work for multiple channels
- 	    if ( ! self$toCategorical[ 1 ]  ) batchY[i,,,1] <- warpedArrayY else batchY[i,,] <- warpedArrayY
+            if ( imageDim == 2 ) {
+              batchX[i,,,chan] <- warpedArrayX # FIXME make work for multiple channels
+              if ( ! self$toCategorical[ 1 ]  ) batchY[i,,,1] <- warpedArrayY else batchY[i,,] <- warpedArrayY
+              }
             }
-
           }
 
         if ( self$toCategorical[ 1 ] ) {
-  	  segmentationLabels <- sort( unique( as.vector( batchY ) ) )
+     	    segmentationLabels <- sort( unique( as.vector( batchY ) ) )
           outlist = list(  batchX, encodeUnet( batchY, segmentationLabels ) )
           return( outlist )
-	} else {
+	        } else {
           return( list(  batchX, batchY ) )
-	  }
+	        }
         }
       }
     )
