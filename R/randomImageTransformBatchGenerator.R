@@ -165,7 +165,9 @@ public = list(
         nChannels = 1 # FIXME make work for multiple input features and multiple output features
         xdims = c( batchSize, imageSize, nChannels )
         ydims = c( batchSize, imageSize )
-        batchX <- array( data = 0, dim = xdims )
+	if ( ! self$toCategorical[ 1 ]  ) 
+          ydims = c( batchSize, imageSize, nChannels )
+ 	batchX <- array( data = 0, dim = xdims )
         batchY <- array( data = 0, dim = ydims )
 
         currentPassCount <<- currentPassCount + batchSize
@@ -181,20 +183,23 @@ public = list(
           warpedArrayY <- as.array( randITX$outputOutcomeList[[i]] )
           if ( imageDim == 3 ) {
             batchX[i,,,, 1] <- warpedArrayX # FIXME make work for multiple channels
-            batchY[i,,,] <- warpedArrayY
-            }
+	    if ( ! self$toCategorical[ 1 ]  ) batchY[i,,,,1] <- warpedArrayY else batchY[i,,,] <- warpedArrayY
+  	    }
 
           if ( imageDim == 2 ) {
             batchX[i,,,1] <- warpedArrayX # FIXME make work for multiple channels
-            batchY[i,,] <- warpedArrayY
+ 	    if ( ! self$toCategorical[ 1 ]  ) batchY[i,,,1] <- warpedArrayY else batchY[i,,] <- warpedArrayY
             }
 
           }
 
         if ( self$toCategorical[ 1 ] ) {
-          segmentationLabels <- sort( unique( as.vector( batchY ) ) )
-          return( list(  batchX, encodeUnet( batchY, segmentationLabels ) ) )
-          } else return( list(  batchX, batchY ) )
+  	  segmentationLabels <- sort( unique( as.vector( batchY ) ) )
+          outlist = list(  batchX, encodeUnet( batchY, segmentationLabels ) )
+          return( outlist )
+	} else {
+          return( list(  batchX, batchY ) )
+	  }
         }
       }
     )
