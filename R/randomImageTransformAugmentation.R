@@ -28,7 +28,7 @@
 #' @param deformationBasis list containing deformationBasis set
 #' @param directoryName where to write to disk (optional)
 #' @param imageDomainY optional spatial domain for outcome images.
-#' @param normalization optional intensity normalization either none or 01.
+#' @param normalization optional intensity normalization either none, standardize or 01.
 #' @return list (if no directory set) or boolean for success, failure
 #' @author Avants BB
 #' @seealso \code{\link{randomImageTransformBatchGenerator}}
@@ -177,12 +177,20 @@ randomImageTransformAugmentation <- function(
             interpolation =  interpolator[1] )
         if ( normalization == "01" )
           locimgpredictors[[kk]] = iMath( locimgpredictors[[kk]], "Normalize" )
+        if ( normalization == "standardize" )
+            locimgpredictors[[kk]] =
+              ( locimgpredictors[[kk]] - mean( locimgpredictors[[kk]] ) ) /
+                sd( locimgpredictors[[kk]] )
         }
       locimgoutcome =
         applyAntsrTransform( loctx, locimgoutcome[[1]], imageDomainY,
                   interpolation =  interpolator[2] ) - imageDomainY * 0
       if ( normalization == "01" )
         locimgoutcome = iMath( locimgoutcome, "Normalize" )
+      if ( normalization == "standardize" )
+        locimgoutcome =
+              ( locimgoutcome - mean( locimgoutcome ) ) /
+                sd( locimgoutcome + 1-e6 )
       outputPredictorList[[i]] = locimgpredictors
       outputOutcomeList[[i]] = locimgoutcome
       outputRandomTransformList[[i]] = loctx

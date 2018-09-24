@@ -50,7 +50,7 @@ otherwise i.e. maps any transformation to a single deformation field.}
 
 \item{imageDomainY}{optional spatial domain for outcome images.}
 
-\item{normalization}{optional intensity normalization either none or 01.}
+\item{normalization}{optional intensity normalization either none, standardize or 01.}
 }
 \value{
 list (if no directory set) or boolean for success, failure
