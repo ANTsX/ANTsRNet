@@ -46,6 +46,7 @@ This operation will test
 
 \code{toCategorical} boolean vector denoting whether the outcome class is categorical or not
 \code{imageDomainY} optional domain for outcome images
+\code{normalization} optional intensity normalization either none or 01
 }
 
 \section{Methods}{

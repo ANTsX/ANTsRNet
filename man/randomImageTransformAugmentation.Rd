@@ -9,7 +9,7 @@ randomImageTransformAugmentation(imageDomain, predictorImageList,
   interpolator = c("linear", "nearestNeighbor"), sdAffine = 1,
   nControlPoints = 100, spatialSmoothing = 3, composeToField = FALSE,
   numberOfCompositions = 4, deformationBasis, directoryName,
-  imageDomainY)
+  imageDomainY, normalization = "none")
 }
 \arguments{
 \item{imageDomain}{defines default spatial domain for images. NOTE: if the
@@ -49,6 +49,8 @@ otherwise i.e. maps any transformation to a single deformation field.}
 \item{directoryName}{where to write to disk (optional)}
 
 \item{imageDomainY}{optional spatial domain for outcome images.}
+
+\item{normalization}{optional intensity normalization either none or 01.}
 }
 \value{
 list (if no directory set) or boolean for success, failure

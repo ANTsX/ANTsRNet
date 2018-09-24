@@ -28,6 +28,7 @@
 #' @param deformationBasis list containing deformationBasis set
 #' @param directoryName where to write to disk (optional)
 #' @param imageDomainY optional spatial domain for outcome images.
+#' @param normalization optional intensity normalization either none or 01.
 #' @return list (if no directory set) or boolean for success, failure
 #' @author Avants BB
 #' @seealso \code{\link{randomImageTransformBatchGenerator}}
@@ -61,7 +62,8 @@ randomImageTransformAugmentation <- function(
   numberOfCompositions = 4,
   deformationBasis,
   directoryName,
-  imageDomainY )
+  imageDomainY,
+  normalization = "none" )
 {
   if ( missing( imageDomainY ) ) imageDomainY = imageDomain
 
@@ -156,7 +158,7 @@ randomImageTransformAugmentation <- function(
           resampleImageToTarget( locimgpredictors[[kk]], imageDomain,
             interpType =  interpolator[1] )
       locimgoutcome[[1]] =
-        resampleImageToTarget( locimgoutcome[[1]], imageDomain,
+        resampleImageToTarget( locimgoutcome[[1]], imageDomainY,
         interpType = interpolator[2] )
       }
     # get simulated data
@@ -169,13 +171,18 @@ randomImageTransformAugmentation <- function(
       loctx = randAff( imageDomain, fxparam,  typeOfTransform, sdAffine )
     # pass to output
     if ( returnList ) {
-      for ( kk in 1:length( locimgpredictors ) )
+      for ( kk in 1:length( locimgpredictors ) ) {
         locimgpredictors[[kk]] =
           applyAntsrTransform( loctx, locimgpredictors[[kk]], imageDomain,
-            interpolation =  interpolator[1] )  - imageDomain * 0
+            interpolation =  interpolator[1] )
+        if ( normalization == "01" )
+          locimgpredictors[[kk]] = iMath( locimgpredictors[[kk]], "Normalize" )
+        }
       locimgoutcome =
         applyAntsrTransform( loctx, locimgoutcome[[1]], imageDomainY,
                   interpolation =  interpolator[2] ) - imageDomainY * 0
+      if ( normalization == "01" )
+        locimgoutcome = iMath( locimgoutcome, "Normalize" )
       outputPredictorList[[i]] = locimgpredictors
       outputOutcomeList[[i]] = locimgoutcome
       outputRandomTransformList[[i]] = loctx

@@ -40,6 +40,7 @@
 #'
 #' \code{toCategorical} boolean vector denoting whether the outcome class is categorical or not
 #' \code{imageDomainY} optional domain for outcome images
+#' \code{normalization} optional intensity normalization either none or 01
 #'
 #' @section Methods:
 #' \code{$new()} Initialize the class in default empty or filled form.
@@ -99,16 +100,19 @@ public = list(
 
     imageDomainY = NULL,
 
+    normalization = "none",
+
     initialize = function( imageList = NULL, outcomeImageList = NULL,
       transformType = NULL, imageDomain = NULL, sdAffine = 1,
       nControlPoints = 100, spatialSmoothing = 3, toCategorical = FALSE,
-      imageDomainY = NULL )
+      imageDomainY = NULL, normalization = "none" )
       {
 
       self$sdAffine <- sdAffine
       self$nControlPoints <- nControlPoints
       self$spatialSmoothing <- spatialSmoothing
       self$toCategorical <- toCategorical
+      self$normalization <- normalization
 
       if( !usePkg( "ANTsR" ) )
         {
@@ -171,7 +175,8 @@ public = list(
           nControlPoints = self$nControlPoints,
           spatialSmoothing = self$spatialSmoothing,
           composeToField = FALSE,
-          imageDomainY = self$imageDomainY )
+          imageDomainY = self$imageDomainY,
+          normalization = self$normalization )
         gc()
         imageSize <- dim( randITX$outputPredictorList[[1]][[1]] )
         imageSizeY <- dim( self$imageDomainY )
