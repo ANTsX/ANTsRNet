@@ -190,7 +190,7 @@ randomImageTransformAugmentation <- function(
       if ( normalization == "standardize" )
         locimgoutcome =
               ( locimgoutcome - mean( locimgoutcome ) ) /
-                sd( locimgoutcome + 1-e6 )
+                sd( locimgoutcome )
       outputPredictorList[[i]] = locimgpredictors
       outputOutcomeList[[i]] = locimgoutcome
       outputRandomTransformList[[i]] = loctx
@@ -219,9 +219,6 @@ randomImageTransformAugmentation <- function(
       )
     )
 }
-
-
-
 
 
 
