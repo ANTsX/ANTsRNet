@@ -124,7 +124,7 @@ extractImagePatches <- function( image,
     } else {
     startIndex <- rep( 0, dimensionality )
     count <- 1
-    while( count < maxNumberOfPatches )
+    while( count <= maxNumberOfPatches )
       {
       for( d in seq_len( dimensionality ) )
         {
