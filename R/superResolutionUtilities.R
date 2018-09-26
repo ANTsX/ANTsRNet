@@ -34,6 +34,56 @@ loss_peak_signal_to_noise_ratio_error <- function( y_true, y_pred )
 attr( loss_peak_signal_to_noise_ratio_error, "py_function_name" ) <-
   "peak_signal_to_noise_ratio_error"
 
+#' Model loss function for super-resolution---pearson's correlation coefficient.
+#'
+#' Based on the code found here:
+#'
+#'    \url{https://github.com/rstudio/keras/issues/160}
+#'
+#' @param y_true True labels (Tensor)
+#' @param y_pred Predictions (Tensor of the same shape as \code{y_true})
+#'
+#' @details Loss functions are to be supplied in the loss parameter of the
+#' \code{compile()} function.
+#'
+#' @export
+pearson_correlation_coefficient <- function( y_true, y_pred )
+{
+  K <- keras::backend()
+
+  N <- K$sum( K$ones_like( y_true ) )
+
+  sum_x <- K$sum( y_true )
+  sum_y <- K$sum( y_pred )
+  sum_x_squared <- K$sum( K$square( y_true ) )
+  sum_y_squared <- K$sum( K$square( y_pred ) )
+  sum_xy <- K$sum( y_true * y_pred )
+
+  numerator <- sum_xy - ( sum_x * sum_y / N )
+  denominator <- K$sqrt( ( sum_x_squared - K$square( sum_x ) / N ) *  
+    ( sum_y_squared - K$square( sum_y ) / N ) )
+  
+  coefficient <- numerator / denominator
+
+  return( coefficient )
+}
+attr( pearson_correlation_coefficient, "py_function_name" ) <-
+  "pearson_correlation_coefficient"
+
+#' Pearson correlation coefficient
+#'
+#' @param y_true true encoded labels
+#' @param y_pred predicted encoded labels
+#'
+#' @rdname loss_pearson_correlation_coefficient_error
+#' @export
+loss_pearson_correlation_coefficient_error <- function( y_true, y_pred )
+{
+  return( -pearson_correlation_coefficient( y_true, y_pred ) )
+}
+attr( loss_pearson_correlation_coefficient_error, "py_function_name" ) <-
+  "pearson_correlation_coefficient_error"
+
 #' Extract 2-D or 3-D image patches.
 #'
 #' @param image Input ANTs image
