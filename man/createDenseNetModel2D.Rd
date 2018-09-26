@@ -7,7 +7,7 @@
 createDenseNetModel2D(inputImageSize,
   numberOfClassificationLabels = 1000, numberOfFilters = 16,
   depth = 7, numberOfDenseBlocks = 1, growthRate = 12,
-  dropoutRate = 0.2, weightDecay = 1e-04)
+  dropoutRate = 0.2, weightDecay = 1e-04, regression = FALSE)
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
@@ -31,6 +31,8 @@ N is an integer (default = 7).}
 \item{dropoutRate}{= per drop out layer rate (default = 0.2)}
 
 \item{weightDecay}{= weight decay (default = 1e-4)}
+
+\item{regression}{boolean to set last layer activation}
 }
 \value{
 an DenseNet keras model

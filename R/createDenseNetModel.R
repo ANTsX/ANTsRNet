@@ -29,7 +29,7 @@
 #' (default = 12).
 #' @param dropoutRate = per drop out layer rate (default = 0.2)
 #' @param weightDecay = weight decay (default = 1e-4)
-#'
+#' @param regression boolean to set last layer activation
 #' @return an DenseNet keras model
 #' @author Tustison NJ
 #' @examples
@@ -76,7 +76,8 @@ createDenseNetModel2D <- function( inputImageSize,
                                    numberOfDenseBlocks = 1,
                                    growthRate = 12,
                                    dropoutRate = 0.2,
-                                   weightDecay = 1e-4
+                                   weightDecay = 1e-4,
+				   regression = FALSE
                                  )
 {
 
@@ -176,8 +177,10 @@ createDenseNetModel2D <- function( inputImageSize,
   
   outputs <- outputs %>% layer_activation( activation = 'relu' )
   outputs <- outputs %>% layer_global_average_pooling_2d()
+  lastLayerAct = 'softmax' 
+  if ( regression ) lastLayerAct = 'linear'
   outputs <- outputs %>% layer_dense( units = numberOfClassificationLabels, 
-    activation = 'softmax', kernel_regularizer = regularizer_l2( weightDecay ), 
+    activation = lastLayerAct, kernel_regularizer = regularizer_l2( weightDecay ), 
     bias_regularizer = regularizer_l2( weightDecay ) )
 
   denseNetModel <- keras_model( inputs = inputs, outputs = outputs )
@@ -216,7 +219,7 @@ createDenseNetModel2D <- function( inputImageSize,
 #' (default = 12).
 #' @param dropoutRate = per drop out layer rate (default = 0.2)
 #' @param weightDecay = weight decay (default = 1e-4)
-#'
+#' @param regression boolean controlling last layer activation
 #' @return an DenseNet keras model
 #' @author Tustison NJ
 #' @examples
@@ -263,7 +266,8 @@ createDenseNetModel3D <- function( inputImageSize,
                                    numberOfDenseBlocks = 1,
                                    growthRate = 12,
                                    dropoutRate = 0.2,
-                                   weightDecay = 1e-4
+                                   weightDecay = 1e-4,
+				   regression = FALSE
                                  )
 {
 
@@ -363,8 +367,10 @@ createDenseNetModel3D <- function( inputImageSize,
   
   outputs <- outputs %>% layer_activation( activation = 'relu' )
   outputs <- outputs %>% layer_global_average_pooling_3d()
+  llAct = 'softmax'
+  if ( regression ) llAct = 'linear'
   outputs <- outputs %>% layer_dense( units = numberOfClassificationLabels, 
-    activation = 'softmax', kernel_regularizer = regularizer_l2( weightDecay ), 
+    activation = llAct, kernel_regularizer = regularizer_l2( weightDecay ), 
     bias_regularizer = regularizer_l2( weightDecay ) )
 
   denseNetModel <- keras_model( inputs = inputs, outputs = outputs )
