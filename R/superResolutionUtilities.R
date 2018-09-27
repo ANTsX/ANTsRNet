@@ -141,8 +141,8 @@ extractImagePatches <- function( image,
           {
           startIndex <- c( i, j )
           endIndex <- startIndex + patchSize - 1
-          temp = imageArray[startIndex[1]:endIndex[1],startIndex[2]:endIndex[2]]
-#          if ( sd( temp ) > 0 )
+          temp = imageArray[startIndex[1]:endIndex[1], startIndex[2]:endIndex[2]]
+          # if( sd( temp ) > 0 )
             {
             patches[[count]] <- temp
             count <- count + 1
@@ -160,7 +160,7 @@ extractImagePatches <- function( image,
             endIndex <- startIndex + patchSize - 1
             temp <- imageArray[startIndex[1]:endIndex[1],
               startIndex[2]:endIndex[2], startIndex[3]:endIndex[3]]
-#            if ( sd( temp ) > 0 )
+            # if ( sd( temp ) > 0 )
               {
               patches[[count]] <- temp
               count <- count + 1
@@ -172,7 +172,7 @@ extractImagePatches <- function( image,
       stop( "Unsupported dimensionality.\n" )
       }
     } else {
-    startIndex <- rep( 0, dimensionality )
+    startIndex <- rep( 1, dimensionality )
     count <- 1
     while( count <= maxNumberOfPatches )
       {
@@ -184,7 +184,7 @@ extractImagePatches <- function( image,
       if( dimensionality == 2 )
         {
         temp = imageArray[startIndex[1]:endIndex[1], startIndex[2]:endIndex[2]]
-        if ( sd( temp ) > 0 )
+        if( sd( temp ) > 0 )
           {
           patches[[count]] <- temp
           count <- count + 1
@@ -192,11 +192,11 @@ extractImagePatches <- function( image,
         } else if( dimensionality == 3 ) {
         temp <- imageArray[startIndex[1]:endIndex[1],
           startIndex[2]:endIndex[2], startIndex[3]:endIndex[3]]
-          if ( sd( temp ) > 0 )
-            {
-            patches[[count]] <- temp
-            count <- count + 1
-            }
+        if( sd( temp ) > 0 )
+          {
+          patches[[count]] <- temp
+          count <- count + 1
+          }
         } else {
         stop( "Unsupported dimensionality.\n" )
         }
