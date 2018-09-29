@@ -8,7 +8,7 @@ randomlyTransformImageData(referenceImage, inputImageList,
   segmentationImageList = NA, numberOfSimulations = 10,
   transformType = "affine", inputImageInterpolator = "linear",
   segmentationImageInterpolator = "nearestNeighbor", sdAffine = 1,
-  numberOfControlPoints = 100, spatialSmoothing = 3)
+  numberOfControlPoints = 100, spatialSmoothing = 3, sdNoise = 1)
 }
 \arguments{
 \item{referenceImage}{defines the spatial domain for all output images.  If
@@ -45,8 +45,11 @@ random linear transformations.  Default = 1.0.}
 \item{numberOfControlPoints}{number of control points for simulated
 deformations. Default = 100.}
 
-\item{spatialSmoothing}{parameter dictating amount of spatial
-smoothing for simulated deformations.  Default = 3.0.}
+\item{spatialSmoothing}{amount of spatial smoothing for simulated
+deformations.  Default = 3.0.}
+
+\item{sdNoise}{randomization parameter for simulated deformations.
+Default = 1.0.}
 }
 \value{
 list (if no directory set) or boolean for success, failure

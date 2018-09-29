@@ -28,8 +28,10 @@
 #' random linear transformations.  Default = 1.0.
 #' @param numberOfControlPoints number of control points for simulated 
 #' deformations. Default = 100.
-#' @param spatialSmoothing parameter dictating amount of spatial 
-#' smoothing for simulated deformations.  Default = 3.0.
+#' @param spatialSmoothing amount of spatial smoothing for simulated 
+#' deformations.  Default = 3.0.
+#' @param sdNoise randomization parameter for simulated deformations.  
+#' Default = 1.0.
 #' @return list (if no directory set) or boolean for success, failure
 #' @author Avants BB
 #' @seealso \code{\link{randomImageTransformBatchGenerator}}
@@ -53,7 +55,7 @@ randomlyTransformImageData <- function( referenceImage,
   transformType = 'affine', inputImageInterpolator = 'linear',
   segmentationImageInterpolator = 'nearestNeighbor',
   sdAffine = 1.0, numberOfControlPoints = 100, 
-  spatialSmoothing = 3.0 )
+  spatialSmoothing = 3.0, sdNoise = 1.0 )
 {
 
   polarDecomposition <- function( X )
@@ -110,7 +112,7 @@ randomlyTransformImageData <- function( referenceImage,
 
   createRandomDisplacementFieldTransform <- function( image, 
     numberOfControlPoints = 100, spatialSmoothing = 3.0, 
-    dilationRadius = 5, sdNoise = 1.0, numberOfCompositions = 10, 
+    sdNoise = 1.0, dilationRadius = 5, numberOfCompositions = 10, 
     gradientStep = 0.1 )
     {
     maskImage <- image * 0.0 + 1.0
@@ -197,13 +199,13 @@ randomlyTransformImageData <- function( referenceImage,
     if( transformType == 'deformation' )
       {
       deformableTransform <- createRandomDisplacementFieldTransform(     
-        referenceImage, numberOfControlPoints, spatialSmoothing )
+        referenceImage, numberOfControlPoints, spatialSmoothing, sdNoise )
       transforms <- list( deformableTransform )
       }  
     if( transformType == 'affineAndDeformation' )
       {
       deformableTransform <- createRandomDisplacementFieldTransform(     
-        referenceImage, numberOfControlPoints, spatialSmoothing )
+        referenceImage, numberOfControlPoints, spatialSmoothing, sdNoise )
       linearTransform <- createRandomLinearTransform( referenceImage, 
         fixedParameters, 'affine', sdAffine )  
       transforms <- list( deformableTransform, linearTransform )
