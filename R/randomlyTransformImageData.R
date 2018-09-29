@@ -33,8 +33,12 @@
 #' @return list (if no directory set) or boolean for success, failure
 #' @author Avants BB
 #' @seealso \code{\link{randomImageTransformBatchGenerator}}
-#' @importFrom ANTsRCore getAntsrTransformFixedParameters iMath resampleImageToTarget applyAntsrTransform antsImagePhysicalSpaceConsistency antsrTransformFromDisplacementField makeImage smoothImage setAntsrTransformFixedParameters getAntsrTransformParameters setAntsrTransformParameters readAntsrTransform createAntsrTransform randomMask mergeChannels
-#' @importFrom ANTsR composeTransformsToField
+#' @importFrom ANTsRCore getAntsrTransformFixedParameters iMath resampleImageToTarget 
+#' @importFrom applyAntsrTransform antsImagePhysicalSpaceConsistency 
+#' @importFrom antsrTransformFromDisplacementField makeImage smoothImage 
+#' @importFrom setAntsrTransformFixedParameters getAntsrTransformParameters 
+#' @importFrom setAntsrTransformParameters readAntsrTransform createAntsrTransform 
+#' @imoprtFrom randomMask mergeChannels ANTsR composeTransformsToField
 #' @importFrom stats rnorm
 #' @examples
 #'
@@ -124,17 +128,18 @@ randomlyTransformImageData <- function( referenceImage,
       displacementFieldComponents[[d]] <- fieldComponent
       }
     displacementField <- mergeChannels( displacementFieldComponents )
+    displacementFieldTransform <- antsrTransformFromDisplacementField( displacementField )
 
-    composedField <- NA
+    transforms <- list()
     for ( i in 1:numberOfCompositions ) 
       {
-      composedField <- composeTransformsToField( composedField, displacementField )
+      transforms[[i]] <- displacementFieldTransform
       }
-    transform <- antsrTransformFromDisplacementField( composedField )
 
-    return( transform )
+    composedTransformField <- antsrTransformFromDisplacementField( 
+      composeTransformsToField( image, transforms ) )
+    return( composedTransformField )
     }
-
 
   admissibleTransforms <- c( "translation", "rigid", "scaleShear", "affine", 
     "affineAndDeformation", "deformation" )
@@ -185,34 +190,36 @@ randomlyTransformImageData <- function( referenceImage,
         }    
       }
 
-    transforms <- c()
-    if( transformType == 'Deformation' )
+    transforms <- list()
+    if( transformType == 'deformation' )
       {
       deformableTransform <- createRandomDisplacementFieldTransform(     
         referenceImage, numberOfControlPoints, spatialSmoothing )
-      transforms <- c( deformableTransform )
+      transforms <- list( deformableTransform )
       }  
-    if( transformType == 'AffineAndDeformation' )
+    if( transformType == 'affineAndDeformation' )
       {
       deformableTransform <- createRandomDisplacementFieldTransform(     
         referenceImage, numberOfControlPoints, spatialSmoothing )
       linearTransform <- createRandomLinearTransform( referenceImage, 
         fixedParameters, 'affine', sdAffine )  
-      transforms <- c( deformableTransform, linearTransform )
+      transforms <- list( deformableTransform, linearTransform )
       }  
     if( transformType %in% admissibleTransforms[1:4] )
       {
       linearTransform <- createRandomLinearTransform( referenceImage, 
         fixedParameters, transformType, sdAffine )
-      transforms <- c( linearTransform )
+      transforms <- list( linearTransform )
       }
+
+    antsrTransform <- composeAntsrTransforms( transforms )
 
     singleSubjectSimulatedImageList <- list()
     for( j in 1:length( singleSubjectImageList ) )
       {
-      singleSubjectSimulatedImageList[[j]] <- applyAntsrTransform( transforms, 
-        singleSubjectImageList[[j]], referenceImage, 
-          interpolation = inputImageInterpolator )
+      singleSubjectSimulatedImageList[[j]] <- applyAntsrTransform( 
+        antsrTransform, singleSubjectImageList[[j]], referenceImage, 
+        interpolation = inputImageInterpolator )
       }
     simulatedImageList[[i]] <- singleSubjectSimulatedImageList
 
