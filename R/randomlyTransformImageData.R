@@ -24,21 +24,17 @@
 #' @param segmentationImageInterpolator one of the following options 
 #' \code{ c( "nearestNeighbor", "genericLabel" )}.  Default = 
 #' \"nearestNeighbor\".
-#' @param numberOfControlPoints number of control points for simulated 
-#' deformations. Default = 100.
 #' @param sdAffine parameter dictating deviation amount from identity for 
 #' random linear transformations.  Default = 1.0.
+#' @param numberOfControlPoints number of control points for simulated 
+#' deformations. Default = 100.
 #' @param spatialSmoothing parameter dictating amount of spatial 
-#' smoothing.  Default = 3.0.
+#' smoothing for simulated deformations.  Default = 3.0.
 #' @return list (if no directory set) or boolean for success, failure
 #' @author Avants BB
 #' @seealso \code{\link{randomImageTransformBatchGenerator}}
-#' @importFrom ANTsRCore getAntsrTransformFixedParameters iMath resampleImageToTarget 
-#' @importFrom applyAntsrTransform antsImagePhysicalSpaceConsistency 
-#' @importFrom antsrTransformFromDisplacementField makeImage smoothImage 
-#' @importFrom setAntsrTransformFixedParameters getAntsrTransformParameters 
-#' @importFrom setAntsrTransformParameters readAntsrTransform createAntsrTransform 
-#' @imoprtFrom randomMask mergeChannels ANTsR composeTransformsToField
+#' @importFrom ANTsRCore getAntsrTransformFixedParameters iMath resampleImageToTarget applyAntsrTransform antsImagePhysicalSpaceConsistency antsrTransformFromDisplacementField makeImage smoothImage setAntsrTransformFixedParameters getAntsrTransformParameters setAntsrTransformParameters readAntsrTransform createAntsrTransform randomMask mergeChannels 
+#' @importFrom ANTsR composeTransformsToField
 #' @importFrom stats rnorm
 #' @examples
 #'
@@ -56,7 +52,7 @@ randomlyTransformImageData <- function( referenceImage,
   inputImageList, segmentationImageList = NA, numberOfSimulations = 10,
   transformType = 'affine', inputImageInterpolator = 'linear',
   segmentationImageInterpolator = 'nearestNeighbor',
-  numberOfControlPoints = 100, sdAffine = 1.0, 
+  sdAffine = 1.0, numberOfControlPoints = 100, 
   spatialSmoothing = 3.0 )
 {
 

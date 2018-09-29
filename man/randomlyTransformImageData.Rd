@@ -7,8 +7,8 @@
 randomlyTransformImageData(referenceImage, inputImageList,
   segmentationImageList = NA, numberOfSimulations = 10,
   transformType = "affine", inputImageInterpolator = "linear",
-  segmentationImageInterpolator = "nearestNeighbor",
-  numberOfControlPoints = 100, sdAffine = 1, spatialSmoothing = 3)
+  segmentationImageInterpolator = "nearestNeighbor", sdAffine = 1,
+  numberOfControlPoints = 100, spatialSmoothing = 3)
 }
 \arguments{
 \item{referenceImage}{defines the spatial domain for all output images.  If
@@ -39,14 +39,14 @@ input image list (optional).}
 \code{ c( "nearestNeighbor", "genericLabel" )}.  Default =
 "nearestNeighbor".}
 
-\item{numberOfControlPoints}{number of control points for simulated
-deformations. Default = 100.}
-
 \item{sdAffine}{parameter dictating deviation amount from identity for
 random linear transformations.  Default = 1.0.}
 
+\item{numberOfControlPoints}{number of control points for simulated
+deformations. Default = 100.}
+
 \item{spatialSmoothing}{parameter dictating amount of spatial
-smoothing.  Default = 3.0.}
+smoothing for simulated deformations.  Default = 3.0.}
 }
 \value{
 list (if no directory set) or boolean for success, failure
