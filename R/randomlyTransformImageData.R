@@ -118,6 +118,7 @@ randomlyTransformImageData <- function( referenceImage,
     maskImage <- image * 0.0 + 1.0
 
     spacing <- antsGetSpacing( image )
+    N <- prod( dim( image ) )
 
     displacementFieldComponents <- list()
     for( d in 1:image@dimension ) 
@@ -129,8 +130,8 @@ randomlyTransformImageData <- function( referenceImage,
       randomImage <- makeImage( randomMaskForTransform, ( voxelValues - minimumValue ) )
       fieldComponent <- iMath( randomImage, "GD", dilationRadius ) %>% 
         smoothImage( spatialSmoothing ) * gradientStep
-      displacementFieldComponents[[d]] <- fieldComponent - 
-        0.5 * ( max( fieldComponent ) - min( fieldComponent ) )
+
+      displacementFieldComponents[[d]] <- fieldComponent - sum( fieldComponent ) / N
       }
     displacementField <- mergeChannels( displacementFieldComponents )
     displacementFieldTransform <- antsrTransformFromDisplacementField( displacementField )
