@@ -63,7 +63,7 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
       for( i in seq.int( from = 1, to = imageSize[1] - patchSize[1] + 1, 
         by = strideLengthVector[1] ) )
         {
-        for( j in seq.int( from = 2, to = imageSize[2] - patchSize[2] + 1, 
+        for( j in seq.int( from = 1, to = imageSize[2] - patchSize[2] + 1, 
           by = strideLengthVector[2] ) )
           {
           startIndex <- c( i, j )
