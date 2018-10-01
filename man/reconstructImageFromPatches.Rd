@@ -4,13 +4,16 @@
 \alias{reconstructImageFromPatches}
 \title{Reconstruct image from a list of patches.}
 \usage{
-reconstructImageFromPatches(patchList, domainImage)
+reconstructImageFromPatches(patchList, domainImage, strideLength = 1)
 }
 \arguments{
 \item{patchList}{list of overlapping patches defining an image.}
 
 \item{domainImage}{Image to define the geometric information of the
 reconstructed image.}
+
+\item{strideLength}{Defines the sequential patch overlap for
+maxNumberOfPatches = all.  Can be a image-dimensional vector or a scalar.}
 }
 \value{
 an ANTs image.

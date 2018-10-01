@@ -3,7 +3,10 @@
 #' @param image Input ANTs image
 #' @param patchSize Width, height, and depth (if 3-D) of patches.
 #' @param maxNumberOfPatches Maximum number of patches returned.  If
-#' "all" is specified, then all overlapping patches are extracted.
+#' "all" is specified, then all patches in sequence (defined by the 
+#" strideLength are extracted.
+#' @param strideLength Defines the sequential patch overlap for 
+#' maxNumberOfPatches = all.  Can be a image-dimensional vector or a scalar.
 #' @param randomSeed integer seed that allows reproducible patch extraction
 #' across runs.
 #'
@@ -18,11 +21,8 @@
 #' patchSet3 = extractImagePatches( i, c( 32, 32 ), 10, randomSeed = 0 )
 #'
 #' @export
-extractImagePatches <- function( image,
-  patchSize,
-  maxNumberOfPatches = 'all',
-  randomSeed
-  )
+extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all', 
+  strideLength = 1, randomSeed )
 {
   if ( ! missing( randomSeed ) )
     {
@@ -46,12 +46,25 @@ extractImagePatches <- function( image,
 
   if( tolower( maxNumberOfPatches ) == 'all' )
     {
+    strideLengthVector <- strideLength
+    if( length( strideLength ) == 1 )
+      {
+      strideLengthVector <- rep.int( strideLength, dimensionality )
+      } else if( length( strideLength ) != dimensionality ) {
+      stop( paste0( "strideLength is not a scalar or vector of 
+        length dimensionality." ) ) 
+      } else if( any( strideLength < 1 ) ) {
+      stop( paste0( "strideLength must be a positive integer." ) )
+      }
+
     count <- 1
     if( dimensionality == 2 )
       {
-      for( i in seq_len( imageSize[1] - patchSize[1] + 1 ) )
+      for( i in seq.int( from = 1, to = imageSize[1] - patchSize[1] + 1, 
+        by = strideLengthVector[1] ) )
         {
-        for( j in seq_len( imageSize[2] - patchSize[2] + 1 ) )
+        for( j in seq.int( from = 2, to = imageSize[2] - patchSize[2] + 1, 
+          by = strideLengthVector[2] ) )
           {
           startIndex <- c( i, j )
           endIndex <- startIndex + patchSize - 1
@@ -64,11 +77,14 @@ extractImagePatches <- function( image,
           }
         }
       } else if( dimensionality == 3 ) {
-      for( i in seq_len( imageSize[1] - patchSize[1] + 1 ) )
+      for( i in seq.int( from = 1, to = imageSize[1] - patchSize[1] + 1, 
+        by = strideLengthVector[1] ) )
         {
-        for( j in seq_len( imageSize[2] - patchSize[2] + 1 ) )
+        for( j in seq.int( from = 1, to = imageSize[2] - patchSize[2] + 1, 
+          by = strideLengthVector[2] ) )
           {
-          for( k in seq_len( imageSize[3] - patchSize[3] + 1 ) )
+          for( k in seq.int( from = 1, to = imageSize[3] - patchSize[3] + 1, 
+            by = strideLengthVector[3] ) )
             {
             startIndex <- c( i, j, k )
             endIndex <- startIndex + patchSize - 1
@@ -83,7 +99,7 @@ extractImagePatches <- function( image,
           }
         }
       } else {
-      stop( "Unsupported dimensionality.\n" )
+      stop( "Unsupported dimensionality." )
       }
     } else {
     startIndex <- rep( 1, dimensionality )
@@ -112,7 +128,7 @@ extractImagePatches <- function( image,
           count <- count + 1
           }
         } else {
-        stop( "Unsupported dimensionality.\n" )
+        stop( "Unsupported dimensionality." )
         }
       }
     }
@@ -124,6 +140,8 @@ extractImagePatches <- function( image,
 #' @param patchList list of overlapping patches defining an image.
 #' @param domainImage Image to define the geometric information of the
 #' reconstructed image.
+#' @param strideLength Defines the sequential patch overlap for 
+#' maxNumberOfPatches = all.  Can be a image-dimensional vector or a scalar.
 #'
 #' @return an ANTs image.
 #' @author Tustison NJ
@@ -132,86 +150,156 @@ extractImagePatches <- function( image,
 #' }
 #' @importFrom ANTsRCore as.antsImage
 #' @export
-reconstructImageFromPatches <- function( patchList, domainImage )
+reconstructImageFromPatches <- function( patchList, domainImage, 
+  strideLength = 1 )
 {
   imageSize <- dim( domainImage )
   dimensionality <- length( imageSize )
   patchSize <- dim( patchList[[1]] )
 
-  numberOfPatches <- 1
-  for( d in 1:dimensionality )
-    {
-    numberOfPatches <- numberOfPatches *
-      ( imageSize[d] - patchSize[d] + 1 )
-    }
-  if( numberOfPatches != length( patchList ) )
-    {
-    stop( "Not the right number of patches.\n" )
-    }
-
   imageArray <- array( data = 0, dim = imageSize )
+
+  strideLengthVector <- strideLength
+  if( length( strideLength ) == 1 )
+    {
+    strideLengthVector <- rep.int( strideLength, dimensionality )
+    } else if( length( strideLength ) != dimensionality ) {
+    stop( paste0( "strideLength is not a scalar or vector of 
+      length dimensionality." ) )
+    } else if( any( strideLength < 1 ) ) {
+    stop( paste0( "strideLength must be a positive integer." ) )
+    }   
 
   count <- 1
   if( dimensionality == 2 )
     {
-    for( i in seq_len( imageSize[1] - patchSize[1] + 1 ) )
-      {
-      for( j in seq_len( imageSize[2] - patchSize[2] + 1 ) )
+    if( all( strideLengthVector == 1 ) )
+      {  
+      for( i in seq_len( imageSize[1] - patchSize[1] + 1 ) )
         {
-        startIndex <- c( i, j )
-        endIndex <- startIndex + patchSize - 1
-
-        imageArray[startIndex[1]:endIndex[1], startIndex[2]:endIndex[2]] <-
-          imageArray[startIndex[1]:endIndex[1], startIndex[2]:endIndex[2]] +
-          patchList[[count]]
-        count <- count + 1
-        }
-      }
-
-    for( i in seq_len( imageSize[1] ) )
-      {
-      for( j in seq_len( imageSize[2] ) )
-        {
-        factor <- min( i, patchSize[1], imageSize[1] - i + 1 ) *
-          min( j, patchSize[2], imageSize[2] - j + 1 )
-
-        imageArray[i, j] <- imageArray[i, j] / factor
-        }
-      }
-
-    } else if( dimensionality == 3 ) {
-    for( i in seq_len( imageSize[1] - patchSize[1] + 1 ) )
-      {
-      for( j in seq_len( imageSize[2] - patchSize[2] + 1 ) )
-        {
-        for( k in seq_len( imageSize[3] - patchSize[3] + 1 ) )
+        for( j in seq_len( imageSize[2] - patchSize[2] + 1 ) )
           {
-          startIndex <- c( i, j, k )
+          startIndex <- c( i, j )
           endIndex <- startIndex + patchSize - 1
 
-          imageArray[startIndex[1]:endIndex[1],
-            startIndex[2]:endIndex[2], startIndex[3]:endIndex[3]] <-
-            imageArray[startIndex[1]:endIndex[1],
-            startIndex[2]:endIndex[2], startIndex[3]:endIndex[3]] +
+          imageArray[startIndex[1]:endIndex[1], startIndex[2]:endIndex[2]] <-
+            imageArray[startIndex[1]:endIndex[1], startIndex[2]:endIndex[2]] +
             patchList[[count]]
           count <- count + 1
           }
         }
-      }
-
-    for( i in seq_len( imageSize[1] ) )
-      {
-      for( j in seq_len( imageSize[2] ) )
+      for( i in seq_len( imageSize[1] ) )
         {
-        for( k in seq_len( imageSize[3] ) )
+        for( j in seq_len( imageSize[2] ) )
           {
           factor <- min( i, patchSize[1], imageSize[1] - i + 1 ) *
-            min( j, patchSize[2], imageSize[2] - j + 1 ) *
-            min( k, patchSize[3], imageSize[3] - k + 1 )
+            min( j, patchSize[2], imageSize[2] - j + 1 )
 
-          imageArray[i, j, k] <- imageArray[i, j, k] / factor
-          count <- count + 1
+          imageArray[i, j] <- imageArray[i, j] / factor
           }
+        }
+      } else {
+      countArray <- array( 0, dim = dim( imageArray ) )
+      for( i in seq.int( from = 1, to = imageSize[1] - patchSize[1] + 1, 
+        by = strideLengthVector[1] ) )
+        {
+        for( j in seq.int( from = 1, to = imageSize[2] - patchSize[2] + 1, 
+          by = strideLengthVector[2] ) )
+          {
+          startIndex <- c( i, j )
+          endIndex <- startIndex + patchSize - 1
+
+          imageArray[startIndex[1]:endIndex[1], startIndex[2]:endIndex[2]] <-
+            imageArray[startIndex[1]:endIndex[1], startIndex[2]:endIndex[2]] +
+            patchList[[count]]
+          countArray[startIndex[1]:endIndex[1], startIndex[2]:endIndex[2]] <-
+            countArray[startIndex[1]:endIndex[1], startIndex[2]:endIndex[2]] +
+            array( data = 1, dim = patchSize )
+          count <- count + 1  
+          }
+        }
+      for( i in seq_len( imageSize[1] ) )
+        {
+        for( j in seq_len( imageSize[2] ) )
+          {
+          factor <- max( 1, countArray[i, j] )
+          imageArray[i, j] <- imageArray[i, j] / factor
+          }
+        }
+      }
+    } else if( dimensionality == 3 ) {
+    if( all( strideLengthVector == 1 ) )
+      {  
+      for( i in seq_len( imageSize[1] - patchSize[1] + 1 ) )
+        {
+        for( j in seq_len( imageSize[2] - patchSize[2] + 1 ) )
+          {
+          for( k in seq_len( imageSize[3] - patchSize[3] + 1 ) )
+            {
+            startIndex <- c( i, j, k )
+            endIndex <- startIndex + patchSize - 1
+
+            imageArray[startIndex[1]:endIndex[1],
+                startIndex[2]:endIndex[2], startIndex[3]:endIndex[3]] <-
+              imageArray[startIndex[1]:endIndex[1],
+                startIndex[2]:endIndex[2], startIndex[3]:endIndex[3]] +
+              patchList[[count]]
+            count <- count + 1
+            }
+          }
+        }
+
+      for( i in seq_len( imageSize[1] ) )
+        {
+        for( j in seq_len( imageSize[2] ) )
+          {
+          for( k in seq_len( imageSize[3] ) )
+            {
+            factor <- min( i, patchSize[1], imageSize[1] - i + 1 ) *
+              min( j, patchSize[2], imageSize[2] - j + 1 ) *
+              min( k, patchSize[3], imageSize[3] - k + 1 )
+
+            imageArray[i, j, k] <- imageArray[i, j, k] / factor
+            count <- count + 1
+            }
+          }
+        }
+      } else {
+      countArray <- array( 0, dim = dim( imageArray ) )
+      for( i in seq.int( from = 1, to = imageSize[1] - patchSize[1] + 1, 
+        by = strideLengthVector[1] ) )
+        {
+        for( j in seq.int( from = 1, to = imageSize[2] - patchSize[2] + 1, 
+          by = strideLengthVector[2] ) )
+          {
+          for( k in seq.int( from = 1, to = imageSize[3] - patchSize[3] + 1, 
+            by = strideLengthVector[3] ) )
+            {
+            startIndex <- c( i, j, k )
+            endIndex <- startIndex + patchSize - 1
+
+            imageArray[startIndex[1]:endIndex[1], startIndex[2]:endIndex[2], 
+                startIndex[3]:endIndex[3]] <-
+              imageArray[startIndex[1]:endIndex[1], startIndex[2]:endIndex[2], 
+                startIndex[3]:endIndex[3]] + patchList[[count]]
+            countArray[startIndex[1]:endIndex[1], startIndex[2]:endIndex[2], 
+                startIndex[3]:endIndex[3]] <-
+              countArray[startIndex[1]:endIndex[1], startIndex[2]:endIndex[2], 
+                startIndex[3]:endIndex[3]] + array( data = 1, dim = patchSize )
+            count <- count + 1  
+            }  
+          }
+        }
+      for( i in seq_len( imageSize[1] ) )
+        {
+        for( j in seq_len( imageSize[2] ) )
+          {
+          for( k in seq_len( imageSize[3] ) )
+            {
+            factor <- max( 1, countArray[i, j, k] )
+            imageArray[i, j, k] <- imageArray[i, j, k] / factor
+            }
+          }  
         }
       }
     } else {

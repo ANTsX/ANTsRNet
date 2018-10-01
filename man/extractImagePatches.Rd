@@ -5,7 +5,7 @@
 \title{Extract 2-D or 3-D image patches.}
 \usage{
 extractImagePatches(image, patchSize, maxNumberOfPatches = "all",
-  randomSeed)
+  strideLength = 1, randomSeed)
 }
 \arguments{
 \item{image}{Input ANTs image}
@@ -13,7 +13,10 @@ extractImagePatches(image, patchSize, maxNumberOfPatches = "all",
 \item{patchSize}{Width, height, and depth (if 3-D) of patches.}
 
 \item{maxNumberOfPatches}{Maximum number of patches returned.  If
-"all" is specified, then all overlapping patches are extracted.}
+"all" is specified, then all patches in sequence (defined by the}
+
+\item{strideLength}{Defines the sequential patch overlap for
+maxNumberOfPatches = all.  Can be a image-dimensional vector or a scalar.}
 
 \item{randomSeed}{integer seed that allows reproducible patch extraction
 across runs.}
