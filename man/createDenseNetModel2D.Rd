@@ -7,7 +7,7 @@
 createDenseNetModel2D(inputImageSize,
   numberOfClassificationLabels = 1000, numberOfFilters = 16,
   depth = 7, numberOfDenseBlocks = 1, growthRate = 12,
-  dropoutRate = 0.2, weightDecay = 0.0001, regression = FALSE)
+  dropoutRate = 0.2, weightDecay = 1e-04, regression = FALSE)
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The

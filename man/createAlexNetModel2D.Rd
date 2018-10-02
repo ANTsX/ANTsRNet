@@ -5,7 +5,7 @@
 \title{2-D implementation of the AlexNet deep learning architecture.}
 \usage{
 createAlexNetModel2D(inputImageSize, numberOfClassificationLabels = 1000,
-  numberOfDenseUnits = 4096, dropoutRate = 0)
+  numberOfDenseUnits = 4096, dropoutRate = 0, regression = FALSE)
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
@@ -19,6 +19,8 @@ the number of channels (e.g., red, green, and blue).  The batch size
 
 \item{dropoutRate}{optional regularization parameter between \verb{[0, 1]}.
 Default = 0.0.}
+
+\item{regression}{boolean to use regression in output layer}
 }
 \value{
 an AlexNet keras model
@@ -43,7 +45,7 @@ https://github.com/lunardog/convnets-keras/
 }
 \examples{
 
-\dontrun{ 
+\dontrun{
 
 library( keras )
 
@@ -57,15 +59,15 @@ Y_train <- keras::to_categorical( mnistData$train$y, numberOfLabels )
 # we add a dimension of 1 to specify the channel size
 inputImageSize <- c( dim( mnistData$train$x )[2:3], 1 )
 
-alexNetModel <- createAlexNetModel2D( inputImageSize = inputImageSize, 
+alexNetModel <- createAlexNetModel2D( inputImageSize = inputImageSize,
   numberOfClassificationLabels = numberOfLabels, numberOfDenseUnits = 4096,
   dropoutRate = 0.0 )
 
 alexNetModel \%>\% compile( loss = 'categorical_crossentropy',
-  optimizer = optimizer_adam( lr = 0.0001 ),  
+  optimizer = optimizer_adam( lr = 0.0001 ),
   metrics = c( 'categorical_crossentropy', 'accuracy' ) )
 
-track <- alexNetModel \%>\% fit( X_train, Y_train, epochs = 40, batch_size = 32, 
+track <- alexNetModel \%>\% fit( X_train, Y_train, epochs = 40, batch_size = 32,
   verbose = 1, shuffle = TRUE, validation_split = 0.2 )
 
 # Now test the model
