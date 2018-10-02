@@ -6,6 +6,8 @@ A collection of well-known deep learning architectures ported to the R language 
 
 Examples available at [ANTsRNetExamples](https://github.com/ntustison/ANTsRNetExamples).
 
+Documentation page [https://antsx.github.io/ANTsRNet/](https://antsx.github.io/ANTsRNet/).
+
 ## Available architectures
 
 ### Image segmentation
