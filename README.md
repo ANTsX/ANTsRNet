@@ -47,7 +47,6 @@ Documentation page [https://antsx.github.io/ANTsRNet/](https://antsx.github.io/A
 * Deep denoise super-resolution (DDSRCNN) (2-D, 3-D)
 * ResNet super-resolution (SRResNet) (2-D, 3-D)
     * [Christian Ledig, Lucas Theis, Ferenc Huszar, Jose Caballero, Andrew Cunningham, Alejandro Acosta, Andrew Aitken, Alykhan Tejani, Johannes Totz, Zehan Wang, and Wenzhe Shi.  Photo-Realistic Single Image Super-Resolution Using a Generative Adversarial Network.](https://arxiv.org/abs/1609.04802)
-* [Python implementations](https://github.com/titu1994/Image-Super-Resolution/)  
 
 ### Image-based regression
 
