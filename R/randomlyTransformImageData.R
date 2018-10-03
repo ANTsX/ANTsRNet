@@ -156,7 +156,7 @@ randomlyTransformImageData <- function( referenceImage,
 
   # Get the fixed parameters from the reference image.
 
-  fixedParameters <- getCenterOfMass( image  )
+  fixedParameters <- getCenterOfMass( referenceImage  )
   numberOfSubjects <- length( inputImageList )   
   numberOfImagesPerSubject <- length( inputImageList[[1]] )
 
