@@ -22,8 +22,14 @@ an ANTs image.
 Reconstruct image from a list of patches.
 }
 \examples{
-\dontrun{
-}
+library( ANTsR )
+
+library( ANTsR )
+image <- antsImageRead( getANTsRData( "r16" ) )
+patchSet <- extractImagePatches( image, c( 64, 64 ), "all", c( 8, 8 ) )
+imageReconstructed <- 
+  reconstructImageFromPatches( patchSet, image, c( 8, 8 ) )
+
 }
 \author{
 Tustison NJ

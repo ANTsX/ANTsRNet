@@ -4,8 +4,8 @@ Title: Neural networks for medical image processing
 Version: 1.0
 Date: 2018-04-25
 Authors@R: c(
-    person(c("Nicholas", "J"), "Tustison", role = c("aut", "cre"), email = "ntustison@gmail.com"),
-    person(c("Brian", "B"), "Avants", role = "ctb", email = "NA")
+    person(c("Nicholas", "J"), "Tustison", role = c("aut", "cre"), email = "ntustison@gmail.com", comment = c(ORCID = "0000-0001-9418-5103")),
+    person(c("Brian", "B"), "Avants", role = c("aut"), email = "stnava@gmail.com", comment = c(ORCID = "0000-0002-4212-3362"))
     )
 Maintainer: Nicholas J. Tustison <ntustison@gmail.com>
 Description: Deep learning tools for medical image processing.

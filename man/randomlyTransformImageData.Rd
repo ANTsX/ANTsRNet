@@ -68,10 +68,8 @@ segmentation2 <- thresholdImage( image2, "Otsu", 3 )
 data <- randomlyTransformImageData( image1,
   list( list( image1 ), list( image2 ) ),  
   list( segmentation1, segmentation2 ) )
-}
-\seealso{
-\code{\link{randomImageTransformBatchGenerator}}
+
 }
 \author{
-Avants BB
+Avants BB, Tustison NJ
 }

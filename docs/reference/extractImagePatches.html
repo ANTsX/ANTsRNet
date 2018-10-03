@@ -146,10 +146,10 @@ across runs.</p></td>
 #&gt; <span class='message'></span>
 #&gt; <span class='message'>    var</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:base’:</span>
 #&gt; <span class='message'></span>
-#&gt; <span class='message'>    all, any, apply, max, min, prod, range, sum</span></div><div class='input'><span class='no'>i</span> <span class='kw'>=</span> <span class='fu'>ri</span>( <span class='fl'>1</span> )
-<span class='no'>patchSet1</span> <span class='kw'>=</span> <span class='fu'>extractImagePatches</span>( <span class='no'>i</span>, <span class='fu'>c</span>( <span class='fl'>32</span>, <span class='fl'>32</span> ), <span class='fl'>10</span>, <span class='kw'>randomSeed</span> <span class='kw'>=</span> <span class='fl'>0</span> )
-<span class='no'>patchSet2</span> <span class='kw'>=</span> <span class='fu'>extractImagePatches</span>( <span class='no'>i</span>, <span class='fu'>c</span>( <span class='fl'>32</span>, <span class='fl'>32</span> ), <span class='fl'>10</span>, <span class='kw'>randomSeed</span> <span class='kw'>=</span> <span class='fl'>1</span> )
-<span class='no'>patchSet3</span> <span class='kw'>=</span> <span class='fu'>extractImagePatches</span>( <span class='no'>i</span>, <span class='fu'>c</span>( <span class='fl'>32</span>, <span class='fl'>32</span> ), <span class='fl'>10</span>, <span class='kw'>randomSeed</span> <span class='kw'>=</span> <span class='fl'>0</span> )</div></pre>
+#&gt; <span class='message'>    all, any, apply, max, min, prod, range, sum</span></div><div class='input'><span class='no'>image</span> <span class='kw'>&lt;-</span> <span class='fu'>antsImageRead</span>( <span class='fu'>getANTsRData</span>( <span class='st'>"r16"</span> ) )
+<span class='no'>patchSet1</span> <span class='kw'>&lt;-</span> <span class='fu'>extractImagePatches</span>( <span class='no'>image</span>, <span class='fu'>c</span>( <span class='fl'>32</span>, <span class='fl'>32</span> ), <span class='fl'>10</span>, <span class='fu'>c</span>( <span class='fl'>32</span>, <span class='fl'>32</span> ), <span class='kw'>randomSeed</span> <span class='kw'>=</span> <span class='fl'>0</span> )
+<span class='no'>patchSet2</span> <span class='kw'>&lt;-</span> <span class='fu'>extractImagePatches</span>( <span class='no'>image</span>, <span class='fu'>c</span>( <span class='fl'>32</span>, <span class='fl'>32</span> ), <span class='fl'>10</span>, <span class='fu'>c</span>( <span class='fl'>32</span>, <span class='fl'>32</span> ), <span class='kw'>randomSeed</span> <span class='kw'>=</span> <span class='fl'>1</span> )
+<span class='no'>patchSet3</span> <span class='kw'>&lt;-</span> <span class='fu'>extractImagePatches</span>( <span class='no'>image</span>, <span class='fu'>c</span>( <span class='fl'>32</span>, <span class='fl'>32</span> ), <span class='fl'>10</span>, <span class='fu'>c</span>( <span class='fl'>32</span>, <span class='fl'>32</span> ), <span class='kw'>randomSeed</span> <span class='kw'>=</span> <span class='fl'>0</span> )</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -170,7 +170,7 @@ Tustison NJ
 
       <footer>
       <div class="copyright">
-  <p>Developed by Nicholas J Tustison.</p>
+  <p>Developed by Nicholas J Tustison, Brian B Avants.</p>
 </div>
 
 <div class="pkgdown">

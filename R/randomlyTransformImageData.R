@@ -33,8 +33,7 @@
 #' @param sdNoise randomization parameter for simulated deformations.  
 #' Default = 1.0.
 #' @return list (if no directory set) or boolean for success, failure
-#' @author Avants BB
-#' @seealso \code{\link{randomImageTransformBatchGenerator}}
+#' @author Avants BB, Tustison NJ
 #' @importFrom ANTsRCore getAntsrTransformFixedParameters iMath resampleImageToTarget applyAntsrTransform antsImagePhysicalSpaceConsistency antsrTransformFromDisplacementField makeImage smoothImage setAntsrTransformFixedParameters getAntsrTransformParameters setAntsrTransformParameters readAntsrTransform createAntsrTransform randomMask mergeChannels 
 #' @importFrom ANTsR composeTransformsToField
 #' @importFrom stats rnorm
@@ -48,8 +47,8 @@
 #' data <- randomlyTransformImageData( image1,
 #'   list( list( image1 ), list( image2 ) ),  
 #'   list( segmentation1, segmentation2 ) )
+#'
 #' @export randomlyTransformImageData
-
 randomlyTransformImageData <- function( referenceImage,
   inputImageList, segmentationImageList = NA, numberOfSimulations = 10,
   transformType = 'affine', inputImageInterpolator = 'linear',
@@ -157,12 +156,7 @@ randomlyTransformImageData <- function( referenceImage,
 
   # Get the fixed parameters from the reference image.
 
-  referenceRegistration <- antsRegistration( referenceImage, referenceImage, 
-    typeofTransform = 'Rigid', regIterations = c( 1, 0 ) )
-  referenceTransform <- readAntsrTransform( 
-    referenceRegistration$fwdtransforms[1], referenceImage@dimension )
-  fixedParameters = getAntsrTransformFixedParameters( referenceTransform )
-
+  fixedParameters <- getCenterOfMass( imageDomain  )
   numberOfSubjects <- length( inputImageList )   
   numberOfImagesPerSubject <- length( inputImageList[[1]] )
 

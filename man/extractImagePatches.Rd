@@ -30,10 +30,10 @@ Extract 2-D or 3-D image patches.
 \examples{
 
 library( ANTsR )
-i = ri( 1 )
-patchSet1 = extractImagePatches( i, c( 32, 32 ), 10, randomSeed = 0 )
-patchSet2 = extractImagePatches( i, c( 32, 32 ), 10, randomSeed = 1 )
-patchSet3 = extractImagePatches( i, c( 32, 32 ), 10, randomSeed = 0 )
+image <- antsImageRead( getANTsRData( "r16" ) )
+patchSet1 <- extractImagePatches( image, c( 32, 32 ), 10, c( 32, 32 ), randomSeed = 0 )
+patchSet2 <- extractImagePatches( image, c( 32, 32 ), 10, c( 32, 32 ), randomSeed = 1 )
+patchSet3 <- extractImagePatches( image, c( 32, 32 ), 10, c( 32, 32 ), randomSeed = 0 )
 
 }
 \author{

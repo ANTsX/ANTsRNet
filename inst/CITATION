@@ -1,0 +1,28 @@
+citHeader("To cite ANTsRNet in publications use:")
+
+citEntry(entry = "Article",
+  title        = "Convolutional Neural Networks with Template-Based Data Augmentation for Functional Lung Image Quantification",
+  author       = personList(
+                   as.person("Nicholas J. Tustison"),
+                   as.person("Zixuan Lin"),
+                   as.person("Xue Feng"),
+                   as.person("Nicholas Cullen"),
+                   as.person("Jaime F. Mata"),
+                   as.person("Lucia Flors"),
+                   as.person("James C. Gee"),
+                   as.person("Talissa A. Altes"),
+                   as.person("John P. Mugler III"),
+                   as.person("Kun Qing")),
+  journal      = "Academic Radiology",
+  year         = "2018",
+  volume       = "",
+  number       = "",
+  pages        = "",
+  url          = "https://www.ncbi.nlm.nih.gov/pubmed/30195415",
+
+  textVersion  =
+  paste(" Nicholas J. Tustison, Brian B. Avants, et al. (2018).",
+        "Convolutional Neural Networks with Template-Based Data Augmentation for Functional Lung Image Quantification.",
+        "Academic Radiology.",
+        "URL https://www.ncbi.nlm.nih.gov/pubmed/30195415.")
+)

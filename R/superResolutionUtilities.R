@@ -15,10 +15,10 @@
 #' @examples
 #'
 #' library( ANTsR )
-#' i = ri( 1 )
-#' patchSet1 = extractImagePatches( i, c( 32, 32 ), 10, randomSeed = 0 )
-#' patchSet2 = extractImagePatches( i, c( 32, 32 ), 10, randomSeed = 1 )
-#' patchSet3 = extractImagePatches( i, c( 32, 32 ), 10, randomSeed = 0 )
+#' image <- antsImageRead( getANTsRData( "r16" ) )
+#' patchSet1 <- extractImagePatches( image, c( 32, 32 ), 10, c( 32, 32 ), randomSeed = 0 )
+#' patchSet2 <- extractImagePatches( image, c( 32, 32 ), 10, c( 32, 32 ), randomSeed = 1 )
+#' patchSet3 <- extractImagePatches( image, c( 32, 32 ), 10, c( 32, 32 ), randomSeed = 0 )
 #'
 #' @export
 extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all', 
@@ -146,8 +146,14 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
 #' @return an ANTs image.
 #' @author Tustison NJ
 #' @examples
-#' \dontrun{
-#' }
+#' library( ANTsR )
+#'
+#' library( ANTsR )
+#' image <- antsImageRead( getANTsRData( "r16" ) )
+#' patchSet <- extractImagePatches( image, c( 64, 64 ), "all", c( 8, 8 ) )
+#' imageReconstructed <- 
+#'   reconstructImageFromPatches( patchSet, image, c( 8, 8 ) )
+#'
 #' @importFrom ANTsRCore as.antsImage
 #' @export
 reconstructImageFromPatches <- function( patchList, domainImage, 
