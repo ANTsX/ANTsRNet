@@ -1,0 +1,82 @@
+reference:
+- title: Classification models
+  desc: ~
+  contents:
+  - '`createAlexNetModel2D`'
+  - '`createAlexNetModel3D`'
+  - '`createDenseNetModel2D`'
+  - '`createDenseNetModel3D`'
+  - '`createGoogLeNetModel2D`'
+  - '`createResNetModel2D`'
+  - '`createResNetModel3D`'
+  - '`createVggModel2D`'
+  - '`createVggModel3D`'
+- title: Object localization models
+  desc: ~
+  contents:
+  - '`createSsd7Model2D`'
+  - '`createSsd7Model3D`'
+  - '`createSsdModel2D`'
+  - '`createSsdModel3D`'
+- title: SSD-specific helper functions
+  desc: ~
+  contents:
+  - '`AnchorBoxLayer2D`'
+  - '`AnchorBoxLayer3D`'
+  - '`L2NormalizationLayer2D`'
+  - '`L2NormalizationLayer3D`'
+  - '`LossSSD`'
+  - '`convertCoordinates`'
+  - '`decodeSsd2D`'
+  - '`decodeSsd3D`'
+  - '`drawRectangles`'
+  - '`encodeSsd2D`'
+  - '`encodeSsd3D`'
+  - '`jaccardSimilarity`'
+- title: Segmentation models.
+  desc: ~
+  contents:
+  - '`createUnetModel2D`'
+  - '`createUnetModel3D`'
+- title: U-net-specific helper functions
+  desc: ~
+  contents:
+  - '`decodeUnet`'
+  - '`encodeUnet`'
+- title: Super-resolution models
+  desc: ~
+  contents:
+  - '`createDeepDenoiseSuperResolutionModel2D`'
+  - '`createDeepDenoiseSuperResolutionModel3D`'
+  - '`createDenoisingAutoEncoderSuperResolutionModel2D`'
+  - '`createDenoisingAutoEncoderSuperResolutionModel3D`'
+  - '`createExpandedSuperResolutionModel2D`'
+  - '`createExpandedSuperResolutionModel3D`'
+  - '`createImageSuperResolutionModel2D`'
+  - '`createImageSuperResolutionModel3D`'
+  - '`createResNetSuperResolutionModel2D`'
+  - '`createResNetSuperResolutionModel3D`'
+- title: Super-resolution helper functions
+  desc: ~
+  contents:
+  - '`extractImagePatches`'
+  - '`reconstructImageFromPatches`'
+- title: Custom loss functions
+  desc: ~
+  contents:
+  - '`loss_multilabel_dice_coefficient_error`'
+  - '`loss_peak_signal_to_noise_ratio_error`'
+  - '`loss_pearson_correlation_coefficient_error`'
+  - '`multilabel_dice_coefficient`'
+  - '`peak_signal_to_noise_ratio`'
+  - '`pearson_correlation_coefficient`'
+- title: Data augmentation functions
+  desc: ~
+  contents:
+  - '`basisWarp`'
+  - '`randomImageTransformAugmentation`'
+  - '`randomImageTransformBatchGenerator`'
+  - '`randomImageTransformParametersAugmentation`'
+  - '`randomImageTransformParametersBatchGenerator`'
+  - '`randomlyTransformImageData`'
+
