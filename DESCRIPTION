@@ -25,7 +25,8 @@ Imports:
     zeallot,
     methods,
     mvtnorm,
-    R6
+    R6,
+    Rcpp
 Suggests:
     ggplot2,
     rmarkdown,

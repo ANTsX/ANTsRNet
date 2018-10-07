@@ -156,7 +156,6 @@ uvaSegTrain <- function( patches, k, convControl ) {
 
   ## variational autoencoder
   vae <- keras_model(x, x_decoded_mean_squash)
-  print( summary( vae ) )
   vae %>% compile( optimizer = optimizer_adam( lr = 0.0001 ), loss = vae_loss )
 
   ## build a generator that can sample from the learned distribution
@@ -291,7 +290,6 @@ NumericMatrix fuzzyClustering(NumericMatrix data, NumericMatrix centers, int m) 
   kmAlg = stats::kmeans( x_test_encoded, k )
   mykm = kmAlg$cluster
   myprobs = fuzzyClustering( x_test_encoded, kmAlg$centers, m=2 )
-  print( dim(myprobs))
   probs = list()
   mid = round( p / 2 )
   for ( myk in 1:ncol( myprobs ) ) {

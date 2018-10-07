@@ -21,8 +21,8 @@ available here:
 }
 \section{Usage}{
 
-\preformatted{ssdLoss <- LossSSD$new( dimension = 2L, backgroundRatio = 3L, 
-  minNumberOfBackgroundBoxes = 0L,  alpha = 1.0, 
+\preformatted{ssdLoss <- LossSSD$new( dimension = 2L, backgroundRatio = 3L,
+  minNumberOfBackgroundBoxes = 0L,  alpha = 1.0,
   numberOfClassificationLabels )
 
 ssdLoss$smooth_l1_loss( y_true, y_pred )

@@ -2,3 +2,5 @@
 ^\.Rproj\.user$
 \.travis\.yml$
 _config\.yml$
+_pkgdown.yml
+docs

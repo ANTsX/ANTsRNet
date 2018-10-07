@@ -9,8 +9,9 @@ reconstructImageFromPatches(patchList, domainImage, strideLength = 1)
 \arguments{
 \item{patchList}{list of overlapping patches defining an image.}
 
-\item{domainImage}{Image to define the geometric information of the
-reconstructed image.}
+\item{domainImage}{Image or mask to define the geometric information of the
+reconstructed image.  If this is a mask image, the reconstruction will only
+use patches in the mask.}
 
 \item{strideLength}{Defines the sequential patch overlap for
 maxNumberOfPatches = all.  Can be a image-dimensional vector or a scalar.}
@@ -27,7 +28,7 @@ library( ANTsR )
 library( ANTsR )
 image <- antsImageRead( getANTsRData( "r16" ) )
 patchSet <- extractImagePatches( image, c( 64, 64 ), "all", c( 8, 8 ) )
-imageReconstructed <- 
+imageReconstructed <-
   reconstructImageFromPatches( patchSet, image, c( 8, 8 ) )
 
 }

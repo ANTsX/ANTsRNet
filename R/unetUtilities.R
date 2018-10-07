@@ -61,6 +61,9 @@ encodeUnet <- function( groundTruthSegmentations, segmentationLabels )
 #'
 #' @author Tustison NJ
 #' @importFrom utils tail
+#' @importFrom stats predict
+#' @importFrom stats kmeans
+#' @importFrom magrittr %>%
 #' @importFrom ANTsRCore as.antsImage
 #' @export
 decodeUnet <- function( yPredicted, domainImage )

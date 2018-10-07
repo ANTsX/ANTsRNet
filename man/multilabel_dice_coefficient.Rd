@@ -2,9 +2,7 @@
 % Please edit documentation in R/customLosses.R
 \name{multilabel_dice_coefficient}
 \alias{multilabel_dice_coefficient}
-\title{Model loss function for multilabel problems--- multilabel dice coefficient
-
-Based on the keras loss function (losses.R):}
+\title{Model loss function for multilabel problems--- multilabel dice coefficient}
 \usage{
 multilabel_dice_coefficient(y_true, y_pred)
 }
@@ -14,9 +12,11 @@ multilabel_dice_coefficient(y_true, y_pred)
 \item{y_pred}{Predictions (Tensor of the same shape as \code{y_true})}
 }
 \description{
-\url{https://github.com/rstudio/keras/blob/master/R/losses.R}
+Based on the keras loss function (losses.R):
 }
 \details{
+\url{https://github.com/rstudio/keras/blob/master/R/losses.R}
+
 Loss functions are to be supplied in the loss parameter of the
 \code{compile()} function.
 
