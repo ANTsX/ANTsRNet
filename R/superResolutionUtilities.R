@@ -7,6 +7,8 @@
 #" strideLength are extracted.
 #' @param strideLength Defines the sequential patch overlap for
 #' maxNumberOfPatches = all.  Can be a image-dimensional vector or a scalar.
+#' @param maskImage optional image specifying the sampling region for
+#' the patches when \code{maximumNumberOfPatches} does not equal "all".
 #' @param randomSeed integer seed that allows reproducible patch extraction
 #' across runs.
 #'
@@ -16,13 +18,14 @@
 #'
 #' library( ANTsR )
 #' image <- antsImageRead( getANTsRData( "r16" ) )
+#' maskImage <- getMask( image, 1, 1000 )
 #' patchSet1 <- extractImagePatches( image, c( 32, 32 ), 10, c( 32, 32 ), randomSeed = 0 )
 #' patchSet2 <- extractImagePatches( image, c( 32, 32 ), 10, c( 32, 32 ), randomSeed = 1 )
-#' patchSet3 <- extractImagePatches( image, c( 32, 32 ), 10, c( 32, 32 ), randomSeed = 0 )
+#' patchSet3 <- extractImagePatches( image, c( 32, 32 ), 10, c( 32, 32 ), maskImage, randomSeed = 0 )
 #'
 #' @export
 extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
-  strideLength = 1, randomSeed )
+  strideLength = 1, maskImage = NA, randomSeed )
 {
   if ( ! missing( randomSeed ) )
     {
@@ -68,12 +71,8 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
           {
           startIndex <- c( i, j )
           endIndex <- startIndex + patchSize - 1
-          temp = imageArray[startIndex[1]:endIndex[1], startIndex[2]:endIndex[2]]
-          # if( sd( temp ) > 0 )
-            {
-            patches[[count]] <- temp
-            count <- count + 1
-            }
+          patches[[count]] = imageArray[startIndex[1]:endIndex[1], startIndex[2]:endIndex[2]]
+          count <- count + 1
           }
         }
       } else if( dimensionality == 3 ) {
@@ -88,13 +87,9 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
             {
             startIndex <- c( i, j, k )
             endIndex <- startIndex + patchSize - 1
-            temp <- imageArray[startIndex[1]:endIndex[1],
+            patches[[count]] <- imageArray[startIndex[1]:endIndex[1],
               startIndex[2]:endIndex[2], startIndex[3]:endIndex[3]]
-            # if ( sd( temp ) > 0 )
-              {
-              patches[[count]] <- temp
-              count <- count + 1
-              }
+            count <- count + 1
             }
           }
         }
@@ -102,31 +97,50 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
       stop( "Unsupported dimensionality." )
       }
     } else {
+
+    randomIndices <- array( data = NA, dim = c( maxNumberOfPatches, dimensionality ) )
+    if( !is.na( maskImage ) )
+      {
+      maskArray <- as.array( maskImage )
+      maskIndices <- which( maskArray != 0, arr.ind = TRUE )
+
+      negativeIndices <- c()
+      for( d in seq_len( dimensionality ) )
+        {
+        maskIndices[, d] <- maskIndices[, d] - round( 0.5 * patchSize[d] )
+        negativeIndices <- append( negativeIndices, which( randomIndices[, d] <= 0 ) )
+        }
+      negativeIndices <- unique( negativeIndices )
+      if( length( negativeIndices ) > 0 )
+        {
+        maskIndices <- maskIndices[-negativeIndices,]
+        }
+
+      randomIndices <- maskIndices[sample.int( nrow( maskIndices ), maxNumberOfPatches ),]
+      } else {
+      for( d in seq_len( dimensionality ) )
+        {
+        randomIndices[, d] <- sample.int( imageSize[d] - patchSize[d] + 1, maxNumberOfPatches )
+        }
+      }
+
     startIndex <- rep( 1, dimensionality )
     count <- 1
     while( count <= maxNumberOfPatches )
       {
       for( d in seq_len( dimensionality ) )
         {
-        startIndex[d] <- sample.int( imageSize[d] - patchSize[d] + 1, 1 )
+        startIndex[d] <- randomIndices[count, d]
         }
       endIndex <- startIndex + patchSize - 1
       if( dimensionality == 2 )
         {
-        temp = imageArray[startIndex[1]:endIndex[1], startIndex[2]:endIndex[2]]
-        if( sd( temp ) > 0 )
-          {
-          patches[[count]] <- temp
-          count <- count + 1
-          }
+        patches[[count]] <- imageArray[startIndex[1]:endIndex[1], startIndex[2]:endIndex[2]]
+        count <- count + 1
         } else if( dimensionality == 3 ) {
-        temp <- imageArray[startIndex[1]:endIndex[1],
+        patches[[count]] <- imageArray[startIndex[1]:endIndex[1],
           startIndex[2]:endIndex[2], startIndex[3]:endIndex[3]]
-        if( sd( temp ) > 0 )
-          {
-          patches[[count]] <- temp
-          count <- count + 1
-          }
+        count <- count + 1
         } else {
         stop( "Unsupported dimensionality." )
         }
