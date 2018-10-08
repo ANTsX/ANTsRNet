@@ -104,7 +104,7 @@
     </div>
 
     <pre class="usage"><span class='fu'>extractImagePatches</span>(<span class='no'>image</span>, <span class='no'>patchSize</span>, <span class='kw'>maxNumberOfPatches</span> <span class='kw'>=</span> <span class='st'>"all"</span>,
-  <span class='kw'>strideLength</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='no'>randomSeed</span>)</pre>
+  <span class='kw'>strideLength</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>maskImage</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='no'>randomSeed</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -128,6 +128,11 @@
 maxNumberOfPatches = all.  Can be a image-dimensional vector or a scalar.</p></td>
     </tr>
     <tr>
+      <th>maskImage</th>
+      <td><p>optional image specifying the sampling region for
+the patches when <code>maximumNumberOfPatches</code> does not equal "all".</p></td>
+    </tr>
+    <tr>
       <th>randomSeed</th>
       <td><p>integer seed that allows reproducible patch extraction
 across runs.</p></td>
@@ -147,9 +152,10 @@ across runs.</p></td>
 #&gt; <span class='message'>    var</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:base’:</span>
 #&gt; <span class='message'></span>
 #&gt; <span class='message'>    all, any, apply, max, min, prod, range, sum</span></div><div class='input'><span class='no'>image</span> <span class='kw'>&lt;-</span> <span class='fu'>antsImageRead</span>( <span class='fu'>getANTsRData</span>( <span class='st'>"r16"</span> ) )
+<span class='no'>maskImage</span> <span class='kw'>&lt;-</span> <span class='fu'>getMask</span>( <span class='no'>image</span>, <span class='fl'>1</span>, <span class='fl'>1000</span> )
 <span class='no'>patchSet1</span> <span class='kw'>&lt;-</span> <span class='fu'>extractImagePatches</span>( <span class='no'>image</span>, <span class='fu'>c</span>( <span class='fl'>32</span>, <span class='fl'>32</span> ), <span class='fl'>10</span>, <span class='fu'>c</span>( <span class='fl'>32</span>, <span class='fl'>32</span> ), <span class='kw'>randomSeed</span> <span class='kw'>=</span> <span class='fl'>0</span> )
 <span class='no'>patchSet2</span> <span class='kw'>&lt;-</span> <span class='fu'>extractImagePatches</span>( <span class='no'>image</span>, <span class='fu'>c</span>( <span class='fl'>32</span>, <span class='fl'>32</span> ), <span class='fl'>10</span>, <span class='fu'>c</span>( <span class='fl'>32</span>, <span class='fl'>32</span> ), <span class='kw'>randomSeed</span> <span class='kw'>=</span> <span class='fl'>1</span> )
-<span class='no'>patchSet3</span> <span class='kw'>&lt;-</span> <span class='fu'>extractImagePatches</span>( <span class='no'>image</span>, <span class='fu'>c</span>( <span class='fl'>32</span>, <span class='fl'>32</span> ), <span class='fl'>10</span>, <span class='fu'>c</span>( <span class='fl'>32</span>, <span class='fl'>32</span> ), <span class='kw'>randomSeed</span> <span class='kw'>=</span> <span class='fl'>0</span> )</div></pre>
+<span class='no'>patchSet3</span> <span class='kw'>&lt;-</span> <span class='fu'>extractImagePatches</span>( <span class='no'>image</span>, <span class='fu'>c</span>( <span class='fl'>32</span>, <span class='fl'>32</span> ), <span class='fl'>10</span>, <span class='fu'>c</span>( <span class='fl'>32</span>, <span class='fl'>32</span> ), <span class='no'>maskImage</span>, <span class='kw'>randomSeed</span> <span class='kw'>=</span> <span class='fl'>0</span> )</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

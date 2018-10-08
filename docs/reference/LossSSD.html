@@ -120,8 +120,8 @@ SSD: Single Shot MultiBox Detector.</p>
     <h2 class="hasAnchor" id="usage"><a class="anchor" href="#usage"></a>Usage</h2>
 
     
-    <pre>ssdLoss &lt;- LossSSD$new( dimension = 2L, backgroundRatio = 3L, 
-  minNumberOfBackgroundBoxes = 0L,  alpha = 1.0, 
+    <pre>ssdLoss &lt;- LossSSD$new( dimension = 2L, backgroundRatio = 3L,
+  minNumberOfBackgroundBoxes = 0L,  alpha = 1.0,
   numberOfClassificationLabels )
     ssdLoss$smooth_l1_loss( y_true, y_pred )
 ssdLoss$log_loss( y_true, y_pred )

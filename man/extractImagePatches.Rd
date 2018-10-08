@@ -5,7 +5,7 @@
 \title{Extract 2-D or 3-D image patches.}
 \usage{
 extractImagePatches(image, patchSize, maxNumberOfPatches = "all",
-  strideLength = 1, randomSeed)
+  strideLength = 1, maskImage = NA, randomSeed)
 }
 \arguments{
 \item{image}{Input ANTs image}
@@ -17,6 +17,9 @@ extractImagePatches(image, patchSize, maxNumberOfPatches = "all",
 
 \item{strideLength}{Defines the sequential patch overlap for
 maxNumberOfPatches = all.  Can be a image-dimensional vector or a scalar.}
+
+\item{maskImage}{optional image specifying the sampling region for
+the patches when \code{maximumNumberOfPatches} does not equal "all".}
 
 \item{randomSeed}{integer seed that allows reproducible patch extraction
 across runs.}
@@ -31,9 +34,10 @@ Extract 2-D or 3-D image patches.
 
 library( ANTsR )
 image <- antsImageRead( getANTsRData( "r16" ) )
+maskImage <- getMask( image, 1, 1000 )
 patchSet1 <- extractImagePatches( image, c( 32, 32 ), 10, c( 32, 32 ), randomSeed = 0 )
 patchSet2 <- extractImagePatches( image, c( 32, 32 ), 10, c( 32, 32 ), randomSeed = 1 )
-patchSet3 <- extractImagePatches( image, c( 32, 32 ), 10, c( 32, 32 ), randomSeed = 0 )
+patchSet3 <- extractImagePatches( image, c( 32, 32 ), 10, c( 32, 32 ), maskImage, randomSeed = 0 )
 
 }
 \author{
