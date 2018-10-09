@@ -46,6 +46,7 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
   imageArray <- as.array( image )
 
   patches <- list()
+  midPatchIndex <- round( patchSize / 2 )
 
   if( tolower( maxNumberOfPatches ) == 'all' )
     {
@@ -71,7 +72,8 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
           {
           startIndex <- c( i, j )
           endIndex <- startIndex + patchSize - 1
-          patches[[count]] = imageArray[startIndex[1]:endIndex[1], startIndex[2]:endIndex[2]]
+          patches[[count]] <- imageArray[startIndex[1]:endIndex[1],
+            startIndex[2]:endIndex[2]]
           count <- count + 1
           }
         }
@@ -107,7 +109,7 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
       negativeIndices <- c()
       for( d in seq_len( dimensionality ) )
         {
-        maskIndices[, d] <- maskIndices[, d] - round( 0.5 * patchSize[d] )
+        maskIndices[, d] <- maskIndices[, d] - midPatchIndex[d]
         negativeIndices <- append( negativeIndices, which( randomIndices[, d] <= 0 ) )
         }
       negativeIndices <- unique( negativeIndices )
@@ -115,12 +117,13 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
         {
         maskIndices <- maskIndices[-negativeIndices,]
         }
-
-      randomIndices <- maskIndices[sample.int( nrow( maskIndices ), maxNumberOfPatches ),]
+      randomIndices <- maskIndices[
+        sample.int( nrow( maskIndices ), maxNumberOfPatches ),]
       } else {
       for( d in seq_len( dimensionality ) )
         {
-        randomIndices[, d] <- sample.int( imageSize[d] - patchSize[d] + 1, maxNumberOfPatches )
+        randomIndices[, d] <- sample.int(
+          imageSize[d] - patchSize[d] + 1, maxNumberOfPatches )
         }
       }
 
@@ -135,7 +138,8 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
       endIndex <- startIndex + patchSize - 1
       if( dimensionality == 2 )
         {
-        patches[[count]] <- imageArray[startIndex[1]:endIndex[1], startIndex[2]:endIndex[2]]
+        patches[[count]] <- imageArray[startIndex[1]:endIndex[1],
+          startIndex[2]:endIndex[2]]
         count <- count + 1
         } else if( dimensionality == 3 ) {
         patches[[count]] <- imageArray[startIndex[1]:endIndex[1],
@@ -151,12 +155,14 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
 
 #' Reconstruct image from a list of patches.
 #'
-#' @param patchList list of overlapping patches defining an image.
+#' @param patchList List of overlapping patches defining an image.
 #' @param domainImage Image or mask to define the geometric information of the
 #' reconstructed image.  If this is a mask image, the reconstruction will only
 #' use patches in the mask.
 #' @param strideLength Defines the sequential patch overlap for
 #' maxNumberOfPatches = all.  Can be a image-dimensional vector or a scalar.
+#' @param domainImageIsMask boolean specifying whether the domain image is a
+#' mask used to limit the region of reconstruction from the patches.
 #'
 #' @return an ANTs image.
 #' @author Tustison NJ
@@ -172,15 +178,15 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
 #' @importFrom ANTsRCore as.antsImage
 #' @export
 reconstructImageFromPatches <- function( patchList, domainImage,
-  strideLength = 1 )
+  strideLength = 1, domainImageIsMask = FALSE )
 {
   imageSize <- dim( domainImage )
   dimensionality <- length( imageSize )
-  patchSize <- dim( patchList[[1]] )
-  ismask = ( ( sum( domainImage == 0 ) + sum( domainImage == 1 ) ) ==
-    prod( dim( domainImage ) ) )
   imageArray <- array( data = 0, dim = imageSize )
-  mid = round( patchSize / 2 )
+
+  patchSize <- dim( patchList[[1]] )
+  midPatchIndex <- round( patchSize / 2 )
+
   strideLengthVector <- strideLength
   if( length( strideLength ) == 1 )
     {
@@ -191,7 +197,13 @@ reconstructImageFromPatches <- function( patchList, domainImage,
     } else if( any( strideLength < 1 ) ) {
     stop( paste0( "strideLength must be a positive integer." ) )
     }
-  if ( ismask ) maskarr = as.array( domainImage )
+
+  if( domainImageIsMask )
+    {
+    maskArray <- as.array( domainImage )
+    maskArray[maskArray != 0] <- 1
+    }
+
   count <- 1
   if( dimensionality == 2 )
     {
@@ -203,20 +215,28 @@ reconstructImageFromPatches <- function( patchList, domainImage,
           {
           startIndex <- c( i, j )
           endIndex <- startIndex + patchSize - 1
-          doAdd = TRUE
-          if ( ismask  ) {
-            if ( maskarr[
-              startIndex[1]:endIndex[1],
-              startIndex[2]:endIndex[2] ][mid[1],mid[2]] != 1 ) doAdd = FALSE
+
+          doAdd <- TRUE
+          if( domainImageIsMask )
+            {
+            if( maskArray[startIndex[1]:endIndex[1], startIndex[2]:endIndex[2]]
+              [midPatchIndex[1], midPatchIndex[2]] == 0 )
+              {
+              doAdd <- FALSE
+              }
             }
-          if ( doAdd )
+
+          if( doAdd )
+            {
             imageArray[startIndex[1]:endIndex[1], startIndex[2]:endIndex[2]] <-
               imageArray[startIndex[1]:endIndex[1], startIndex[2]:endIndex[2]] +
               patchList[[count]]
+            }
           count <- count + 1
           }
         }
-      if ( !ismask )
+      if( !domainImageIsMask )
+        {
         for( i in seq_len( imageSize[1] ) )
           {
           for( j in seq_len( imageSize[2] ) )
@@ -227,6 +247,7 @@ reconstructImageFromPatches <- function( patchList, domainImage,
             imageArray[i, j] <- imageArray[i, j] / factor
             }
           }
+        }
       } else {
       countArray <- array( 0, dim = dim( imageArray ) )
       for( i in seq.int( from = 1, to = imageSize[1] - patchSize[1] + 1,
@@ -268,37 +289,43 @@ reconstructImageFromPatches <- function( patchList, domainImage,
             startIndex <- c( i, j, k )
             endIndex <- startIndex + patchSize - 1
 
-            doAdd = TRUE
-            if ( ismask  ) {
-              if ( maskarr[
-                startIndex[1]:endIndex[1],
-                    startIndex[2]:endIndex[2], startIndex[3]:endIndex[3] ][mid[1],mid[2],mid[3]] != 1 ) doAdd = FALSE
+            doAdd <- TRUE
+            if( domainImageIsMask )
+              {
+              if( maskArray[startIndex[1]:endIndex[1], startIndex[2]:endIndex[2],
+                startIndex[3]:endIndex[3]][mid[1], mid[2], mid[3]] == 0 )
+                {
+                doAdd <- FALSE
+                }
               }
-            if ( doAdd )
+
+            if( doAdd )
+              {
               imageArray[startIndex[1]:endIndex[1],
                   startIndex[2]:endIndex[2], startIndex[3]:endIndex[3]] <-
                 imageArray[startIndex[1]:endIndex[1],
                     startIndex[2]:endIndex[2], startIndex[3]:endIndex[3]] +
                 patchList[[count]]
-
-            count <- count + 1
+              count <- count + 1
+              }
             }
           }
         }
 
-      if ( !ismask )
-        for( i in seq_len( imageSize[1] ) )
+      if( !domainImageIsMask )
         {
-        for( j in seq_len( imageSize[2] ) )
+        for( i in seq_len( imageSize[1] ) )
           {
-          for( k in seq_len( imageSize[3] ) )
+          for( j in seq_len( imageSize[2] ) )
             {
-            factor <- min( i, patchSize[1], imageSize[1] - i + 1 ) *
-              min( j, patchSize[2], imageSize[2] - j + 1 ) *
-              min( k, patchSize[3], imageSize[3] - k + 1 )
+            for( k in seq_len( imageSize[3] ) )
+              {
+              factor <- min( i, patchSize[1], imageSize[1] - i + 1 ) *
+                min( j, patchSize[2], imageSize[2] - j + 1 ) *
+                min( k, patchSize[3], imageSize[3] - k + 1 )
 
-            imageArray[i, j, k] <- imageArray[i, j, k] / factor
-            count <- count + 1
+              imageArray[i, j, k] <- imageArray[i, j, k] / factor
+              }
             }
           }
         }

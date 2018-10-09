@@ -4,10 +4,11 @@
 \alias{reconstructImageFromPatches}
 \title{Reconstruct image from a list of patches.}
 \usage{
-reconstructImageFromPatches(patchList, domainImage, strideLength = 1)
+reconstructImageFromPatches(patchList, domainImage, strideLength = 1,
+  domainImageIsMask = FALSE)
 }
 \arguments{
-\item{patchList}{list of overlapping patches defining an image.}
+\item{patchList}{List of overlapping patches defining an image.}
 
 \item{domainImage}{Image or mask to define the geometric information of the
 reconstructed image.  If this is a mask image, the reconstruction will only
@@ -15,6 +16,9 @@ use patches in the mask.}
 
 \item{strideLength}{Defines the sequential patch overlap for
 maxNumberOfPatches = all.  Can be a image-dimensional vector or a scalar.}
+
+\item{domainImageIsMask}{boolean specifying whether the domain image is a
+mask used to limit the region of reconstruction from the patches.}
 }
 \value{
 an ANTs image.
