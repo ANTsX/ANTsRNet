@@ -5,7 +5,7 @@
 \title{Unsupervised variational autoencoder segmentation}
 \usage{
 uvaSeg(image, model, k, mask, returnProbabilities = FALSE,
-  batchSize = 1028, verbose = FALSE)
+  batchSize = 1028, standardize = TRUE, verbose = FALSE)
 }
 \arguments{
 \item{image}{input image}
@@ -19,6 +19,8 @@ uvaSeg(image, model, k, mask, returnProbabilities = FALSE,
 \item{returnProbabilities}{boolean}
 
 \item{batchSize}{for the prediction}
+
+\item{standardize}{boolean controlling whether patches are standardized}
 
 \item{verbose}{boolean}
 }

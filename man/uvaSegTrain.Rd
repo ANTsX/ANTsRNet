@@ -4,7 +4,7 @@
 \alias{uvaSegTrain}
 \title{Unsupervised variational autoencoder training}
 \usage{
-uvaSegTrain(patches, k, convControl)
+uvaSegTrain(patches, k, convControl, standardize = TRUE)
 }
 \arguments{
 \item{patches}{input patch list, see \code{extractImagePatches}}
@@ -13,13 +13,19 @@ uvaSegTrain(patches, k, convControl)
 
 \item{convControl}{optional named list with control parameters ( see code )
 \itemize{
+\item{hiddenAct}{ activation function for hidden layers eg relu}
 \item{img_chns}{ eg 1 number of channels}
 \item{filters}{ eg 32L}
 \item{conv_kern_sz}{ eg 1L}
 \item{front_kernel_size}{ eg 2L}
 \item{intermediate_dim}{ eg 32L}
 \item{epochs}{ eg 50}
+\item{batch_size}{ eg 32}
+\item{squashAct}{ activation function for squash layers eg sigmoid}
+\item{tensorboardLogDirectory}{ tensorboard logs stored here }
 }}
+
+\item{standardize}{boolean controlling whether patches are standardized}
 }
 \value{
 model is output

@@ -105,7 +105,8 @@ followed by k-means clustering to produce a segmentation and probabilities.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>uvaSeg</span>(<span class='no'>image</span>, <span class='no'>model</span>, <span class='no'>k</span>, <span class='no'>mask</span>)</pre>
+    <pre class="usage"><span class='fu'>uvaSeg</span>(<span class='no'>image</span>, <span class='no'>model</span>, <span class='no'>k</span>, <span class='no'>mask</span>, <span class='kw'>returnProbabilities</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>batchSize</span> <span class='kw'>=</span> <span class='fl'>1028</span>, <span class='kw'>standardize</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -126,6 +127,22 @@ followed by k-means clustering to produce a segmentation and probabilities.</p>
       <th>mask</th>
       <td><p>defining output segmentation space</p></td>
     </tr>
+    <tr>
+      <th>returnProbabilities</th>
+      <td><p>boolean</p></td>
+    </tr>
+    <tr>
+      <th>batchSize</th>
+      <td><p>for the prediction</p></td>
+    </tr>
+    <tr>
+      <th>standardize</th>
+      <td><p>boolean controlling whether patches are standardized</p></td>
+    </tr>
+    <tr>
+      <th>verbose</th>
+      <td><p>boolean</p></td>
+    </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -137,7 +154,10 @@ followed by k-means clustering to produce a segmentation and probabilities.</p>
     <pre class="examples"><div class='input'>
 <span class='fu'>library</span>(<span class='no'>ANTsR</span>)
 <span class='no'>patch</span> <span class='kw'>&lt;-</span> <span class='fu'>ri</span>( <span class='fl'>1</span> ) <span class='kw'>%&gt;%</span> <span class='fu'>resampleImage</span>( <span class='fl'>4</span> ) <span class='kw'>%&gt;%</span> <span class='fu'>iMath</span>( <span class='st'>"Normalize"</span> ) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='extractImagePatches.html'>extractImagePatches</a></span>( <span class='fu'>c</span>(<span class='fl'>3</span>,<span class='fl'>3</span>), <span class='kw'>maxNumberOfPatches</span> <span class='kw'>=</span> <span class='fl'>50</span> )</div><div class='output co'>#&gt; <span class='error'>Error in ri(1): could not find function "ri"</span></div><div class='input'><span class='no'>uvaSegModel</span> <span class='kw'>=</span> <span class='fu'><a href='uvaSegTrain.html'>uvaSegTrain</a></span>( <span class='no'>patch</span>, <span class='fl'>6</span> )</div><div class='output co'>#&gt; <span class='error'>Error in uvaSegTrain(patch, 6): object 'patch' not found</span></div><div class='input'><span class='no'>tarImg</span> <span class='kw'>=</span> <span class='fu'>ri</span>( <span class='fl'>3</span> ) <span class='kw'>%&gt;%</span> <span class='fu'>resampleImage</span>( <span class='fl'>4</span> )</div><div class='output co'>#&gt; <span class='error'>Error in ri(3): could not find function "ri"</span></div><div class='input'><span class='no'>uvaSegmentation</span> <span class='kw'>=</span> <span class='fu'>uvaSeg</span>(<span class='no'>tarImg</span>, <span class='no'>uvaSegModel</span>, <span class='kw'>k</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='fu'>getMask</span>( <span class='no'>tarImg</span> ) )</div><div class='output co'>#&gt; <span class='warning'>Warning: No function found for Rcpp::export attribute at file427b53fe50ac.cpp:5</span></div><div class='output co'>#&gt; <span class='error'>Error in uvaSeg(tarImg, uvaSegModel, k = 3, getMask(tarImg)): object 'uvaSegModel' not found</span></div><div class='input'>
+  <span class='fu'><a href='extractImagePatches.html'>extractImagePatches</a></span>( <span class='fu'>c</span>(<span class='fl'>3</span>,<span class='fl'>3</span>), <span class='kw'>maxNumberOfPatches</span> <span class='kw'>=</span> <span class='fl'>50</span> )
+<span class='no'>uvaSegModel</span> <span class='kw'>=</span> <span class='fu'><a href='uvaSegTrain.html'>uvaSegTrain</a></span>( <span class='no'>patch</span>, <span class='fl'>6</span> )
+<span class='no'>tarImg</span> <span class='kw'>=</span> <span class='fu'>ri</span>( <span class='fl'>3</span> ) <span class='kw'>%&gt;%</span> <span class='fu'>resampleImage</span>( <span class='fl'>4</span> )
+<span class='no'>uvaSegmentation</span> <span class='kw'>=</span> <span class='fu'>uvaSeg</span>(<span class='no'>tarImg</span>, <span class='no'>uvaSegModel</span>, <span class='kw'>k</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='fu'>getMask</span>( <span class='no'>tarImg</span> ) )</div><div class='output co'>#&gt; <span class='warning'>Warning: No function found for Rcpp::export attribute at file8c614ac45b3a.cpp:5</span></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

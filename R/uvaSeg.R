@@ -7,13 +7,18 @@
 #' @param k number of embedding layers
 #' @param convControl optional named list with control parameters ( see code )
 #' \itemize{
+#' \item{hiddenAct}{ activation function for hidden layers eg relu}
 #' \item{img_chns}{ eg 1 number of channels}
 #' \item{filters}{ eg 32L}
 #' \item{conv_kern_sz}{ eg 1L}
 #' \item{front_kernel_size}{ eg 2L}
 #' \item{intermediate_dim}{ eg 32L}
 #' \item{epochs}{ eg 50}
+#' \item{batch_size}{ eg 32}
+#' \item{squashAct}{ activation function for squash layers eg sigmoid}
+#' \item{tensorboardLogDirectory}{ tensorboard logs stored here }
 #' }
+#' @param standardize boolean controlling whether patches are standardized
 #' @return model is output
 #' @author Avants BB
 #' @examples
@@ -23,7 +28,7 @@
 #' mdl = uvaSegTrain( patch, 3 )
 #'
 #' @export uvaSegTrain
-uvaSegTrain <- function( patches, k, convControl ) {
+uvaSegTrain <- function( patches, k, convControl, standardize = TRUE ) {
 
   ##############################################################################
   # unsupervised segmentation - variational aec
@@ -198,8 +203,13 @@ uvaSegTrain <- function( patches, k, convControl ) {
   mytrn = length( patches )
   x_train = array( dim =  c( mytrn, p, p, img_chns   ) )
   for ( i in 1:mytrn ) {
-    x_train[ i, , , 1 ] = patches[[i]]
-    }
+    if ( standardize ) {
+      mymu = mean( patches[[i]] )
+      mysd = sd( patches[[i]] )
+      if ( mysd == 0 ) mysd = 1
+      x_train[ i, , , 1 ] = ( patches[[i]] - mymu ) / mysd
+    } else x_train[ i, , , 1 ] = patches[[i]]
+  }
 
   #### Model Fitting ####
   if ( ! is.na(  tensorboardLogDirectory  ) ) {
@@ -232,7 +242,7 @@ uvaSegTrain <- function( patches, k, convControl ) {
   gen_x_decoded_mean_squash <- decoder_mean_squash(gen_x_decoded_relu)
   generator <- keras_model(gen_decoder_input, gen_x_decoded_mean_squash)
 
-  return( list( encoder = encoder, generator = generator ) )
+  return( list( encoder = encoder, generator = generator, vae = vae ) )
 
 }
 
@@ -249,6 +259,7 @@ uvaSegTrain <- function( patches, k, convControl ) {
 #' @param mask defining output segmentation space
 #' @param returnProbabilities boolean
 #' @param batchSize for the prediction
+#' @param standardize boolean controlling whether patches are standardized
 #' @param verbose boolean
 #' @return segmentation and probability images are output
 #' @author Avants BB
@@ -269,6 +280,7 @@ uvaSeg <- function( image,
   mask,
   returnProbabilities = FALSE,
   batchSize = 1028,
+  standardize = TRUE,
   verbose = FALSE )
 {
   normimg <-function( img ) {
@@ -329,7 +341,12 @@ NumericMatrix fuzzyClustering(NumericMatrix data, NumericMatrix centers, int m) 
   x_test = array(
     dim =  c( ncol( patches ), p, p, img_chns   ) )
   for ( i in 1:ncol( patches ) ) {
-    x_test[ i, , , 1] = patches[ , i ]
+    if ( standardize ) {
+      mymu = mean( patches[ , i ] )
+      mysd = sd( patches[ , i ] )
+      if ( mysd == 0 ) mysd = 1
+      x_test[ i, , , 1] = ( patches[ , i ] - mymu ) / mysd
+    } else x_test[ i, , , 1] = patches[ , i ]
     }
   rm( patches )
   invisible( gc() )
