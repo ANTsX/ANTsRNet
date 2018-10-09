@@ -4,7 +4,8 @@
 \alias{uvaSeg}
 \title{Unsupervised variational autoencoder segmentation}
 \usage{
-uvaSeg(image, model, k, mask)
+uvaSeg(image, model, k, mask, returnProbabilities = FALSE,
+  verbose = FALSE)
 }
 \arguments{
 \item{image}{input image}
@@ -14,6 +15,10 @@ uvaSeg(image, model, k, mask)
 \item{k}{number of clusters or cluster centers}
 
 \item{mask}{defining output segmentation space}
+
+\item{returnProbabilities}{boolean}
+
+\item{verbose}{boolean}
 }
 \value{
 segmentation and probability images are output

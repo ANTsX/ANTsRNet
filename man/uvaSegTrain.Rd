@@ -11,7 +11,15 @@ uvaSegTrain(patches, k, convControl)
 
 \item{k}{number of embedding layers}
 
-\item{convControl}{optional named list with control parameters ( see code )}
+\item{convControl}{optional named list with control parameters ( see code )
+\itemize{
+\item{img_chns}{ eg 1 number of channels}
+\item{filters}{ eg 32L}
+\item{conv_kern_sz}{ eg 1L}
+\item{front_kernel_size}{ eg 2L}
+\item{intermediate_dim}{ eg 32L}
+\item{epochs}{ eg 50}
+}}
 }
 \value{
 model is output

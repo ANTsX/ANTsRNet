@@ -6,6 +6,14 @@
 #' @param patches input patch list, see \code{extractImagePatches}
 #' @param k number of embedding layers
 #' @param convControl optional named list with control parameters ( see code )
+#' \itemize{
+#' \item{img_chns}{ eg 1 number of channels}
+#' \item{filters}{ eg 32L}
+#' \item{conv_kern_sz}{ eg 1L}
+#' \item{front_kernel_size}{ eg 2L}
+#' \item{intermediate_dim}{ eg 32L}
+#' \item{epochs}{ eg 50}
+#' }
 #' @return model is output
 #' @author Avants BB
 #' @examples
@@ -33,8 +41,16 @@ uvaSegTrain <- function( patches, k, convControl ) {
   front_kernel_size = c(2L, 2L)
   latent_dim <- as.integer( k )
   intermediate_dim <- 64L
-  epsilon_std <- 1.0
   epochs = 50
+  epsilon_std <- 1.0
+  if ( ! missing( "convControl" ) ) {
+    img_chns <- as.integer( convControl$img_chns ) # FIXME should generalize
+    filters <- as.integer( convControl$filters )
+    conv_kern_sz <- as.integer( convControl$conv_kern_sz )
+    front_kernel_size = convControl$front_kernel_size
+    intermediate_dim <- as.integer( convControl$intermediate_dim )
+    epochs = convControl$epochs
+  }
   # training parameters
   batch_size <- min( c( 100L, round( length( patches )/2 ) ) )
   output_shape <- c( batch_size, p, p, filters )
@@ -156,7 +172,8 @@ uvaSegTrain <- function( patches, k, convControl ) {
 
   ## variational autoencoder
   vae <- keras_model(x, x_decoded_mean_squash)
-  vae %>% compile( optimizer = optimizer_adam( lr = 0.0001 ), loss = vae_loss )
+#  vae %>% compile( optimizer = optimizer_adam( lr = 0.0001 ), loss = vae_loss )
+  vae %>% compile( optimizer = "rmsprop", loss = vae_loss )
 
   ## build a generator that can sample from the learned distribution
   ## this reuses the layers trained above
@@ -215,6 +232,8 @@ uvaSegTrain <- function( patches, k, convControl ) {
 #' @param model the model output from \code{uvaSegTrain}
 #' @param k number of clusters or cluster centers
 #' @param mask defining output segmentation space
+#' @param returnProbabilities boolean
+#' @param verbose boolean
 #' @return segmentation and probability images are output
 #' @author Avants BB
 #' @examples
@@ -228,7 +247,13 @@ uvaSegTrain <- function( patches, k, convControl ) {
 #'
 #' @export uvaSeg
 #' @importFrom Rcpp cppFunction
-uvaSeg <- function( image, model, k,  mask ) {
+uvaSeg <- function( image,
+  model,
+  k,
+  mask,
+  returnProbabilities = FALSE,
+  verbose = FALSE )
+{
   normimg <-function( img ) {
     iMath( img, "Normalize" )
     }
@@ -276,53 +301,43 @@ NumericMatrix fuzzyClustering(NumericMatrix data, NumericMatrix centers, int m) 
   }
   return result;
 } ")
-  p = as.integer( model$encoder$input_shape[[ 2 ]] )
-  patches = extractImagePatches( normimg( image ),
-    c( p, p ), maxNumberOfPatches = 'all',
-    strideLength = 1 )
   img_chns = 1L
-  x_test = array( dim =  c( length( patches ), p, p, img_chns   ) )
-  for ( i in 1:length( patches ) ) {
-    x_test[ i, , , 1 ] = patches[[i]]
+  p = as.integer( model$encoder$input_shape[[ 2 ]] )
+  patches = getNeighborhoodInMask(
+    image = image,
+    mask = mask,
+    radius = rep( floor( p / 2 ), image@dimension ),
+    boundary.condition = "mean" )
+  img_chns = 1L
+  x_test = array(
+    dim =  c( ncol( patches ), p, p, img_chns   ) )
+  for ( i in 1:ncol( patches ) ) {
+    x_test[ i, , , 1] = patches[ , i ]
     }
+  rm( patches )
+  invisible( gc() )
   ###################################################################
-  x_test_encoded <- predict( model$encoder, x_test, batch_size = 1000 )
-  kmAlg = stats::kmeans( x_test_encoded, k )
+  if ( verbose ) print("begin predict")
+  x_test_encoded <- predict( model$encoder, x_test, batch_size = 10000 )
+  wkmalg = "Forgy"
+  if ( verbose ) print("begin km")
+  kmAlg = stats::kmeans( x_test_encoded, k,        iter.max=30 )
+  kmAlg = stats::kmeans( x_test_encoded,
+    kmAlg$centers[ order(kmAlg$centers[,1])  ,  ], iter.max=30 )
   mykm = kmAlg$cluster
-  myprobs = fuzzyClustering( x_test_encoded, kmAlg$centers, m=2 )
+  segmentation = makeImage( mask, mykm )
   probs = list()
   mid = round( p / 2 )
-  for ( myk in 1:ncol( myprobs ) ) {
-    for ( i in 1:length( patches ) ) {
-      temp = array( 0, dim=c(p,p) )
-      wm = myprobs[i,myk]
-      temp[mid,mid] = wm
-      patches[[i]][,] = temp
-      }
-    if ( ! missing( mask ) )
-      imageReconstructed <- reconstructImageFromPatches(
-        patches, mask, strideLength=1 )
-      else imageReconstructed <- reconstructImageFromPatches(
-          patches, image, strideLength=1 )
-    probs[[ myk ]] = imageReconstructed
-    }
-
-# segmentation image
-  for ( i in 1:length( patches ) ) {
-    temp = array( 0, dim=c(p,p) )
-    wm = mykm[i]
-    temp[mid,mid] = wm
-    patches[[i]][,] = temp
-    }
-  if ( ! missing( mask ) )
-    imageReconstructed <- reconstructImageFromPatches(
-      patches, mask, strideLength=1 )
-    else imageReconstructed <- reconstructImageFromPatches(
-        patches, image, strideLength=1 )
-
+  if ( returnProbabilities ) {
+    if ( verbose ) print("begin probs")
+    myprobs = fuzzyClustering( x_test_encoded, kmAlg$centers, m=2 )
+    for ( k in 1:ncol( myprobs ) )
+      probs[[ k ]] = makeImage( mask, myprobs[ , k ] )
+    if ( verbose ) print("end probs")
+  }
   return(
     list(
-      segmentation = imageReconstructed,
+      segmentation = segmentation,
       probabilities = probs  )
       )
 }
