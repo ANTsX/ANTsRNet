@@ -23,7 +23,6 @@
 #' mdl = uvaSegTrain( patch, 3 )
 #'
 #' @export uvaSegTrain
-#### @useDynLib ANTsRNet
 uvaSegTrain <- function( patches, k, convControl ) {
 
   ##############################################################################
@@ -43,16 +42,23 @@ uvaSegTrain <- function( patches, k, convControl ) {
   intermediate_dim <- 64L
   epochs = 50
   epsilon_std <- 1.0
+  batch_size = 32
+  squashAct = "sigmoid"
+  tensorboardLogDirectory = NA
   if ( ! missing( "convControl" ) ) {
+    hiddenAct = convControl$hiddenAct
     img_chns <- as.integer( convControl$img_chns ) # FIXME should generalize
     filters <- as.integer( convControl$filters )
     conv_kern_sz <- as.integer( convControl$conv_kern_sz )
     front_kernel_size = convControl$front_kernel_size
     intermediate_dim <- as.integer( convControl$intermediate_dim )
     epochs = convControl$epochs
+    batch_size = convControl$batch_size
+    squashAct = convControl$squashAct
+    tensorboardLogDirectory = convControl$tensorboardLogDirectory
   }
   # training parameters
-  batch_size <- min( c( 100L, round( length( patches )/2 ) ) )
+  batch_size <- min( c( batch_size, round( length( patches )/2 ) ) )
   output_shape <- c( batch_size, p, p, filters )
 
   #### Model Construction ####
@@ -148,7 +154,7 @@ uvaSegTrain <- function( patches, k, convControl ) {
     kernel_size = c(1L, 1L),
     strides = c(1L, 1L),
     padding = "same",
-    activation = "sigmoid"
+    activation = squashAct
   )
 
   hidden_decoded <- decoder_hidden(z)
@@ -196,12 +202,21 @@ uvaSegTrain <- function( patches, k, convControl ) {
     }
 
   #### Model Fitting ####
-  vae %>% fit(
-    x_train, x_train,
-    shuffle = TRUE,
-    epochs = epochs,
-    batch_size = batch_size
-  )
+  if ( ! is.na(  tensorboardLogDirectory  ) ) {
+    keras::tensorboard( tensorboardLogDirectory, launch_browser = FALSE )
+    vae %>% fit(
+      x_train, x_train,
+      shuffle = TRUE,
+      epochs = epochs,
+      batch_size = batch_size,
+      callbacks = callback_tensorboard( tensorboardLogDirectory )
+    )
+  }
+
+  if ( is.na(  tensorboardLogDirectory  ) )
+    vae %>% fit(
+      x_train, x_train, shuffle = TRUE, epochs = epochs, batch_size = batch_size
+    )
 
   ## encoder: model to project inputs on the latent space
   encoder <- keras_model( x, z_mean )
@@ -233,6 +248,7 @@ uvaSegTrain <- function( patches, k, convControl ) {
 #' @param k number of clusters or cluster centers
 #' @param mask defining output segmentation space
 #' @param returnProbabilities boolean
+#' @param batchSize for the prediction
 #' @param verbose boolean
 #' @return segmentation and probability images are output
 #' @author Avants BB
@@ -252,6 +268,7 @@ uvaSeg <- function( image,
   k,
   mask,
   returnProbabilities = FALSE,
+  batchSize = 1028,
   verbose = FALSE )
 {
   normimg <-function( img ) {
@@ -303,7 +320,7 @@ NumericMatrix fuzzyClustering(NumericMatrix data, NumericMatrix centers, int m) 
 } ")
   img_chns = 1L
   p = as.integer( model$encoder$input_shape[[ 2 ]] )
-  patches = getNeighborhoodInMask(
+  patches = ANTsRCore::getNeighborhoodInMask(
     image = image,
     mask = mask,
     radius = rep( floor( p / 2 ), image@dimension ),
@@ -318,12 +335,12 @@ NumericMatrix fuzzyClustering(NumericMatrix data, NumericMatrix centers, int m) 
   invisible( gc() )
   ###################################################################
   if ( verbose ) print("begin predict")
-  x_test_encoded <- predict( model$encoder, x_test, batch_size = 10000 )
+  x_test_encoded <- predict( model$encoder, x_test, batch_size = batchSize )
   wkmalg = "Forgy"
   if ( verbose ) print("begin km")
   kmAlg = stats::kmeans( x_test_encoded, k,        iter.max=30 )
   kmAlg = stats::kmeans( x_test_encoded,
-    kmAlg$centers[ order(kmAlg$centers[,1])  ,  ], iter.max=30 )
+    kmAlg$centers[ order(kmAlg$centers[,1]),  ], iter.max=30 )
   mykm = kmAlg$cluster
   segmentation = makeImage( mask, mykm )
   probs = list()
@@ -337,7 +354,8 @@ NumericMatrix fuzzyClustering(NumericMatrix data, NumericMatrix centers, int m) 
   }
   return(
     list(
-      segmentation = segmentation,
-      probabilities = probs  )
+      segmentation  = segmentation,
+      probabilities = probs,
+      embedding     = x_test_encoded   )
       )
 }

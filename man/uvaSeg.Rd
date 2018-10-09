@@ -5,7 +5,7 @@
 \title{Unsupervised variational autoencoder segmentation}
 \usage{
 uvaSeg(image, model, k, mask, returnProbabilities = FALSE,
-  verbose = FALSE)
+  batchSize = 1028, verbose = FALSE)
 }
 \arguments{
 \item{image}{input image}
@@ -17,6 +17,8 @@ uvaSeg(image, model, k, mask, returnProbabilities = FALSE,
 \item{mask}{defining output segmentation space}
 
 \item{returnProbabilities}{boolean}
+
+\item{batchSize}{for the prediction}
 
 \item{verbose}{boolean}
 }
