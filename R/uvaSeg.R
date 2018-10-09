@@ -3,7 +3,7 @@
 #' Trains a variational autoencoding with a convolutional network. This is
 #' followed by k-means clustering to produce a segmentation and probabilities.
 #'
-#' @param patches input patch list, see \code{extractImagePatches}
+#' @param patches input patch matrix, see \code{getNeighborhoodInMask}
 #' @param k number of embedding layers
 #' @param convControl optional named list with control parameters ( see code )
 #' \itemize{
@@ -22,10 +22,13 @@
 #' @return model is output
 #' @author Avants BB
 #' @examples
+#'
 #' library(ANTsR)
-#' patch <- ri( 1 ) %>% resampleImage( 4 ) %>% iMath( "Normalize" ) %>%
-#'   extractImagePatches( c(3,3), maxNumberOfPatches = 50 )
-#' mdl = uvaSegTrain( patch, 3 )
+#' img <- ri( 1 ) %>% resampleImage( 4 ) %>% iMath( "Normalize" )
+#' mask = randomMask( getMask( img ), 50 )
+#' r = c( 3, 3 )
+#' patch = getNeighborhoodInMask( img, mask, r, boundary.condition = "NA" )
+#' uvaSegModel = uvaSegTrain( patch, 6 )
 #'
 #' @export uvaSegTrain
 uvaSegTrain <- function( patches, k, convControl, standardize = TRUE ) {
@@ -33,7 +36,7 @@ uvaSegTrain <- function( patches, k, convControl, standardize = TRUE ) {
   ##############################################################################
   # unsupervised segmentation - variational aec
   ##############################################################################
-  p <- as.integer( dim( patches[[1]] )[1] ) # patchSize
+  p <- as.integer( sqrt( nrow( patches ) ) ) # patchSize
   #### Parameterization ####
   act1 = 'relu'
   hiddenAct = 'relu'
@@ -62,6 +65,24 @@ uvaSegTrain <- function( patches, k, convControl, standardize = TRUE ) {
     squashAct = convControl$squashAct
     tensorboardLogDirectory = convControl$tensorboardLogDirectory
   }
+
+
+  #### Data Preparation ####
+  nona <-function( x ) {
+    x[ is.na( x ) ] = 0
+    return( x )
+  }
+  x_train = array( dim =  c( ncol( patches ), p, p, img_chns   ) )
+  for ( i in 1:ncol( patches ) ) {
+    locp = nona( patches[ , i ] )
+    if ( standardize ) {
+      mymu = mean( locp, na.rm=T )
+      mysd = sd( locp, na.rm=T )
+      if ( mysd == 0 ) mysd = 1
+      x_train[ i, , , 1] = ( locp - mymu ) / mysd
+    } else x_train[ i, , , 1] = locp
+    }
+
   # training parameters
   batch_size <- min( c( batch_size, round( length( patches )/2 ) ) )
   output_shape <- c( batch_size, p, p, filters )
@@ -199,18 +220,6 @@ uvaSegTrain <- function( patches, k, convControl, standardize = TRUE ) {
   generator <- keras_model(gen_decoder_input, gen_x_decoded_mean_squash)
 
 
-  #### Data Preparation ####
-  mytrn = length( patches )
-  x_train = array( dim =  c( mytrn, p, p, img_chns   ) )
-  for ( i in 1:mytrn ) {
-    if ( standardize ) {
-      mymu = mean( patches[[i]] )
-      mysd = sd( patches[[i]] )
-      if ( mysd == 0 ) mysd = 1
-      x_train[ i, , , 1 ] = ( patches[[i]] - mymu ) / mysd
-    } else x_train[ i, , , 1 ] = patches[[i]]
-  }
-
   #### Model Fitting ####
   if ( ! is.na(  tensorboardLogDirectory  ) ) {
     keras::tensorboard( tensorboardLogDirectory, launch_browser = FALSE )
@@ -266,8 +275,9 @@ uvaSegTrain <- function( patches, k, convControl, standardize = TRUE ) {
 #' @examples
 #'
 #' library(ANTsR)
-#' patch <- ri( 1 ) %>% resampleImage( 4 ) %>% iMath( "Normalize" ) %>%
-#'   extractImagePatches( c(3,3), maxNumberOfPatches = 50 )
+#' img <- ri( 1 ) %>% resampleImage( 4 ) %>% iMath( "Normalize" )
+#' mask = randomMask( getMask( img ), 50 )
+#' patch = getNeighborhoodInMask( img, mask, c(3,3), boundary.condition = "NA" )
 #' uvaSegModel = uvaSegTrain( patch, 6 )
 #' tarImg = ri( 3 ) %>% resampleImage( 4 )
 #' uvaSegmentation = uvaSeg(tarImg, uvaSegModel, k = 3, getMask( tarImg ) )
@@ -336,17 +346,22 @@ NumericMatrix fuzzyClustering(NumericMatrix data, NumericMatrix centers, int m) 
     image = image,
     mask = mask,
     radius = rep( floor( p / 2 ), image@dimension ),
-    boundary.condition = "mean" )
+    boundary.condition = "NA" )
   img_chns = 1L
   x_test = array(
     dim =  c( ncol( patches ), p, p, img_chns   ) )
+  nona <-function( x ) {
+      x[ is.na( x ) ] = 0
+      return( x )
+    }
   for ( i in 1:ncol( patches ) ) {
+    locp = nona( patches[ , i ] )
     if ( standardize ) {
-      mymu = mean( patches[ , i ] )
-      mysd = sd( patches[ , i ] )
+      mymu = mean( locp, na.rm=T )
+      mysd = sd( locp, na.rm=T )
       if ( mysd == 0 ) mysd = 1
-      x_test[ i, , , 1] = ( patches[ , i ] - mymu ) / mysd
-    } else x_test[ i, , , 1] = patches[ , i ]
+      x_test[ i, , , 1] = ( locp - mymu ) / mysd
+    } else x_test[ i, , , 1] = locp
     }
   rm( patches )
   invisible( gc() )

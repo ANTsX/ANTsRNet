@@ -34,8 +34,9 @@ followed by k-means clustering to produce a segmentation and probabilities.
 \examples{
 
 library(ANTsR)
-patch <- ri( 1 ) \%>\% resampleImage( 4 ) \%>\% iMath( "Normalize" ) \%>\%
-  extractImagePatches( c(3,3), maxNumberOfPatches = 50 )
+img <- ri( 1 ) \%>\% resampleImage( 4 ) \%>\% iMath( "Normalize" )
+mask = randomMask( getMask( img ), 50 )
+patch = getNeighborhoodInMask( img, mask, c(3,3), boundary.condition = "NA" )
 uvaSegModel = uvaSegTrain( patch, 6 )
 tarImg = ri( 3 ) \%>\% resampleImage( 4 )
 uvaSegmentation = uvaSeg(tarImg, uvaSegModel, k = 3, getMask( tarImg ) )

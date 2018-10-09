@@ -7,7 +7,7 @@
 uvaSegTrain(patches, k, convControl, standardize = TRUE)
 }
 \arguments{
-\item{patches}{input patch list, see \code{extractImagePatches}}
+\item{patches}{input patch matrix, see \code{getNeighborhoodInMask}}
 
 \item{k}{number of embedding layers}
 
@@ -35,10 +35,13 @@ Trains a variational autoencoding with a convolutional network. This is
 followed by k-means clustering to produce a segmentation and probabilities.
 }
 \examples{
+
 library(ANTsR)
-patch <- ri( 1 ) \%>\% resampleImage( 4 ) \%>\% iMath( "Normalize" ) \%>\%
-  extractImagePatches( c(3,3), maxNumberOfPatches = 50 )
-mdl = uvaSegTrain( patch, 3 )
+img <- ri( 1 ) \%>\% resampleImage( 4 ) \%>\% iMath( "Normalize" )
+mask = randomMask( getMask( img ), 50 )
+r = c( 3, 3 )
+patch = getNeighborhoodInMask( img, mask, r, boundary.condition = "NA" )
+uvaSegModel = uvaSegTrain( patch, 6 )
 
 }
 \author{
