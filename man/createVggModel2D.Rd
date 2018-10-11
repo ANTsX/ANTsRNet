@@ -57,73 +57,39 @@ implementation:
 }
 \examples{
 # Simple examples, must run successfully and quickly. These will be tested.
-\dontrun{ 
+\dontrun{
 
- library( ANTsR )
+library( keras )
 
- imageIDs <- c( "r16", "r27", "r30", "r62", "r64", "r85" )
+mnistData <- dataset_mnist()
 
- # Perform simple 3-tissue segmentation.  For convenience we are going 
- 
- segmentationLabels <- c( 1, 2, 3 )
- 
- images <- list()
- kmeansSegs <- list()
+numberOfLabels <- length( unique( mnistData$train$y ) )
 
- trainingImageArrays <- list()
- trainingMaskArrays <- list()
+X_train <- array( mnistData$train$x, dim = c( dim( mnistData$train$x ), 1 ) )
+Y_train <- keras::to_categorical( mnistData$train$y, numberOfLabels )
 
- for( i in 1:length( imageIDs ) )
-   {
-   cat( "Processing image", imageIDs[i], "\\n" )
-   images[[i]] <- antsImageRead( getANTsRData( imageIDs[i] ) )
-   mask <- getMask( images[[i]] )
-   kmeansSegs[[i]] <- kmeansSegmentation( images[[i]], 
-     length( segmentationLabels ), mask, mrf = 0.0 )$segmentation
+# we add a dimension of 1 to specify the channel size
+inputImageSize <- c( dim( mnistData$train$x )[2:3], 1 )
 
-   trainingImageArrays[[i]] <- as.array( images[[i]] )
-   trainingMaskArrays[[i]] <- as.array( mask )
-   }
- 
- # reshape the training data to the format expected by keras
- 
- trainingLabelData <- abind( trainingMaskArrays, along = 3 )  
- trainingLabelData <- aperm( trainingLabelData, c( 3, 1, 2 ) )
+vggModel <- createVggModel2D( inputImageSize = inputImageSize,
+  numberOfClassificationLabels = numberOfLabels, layers = c( 1, 4, 4 ),
+  lowestResolution = 14 )
 
- trainingData <- abind( trainingImageArrays, along = 3 )   
- trainingData <- aperm( trainingData, c( 3, 1, 2 ) )
- 
- # Perform an easy normalization which is important for U-net. 
- # Other normalization methods might further improve results.
- 
- trainingData <- ( trainingData - mean( trainingData ) ) / sd( trainingData )
+vggModel \%>\% compile( loss = 'categorical_crossentropy',
+  optimizer = optimizer_adam( lr = 0.0001 ),
+  metrics = c( 'categorical_crossentropy', 'accuracy' ) )
 
- X_train <- array( trainingData, dim = c( dim( trainingData ), 
-   numberOfClassificationLabels = length( segmentationLabels ) ) )
- Y_train <- array( trainingLabelData, dim = c( dim( trainingData ), 
-   numberOfClassificationLabels = length( segmentationLabels ) ) )
- 
- # Create the model
- 
- vggModel <- createVggModel2D( dim( trainingImageArrays[[1]] ), 
-   numberOfClassificationLabels = numberOfLabels, layers = 1:4 )
- 
- # Fit the model
- 
- track <- vggModel \%>\% fit( X_train, Y_train, 
-                epochs = 100, batch_size = 32, verbose = 1, shuffle = TRUE,
-                callbacks = list( 
-                  callback_model_checkpoint( paste0( baseDirectory, "weights.h5" ), 
-                     monitor = 'val_loss', save_best_only = TRUE ),
-                #  callback_early_stopping( patience = 2, monitor = 'loss' ),
-                  callback_reduce_lr_on_plateau( monitor = "val_loss", factor = 0.1 )
-                ), 
-                validation_split = 0.2 )
+track <- vggModel \%>\% fit( X_train, Y_train, epochs = 40, batch_size = 32,
+  verbose = 1, shuffle = TRUE, validation_split = 0.2 )
 
- # Save the model and/or save the model weights
+# Now test the model
 
- save_model_hdf5( unetModel, filepath = 'unetModel.h5' )
- save_model_weights_hdf5( unetModel, filepath = 'unetModelWeights.h5' ) )
+X_test <- array( mnistData$test$x, dim = c( dim( mnistData$test$x ), 1 ) )
+Y_test <- keras::to_categorical( mnistData$test$y, numberOfLabels )
+
+testingMetrics <- vggModel \%>\% evaluate( X_test, Y_test )
+predictedData <- vggModel \%>\% predict( X_test, verbose = 1 )
+
 }
 }
 \author{

@@ -177,74 +177,39 @@ implementation:</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'># Simple examples, must run successfully and quickly. These will be tested.
-</div># NOT RUN {
- library( ANTsR )
+</div><span class='co'># NOT RUN {</span>
+<span class='fu'>library</span>( <span class='no'>keras</span> )
 
- imageIDs <- c( "r16", "r27", "r30", "r62", "r64", "r85" )
+<span class='no'>mnistData</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/dataset_mnist'>dataset_mnist</a></span>()
 
- # Perform simple 3-tissue segmentation.  For convenience we are going 
- 
- segmentationLabels <- c( 1, 2, 3 )
- 
- images <- list()
- kmeansSegs <- list()
+<span class='no'>numberOfLabels</span> <span class='kw'>&lt;-</span> <span class='fu'>length</span>( <span class='fu'>unique</span>( <span class='no'>mnistData</span>$<span class='no'>train</span>$<span class='no'>y</span> ) )
 
- trainingImageArrays <- list()
- trainingMaskArrays <- list()
+<span class='no'>X_train</span> <span class='kw'>&lt;-</span> <span class='fu'>array</span>( <span class='no'>mnistData</span>$<span class='no'>train</span>$<span class='no'>x</span>, <span class='kw'>dim</span> <span class='kw'>=</span> <span class='fu'>c</span>( <span class='fu'>dim</span>( <span class='no'>mnistData</span>$<span class='no'>train</span>$<span class='no'>x</span> ), <span class='fl'>1</span> ) )
+<span class='no'>Y_train</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>keras</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/to_categorical'>to_categorical</a></span>( <span class='no'>mnistData</span>$<span class='no'>train</span>$<span class='no'>y</span>, <span class='no'>numberOfLabels</span> )
 
- for( i in 1:length( imageIDs ) )
-   {
-   cat( "Processing image", imageIDs[i], "\n" )
-   images[[i]] <- antsImageRead( getANTsRData( imageIDs[i] ) )
-   mask <- getMask( images[[i]] )
-   kmeansSegs[[i]] <- kmeansSegmentation( images[[i]], 
-     length( segmentationLabels ), mask, mrf = 0.0 )$segmentation
+<span class='co'># we add a dimension of 1 to specify the channel size</span>
+<span class='no'>inputImageSize</span> <span class='kw'>&lt;-</span> <span class='fu'>c</span>( <span class='fu'>dim</span>( <span class='no'>mnistData</span>$<span class='no'>train</span>$<span class='no'>x</span> )[<span class='fl'>2</span>:<span class='fl'>3</span>], <span class='fl'>1</span> )
 
-   trainingImageArrays[[i]] <- as.array( images[[i]] )
-   trainingMaskArrays[[i]] <- as.array( mask )
-   }
- 
- # reshape the training data to the format expected by keras
- 
- trainingLabelData <- abind( trainingMaskArrays, along = 3 )  
- trainingLabelData <- aperm( trainingLabelData, c( 3, 1, 2 ) )
+<span class='no'>vggModel</span> <span class='kw'>&lt;-</span> <span class='fu'>createVggModel2D</span>( <span class='kw'>inputImageSize</span> <span class='kw'>=</span> <span class='no'>inputImageSize</span>,
+  <span class='kw'>numberOfClassificationLabels</span> <span class='kw'>=</span> <span class='no'>numberOfLabels</span>, <span class='kw'>layers</span> <span class='kw'>=</span> <span class='fu'>c</span>( <span class='fl'>1</span>, <span class='fl'>4</span>, <span class='fl'>4</span> ),
+  <span class='kw'>lowestResolution</span> <span class='kw'>=</span> <span class='fl'>14</span> )
 
- trainingData <- abind( trainingImageArrays, along = 3 )   
- trainingData <- aperm( trainingData, c( 3, 1, 2 ) )
- 
- # Perform an easy normalization which is important for U-net. 
- # Other normalization methods might further improve results.
- 
- trainingData <- ( trainingData - mean( trainingData ) ) / sd( trainingData )
+<span class='no'>vggModel</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/compile'>compile</a></span>( <span class='kw'>loss</span> <span class='kw'>=</span> <span class='st'>'categorical_crossentropy'</span>,
+  <span class='kw'>optimizer</span> <span class='kw'>=</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/optimizer_adam'>optimizer_adam</a></span>( <span class='kw'>lr</span> <span class='kw'>=</span> <span class='fl'>0.0001</span> ),
+  <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='fu'>c</span>( <span class='st'>'categorical_crossentropy'</span>, <span class='st'>'accuracy'</span> ) )
 
- X_train <- array( trainingData, dim = c( dim( trainingData ), 
-   numberOfClassificationLabels = length( segmentationLabels ) ) )
- Y_train <- array( trainingLabelData, dim = c( dim( trainingData ), 
-   numberOfClassificationLabels = length( segmentationLabels ) ) )
- 
- # Create the model
- 
- vggModel <- createVggModel2D( dim( trainingImageArrays[[1]] ), 
-   numberOfClassificationLabels = numberOfLabels, layers = 1:4 )
- 
- # Fit the model
- 
- track <- vggModel %>% fit( X_train, Y_train, 
-                epochs = 100, batch_size = 32, verbose = 1, shuffle = TRUE,
-                callbacks = list( 
-                  callback_model_checkpoint( paste0( baseDirectory, "weights.h5" ), 
-                     monitor = 'val_loss', save_best_only = TRUE ),
-                #  callback_early_stopping( patience = 2, monitor = 'loss' ),
-                  callback_reduce_lr_on_plateau( monitor = "val_loss", factor = 0.1 )
-                ), 
-                validation_split = 0.2 )
+<span class='no'>track</span> <span class='kw'>&lt;-</span> <span class='no'>vggModel</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/fit'>fit</a></span>( <span class='no'>X_train</span>, <span class='no'>Y_train</span>, <span class='kw'>epochs</span> <span class='kw'>=</span> <span class='fl'>40</span>, <span class='kw'>batch_size</span> <span class='kw'>=</span> <span class='fl'>32</span>,
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>shuffle</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>validation_split</span> <span class='kw'>=</span> <span class='fl'>0.2</span> )
 
- # Save the model and/or save the model weights
+<span class='co'># Now test the model</span>
 
- save_model_hdf5( unetModel, filepath = 'unetModel.h5' )
- save_model_weights_hdf5( unetModel, filepath = 'unetModelWeights.h5' ) )
-# }
-</pre>
+<span class='no'>X_test</span> <span class='kw'>&lt;-</span> <span class='fu'>array</span>( <span class='no'>mnistData</span>$<span class='no'>test</span>$<span class='no'>x</span>, <span class='kw'>dim</span> <span class='kw'>=</span> <span class='fu'>c</span>( <span class='fu'>dim</span>( <span class='no'>mnistData</span>$<span class='no'>test</span>$<span class='no'>x</span> ), <span class='fl'>1</span> ) )
+<span class='no'>Y_test</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>keras</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/to_categorical'>to_categorical</a></span>( <span class='no'>mnistData</span>$<span class='no'>test</span>$<span class='no'>y</span>, <span class='no'>numberOfLabels</span> )
+
+<span class='no'>testingMetrics</span> <span class='kw'>&lt;-</span> <span class='no'>vggModel</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/reexports'>evaluate</a></span>( <span class='no'>X_test</span>, <span class='no'>Y_test</span> )
+<span class='no'>predictedData</span> <span class='kw'>&lt;-</span> <span class='no'>vggModel</span> <span class='kw'>%&gt;%</span> <span class='fu'>predict</span>( <span class='no'>X_test</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>1</span> )
+
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
