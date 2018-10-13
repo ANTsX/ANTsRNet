@@ -19,6 +19,8 @@
 #' \item{tensorboardLogDirectory}{ tensorboard logs stored here }
 #' }
 #' @param standardize boolean controlling whether patches are standardized
+#' @param patches2 input target patch matrix, see \code{getNeighborhoodInMask},
+#' may be useful for super-resolution
 #' @return model is output
 #' @author Avants BB
 #' @examples
@@ -31,7 +33,11 @@
 #' uvaSegModel = uvaSegTrain( patch, 6 )
 #'
 #' @export uvaSegTrain
-uvaSegTrain <- function( patches, k, convControl, standardize = TRUE ) {
+uvaSegTrain <- function( patches,
+  k,
+  convControl,
+  standardize = TRUE,
+  patches2 ) {
 
   ##############################################################################
   # unsupervised segmentation - variational aec
@@ -47,7 +53,7 @@ uvaSegTrain <- function( patches, k, convControl, standardize = TRUE ) {
   conv_kern_sz <- 1L
   front_kernel_size = c(2L, 2L)
   latent_dim <- as.integer( k )
-  intermediate_dim <- 64L
+  intermediate_dim <- 512L
   epochs = 50
   epsilon_std <- 1.0
   batch_size = 32
@@ -82,6 +88,19 @@ uvaSegTrain <- function( patches, k, convControl, standardize = TRUE ) {
       x_train[ i, , , 1] = ( locp - mymu ) / mysd
     } else x_train[ i, , , 1] = locp
     }
+
+  if ( ! missing( patches2 ) ) {
+    x_train2 = array( dim =  c( ncol( patches2 ), p, p, img_chns   ) )
+    for ( i in 1:ncol( patches2 ) ) {
+      locp = nona( patches2[ , i ] )
+      if ( standardize ) {
+        mymu = mean( locp, na.rm=T )
+        mysd = sd( locp, na.rm=T )
+        if ( mysd == 0 ) mysd = 1
+        x_train2[ i, , , 1] = ( locp - mymu ) / mysd
+      } else x_train2[ i, , , 1] = locp
+      }
+  } else x_train2 = x_train
 
   # training parameters
   batch_size <- min( c( batch_size, round( length( patches )/2 ) ) )
@@ -224,7 +243,7 @@ uvaSegTrain <- function( patches, k, convControl, standardize = TRUE ) {
   if ( ! is.na(  tensorboardLogDirectory  ) ) {
     keras::tensorboard( tensorboardLogDirectory, launch_browser = FALSE )
     vae %>% fit(
-      x_train, x_train,
+      x_train, x_train2,
       shuffle = TRUE,
       epochs = epochs,
       batch_size = batch_size,
@@ -234,7 +253,7 @@ uvaSegTrain <- function( patches, k, convControl, standardize = TRUE ) {
 
   if ( is.na(  tensorboardLogDirectory  ) )
     vae %>% fit(
-      x_train, x_train, shuffle = TRUE, epochs = epochs, batch_size = batch_size
+      x_train, x_train2, shuffle = TRUE, epochs = epochs, batch_size = batch_size
     )
 
   ## encoder: model to project inputs on the latent space
@@ -284,7 +303,8 @@ uvaSegTrain <- function( patches, k, convControl, standardize = TRUE ) {
 #'
 #' @export uvaSeg
 #' @importFrom Rcpp cppFunction
-uvaSeg <- function( image,
+uvaSeg <- function(
+  image,
   model,
   k,
   mask,
@@ -368,15 +388,23 @@ NumericMatrix fuzzyClustering(NumericMatrix data, NumericMatrix centers, int m) 
   ###################################################################
   if ( verbose ) print("begin predict")
   x_test_encoded <- predict( model$encoder, x_test, batch_size = batchSize )
+  if ( verbose ) print("begin patch prediction")
+  barker = NA
+#  barker <- predict( model$vae, x_test, batch_size = batchSize )
   wkmalg = "Forgy"
   if ( verbose ) print("begin km")
-  kmAlg = stats::kmeans( x_test_encoded, k,        iter.max=30 )
+  kmAlg = stats::kmeans( x_test_encoded, k, iter.max=30 )
+  mykm = kmAlg$cluster
+  segmentation = makeImage( mask, mykm )
+  centerimgmeans = labelStats( image, segmentation )$Mean[-1]
   kmAlg = stats::kmeans( x_test_encoded,
-    kmAlg$centers[ order(kmAlg$centers[,1]),  ], iter.max=30 )
+    kmAlg$centers[ order( centerimgmeans ),  ], iter.max=30 )
   mykm = kmAlg$cluster
   segmentation = makeImage( mask, mykm )
   probs = list()
   mid = round( p / 2 )
+  intensityvec = rep( NA, sum( mask == 1 ) )
+#  for ( i in 1:dim( barker )[1] ) intensityvec[ i ] = barker[i,mid,mid,1]
   if ( returnProbabilities ) {
     if ( verbose ) print("begin probs")
     myprobs = fuzzyClustering( x_test_encoded, kmAlg$centers, m=2 )
@@ -388,6 +416,10 @@ NumericMatrix fuzzyClustering(NumericMatrix data, NumericMatrix centers, int m) 
     list(
       segmentation  = segmentation,
       probabilities = probs,
-      embedding     = x_test_encoded   )
+      embedding     = x_test_encoded,
+      x_test        = x_test,
+      predictedPatches = barker,
+      centers      = kmAlg$centers,
+      intensityvec = intensityvec  )
       )
 }
