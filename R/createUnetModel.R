@@ -211,11 +211,7 @@ createUnetModel2D <- function( inputImageSize,
       }
     } else if( mode == 'regression' ) {
     outputs <- outputs %>%
-<<<<<<< HEAD
       layer_conv_2d( filters = numberOfOutputs,
-=======
-      layer_conv_2d( filters = numberOfClassificationLabels,
->>>>>>> e7730802fd20fa821946db58c2e2ad9e4781bb3c
         kernel_size = c( 1, 1 ), activation = 'linear' )
     } else {
     stop( 'Error: unrecognized mode.' )
