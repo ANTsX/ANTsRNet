@@ -299,7 +299,7 @@ reconstructImageFromPatches <- function( patchList, domainImage,
             if( domainImageIsMask )
               {
               if( maskArray[startIndex[1]:endIndex[1], startIndex[2]:endIndex[2],
-                startIndex[3]:endIndex[3]][mid[1], mid[2], mid[3]] == 0 )
+                startIndex[3]:endIndex[3]][midPatchIndex[1], midPatchIndex[2], midPatchIndex[3]] == 0 )
                 {
                 doAdd <- FALSE
                 }
