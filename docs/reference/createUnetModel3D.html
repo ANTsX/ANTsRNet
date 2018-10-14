@@ -105,7 +105,7 @@ segmentation.  More information is provided at the authors' website:</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>createUnetModel3D</span>(<span class='no'>inputImageSize</span>, <span class='kw'>numberOfClassificationLabels</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+    <pre class="usage"><span class='fu'>createUnetModel3D</span>(<span class='no'>inputImageSize</span>, <span class='kw'>numberOfOutputs</span> <span class='kw'>=</span> <span class='fl'>1</span>,
   <span class='kw'>numberOfLayers</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>numberOfFiltersAtBaseLayer</span> <span class='kw'>=</span> <span class='fl'>32</span>,
   <span class='kw'>convolutionKernelSize</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>3</span>, <span class='fl'>3</span>, <span class='fl'>3</span>), <span class='kw'>deconvolutionKernelSize</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>2</span>, <span class='fl'>2</span>,
   <span class='fl'>2</span>), <span class='kw'>poolSize</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>2</span>, <span class='fl'>2</span>, <span class='fl'>2</span>), <span class='kw'>strides</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>2</span>, <span class='fl'>2</span>, <span class='fl'>2</span>), <span class='kw'>dropoutRate</span> <span class='kw'>=</span> <span class='fl'>0</span>,
@@ -122,8 +122,10 @@ the number of channels (e.g., red, green, and blue).  The batch size
 (i.e., number of training images) is not specified a priori.</p></td>
     </tr>
     <tr>
-      <th>numberOfClassificationLabels</th>
-      <td><p>Number of segmentation labels.</p></td>
+      <th>numberOfOutputs</th>
+      <td><p>Meaning depends on the <code>mode</code>.  For
+'classification' this is the number of segmentation labels.  For 'regression'
+this is the number of outputs.</p></td>
     </tr>
     <tr>
       <th>numberOfLayers</th>
@@ -183,10 +185,10 @@ implementation:</p>
 
  imageIDs <- c( "r16", "r27", "r30", "r62", "r64", "r85" )
 
- # Perform simple 3-tissue segmentation.  For convenience we are going 
- 
+ # Perform simple 3-tissue segmentation.  For convenience we are going
+
  segmentationLabels <- c( 1, 2, 3 )
- 
+
  images <- list()
  kmeansSegs <- list()
 
@@ -198,49 +200,49 @@ implementation:</p>
    cat( "Processing image", imageIDs[i], "\n" )
    images[[i]] <- antsImageRead( getANTsRData( imageIDs[i] ) )
    mask <- getMask( images[[i]] )
-   kmeansSegs[[i]] <- kmeansSegmentation( images[[i]], 
+   kmeansSegs[[i]] <- kmeansSegmentation( images[[i]],
      length( segmentationLabels ), mask, mrf = 0.0 )$segmentation
 
    trainingImageArrays[[i]] <- as.array( images[[i]] )
    trainingMaskArrays[[i]] <- as.array( mask )
    }
- 
+
  # Reshape the training data to the format expected by keras
- 
- trainingLabelData <- abind( trainingMaskArrays, along = 3 )  
+
+ trainingLabelData <- abind( trainingMaskArrays, along = 3 )
  trainingLabelData <- aperm( trainingLabelData, c( 3, 1, 2 ) )
 
- trainingData <- abind( trainingImageArrays, along = 3 )   
+ trainingData <- abind( trainingImageArrays, along = 3 )
  trainingData <- aperm( trainingData, c( 3, 1, 2 ) )
- 
- # Perform a simple normalization which is important for U-net. 
+
+ # Perform a simple normalization which is important for U-net.
  # Other normalization methods might further improve results.
- 
+
  trainingData <- ( trainingData - mean( trainingData ) ) / sd( trainingData )
  X_train <- array( trainingData, dim = c( dim( trainingData ), 1 ) )
 
- trainingLabelData <- abind( trainingMaskArrays, along = 3 )  
+ trainingLabelData <- abind( trainingMaskArrays, along = 3 )
  trainingLabelData <- aperm( trainingLabelData, c( 3, 1, 2 ) )
  Y_train <- encodeUnet( trainingLabelData, segmentationLabels )
- 
+
  # Create the model
- 
- unetModel <- createUnetModel2D( c( dim( trainingImageArrays[[1]] ), 1 ), 
-   numberOfClassificationLabels = numberOfLabels )
+
+ unetModel <- createUnetModel2D( c( dim( trainingImageArrays[[1]] ), 1 ),
+   numberOfOutputs = numberOfLabels )
 
  unetModel %>% compile( loss = loss_multilabel_dice_coefficient_error,
-   optimizer = optimizer_adam( lr = 0.0001 ),  
+   optimizer = optimizer_adam( lr = 0.0001 ),
    metrics = c( multilabel_dice_coefficient ) )
- 
+
  # Fit the model
- 
- track <- unetModel %>% fit( X_train, Y_train, 
+
+ track <- unetModel %>% fit( X_train, Y_train,
                 epochs = 100, batch_size = 32, verbose = 1, shuffle = TRUE,
-                callbacks = list( 
-                  callback_model_checkpoint( paste0( baseDirectory, "weights.h5" ), 
+                callbacks = list(
+                  callback_model_checkpoint( paste0( baseDirectory, "weights.h5" ),
                      monitor = 'val_loss', save_best_only = TRUE ),
                   callback_reduce_lr_on_plateau( monitor = "val_loss", factor = 0.1 )
-                ), 
+                ),
                 validation_split = 0.2 )
 
  # Save the model and/or save the model weights

@@ -105,7 +105,7 @@ followed by k-means clustering to produce a segmentation and probabilities.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>uvaSegTrain</span>(<span class='no'>patches</span>, <span class='no'>k</span>, <span class='no'>convControl</span>, <span class='kw'>standardize</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>uvaSegTrain</span>(<span class='no'>patches</span>, <span class='no'>k</span>, <span class='no'>convControl</span>, <span class='kw'>standardize</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>patches2</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -136,6 +136,11 @@ followed by k-means clustering to produce a segmentation and probabilities.</p>
     <tr>
       <th>standardize</th>
       <td><p>boolean controlling whether patches are standardized</p></td>
+    </tr>
+    <tr>
+      <th>patches2</th>
+      <td><p>input target patch matrix, see <code>getNeighborhoodInMask</code>,
+may be useful for super-resolution</p></td>
     </tr>
     </table>
     

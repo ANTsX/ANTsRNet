@@ -4,7 +4,7 @@
 \alias{uvaSegTrain}
 \title{Unsupervised variational autoencoder training}
 \usage{
-uvaSegTrain(patches, k, convControl, standardize = TRUE)
+uvaSegTrain(patches, k, convControl, standardize = TRUE, patches2)
 }
 \arguments{
 \item{patches}{input patch matrix, see \code{getNeighborhoodInMask}}
@@ -26,6 +26,9 @@ uvaSegTrain(patches, k, convControl, standardize = TRUE)
 }}
 
 \item{standardize}{boolean controlling whether patches are standardized}
+
+\item{patches2}{input target patch matrix, see \code{getNeighborhoodInMask},
+may be useful for super-resolution}
 }
 \value{
 model is output

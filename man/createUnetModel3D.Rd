@@ -4,7 +4,7 @@
 \alias{createUnetModel3D}
 \title{3-D image segmentation implementation of the U-net deep learning architecture.}
 \usage{
-createUnetModel3D(inputImageSize, numberOfClassificationLabels = 1,
+createUnetModel3D(inputImageSize, numberOfOutputs = 1,
   numberOfLayers = 4, numberOfFiltersAtBaseLayer = 32,
   convolutionKernelSize = c(3, 3, 3), deconvolutionKernelSize = c(2, 2,
   2), poolSize = c(2, 2, 2), strides = c(2, 2, 2), dropoutRate = 0,
@@ -16,7 +16,9 @@ shape (or dimension) of that tensor is the image dimensions followed by
 the number of channels (e.g., red, green, and blue).  The batch size
 (i.e., number of training images) is not specified a priori.}
 
-\item{numberOfClassificationLabels}{Number of segmentation labels.}
+\item{numberOfOutputs}{Meaning depends on the \code{mode}.  For
+'classification' this is the number of segmentation labels.  For 'regression'
+this is the number of outputs.}
 
 \item{numberOfLayers}{number of encoding/decoding layers.}
 
@@ -58,16 +60,16 @@ implementation:
 }
 \examples{
 # Simple examples, must run successfully and quickly. These will be tested.
-\dontrun{ 
+\dontrun{
 
  library( ANTsR )
 
  imageIDs <- c( "r16", "r27", "r30", "r62", "r64", "r85" )
 
- # Perform simple 3-tissue segmentation.  For convenience we are going 
- 
+ # Perform simple 3-tissue segmentation.  For convenience we are going
+
  segmentationLabels <- c( 1, 2, 3 )
- 
+
  images <- list()
  kmeansSegs <- list()
 
@@ -79,49 +81,49 @@ implementation:
    cat( "Processing image", imageIDs[i], "\\n" )
    images[[i]] <- antsImageRead( getANTsRData( imageIDs[i] ) )
    mask <- getMask( images[[i]] )
-   kmeansSegs[[i]] <- kmeansSegmentation( images[[i]], 
+   kmeansSegs[[i]] <- kmeansSegmentation( images[[i]],
      length( segmentationLabels ), mask, mrf = 0.0 )$segmentation
 
    trainingImageArrays[[i]] <- as.array( images[[i]] )
    trainingMaskArrays[[i]] <- as.array( mask )
    }
- 
+
  # Reshape the training data to the format expected by keras
- 
- trainingLabelData <- abind( trainingMaskArrays, along = 3 )  
+
+ trainingLabelData <- abind( trainingMaskArrays, along = 3 )
  trainingLabelData <- aperm( trainingLabelData, c( 3, 1, 2 ) )
 
- trainingData <- abind( trainingImageArrays, along = 3 )   
+ trainingData <- abind( trainingImageArrays, along = 3 )
  trainingData <- aperm( trainingData, c( 3, 1, 2 ) )
- 
- # Perform a simple normalization which is important for U-net. 
+
+ # Perform a simple normalization which is important for U-net.
  # Other normalization methods might further improve results.
- 
+
  trainingData <- ( trainingData - mean( trainingData ) ) / sd( trainingData )
  X_train <- array( trainingData, dim = c( dim( trainingData ), 1 ) )
 
- trainingLabelData <- abind( trainingMaskArrays, along = 3 )  
+ trainingLabelData <- abind( trainingMaskArrays, along = 3 )
  trainingLabelData <- aperm( trainingLabelData, c( 3, 1, 2 ) )
  Y_train <- encodeUnet( trainingLabelData, segmentationLabels )
- 
+
  # Create the model
- 
- unetModel <- createUnetModel2D( c( dim( trainingImageArrays[[1]] ), 1 ), 
-   numberOfClassificationLabels = numberOfLabels )
+
+ unetModel <- createUnetModel2D( c( dim( trainingImageArrays[[1]] ), 1 ),
+   numberOfOutputs = numberOfLabels )
 
  unetModel \%>\% compile( loss = loss_multilabel_dice_coefficient_error,
-   optimizer = optimizer_adam( lr = 0.0001 ),  
+   optimizer = optimizer_adam( lr = 0.0001 ),
    metrics = c( multilabel_dice_coefficient ) )
- 
+
  # Fit the model
- 
- track <- unetModel \%>\% fit( X_train, Y_train, 
+
+ track <- unetModel \%>\% fit( X_train, Y_train,
                 epochs = 100, batch_size = 32, verbose = 1, shuffle = TRUE,
-                callbacks = list( 
-                  callback_model_checkpoint( paste0( baseDirectory, "weights.h5" ), 
+                callbacks = list(
+                  callback_model_checkpoint( paste0( baseDirectory, "weights.h5" ),
                      monitor = 'val_loss', save_best_only = TRUE ),
                   callback_reduce_lr_on_plateau( monitor = "val_loss", factor = 0.1 )
-                ), 
+                ),
                 validation_split = 0.2 )
 
  # Save the model and/or save the model weights
