@@ -308,9 +308,9 @@ reconstructImageFromPatches <- function( patchList, domainImage,
             if( doAdd )
               {
               imageArray[startIndex[1]:endIndex[1],
-                  startIndex[2]:endIndex[2], startIndex[3]:endIndex[3]] <-
+                startIndex[2]:endIndex[2], startIndex[3]:endIndex[3]] <-
                 imageArray[startIndex[1]:endIndex[1],
-                    startIndex[2]:endIndex[2], startIndex[3]:endIndex[3]] +
+                  startIndex[2]:endIndex[2], startIndex[3]:endIndex[3]] +
                 patchList[[count]]
               count <- count + 1
               }
