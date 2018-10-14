@@ -106,12 +106,18 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
       maskArray <- as.array( maskImage )
       maskIndices <- which( maskArray != 0, arr.ind = TRUE )
 
+      shiftedMaskIndices <- maskIndices
       negativeIndices <- c()
       for( d in seq_len( dimensionality ) )
         {
-        maskIndices[, d] <- maskIndices[, d] - midPatchIndex[d]
-        negativeIndices <- append( negativeIndices, which( randomIndices[, d] <= 0 ) )
+        shiftedMaskIndices[, d] <- maskIndices[, d] + patchSize[d]
+        negativeIndices <- append( negativeIndices, which( shiftedMaskIndices[, d] > imageSize[d] ) )
+        shiftedMaskIndices[, d] <- maskIndices[, d] - midPatchIndex[d]
+        negativeIndices <- append( negativeIndices, which( shiftedMaskIndices[, d] <= 0 ) )
+        shiftedMaskIndices[, d] <- maskIndices[, d] + midPatchIndex[d]
+        negativeIndices <- append( negativeIndices, which( shiftedMaskIndices[, d] > imageSize[d] ) )
         }
+
       negativeIndices <- unique( negativeIndices )
       if( length( negativeIndices ) > 0 )
         {
