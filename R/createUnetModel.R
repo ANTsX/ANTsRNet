@@ -209,7 +209,7 @@ createUnetModel2D <- function( inputImageSize,
       }
     } else if( mode == 'regression' ) {
     outputs <- outputs %>%
-      layer_conv_2d( filters = 1,
+      layer_conv_2d( filters = numberOfClassificationLabels,
         kernel_size = c( 1, 1 ), activation = 'linear' )
     } else {
     stop( 'Error: unrecognized mode.' )
@@ -431,8 +431,8 @@ createUnetModel3D <- function( inputImageSize,
       }
     } else if( mode == 'regression' ) {
     outputs <- outputs %>%
-      layer_conv_3d( filters = 1,
-        kernel_size = c( 1, 1, 1 ), activation = 'tanh' )
+      layer_conv_3d( filters = numberOfClassificationLabels,
+        kernel_size = c( 1, 1, 1 ), activation = 'linear' )
     } else {
     stop( 'Error: unrecognized mode.' )
     }
@@ -441,4 +441,3 @@ createUnetModel3D <- function( inputImageSize,
 
   return( unetModel )
 }
-
