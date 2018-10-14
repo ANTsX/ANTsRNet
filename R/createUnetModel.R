@@ -18,7 +18,9 @@
 #' shape (or dimension) of that tensor is the image dimensions followed by
 #' the number of channels (e.g., red, green, and blue).  The batch size
 #' (i.e., number of training images) is not specified a priori.
-#' @param numberOfClassificationLabels Number of segmentation labels.
+#' @param numberOfOutputs Meaning depends on the \code{mode}.  For
+#' 'classification' this is the number of segmentation labels.  For 'regression'
+#' this is the number of outputs.
 #' @param numberOfLayers number of encoding/decoding layers.
 #' @param numberOfFiltersAtBaseLayer number of filters at the beginning and end
 #' of the \verb{'U'}.  Doubles at each descending/ascending layer.
@@ -86,7 +88,7 @@
 #'  # Create the model
 #'
 #'  unetModel <- createUnetModel2D( c( dim( trainingImageArrays[[1]] ), 1 ),
-#'    numberOfClassificationLabels = numberOfLabels )
+#'    numberOfOutputs = numberOfLabels )
 #'
 #'  unetModel %>% compile( loss = loss_multilabel_dice_coefficient_error,
 #'    optimizer = optimizer_adam( lr = 0.0001 ),
@@ -111,7 +113,7 @@
 #' @import keras
 #' @export
 createUnetModel2D <- function( inputImageSize,
-                               numberOfClassificationLabels = 1,
+                               numberOfOutputs = 1,
                                numberOfLayers = 4,
                                numberOfFiltersAtBaseLayer = 32,
                                convolutionKernelSize = c( 3, 3 ),
@@ -197,19 +199,19 @@ createUnetModel2D <- function( inputImageSize,
     }
   if( mode == 'classification' )
     {
-    if( numberOfClassificationLabels == 2 )
+    if( numberOfOutputs == 2 )
       {
       outputs <- outputs %>%
-        layer_conv_2d( filters = numberOfClassificationLabels,
+        layer_conv_2d( filters = numberOfOutputs,
           kernel_size = c( 1, 1 ), activation = 'sigmoid' )
       } else {
       outputs <- outputs %>%
-        layer_conv_2d( filters = numberOfClassificationLabels,
+        layer_conv_2d( filters = numberOfOutputs,
           kernel_size = c( 1, 1 ), activation = 'softmax' )
       }
     } else if( mode == 'regression' ) {
     outputs <- outputs %>%
-      layer_conv_2d( filters = 1,
+      layer_conv_2d( filters = numberOfOutputs,
         kernel_size = c( 1, 1 ), activation = 'linear' )
     } else {
     stop( 'Error: unrecognized mode.' )
@@ -241,7 +243,9 @@ createUnetModel2D <- function( inputImageSize,
 #' shape (or dimension) of that tensor is the image dimensions followed by
 #' the number of channels (e.g., red, green, and blue).  The batch size
 #' (i.e., number of training images) is not specified a priori.
-#' @param numberOfClassificationLabels Number of segmentation labels.
+#' @param numberOfOutputs Meaning depends on the \code{mode}.  For
+#' 'classification' this is the number of segmentation labels.  For 'regression'
+#' this is the number of outputs.
 #' @param numberOfLayers number of encoding/decoding layers.
 #' @param numberOfFiltersAtBaseLayer number of filters at the beginning and end
 #' of the \verb{'U'}.  Doubles at each descending/ascending layer.
@@ -308,7 +312,7 @@ createUnetModel2D <- function( inputImageSize,
 #'  # Create the model
 #'
 #'  unetModel <- createUnetModel2D( c( dim( trainingImageArrays[[1]] ), 1 ),
-#'    numberOfClassificationLabels = numberOfLabels )
+#'    numberOfOutputs = numberOfLabels )
 #'
 #'  unetModel %>% compile( loss = loss_multilabel_dice_coefficient_error,
 #'    optimizer = optimizer_adam( lr = 0.0001 ),
@@ -333,7 +337,7 @@ createUnetModel2D <- function( inputImageSize,
 #' @import keras
 #' @export
 createUnetModel3D <- function( inputImageSize,
-                               numberOfClassificationLabels = 1,
+                               numberOfOutputs = 1,
                                numberOfLayers = 4,
                                numberOfFiltersAtBaseLayer = 32,
                                convolutionKernelSize = c( 3, 3, 3 ),
@@ -419,19 +423,19 @@ createUnetModel3D <- function( inputImageSize,
     }
   if( mode == 'classification' )
     {
-    if( numberOfClassificationLabels == 2 )
+    if( numberOfOutputs == 2 )
       {
       outputs <- outputs %>%
-        layer_conv_3d( filters = numberOfClassificationLabels,
+        layer_conv_3d( filters = numberOfOutputs,
           kernel_size = c( 1, 1, 1 ), activation = 'sigmoid' )
       } else {
       outputs <- outputs %>%
-        layer_conv_3d( filters = numberOfClassificationLabels,
+        layer_conv_3d( filters = numberOfOutputs,
           kernel_size = c( 1, 1, 1 ), activation = 'softmax' )
       }
     } else if( mode == 'regression' ) {
     outputs <- outputs %>%
-      layer_conv_3d( filters = 1,
+      layer_conv_3d( filters = numberOfOutputs,
         kernel_size = c( 1, 1, 1 ), activation = 'tanh' )
     } else {
     stop( 'Error: unrecognized mode.' )
