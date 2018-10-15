@@ -10,7 +10,7 @@ Documentation page [https://antsx.github.io/ANTsRNet/](https://antsx.github.io/A
 
 ## Available architectures
 
-### Image segmentation
+### Image segmentation/regression
 
 * U-Net (2-D) or V-Net (3-D) with a [multi-label Dice loss function](https://github.com/ntustison/ANTsRNet/blob/master/Models/createUnetModel.R#L1-L91)
     * [O. Ronneberger, P. Fischer, and T. Brox.  U-Net: Convolutional Networks for Biomedical Image Segmentation.](https://arxiv.org/abs/1505.04597)
