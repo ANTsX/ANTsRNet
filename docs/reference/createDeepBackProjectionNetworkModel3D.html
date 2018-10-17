@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>2-D implementation of the SSD deep learning architecture. — createSsdModel2D • ANTsRNet</title>
+<title>3-D implementation of the deep back-projection network. — createDeepBackProjectionNetworkModel3D • ANTsRNet</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,10 +30,10 @@
 
 
 
-<meta property="og:title" content="2-D implementation of the SSD deep learning architecture. — createSsdModel2D" />
+<meta property="og:title" content="3-D implementation of the deep back-projection network. — createDeepBackProjectionNetworkModel3D" />
 
-<meta property="og:description" content="Creates a keras model of the SSD deep learning architecture for
-object detection based on the paper" />
+<meta property="og:description" content="Creates a keras model of the deep back-project network for image super
+resolution.  More information is provided at the authors' website:" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -93,24 +93,22 @@ object detection based on the paper" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>2-D implementation of the SSD deep learning architecture.</h1>
+    <h1>3-D implementation of the deep back-projection network.</h1>
     
-    <div class="hidden name"><code>createSsdModel2D.Rd</code></div>
+    <div class="hidden name"><code>createDeepBackProjectionNetworkModel3D.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Creates a keras model of the SSD deep learning architecture for
-object detection based on the paper</p>
+    <p>Creates a keras model of the deep back-project network for image super
+resolution.  More information is provided at the authors' website:</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>createSsdModel2D</span>(<span class='no'>inputImageSize</span>, <span class='no'>numberOfClassificationLabels</span>,
-  <span class='kw'>l2Regularization</span> <span class='kw'>=</span> <span class='fl'>5e-04</span>, <span class='kw'>minScale</span> <span class='kw'>=</span> <span class='fl'>0.1</span>, <span class='kw'>maxScale</span> <span class='kw'>=</span> <span class='fl'>0.9</span>,
-  <span class='kw'>aspectRatiosPerLayer</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='fu'>c</span>(<span class='st'>"1:1"</span>, <span class='st'>"2:1"</span>, <span class='st'>"1:2"</span>), <span class='fu'>c</span>(<span class='st'>"1:1"</span>, <span class='st'>"2:1"</span>,
-  <span class='st'>"1:2"</span>, <span class='st'>"3:1"</span>, <span class='st'>"1:3"</span>), <span class='fu'>c</span>(<span class='st'>"1:1"</span>, <span class='st'>"2:1"</span>, <span class='st'>"1:2"</span>, <span class='st'>"3:1"</span>, <span class='st'>"1:3"</span>), <span class='fu'>c</span>(<span class='st'>"1:1"</span>,
-  <span class='st'>"2:1"</span>, <span class='st'>"1:2"</span>, <span class='st'>"3:1"</span>, <span class='st'>"1:3"</span>), <span class='fu'>c</span>(<span class='st'>"1:1"</span>, <span class='st'>"2:1"</span>, <span class='st'>"1:2"</span>), <span class='fu'>c</span>(<span class='st'>"1:1"</span>, <span class='st'>"2:1"</span>,
-  <span class='st'>"1:2"</span>)), <span class='kw'>variances</span> <span class='kw'>=</span> <span class='fu'>rep</span>(<span class='fl'>1</span>, <span class='fl'>4</span>), <span class='kw'>style</span> <span class='kw'>=</span> <span class='fl'>300</span>)</pre>
+    <pre class="usage"><span class='fu'>createDeepBackProjectionNetworkModel3D</span>(<span class='no'>inputImageSize</span>,
+  <span class='kw'>numberOfOutputs</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>numberOfBaseFilters</span> <span class='kw'>=</span> <span class='fl'>64</span>,
+  <span class='kw'>numberOfFeatureFilters</span> <span class='kw'>=</span> <span class='fl'>256</span>, <span class='kw'>numberOfBackProjectionStages</span> <span class='kw'>=</span> <span class='fl'>7</span>,
+  <span class='kw'>convolutionKernelSize</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>12</span>, <span class='fl'>12</span>, <span class='fl'>12</span>), <span class='kw'>strides</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>8</span>, <span class='fl'>8</span>, <span class='fl'>8</span>))</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -119,67 +117,66 @@ object detection based on the paper</p>
       <th>inputImageSize</th>
       <td><p>Used for specifying the input tensor shape.  The
 shape (or dimension) of that tensor is the image dimensions followed by
-the number of channels (e.g., red, green, and blue).  The batch size
-(i.e., number of training images) is not specified a priori.</p></td>
+the number of channels (e.g., red, green, and blue).</p></td>
     </tr>
     <tr>
-      <th>numberOfClassificationLabels</th>
-      <td><p>Number of classification labels.
-Needs to include the background as one of the labels.</p></td>
+      <th>numberOfOutputs</th>
+      <td><p>number of outputs (e.g., 3 for RGB images).</p></td>
     </tr>
     <tr>
-      <th>l2Regularization</th>
-      <td><p>The L2-regularization rate.  Default = 0.0005.</p></td>
+      <th>numberOfBaseFilters</th>
+      <td><p>number of base filters.</p></td>
     </tr>
     <tr>
-      <th>minScale</th>
-      <td><p>The smallest scaling factor for the size of the anchor
-boxes as a fraction of the shorter side of the input images.</p></td>
+      <th>numberOfFeatureFilters</th>
+      <td><p>number of feature filters.</p></td>
     </tr>
     <tr>
-      <th>maxScale</th>
-      <td><p>The largest scaling factor for the size of the anchor
-boxes as a fraction of the shorter side of the input images. All scaling
-factors between the smallest and the largest are linearly interpolated.</p></td>
+      <th>numberOfBackProjectionStages</th>
+      <td><p>number of up-/down-projection stages.  This
+number includes the final up block.</p></td>
     </tr>
     <tr>
-      <th>aspectRatiosPerLayer</th>
-      <td><p>A list containing one aspect ratio list for
-each predictor layer.  The default lists follows the original
-implementation except each aspect ratio is defined as a character string
-(e.g. <code>'1:2'</code>).</p></td>
+      <th>convolutionKernelSize</th>
+      <td><p>kernel size for certain convolutional layers.  This
+and <code>strides</code> are dependent on the scale factor discussed in
+original paper.  Factors used in the original implementation are as follows:
+2x --&gt; <code>strides = c( 2, 2, 2 )</code>, 4x --&gt; <code>strides = c( 4, 4, 4 )</code>,
+8x --&gt; <code>strides = c( 8, 8, 8 )</code>. We default to 8x parameters.</p></td>
     </tr>
     <tr>
-      <th>variances</th>
-      <td><p>A list of 4 floats &gt; 0 with scaling factors for the encoded
-predicted box coordinates. A variance value of 1.0 would apply no scaling at
-all to the predictions, while values in (0,1) upscale the encoded
-predictions and values greater than 1.0 downscale the encoded predictions.
-Defaults to 1.0.</p></td>
-    </tr>
-    <tr>
-      <th>style</th>
-      <td><p>300 or 512</p></td>
+      <th>strides</th>
+      <td><p>strides for certain convolutional layers.  This and the
+<code>convolutionKernelSize</code> are dependent on the scale factor discussed in
+original paper.  Factors used in the original implementation are as follows:
+2x --&gt; <code>convolutionKernelSize = c( 2, 2, 2 )</code>,
+4x --&gt; <code>convolutionKernelSize = c( 8, 8, 8 )</code>,
+8x --&gt; <code>convolutionKernelSize = c( 12, 12, 12 )</code>.  We default to 8x parameters.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>an SSD keras model</p>
+    <p>a keras model defining the deep back-projection network.</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>W. Liu, D. Anguelov, D. Erhan, C. Szegedy, S. Reed, C-Y. Fu, A. Berg.
-SSD: Single Shot MultiBox Detector.</p>
-<p>available here:</p>
-<p>https://arxiv.org/abs/1512.02325</p>
-<p>This particular implementation was influenced by the following python
-and R implementations:</p>
-<p>https://github.com/pierluigiferrari/ssd_keras
-https://github.com/rykov8/ssd_keras
-https://github.com/gsimchoni/ssdkeras</p>
+    <p><a href='https://www.toyota-ti.ac.jp/Lab/Denshi/iim/members/muhammad.haris/projects/DBPN.html'>https://www.toyota-ti.ac.jp/Lab/Denshi/iim/members/muhammad.haris/projects/DBPN.html</a></p>
+<p>with the paper available here:</p>
+<p><a href='https://arxiv.org/abs/1803.02735'>https://arxiv.org/abs/1803.02735</a></p>
+<p>This particular implementation was influenced by the following keras (python)
+implementation:</p>
+<p><a href='https://github.com/rajatkb/DBPN-Keras'>https://github.com/rajatkb/DBPN-Keras</a></p>
+<p>with help from the original author's Caffe and Pytorch implementations:</p>
+<p><a href='https://github.com/alterzero/DBPN-caffe'>https://github.com/alterzero/DBPN-caffe</a>
+<a href='https://github.com/alterzero/DBPN-Pytorch'>https://github.com/alterzero/DBPN-Pytorch</a></p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'>#
+</div># NOT RUN {
+# }
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -189,7 +186,9 @@ https://github.com/gsimchoni/ssdkeras</p>
       <li><a href="#value">Value</a></li>
 
       <li><a href="#details">Details</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
     <h2>Author</h2>
     

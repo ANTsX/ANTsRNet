@@ -56,6 +56,8 @@ reference:
   - '`createImageSuperResolutionModel3D`'
   - '`createResNetSuperResolutionModel2D`'
   - '`createResNetSuperResolutionModel3D`'
+  - '`createDeepBackProjectionNetworkModel2D`'
+  - '`createDeepBackProjectionNetworkModel3D`'
 - title: Super-resolution helper functions
   desc: ~
   contents:
