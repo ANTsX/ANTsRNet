@@ -73,7 +73,7 @@ createAlexNetModel2D <- function( inputImageSize,
                                 )
 {
 
-  splitTensor2D <- function( axis = 4, ratioSplit = 1, idSplit = 1  )
+  splitTensor2D <- function( axis = 4, ratioSplit = 1, idSplit = 1 )
     {
     f <- function( X )
       {
@@ -304,7 +304,7 @@ createAlexNetModel3D <- function( inputImageSize,
                                 )
 {
 
-  splitTensor3D <- function( axis = 5, ratioSplit = 1, idSplit = 1  )
+  splitTensor3D <- function( axis = 5, ratioSplit = 1, idSplit = 1 )
     {
     f <- function( X )
       {
