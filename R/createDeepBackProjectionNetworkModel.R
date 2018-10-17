@@ -30,14 +30,14 @@
 #' @param convolutionKernelSize kernel size for certain convolutional layers.  This
 #' and \code{strides} are dependent on the scale factor discussed in
 #' original paper.  Factors used in the original implementation are as follows:
-#' 2x --> \code{strides = c( 2, 2 )}, 4x --> \code{strides = c( 4, 4 )}, 8x -->
-#' \code{strides = c( 8, 8 )}. We default to 8x parameters.
-#' @param strides strides for certain convolutional layers.  This and the
-#' \code{convolutionKernelSize} are dependent on the scale factor discussed in
-#' original paper.  Factors used in the original implementation are as follows:
 #' 2x --> \code{convolutionKernelSize = c( 2, 2 )},
 #' 4x --> \code{convolutionKernelSize = c( 8, 8 )},
 #' 8x --> \code{convolutionKernelSize = c( 12, 12 )}.  We default to 8x parameters.
+#' @param strides strides for certain convolutional layers.  This and the
+#' \code{convolutionKernelSize} are dependent on the scale factor discussed in
+#' original paper.  Factors used in the original implementation are as follows:
+#' 2x --> \code{strides = c( 2, 2 )}, 4x --> \code{strides = c( 4, 4 )}, 8x -->
+#' \code{strides = c( 8, 8 )}. We default to 8x parameters.
 #'
 #' @return a keras model defining the deep back-projection network.
 #' @author Tustison NJ
@@ -235,14 +235,14 @@ createDeepBackProjectionNetworkModel2D <-
 #' @param convolutionKernelSize kernel size for certain convolutional layers.  This
 #' and \code{strides} are dependent on the scale factor discussed in
 #' original paper.  Factors used in the original implementation are as follows:
-#' 2x --> \code{strides = c( 2, 2, 2 )}, 4x --> \code{strides = c( 4, 4, 4 )},
-#' 8x --> \code{strides = c( 8, 8, 8 )}. We default to 8x parameters.
-#' @param strides strides for certain convolutional layers.  This and the
-#' \code{convolutionKernelSize} are dependent on the scale factor discussed in
-#' original paper.  Factors used in the original implementation are as follows:
 #' 2x --> \code{convolutionKernelSize = c( 2, 2, 2 )},
 #' 4x --> \code{convolutionKernelSize = c( 8, 8, 8 )},
 #' 8x --> \code{convolutionKernelSize = c( 12, 12, 12 )}.  We default to 8x parameters.
+#' @param strides strides for certain convolutional layers.  This and the
+#' \code{convolutionKernelSize} are dependent on the scale factor discussed in
+#' original paper.  Factors used in the original implementation are as follows:
+#' 2x --> \code{strides = c( 2, 2, 2 )}, 4x --> \code{strides = c( 4, 4, 4 )},
+#' 8x --> \code{strides = c( 8, 8, 8 )}. We default to 8x parameters.
 #'
 #' @return a keras model defining the deep back-projection network.
 #' @author Tustison NJ

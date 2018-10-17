@@ -141,17 +141,17 @@ number includes the final up block.</p></td>
       <td><p>kernel size for certain convolutional layers.  This
 and <code>strides</code> are dependent on the scale factor discussed in
 original paper.  Factors used in the original implementation are as follows:
-2x --&gt; <code>strides = c( 2, 2, 2 )</code>, 4x --&gt; <code>strides = c( 4, 4, 4 )</code>,
-8x --&gt; <code>strides = c( 8, 8, 8 )</code>. We default to 8x parameters.</p></td>
+2x --&gt; <code>convolutionKernelSize = c( 2, 2, 2 )</code>,
+4x --&gt; <code>convolutionKernelSize = c( 8, 8, 8 )</code>,
+8x --&gt; <code>convolutionKernelSize = c( 12, 12, 12 )</code>.  We default to 8x parameters.</p></td>
     </tr>
     <tr>
       <th>strides</th>
       <td><p>strides for certain convolutional layers.  This and the
 <code>convolutionKernelSize</code> are dependent on the scale factor discussed in
 original paper.  Factors used in the original implementation are as follows:
-2x --&gt; <code>convolutionKernelSize = c( 2, 2, 2 )</code>,
-4x --&gt; <code>convolutionKernelSize = c( 8, 8, 8 )</code>,
-8x --&gt; <code>convolutionKernelSize = c( 12, 12, 12 )</code>.  We default to 8x parameters.</p></td>
+2x --&gt; <code>strides = c( 2, 2, 2 )</code>, 4x --&gt; <code>strides = c( 4, 4, 4 )</code>,
+8x --&gt; <code>strides = c( 8, 8, 8 )</code>. We default to 8x parameters.</p></td>
     </tr>
     </table>
     
