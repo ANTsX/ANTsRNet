@@ -54,7 +54,7 @@ uvaSegTrain <- function( patches,
   front_kernel_size = c(2L, 2L)
   latent_dim <- as.integer( k )
   intermediate_dim <- 512L
-  epochs = 50
+  epochs = 2
   epsilon_std <- 1.0
   batch_size = 32
   squashAct = "sigmoid"
@@ -318,34 +318,27 @@ uvaSeg <- function(
     }
 
   Rcpp::cppFunction("
-  #include <Rcpp.h>
+#include <Rcpp.h>
 #include <math.h>
 using namespace Rcpp;
 
 // [[Rcpp::export]]
 NumericMatrix fuzzyClustering(NumericMatrix data, NumericMatrix centers, int m) {
-/* data is a matrix with observations(rows) and variables,
-   centers is a matrix with cluster centers coordinates,
-   m is a parameter of equation, c is a number of clusters
-*/
-
   int c=centers.rows();
   int rows = data.rows();
-  int cols = data.cols(); /*number of columns equals number of variables, the same as is in centers matrix*/
-  double tempDist=0;        /*dist and tempDist are variables storing temporary euclidean distances */
+  int cols = data.cols();
+  double tempDist=0;
   double dist=0;
-  double denominator=0;    //denominator of main equation
+  double denominator=0;
 
-  NumericMatrix result(rows,c);    //declaration of matrix of results
+  NumericMatrix result(rows,c);
 
   for(int i=0;i<rows;i++){
     for(int j=0;j<c;j++){
       for(int k=0;k<c;k++){
         for(int p=0;p<cols;p++){
           tempDist = tempDist+pow(centers(j,p)-data(i,p),2);
-         //in innermost loop an euclidean distance is calculated.
           dist = dist + pow(centers(k,p)-data(i,p),2);
-/*tempDist is nominator inside the sum operator in the equation, dist is the denominator inside the sum operator in the equation*/
         }
         tempDist = sqrt(tempDist);
         dist = sqrt(dist);
@@ -354,7 +347,6 @@ NumericMatrix fuzzyClustering(NumericMatrix data, NumericMatrix centers, int m) 
         dist = 0;
       }
       result(i,j) = 1/denominator;
-// nominator/denominator in the  main equation
       denominator = 0;
     }
   }
