@@ -13,6 +13,8 @@
 #' convolution.
 #' @param numberOfFilters the number of filters for each encoding layer.
 #' @param numberOfResidualBlocks the number of residual blocks.
+#' @param numberOfResNetBlocks the number of resNet blocks.  Each block
+#' will double the upsampling amount.
 #'
 #' @return a keras model for ResNet image super resolution
 #' @author Tustison NJ
@@ -23,7 +25,7 @@
 #' @export
 createResNetSuperResolutionModel2D <- function( inputImageSize,
   convolutionKernelSize = c( 3, 3 ), numberOfFilters = 64,
-  numberOfResidualBlocks = 5 )
+  numberOfResidualBlocks = 5, numberOfResNetBlocks = 1 )
 {
 
   residualBlock2D <- function( model, numberOfFilters, convolutionKernelSize )
@@ -54,6 +56,9 @@ createResNetSuperResolutionModel2D <- function( inputImageSize,
 
   inputs <- layer_input( shape = inputImageSize )
 
+  makeResNetBlock2D <- function(  inputs,  numberOfFilters,
+    convolutionKernelSize, numberOfResidualBlocks  )
+  {
   outputs <- inputs %>% layer_conv_2d( filters = numberOfFilters,
     kernel_size = convolutionKernelSize, activation = 'relu',
     padding = 'same' )
@@ -70,6 +75,16 @@ createResNetSuperResolutionModel2D <- function( inputImageSize,
 
   outputs <- upscaleBlock2D( outputs, numberOfFilters,
     convolutionKernelSize )
+  return( outputs )
+  }
+
+
+  outputs <- makeResNetBlock2D(  inputs,  numberOfFilters,
+    convolutionKernelSize, numberOfResidualBlocks  )
+  if ( numberOfResNetBlocks > 1 )
+    for ( nrnb in 2:numberOfResNetBlocks )
+      outputs <- makeResNetBlock2D(  outputs,  numberOfFilters,
+        convolutionKernelSize, numberOfResidualBlocks )
 
   numberOfChannels <- tail( inputImageSize, 1 )
 
@@ -97,6 +112,8 @@ createResNetSuperResolutionModel2D <- function( inputImageSize,
 #' convolution.
 #' @param numberOfFilters the number of filters for each encoding layer.
 #' @param numberOfResidualBlocks the number of residual blocks.
+#' @param numberOfResNetBlocks the number of resNet blocks.  Each block
+#' will double the upsampling amount.
 #'
 #' @return a keras model for ResNet image super resolution
 #' @author Tustison NJ
@@ -107,7 +124,7 @@ createResNetSuperResolutionModel2D <- function( inputImageSize,
 #' @export
 createResNetSuperResolutionModel3D <- function( inputImageSize,
   convolutionKernelSize = c( 3, 3, 3 ), numberOfFilters = 64,
-  numberOfResidualBlocks = 5 )
+  numberOfResidualBlocks = 5, numberOfResNetBlocks = 1 )
 {
 
   residualBlock3D <- function( model, numberOfFilters, convolutionKernelSize )
@@ -139,6 +156,9 @@ createResNetSuperResolutionModel3D <- function( inputImageSize,
 
   inputs <- layer_input( shape = inputImageSize )
 
+  makeResNetBlock3D <- function(  inputs,  numberOfFilters,
+    convolutionKernelSize, numberOfResidualBlocks  )
+  {
   outputs <- inputs %>% layer_conv_3d( filters = numberOfFilters,
     kernel_size = convolutionKernelSize, activation = 'relu',
     padding = 'same' )
@@ -153,6 +173,14 @@ createResNetSuperResolutionModel3D <- function( inputImageSize,
 
   outputs <- upscaleBlock3D( outputs, numberOfFilters,
     convolutionKernelSize )
+  }
+
+  outputs <- makeResNetBlock3D(  inputs,  numberOfFilters,
+    convolutionKernelSize, numberOfResidualBlocks  )
+  if ( numberOfResNetBlocks > 1 )
+    for ( nrnb in 2:numberOfResNetBlocks )
+      outputs <- makeResNetBlock3D(  outputs,  numberOfFilters,
+        convolutionKernelSize, numberOfResidualBlocks )
 
   numberOfChannels <- tail( inputImageSize, 1 )
 
