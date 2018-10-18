@@ -379,3 +379,102 @@ reconstructImageFromPatches <- function( patchList, domainImage,
 
   return( as.antsImage( imageArray, reference = domainImage ) )
 }
+
+
+
+#' Error measurements of images (from redr)
+#'
+#' This function calculates error between two images
+#'
+#' @param x,y \code{antsImage} objects
+#'
+#' @examples
+#' library( ANTsRCore )
+#' MSE( ri(1), ri(2) )
+#' # alternatively it can be done like:
+#' MSE( ri(1) - ri(2) )
+#' @name error
+NULL
+
+#' @export
+#' @describeIn error Mean Squared Error
+MSE <- function(x, y = NULL){
+
+  if(is.null(y))
+    return(mean(x^2))
+  else
+    return(mean((x - y)^2))
+}
+
+#' @export
+#' @describeIn error Mean Absolute Error
+MAE <- function(x, y = NULL){
+
+  if(is.null(y))
+    return(mean(abs(x)))
+  else
+    return(mean(abs(x - y)))
+}
+
+#' @export
+#' @describeIn error Peak Signal-to-Noise Ratio
+PSNR <- function(x, y){
+  20*log10(max(x)) - 10*log10(MSE(x, y))
+}
+
+
+#' @title Structural similarity index
+#'
+#' @description
+#'  This function implements the structural similarity index of Wang et al. (2003) formulated
+#'  for comparison of \code{antsImage} objects.
+#'
+#' @param img1 is a \code{antsImage} object to compare
+#' @param img2 is a \code{antsImage} object to compare
+#' @param ks is a vector of length 2 which contains values for constants in the SSIM formula. If ignored default values will be used.
+#'
+#'
+#' @return
+#'   \code{ssim} returns the SSIM value
+#'
+#' @export
+ssim <- function(img1, img2, ks=c(0.01, 0.03)) {
+  #set constants
+  N <- FALSE
+  L <- max( max( img1 ), max( img2 ) )
+  globalMin <- abs(  min( min(img1 ), min( img2 ) ) )
+  L <- L - globalMin
+  K <- ks
+  C1 <-(K[1]*L)^2
+  C2 <-(K[2]*L)^2
+  C3 <-C2/2
+
+  #get mu
+  mu1 <- mean( img1 )
+  mu2 <- mean( img2 )
+  img12 <- img1 * img2
+  #square
+  mu1mu2 <- mu1 * mu2
+  mu1sq <- mu1 * mu1
+  mu2sq <- mu2 * mu2
+  #normalized sigma sq
+  sigsq1<- mean(img1*img1) - mu1sq
+  sigsq2<- mean(img2*img2) - mu2sq
+  sig12 <- mean(img12) - mu1mu2
+  #std dev
+  sig1 <- sigsq1 ^ 0.5
+  sig2 <- sigsq2 ^ 0.5
+  #compute components
+  L <- ((2*mu1mu2)+C1) / (mu1sq + mu2sq + C1)
+  C <- (2*sig1*sig2+C2) / (sigsq1 + sigsq2 + C2)
+  S <- (sig12 + C3) / (sig1 * sig2 + C3)
+  #compute SSIMap
+  SSIM2 <- L * C * S
+  #compute SSIM
+  num <- (2*mu1mu2+C1)*(2*sig12+C2)
+  denom <- (mu1sq+mu2sq+C1) * (sigsq1+sigsq2+C2)
+  #global mean
+  mSSIM <- mean((num / denom))
+  return( mSSIM )
+}
+
