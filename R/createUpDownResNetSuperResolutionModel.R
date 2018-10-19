@@ -22,22 +22,18 @@
 #' @import keras
 #' @export
 createUpDownResNetSuperResolutionModel2D <- function( inputImageSize,
-  convolutionKernelSize = c( 3, 3 ), numberOfFilters = 64,
-  numberOfResidualBlocks = 5, numberOfResNetBlocks = 1 )
+  convolutionKernelSize = c( 3, 3 ), numberOfFilters = 256,
+  numberOfResidualBlocks = 8, numberOfResNetBlocks = 1 )
 {
 
   residualBlock2D <- function( model, numberOfFilters, convolutionKernelSize )
     {
     block <- model %>% layer_conv_2d( filters = numberOfFilters,
-      kernel_size = convolutionKernelSize, activation = 'linear',
+      kernel_size = convolutionKernelSize, activation = 'relu',
       padding = 'same' )
-
-    block <- block %>% layer_batch_normalization()
-    block <- block %>% layer_activation( activation = 'relu' )
     block <- block %>% layer_conv_2d( filters = numberOfFilters,
       kernel_size = convolutionKernelSize, activation = 'linear',
       padding = 'same' )
-    block <- block %>% layer_batch_normalization()
     block <- layer_add( list( model, block ) )
 
     return( block )
@@ -52,24 +48,10 @@ createUpDownResNetSuperResolutionModel2D <- function( inputImageSize,
     return( block )
     }
 
-    upDownBlock2D <- function( model, numberOfFilters, convolutionKernelSize )
-      {
-        model <- upscaleBlock2D( model, numberOfFilters,
-          convolutionKernelSize )
-
-        model <- downscaleBlock2D( model, numberOfFilters,
-          convolutionKernelSize )
-
-        model <- upscaleBlock2D( model, numberOfFilters,
-          convolutionKernelSize )
-
-        return( model )
-      }
-
   downscaleBlock2D <- function( model, numberOfFilters, convolutionKernelSize )
     {
-#    block <- model %>% layer_max_pooling_2d()
-    block <- model %>% layer_average_pooling_2d()
+    block <- model %>% layer_max_pooling_2d()
+#    block <- model %>% layer_average_pooling_2d()
     block <- block %>% layer_conv_2d( filters = numberOfFilters,
       kernel_size = convolutionKernelSize, activation = 'relu',
       padding = 'same' )
@@ -90,37 +72,42 @@ createUpDownResNetSuperResolutionModel2D <- function( inputImageSize,
       return( model )
     }
 
-  inputs <- layer_input( shape = inputImageSize )
-
   makeResNetBlock2D <- function(  inputs,  numberOfFilters,
     convolutionKernelSize, numberOfResidualBlocks  )
   {
-  outputs <- inputs %>% layer_conv_2d( filters = numberOfFilters,
-    kernel_size = convolutionKernelSize, activation = 'relu',
+  outputsX = outputsB = layer_conv_2d( inputs,
+    filters = numberOfFilters,
+    kernel_size = convolutionKernelSize,
     padding = 'same' )
 
-  residualBlocks <- residualBlock2D( outputs,
+  residualBlocks <- residualBlock2D( outputsB,
     numberOfFilters = numberOfFilters,
     convolutionKernelSize = convolutionKernelSize )
-  for( i in seq_len( numberOfResidualBlocks ) )
+  for( i in 2:numberOfResidualBlocks )
     {
     residualBlocks <- residualBlock2D( residualBlocks, numberOfFilters,
       convolutionKernelSize )
     }
-  outputs <- layer_add( list( residualBlocks, outputs ) )
+  outputsB = layer_conv_2d( residualBlocks,
+      filters = numberOfFilters,
+      kernel_size = convolutionKernelSize,
+      padding = 'same' )
+  outputsX <- layer_add( list( outputsX, outputsB ) )
 
-  outputs <- upDownBlock2D( outputs, numberOfFilters,
+  outputsX <- upscaleBlock2D( outputsX, numberOfFilters,
     convolutionKernelSize )
-  return( outputs )
+  return( outputsX )
   }
 
+  inputs <- layer_input( shape = inputImageSize )
 
   outputs <- makeResNetBlock2D(  inputs,  numberOfFilters,
     convolutionKernelSize, numberOfResidualBlocks  )
+
   if ( numberOfResNetBlocks > 1 )
     for ( nrnb in 2:numberOfResNetBlocks )
-      outputs <- makeResNetBlock2D(  outputs,  numberOfFilters,
-        convolutionKernelSize, numberOfResidualBlocks )
+      outputs <- upscaleBlock2D( outputs, numberOfFilters,
+        convolutionKernelSize )
 
   numberOfChannels <- tail( inputImageSize, 1 )
 

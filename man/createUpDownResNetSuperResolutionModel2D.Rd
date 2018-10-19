@@ -5,8 +5,8 @@
 \title{2-D implementation of the UpDown image super resolution architecture.}
 \usage{
 createUpDownResNetSuperResolutionModel2D(inputImageSize,
-  convolutionKernelSize = c(3, 3), numberOfFilters = 64,
-  numberOfResidualBlocks = 5, numberOfResNetBlocks = 1)
+  convolutionKernelSize = c(3, 3), numberOfFilters = 256,
+  numberOfResidualBlocks = 8, numberOfResNetBlocks = 1)
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The

@@ -146,12 +146,8 @@ across runs.</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='fu'>library</span>( <span class='no'>ANTsR</span> )</div><div class='output co'>#&gt; <span class='message'>Loading required package: ANTsRCore</span></div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>Attaching package: ‘ANTsRCore’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:stats’:</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>    var</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:base’:</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>    all, any, apply, max, min, prod, range, sum</span></div><div class='input'><span class='no'>image</span> <span class='kw'>&lt;-</span> <span class='fu'>antsImageRead</span>( <span class='fu'>getANTsRData</span>( <span class='st'>"r16"</span> ) )
+<span class='fu'>library</span>( <span class='no'>ANTsR</span> )
+<span class='no'>image</span> <span class='kw'>&lt;-</span> <span class='fu'>antsImageRead</span>( <span class='fu'>getANTsRData</span>( <span class='st'>"r16"</span> ) )
 <span class='no'>maskImage</span> <span class='kw'>&lt;-</span> <span class='fu'>getMask</span>( <span class='no'>image</span>, <span class='fl'>1</span>, <span class='fl'>1000</span> )
 <span class='no'>patchSet1</span> <span class='kw'>&lt;-</span> <span class='fu'>extractImagePatches</span>( <span class='no'>image</span>, <span class='fu'>c</span>( <span class='fl'>32</span>, <span class='fl'>32</span> ), <span class='fl'>10</span>, <span class='fu'>c</span>( <span class='fl'>32</span>, <span class='fl'>32</span> ), <span class='kw'>randomSeed</span> <span class='kw'>=</span> <span class='fl'>0</span> )
 <span class='no'>patchSet2</span> <span class='kw'>&lt;-</span> <span class='fu'>extractImagePatches</span>( <span class='no'>image</span>, <span class='fu'>c</span>( <span class='fl'>32</span>, <span class='fl'>32</span> ), <span class='fl'>10</span>, <span class='fu'>c</span>( <span class='fl'>32</span>, <span class='fl'>32</span> ), <span class='kw'>randomSeed</span> <span class='kw'>=</span> <span class='fl'>1</span> )

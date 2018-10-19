@@ -107,7 +107,7 @@ framework based on the following python implementation:</p>
 
     <pre class="usage"><span class='fu'>createResNetSuperResolutionModel2D</span>(<span class='no'>inputImageSize</span>,
   <span class='kw'>convolutionKernelSize</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>3</span>, <span class='fl'>3</span>), <span class='kw'>numberOfFilters</span> <span class='kw'>=</span> <span class='fl'>64</span>,
-  <span class='kw'>numberOfResidualBlocks</span> <span class='kw'>=</span> <span class='fl'>5</span>)</pre>
+  <span class='kw'>numberOfResidualBlocks</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>numberOfResNetBlocks</span> <span class='kw'>=</span> <span class='fl'>1</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -131,6 +131,11 @@ convolution.</p></td>
     <tr>
       <th>numberOfResidualBlocks</th>
       <td><p>the number of residual blocks.</p></td>
+    </tr>
+    <tr>
+      <th>numberOfResNetBlocks</th>
+      <td><p>the number of resNet blocks.  Each block
+will double the upsampling amount.</p></td>
     </tr>
     </table>
     
