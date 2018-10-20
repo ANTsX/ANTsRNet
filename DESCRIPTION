@@ -12,10 +12,8 @@ Description: Deep learning tools for medical image processing.
 License: Apache License (>=2.0)
 LazyLoad: yes
 Depends:
-    R (>= 3.5)
+    R (>= 3.5), ANTsRCore, ANTsR
 Imports:
-    ANTsRCore,
-    ANTsR,
     knitr,
     keras,
     reticulate (>= 1.6.0.9002),
