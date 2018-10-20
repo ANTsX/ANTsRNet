@@ -48,6 +48,8 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
   patches <- list()
   midPatchIndex <- round( patchSize / 2 )
 
+  numberOfExtractedPatches <- maxNumberOfPatches
+
   if( tolower( maxNumberOfPatches ) == 'all' )
     {
     strideLengthVector <- strideLength
@@ -123,8 +125,10 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
         {
         maskIndices <- maskIndices[-negativeIndices,]
         }
+      numberOfExtractedPatches <- min( maxNumberOfPatches, nrow( maskIndices ) )
+
       randomIndices <- maskIndices[
-        sample.int( nrow( maskIndices ), maxNumberOfPatches ),]
+        sample.int( nrow( maskIndices ), numberOfExtractedPatches ),]
       } else {
       for( d in seq_len( dimensionality ) )
         {
@@ -134,23 +138,17 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
       }
 
     startIndex <- rep( 1, dimensionality )
-    count <- 1
-    while( count <= maxNumberOfPatches )
+    for( i in seq_len( numberOfExtractedPatches ) )
       {
-      for( d in seq_len( dimensionality ) )
-        {
-        startIndex[d] <- randomIndices[count, d]
-        }
+      startIndex <- randomIndices[i,]
       endIndex <- startIndex + patchSize - 1
       if( dimensionality == 2 )
         {
-        patches[[count]] <- imageArray[startIndex[1]:endIndex[1],
+        patches[[i]] <- imageArray[startIndex[1]:endIndex[1],
           startIndex[2]:endIndex[2]]
-        count <- count + 1
         } else if( dimensionality == 3 ) {
-        patches[[count]] <- imageArray[startIndex[1]:endIndex[1],
+        patches[[i]] <- imageArray[startIndex[1]:endIndex[1],
           startIndex[2]:endIndex[2], startIndex[3]:endIndex[3]]
-        count <- count + 1
         } else {
         stop( "Unsupported dimensionality." )
         }
