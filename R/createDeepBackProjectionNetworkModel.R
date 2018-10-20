@@ -60,12 +60,12 @@ createDeepBackProjectionNetworkModel2D <-
 {
 
   upBlock2D <- function( L, numberOfFilters = 64, kernelSize = c( 12, 12 ),
-    strides = c( 8, 8 ), includeDenseConvolutionLayer = FALSE, numberOfStages = 1 )
+    strides = c( 8, 8 ), includeDenseConvolutionLayer = FALSE )
     {
     if( includeDenseConvolutionLayer )
       {
-      L <- L %>% layer_conv_2d( filters = numberOfFilters, # * numberOfStages,
-        kernel_size = c( 1, 1 ), stride = c( 1, 1 ), padding = 'same', use_bias = TRUE )
+      L <- L %>% layer_conv_2d( filters = numberOfFilters, use_bias = TRUE,
+        kernel_size = c( 1, 1 ), stride = c( 1, 1 ), padding = 'same' )
       L <- L %>% layer_activation_parametric_relu(
         alpha_initializer = 'zero', shared_axes = c( 1, 2 ) )
       }
@@ -101,12 +101,12 @@ createDeepBackProjectionNetworkModel2D <-
     }
 
   downBlock2D <- function( H, numberOfFilters = 64, kernelSize = c( 12, 12 ),
-    strides = c( 8, 8 ), includeDenseConvolutionLayer = FALSE, numberOfStages = 1 )
+    strides = c( 8, 8 ), includeDenseConvolutionLayer = FALSE )
     {
     if( includeDenseConvolutionLayer )
       {
-      H <- H %>% layer_conv_2d( filters = numberOfFilters, # * numberOfStages,
-        kernel_size = c( 1, 1 ), stride = c( 1, 1 ), padding = 'same', use_bias = TRUE )
+      H <- H %>% layer_conv_2d( filters = numberOfFilters, use_bias = TRUE,
+        kernel_size = c( 1, 1 ), stride = c( 1, 1 ), padding = 'same' )
       H <- H %>% layer_activation_parametric_relu(
         alpha_initializer = 'zero', shared_axes = c( 1, 2 ) )
       }
@@ -180,17 +180,18 @@ createDeepBackProjectionNetworkModel2D <-
       } else {
       model <- downBlock2D( model, numberOfFilters = numberOfBaseFilters,
         kernelSize = convolutionKernelSize, strides = strides,
-        includeDenseConvolutionLayer = TRUE, numberOfStages = i )
+        includeDenseConvolutionLayer = TRUE )
       downProjectionBlocks[[i]] <- model
       model <- layer_concatenate( downProjectionBlocks )
 
       model <- upBlock2D( model, numberOfFilters = numberOfBaseFilters,
         kernelSize = convolutionKernelSize, strides = strides,
-        includeDenseConvolutionLayer = TRUE, numberOfStages = i )
+        includeDenseConvolutionLayer = TRUE )
       upProjectionBlocks[[i+1]] <- model
       model <- layer_concatenate( upProjectionBlocks )
       }
     }
+
   # Final convolution layer
   outputs <- model %>% layer_conv_2d( filters = numberOfOutputs,
     kernel_size = c( 3, 3 ), strides = c( 1, 1 ), padding = 'same',
@@ -267,9 +268,8 @@ createDeepBackProjectionNetworkModel3D <-
     {
     if( includeDenseConvolutionLayer )
       {
-      L <- L %>% layer_conv_3d( filters = numberOfFilters, # * numberOfStages,
-        kernel_size = c( 1, 1, 1 ), stride = c( 1, 1, 1 ), padding = 'same',
-        use_bias = TRUE )
+      L <- L %>% layer_conv_3d( filters = numberOfFilters, use_bias = TRUE,
+        kernel_size = c( 1, 1, 1 ), stride = c( 1, 1, 1 ), padding = 'same' )
       L <- L %>% layer_activation_parametric_relu(
         alpha_initializer = 'zero', shared_axes = c( 1, 2, 3 ) )
       }
@@ -309,9 +309,8 @@ createDeepBackProjectionNetworkModel3D <-
     {
     if( includeDenseConvolutionLayer )
       {
-      H <- H %>% layer_conv_3d( filters = numberOfFilters, # * numberOfStages,
-        kernel_size = c( 1, 1, 1 ), stride = c( 1, 1, 1 ), padding = 'same',
-        use_bias = TRUE )
+      H <- H %>% layer_conv_3d( filters = numberOfFilters, use_bias = TRUE,
+        kernel_size = c( 1, 1, 1 ), stride = c( 1, 1, 1 ), padding = 'same' )
       H <- H %>% layer_activation_parametric_relu(
         alpha_initializer = 'zero', shared_axes = c( 1, 2, 3 ) )
       }
@@ -398,6 +397,7 @@ createDeepBackProjectionNetworkModel3D <-
       model <- layer_concatenate( upProjectionBlocks )
       }
     }
+
   # Final convolution layer
   outputs <- model %>% layer_conv_3d( filters = numberOfOutputs,
     kernel_size = c( 3, 3, 3 ), strides = c( 1, 1, 1 ), padding = 'same',
