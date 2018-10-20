@@ -129,7 +129,7 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
       for( d in seq_len( dimensionality ) )
         {
         randomIndices[, d] <- sample.int(
-          imageSize[d] - patchSize[d] + 1, maxNumberOfPatches )
+          imageSize[d] - patchSize[d] + 1, maxNumberOfPatches, replace = TRUE )
         }
       }
 
