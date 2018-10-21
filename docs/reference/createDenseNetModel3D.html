@@ -108,7 +108,7 @@ recognition based on the paper</p>
     <pre class="usage"><span class='fu'>createDenseNetModel3D</span>(<span class='no'>inputImageSize</span>,
   <span class='kw'>numberOfClassificationLabels</span> <span class='kw'>=</span> <span class='fl'>1000</span>, <span class='kw'>numberOfFilters</span> <span class='kw'>=</span> <span class='fl'>16</span>,
   <span class='kw'>depth</span> <span class='kw'>=</span> <span class='fl'>7</span>, <span class='kw'>numberOfDenseBlocks</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>growthRate</span> <span class='kw'>=</span> <span class='fl'>12</span>,
-  <span class='kw'>dropoutRate</span> <span class='kw'>=</span> <span class='fl'>0.2</span>, <span class='kw'>weightDecay</span> <span class='kw'>=</span> <span class='fl'>1e-04</span>, <span class='kw'>regression</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+  <span class='kw'>dropoutRate</span> <span class='kw'>=</span> <span class='fl'>0.2</span>, <span class='kw'>weightDecay</span> <span class='kw'>=</span> <span class='fl'>0.0001</span>, <span class='kw'>regression</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -152,8 +152,8 @@ N is an integer (default = 7).</p></td>
       <td><p>= weight decay (default = 1e-4)</p></td>
     </tr>
     <tr>
-      <th>regression</th>
-      <td><p>boolean controlling last layer activation</p></td>
+      <th>mode</th>
+      <td><p>'classification' or 'regression'.  Default = 'classification'.</p></td>
     </tr>
     </table>
     

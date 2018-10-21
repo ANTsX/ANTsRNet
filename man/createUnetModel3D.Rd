@@ -40,7 +40,7 @@ during the decoding}
 \item{mode}{'classification' or 'regression'.  Default = 'classification'.}
 }
 \value{
-a u-net keras model to be used with subsequent fitting
+a u-net keras model
 }
 \description{
 Creates a keras model of the U-net deep learning architecture for image

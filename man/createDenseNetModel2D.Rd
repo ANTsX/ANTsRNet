@@ -7,7 +7,7 @@
 createDenseNetModel2D(inputImageSize,
   numberOfClassificationLabels = 1000, numberOfFilters = 16,
   depth = 7, numberOfDenseBlocks = 1, growthRate = 12,
-  dropoutRate = 0.2, weightDecay = 0.0001, regression = FALSE)
+  dropoutRate = 0.2, weightDecay = 0.0001, mode = "classification")
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
@@ -32,7 +32,7 @@ N is an integer (default = 7).}
 
 \item{weightDecay}{= weight decay (default = 1e-4)}
 
-\item{regression}{boolean to set last layer activation}
+\item{mode}{'classification' or 'regression'.  Default = 'classification'.}
 }
 \value{
 an DenseNet keras model
@@ -56,7 +56,7 @@ https://github.com/tdeboissiere/DeepLearningImplementations/blob/master/DenseNet
 }
 \examples{
 
-\dontrun{ 
+\dontrun{
 
 library( keras )
 
@@ -70,14 +70,14 @@ Y_train <- keras::to_categorical( mnistData$train$y, numberOfLabels )
 # we add a dimension of 1 to specify the channel size
 inputImageSize <- c( dim( mnistData$train$x )[2:3], 1 )
 
-denseNetModel <- createDenseNetModel2D( inputImageSize = inputImageSize, 
+denseNetModel <- createDenseNetModel2D( inputImageSize = inputImageSize,
   numberOfClassificationLabels = numberOfLabels )
 
 denseNetModel \%>\% compile( loss = 'categorical_crossentropy',
-  optimizer = optimizer_adam( lr = 0.0001 ),  
+  optimizer = optimizer_adam( lr = 0.0001 ),
   metrics = c( 'categorical_crossentropy', 'accuracy' ) )
 
-track <- denseNetModel \%>\% fit( X_train, Y_train, epochs = 40, batch_size = 32, 
+track <- denseNetModel \%>\% fit( X_train, Y_train, epochs = 40, batch_size = 32,
   verbose = 1, shuffle = TRUE, validation_split = 0.2 )
 
 # Now test the model

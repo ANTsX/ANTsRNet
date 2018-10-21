@@ -33,7 +33,7 @@
 #' @param dropoutRate float between 0 and 1 to use between dense layers.
 #' @param mode 'classification' or 'regression'.  Default = 'classification'.
 #'
-#' @return a u-net keras model to be used with subsequent fitting
+#' @return a u-net keras model
 #' @author Tustison NJ
 #' @examples
 #' # Simple examples, must run successfully and quickly. These will be tested.
@@ -197,25 +197,24 @@ createUnetModel2D <- function( inputImageSize,
           activation = 'relu', padding = 'same' )
       }
     }
+
+  convActivation <- ''
   if( mode == 'classification' )
     {
     if( numberOfOutputs == 2 )
       {
-      outputs <- outputs %>%
-        layer_conv_2d( filters = numberOfOutputs,
-          kernel_size = c( 1, 1 ), activation = 'sigmoid' )
+      convActivation <- 'sigmoid'
       } else {
-      outputs <- outputs %>%
-        layer_conv_2d( filters = numberOfOutputs,
-          kernel_size = c( 1, 1 ), activation = 'softmax' )
+      convActivation <- 'softmax'
       }
     } else if( mode == 'regression' ) {
-    outputs <- outputs %>%
-      layer_conv_2d( filters = numberOfOutputs,
-        kernel_size = c( 1, 1 ), activation = 'linear' )
+    convActivation <- 'linear'
     } else {
     stop( 'Error: unrecognized mode.' )
     }
+  outputs <- outputs %>%
+    layer_conv_2d( filters = numberOfOutputs,
+      kernel_size = c( 1, 1 ), activation = convActivation )
 
   unetModel <- keras_model( inputs = inputs, outputs = outputs )
 
@@ -258,7 +257,7 @@ createUnetModel2D <- function( inputImageSize,
 #' @param dropoutRate float between 0 and 1 to use between dense layers.
 #' @param mode 'classification' or 'regression'.  Default = 'classification'.
 #'
-#' @return a u-net keras model to be used with subsequent fitting
+#' @return a u-net keras model
 #' @author Tustison NJ
 #' @examples
 #' # Simple examples, must run successfully and quickly. These will be tested.
@@ -421,25 +420,24 @@ createUnetModel3D <- function( inputImageSize,
           activation = 'relu', padding = 'same'  )
       }
     }
+
+  convActivation <- ''
   if( mode == 'classification' )
     {
     if( numberOfOutputs == 2 )
       {
-      outputs <- outputs %>%
-        layer_conv_3d( filters = numberOfOutputs,
-          kernel_size = c( 1, 1, 1 ), activation = 'sigmoid' )
+      convActivation <- 'sigmoid'
       } else {
-      outputs <- outputs %>%
-        layer_conv_3d( filters = numberOfOutputs,
-          kernel_size = c( 1, 1, 1 ), activation = 'softmax' )
+      convActivation <- 'softmax'
       }
     } else if( mode == 'regression' ) {
-    outputs <- outputs %>%
-      layer_conv_3d( filters = numberOfOutputs,
-        kernel_size = c( 1, 1, 1 ), activation = 'tanh' )
+    convActivation <- 'linear'
     } else {
     stop( 'Error: unrecognized mode.' )
     }
+  outputs <- outputs %>%
+    layer_conv_3d( filters = numberOfOutputs,
+      kernel_size = c( 1, 1, 1 ), activation = convActivation )
 
   unetModel <- keras_model( inputs = inputs, outputs = outputs )
 
