@@ -5,7 +5,8 @@
 \title{3-D implementation of the AlexNet deep learning architecture.}
 \usage{
 createAlexNetModel3D(inputImageSize, numberOfClassificationLabels = 1000,
-  numberOfDenseUnits = 4096, dropoutRate = 0, regression = FALSE)
+  numberOfDenseUnits = 4096, dropoutRate = 0,
+  mode = "classification")
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
@@ -20,7 +21,7 @@ the number of channels (e.g., red, green, and blue).  The batch size
 \item{dropoutRate}{optional regularization parameter between \verb{[0, 1]}.
 Default = 0.0.}
 
-\item{regression}{boolean to use regression in output layer}
+\item{mode}{'classification' or 'regression'.  Default = 'classification'.}
 }
 \value{
 an AlexNet keras model

@@ -24,7 +24,7 @@
 #' @param numberOfDenseUnits number of dense units.
 #' @param dropoutRate optional regularization parameter between \verb{[0, 1]}.
 #' Default = 0.0.
-#' @param regression boolean to use regression in output layer
+#' @param mode 'classification' or 'regression'.  Default = 'classification'.
 #' @return an AlexNet keras model
 #' @author Tustison NJ
 #' @examples
@@ -69,7 +69,7 @@ createAlexNetModel2D <- function( inputImageSize,
                                   numberOfClassificationLabels = 1000,
                                   numberOfDenseUnits = 4096,
                                   dropoutRate = 0.0,
-                                  regression = FALSE
+                                  mode = 'classification'
                                 )
 {
 
@@ -216,13 +216,24 @@ createAlexNetModel2D <- function( inputImageSize,
     {
     outputs <- outputs %>% layer_dropout( rate = dropoutRate )
     }
-  if ( ! regression )
-    outputs <- outputs %>%
-      layer_dense( units = numberOfClassificationLabels, activation = 'softmax' )
 
-  if ( regression )
-    outputs <- outputs %>%
-      layer_dense( units = numberOfClassificationLabels, activation = 'linear' )
+  layerActivation <- ''
+  if( mode == 'classification' )
+    {
+    if( numberOfClassificationLabels == 2 )
+      {
+      layerActivation <- 'sigmoid'
+      } else {
+      layerActivation <- 'softmax'
+      }
+    } else if( mode == 'regression' ) {
+    layerActivation <- 'linear'
+    } else {
+    stop( 'Error: unrecognized mode.' )
+    }
+
+  outputs <- outputs %>%
+    layer_dense( units = numberOfClassificationLabels, activation = layerActivation )
 
   alexNetModel <- keras_model( inputs = inputs, outputs = outputs )
 
@@ -255,7 +266,7 @@ createAlexNetModel2D <- function( inputImageSize,
 #' @param numberOfDenseUnits number of dense units.
 #' @param dropoutRate optional regularization parameter between \verb{[0, 1]}.
 #' Default = 0.0.
-#' @param regression boolean to use regression in output layer
+#' @param mode 'classification' or 'regression'.  Default = 'classification'.
 #' @return an AlexNet keras model
 #' @author Tustison NJ
 #' @examples
@@ -300,7 +311,7 @@ createAlexNetModel3D <- function( inputImageSize,
                                   numberOfClassificationLabels = 1000,
                                   numberOfDenseUnits = 4096,
                                   dropoutRate = 0.0,
-                                  regression = FALSE
+                                  mode = 'classification'
                                 )
 {
 
@@ -451,13 +462,23 @@ createAlexNetModel3D <- function( inputImageSize,
     outputs <- outputs %>% layer_dropout( rate = dropoutRate )
     }
 
-  if ( ! regression )
-    outputs <- outputs %>%
-      layer_dense( units = numberOfClassificationLabels, activation = 'softmax' )
+  layerActivation <- ''
+  if( mode == 'classification' )
+    {
+    if( numberOfClassificationLabels == 2 )
+      {
+      layerActivation <- 'sigmoid'
+      } else {
+      layerActivation <- 'softmax'
+      }
+    } else if( mode == 'regression' ) {
+    layerActivation <- 'linear'
+    } else {
+    stop( 'Error: unrecognized mode.' )
+    }
 
-  if ( regression )
-    outputs <- outputs %>%
-      layer_dense( units = numberOfClassificationLabels, activation = 'linear' )
+  outputs <- outputs %>%
+    layer_dense( units = numberOfClassificationLabels, activation = layerActivation )
 
   alexNetModel <- keras_model( inputs = inputs, outputs = outputs )
 
