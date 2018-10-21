@@ -27,9 +27,9 @@ an ANTs image.
 Reconstruct image from a list of patches.
 }
 \examples{
-library( ANTsR )
 
 library( ANTsR )
+
 image <- antsImageRead( getANTsRData( "r16" ) )
 patchSet <- extractImagePatches( image, c( 64, 64 ), "all", c( 8, 8 ) )
 imageReconstructed <-

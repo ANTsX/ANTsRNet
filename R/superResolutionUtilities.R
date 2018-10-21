@@ -17,6 +17,7 @@
 #' @examples
 #'
 #' library( ANTsR )
+#'
 #' image <- antsImageRead( getANTsRData( "r16" ) )
 #' maskImage <- getMask( image, 1, 1000 )
 #' patchSet1 <- extractImagePatches( image, c( 32, 32 ), 10, c( 32, 32 ), randomSeed = 0 )
@@ -171,9 +172,9 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
 #' @return an ANTs image.
 #' @author Tustison NJ
 #' @examples
-#' library( ANTsR )
 #'
 #' library( ANTsR )
+#'
 #' image <- antsImageRead( getANTsRData( "r16" ) )
 #' patchSet <- extractImagePatches( image, c( 64, 64 ), "all", c( 8, 8 ) )
 #' imageReconstructed <-
@@ -378,48 +379,78 @@ reconstructImageFromPatches <- function( patchList, domainImage,
   return( as.antsImage( imageArray, reference = domainImage ) )
 }
 
-
-
-#' Error measurements of images (from redr)
+#' Mean square error of a single image or between two images.
 #'
-#' This function calculates error between two images
+#' @param x input image.
+#' @param y input image.
 #'
-#' @param x,y \code{antsImage} objects
-#'
+#' @return the mean squared error
+#' @author Avants BB (from redr)
 #' @examples
-#' library( ANTsRCore )
-#' MSE( ri(1), ri(2) )
-#' # alternatively it can be done like:
-#' MSE( ri(1) - ri(2) )
-#' @name error
-NULL
-
+#'
+#' library( ANTsR )
+#'
+#' r16 <- antsImageRead( getANTsRData( 'r16' ) )
+#' r85 <- antsImageRead( getANTsRData( 'r85' ) )
+#' mseValue <- MSE( r16, r85 )
+#'
 #' @export
-#' @describeIn error Mean Squared Error
-MSE <- function(x, y = NULL){
-
-  if(is.null(y))
-    return(mean(x^2))
-  else
-    return(mean((x - y)^2))
+MSE <- function( x, y = NULL )
+{
+  if( is.null( y ) )
+    {
+    return( mean( x^2 ) )
+    } else {
+    return( mean ( ( x - y )^2 ) )
+    }
 }
 
+#' Mean absolute error of a single image or between two images.
+#'
+#' @param x input image.
+#' @param y input image.
+#'
+#' @return the mean absolute error
+#' @author Avants BB (from redr)
+#' @examples
+#'
+#' library( ANTsR )
+#'
+#' r16 <- antsImageRead( getANTsRData( 'r16' ) )
+#' r85 <- antsImageRead( getANTsRData( 'r85' ) )
+#' maeValue <- MAE( r16, r85 )
+#'
 #' @export
-#' @describeIn error Mean Absolute Error
-MAE <- function(x, y = NULL){
-
-  if(is.null(y))
-    return(mean(abs(x)))
-  else
-    return(mean(abs(x - y)))
+MAE <- function( x, y = NULL )
+{
+  if( is.null( y ) )
+    {
+    return( mean( abs( x ) ) )
+    } else {
+    return( mean ( abs( x - y ) ) )
+    }
 }
 
+#' Peak signal-to-noise ratio between two images.
+#'
+#' @param x input image.
+#' @param y input image.
+#'
+#' @return the peak signal-to-noise ratio
+#' @author Avants BB
+#' @examples
+#'
+#' library( ANTsR )
+#'
+#' r16 <- antsImageRead( getANTsRData( 'r16' ) )
+#' r85 <- antsImageRead( getANTsRData( 'r85' ) )
+#' psnrValue <- PSNR( r16, r85 )
+#'
 #' @export
-#' @describeIn error Peak Signal-to-Noise Ratio
-PSNR <- function(x, y){
-  20*log10(max(x)) - 10*log10(MSE(x, y))
+PSNR <- function( x, y )
+{
+  return( 20 * log10( max( x ) ) - 10 * log10( MSE( x, y ) ) )
 }
-
 
 #' @title Structural similarity index
 #'

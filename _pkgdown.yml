@@ -81,4 +81,9 @@ reference:
   - '`randomImageTransformParametersAugmentation`'
   - '`randomImageTransformParametersBatchGenerator`'
   - '`randomlyTransformImageData`'
-
+- title: Misc
+  desc: ~
+  contents:
+  - '`MSE`'
+  - '`MAE`'
+  - '`SSIM`'

@@ -33,6 +33,7 @@ Extract 2-D or 3-D image patches.
 \examples{
 
 library( ANTsR )
+
 image <- antsImageRead( getANTsRData( "r16" ) )
 maskImage <- getMask( image, 1, 1000 )
 patchSet1 <- extractImagePatches( image, c( 32, 32 ), 10, c( 32, 32 ), randomSeed = 0 )

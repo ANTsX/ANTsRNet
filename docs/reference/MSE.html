@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Reconstruct image from a list of patches. — reconstructImageFromPatches • ANTsRNet</title>
+<title>Mean square error of a single image or between two images. — MSE • ANTsRNet</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Reconstruct image from a list of patches. — reconstructImageFromPatches" />
+<meta property="og:title" content="Mean square error of a single image or between two images. — MSE" />
 
-<meta property="og:description" content="Reconstruct image from a list of patches." />
+<meta property="og:description" content="Mean square error of a single image or between two images." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -92,58 +92,44 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Reconstruct image from a list of patches.</h1>
+    <h1>Mean square error of a single image or between two images.</h1>
     
-    <div class="hidden name"><code>reconstructImageFromPatches.Rd</code></div>
+    <div class="hidden name"><code>MSE.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Reconstruct image from a list of patches.</p>
+    <p>Mean square error of a single image or between two images.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>reconstructImageFromPatches</span>(<span class='no'>patchList</span>, <span class='no'>domainImage</span>, <span class='kw'>strideLength</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>domainImageIsMask</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>MSE</span>(<span class='no'>x</span>, <span class='kw'>y</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>patchList</th>
-      <td><p>List of overlapping patches defining an image.</p></td>
+      <th>x</th>
+      <td><p>input image.</p></td>
     </tr>
     <tr>
-      <th>domainImage</th>
-      <td><p>Image or mask to define the geometric information of the
-reconstructed image.  If this is a mask image, the reconstruction will only
-use patches in the mask.</p></td>
-    </tr>
-    <tr>
-      <th>strideLength</th>
-      <td><p>Defines the sequential patch overlap for
-maxNumberOfPatches = all.  Can be a image-dimensional vector or a scalar.</p></td>
-    </tr>
-    <tr>
-      <th>domainImageIsMask</th>
-      <td><p>boolean specifying whether the domain image is a
-mask used to limit the region of reconstruction from the patches.</p></td>
+      <th>y</th>
+      <td><p>input image.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>an ANTs image.</p>
+    <p>the mean squared error</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
 <span class='fu'>library</span>( <span class='no'>ANTsR</span> )
 
-<span class='no'>image</span> <span class='kw'>&lt;-</span> <span class='fu'>antsImageRead</span>( <span class='fu'>getANTsRData</span>( <span class='st'>"r16"</span> ) )
-<span class='no'>patchSet</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='extractImagePatches.html'>extractImagePatches</a></span>( <span class='no'>image</span>, <span class='fu'>c</span>( <span class='fl'>64</span>, <span class='fl'>64</span> ), <span class='st'>"all"</span>, <span class='fu'>c</span>( <span class='fl'>8</span>, <span class='fl'>8</span> ) )
-<span class='no'>imageReconstructed</span> <span class='kw'>&lt;-</span>
-  <span class='fu'>reconstructImageFromPatches</span>( <span class='no'>patchSet</span>, <span class='no'>image</span>, <span class='fu'>c</span>( <span class='fl'>8</span>, <span class='fl'>8</span> ) )</div></pre>
+<span class='no'>r16</span> <span class='kw'>&lt;-</span> <span class='fu'>antsImageRead</span>( <span class='fu'>getANTsRData</span>( <span class='st'>'r16'</span> ) )
+<span class='no'>r85</span> <span class='kw'>&lt;-</span> <span class='fu'>antsImageRead</span>( <span class='fu'>getANTsRData</span>( <span class='st'>'r85'</span> ) )
+<span class='no'>mseValue</span> <span class='kw'>&lt;-</span> <span class='fu'>MSE</span>( <span class='no'>r16</span>, <span class='no'>r85</span> )</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -157,7 +143,7 @@ mask used to limit the region of reconstruction from the patches.</p></td>
 
     <h2>Author</h2>
     
-Tustison NJ
+Avants BB (from redr)
 
   </div>
 </div>
