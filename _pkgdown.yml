@@ -86,4 +86,5 @@ reference:
   contents:
   - '`MSE`'
   - '`MAE`'
+  - '`PSNR`'
   - '`SSIM`'

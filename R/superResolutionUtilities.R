@@ -452,58 +452,55 @@ PSNR <- function( x, y )
   return( 20 * log10( max( x ) ) - 10 * log10( MSE( x, y ) ) )
 }
 
-#' @title Structural similarity index
+#' Structural similarity index (SSI) between two images.
 #'
-#' @description
-#'  This function implements the structural similarity index of Wang et al. (2003) formulated
-#'  for comparison of \code{antsImage} objects.
+#' Implementation of the SSI quantity for two images proposed in
 #'
-#' @param img1 is a \code{antsImage} object to compare
-#' @param img2 is a \code{antsImage} object to compare
-#' @param ks is a vector of length 2 which contains values for constants in the SSIM formula. If ignored default values will be used.
+#' Z. Wang, A.C. Bovik, H.R. Sheikh, E.P. Simoncelli. "Image quality
+#' assessment: from error visibility to structural similarity". IEEE TIP.
+#' 13 (4): 600–612.
 #'
+#' @param x input image.
+#' @param y input image.
+#' @param K vector of length 2 which contain SSI parameters meant to stabilize
+#' the formula in case of weak denominators.
 #'
-#' @return
-#'   \code{ssim} returns the SSIM value
+#' @return the structural similarity index
+#' @author Avants BB
+#' @examples
+#'
+#' library( ANTsR )
+#'
+#' r16 <- antsImageRead( getANTsRData( 'r16' ) )
+#' r85 <- antsImageRead( getANTsRData( 'r85' ) )
+#' ssimValue <- SSIM( r16, r85 )
 #'
 #' @export
-ssim <- function(img1, img2, ks=c(0.01, 0.03)) {
-  #set constants
-  N <- FALSE
-  L <- max( max( img1 ), max( img2 ) )
-  globalMin <- abs(  min( min(img1 ), min( img2 ) ) )
-  L <- L - globalMin
-  K <- ks
-  C1 <-(K[1]*L)^2
-  C2 <-(K[2]*L)^2
-  C3 <-C2/2
+SSIM <- function( x, y, K = c( 0.01, 0.03 ) )
+{
+  globalMax <- max( max( x ), max( y ) )
+  globalMin <- abs( min( min( x ), min( y ) ) )
+  L <- globalMax - globalMin
 
-  #get mu
-  mu1 <- mean( img1 )
-  mu2 <- mean( img2 )
-  img12 <- img1 * img2
-  #square
-  mu1mu2 <- mu1 * mu2
-  mu1sq <- mu1 * mu1
-  mu2sq <- mu2 * mu2
-  #normalized sigma sq
-  sigsq1<- mean(img1*img1) - mu1sq
-  sigsq2<- mean(img2*img2) - mu2sq
-  sig12 <- mean(img12) - mu1mu2
-  #std dev
-  sig1 <- sigsq1 ^ 0.5
-  sig2 <- sigsq2 ^ 0.5
-  #compute components
-  L <- ((2*mu1mu2)+C1) / (mu1sq + mu2sq + C1)
-  C <- (2*sig1*sig2+C2) / (sigsq1 + sigsq2 + C2)
-  S <- (sig12 + C3) / (sig1 * sig2 + C3)
-  #compute SSIMap
-  SSIM2 <- L * C * S
-  #compute SSIM
-  num <- (2*mu1mu2+C1)*(2*sig12+C2)
-  denom <- (mu1sq+mu2sq+C1) * (sigsq1+sigsq2+C2)
-  #global mean
-  mSSIM <- mean((num / denom))
-  return( mSSIM )
+  C1 <- ( K[1] * L )^2
+  C2 <- ( K[2] * L )^2
+  C3 <- C2 / 2
+
+  mu_x <- mean( x )
+  mu_y <- mean( y )
+
+  mu_x_sq <- mu_x * mu_x
+  mu_y_sq <- mu_y * mu_y
+  mu_xy <- mu_x * mu_y
+
+  sigma_x_sq <- mean( x * x ) - mu_x_sq
+  sigma_y_sq <- mean( y * y ) - mu_y_sq
+  sigma_xy <- mean( x * y ) - mu_xy
+
+  numerator <- ( 2 * mu_xy + C1 ) * ( 2 * sigma_xy + C2 )
+  denominator <- ( mu_x_sq + mu_y_sq + C1 ) * ( sigma_x_sq + sigma_y_sq + C2 )
+
+  SSI <- numerator / denominator
+
+  return( SSI )
 }
-
