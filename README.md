@@ -2,7 +2,7 @@
 
 # ANTsRNet
 
-A collection of well-known deep learning architectures ported to the R language and tools for basic medical image processing.
+A collection of deep learning architectures ported to the R language and tools for basic medical image processing.
 
 Examples available at [ANTsRNetExamples](https://github.com/ntustison/ANTsRNetExamples).
 
