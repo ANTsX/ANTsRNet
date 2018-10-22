@@ -11,8 +11,12 @@
 #' the patches when \code{maximumNumberOfPatches} does not equal "all".
 #' @param randomSeed integer seed that allows reproducible patch extraction
 #' across runs.
+#' @param returnAsArray specifies the return type of the function.  If
+#' \code{FALSE} (default) the return type is a list where each element is
+#' a single patch.  Otherwise the return type is an array of size
+#' \code{dim( numberOfPatches, patchSize )}.
 #'
-#' @return a randomly selected list of patches.
+#' @return a list (or array) of image patches.
 #' @author Tustison NJ
 #' @examples
 #'
@@ -26,7 +30,7 @@
 #'
 #' @export
 extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
-  strideLength = 1, maskImage = NA, randomSeed )
+  strideLength = 1, maskImage = NA, randomSeed, returnAsArray = FALSE )
 {
   if ( ! missing( randomSeed ) )
     {
@@ -46,7 +50,8 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
 
   imageArray <- as.array( image )
 
-  patches <- list()
+  patchList <- list()
+  patchArray <- array( data = NA )
   midPatchIndex <- round( patchSize / 2 )
 
   numberOfExtractedPatches <- maxNumberOfPatches
@@ -64,36 +69,65 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
       stop( paste0( "strideLength must be a positive integer." ) )
       }
 
+    numberOfExtractedPatches <- 1
+
+    indices <- list()
+    for( d in seq_length( dimensionality ) )
+      {
+      indices[[d]] <- seq.int( from = 1, to = imageSize[d] - patchSize[d] + 1,
+        by = strideLengthVector[d] )
+      numberOfExtractedPatches <- numberOfExtractedPatches * length( indices[[d]] )
+      }
+
+    if( returnAsArray == TRUE )
+      {
+      patchArray <- array( data = NA,
+        dim = c( numberOfExtractedPatches, patchSize ) )
+      }
+
     count <- 1
     if( dimensionality == 2 )
       {
-      for( i in seq.int( from = 1, to = imageSize[1] - patchSize[1] + 1,
-        by = strideLengthVector[1] ) )
+      for( i in indices[[1]] )
         {
-        for( j in seq.int( from = 1, to = imageSize[2] - patchSize[2] + 1,
-          by = strideLengthVector[2] ) )
+        for( j in indices[[2]] )
           {
           startIndex <- c( i, j )
           endIndex <- startIndex + patchSize - 1
-          patches[[count]] <- imageArray[startIndex[1]:endIndex[1],
+
+          patch <- imageArray[startIndex[1]:endIndex[1],
             startIndex[2]:endIndex[2]]
+
+          if( returnAsArray == TRUE )
+            {
+            patchArray[count,,] <- patch
+            } else {
+            patchList[[count]] <- patch
+            }
+
           count <- count + 1
           }
         }
       } else if( dimensionality == 3 ) {
-      for( i in seq.int( from = 1, to = imageSize[1] - patchSize[1] + 1,
-        by = strideLengthVector[1] ) )
+      for( i in indices[[1]] )
         {
-        for( j in seq.int( from = 1, to = imageSize[2] - patchSize[2] + 1,
-          by = strideLengthVector[2] ) )
+        for( j in indices[[2]] )
           {
-          for( k in seq.int( from = 1, to = imageSize[3] - patchSize[3] + 1,
-            by = strideLengthVector[3] ) )
+          for( k in indices[[3]] )
             {
             startIndex <- c( i, j, k )
             endIndex <- startIndex + patchSize - 1
-            patches[[count]] <- imageArray[startIndex[1]:endIndex[1],
+
+            patch <- imageArray[startIndex[1]:endIndex[1],
               startIndex[2]:endIndex[2], startIndex[3]:endIndex[3]]
+
+            if( returnAsArray == TRUE )
+              {
+              patchArray[count,,,] <- patch
+              } else {
+              patchList[[count]] <- patch
+              }
+
             count <- count + 1
             }
           }
@@ -138,24 +172,49 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
         }
       }
 
+    if( returnAsArray == TRUE )
+      {
+      patchArray <- array( data = NA,
+        dim = c( numberOfExtractedPatches, patchSize ) )
+      }
+
     startIndex <- rep( 1, dimensionality )
     for( i in seq_len( numberOfExtractedPatches ) )
       {
       startIndex <- randomIndices[i,]
       endIndex <- startIndex + patchSize - 1
+
       if( dimensionality == 2 )
         {
-        patches[[i]] <- imageArray[startIndex[1]:endIndex[1],
+        patch <- imageArray[startIndex[1]:endIndex[1],
           startIndex[2]:endIndex[2]]
         } else if( dimensionality == 3 ) {
-        patches[[i]] <- imageArray[startIndex[1]:endIndex[1],
+        patch <- imageArray[startIndex[1]:endIndex[1],
           startIndex[2]:endIndex[2], startIndex[3]:endIndex[3]]
         } else {
         stop( "Unsupported dimensionality." )
         }
+
+      if( returnAsArray == TRUE )
+        {
+        if( dimensionality == 2 )
+          {
+          patchArray[i,,] <- patch
+          } else {
+          patchArray[i,,,] <- patch
+          }
+        } else {
+        patchList[[i]] <- patch
+        }
       }
     }
-  return( patches )
+
+  if( returnAsArray )
+    {
+    return( patchArray )
+    } else {
+    return( patchList )
+    }
 }
 
 #' Reconstruct image from a list of patches.

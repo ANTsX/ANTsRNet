@@ -5,7 +5,8 @@
 \title{Extract 2-D or 3-D image patches.}
 \usage{
 extractImagePatches(image, patchSize, maxNumberOfPatches = "all",
-  strideLength = 1, maskImage = NA, randomSeed)
+  strideLength = 1, maskImage = NA, randomSeed,
+  returnAsArray = FALSE)
 }
 \arguments{
 \item{image}{Input ANTs image}
@@ -23,9 +24,14 @@ the patches when \code{maximumNumberOfPatches} does not equal "all".}
 
 \item{randomSeed}{integer seed that allows reproducible patch extraction
 across runs.}
+
+\item{returnAsArray}{specifies the return type of the function.  If
+\code{FALSE} (default) the return type is a list where each element is
+a single patch.  Otherwise the return type is an array of size
+\code{dim( numberOfPatches, patchSize )}.}
 }
 \value{
-a randomly selected list of patches.
+a list (or array) of image patches.
 }
 \description{
 Extract 2-D or 3-D image patches.

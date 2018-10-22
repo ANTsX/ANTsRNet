@@ -104,7 +104,8 @@
     </div>
 
     <pre class="usage"><span class='fu'>extractImagePatches</span>(<span class='no'>image</span>, <span class='no'>patchSize</span>, <span class='kw'>maxNumberOfPatches</span> <span class='kw'>=</span> <span class='st'>"all"</span>,
-  <span class='kw'>strideLength</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>maskImage</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='no'>randomSeed</span>)</pre>
+  <span class='kw'>strideLength</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>maskImage</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='no'>randomSeed</span>,
+  <span class='kw'>returnAsArray</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -137,11 +138,18 @@ the patches when <code>maximumNumberOfPatches</code> does not equal "all".</p></
       <td><p>integer seed that allows reproducible patch extraction
 across runs.</p></td>
     </tr>
+    <tr>
+      <th>returnAsArray</th>
+      <td><p>specifies the return type of the function.  If
+<code>FALSE</code> (default) the return type is a list where each element is
+a single patch.  Otherwise the return type is an array of size
+<code>dim( numberOfPatches, patchSize )</code>.</p></td>
+    </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a randomly selected list of patches.</p>
+    <p>a list (or array) of image patches.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
