@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Structural similarity index — ssim • ANTsRNet</title>
+<title>Structural similarity index (SSI) between two images. — SSIM • ANTsRNet</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,10 +30,9 @@
 
 
 
-<meta property="og:title" content="Structural similarity index — ssim" />
+<meta property="og:title" content="Structural similarity index (SSI) between two images. — SSIM" />
 
-<meta property="og:description" content="This function implements the structural similarity index of Wang et al. (2003) formulated
-for comparison of antsImage objects." />
+<meta property="og:description" content="Implementation of the SSI quantity for two images proposed in" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -93,42 +92,55 @@ for comparison of antsImage objects." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Structural similarity index</h1>
+    <h1>Structural similarity index (SSI) between two images.</h1>
     
-    <div class="hidden name"><code>ssim.Rd</code></div>
+    <div class="hidden name"><code>SSIM.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>This function implements the structural similarity index of Wang et al. (2003) formulated
-for comparison of <code>antsImage</code> objects.</p>
+    <p>Implementation of the SSI quantity for two images proposed in</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>ssim</span>(<span class='no'>img1</span>, <span class='no'>img2</span>, <span class='kw'>ks</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>0.01</span>, <span class='fl'>0.03</span>))</pre>
+    <pre class="usage"><span class='fu'>SSIM</span>(<span class='no'>x</span>, <span class='no'>y</span>, <span class='kw'>K</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>0.01</span>, <span class='fl'>0.03</span>))</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>img1</th>
-      <td><p>is a <code>antsImage</code> object to compare</p></td>
+      <th>x</th>
+      <td><p>input image.</p></td>
     </tr>
     <tr>
-      <th>img2</th>
-      <td><p>is a <code>antsImage</code> object to compare</p></td>
+      <th>y</th>
+      <td><p>input image.</p></td>
     </tr>
     <tr>
-      <th>ks</th>
-      <td><p>is a vector of length 2 which contains values for constants in the SSIM formula. If ignored default values will be used.</p></td>
+      <th>K</th>
+      <td><p>vector of length 2 which contain SSI parameters meant to stabilize
+the formula in case of weak denominators.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><code>ssim</code> returns the SSIM value</p>
+    <p>the structural similarity index</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Z. Wang, A.C. Bovik, H.R. Sheikh, E.P. Simoncelli. "Image quality
+assessment: from error visibility to structural similarity". IEEE TIP.
+13 (4): 600–612.</p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'>
+<span class='fu'>library</span>( <span class='no'>ANTsR</span> )
+
+<span class='no'>r16</span> <span class='kw'>&lt;-</span> <span class='fu'>antsImageRead</span>( <span class='fu'>getANTsRData</span>( <span class='st'>'r16'</span> ) )
+<span class='no'>r85</span> <span class='kw'>&lt;-</span> <span class='fu'>antsImageRead</span>( <span class='fu'>getANTsRData</span>( <span class='st'>'r85'</span> ) )
+<span class='no'>ssimValue</span> <span class='kw'>&lt;-</span> <span class='fu'>SSIM</span>( <span class='no'>r16</span>, <span class='no'>r85</span> )</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -136,7 +148,15 @@ for comparison of <code>antsImage</code> objects.</p>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-          </ul>
+
+      <li><a href="#details">Details</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
+
+    <h2>Author</h2>
+    
+Avants BB
 
   </div>
 </div>
