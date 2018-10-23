@@ -72,7 +72,7 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
     numberOfExtractedPatches <- 1
 
     indices <- list()
-    for( d in seq_length( dimensionality ) )
+    for( d in seq_len( dimensionality ) )
       {
       indices[[d]] <- seq.int( from = 1, to = imageSize[d] - patchSize[d] + 1,
         by = strideLengthVector[d] )
