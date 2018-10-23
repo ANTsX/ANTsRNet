@@ -264,7 +264,7 @@ createDeepBackProjectionNetworkModel3D <-
 {
 
   upBlock3D <- function( L, numberOfFilters = 64, kernelSize = c( 12, 12, 12 ),
-    strides = c( 8, 8, 8 ), includeDenseConvolutionLayer = FALSE, numberOfStages = 1 )
+    strides = c( 8, 8, 8 ), includeDenseConvolutionLayer = FALSE )
     {
     if( includeDenseConvolutionLayer )
       {
@@ -305,7 +305,7 @@ createDeepBackProjectionNetworkModel3D <-
     }
 
   downBlock3D <- function( H, numberOfFilters = 64, kernelSize = c( 12, 12, 12 ),
-    strides = c( 8, 8, 8 ), includeDenseConvolutionLayer = FALSE, numberOfStages = 1 )
+    strides = c( 8, 8, 8 ), includeDenseConvolutionLayer = FALSE )
     {
     if( includeDenseConvolutionLayer )
       {
@@ -386,13 +386,13 @@ createDeepBackProjectionNetworkModel3D <-
       } else {
       model <- downBlock3D( model, numberOfFilters = numberOfBaseFilters,
         kernelSize = convolutionKernelSize, strides = strides,
-        includeDenseConvolutionLayer = TRUE, numberOfStages = i )
+        includeDenseConvolutionLayer = TRUE )
       downProjectionBlocks[[i]] <- model
       model <- layer_concatenate( downProjectionBlocks )
 
       model <- upBlock3D( model, numberOfFilters = numberOfBaseFilters,
         kernelSize = convolutionKernelSize, strides = strides,
-        includeDenseConvolutionLayer = TRUE, numberOfStages = i )
+        includeDenseConvolutionLayer = TRUE )
       upProjectionBlocks[[i+1]] <- model
       model <- layer_concatenate( upProjectionBlocks )
       }
