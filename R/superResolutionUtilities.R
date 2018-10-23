@@ -79,7 +79,7 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
       numberOfExtractedPatches <- numberOfExtractedPatches * length( indices[[d]] )
       }
 
-    if( returnAsArray == TRUE )
+    if( returnAsArray )
       {
       patchArray <- array( data = NA,
         dim = c( numberOfExtractedPatches, patchSize ) )
@@ -98,7 +98,7 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
           patch <- imageArray[startIndex[1]:endIndex[1],
             startIndex[2]:endIndex[2]]
 
-          if( returnAsArray == TRUE )
+          if( returnAsArray )
             {
             patchArray[count,,] <- patch
             } else {
@@ -121,7 +121,7 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
             patch <- imageArray[startIndex[1]:endIndex[1],
               startIndex[2]:endIndex[2], startIndex[3]:endIndex[3]]
 
-            if( returnAsArray == TRUE )
+            if( returnAsArray )
               {
               patchArray[count,,,] <- patch
               } else {
@@ -172,7 +172,7 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
         }
       }
 
-    if( returnAsArray == TRUE )
+    if( returnAsArray )
       {
       patchArray <- array( data = NA,
         dim = c( numberOfExtractedPatches, patchSize ) )
@@ -195,7 +195,7 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
         stop( "Unsupported dimensionality." )
         }
 
-      if( returnAsArray == TRUE )
+      if( returnAsArray )
         {
         if( dimensionality == 2 )
           {
