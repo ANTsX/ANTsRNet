@@ -237,7 +237,7 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
 
       if( dimensionality == 2 )
         {
-        if( numberOfImageComponets == 1 )
+        if( numberOfImageComponents == 1 )
           {
           patch <- imageArray[startIndex[1]:endIndex[1],
             startIndex[2]:endIndex[2]]
