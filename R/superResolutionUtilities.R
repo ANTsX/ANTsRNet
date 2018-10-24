@@ -609,12 +609,20 @@ reconstructImageFromPatches <- function( patches, domainImage,
     imageArray <- aperm( imageArray, c( 4, 1, 2, 3 ) )
     }
 
-  reconstructedImage <- as.antsImage( imageArray,
-    pixeltype = domainImage@pixeltype,
-    spacing = antsGetSpacing( domainImage ),
-    origin = antsGetOrigin( domainImage ),
-    direction = antsGetDirection( domainImage ),
-    components = numberOfImageComponents )
+  if( numberOfImageComponents == 1 )
+    {
+    imageArray <- drop( imageArray )
+    reconstructedImage <- as.antsImage( imageArray, reference = domainImage )
+    }
+  else
+    {
+    reconstructedImage <- as.antsImage( imageArray,
+      pixeltype = domainImage@pixeltype,
+      spacing = antsGetSpacing( domainImage ),
+      origin = antsGetOrigin( domainImage ),
+      direction = antsGetDirection( domainImage ),
+      components = numberOfImageComponents )
+    }
 
   return( reconstructedImage )
 }
