@@ -278,7 +278,7 @@ createDenseNetModel3D <- function( inputImageSize,
                                    growthRate = 12,
                                    dropoutRate = 0.2,
                                    weightDecay = 1e-4,
-				                           regression = FALSE
+                                   mode = 'classification'
                                  )
 {
 
