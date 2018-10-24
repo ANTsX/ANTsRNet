@@ -9,7 +9,7 @@ extractImagePatches(image, patchSize, maxNumberOfPatches = "all",
   returnAsArray = FALSE)
 }
 \arguments{
-\item{image}{Input ANTs image}
+\item{image}{Input ANTs image with one or more components}
 
 \item{patchSize}{Width, height, and depth (if 3-D) of patches.}
 

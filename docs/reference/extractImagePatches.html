@@ -112,7 +112,7 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>image</th>
-      <td><p>Input ANTs image</p></td>
+      <td><p>Input ANTs image with one or more components</p></td>
     </tr>
     <tr>
       <th>patchSize</th>
@@ -158,9 +158,8 @@ a single patch.  Otherwise the return type is an array of size
 
 <span class='no'>image</span> <span class='kw'>&lt;-</span> <span class='fu'>antsImageRead</span>( <span class='fu'>getANTsRData</span>( <span class='st'>"r16"</span> ) )
 <span class='no'>maskImage</span> <span class='kw'>&lt;-</span> <span class='fu'>getMask</span>( <span class='no'>image</span>, <span class='fl'>1</span>, <span class='fl'>1000</span> )
-<span class='no'>patchSet1</span> <span class='kw'>&lt;-</span> <span class='fu'>extractImagePatches</span>( <span class='no'>image</span>, <span class='fu'>c</span>( <span class='fl'>32</span>, <span class='fl'>32</span> ), <span class='fl'>10</span>, <span class='fu'>c</span>( <span class='fl'>32</span>, <span class='fl'>32</span> ), <span class='kw'>randomSeed</span> <span class='kw'>=</span> <span class='fl'>0</span> )
-<span class='no'>patchSet2</span> <span class='kw'>&lt;-</span> <span class='fu'>extractImagePatches</span>( <span class='no'>image</span>, <span class='fu'>c</span>( <span class='fl'>32</span>, <span class='fl'>32</span> ), <span class='fl'>10</span>, <span class='fu'>c</span>( <span class='fl'>32</span>, <span class='fl'>32</span> ), <span class='kw'>randomSeed</span> <span class='kw'>=</span> <span class='fl'>1</span> )
-<span class='no'>patchSet3</span> <span class='kw'>&lt;-</span> <span class='fu'>extractImagePatches</span>( <span class='no'>image</span>, <span class='fu'>c</span>( <span class='fl'>32</span>, <span class='fl'>32</span> ), <span class='fl'>10</span>, <span class='fu'>c</span>( <span class='fl'>32</span>, <span class='fl'>32</span> ), <span class='no'>maskImage</span>, <span class='kw'>randomSeed</span> <span class='kw'>=</span> <span class='fl'>0</span> )</div></pre>
+<span class='no'>patchSet1</span> <span class='kw'>&lt;-</span> <span class='fu'>extractImagePatches</span>( <span class='no'>image</span>, <span class='fu'>c</span>( <span class='fl'>32</span>, <span class='fl'>32</span> ), <span class='fl'>10</span>, <span class='fu'>c</span>( <span class='fl'>32</span>, <span class='fl'>32</span> ), <span class='kw'>randomSeed</span> <span class='kw'>=</span> <span class='fl'>0</span> )</div><div class='output co'>#&gt; <span class='error'>Error: object 'numberOfImageComponets' not found</span></div><div class='input'><span class='no'>patchSet2</span> <span class='kw'>&lt;-</span> <span class='fu'>extractImagePatches</span>( <span class='no'>image</span>, <span class='fu'>c</span>( <span class='fl'>32</span>, <span class='fl'>32</span> ), <span class='fl'>10</span>, <span class='fu'>c</span>( <span class='fl'>32</span>, <span class='fl'>32</span> ), <span class='kw'>randomSeed</span> <span class='kw'>=</span> <span class='fl'>1</span> )</div><div class='output co'>#&gt; <span class='error'>Error in extractImagePatches(image, c(32, 32), 10, c(32, 32), randomSeed = 1): object 'numberOfImageComponets' not found</span></div><div class='input'><span class='no'>patchSet3</span> <span class='kw'>&lt;-</span> <span class='fu'>extractImagePatches</span>( <span class='no'>image</span>, <span class='fu'>c</span>( <span class='fl'>32</span>, <span class='fl'>32</span> ), <span class='fl'>10</span>, <span class='fu'>c</span>( <span class='fl'>32</span>, <span class='fl'>32</span> ), <span class='no'>maskImage</span>, <span class='kw'>randomSeed</span> <span class='kw'>=</span> <span class='fl'>0</span> )</div><div class='output co'>#&gt; <span class='error'>Error in extractImagePatches(image, c(32, 32), 10, c(32, 32), maskImage,     randomSeed = 0): object 'numberOfImageComponets' not found</span></div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

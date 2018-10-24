@@ -1,6 +1,6 @@
 #' Extract 2-D or 3-D image patches.
 #'
-#' @param image Input ANTs image
+#' @param image Input ANTs image with one or more components
 #' @param patchSize Width, height, and depth (if 3-D) of patches.
 #' @param maxNumberOfPatches Maximum number of patches returned.  If
 #' "all" is specified, then all patches in sequence (defined by the
@@ -39,6 +39,13 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
   imageSize <- dim( image )
   dimensionality <- length( imageSize )
 
+  if( dimensionality != 2 && dimensionality != 3 )
+    {
+    stop( "Unsupported dimensionality." )
+    }
+
+  numberOfImageComponents <- image@components
+
   if( length( imageSize ) != length( patchSize ) )
     {
     stop( "Mismatch between the image size and the specified patch size.\n" )
@@ -49,6 +56,15 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
     }
 
   imageArray <- as.array( image )
+  if( numberOfImageComponents > 1 )
+    {
+    if( dimensionality == 2 )
+      {
+      imageArray <- aperm( imageArray, c( 2, 3, 1 ) )
+      } else {
+      imageArray <- aperm( imageArray, c( 2, 3, 4, 1 ) )
+      }
+    }
 
   patchList <- list()
   patchArray <- array( data = NA )
@@ -76,13 +92,20 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
       {
       indices[[d]] <- seq.int( from = 1, to = imageSize[d] - patchSize[d] + 1,
         by = strideLengthVector[d] )
-      numberOfExtractedPatches <- numberOfExtractedPatches * length( indices[[d]] )
+      numberOfExtractedPatches <-
+        numberOfExtractedPatches * length( indices[[d]] )
       }
 
     if( returnAsArray )
       {
-      patchArray <- array( data = NA,
-        dim = c( numberOfExtractedPatches, patchSize ) )
+      if( numberOfImageComponents == 1 )
+        {
+        patchArray <- array( data = NA,
+          dim = c( numberOfExtractedPatches, patchSize ) )
+        } else {
+        patchArray <- array( data = NA, dim =
+          c( numberOfExtractedPatches, patchSize, numberOfImageComponents ) )
+        }
       }
 
     count <- 1
@@ -95,12 +118,23 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
           startIndex <- c( i, j )
           endIndex <- startIndex + patchSize - 1
 
-          patch <- imageArray[startIndex[1]:endIndex[1],
-            startIndex[2]:endIndex[2]]
+          if( numberOfImageComponents == 1 )
+            {
+            patch <- imageArray[startIndex[1]:endIndex[1],
+              startIndex[2]:endIndex[2]]
+            } else {
+            patch <- imageArray[startIndex[1]:endIndex[1],
+              startIndex[2]:endIndex[2],]
+            }
 
           if( returnAsArray )
             {
-            patchArray[count,,] <- patch
+            if( numberOfImageComponents == 1 )
+              {
+              patchArray[count,,] <- patch
+              } else {
+              patchArray[count,,,] <- patch
+              }
             } else {
             patchList[[count]] <- patch
             }
@@ -108,7 +142,7 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
           count <- count + 1
           }
         }
-      } else if( dimensionality == 3 ) {
+      } else {
       for( i in indices[[1]] )
         {
         for( j in indices[[2]] )
@@ -118,12 +152,23 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
             startIndex <- c( i, j, k )
             endIndex <- startIndex + patchSize - 1
 
-            patch <- imageArray[startIndex[1]:endIndex[1],
-              startIndex[2]:endIndex[2], startIndex[3]:endIndex[3]]
+            if( numberOfImageComponents == 1 )
+              {
+              patch <- imageArray[startIndex[1]:endIndex[1],
+                startIndex[2]:endIndex[2], startIndex[3]:endIndex[3]]
+              } else {
+              patch <- imageArray[startIndex[1]:endIndex[1],
+                startIndex[2]:endIndex[2], startIndex[3]:endIndex[3],]
+              }
 
             if( returnAsArray )
               {
-              patchArray[count,,,] <- patch
+              if( numberOfImageComponents == 1 )
+                {
+                patchArray[count,,,] <- patch
+                } else {
+                patchArray[count,,,,] <- patch
+                }
               } else {
               patchList[[count]] <- patch
               }
@@ -132,12 +177,12 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
             }
           }
         }
-      } else {
-      stop( "Unsupported dimensionality." )
       }
     } else {
 
-    randomIndices <- array( data = NA, dim = c( maxNumberOfPatches, dimensionality ) )
+    randomIndices <-
+      array( data = NA, dim = c( maxNumberOfPatches, dimensionality ) )
+
     if( !is.na( maskImage ) )
       {
       maskArray <- as.array( maskImage )
@@ -174,8 +219,14 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
 
     if( returnAsArray )
       {
-      patchArray <- array( data = NA,
-        dim = c( numberOfExtractedPatches, patchSize ) )
+      if( numberOfImageComponents == 1 )
+        {
+        patchArray <- array( data = NA,
+          dim = c( numberOfExtractedPatches, patchSize ) )
+        } else {
+        patchArray <- array( data = NA, dim =
+          c( numberOfExtractedPatches, patchSize, numberOfImageComponents ) )
+        }
       }
 
     startIndex <- rep( 1, dimensionality )
@@ -186,22 +237,42 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
 
       if( dimensionality == 2 )
         {
-        patch <- imageArray[startIndex[1]:endIndex[1],
-          startIndex[2]:endIndex[2]]
-        } else if( dimensionality == 3 ) {
-        patch <- imageArray[startIndex[1]:endIndex[1],
-          startIndex[2]:endIndex[2], startIndex[3]:endIndex[3]]
+        if( numberOfImageComponets == 1 )
+          {
+          patch <- imageArray[startIndex[1]:endIndex[1],
+            startIndex[2]:endIndex[2]]
+          } else {
+          patch <- imageArray[startIndex[1]:endIndex[1],
+            startIndex[2]:endIndex[2],]
+          }
         } else {
-        stop( "Unsupported dimensionality." )
+        if( numberOfImageComponents == 1 )
+          {
+          patch <- imageArray[startIndex[1]:endIndex[1],
+            startIndex[2]:endIndex[2], startIndex[3]:endIndex[3]]
+          } else {
+          patch <- imageArray[startIndex[1]:endIndex[1],
+            startIndex[2]:endIndex[2], startIndex[3]:endIndex[3],]
+          }
         }
 
       if( returnAsArray )
         {
         if( dimensionality == 2 )
           {
-          patchArray[i,,] <- patch
+          if( numberOfImageComponents == 1 )
+            {
+            patchArray[i,,] <- patch
+            } else {
+            patchArray[i,,,] <- patch
+            }
           } else {
-          patchArray[i,,,] <- patch
+          if( numberOfImageComponents == 1 )
+            {
+            patchArray[i,,,] <- patch
+            } else {
+            patchArray[i,,,,] <- patch
+            }
           }
         } else {
         patchList[[i]] <- patch
@@ -341,7 +412,7 @@ reconstructImageFromPatches <- function( patchList, domainImage,
           }
         }
       }
-    } else if( dimensionality == 3 ) {
+    } else {
     if( all( strideLengthVector == 1 ) )
       {
       for( i in seq_len( imageSize[1] - patchSize[1] + 1 ) )
@@ -431,8 +502,6 @@ reconstructImageFromPatches <- function( patchList, domainImage,
           }
         }
       }
-    } else {
-    stop( "Unsupported dimensionality.\n" )
     }
 
   return( as.antsImage( imageArray, reference = domainImage ) )
