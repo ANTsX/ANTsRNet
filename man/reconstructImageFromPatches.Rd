@@ -4,11 +4,12 @@
 \alias{reconstructImageFromPatches}
 \title{Reconstruct image from a list of patches.}
 \usage{
-reconstructImageFromPatches(patchList, domainImage, strideLength = 1,
+reconstructImageFromPatches(patches, domainImage, strideLength = 1,
   domainImageIsMask = FALSE)
 }
 \arguments{
-\item{patchList}{List of overlapping patches defining an image.}
+\item{patches}{List or array of patches defining an image.  Patches are assumed
+to have the same format as returned by \code{extractImagePatches}.}
 
 \item{domainImage}{Image or mask to define the geometric information of the
 reconstructed image.  If this is a mask image, the reconstruction will only
