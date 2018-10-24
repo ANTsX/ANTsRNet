@@ -50,10 +50,6 @@ Documentation page [https://antsx.github.io/ANTsRNet/](https://antsx.github.io/A
 * Deep back-projection network (DBPN) (2-D, 3-D)
     * [Muhammad Haris, Greg Shakhnarovich, Norimichi Ukita.  Deep Back-Projection Networks For Super-Resolution.](https://arxiv.org/abs/1803.02735)
 
-### Image-based regression
-
-Various networks above provide the option to use a regression layer as output.
-
 --------------------------------------
 
 ## Installation
