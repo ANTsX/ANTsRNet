@@ -106,7 +106,7 @@ recognition based on the paper</p>
     </div>
 
     <pre class="usage"><span class='fu'>createGoogLeNetModel2D</span>(<span class='no'>inputImageSize</span>,
-  <span class='kw'>numberOfClassificationLabels</span> <span class='kw'>=</span> <span class='fl'>1000</span>)</pre>
+  <span class='kw'>numberOfClassificationLabels</span> <span class='kw'>=</span> <span class='fl'>1000</span>, <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"classification"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -121,6 +121,10 @@ the number of channels (e.g., red, green, and blue).  The batch size
     <tr>
       <th>numberOfClassificationLabels</th>
       <td><p>Number of segmentation labels.</p></td>
+    </tr>
+    <tr>
+      <th>mode</th>
+      <td><p>'classification' or 'regression'.  Default = 'classification'.</p></td>
     </tr>
     </table>
     

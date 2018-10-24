@@ -5,7 +5,7 @@
 \title{2-D implementation of the GoogLeNet deep learning architecture.}
 \usage{
 createGoogLeNetModel2D(inputImageSize,
-  numberOfClassificationLabels = 1000)
+  numberOfClassificationLabels = 1000, mode = "classification")
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
@@ -14,6 +14,8 @@ the number of channels (e.g., red, green, and blue).  The batch size
 (i.e., number of training images) is not specified a priori.}
 
 \item{numberOfClassificationLabels}{Number of segmentation labels.}
+
+\item{mode}{'classification' or 'regression'.  Default = 'classification'.}
 }
 \value{
 a GoogLeNet keras model
@@ -40,7 +42,7 @@ https://github.com/fchollet/deep-learning-models/blob/master/inception_v3.py
 }
 \examples{
 
-\dontrun{ 
+\dontrun{
 
 library( keras )
 
@@ -54,14 +56,14 @@ Y_train <- keras::to_categorical( mnistData$train$y, numberOfLabels )
 # we add a dimension of 1 to specify the channel size
 inputImageSize <- c( dim( mnistData$train$x )[2:3], 1 )
 
-googLeNetModel <- createGoogLeNetModel2D( inputImageSize = inputImageSize, 
+googLeNetModel <- createGoogLeNetModel2D( inputImageSize = inputImageSize,
   numberOfClassificationLabels = numberOfLabels )
 
 googLeNetModel \%>\% compile( loss = 'categorical_crossentropy',
-  optimizer = optimizer_adam( lr = 0.0001 ),  
+  optimizer = optimizer_adam( lr = 0.0001 ),
   metrics = c( 'categorical_crossentropy', 'accuracy' ) )
 
-track <- googLeNetModel \%>\% fit( X_train, Y_train, epochs = 40, batch_size = 32, 
+track <- googLeNetModel \%>\% fit( X_train, Y_train, epochs = 40, batch_size = 32,
   verbose = 1, shuffle = TRUE, validation_split = 0.2 )
 
 # Now test the model

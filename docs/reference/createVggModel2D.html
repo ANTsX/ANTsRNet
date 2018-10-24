@@ -108,7 +108,8 @@ recognition based on the paper</p>
     <pre class="usage"><span class='fu'>createVggModel2D</span>(<span class='no'>inputImageSize</span>, <span class='kw'>numberOfClassificationLabels</span> <span class='kw'>=</span> <span class='fl'>1000</span>,
   <span class='kw'>layers</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span>, <span class='fl'>4</span>, <span class='fl'>4</span>), <span class='kw'>lowestResolution</span> <span class='kw'>=</span> <span class='fl'>64</span>,
   <span class='kw'>convolutionKernelSize</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>3</span>, <span class='fl'>3</span>), <span class='kw'>poolSize</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>2</span>, <span class='fl'>2</span>), <span class='kw'>strides</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>2</span>,
-  <span class='fl'>2</span>), <span class='kw'>denseUnits</span> <span class='kw'>=</span> <span class='fl'>4096</span>, <span class='kw'>dropoutRate</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>style</span> <span class='kw'>=</span> <span class='fl'>19</span>)</pre>
+  <span class='fl'>2</span>), <span class='kw'>denseUnits</span> <span class='kw'>=</span> <span class='fl'>4096</span>, <span class='kw'>dropoutRate</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>style</span> <span class='kw'>=</span> <span class='fl'>19</span>,
+  <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"classification"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -157,6 +158,10 @@ during the encoding path</p></td>
     <tr>
       <th>style</th>
       <td><p><code>'16'</code> or <code>'19'</code> for VGG16 or VGG19, respectively.</p></td>
+    </tr>
+    <tr>
+      <th>mode</th>
+      <td><p>'classification' or 'regression'.  Default = 'classification'.</p></td>
     </tr>
     </table>
     

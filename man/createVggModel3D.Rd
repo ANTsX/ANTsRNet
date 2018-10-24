@@ -8,7 +8,7 @@ createVggModel3D(inputImageSize, numberOfClassificationLabels = 1000,
   layers = c(1, 2, 3, 4, 4), lowestResolution = 64,
   convolutionKernelSize = c(3, 3, 3), poolSize = c(2, 2, 2),
   strides = c(2, 2, 2), denseUnits = 4096, dropoutRate = 0,
-  style = 19)
+  style = 19, mode = "classification")
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
@@ -35,6 +35,8 @@ during the encoding path}
 \item{dropoutRate}{float between 0 and 1 to use between dense layers.}
 
 \item{style}{\verb{'16'} or \verb{'19'} for VGG16 or VGG19, respectively.}
+
+\item{mode}{'classification' or 'regression'.  Default = 'classification'.}
 }
 \value{
 a VGG keras model to be used with subsequent fitting

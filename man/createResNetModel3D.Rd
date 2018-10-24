@@ -6,7 +6,7 @@
 \usage{
 createResNetModel3D(inputImageSize, numberOfClassificationLabels = 1000,
   layers = 1:4, residualBlockSchedule = c(3, 4, 6, 3),
-  lowestResolution = 64, cardinality = 1)
+  lowestResolution = 64, cardinality = 1, mode = "classification")
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
@@ -27,6 +27,8 @@ the 'U'.}
 
 \item{cardinality}{perform  ResNet (cardinality = 1) or ResNeXt
 (cardinality != 1 but powers of 2---try '32' )}
+
+\item{mode}{'classification' or 'regression'.  Default = 'classification'.}
 }
 \value{
 an ResNet keras model
@@ -45,7 +47,7 @@ https://gist.github.com/mjdietzx/0cb95922aac14d446a6530f87b3a04ce
 }
 \examples{
 
-\dontrun{ 
+\dontrun{
 
 library( keras )
 
@@ -59,14 +61,14 @@ Y_train <- keras::to_categorical( mnistData$train$y, numberOfLabels )
 # we add a dimension of 1 to specify the channel size
 inputImageSize <- c( dim( mnistData$train$x )[2:3], 1 )
 
-resNetModel <- createResNetModel2D( inputImageSize = inputImageSize, 
+resNetModel <- createResNetModel2D( inputImageSize = inputImageSize,
   numberOfClassificationLabels = numberOfLabels )
 
 resNetModel \%>\% compile( loss = 'categorical_crossentropy',
-  optimizer = optimizer_adam( lr = 0.0001 ),  
+  optimizer = optimizer_adam( lr = 0.0001 ),
   metrics = c( 'categorical_crossentropy', 'accuracy' ) )
 
-track <- resNetModel \%>\% fit( X_train, Y_train, epochs = 40, batch_size = 32, 
+track <- resNetModel \%>\% fit( X_train, Y_train, epochs = 40, batch_size = 32,
   verbose = 1, shuffle = TRUE, validation_split = 0.2 )
 
 # Now test the model
