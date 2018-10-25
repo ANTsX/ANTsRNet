@@ -61,8 +61,10 @@ reference:
 - title: Super-resolution helper functions
   desc: ~
   contents:
-  - '`extractImagePatches`'
-  - '`reconstructImageFromPatches`'
+  - '`MSE`'
+  - '`MAE`'
+  - '`PSNR`'
+  - '`SSIM`'
 - title: Custom loss functions
   desc: ~
   contents:
@@ -84,7 +86,5 @@ reference:
 - title: Misc
   desc: ~
   contents:
-  - '`MSE`'
-  - '`MAE`'
-  - '`PSNR`'
-  - '`SSIM`'
+  - '`extractImagePatches`'
+  - '`reconstructImageFromPatches`'
