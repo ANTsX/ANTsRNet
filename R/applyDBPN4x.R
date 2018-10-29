@@ -5,6 +5,7 @@
 #' @param image input image
 #' @param modelFilename see \code{getPretrainedNetwork}
 #' @param expansionFactor size to upscale, should match network pretraining
+#' @param strideLength stride length should be less than patch size
 #' @param verbose If \code{TRUE}, show status messages
 #' @return image upscaled to resolution provided by network
 #' @author Avants BB
@@ -17,14 +18,16 @@ applyDBPNsr <- function(
   image,
   modelFilename,
   expansionFactor,
+  strideLength,
   verbose = FALSE )
 {
 if ( verbose ) print( paste( "perform-*x-sr" ) )
 channelSize = 1
 lowResolutionPatchSize <- c( 48, 48 ) # from EDSR paper
 if ( missing( expansionFactor ) ) expansionFactor = 4
+if ( missing( strideLength ) ) strideLength = 10
 highResolutionPatchSize <- round( lowResolutionPatchSize * expansionFactor )
-strl = 20
+strl = strideLength
 ###############################################
 inputImageSize = c( lowResolutionPatchSize, 1 )
 if ( verbose ) print( "1. load model" )

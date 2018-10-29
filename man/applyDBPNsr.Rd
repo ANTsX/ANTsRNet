@@ -4,7 +4,8 @@
 \alias{applyDBPNsr}
 \title{applyDBPNsr}
 \usage{
-applyDBPNsr(image, modelFilename, expansionFactor, verbose = FALSE)
+applyDBPNsr(image, modelFilename, expansionFactor, strideLength,
+  verbose = FALSE)
 }
 \arguments{
 \item{image}{input image}
@@ -12,6 +13,8 @@ applyDBPNsr(image, modelFilename, expansionFactor, verbose = FALSE)
 \item{modelFilename}{see \code{getPretrainedNetwork}}
 
 \item{expansionFactor}{size to upscale, should match network pretraining}
+
+\item{strideLength}{stride length should be less than patch size}
 
 \item{verbose}{If \code{TRUE}, show status messages}
 }
