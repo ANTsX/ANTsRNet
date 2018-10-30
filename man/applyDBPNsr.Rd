@@ -4,8 +4,8 @@
 \alias{applyDBPNsr}
 \title{applyDBPNsr}
 \usage{
-applyDBPNsr(image, modelFilename, expansionFactor, strideLength,
-  verbose = FALSE)
+applyDBPNsr(image, modelFilename, expansionFactor = 4,
+  strideLength = 20, verbose = FALSE)
 }
 \arguments{
 \item{image}{input image}

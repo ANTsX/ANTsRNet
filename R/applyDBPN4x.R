@@ -17,28 +17,27 @@
 applyDBPNsr <- function(
   image,
   modelFilename,
-  expansionFactor,
-  strideLength,
+  expansionFactor = 4,
+  strideLength = 20,
   verbose = FALSE )
 {
 if ( verbose ) print( paste( "perform-*x-sr" ) )
 channelSize = 1
 lowResolutionPatchSize <- c( 48, 48 ) # from EDSR paper
-if ( missing( expansionFactor ) ) expansionFactor = 4
-if ( missing( strideLength ) ) strideLength = 10
 highResolutionPatchSize <- round( lowResolutionPatchSize * expansionFactor )
 strl = strideLength
 ###############################################
 inputImageSize = c( lowResolutionPatchSize, 1 )
 if ( verbose ) print( "1. load model" )
 tl1 = Sys.time()
-if ( ! exists( "srModel" ) )
-  srModel = load_model_hdf5( modelFilename )
+if ( file.exists( modelFilename ) )
+  srModel = load_model_hdf5( modelFilename ) else stop( paste( modelFilename, 'does not exist' ) )
 if ( verbose ) print( paste("      --- in : ", Sys.time() - tl1 ) )
 ###############
 t0 = Sys.time()
 if ( verbose ) print("2. extract patches")
-X_test <- extractImagePatches( image,
+X_test <- extractImagePatches(
+  iMath( image, "Normalize" ) * 255,
   lowResolutionPatchSize, maxNumberOfPatches = 'all',
   strideLength = strl, returnAsArray = TRUE )
 #################################################
@@ -53,7 +52,8 @@ for( j in seq_len( numberOfPatches ) )
   X_test[j,,,1] <- ( X_test[j,,,1] - xmean[j] ) / ( xsd[j] + 1 )
   }
 ########
-bigimage = resampleImage( image, antsGetSpacing( image )/expansionFactor, useVoxels = F )
+bigImg = resampleImage( iMath( image, "Normalize" ) * 255,
+  antsGetSpacing( image )/expansionFactor, useVoxels = F )
 t1=Sys.time()
 if ( verbose ) print( paste( "     - Extract:", numberOfPatches, "in:", t1-t0 ) )
 if ( verbose ) print( "3. ##### prediction" )
@@ -63,7 +63,8 @@ plist = list()
 for( j in seq_len( numberOfPatches ) )
   plist[[j]] = ( pred[j,,,1] ) * ( xsd[j] + 1) + xmean[j]
 if ( verbose ) print( "4. reconstruct" )
-predimage = reconstructImageFromPatches( plist,
-  bigimage,   strideLength = strl * expansionFactor )
-return( predimage )
+predImg = reconstructImageFromPatches( plist,
+  bigImg,   strideLength = strl * expansionFactor )
+
+return( predImg )
 }
