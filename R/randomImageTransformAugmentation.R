@@ -382,8 +382,8 @@ randomImageTransformParametersAugmentation <- function(
         parameters[ k ] = rnorm( 1, txParamMeans[k],
           txParamSDs[k] )
         }
-    if ( is.matrix( txParamSDs ) )
-      parameters = mvtnorm::rmvnorm( 1, txParamMeans, txParamSDs )
+    if ( is.matrix( txParamSDs ) | is.data.frame( txParamSDs ) )
+      parameters = mvtnorm::rmvnorm( 1, txParamMeans, data.matrix( txParamSDs ) )
     return( parameters )
   }
 
@@ -403,9 +403,10 @@ randomImageTransformParametersAugmentation <- function(
       if ( is.list( deformationBasis ) )
         loctx = basisWarp( deformationBasis, params, numberOfCompositions,
           spatialSmoothing )
-      if ( is.matrix( deformationBasis ) ) # affine - just sum
+      if ( is.matrix( deformationBasis ) | is.data.frame( deformationBasis) ) # affine - just sum
         {
-        txparams = deformationBasis %*% t( params )
+        txmatparams = matrix( params, nrow = length( params ), ncol = 1 )
+        txparams = data.matrix( deformationBasis ) %*% txmatparams
         loctx = createAntsrTransform(
           type = "AffineTransform", precision = "float",
                dimension =  imageDomain@dimension )
