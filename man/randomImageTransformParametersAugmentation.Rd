@@ -30,7 +30,8 @@ consequences if you are not aware of this.  This operation will test
 
 \item{numberOfCompositions}{integer greater than or equal to one}
 
-\item{deformationBasis}{list containing deformationBasis set}
+\item{deformationBasis}{list containing deformationBasis set or a matrix
+if the basis is low-dimensional i.e. affine}
 
 \item{txParamMeans}{list containing deformationBasis set means}
 

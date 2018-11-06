@@ -292,7 +292,8 @@ basisWarp <- function(
 #' @param interpolator nearestNeighbor or linear (string) for predictor images
 #' @param spatialSmoothing spatial smoothing for simulated deformation
 #' @param numberOfCompositions integer greater than or equal to one
-#' @param deformationBasis list containing deformationBasis set
+#' @param deformationBasis list containing deformationBasis set or a matrix
+#'  if the basis is low-dimensional i.e. affine
 #' @param txParamMeans list containing deformationBasis set means
 #' @param txParamSDs list containing deformationBasis standard deviations
 #' @return list of transformed images and transform parameters
@@ -399,8 +400,18 @@ randomImageTransformParametersAugmentation <- function(
     # get simulated data
     if ( typeOfTransform == 'DeformationBasis' ) {
       params = basisParameters( txParamMeans, txParamSDs )
-      loctx = basisWarp( deformationBasis, params, numberOfCompositions,
-        spatialSmoothing )
+      if ( is.list( deformationBasis ) )
+        loctx = basisWarp( deformationBasis, params, numberOfCompositions,
+          spatialSmoothing )
+      if ( is.matrix( deformationBasis ) ) # affine - just sum
+        {
+        txparams = deformationBasis %*% t( params )
+        loctx = createAntsrTransform(
+          type = "AffineTransform", precision = "float",
+               dimension =  imageDomain@dimension )
+        setAntsrTransformParameters( loctx, txparams )
+        setAntsrTransformFixedParameters( loctx, fxparam )
+        }
       }
     if ( typeOfTransform %in% admissibleTx[1:4] ) {
       loctx = randAff( imageDomain, fxparam,  typeOfTransform,
