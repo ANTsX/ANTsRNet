@@ -65,7 +65,7 @@ createDeepBackProjectionNetworkModel2D <-
     if( includeDenseConvolutionLayer )
       {
       L <- L %>% layer_conv_2d( filters = numberOfFilters, use_bias = TRUE,
-        kernel_size = c( 1, 1 ), stride = c( 1, 1 ), padding = 'same' )
+        kernel_size = c( 1, 1 ), strides = c( 1, 1 ), padding = 'same' )
       L <- L %>% layer_activation_parametric_relu(
         alpha_initializer = 'zero', shared_axes = c( 1, 2 ) )
       }
@@ -106,7 +106,7 @@ createDeepBackProjectionNetworkModel2D <-
     if( includeDenseConvolutionLayer )
       {
       H <- H %>% layer_conv_2d( filters = numberOfFilters, use_bias = TRUE,
-        kernel_size = c( 1, 1 ), stride = c( 1, 1 ), padding = 'same' )
+        kernel_size = c( 1, 1 ), strides = c( 1, 1 ), padding = 'same' )
       H <- H %>% layer_activation_parametric_relu(
         alpha_initializer = 'zero', shared_axes = c( 1, 2 ) )
       }
@@ -269,14 +269,14 @@ createDeepBackProjectionNetworkModel3D <-
     if( includeDenseConvolutionLayer )
       {
       L <- L %>% layer_conv_3d( filters = numberOfFilters, use_bias = TRUE,
-        kernel_size = c( 1, 1, 1 ), stride = c( 1, 1, 1 ), padding = 'same' )
+        kernel_size = c( 1, 1, 1 ), strides = c( 1, 1, 1 ), padding = 'same' )
       L <- L %>% layer_activation_parametric_relu(
         alpha_initializer = 'zero', shared_axes = c( 1, 2, 3 ) )
       }
 
     # Scale up
     H0 <- L %>% layer_conv_3d_transpose( filters = numberOfFilters,
-      kernel_size = kernel_size, strides = strides,
+      kernel_size = kernelSize, strides = strides,
       kernel_initializer = 'glorot_uniform', padding = 'same' )
     H0 <- H0 %>% layer_activation_parametric_relu(
       alpha_initializer = 'zero', shared_axes = c( 1, 2, 3 ) )
@@ -310,7 +310,7 @@ createDeepBackProjectionNetworkModel3D <-
     if( includeDenseConvolutionLayer )
       {
       H <- H %>% layer_conv_3d( filters = numberOfFilters, use_bias = TRUE,
-        kernel_size = c( 1, 1, 1 ), stride = c( 1, 1, 1 ), padding = 'same' )
+        kernel_size = c( 1, 1, 1 ), strides = c( 1, 1, 1 ), padding = 'same' )
       H <- H %>% layer_activation_parametric_relu(
         alpha_initializer = 'zero', shared_axes = c( 1, 2, 3 ) )
       }

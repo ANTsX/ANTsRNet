@@ -41,6 +41,7 @@ This operation will test
 \code{deformationBasis} list of basis deformations
 \code{txParamMeans} vector of basis deformations means
 \code{txParamSDs} vector of basis deformations sds
+\code{center} center the parameters before passing to Y
 }
 
 \section{Methods}{

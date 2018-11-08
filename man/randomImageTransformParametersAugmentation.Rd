@@ -7,7 +7,7 @@
 randomImageTransformParametersAugmentation(imageDomain, predictorImageList,
   n = 8, typeOfTransform = "Affine", interpolator = "linear",
   spatialSmoothing = 3, numberOfCompositions = 4, deformationBasis,
-  txParamMeans, txParamSDs)
+  txParamMeans, txParamSDs, center = FALSE)
 }
 \arguments{
 \item{imageDomain}{defines the spatial domain for all images.  NOTE: if the
@@ -36,6 +36,8 @@ if the basis is low-dimensional i.e. affine}
 \item{txParamMeans}{list containing deformationBasis set means}
 
 \item{txParamSDs}{list containing deformationBasis standard deviations}
+
+\item{center}{center the parameters before passing as ground truth output}
 }
 \value{
 list of transformed images and transform parameters

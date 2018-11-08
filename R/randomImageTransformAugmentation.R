@@ -296,6 +296,7 @@ basisWarp <- function(
 #'  if the basis is low-dimensional i.e. affine
 #' @param txParamMeans list containing deformationBasis set means
 #' @param txParamSDs list containing deformationBasis standard deviations
+#' @param center center the parameters before passing as ground truth output
 #' @return list of transformed images and transform parameters
 #' @author Avants BB
 #' @seealso \code{\link{randomImageTransformParametersBatchGenerator}}
@@ -319,8 +320,9 @@ randomImageTransformParametersAugmentation <- function(
   spatialSmoothing = 3, # for deformation
   numberOfCompositions = 4,
   deformationBasis,
-  txParamMeans, # mean values
-  txParamSDs  )  # sd values
+  txParamMeans,   # mean values
+  txParamSDs,     # sd values
+  center = FALSE )
 {
   admissibleTx = c(
     "Translation","Rigid","ScaleShear","Affine", "DeformationBasis" )
@@ -424,7 +426,7 @@ randomImageTransformParametersAugmentation <- function(
       applyAntsrTransform( loctx, locimgpredictors, imageDomain,
         interpolation =  interpolator[1] ) - imageDomain * 0
     outputPredictorList[[i]] = locimgpredictors
-    outputParameterList[[i]] = params
+    if ( center ) outputParameterList[[i]] = params - txParamMeans else outputParameterList[[i]] = params
     }
 
   return(

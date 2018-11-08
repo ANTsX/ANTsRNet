@@ -263,6 +263,7 @@ public = list(
 #' \code{deformationBasis} list of basis deformations
 #' \code{txParamMeans} vector of basis deformations means
 #' \code{txParamSDs} vector of basis deformations sds
+#' \code{center} center the parameters before passing to Y
 #'
 
 #' @section Methods:
@@ -309,6 +310,7 @@ public = list(
     deformationBasis = NULL,
     txParamMeans = NULL,
     txParamSDs = NULL,
+    center = FALSE,
 
     initialize = function(
       imageDomain = NULL,
@@ -318,7 +320,8 @@ public = list(
       numberOfCompositions = 4,
       deformationBasis = NULL,
       txParamMeans = NULL,
-      txParamSDs = NULL
+      txParamSDs = NULL,
+      center = FALSE
       )
       {
       self$imageDomain <- imageDomain
@@ -329,6 +332,7 @@ public = list(
       self$deformationBasis <- deformationBasis
       self$txParamMeans <- txParamMeans
       self$txParamSDs <- txParamSDs
+      self$center <- center
 
       if( !usePkg( "ANTsR" ) )
         {
@@ -375,7 +379,8 @@ public = list(
           numberOfCompositions = self$numberOfCompositions,
           deformationBasis = self$deformationBasis,
           txParamMeans = self$txParamMeans,
-          txParamSDs = self$txParamSDs )
+          txParamSDs = self$txParamSDs,
+          center = self$center )
         gc()
         imageSize <- dim( randITX$outputPredictorList[[1]] )
         paramsSize = length( randITX$outputParameterList[[1]] )

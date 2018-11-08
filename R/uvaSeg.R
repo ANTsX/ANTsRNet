@@ -303,6 +303,8 @@ uvaSegTrain <- function( patches,
 #'
 #' @export uvaSeg
 #' @importFrom Rcpp cppFunction
+#' @importFrom utils download.file
+#' @importFrom ANTsRCore antsGetDirection antsGetOrigin resampleImage labelStats
 uvaSeg <- function(
   image,
   model,
