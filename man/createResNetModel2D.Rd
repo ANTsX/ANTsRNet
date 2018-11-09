@@ -55,9 +55,9 @@ numberOfLabels <- 10
 
 # Extract a small subset for something that can run quickly
 
-X_trainSmall <- mnistData$train$x[1:100,,]
+X_trainSmall <- mnistData$train$x[1:10,,]
 X_trainSmall <- array( data = X_trainSmall, dim = c( dim( X_trainSmall ), 1 ) )
-Y_trainSmall <- to_categorical( mnistData$train$y[1:100], numberOfLabels )
+Y_trainSmall <- to_categorical( mnistData$train$y[1:10], numberOfLabels )
 
 X_testSmall <- mnistData$test$x[1:10,,]
 X_testSmall <- array( data = X_testSmall, dim = c( dim( X_testSmall ), 1 ) )

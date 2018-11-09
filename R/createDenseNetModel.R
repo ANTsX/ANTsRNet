@@ -247,9 +247,9 @@ createDenseNetModel2D <- function( inputImageSize,
 #'
 #' # Extract a small subset for something that can run quickly
 #'
-#' X_trainSmall <- mnistData$train$x[1:100,,]
+#' X_trainSmall <- mnistData$train$x[1:10,,]
 #' X_trainSmall <- array( data = X_trainSmall, dim = c( dim( X_trainSmall ), 1 ) )
-#' Y_trainSmall <- to_categorical( mnistData$train$y[1:100], numberOfLabels )
+#' Y_trainSmall <- to_categorical( mnistData$train$y[1:10], numberOfLabels )
 #'
 #' X_testSmall <- mnistData$test$x[1:10,,]
 #' X_testSmall <- array( data = X_testSmall, dim = c( dim( X_testSmall ), 1 ) )
@@ -267,7 +267,7 @@ createDenseNetModel2D <- function( inputImageSize,
 #'   metrics = c( 'categorical_crossentropy', 'accuracy' ) )
 #'
 #' track <- model %>% fit( X_trainSmall, Y_trainSmall, verbose = 1,
-#'   epochs = 2, batch_size = 20, shuffle = TRUE, validation_split = 0.25 )
+#'   epochs = 1, batch_size = 2, shuffle = TRUE, validation_split = 0.5 )
 #'
 #' # Now test the model
 #'

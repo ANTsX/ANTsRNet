@@ -171,9 +171,9 @@ implementation:</p>
 
 <span class='co'># Extract a small subset for something that can run quickly</span>
 
-<span class='no'>X_trainSmall</span> <span class='kw'>&lt;-</span> <span class='no'>mnistData</span>$<span class='no'>train</span>$<span class='no'>x</span>[<span class='fl'>1</span>:<span class='fl'>100</span>,,]
+<span class='no'>X_trainSmall</span> <span class='kw'>&lt;-</span> <span class='no'>mnistData</span>$<span class='no'>train</span>$<span class='no'>x</span>[<span class='fl'>1</span>:<span class='fl'>10</span>,,]
 <span class='no'>X_trainSmall</span> <span class='kw'>&lt;-</span> <span class='fu'>array</span>( <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>X_trainSmall</span>, <span class='kw'>dim</span> <span class='kw'>=</span> <span class='fu'>c</span>( <span class='fu'>dim</span>( <span class='no'>X_trainSmall</span> ), <span class='fl'>1</span> ) )
-<span class='no'>Y_trainSmall</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/to_categorical'>to_categorical</a></span>( <span class='no'>mnistData</span>$<span class='no'>train</span>$<span class='no'>y</span>[<span class='fl'>1</span>:<span class='fl'>100</span>], <span class='no'>numberOfLabels</span> )
+<span class='no'>Y_trainSmall</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/to_categorical'>to_categorical</a></span>( <span class='no'>mnistData</span>$<span class='no'>train</span>$<span class='no'>y</span>[<span class='fl'>1</span>:<span class='fl'>10</span>], <span class='no'>numberOfLabels</span> )
 
 <span class='no'>X_testSmall</span> <span class='kw'>&lt;-</span> <span class='no'>mnistData</span>$<span class='no'>test</span>$<span class='no'>x</span>[<span class='fl'>1</span>:<span class='fl'>10</span>,,]
 <span class='no'>X_testSmall</span> <span class='kw'>&lt;-</span> <span class='fu'>array</span>( <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>X_testSmall</span>, <span class='kw'>dim</span> <span class='kw'>=</span> <span class='fu'>c</span>( <span class='fu'>dim</span>( <span class='no'>X_testSmall</span> ), <span class='fl'>1</span> ) )

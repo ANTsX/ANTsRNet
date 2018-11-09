@@ -183,9 +183,9 @@ implementation:</p>
 
 <span class='co'># Extract a small subset for something that can run quickly</span>
 
-<span class='no'>X_trainSmall</span> <span class='kw'>&lt;-</span> <span class='no'>mnistData</span>$<span class='no'>train</span>$<span class='no'>x</span>[<span class='fl'>1</span>:<span class='fl'>100</span>,,]
+<span class='no'>X_trainSmall</span> <span class='kw'>&lt;-</span> <span class='no'>mnistData</span>$<span class='no'>train</span>$<span class='no'>x</span>[<span class='fl'>1</span>:<span class='fl'>10</span>,,]
 <span class='no'>X_trainSmall</span> <span class='kw'>&lt;-</span> <span class='fu'>array</span>( <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>X_trainSmall</span>, <span class='kw'>dim</span> <span class='kw'>=</span> <span class='fu'>c</span>( <span class='fu'>dim</span>( <span class='no'>X_trainSmall</span> ), <span class='fl'>1</span> ) )
-<span class='no'>Y_trainSmall</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/to_categorical'>to_categorical</a></span>( <span class='no'>mnistData</span>$<span class='no'>train</span>$<span class='no'>y</span>[<span class='fl'>1</span>:<span class='fl'>100</span>], <span class='no'>numberOfLabels</span> )
+<span class='no'>Y_trainSmall</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/to_categorical'>to_categorical</a></span>( <span class='no'>mnistData</span>$<span class='no'>train</span>$<span class='no'>y</span>[<span class='fl'>1</span>:<span class='fl'>10</span>], <span class='no'>numberOfLabels</span> )
 
 <span class='no'>X_testSmall</span> <span class='kw'>&lt;-</span> <span class='no'>mnistData</span>$<span class='no'>test</span>$<span class='no'>x</span>[<span class='fl'>1</span>:<span class='fl'>10</span>,,]
 <span class='no'>X_testSmall</span> <span class='kw'>&lt;-</span> <span class='fu'>array</span>( <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>X_testSmall</span>, <span class='kw'>dim</span> <span class='kw'>=</span> <span class='fu'>c</span>( <span class='fu'>dim</span>( <span class='no'>X_testSmall</span> ), <span class='fl'>1</span> ) )
@@ -203,7 +203,7 @@ implementation:</p>
   <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='fu'>c</span>( <span class='st'>'categorical_crossentropy'</span>, <span class='st'>'accuracy'</span> ) )
 
 <span class='no'>track</span> <span class='kw'>&lt;-</span> <span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/fit'>fit</a></span>( <span class='no'>X_trainSmall</span>, <span class='no'>Y_trainSmall</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>epochs</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>batch_size</span> <span class='kw'>=</span> <span class='fl'>20</span>, <span class='kw'>shuffle</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>validation_split</span> <span class='kw'>=</span> <span class='fl'>0.25</span> )
+  <span class='kw'>epochs</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>batch_size</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>shuffle</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>validation_split</span> <span class='kw'>=</span> <span class='fl'>0.5</span> )
 
 <span class='co'># Now test the model</span>
 
