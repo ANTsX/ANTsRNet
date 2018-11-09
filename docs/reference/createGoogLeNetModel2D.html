@@ -169,7 +169,7 @@ implementation:</p>
 <span class='no'>inputImageSize</span> <span class='kw'>&lt;-</span> <span class='fu'>c</span>( <span class='fu'>dim</span>( <span class='no'>X_trainSmall</span> )[<span class='fl'>2</span>:<span class='fl'>3</span>], <span class='fl'>1</span> )
 
 <span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'>createGoogLeNetModel2D</span>( <span class='kw'>inputImageSize</span> <span class='kw'>=</span> <span class='no'>inputImageSize</span>,
-  <span class='kw'>numberOfClassificationLabels</span> <span class='kw'>=</span> <span class='no'>numberOfLabels</span> )</div><div class='output co'>#&gt; <span class='error'>Error in py_call_impl(callable, dots$args, dots$keywords): ValueError: Negative dimension size caused by subtracting 3 from 2 for 'conv2d_32/convolution' (op: 'Conv2D') with input shapes: [?,2,2,256], [3,3,256,384].</span>
+  <span class='kw'>numberOfClassificationLabels</span> <span class='kw'>=</span> <span class='no'>numberOfLabels</span> )</div><div class='output co'>#&gt; <span class='error'>Error in py_call_impl(callable, dots$args, dots$keywords): ValueError: Negative dimension size caused by subtracting 3 from 2 for 'conv2d_27/convolution' (op: 'Conv2D') with input shapes: [?,2,2,256], [3,3,256,384].</span>
 #&gt; <span class='error'></span>
 #&gt; <span class='error'>Detailed traceback: </span>
 #&gt; <span class='error'>  File "/Users/ntustison/anaconda3/lib/python3.6/site-packages/keras/engine/base_layer.py", line 457, in __call__</span>
@@ -204,9 +204,10 @@ implementation:</p>
 #&gt; <span class='error'>    require_shape_fn)</span>
 #&gt; <span class='error'>  File "/Users/ntustison/anaconda3/lib/python3.6/site-packages/tensorflow/python/framework/common_shapes.py", line 691, in _call_cpp_shape_fn_impl</span>
 #&gt; <span class='error'>    raise ValueError(err.message)</span></div><div class='input'>
-<span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/compile'>compile</a></span>( <span class='kw'>loss</span> <span class='kw'>=</span> <span class='st'>'categorical_crossentropy'</span>,
-  <span class='kw'>optimizer</span> <span class='kw'>=</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/optimizer_adam'>optimizer_adam</a></span>( <span class='kw'>lr</span> <span class='kw'>=</span> <span class='fl'>0.0001</span> ),
-  <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='fu'>c</span>( <span class='st'>'categorical_crossentropy'</span>, <span class='st'>'accuracy'</span> ) )</div><div class='output co'>#&gt; <span class='error'>Error in eval(lhs, parent, parent): object 'model' not found</span></div><div class='input'>
+# model %>% compile( loss = 'categorical_crossentropy',
+#   optimizer = optimizer_adam( lr = 0.0001 ),
+#   metrics = c( 'categorical_crossentropy', 'accuracy' ) )
+
 # Comment out the rest due to travis build constraints
 
 # track <- model %>% fit( X_trainSmall, Y_trainSmall, verbose = 1,
