@@ -183,13 +183,15 @@ https://github.com/lunardog/convnets-keras/</p>
   <span class='kw'>optimizer</span> <span class='kw'>=</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/optimizer_adam'>optimizer_adam</a></span>( <span class='kw'>lr</span> <span class='kw'>=</span> <span class='fl'>0.0001</span> ),
   <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='fu'>c</span>( <span class='st'>'categorical_crossentropy'</span>, <span class='st'>'accuracy'</span> ) )
 
-<span class='no'>track</span> <span class='kw'>&lt;-</span> <span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/fit'>fit</a></span>( <span class='no'>X_trainSmall</span>, <span class='no'>Y_trainSmall</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>epochs</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>batch_size</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>shuffle</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>validation_split</span> <span class='kw'>=</span> <span class='fl'>0.5</span> )
+<span class='co'># Comment out the rest due to travis build constraints</span>
+
+<span class='co'># track &lt;- model %&gt;% fit( X_trainSmall, Y_trainSmall, verbose = 1,</span>
+<span class='co'>#   epochs = 1, batch_size = 2, shuffle = TRUE, validation_split = 0.5 )</span>
 
 <span class='co'># Now test the model</span>
 
-<span class='no'>testingMetrics</span> <span class='kw'>&lt;-</span> <span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/reexports'>evaluate</a></span>( <span class='no'>X_testSmall</span>, <span class='no'>Y_testSmall</span> )
-<span class='no'>predictedData</span> <span class='kw'>&lt;-</span> <span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'>predict</span>( <span class='no'>X_testSmall</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>1</span> )</div></pre>
+<span class='co'># testingMetrics &lt;- model %&gt;% evaluate( X_testSmall, Y_testSmall )</span>
+<span class='co'># predictedData &lt;- model %&gt;% predict( X_testSmall, verbose = 1 )</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

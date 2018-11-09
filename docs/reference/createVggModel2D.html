@@ -240,11 +240,16 @@ implementation:</p>
 <span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/compile'>compile</a></span>( <span class='kw'>loss</span> <span class='kw'>=</span> <span class='st'>'categorical_crossentropy'</span>,
   <span class='kw'>optimizer</span> <span class='kw'>=</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/optimizer_adam'>optimizer_adam</a></span>( <span class='kw'>lr</span> <span class='kw'>=</span> <span class='fl'>0.0001</span> ),
   <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='fu'>c</span>( <span class='st'>'categorical_crossentropy'</span>, <span class='st'>'accuracy'</span> ) )</div><div class='output co'>#&gt; <span class='error'>Error in eval(lhs, parent, parent): object 'model' not found</span></div><div class='input'>
-<span class='no'>track</span> <span class='kw'>&lt;-</span> <span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/fit'>fit</a></span>( <span class='no'>X_trainSmall</span>, <span class='no'>Y_trainSmall</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>epochs</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>batch_size</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>shuffle</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>validation_split</span> <span class='kw'>=</span> <span class='fl'>0.5</span> )</div><div class='output co'>#&gt; <span class='error'>Error in eval(lhs, parent, parent): object 'model' not found</span></div><div class='input'>
-<span class='co'># Now test the model</span>
+# Comment out the rest due to travis build constraints
 
-<span class='no'>testingMetrics</span> <span class='kw'>&lt;-</span> <span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/reexports'>evaluate</a></span>( <span class='no'>X_testSmall</span>, <span class='no'>Y_testSmall</span> )</div><div class='output co'>#&gt; <span class='error'>Error in eval(lhs, parent, parent): object 'model' not found</span></div><div class='input'><span class='no'>predictedData</span> <span class='kw'>&lt;-</span> <span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'>predict</span>( <span class='no'>X_testSmall</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>1</span> )</div><div class='output co'>#&gt; <span class='error'>Error in eval(lhs, parent, parent): object 'model' not found</span></div><div class='input'>
+# track <- model %>% fit( X_trainSmall, Y_trainSmall, verbose = 1,
+#   epochs = 1, batch_size = 2, shuffle = TRUE, validation_split = 0.5 )
+
+# Now test the model
+
+# testingMetrics <- model %>% evaluate( X_testSmall, Y_testSmall )
+# predictedData <- model %>% predict( X_testSmall, verbose = 1 )
+
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

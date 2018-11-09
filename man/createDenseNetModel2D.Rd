@@ -83,13 +83,15 @@ model \%>\% compile( loss = 'categorical_crossentropy',
   optimizer = optimizer_adam( lr = 0.0001 ),
   metrics = c( 'categorical_crossentropy', 'accuracy' ) )
 
-track <- model \%>\% fit( X_trainSmall, Y_trainSmall, verbose = 1,
-  epochs = 2, batch_size = 20, shuffle = TRUE, validation_split = 0.25 )
+# Comment out the rest due to travis build constraints
+
+# track <- model \%>\% fit( X_trainSmall, Y_trainSmall, verbose = 1,
+#   epochs = 1, batch_size = 2, shuffle = TRUE, validation_split = 0.5 )
 
 # Now test the model
 
-testingMetrics <- model \%>\% evaluate( X_testSmall, Y_testSmall )
-predictedData <- model \%>\% predict( X_testSmall, verbose = 1 )
+# testingMetrics <- model \%>\% evaluate( X_testSmall, Y_testSmall )
+# predictedData <- model \%>\% predict( X_testSmall, verbose = 1 )
 
 }
 \author{
