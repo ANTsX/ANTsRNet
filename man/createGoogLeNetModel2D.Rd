@@ -62,8 +62,8 @@ Y_testSmall <- to_categorical( mnistData$test$y[1:10], numberOfLabels )
 
 inputImageSize <- c( dim( X_trainSmall )[2:3], 1 )
 
-model <- createGoogLeNetModel2D( inputImageSize = inputImageSize,
-  numberOfClassificationLabels = numberOfLabels )
+# model <- createGoogLeNetModel2D( inputImageSize = inputImageSize,
+#  numberOfClassificationLabels = numberOfLabels )
 
 # model \%>\% compile( loss = 'categorical_crossentropy',
 #   optimizer = optimizer_adam( lr = 0.0001 ),
