@@ -327,7 +327,7 @@ createResNetModel3D <- function( inputImageSize,
     return( groupedModel )
     }
 
-  residualBlock3d <- function( model, numberOfFiltersIn, numberOfFiltersOut,
+  residualBlock3D <- function( model, numberOfFiltersIn, numberOfFiltersOut,
     strides = c( 1, 1, 1 ), projectShortcut = FALSE )
     {
     shortcut <- model
@@ -386,7 +386,7 @@ createResNetModel3D <- function( inputImageSize,
         } else {
         strides <- c( 1, 1, 1 )
         }
-      outputs <- residualBlock3d( outputs, numberOfFiltersIn = nFiltersIn,
+      outputs <- residualBlock3D( outputs, numberOfFiltersIn = nFiltersIn,
         numberOfFiltersOut = nFiltersOut, strides = strides,
         projectShortcut = projectShortcut )
       }
