@@ -103,7 +103,8 @@
     
     </div>
 
-    <pre class="usage"><span class='fu'>applyDBPNsr</span>(<span class='no'>image</span>, <span class='no'>modelFilename</span>, <span class='no'>expansionFactor</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>applyDBPNsr</span>(<span class='no'>image</span>, <span class='no'>modelFilename</span>, <span class='kw'>expansionFactor</span> <span class='kw'>=</span> <span class='fl'>4</span>,
+  <span class='kw'>strideLength</span> <span class='kw'>=</span> <span class='fl'>20</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -119,6 +120,10 @@
     <tr>
       <th>expansionFactor</th>
       <td><p>size to upscale, should match network pretraining</p></td>
+    </tr>
+    <tr>
+      <th>strideLength</th>
+      <td><p>stride length should be less than patch size</p></td>
     </tr>
     <tr>
       <th>verbose</th>

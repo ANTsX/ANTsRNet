@@ -7,7 +7,7 @@
 createDenseNetModel3D(inputImageSize,
   numberOfClassificationLabels = 1000, numberOfFilters = 16,
   depth = 7, numberOfDenseBlocks = 1, growthRate = 12,
-  dropoutRate = 0.2, weightDecay = 1e-04, mode = "classification")
+  dropoutRate = 0.2, weightDecay = 0.0001, mode = "classification")
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
@@ -58,35 +58,40 @@ https://github.com/tdeboissiere/DeepLearningImplementations/blob/master/DenseNet
 
 \dontrun{
 
+library( ANTsRNet )
 library( keras )
 
 mnistData <- dataset_mnist()
+numberOfLabels <- 10
 
-numberOfLabels <- length( unique( mnistData$train$y ) )
+# Extract a small subset for something that can run quickly
 
-X_train <- array( mnistData$train$x, dim = c( dim( mnistData$train$x ), 1 ) )
-Y_train <- keras::to_categorical( mnistData$train$y, numberOfLabels )
+X_trainSmall <- mnistData$train$x[1:100,,]
+X_trainSmall <- array( data = X_trainSmall, dim = c( dim( X_trainSmall ), 1 ) )
+Y_trainSmall <- to_categorical( mnistData$train$y[1:100], numberOfLabels )
 
-# we add a dimension of 1 to specify the channel size
-inputImageSize <- c( dim( mnistData$train$x )[2:3], 1 )
+X_testSmall <- mnistData$test$x[1:10,,]
+X_testSmall <- array( data = X_testSmall, dim = c( dim( X_testSmall ), 1 ) )
+Y_testSmall <- to_categorical( mnistData$test$y[1:10], numberOfLabels )
 
-denseNetModel <- createDenseNetModel2D( inputImageSize = inputImageSize,
+# We add a dimension of 1 to specify the channel size
+
+inputImageSize <- c( dim( X_trainSmall )[2:3], 1 )
+
+model <- createDenseNetModel2D( inputImageSize = inputImageSize,
   numberOfClassificationLabels = numberOfLabels )
 
-denseNetModel \%>\% compile( loss = 'categorical_crossentropy',
+model \%>\% compile( loss = 'categorical_crossentropy',
   optimizer = optimizer_adam( lr = 0.0001 ),
   metrics = c( 'categorical_crossentropy', 'accuracy' ) )
 
-track <- denseNetModel \%>\% fit( X_train, Y_train, epochs = 40, batch_size = 32,
-  verbose = 1, shuffle = TRUE, validation_split = 0.2 )
+track <- model \%>\% fit( X_trainSmall, Y_trainSmall, verbose = 1,
+  epochs = 2, batch_size = 20, shuffle = TRUE, validation_split = 0.25 )
 
 # Now test the model
 
-X_test <- array( mnistData$test$x, dim = c( dim( mnistData$test$x ), 1 ) )
-Y_test <- keras::to_categorical( mnistData$test$y, numberOfLabels )
-
-testingMetrics <- denseNetModel \%>\% evaluate( X_test, Y_test )
-predictedData <- denseNetModel \%>\% predict( X_test, verbose = 1 )
+testingMetrics <- model \%>\% evaluate( X_testSmall, Y_testSmall )
+predictedData <- model \%>\% predict( X_testSmall, verbose = 1 )
 
 }
 }

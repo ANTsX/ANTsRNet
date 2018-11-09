@@ -112,7 +112,7 @@ is intended for use with low-dimensional transformations.</p>
     <pre class="usage"><span class='fu'>randomImageTransformParametersAugmentation</span>(<span class='no'>imageDomain</span>, <span class='no'>predictorImageList</span>,
   <span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>8</span>, <span class='kw'>typeOfTransform</span> <span class='kw'>=</span> <span class='st'>"Affine"</span>, <span class='kw'>interpolator</span> <span class='kw'>=</span> <span class='st'>"linear"</span>,
   <span class='kw'>spatialSmoothing</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>numberOfCompositions</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='no'>deformationBasis</span>,
-  <span class='no'>txParamMeans</span>, <span class='no'>txParamSDs</span>)</pre>
+  <span class='no'>txParamMeans</span>, <span class='no'>txParamSDs</span>, <span class='kw'>center</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -153,7 +153,8 @@ consequences if you are not aware of this.  This operation will test
     </tr>
     <tr>
       <th>deformationBasis</th>
-      <td><p>list containing deformationBasis set</p></td>
+      <td><p>list containing deformationBasis set or a matrix
+if the basis is low-dimensional i.e. affine</p></td>
     </tr>
     <tr>
       <th>txParamMeans</th>
@@ -162,6 +163,10 @@ consequences if you are not aware of this.  This operation will test
     <tr>
       <th>txParamSDs</th>
       <td><p>list containing deformationBasis standard deviations</p></td>
+    </tr>
+    <tr>
+      <th>center</th>
+      <td><p>center the parameters before passing as ground truth output</p></td>
     </tr>
     </table>
     
