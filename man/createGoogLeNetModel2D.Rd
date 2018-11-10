@@ -44,30 +44,41 @@ https://github.com/fchollet/deep-learning-models/blob/master/inception_v3.py
 
 library( ANTsRNet )
 library( keras )
+library( ANTsR )
 
 mnistData <- dataset_mnist()
 numberOfLabels <- 10
 
-# Extract a small subset for something that can run quickly
+# Extract a small subset for something that can run quickly.
+# We also need to resample since the native mnist data size does
+# not fit with GoogLeNet parameters.
 
-X_trainSmall <- mnistData$train$x[1:10,,]
+resampledImageSize <- c( 100, 100 )
+numberOfTrainingData <- 10
+numberOfTestingData <- 5
+
+X_trainSmall <- as.array(
+  resampleImage( as.antsImage( mnistData$train$x[1:numberOfTrainingData,,] ),
+    c( numberOfTrainingData, resampledImageSize ), TRUE ) )
 X_trainSmall <- array( data = X_trainSmall, dim = c( dim( X_trainSmall ), 1 ) )
-Y_trainSmall <- to_categorical( mnistData$train$y[1:10], numberOfLabels )
+Y_trainSmall <- to_categorical( mnistData$train$y[1:numberOfTrainingData], numberOfLabels )
 
-X_testSmall <- mnistData$test$x[1:10,,]
+X_testSmall <- as.array(
+  resampleImage( as.antsImage( mnistData$test$x[1:numberOfTestingData,,] ),
+    c( numberOfTestingData, resampledImageSize ), TRUE ) )
 X_testSmall <- array( data = X_testSmall, dim = c( dim( X_testSmall ), 1 ) )
-Y_testSmall <- to_categorical( mnistData$test$y[1:10], numberOfLabels )
+Y_testSmall <- to_categorical( mnistData$test$y[1:numberOfTestingData], numberOfLabels )
 
 # We add a dimension of 1 to specify the channel size
 
 inputImageSize <- c( dim( X_trainSmall )[2:3], 1 )
 
-# model <- createGoogLeNetModel2D( inputImageSize = inputImageSize,
-#  numberOfClassificationLabels = numberOfLabels )
+model <- createGoogLeNetModel2D( inputImageSize = c( resampledImageSize, 1 ),
+  numberOfClassificationLabels = numberOfLabels )
 
-# model \%>\% compile( loss = 'categorical_crossentropy',
-#   optimizer = optimizer_adam( lr = 0.0001 ),
-#   metrics = c( 'categorical_crossentropy', 'accuracy' ) )
+model \%>\% compile( loss = 'categorical_crossentropy',
+  optimizer = optimizer_adam( lr = 0.0001 ),
+  metrics = c( 'categorical_crossentropy', 'accuracy' ) )
 
 # Comment out the rest due to travis build constraints
 

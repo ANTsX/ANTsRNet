@@ -150,30 +150,41 @@ implementation:</p>
     <pre class="examples"><div class='input'>
 <span class='fu'>library</span>( <span class='no'>ANTsRNet</span> )
 <span class='fu'>library</span>( <span class='no'>keras</span> )
+<span class='fu'>library</span>( <span class='no'>ANTsR</span> )
 
 <span class='no'>mnistData</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/dataset_mnist'>dataset_mnist</a></span>()
 <span class='no'>numberOfLabels</span> <span class='kw'>&lt;-</span> <span class='fl'>10</span>
 
-<span class='co'># Extract a small subset for something that can run quickly</span>
+<span class='co'># Extract a small subset for something that can run quickly.</span>
+<span class='co'># We also need to resample since the native mnist data size does</span>
+<span class='co'># not fit with GoogLeNet parameters.</span>
 
-<span class='no'>X_trainSmall</span> <span class='kw'>&lt;-</span> <span class='no'>mnistData</span>$<span class='no'>train</span>$<span class='no'>x</span>[<span class='fl'>1</span>:<span class='fl'>10</span>,,]
+<span class='no'>resampledImageSize</span> <span class='kw'>&lt;-</span> <span class='fu'>c</span>( <span class='fl'>100</span>, <span class='fl'>100</span> )
+<span class='no'>numberOfTrainingData</span> <span class='kw'>&lt;-</span> <span class='fl'>10</span>
+<span class='no'>numberOfTestingData</span> <span class='kw'>&lt;-</span> <span class='fl'>5</span>
+
+<span class='no'>X_trainSmall</span> <span class='kw'>&lt;-</span> <span class='fu'>as.array</span>(
+  <span class='fu'>resampleImage</span>( <span class='fu'>as.antsImage</span>( <span class='no'>mnistData</span>$<span class='no'>train</span>$<span class='no'>x</span>[<span class='fl'>1</span>:<span class='no'>numberOfTrainingData</span>,,] ),
+    <span class='fu'>c</span>( <span class='no'>numberOfTrainingData</span>, <span class='no'>resampledImageSize</span> ), <span class='fl'>TRUE</span> ) )
 <span class='no'>X_trainSmall</span> <span class='kw'>&lt;-</span> <span class='fu'>array</span>( <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>X_trainSmall</span>, <span class='kw'>dim</span> <span class='kw'>=</span> <span class='fu'>c</span>( <span class='fu'>dim</span>( <span class='no'>X_trainSmall</span> ), <span class='fl'>1</span> ) )
-<span class='no'>Y_trainSmall</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/to_categorical'>to_categorical</a></span>( <span class='no'>mnistData</span>$<span class='no'>train</span>$<span class='no'>y</span>[<span class='fl'>1</span>:<span class='fl'>10</span>], <span class='no'>numberOfLabels</span> )
+<span class='no'>Y_trainSmall</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/to_categorical'>to_categorical</a></span>( <span class='no'>mnistData</span>$<span class='no'>train</span>$<span class='no'>y</span>[<span class='fl'>1</span>:<span class='no'>numberOfTrainingData</span>], <span class='no'>numberOfLabels</span> )
 
-<span class='no'>X_testSmall</span> <span class='kw'>&lt;-</span> <span class='no'>mnistData</span>$<span class='no'>test</span>$<span class='no'>x</span>[<span class='fl'>1</span>:<span class='fl'>10</span>,,]
+<span class='no'>X_testSmall</span> <span class='kw'>&lt;-</span> <span class='fu'>as.array</span>(
+  <span class='fu'>resampleImage</span>( <span class='fu'>as.antsImage</span>( <span class='no'>mnistData</span>$<span class='no'>test</span>$<span class='no'>x</span>[<span class='fl'>1</span>:<span class='no'>numberOfTestingData</span>,,] ),
+    <span class='fu'>c</span>( <span class='no'>numberOfTestingData</span>, <span class='no'>resampledImageSize</span> ), <span class='fl'>TRUE</span> ) )
 <span class='no'>X_testSmall</span> <span class='kw'>&lt;-</span> <span class='fu'>array</span>( <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>X_testSmall</span>, <span class='kw'>dim</span> <span class='kw'>=</span> <span class='fu'>c</span>( <span class='fu'>dim</span>( <span class='no'>X_testSmall</span> ), <span class='fl'>1</span> ) )
-<span class='no'>Y_testSmall</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/to_categorical'>to_categorical</a></span>( <span class='no'>mnistData</span>$<span class='no'>test</span>$<span class='no'>y</span>[<span class='fl'>1</span>:<span class='fl'>10</span>], <span class='no'>numberOfLabels</span> )
+<span class='no'>Y_testSmall</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/to_categorical'>to_categorical</a></span>( <span class='no'>mnistData</span>$<span class='no'>test</span>$<span class='no'>y</span>[<span class='fl'>1</span>:<span class='no'>numberOfTestingData</span>], <span class='no'>numberOfLabels</span> )
 
 <span class='co'># We add a dimension of 1 to specify the channel size</span>
 
 <span class='no'>inputImageSize</span> <span class='kw'>&lt;-</span> <span class='fu'>c</span>( <span class='fu'>dim</span>( <span class='no'>X_trainSmall</span> )[<span class='fl'>2</span>:<span class='fl'>3</span>], <span class='fl'>1</span> )
 
-<span class='co'># model &lt;- createGoogLeNetModel2D( inputImageSize = inputImageSize,</span>
-<span class='co'>#  numberOfClassificationLabels = numberOfLabels )</span>
+<span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'>createGoogLeNetModel2D</span>( <span class='kw'>inputImageSize</span> <span class='kw'>=</span> <span class='fu'>c</span>( <span class='no'>resampledImageSize</span>, <span class='fl'>1</span> ),
+  <span class='kw'>numberOfClassificationLabels</span> <span class='kw'>=</span> <span class='no'>numberOfLabels</span> )
 
-<span class='co'># model %&gt;% compile( loss = 'categorical_crossentropy',</span>
-<span class='co'>#   optimizer = optimizer_adam( lr = 0.0001 ),</span>
-<span class='co'>#   metrics = c( 'categorical_crossentropy', 'accuracy' ) )</span>
+<span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/compile'>compile</a></span>( <span class='kw'>loss</span> <span class='kw'>=</span> <span class='st'>'categorical_crossentropy'</span>,
+  <span class='kw'>optimizer</span> <span class='kw'>=</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/optimizer_adam'>optimizer_adam</a></span>( <span class='kw'>lr</span> <span class='kw'>=</span> <span class='fl'>0.0001</span> ),
+  <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='fu'>c</span>( <span class='st'>'categorical_crossentropy'</span>, <span class='st'>'accuracy'</span> ) )
 
 <span class='co'># Comment out the rest due to travis build constraints</span>
 

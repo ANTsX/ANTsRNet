@@ -181,76 +181,54 @@ implementation:</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># Simple examples, must run successfully and quickly. These will be tested.</span>
-
+    <pre class="examples"><div class='input'>
 <span class='fu'>library</span>( <span class='no'>ANTsRNet</span> )
 <span class='fu'>library</span>( <span class='no'>keras</span> )
+<span class='fu'>library</span>( <span class='no'>ANTsR</span> )
 
 <span class='no'>mnistData</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/dataset_mnist'>dataset_mnist</a></span>()
 <span class='no'>numberOfLabels</span> <span class='kw'>&lt;-</span> <span class='fl'>10</span>
 
-<span class='co'># Extract a small subset for something that can run quickly</span>
+<span class='co'># Extract a small subset for something that can run quickly.</span>
+<span class='co'># We also need to resample since the native mnist data size does</span>
+<span class='co'># not fit with GoogLeNet parameters.</span>
 
-<span class='no'>X_trainSmall</span> <span class='kw'>&lt;-</span> <span class='no'>mnistData</span>$<span class='no'>train</span>$<span class='no'>x</span>[<span class='fl'>1</span>:<span class='fl'>10</span>,,]
+<span class='no'>resampledImageSize</span> <span class='kw'>&lt;-</span> <span class='fu'>c</span>( <span class='fl'>100</span>, <span class='fl'>100</span> )
+<span class='no'>numberOfTrainingData</span> <span class='kw'>&lt;-</span> <span class='fl'>10</span>
+<span class='no'>numberOfTestingData</span> <span class='kw'>&lt;-</span> <span class='fl'>5</span>
+
+<span class='no'>X_trainSmall</span> <span class='kw'>&lt;-</span> <span class='fu'>as.array</span>(
+  <span class='fu'>resampleImage</span>( <span class='fu'>as.antsImage</span>( <span class='no'>mnistData</span>$<span class='no'>train</span>$<span class='no'>x</span>[<span class='fl'>1</span>:<span class='no'>numberOfTrainingData</span>,,] ),
+    <span class='fu'>c</span>( <span class='no'>numberOfTrainingData</span>, <span class='no'>resampledImageSize</span> ), <span class='fl'>TRUE</span> ) )
 <span class='no'>X_trainSmall</span> <span class='kw'>&lt;-</span> <span class='fu'>array</span>( <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>X_trainSmall</span>, <span class='kw'>dim</span> <span class='kw'>=</span> <span class='fu'>c</span>( <span class='fu'>dim</span>( <span class='no'>X_trainSmall</span> ), <span class='fl'>1</span> ) )
-<span class='no'>Y_trainSmall</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/to_categorical'>to_categorical</a></span>( <span class='no'>mnistData</span>$<span class='no'>train</span>$<span class='no'>y</span>[<span class='fl'>1</span>:<span class='fl'>10</span>], <span class='no'>numberOfLabels</span> )
+<span class='no'>Y_trainSmall</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/to_categorical'>to_categorical</a></span>( <span class='no'>mnistData</span>$<span class='no'>train</span>$<span class='no'>y</span>[<span class='fl'>1</span>:<span class='no'>numberOfTrainingData</span>], <span class='no'>numberOfLabels</span> )
 
-<span class='no'>X_testSmall</span> <span class='kw'>&lt;-</span> <span class='no'>mnistData</span>$<span class='no'>test</span>$<span class='no'>x</span>[<span class='fl'>1</span>:<span class='fl'>10</span>,,]
+<span class='no'>X_testSmall</span> <span class='kw'>&lt;-</span> <span class='fu'>as.array</span>(
+  <span class='fu'>resampleImage</span>( <span class='fu'>as.antsImage</span>( <span class='no'>mnistData</span>$<span class='no'>test</span>$<span class='no'>x</span>[<span class='fl'>1</span>:<span class='no'>numberOfTestingData</span>,,] ),
+    <span class='fu'>c</span>( <span class='no'>numberOfTestingData</span>, <span class='no'>resampledImageSize</span> ), <span class='fl'>TRUE</span> ) )
 <span class='no'>X_testSmall</span> <span class='kw'>&lt;-</span> <span class='fu'>array</span>( <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>X_testSmall</span>, <span class='kw'>dim</span> <span class='kw'>=</span> <span class='fu'>c</span>( <span class='fu'>dim</span>( <span class='no'>X_testSmall</span> ), <span class='fl'>1</span> ) )
-<span class='no'>Y_testSmall</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/to_categorical'>to_categorical</a></span>( <span class='no'>mnistData</span>$<span class='no'>test</span>$<span class='no'>y</span>[<span class='fl'>1</span>:<span class='fl'>10</span>], <span class='no'>numberOfLabels</span> )
+<span class='no'>Y_testSmall</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/to_categorical'>to_categorical</a></span>( <span class='no'>mnistData</span>$<span class='no'>test</span>$<span class='no'>y</span>[<span class='fl'>1</span>:<span class='no'>numberOfTestingData</span>], <span class='no'>numberOfLabels</span> )
 
 <span class='co'># We add a dimension of 1 to specify the channel size</span>
 
 <span class='no'>inputImageSize</span> <span class='kw'>&lt;-</span> <span class='fu'>c</span>( <span class='fu'>dim</span>( <span class='no'>X_trainSmall</span> )[<span class='fl'>2</span>:<span class='fl'>3</span>], <span class='fl'>1</span> )
 
-<span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'>createVggModel2D</span>( <span class='kw'>inputImageSize</span> <span class='kw'>=</span> <span class='no'>inputImageSize</span>,
-  <span class='kw'>numberOfClassificationLabels</span> <span class='kw'>=</span> <span class='no'>numberOfLabels</span> )</div><div class='output co'>#&gt; <span class='error'>Error in py_call_impl(callable, dots$args, dots$keywords): ValueError: Negative dimension size caused by subtracting 2 from 1 for 'max_pooling2d_11/MaxPool' (op: 'MaxPool') with input shapes: [?,1,1,512].</span>
-#&gt; <span class='error'></span>
-#&gt; <span class='error'>Detailed traceback: </span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/lib/python3.6/site-packages/keras/engine/sequential.py", line 185, in add</span>
-#&gt; <span class='error'>    output_tensor = layer(self.outputs[0])</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/lib/python3.6/site-packages/keras/engine/base_layer.py", line 457, in __call__</span>
-#&gt; <span class='error'>    output = self.call(inputs, **kwargs)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/lib/python3.6/site-packages/keras/layers/pooling.py", line 157, in call</span>
-#&gt; <span class='error'>    data_format=self.data_format)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/lib/python3.6/site-packages/keras/layers/pooling.py", line 220, in _pooling_function</span>
-#&gt; <span class='error'>    pool_mode='max')</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/lib/python3.6/site-packages/keras/backend/tensorflow_backend.py", line 3880, in pool2d</span>
-#&gt; <span class='error'>    data_format=tf_data_format)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/lib/python3.6/site-packages/tensorflow/python/ops/nn_ops.py", line 2144, in max_pool</span>
-#&gt; <span class='error'>    name=name)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/lib/python3.6/site-packages/tensorflow/python/ops/gen_nn_ops.py", line 4587, in max_pool</span>
-#&gt; <span class='error'>    data_format=data_format, name=name)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/lib/python3.6/site-packages/tensorflow/python/framework/op_def_library.py", line 787, in _apply_op_helper</span>
-#&gt; <span class='error'>    op_def=op_def)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/lib/python3.6/site-packages/tensorflow/python/framework/ops.py", line 3292, in create_op</span>
-#&gt; <span class='error'>    compute_device=compute_device)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/lib/python3.6/site-packages/tensorflow/python/framework/ops.py", line 3332, in _create_op_helper</span>
-#&gt; <span class='error'>    set_shapes_for_outputs(op)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/lib/python3.6/site-packages/tensorflow/python/framework/ops.py", line 2496, in set_shapes_for_outputs</span>
-#&gt; <span class='error'>    return _set_shapes_for_outputs(op)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/lib/python3.6/site-packages/tensorflow/python/framework/ops.py", line 2469, in _set_shapes_for_outputs</span>
-#&gt; <span class='error'>    shapes = shape_func(op)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/lib/python3.6/site-packages/tensorflow/python/framework/ops.py", line 2399, in call_with_requiring</span>
-#&gt; <span class='error'>    return call_cpp_shape_fn(op, require_shape_fn=True)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/lib/python3.6/site-packages/tensorflow/python/framework/common_shapes.py", line 627, in call_cpp_shape_fn</span>
-#&gt; <span class='error'>    require_shape_fn)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/lib/python3.6/site-packages/tensorflow/python/framework/common_shapes.py", line 691, in _call_cpp_shape_fn_impl</span>
-#&gt; <span class='error'>    raise ValueError(err.message)</span></div><div class='input'>
+<span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='createGoogLeNetModel2D.html'>createGoogLeNetModel2D</a></span>( <span class='kw'>inputImageSize</span> <span class='kw'>=</span> <span class='fu'>c</span>( <span class='no'>resampledImageSize</span>, <span class='fl'>1</span> ),
+  <span class='kw'>numberOfClassificationLabels</span> <span class='kw'>=</span> <span class='no'>numberOfLabels</span> )
+
 <span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/compile'>compile</a></span>( <span class='kw'>loss</span> <span class='kw'>=</span> <span class='st'>'categorical_crossentropy'</span>,
   <span class='kw'>optimizer</span> <span class='kw'>=</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/optimizer_adam'>optimizer_adam</a></span>( <span class='kw'>lr</span> <span class='kw'>=</span> <span class='fl'>0.0001</span> ),
-  <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='fu'>c</span>( <span class='st'>'categorical_crossentropy'</span>, <span class='st'>'accuracy'</span> ) )</div><div class='output co'>#&gt; <span class='error'>Error in eval(lhs, parent, parent): object 'model' not found</span></div><div class='input'>
-# Comment out the rest due to travis build constraints
+  <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='fu'>c</span>( <span class='st'>'categorical_crossentropy'</span>, <span class='st'>'accuracy'</span> ) )
 
-# track <- model %>% fit( X_trainSmall, Y_trainSmall, verbose = 1,
-#   epochs = 1, batch_size = 2, shuffle = TRUE, validation_split = 0.5 )
+<span class='co'># Comment out the rest due to travis build constraints</span>
 
-# Now test the model
+<span class='co'># track &lt;- model %&gt;% fit( X_trainSmall, Y_trainSmall, verbose = 1,</span>
+<span class='co'>#   epochs = 1, batch_size = 2, shuffle = TRUE, validation_split = 0.5 )</span>
 
-# testingMetrics <- model %>% evaluate( X_testSmall, Y_testSmall )
-# predictedData <- model %>% predict( X_testSmall, verbose = 1 )
+<span class='co'># Now test the model</span>
 
-</div></pre>
+<span class='co'># testingMetrics &lt;- model %&gt;% evaluate( X_testSmall, Y_testSmall )</span>
+<span class='co'># predictedData &lt;- model %&gt;% predict( X_testSmall, verbose = 1 )</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
