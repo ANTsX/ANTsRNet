@@ -62,74 +62,70 @@ implementation:
 # Simple examples, must run successfully and quickly. These will be tested.
 \dontrun{
 
- library( ANTsR )
+library( ANTsR )
+library( ANTsRNet )
+library( keras )
 
- imageIDs <- c( "r16", "r27", "r30", "r62", "r64", "r85" )
+imageIDs <- c( "r16", "r27", "r30", "r62", "r64", "r85" )
+trainingBatchSize <- length( imageIDs )
 
- # Perform simple 3-tissue segmentation.  For convenience we are going
+# Perform simple 3-tissue segmentation.
 
- segmentationLabels <- c( 1, 2, 3 )
+segmentationLabels <- c( 1, 2, 3 )
+numberOfLabels <- length( segmentationLabels )
+initialization <- paste0( 'KMeans[', numberOfLabels, ']' )
 
- images <- list()
- kmeansSegs <- list()
+domainImage <- antsImageRead( getANTsRData( imageIDs[1] ) )
 
- trainingImageArrays <- list()
- trainingMaskArrays <- list()
+X_train <- array( data = NA, dim = c( trainingBatchSize, dim( domainImage ), 1 ) )
+Y_train <- array( data = NA, dim = c( trainingBatchSize, dim( domainImage ) ) )
 
- for( i in 1:length( imageIDs ) )
-   {
-   cat( "Processing image", imageIDs[i], "\\n" )
-   images[[i]] <- antsImageRead( getANTsRData( imageIDs[i] ) )
-   mask <- getMask( images[[i]] )
-   kmeansSegs[[i]] <- kmeansSegmentation( images[[i]],
-     length( segmentationLabels ), mask, mrf = 0.0 )$segmentation
+images <- list()
+segmentations <- list()
 
-   trainingImageArrays[[i]] <- as.array( images[[i]] )
-   trainingMaskArrays[[i]] <- as.array( mask )
-   }
+for( i in seq_len( trainingBatchSize ) )
+  {
+  cat( "Processing image", imageIDs[i], "\\n" )
+  image <- antsImageRead( getANTsRData( imageIDs[i] ) )
+  mask <- getMask( image )
+  segmentation <- atropos( image, mask, initialization )$segmentation
 
- # Reshape the training data to the format expected by keras
+  X_train[i,,, 1] <- as.array( image )
+  Y_train[i,,] <- as.array( segmentation )
+  }
+Y_train <- encodeUnet( Y_train, segmentationLabels )
 
- trainingLabelData <- abind( trainingMaskArrays, along = 3 )
- trainingLabelData <- aperm( trainingLabelData, c( 3, 1, 2 ) )
+# Perform a simple normalization
 
- trainingData <- abind( trainingImageArrays, along = 3 )
- trainingData <- aperm( trainingData, c( 3, 1, 2 ) )
+X_train <- ( X_train - mean( X_train ) ) / sd( X_train )
 
- # Perform a simple normalization which is important for U-net.
- # Other normalization methods might further improve results.
+# Create the model
 
- trainingData <- ( trainingData - mean( trainingData ) ) / sd( trainingData )
- X_train <- array( trainingData, dim = c( dim( trainingData ), 1 ) )
+model <- createUnetModel2D( c( dim( domainImage ), 1 ),
+  numberOfOutputs = numberOfLabels )
 
- trainingLabelData <- abind( trainingMaskArrays, along = 3 )
- trainingLabelData <- aperm( trainingLabelData, c( 3, 1, 2 ) )
- Y_train <- encodeUnet( trainingLabelData, segmentationLabels )
+model \%>\% compile( loss = loss_multilabel_dice_coefficient_error,
+  optimizer = optimizer_adam( lr = 0.0001 ),
+  metrics = c( multilabel_dice_coefficient ) )
 
- # Create the model
+# Comment out the rest due to travis build constraints
 
- unetModel <- createUnetModel2D( c( dim( trainingImageArrays[[1]] ), 1 ),
-   numberOfOutputs = numberOfLabels )
+# Fit the model
 
- unetModel \%>\% compile( loss = loss_multilabel_dice_coefficient_error,
-   optimizer = optimizer_adam( lr = 0.0001 ),
-   metrics = c( multilabel_dice_coefficient ) )
+# track <- model \%>\% fit( X_train, Y_train,
+#              epochs = 100, batch_size = 4, verbose = 1, shuffle = TRUE,
+#              callbacks = list(
+#                callback_model_checkpoint( "unetModelInterimWeights.h5",
+#                    monitor = 'val_loss', save_best_only = TRUE ),
+#                callback_reduce_lr_on_plateau( monitor = "val_loss", factor = 0.1 )
+#              ),
+#              validation_split = 0.2 )
 
- # Fit the model
+# Save the model and/or save the model weights
 
- track <- unetModel \%>\% fit( X_train, Y_train,
-                epochs = 100, batch_size = 32, verbose = 1, shuffle = TRUE,
-                callbacks = list(
-                  callback_model_checkpoint( paste0( baseDirectory, "weights.h5" ),
-                     monitor = 'val_loss', save_best_only = TRUE ),
-                  callback_reduce_lr_on_plateau( monitor = "val_loss", factor = 0.1 )
-                ),
-                validation_split = 0.2 )
+# save_model_hdf5( model, filepath = 'unetModel.h5' )
+# save_model_weights_hdf5( unetModel, filepath = 'unetModelWeights.h5' ) )
 
- # Save the model and/or save the model weights
-
- save_model_hdf5( unetModel, filepath = 'unetModel.h5' )
- save_model_weights_hdf5( unetModel, filepath = 'unetModelWeights.h5' ) )
 }
 }
 \author{
