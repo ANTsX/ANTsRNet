@@ -40,12 +40,12 @@
 #' inputImageSize <- c( dim( X_trainSmall )[2:3], 1 )
 #'
 #' model <- createSpatialTransformNetworkModel2D( inputImageSize = inputImageSize,
-#'   numberOfClassificationLabels = numberOfLabels )
+#'   resampledSize = c( 30, 30 ), numberOfClassificationLabels = numberOfLabels )
 #'
 #' @import keras
 #' @export
 createSpatialTransformNetworkModel2D <- function( inputImageSize,
-  resampledSize = c( 10, 10 ), numberOfClassificationLabels = 10 )
+  resampledSize = c( 30, 30 ), numberOfClassificationLabels = 10 )
 {
 
   getInitialWeights <- function( outputSize )
@@ -82,11 +82,15 @@ createSpatialTransformNetworkModel2D <- function( inputImageSize,
   outputs <- outputs %>% layer_dense( units = 6, weights = weights )
 
   outputs <- layer_bilinear_interpolation_2d( list( inputs, outputs ), resampledSize )
-  outputs <- outputs %>% layer_conv_2d( filters = 32, kernel_size = c( 3, 3 ) )
+  outputs <- outputs %>%
+    layer_conv_2d( filters = 32L, kernel_size = c( 3, 3 ), padding = 'same' )
+  outputs <- outputs %>% layer_activation_relu()
+  outputs <- outputs %>% layer_max_pooling_2d( pool_size = c( 2, 2 ) )
+  outputs <- outputs %>% layer_conv_2d( filters = 32L, kernel_size = c( 3, 3 ) )
   outputs <- outputs %>% layer_activation_relu()
   outputs <- outputs %>% layer_max_pooling_2d( pool_size = c( 2, 2 ) )
   outputs <- outputs %>% layer_flatten()
-  outputs <- outputs %>% layer_dense( units = 256 )
+  outputs <- outputs %>% layer_dense( units = 256L )
   outputs <- outputs %>% layer_activation_relu()
   outputs <- outputs %>% layer_dense( units = numberOfClassificationLabels )
 
