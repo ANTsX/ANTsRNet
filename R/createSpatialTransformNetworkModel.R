@@ -82,7 +82,7 @@ createSpatialTransformNetworkModel2D <- function( inputImageSize,
   weights <- getInitialWeights( outputSize = 50L )
   outputs <- outputs %>% layer_dense( units = 6, weights = weights )
 
-  outputs <- bilinearInterpolation( list( inputs, outputs ), resampledSize )
+  outputs <- layer_bilinear_interpolation_2d( list( inputs, outputs ), resampledSize )
   outputs <- outputs %>% layer_conv_2d( filters = 32, kernel_size = c( 3, 3 ) )
   outputs <- outputs %>% layer_activation_relu()
   outputs <- outputs %>% layer_max_pooling_2d( pool_size = c( 2, 2 ) )

@@ -175,7 +175,7 @@ BilinearInterpolationLayer2D <- R6::R6Class( "BilinearInterpolationLayer2D",
   )
 )
 
-bilinear_interpolation_2d <- function( objects, resampledSize ) {
+layer_bilinear_interpolation_2d <- function( objects, resampledSize ) {
 create_layer( BilinearInterpolationLayer2D, objects,
     list( resampledSize = resampledSize )
     )
