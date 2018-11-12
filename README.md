@@ -50,17 +50,22 @@ Documentation page [https://antsx.github.io/ANTsRNet/](https://antsx.github.io/A
 * Deep back-projection network (DBPN) (2-D, 3-D)
     * [Muhammad Haris, Greg Shakhnarovich, Norimichi Ukita.  Deep Back-Projection Networks For Super-Resolution.](https://arxiv.org/abs/1803.02735)
 
+### Registration and transforms
+
+* Spatial transform network (STN) (2-D)
+    * [Max Jaderberg, Karen Simonyan, Andrew Zisserman, and Koray Kavukcuoglu.  Spatial Transformer Networks.](https://arxiv.org/abs/1506.02025)
+
 --------------------------------------
 
 ## Installation
 
 * ANTsRNet Installation:
-    * Option 1:    
-       ``` 
+    * Option 1:
+       ```
        $ R
        > devtools::install_github( "ANTsX/ANTsRNet" )
        ```
-    * Option 2:  
+    * Option 2:
        ```
        $ git clone https://github.com/ANTsX/ANTsRNet.git
        $ R CMD INSTALL ANTsRNet

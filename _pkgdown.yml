@@ -65,6 +65,14 @@ reference:
   - '`MAE`'
   - '`PSNR`'
   - '`SSIM`'
+- title: Registration and transform models
+  desc: ~
+  contents:
+  - '`createSpatialTransformNetworkModel2D`'
+- title: Registration and transform helper functions
+  desc: ~
+  contents:
+  - '`BilinearInterpolationLayer2D`'
 - title: Custom loss functions
   desc: ~
   contents:
