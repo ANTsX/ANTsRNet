@@ -301,8 +301,8 @@ TrilinearInterpolationLayer3D <- R6::R6Class( "TrilinearInterpolationLayer3D",
       regularGrid <- K$flatten( regularGrid )
 
       regularGrids <- K$tile( regularGrid, K$stack( list( batchSize ) ) )
-xx      regularGrids <- K$reshape( regularGrids,
-        reticulate::tuple( batchSize, 4L, as.integer( prod( resampledSize ) ) ) )
+#      regularGrids <- K$reshape( regularGrids,
+#        reticulate::tuple( batchSize, 4L, as.integer( prod( resampledSize ) ) ) )
 
       return( regularGrids )
       },
@@ -350,7 +350,8 @@ xx      regularGrids <- K$reshape( regularGrids,
       base <- K$flatten( base )
 
 
-xxxxxxxxxx
+# # xxxxxxxxx
+
 
       baseY0 <- y0 * width
       baseY0 <- base + baseY0

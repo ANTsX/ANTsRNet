@@ -5,9 +5,21 @@
 \title{2-D implementation of the spatial transform network.}
 \usage{
 createSpatialTransformNetworkModel2D(inputImageSize,
-  resampledSize = c(30, 30), numberOfClassificationLabels = 10)
+  resampledSize = c(30, 30, 30), numberOfClassificationLabels = 10)
+
+createSpatialTransformNetworkModel2D(inputImageSize,
+  resampledSize = c(30, 30, 30), numberOfClassificationLabels = 10)
 }
 \arguments{
+\item{inputImageSize}{Used for specifying the input tensor shape.  The
+shape (or dimension) of that tensor is the image dimensions followed by
+the number of channels (e.g., red, green, and blue).  The batch size
+(i.e., number of training images) is not specified a priori.}
+
+\item{resampledSize}{resampled size of the transformed input images.}
+
+\item{numberOfClassificationLabels}{Number of classes.}
+
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
 shape (or dimension) of that tensor is the image dimensions followed by
 the number of channels (e.g., red, green, and blue).  The batch size
@@ -19,11 +31,21 @@ the number of channels (e.g., red, green, and blue).  The batch size
 }
 \value{
 a keras model for image super resolution
+
+a keras model for image super resolution
 }
 \description{
 Creates a keras model of the spatial transform network:
+
+Creates a keras model of the spatial transform network:
 }
 \details{
+\url{https://arxiv.org/abs/1506.02025}
+
+based on the following python Keras model:
+
+\url{https://github.com/oarriaga/STN.keras/blob/master/src/models/STN.py}
+
 \url{https://arxiv.org/abs/1506.02025}
 
 based on the following python Keras model:
@@ -55,7 +77,36 @@ inputImageSize <- c( dim( X_trainSmall )[2:3], 1 )
 model <- createSpatialTransformNetworkModel2D( inputImageSize = inputImageSize,
   resampledSize = c( 30, 30 ), numberOfClassificationLabels = numberOfLabels )
 
+
+\dontrun{
+
+library( ANTsRNet )
+library( keras )
+
+mnistData <- dataset_mnist()
+numberOfLabels <- 10
+
+# Extract a small subset for something that can run quickly
+
+X_trainSmall <- mnistData$train$x[1:100,,]
+X_trainSmall <- array( data = X_trainSmall, dim = c( dim( X_trainSmall ), 1 ) )
+Y_trainSmall <- to_categorical( mnistData$train$y[1:100], numberOfLabels )
+
+X_testSmall <- mnistData$test$x[1:10,,]
+X_testSmall <- array( data = X_testSmall, dim = c( dim( X_testSmall ), 1 ) )
+Y_testSmall <- to_categorical( mnistData$test$y[1:10], numberOfLabels )
+
+# We add a dimension of 1 to specify the channel size
+
+inputImageSize <- c( dim( X_trainSmall )[2:3], 1 )
+
+model <- createSpatialTransformNetworkModel2D( inputImageSize = inputImageSize,
+  resampledSize = c( 30, 30 ), numberOfClassificationLabels = numberOfLabels )
+
+}
 }
 \author{
+Tustison NJ
+
 Tustison NJ
 }
