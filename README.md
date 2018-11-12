@@ -81,7 +81,7 @@ Documentation page [https://antsx.github.io/ANTsRNet/](https://antsx.github.io/A
 
 * Cullen N.C., Avants B.B. (2018) Convolutional Neural Networks for Rapid and Simultaneous Brain Extraction and Tissue Segmentation. In: Spalletta G., Piras F., Gili T. (eds) Brain Morphometry. Neuromethods, vol 136. Humana Press, New York, NY [doi](https://doi.org/10.1007/978-1-4939-7647-8_2)
 
-## Grants
+## Acknowledgments
 
 * We gratefully acknowledge the support of the NVIDIA Corporation with the donation of two Titan Xp GPUs used for this research.
 
