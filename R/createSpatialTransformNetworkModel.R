@@ -12,10 +12,7 @@
 #' shape (or dimension) of that tensor is the image dimensions followed by
 #' the number of channels (e.g., red, green, and blue).  The batch size
 #' (i.e., number of training images) is not specified a priori.
-#' @param samplingSize a list of 2-D vectors specifying the kernel
-#' size at each convolution layer.  Default values are the same as given in
-#' the original paper.  The length of kernel size vectors must be 1 greater
-#' than the vector length of the number of filters.
+#' @param resampledSize resampled size of the transformed input images.
 #' @param numberOfClassificationLabels Number of classes.
 #'
 #' @return a keras model for image super resolution
@@ -65,6 +62,8 @@ createSpatialTransformNetworkModel2D <- function( inputImageSize,
     weights <- list()
     weights[[1]] <- W
     weights[[2]] <- as.array( as.vector( t( b ) ) )
+
+    return( weights )
     }
 
   inputs <- layer_input( shape = inputImageSize )

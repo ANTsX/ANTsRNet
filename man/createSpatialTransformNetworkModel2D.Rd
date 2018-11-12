@@ -13,12 +13,9 @@ shape (or dimension) of that tensor is the image dimensions followed by
 the number of channels (e.g., red, green, and blue).  The batch size
 (i.e., number of training images) is not specified a priori.}
 
-\item{numberOfClassificationLabels}{Number of classes.}
+\item{resampledSize}{resampled size of the transformed input images.}
 
-\item{samplingSize}{a list of 2-D vectors specifying the kernel
-size at each convolution layer.  Default values are the same as given in
-the original paper.  The length of kernel size vectors must be 1 greater
-than the vector length of the number of filters.}
+\item{numberOfClassificationLabels}{Number of classes.}
 }
 \value{
 a keras model for image super resolution

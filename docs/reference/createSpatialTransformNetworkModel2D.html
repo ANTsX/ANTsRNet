@@ -117,15 +117,12 @@ the number of channels (e.g., red, green, and blue).  The batch size
 (i.e., number of training images) is not specified a priori.</p></td>
     </tr>
     <tr>
-      <th>numberOfClassificationLabels</th>
-      <td><p>Number of classes.</p></td>
+      <th>resampledSize</th>
+      <td><p>resampled size of the transformed input images.</p></td>
     </tr>
     <tr>
-      <th>samplingSize</th>
-      <td><p>a list of 2-D vectors specifying the kernel
-size at each convolution layer.  Default values are the same as given in
-the original paper.  The length of kernel size vectors must be 1 greater
-than the vector length of the number of filters.</p></td>
+      <th>numberOfClassificationLabels</th>
+      <td><p>Number of classes.</p></td>
     </tr>
     </table>
     
@@ -162,14 +159,39 @@ than the vector length of the number of filters.</p></td>
 
 <span class='no'>inputImageSize</span> <span class='kw'>&lt;-</span> <span class='fu'>c</span>( <span class='fu'>dim</span>( <span class='no'>X_trainSmall</span> )[<span class='fl'>2</span>:<span class='fl'>3</span>], <span class='fl'>1</span> )
 
-<span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/ANTsRNet/topics/createSpatialTransformNetworkModel2D'>createSpatialTransformNetworkModel2D</a></span>( <span class='kw'>inputImageSize</span> <span class='kw'>=</span> <span class='no'>inputImageSize</span>,
-  <span class='kw'>numberOfClassificationLabels</span> <span class='kw'>=</span> <span class='no'>numberOfLabels</span> )</div><div class='output co'>#&gt; <span class='error'>Error in py_call_impl(callable, dots$args, dots$keywords): ValueError: You called `set_weights(weights)` on layer "dense_2" with a  weight list of length 6, but the layer was expecting 2 weights. Provided weights: [1. 0. 0. 0. 1. 0.]...</span>
+<span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'>createSpatialTransformNetworkModel2D</span>( <span class='kw'>inputImageSize</span> <span class='kw'>=</span> <span class='no'>inputImageSize</span>,
+  <span class='kw'>numberOfClassificationLabels</span> <span class='kw'>=</span> <span class='no'>numberOfLabels</span> )</div><div class='output co'>#&gt; <span class='error'>Error in py_call_impl(callable, dots$args, dots$keywords): RuntimeError: Evaluation error: TypeError: Expected int32, got 2.0 of type 'float' instead.</span>
 #&gt; <span class='error'></span>
 #&gt; <span class='error'>Detailed traceback: </span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/lib/python3.6/site-packages/keras/engine/base_layer.py", line 436, in __call__</span>
-#&gt; <span class='error'>    self.set_weights(self._initial_weights)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/lib/python3.6/site-packages/keras/engine/base_layer.py", line 1047, in set_weights</span>
-#&gt; <span class='error'>    str(weights)[:50] + '...')</span></div><div class='input'>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/lib/python3.6/site-packages/keras/backend/tensorflow_backend.py", line 1947, in reshape</span>
+#&gt; <span class='error'>    return tf.reshape(x, shape)</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/lib/python3.6/site-packages/tensorflow/python/ops/gen_array_ops.py", line 5782, in reshape</span>
+#&gt; <span class='error'>    "Reshape", tensor=tensor, shape=shape, name=name)</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/lib/python3.6/site-packages/tensorflow/python/framework/op_def_library.py", line 513, in _apply_op_helper</span>
+#&gt; <span class='error'>    raise err</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/lib/python3.6/site-packages/tensorflow/python/framework/op_def_library.py", line 510, in _apply_op_helper</span>
+#&gt; <span class='error'>    preferred_dtype=default_dtype)</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/lib/python3.6/site-packages/tensorflow/python/framework/ops.py", line 1040, in internal_convert_to_tensor</span>
+#&gt; <span class='error'>    ret = conversion_func(value, dtype=dtype, name=name, as_ref=as_ref)</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/lib/python3.6/site-packages/tensorflow/python/ops/array_ops.py", line 1026, in _autopacking_conversion_function</span>
+#&gt; <span class='error'>    return _autopacking_helper(v, inferred_dtype, name or "packed")</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/lib/python3.6/site-packages/tensorflow/python/ops/array_ops.py", line 988, in _autopacking_helper</span>
+#&gt; <span class='error'>    constant_op.constant(elem, dtype=dtype, name=str(i)))</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/lib/python3.6/site-packages/tensorflow/python/framework/constant_op.py", line 214, in constant</span>
+#&gt; <span class='error'>    value, dtype=dtype, shape=shape, verify_shape=verify_shape))</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/lib/python3.6/site-packages/tensorflow/python/framework/tensor_util.py", line 433, in make_tensor_proto</span>
+#&gt; <span class='error'>    _AssertCompatible(values, dtype)</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/lib/python3.6/site-packages/tensorflow/python/framework/tensor_util.py", line 344, in _AssertCompatible</span>
+#&gt; <span class='error'>    (dtype.name, repr(mismatch), type(mismatch).__name__))</span>
+#&gt; <span class='error'>.</span>
+#&gt; <span class='error'></span>
+#&gt; <span class='error'>Detailed traceback: </span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/lib/python3.6/site-packages/keras/engine/base_layer.py", line 457, in __call__</span>
+#&gt; <span class='error'>    output = self.call(inputs, **kwargs)</span>
+#&gt; <span class='error'>  File "/Library/Frameworks/R.framework/Versions/3.5/Resources/library/keras/python/kerastools/layer.py", line 29, in call</span>
+#&gt; <span class='error'>    return self.r_call(inputs, mask)</span>
+#&gt; <span class='error'>  File "/Library/Frameworks/R.framework/Versions/3.5/Resources/library/reticulate/python/rpytools/call.py", line 21, in python_function</span>
+#&gt; <span class='error'>    raise RuntimeError(res[kErrorKey])</span></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
