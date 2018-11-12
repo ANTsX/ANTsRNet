@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>2-D implementation of the ResNet deep learning architecture. — createResNetModel2D • ANTsRNet</title>
+<title>2-D implementation of the Wide ResNet deep learning architecture. — createWideResNetModel2D • ANTsRNet</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,10 +30,10 @@
 
 
 
-<meta property="og:title" content="2-D implementation of the ResNet deep learning architecture. — createResNetModel2D" />
+<meta property="og:title" content="2-D implementation of the Wide ResNet deep learning architecture. — createWideResNetModel2D" />
 
-<meta property="og:description" content="Creates a keras model of the ResNet deep learning architecture for image
-classification.  The paper is available here:" />
+<meta property="og:description" content="Creates a keras model of the Wide ResNet deep learning architecture for image
+classification/regression.  The paper is available here:" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -93,21 +93,22 @@ classification.  The paper is available here:" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>2-D implementation of the ResNet deep learning architecture.</h1>
+    <h1>2-D implementation of the Wide ResNet deep learning architecture.</h1>
     
-    <div class="hidden name"><code>createResNetModel2D.Rd</code></div>
+    <div class="hidden name"><code>createWideResNetModel2D.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Creates a keras model of the ResNet deep learning architecture for image
-classification.  The paper is available here:</p>
+    <p>Creates a keras model of the Wide ResNet deep learning architecture for image
+classification/regression.  The paper is available here:</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>createResNetModel2D</span>(<span class='no'>inputImageSize</span>, <span class='kw'>numberOfClassificationLabels</span> <span class='kw'>=</span> <span class='fl'>1000</span>,
-  <span class='kw'>layers</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>4</span>, <span class='kw'>residualBlockSchedule</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>3</span>, <span class='fl'>4</span>, <span class='fl'>6</span>, <span class='fl'>3</span>),
-  <span class='kw'>lowestResolution</span> <span class='kw'>=</span> <span class='fl'>64</span>, <span class='kw'>cardinality</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"classification"</span>)</pre>
+    <pre class="usage"><span class='fu'>createWideResNetModel2D</span>(<span class='no'>inputImageSize</span>,
+  <span class='kw'>numberOfClassificationLabels</span> <span class='kw'>=</span> <span class='fl'>1000</span>, <span class='kw'>depth</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>width</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>residualBlockSchedule</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>16</span>, <span class='fl'>32</span>, <span class='fl'>64</span>), <span class='kw'>poolSize</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>8</span>, <span class='fl'>8</span>),
+  <span class='kw'>dropoutRate</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>weightDecay</span> <span class='kw'>=</span> <span class='fl'>0.0005</span>, <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"classification"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -124,23 +125,32 @@ the number of channels (e.g., red, green, and blue).  The batch size
       <td><p>Number of segmentation labels.</p></td>
     </tr>
     <tr>
-      <th>layers</th>
-      <td><p>a vector determining the number of 'filters' defined at
-for each layer.</p></td>
+      <th>depth</th>
+      <td><p>integer determining the depth of the ntwork.  Related to the
+actual number of layers by the <code>numberOfLayers = depth * 6 + 4</code>.
+Default = 2 (such that <code>numberOfLayers = 16</code>.)</p></td>
+    </tr>
+    <tr>
+      <th>width</th>
+      <td><p>integer determining the width of the network.  Default k = 1.</p></td>
     </tr>
     <tr>
       <th>residualBlockSchedule</th>
-      <td><p>vector defining the how many residual blocks
-repeats.</p></td>
+      <td><p>vector determining the number of filters
+per convolutional block. Default = <code>c( 16, 32, 64 )</code>.</p></td>
     </tr>
     <tr>
-      <th>lowestResolution</th>
-      <td><p>number of filters at the initial layer.</p></td>
+      <th>poolSize</th>
+      <td><p>pool size for final average pooling layer.  Default = c( 8, 8 ).</p></td>
     </tr>
     <tr>
-      <th>cardinality</th>
-      <td><p>perform  ResNet (cardinality = 1) or ResNeXt
-(cardinality != 1 but powers of 2---try '32' )</p></td>
+      <th>dropoutRate</th>
+      <td><p>Dropout percentage.  Default = 0.0.</p></td>
+    </tr>
+    <tr>
+      <th>weightDecay</th>
+      <td><p>weight for l2 regularizer in convolution layers.
+Default = 0.0005.</p></td>
     </tr>
     <tr>
       <th>mode</th>
@@ -150,14 +160,14 @@ repeats.</p></td>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>an ResNet keras model</p>
+    <p>a Wide ResNet keras model</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>https://arxiv.org/abs/1512.03385</p>
 <p>This particular implementation was influenced by the following python
 implementation:</p>
-<p>https://gist.github.com/mjdietzx/0cb95922aac14d446a6530f87b3a04ce</p>
+<p>https://github.com/titu1994/Wide-Residual-Networks</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -182,22 +192,22 @@ implementation:</p>
 
 <span class='no'>inputImageSize</span> <span class='kw'>&lt;-</span> <span class='fu'>c</span>( <span class='fu'>dim</span>( <span class='no'>X_trainSmall</span> )[<span class='fl'>2</span>:<span class='fl'>3</span>], <span class='fl'>1</span> )
 
-<span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'>createResNetModel2D</span>( <span class='kw'>inputImageSize</span> <span class='kw'>=</span> <span class='no'>inputImageSize</span>,
-  <span class='kw'>numberOfClassificationLabels</span> <span class='kw'>=</span> <span class='no'>numberOfLabels</span> )
-
+<span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'>createWideResNetModel2D</span>( <span class='kw'>inputImageSize</span> <span class='kw'>=</span> <span class='no'>inputImageSize</span>,
+  <span class='kw'>numberOfClassificationLabels</span> <span class='kw'>=</span> <span class='no'>numberOfLabels</span> )</div><div class='output co'>#&gt; <span class='error'>Error in customConvolutionLayer(outputs, base = baseNumberOfFilters, width = width,     strides = c(1, 1), weightDecay = weightDecay, dropoutRate = 0,     expand = TRUE): unused argument (weightDecay = weightDecay)</span></div><div class='input'>
 <span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/compile'>compile</a></span>( <span class='kw'>loss</span> <span class='kw'>=</span> <span class='st'>'categorical_crossentropy'</span>,
   <span class='kw'>optimizer</span> <span class='kw'>=</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/optimizer_adam'>optimizer_adam</a></span>( <span class='kw'>lr</span> <span class='kw'>=</span> <span class='fl'>0.0001</span> ),
-  <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='fu'>c</span>( <span class='st'>'categorical_crossentropy'</span>, <span class='st'>'accuracy'</span> ) )
+  <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='fu'>c</span>( <span class='st'>'categorical_crossentropy'</span>, <span class='st'>'accuracy'</span> ) )</div><div class='output co'>#&gt; <span class='error'>Error in eval(lhs, parent, parent): object 'model' not found</span></div><div class='input'>
+# Comment out the rest due to travis build constraints
 
-<span class='co'># Comment out the rest due to travis build constraints</span>
+# track <- model %>% fit( X_trainSmall, Y_trainSmall, verbose = 1,
+#   epochs = 1, batch_size = 2, shuffle = TRUE, validation_split = 0.5 )
 
-<span class='co'># track &lt;- model %&gt;% fit( X_trainSmall, Y_trainSmall, verbose = 1,</span>
-<span class='co'>#   epochs = 1, batch_size = 2, shuffle = TRUE, validation_split = 0.5 )</span>
+# Now test the model
 
-<span class='co'># Now test the model</span>
+# testingMetrics <- model %>% evaluate( X_testSmall, Y_testSmall )
+# predictedData <- model %>% predict( X_testSmall, verbose = 1 )
 
-<span class='co'># testingMetrics &lt;- model %&gt;% evaluate( X_testSmall, Y_testSmall )</span>
-<span class='co'># predictedData &lt;- model %&gt;% predict( X_testSmall, verbose = 1 )</span></div></pre>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

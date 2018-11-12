@@ -1,5 +1,5 @@
 reference:
-- title: Classification models
+- title: Classification/regression models
   desc: ~
   contents:
   - '`createAlexNetModel2D`'
@@ -9,6 +9,8 @@ reference:
   - '`createGoogLeNetModel2D`'
   - '`createResNetModel2D`'
   - '`createResNetModel3D`'
+  - '`createWideResNetModel2D`'
+  - '`createWideResNetModel3D`'
   - '`createVggModel2D`'
   - '`createVggModel3D`'
 - title: Object localization models

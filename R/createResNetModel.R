@@ -19,8 +19,7 @@
 #' for each layer.
 #' @param residualBlockSchedule vector defining the how many residual blocks
 #' repeats.
-#' @param lowestResolution number of filters at the beginning and end of
-#' the 'U'.
+#' @param lowestResolution number of filters at the initial layer.
 #' @param cardinality perform  ResNet (cardinality = 1) or ResNeXt
 #' (cardinality != 1 but powers of 2---try '32' )
 #' @param mode 'classification' or 'regression'.  Default = 'classification'.
@@ -232,8 +231,7 @@ createResNetModel2D <- function( inputImageSize,
 #' for each layer.
 #' @param residualBlockSchedule vector defining the how many residual blocks
 #' repeats.
-#' @param lowestResolution number of filters at the beginning and end of
-#' the 'U'.
+#' @param lowestResolution number of filters at the initial layer.
 #' @param cardinality perform  ResNet (cardinality = 1) or ResNeXt
 #' (cardinality != 1 but powers of 2---try '32' )
 #' @param mode 'classification' or 'regression'.  Default = 'classification'.

@@ -22,8 +22,7 @@ for each layer.}
 \item{residualBlockSchedule}{vector defining the how many residual blocks
 repeats.}
 
-\item{lowestResolution}{number of filters at the beginning and end of
-the 'U'.}
+\item{lowestResolution}{number of filters at the initial layer.}
 
 \item{cardinality}{perform  ResNet (cardinality = 1) or ResNeXt
 (cardinality != 1 but powers of 2---try '32' )}
