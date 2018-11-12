@@ -51,7 +51,8 @@ BilinearInterpolationLayer2D <- R6::R6Class( "BilinearInterpolationLayer2D",
       image <- inputs[[1]]
       transformParameters <- inputs[[2]]
 
-      output <- self$affineTransformImage( image, transformParameters, self$resampledSize )
+      output <-
+        self$affineTransformImage( image, transformParameters, self$resampledSize )
 
       return( output )
       },
