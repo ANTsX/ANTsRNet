@@ -1,6 +1,6 @@
-#' 2-D implementation of the spatial transform network.
+#' 2-D implementation of the spatial transformer network.
 #'
-#' Creates a keras model of the spatial transform network:
+#' Creates a keras model of the spatial transformer network:
 #'
 #'         \url{https://arxiv.org/abs/1506.02025}
 #'
@@ -15,7 +15,7 @@
 #' @param resampledSize resampled size of the transformed input images.
 #' @param numberOfClassificationLabels Number of classes.
 #'
-#' @return a keras model for image super resolution
+#' @return a keras model
 #' @author Tustison NJ
 #' @examples
 #' \dontrun{
@@ -40,13 +40,13 @@
 #'
 #' inputImageSize <- c( dim( X_trainSmall )[2:3], 1 )
 #'
-#' model <- createSpatialTransformNetworkModel2D( inputImageSize = inputImageSize,
+#' model <- createSpatialTransformerNetworkModel2D( inputImageSize = inputImageSize,
 #'   resampledSize = c( 30, 30 ), numberOfClassificationLabels = numberOfLabels )
 #'
 #' }
 #' @import keras
 #' @export
-createSpatialTransformNetworkModel2D <- function( inputImageSize,
+createSpatialTransformerNetworkModel2D <- function( inputImageSize,
   resampledSize = c( 30, 30 ), numberOfClassificationLabels = 10 )
 {
 
@@ -103,9 +103,9 @@ createSpatialTransformNetworkModel2D <- function( inputImageSize,
   return( stnModel )
 }
 
-#' 3-D implementation of the spatial transform network.
+#' 3-D implementation of the spatial transformer network.
 #'
-#' Creates a keras model of the spatial transform network:
+#' Creates a keras model of the spatial transformer network:
 #'
 #'         \url{https://arxiv.org/abs/1506.02025}
 #'
@@ -120,7 +120,7 @@ createSpatialTransformNetworkModel2D <- function( inputImageSize,
 #' @param resampledSize resampled size of the transformed input images.
 #' @param numberOfClassificationLabels Number of classes.
 #'
-#' @return a keras model for image super resolution
+#' @return a keras model
 #' @author Tustison NJ
 #' @examples
 #'
@@ -146,13 +146,13 @@ createSpatialTransformNetworkModel2D <- function( inputImageSize,
 #'
 #' inputImageSize <- c( dim( X_trainSmall )[2:3], 1 )
 #'
-#' model <- createSpatialTransformNetworkModel2D( inputImageSize = inputImageSize,
+#' model <- createSpatialTransformerNetworkModel2D( inputImageSize = inputImageSize,
 #'   resampledSize = c( 30, 30 ), numberOfClassificationLabels = numberOfLabels )
 #'
 #'}
 #' @import keras
 #' @export
-createSpatialTransformNetworkModel3D <- function( inputImageSize,
+createSpatialTransformerNetworkModel3D <- function( inputImageSize,
   resampledSize = c( 30, 30, 30 ), numberOfClassificationLabels = 10 )
 {
 

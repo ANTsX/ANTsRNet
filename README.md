@@ -54,7 +54,7 @@ Documentation page [https://antsx.github.io/ANTsRNet/](https://antsx.github.io/A
 
 ### Registration and transforms
 
-* Spatial transform network (STN) (2-D, 3-D)
+* Spatial transformer network (STN) (2-D, 3-D)
     * [Max Jaderberg, Karen Simonyan, Andrew Zisserman, and Koray Kavukcuoglu.  Spatial Transformer Networks.](https://arxiv.org/abs/1506.02025)
 
 --------------------------------------
