@@ -101,7 +101,7 @@ BilinearInterpolationLayer2D <- R6::R6Class( "BilinearInterpolationLayer2D",
       coords[[2]] <- K$flatten( coords[[2]] )
 
       ones <- K$ones_like( coords[[1]] )
-      regularGrid <- K$concatenate( list( coords[[1]], coords[[2]], ones ), 0L )
+      regularGrid <- K$concatenate( list( coords[[1]], coords[[2]], ones ), axis = 0L )
       regularGrid <- K$flatten( regularGrid )
 
       regularGrids <- K$tile( regularGrid, K$stack( list( batchSize ) ) )
@@ -317,9 +317,9 @@ TrilinearInterpolationLayer3D <- R6::R6Class( "TrilinearInterpolationLayer3D",
       depth <- K$shape( image )[4]
       numberOfChannels <- K$shape( image )[5]
 
-      x <- K$cast( K$flatten( sampledGrids[, 1:2,] ), dtype = 'float32' )
-      y <- K$cast( K$flatten( sampledGrids[, 2:3,] ), dtype = 'float32' )
-      z <- K$cast( K$flatten( sampledGrids[, 3:4,] ), dtype = 'float32' )
+      x <- K$cast( K$flatten( sampledGrids[, 1,] ), dtype = 'float32' )
+      y <- K$cast( K$flatten( sampledGrids[, 2,] ), dtype = 'float32' )
+      z <- K$cast( K$flatten( sampledGrids[, 3,] ), dtype = 'float32' )
 
       x <- 0.5 * ( x + 1.0 ) * K$cast( width, dtype = 'float32' )
       y <- 0.5 * ( y + 1.0 ) * K$cast( height, dtype = 'float32' )
