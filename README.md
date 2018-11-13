@@ -20,7 +20,7 @@ Documentation page [https://antsx.github.io/ANTsRNet/](https://antsx.github.io/A
 
 * AlexNet (2-D, 3-D)
     * [A. Krizhevsky, and I. Sutskever, and G. Hinton. ImageNet Classification with Deep Convolutional Neural Networks.](http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf)
-* Vgg16/Vgg19 (2-D, 3-D)
+* VGG (2-D, 3-D)
     * [K. Simonyan and A. Zisserman. Very Deep Convolutional Networks for Large-Scale Image Recognition.](https://arxiv.org/abs/1409.1556)
 * GoogLeNet (Inception v3) (2-D)
     * [C. Szegedy, W. Liu, Y. Jia, P. Sermanet, S. Reed, D. Anguelov, D. Erhan, V. Vanhoucke, and A. Rabinovich. Going Deeper with Convolutions.](https://arxiv.org/abs/1512.00567)
