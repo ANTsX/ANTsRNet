@@ -384,11 +384,11 @@ TrilinearInterpolationLayer3D <- R6::R6Class( "TrilinearInterpolationLayer3D",
       interpolatedValues000 <- weight000 * pixelValues000
       interpolatedValues001 <- weight001 * pixelValues001
       interpolatedValues010 <- weight010 * pixelValues010
-      interpolatedValues011 <- weight010 * pixelValues011
-      interpolatedValues100 <- weight100 * pixelValues000
-      interpolatedValues101 <- weight101 * pixelValues001
-      interpolatedValues110 <- weight110 * pixelValues010
-      interpolatedValues111 <- weight110 * pixelValues011
+      interpolatedValues011 <- weight011 * pixelValues011
+      interpolatedValues100 <- weight100 * pixelValues100
+      interpolatedValues101 <- weight101 * pixelValues101
+      interpolatedValues110 <- weight110 * pixelValues110
+      interpolatedValues111 <- weight111 * pixelValues111
 
       interpolatedValues <-
         interpolatedValues000 +
