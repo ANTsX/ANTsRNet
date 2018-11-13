@@ -77,7 +77,7 @@ createSpatialTransformNetworkModel2D <- function( inputImageSize,
   outputs <- outputs %>% layer_conv_2d( filters = 20, kernel_size = c( 5, 5 ) )
 
   outputs <- outputs %>% layer_flatten()
-  outputs <- outputs %>% layer_dense( units = 50 )
+  outputs <- outputs %>% layer_dense( units = 50L )
   outputs <- outputs %>% layer_activation_relu()
 
   weights <- getInitialWeights2D( outputSize = 50L )
@@ -184,7 +184,7 @@ createSpatialTransformNetworkModel3D <- function( inputImageSize,
   outputs <- outputs %>% layer_conv_3d( filters = 20, kernel_size = c( 5, 5, 5 ) )
 
   outputs <- outputs %>% layer_flatten()
-  outputs <- outputs %>% layer_dense( units = 50 )
+  outputs <- outputs %>% layer_dense( units = 50L )
   outputs <- outputs %>% layer_activation_relu()
 
   weights <- getInitialWeights3D( outputSize = 50L )

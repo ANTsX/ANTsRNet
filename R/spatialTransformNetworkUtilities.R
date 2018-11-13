@@ -144,41 +144,36 @@ BilinearInterpolationLayer2D <- R6::R6Class( "BilinearInterpolationLayer2D",
         batchPixels, rep = as.integer( prod( resampledSize ) ), axis = 1L )
       base <- K$flatten( base )
 
-      baseY0 <- y0 * width
-      baseY0 <- base + baseY0
-      baseY1 <- y1 * width
-      baseY1 <- baseY1 + base
-
-      indicesA <- baseY0 + x0
-      indicesB <- baseY1 + x0
-      indicesC <- baseY0 + x1
-      indicesD <- baseY1 + x1
+      indices00 <- base + y0 * width + x0
+      indices01 <- base + y1 * width + x0
+      indices10 <- base + y0 * width + x1
+      indices11 <- base + y1 * width + x1
 
       flatImage <- K$reshape( image, shape = c( -1L, numberOfChannels ) )
       flatImage <- K$cast( flatImage, dtype = 'float32' )
 
-      pixelValuesA <- K$gather( flatImage, indicesA )
-      pixelValuesB <- K$gather( flatImage, indicesB )
-      pixelValuesC <- K$gather( flatImage, indicesC )
-      pixelValuesD <- K$gather( flatImage, indicesD )
+      pixelValues00 <- K$gather( flatImage, indices00 )
+      pixelValues01 <- K$gather( flatImage, indices01 )
+      pixelValues10 <- K$gather( flatImage, indices10 )
+      pixelValues11 <- K$gather( flatImage, indices11 )
 
       x0 <- K$cast( x0, dtype = 'float32' )
       x1 <- K$cast( x1, dtype = 'float32' )
       y0 <- K$cast( y0, dtype = 'float32' )
       y1 <- K$cast( y1, dtype = 'float32' )
 
-      areaA <- K$expand_dims( ( ( x1 - x ) * ( y1 - y ) ), axis = 1L )
-      areaB <- K$expand_dims( ( ( x1 - x ) * ( y - y0 ) ), axis = 1L )
-      areaC <- K$expand_dims( ( ( x - x0 ) * ( y1 - y ) ), axis = 1L )
-      areaD <- K$expand_dims( ( ( x - x0 ) * ( y - y0 ) ), axis = 1L )
+      weight00 <- K$expand_dims( ( ( x1 - x ) * ( y1 - y ) ), axis = 1L )
+      weight01 <- K$expand_dims( ( ( x1 - x ) * ( y - y0 ) ), axis = 1L )
+      weight10 <- K$expand_dims( ( ( x - x0 ) * ( y1 - y ) ), axis = 1L )
+      weight11 <- K$expand_dims( ( ( x - x0 ) * ( y - y0 ) ), axis = 1L )
 
-      interpolatedValuesA <- areaA * pixelValuesA
-      interpolatedValuesB <- areaB * pixelValuesB
-      interpolatedValuesC <- areaC * pixelValuesC
-      interpolatedValuesD <- areaD * pixelValuesD
+      interpolatedValues00 <- weight00 * pixelValues00
+      interpolatedValues01 <- weight01 * pixelValues01
+      interpolatedValues10 <- weight10 * pixelValues10
+      interpolatedValues11 <- weight10 * pixelValues11
 
-      interpolatedValues <- interpolatedValuesA + interpolatedValuesB +
-        interpolatedValuesC + interpolatedValuesD
+      interpolatedValues <- interpolatedValues00 + interpolatedValues01 +
+        interpolatedValues10 + interpolatedValues11
 
       return( interpolatedValues )
       }
@@ -349,27 +344,26 @@ TrilinearInterpolationLayer3D <- R6::R6Class( "TrilinearInterpolationLayer3D",
         batchPixels, rep = as.integer( prod( resampledSize ) ), axis = 1L )
       base <- K$flatten( base )
 
-
-# # xxxxxxxxx
-
-
-      baseY0 <- y0 * width
-      baseY0 <- base + baseY0
-      baseY1 <- y1 * width
-      baseY1 <- baseY1 + base
-
-      indicesA <- baseY0 + x0
-      indicesB <- baseY1 + x0
-      indicesC <- baseY0 + x1
-      indicesD <- baseY1 + x1
+      indices000 <- base + z0 * ( width * height ) + y0 * width + x1
+      indices001 <- base + z0 * ( width * height ) + y0 * width + x0
+      indices010 <- base + z0 * ( width * height ) + y1 * width + x1
+      indices011 <- base + z0 * ( width * height ) + y1 * width + x0
+      indices100 <- base + z1 * ( width * height ) + y0 * width + x1
+      indices101 <- base + z1 * ( width * height ) + y0 * width + x0
+      indices110 <- base + z1 * ( width * height ) + y1 * width + x1
+      indices111 <- base + z1 * ( width * height ) + y1 * width + x0
 
       flatImage <- K$reshape( image, shape = c( -1L, numberOfChannels ) )
       flatImage <- K$cast( flatImage, dtype = 'float32' )
 
-      pixelValuesA <- K$gather( flatImage, indicesA )
-      pixelValuesB <- K$gather( flatImage, indicesB )
-      pixelValuesC <- K$gather( flatImage, indicesC )
-      pixelValuesD <- K$gather( flatImage, indicesD )
+      pixelValues000 <- K$gather( flatImage, indices000 )
+      pixelValues001 <- K$gather( flatImage, indices001 )
+      pixelValues010 <- K$gather( flatImage, indices010 )
+      pixelValues011 <- K$gather( flatImage, indices011 )
+      pixelValues100 <- K$gather( flatImage, indices100 )
+      pixelValues101 <- K$gather( flatImage, indices101 )
+      pixelValues110 <- K$gather( flatImage, indices110 )
+      pixelValues111 <- K$gather( flatImage, indices111 )
 
       x0 <- K$cast( x0, dtype = 'float32' )
       x1 <- K$cast( x1, dtype = 'float32' )
@@ -378,18 +372,33 @@ TrilinearInterpolationLayer3D <- R6::R6Class( "TrilinearInterpolationLayer3D",
       z0 <- K$cast( z0, dtype = 'float32' )
       z1 <- K$cast( z1, dtype = 'float32' )
 
-      areaA <- K$expand_dims( ( ( x1 - x ) * ( y1 - y ) ), axis = 1L )
-      areaB <- K$expand_dims( ( ( x1 - x ) * ( y - y0 ) ), axis = 1L )
-      areaC <- K$expand_dims( ( ( x - x0 ) * ( y1 - y ) ), axis = 1L )
-      areaD <- K$expand_dims( ( ( x - x0 ) * ( y - y0 ) ), axis = 1L )
+      weight000 <- K$expand_dims( ( ( x1 - x ) * ( y1 - y ) * ( z1 - z ) ), axis = 1L )
+      weight001 <- K$expand_dims( ( ( x1 - x ) * ( y1 - y ) * ( z - z0 ) ), axis = 1L )
+      weight010 <- K$expand_dims( ( ( x1 - x ) * ( y - y0 ) * ( z1 - z ) ), axis = 1L )
+      weight011 <- K$expand_dims( ( ( x1 - x ) * ( y - y0 ) * ( z - z0 ) ), axis = 1L )
+      weight100 <- K$expand_dims( ( ( x - x0 ) * ( y1 - y ) * ( z1 - z ) ), axis = 1L )
+      weight101 <- K$expand_dims( ( ( x - x0 ) * ( y1 - y ) * ( z - z0 ) ), axis = 1L )
+      weight110 <- K$expand_dims( ( ( x - x0 ) * ( y - y0 ) * ( z1 - z ) ), axis = 1L )
+      weight111 <- K$expand_dims( ( ( x - x0 ) * ( y - y0 ) * ( z - z0 ) ), axis = 1L )
 
-      interpolatedValuesA <- areaA * pixelValuesA
-      interpolatedValuesB <- areaB * pixelValuesB
-      interpolatedValuesC <- areaC * pixelValuesC
-      interpolatedValuesD <- areaD * pixelValuesD
+      interpolatedValues000 <- weight000 * pixelValues000
+      interpolatedValues001 <- weight001 * pixelValues001
+      interpolatedValues010 <- weight010 * pixelValues010
+      interpolatedValues011 <- weight010 * pixelValues011
+      interpolatedValues100 <- weight100 * pixelValues000
+      interpolatedValues101 <- weight101 * pixelValues001
+      interpolatedValues110 <- weight110 * pixelValues010
+      interpolatedValues111 <- weight110 * pixelValues011
 
-      interpolatedValues <- interpolatedValuesA + interpolatedValuesB +
-        interpolatedValuesC + interpolatedValuesD
+      interpolatedValues <-
+        interpolatedValues000 +
+        interpolatedValues001 +
+        interpolatedValues010 +
+        interpolatedValues011 +
+        interpolatedValues100 +
+        interpolatedValues101 +
+        interpolatedValues110 +
+        interpolatedValues111
 
       return( interpolatedValues )
       }
