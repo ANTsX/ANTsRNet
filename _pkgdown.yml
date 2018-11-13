@@ -75,6 +75,7 @@ reference:
   desc: ~
   contents:
   - '`BilinearInterpolationLayer2D`'
+  - '`TrilinearInterpolationLayer3D`'
 - title: Custom loss functions
   desc: ~
   contents:

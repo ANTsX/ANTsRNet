@@ -216,7 +216,7 @@ create_layer( BilinearInterpolationLayer2D, objects,
 #'
 #' @return resampled batch images.
 #'
-#' @name TrilinearInterpolationLayer2D
+#' @name TrilinearInterpolationLayer3D
 NULL
 
 #' @export

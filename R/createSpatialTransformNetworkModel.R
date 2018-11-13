@@ -18,6 +18,7 @@
 #' @return a keras model for image super resolution
 #' @author Tustison NJ
 #' @examples
+#' \dontrun{
 #'
 #' library( ANTsRNet )
 #' library( keras )
@@ -42,6 +43,7 @@
 #' model <- createSpatialTransformNetworkModel2D( inputImageSize = inputImageSize,
 #'   resampledSize = c( 30, 30 ), numberOfClassificationLabels = numberOfLabels )
 #'
+#' }
 #' @import keras
 #' @export
 createSpatialTransformNetworkModel2D <- function( inputImageSize,
@@ -150,7 +152,7 @@ createSpatialTransformNetworkModel2D <- function( inputImageSize,
 #'}
 #' @import keras
 #' @export
-createSpatialTransformNetworkModel2D <- function( inputImageSize,
+createSpatialTransformNetworkModel3D <- function( inputImageSize,
   resampledSize = c( 30, 30, 30 ), numberOfClassificationLabels = 10 )
 {
 
