@@ -344,14 +344,14 @@ TrilinearInterpolationLayer3D <- R6::R6Class( "TrilinearInterpolationLayer3D",
         batchPixels, rep = as.integer( prod( resampledSize ) ), axis = 1L )
       base <- K$flatten( base )
 
-      indices000 <- base + z0 * ( width * height ) + y0 * width + x1
-      indices001 <- base + z0 * ( width * height ) + y0 * width + x0
-      indices010 <- base + z0 * ( width * height ) + y1 * width + x1
-      indices011 <- base + z0 * ( width * height ) + y1 * width + x0
-      indices100 <- base + z1 * ( width * height ) + y0 * width + x1
-      indices101 <- base + z1 * ( width * height ) + y0 * width + x0
-      indices110 <- base + z1 * ( width * height ) + y1 * width + x1
-      indices111 <- base + z1 * ( width * height ) + y1 * width + x0
+      indices000 <- base + z0 * ( width * height ) + y0 * width + x0
+      indices001 <- base + z1 * ( width * height ) + y0 * width + x0
+      indices010 <- base + z0 * ( width * height ) + y1 * width + x0
+      indices011 <- base + z1 * ( width * height ) + y1 * width + x0
+      indices100 <- base + z0 * ( width * height ) + y0 * width + x1
+      indices101 <- base + z1 * ( width * height ) + y0 * width + x1
+      indices110 <- base + z0 * ( width * height ) + y1 * width + x1
+      indices111 <- base + z1 * ( width * height ) + y1 * width + x1
 
       flatImage <- K$reshape( image, shape = c( -1L, numberOfChannels ) )
       flatImage <- K$cast( flatImage, dtype = 'float32' )
