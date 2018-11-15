@@ -8,7 +8,7 @@ createUnetModel2D(inputImageSize, numberOfOutputs = 1,
   numberOfLayers = 4, numberOfFiltersAtBaseLayer = 32,
   convolutionKernelSize = c(3, 3), deconvolutionKernelSize = c(2, 2),
   poolSize = c(2, 2), strides = c(2, 2), dropoutRate = 0,
-  mode = "classification")
+  weightDecay = 0, mode = "classification")
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
@@ -36,6 +36,9 @@ during the decoding}
 \item{strides}{2-d vector describing the stride length in each direction.}
 
 \item{dropoutRate}{float between 0 and 1 to use between dense layers.}
+
+\item{weightDecay}{weighting parameter for L2 regularization of the
+kernel weights of the convolution layers.  Default = 0.0.}
 
 \item{mode}{'classification' or 'regression'.  Default = 'classification'.}
 }

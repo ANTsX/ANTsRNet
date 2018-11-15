@@ -31,6 +31,8 @@
 #' @param poolSize 2-d vector defining the region for each pooling layer.
 #' @param strides 2-d vector describing the stride length in each direction.
 #' @param dropoutRate float between 0 and 1 to use between dense layers.
+#' @param weightDecay weighting parameter for L2 regularization of the
+#' kernel weights of the convolution layers.  Default = 0.0.
 #' @param mode 'classification' or 'regression'.  Default = 'classification'.
 #'
 #' @return a u-net keras model
@@ -112,6 +114,7 @@ createUnetModel2D <- function( inputImageSize,
                                poolSize = c( 2, 2 ),
                                strides = c( 2, 2 ),
                                dropoutRate = 0.0,
+                               weightDecay = 0.0,
                                mode = 'classification'
                              )
 {
@@ -129,11 +132,13 @@ createUnetModel2D <- function( inputImageSize,
       {
       conv <- inputs %>% layer_conv_2d( filters = numberOfFilters,
         kernel_size = convolutionKernelSize, activation = 'relu',
-        padding = 'same' )
+        padding = 'same',
+        kernel_regularizer = regularizer_l2( weightDecay ) )
       } else {
       conv <- pool %>% layer_conv_2d( filters = numberOfFilters,
         kernel_size = convolutionKernelSize, activation = 'relu',
-        padding = 'same' )
+        padding = 'same',
+        kernel_regularizer = regularizer_l2( weightDecay ) )
       }
     if( dropoutRate > 0.0 )
       {
@@ -161,7 +166,8 @@ createUnetModel2D <- function( inputImageSize,
     deconvolution <- outputs %>%
       layer_conv_2d_transpose( filters = numberOfFilters,
         kernel_size = deconvolutionKernelSize,
-        padding = 'same' )
+        padding = 'same',
+        kernel_regularizer = regularizer_l2( weightDecay ) )
     deconvolution <- deconvolution %>% layer_upsampling_2d( size = poolSize )
     outputs <- layer_concatenate( list( deconvolution,
       encodingConvolutionLayers[[numberOfLayers - i + 1]] ),
@@ -173,19 +179,23 @@ createUnetModel2D <- function( inputImageSize,
       outputs <- outputs %>%
         layer_conv_2d( filters = numberOfFilters,
           kernel_size = convolutionKernelSize,
-          activation = 'relu', padding = 'same' ) %>%
+          activation = 'relu', padding = 'same',
+          kernel_regularizer = regularizer_l2( weightDecay ) ) %>%
         layer_dropout( rate = dropoutRate ) %>%
         layer_conv_2d( filters = numberOfFilters,
           kernel_size = convolutionKernelSize,
-          activation = 'relu', padding = 'same'  )
+          activation = 'relu', padding = 'same',
+          kernel_regularizer = regularizer_l2( weightDecay ) )
       } else {
       outputs <- outputs %>%
         layer_conv_2d( filters = numberOfFilters,
           kernel_size = convolutionKernelSize,
-          activation = 'relu', padding = 'same' ) %>%
+          activation = 'relu', padding = 'same',
+          kernel_regularizer = regularizer_l2( weightDecay ) ) %>%
         layer_conv_2d( filters = numberOfFilters,
           kernel_size = convolutionKernelSize,
-          activation = 'relu', padding = 'same' )
+          activation = 'relu', padding = 'same',
+          kernel_regularizer = regularizer_l2( weightDecay ) )
       }
     }
 
@@ -205,7 +215,8 @@ createUnetModel2D <- function( inputImageSize,
     }
   outputs <- outputs %>%
     layer_conv_2d( filters = numberOfOutputs,
-      kernel_size = c( 1, 1 ), activation = convActivation )
+      kernel_size = c( 1, 1 ), activation = convActivation,
+      kernel_regularizer = regularizer_l2( weightDecay ) )
 
   unetModel <- keras_model( inputs = inputs, outputs = outputs )
 
@@ -246,6 +257,8 @@ createUnetModel2D <- function( inputImageSize,
 #' @param poolSize 3-d vector defining the region for each pooling layer.
 #' @param strides 3-d vector describing the stride length in each direction.
 #' @param dropoutRate float between 0 and 1 to use between dense layers.
+#' @param weightDecay weighting parameter for L2 regularization of the
+#' kernel weights of the convolution layers.  Default = 0.0.
 #' @param mode 'classification' or 'regression'.  Default = 'classification'.
 #'
 #' @return a u-net keras model
@@ -330,6 +343,7 @@ createUnetModel3D <- function( inputImageSize,
                                poolSize = c( 2, 2, 2 ),
                                strides = c( 2, 2, 2 ),
                                dropoutRate = 0.0,
+                               weightDecay = 0.0,
                                mode = 'classification'
                              )
 {
@@ -347,11 +361,13 @@ createUnetModel3D <- function( inputImageSize,
       {
       conv <- inputs %>% layer_conv_3d( filters = numberOfFilters,
         kernel_size = convolutionKernelSize, activation = 'relu',
-        padding = 'same' )
+        padding = 'same',
+        kernel_regularizer = regularizer_l2( weightDecay ) )
       } else {
       conv <- pool %>% layer_conv_3d( filters = numberOfFilters,
         kernel_size = convolutionKernelSize, activation = 'relu',
-        padding = 'same' )
+        padding = 'same',
+        kernel_regularizer = regularizer_l2( weightDecay ) )
       }
     if( dropoutRate > 0.0 )
       {
@@ -360,7 +376,8 @@ createUnetModel3D <- function( inputImageSize,
 
     encodingConvolutionLayers[[i]] <- conv %>% layer_conv_3d(
       filters = numberOfFilters, kernel_size = convolutionKernelSize,
-      activation = 'relu', padding = 'same' )
+      activation = 'relu', padding = 'same',
+      kernel_regularizer = regularizer_l2( weightDecay ) )
 
     if( i < numberOfLayers )
       {
@@ -379,31 +396,35 @@ createUnetModel3D <- function( inputImageSize,
     deconvolution <- outputs %>%
       layer_conv_3d_transpose( filters = numberOfFilters,
         kernel_size = deconvolutionKernelSize,
-        padding = 'same' )
+        padding = 'same',
+        kernel_regularizer = regularizer_l2( weightDecay ) )
     deconvolution <- deconvolution %>% layer_upsampling_3d( size = poolSize )
     outputs <- layer_concatenate( list( deconvolution,
       encodingConvolutionLayers[[numberOfLayers - i + 1]] ),
-      axis = 4
-      )
+      axis = 4 )
 
     if( dropoutRate > 0.0 )
       {
       outputs <- outputs %>%
         layer_conv_3d( filters = numberOfFilters,
           kernel_size = convolutionKernelSize, activation = 'relu',
-          padding = 'same' )  %>%
+          padding = 'same',
+          kernel_regularizer = regularizer_l2( weightDecay ) )  %>%
         layer_dropout( rate = dropoutRate ) %>%
         layer_conv_3d( filters = numberOfFilters,
           kernel_size = convolutionKernelSize, activation = 'relu',
-          padding = 'same' )
+          padding = 'same',
+          kernel_regularizer = regularizer_l2( weightDecay ) )
       } else {
       outputs <- outputs %>%
         layer_conv_3d( filters = numberOfFilters,
           kernel_size = convolutionKernelSize,
-          activation = 'relu', padding = 'same'  )  %>%
+          activation = 'relu', padding = 'same',
+          kernel_regularizer = regularizer_l2( weightDecay ) )  %>%
         layer_conv_3d( filters = numberOfFilters,
           kernel_size = convolutionKernelSize,
-          activation = 'relu', padding = 'same'  )
+          activation = 'relu', padding = 'same',
+          kernel_regularizer = regularizer_l2( weightDecay ) )
       }
     }
 
@@ -423,7 +444,8 @@ createUnetModel3D <- function( inputImageSize,
     }
   outputs <- outputs %>%
     layer_conv_3d( filters = numberOfOutputs,
-      kernel_size = c( 1, 1, 1 ), activation = convActivation )
+      kernel_size = c( 1, 1, 1 ), activation = convActivation,
+      kernel_regularizer = regularizer_l2( weightDecay ) )
 
   unetModel <- keras_model( inputs = inputs, outputs = outputs )
 
