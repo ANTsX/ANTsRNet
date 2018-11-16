@@ -70,7 +70,8 @@ reference:
 - title: Registration and transform models
   desc: ~
   contents:
-  - '`createSpatialTransformNetworkModel2D`'
+  - '`createSpatialTransformerNetworkModel2D`'
+  - '`createSpatialTransformerNetworkModel3D`'
 - title: Registration and transform helper functions
   desc: ~
   contents:

@@ -20,7 +20,9 @@ extractImagePatches(image, patchSize, maxNumberOfPatches = "all",
 maxNumberOfPatches = all.  Can be a image-dimensional vector or a scalar.}
 
 \item{maskImage}{optional image specifying the sampling region for
-the patches when \code{maximumNumberOfPatches} does not equal "all".}
+the patches when \code{maximumNumberOfPatches} does not equal "all".
+The way we constrain patch selection using a mask is by forcing
+each returned patch to have a masked voxel at its center.}
 
 \item{randomSeed}{integer seed that allows reproducible patch extraction
 across runs.}

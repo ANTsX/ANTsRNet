@@ -131,7 +131,9 @@ maxNumberOfPatches = all.  Can be a image-dimensional vector or a scalar.</p></t
     <tr>
       <th>maskImage</th>
       <td><p>optional image specifying the sampling region for
-the patches when <code>maximumNumberOfPatches</code> does not equal "all".</p></td>
+the patches when <code>maximumNumberOfPatches</code> does not equal "all".
+The way we constrain patch selection using a mask is by forcing
+each returned patch to have a masked voxel at its center.</p></td>
     </tr>
     <tr>
       <th>randomSeed</th>

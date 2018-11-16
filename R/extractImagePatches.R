@@ -9,6 +9,8 @@
 #' maxNumberOfPatches = all.  Can be a image-dimensional vector or a scalar.
 #' @param maskImage optional image specifying the sampling region for
 #' the patches when \code{maximumNumberOfPatches} does not equal "all".
+#' The way we constrain patch selection using a mask is by forcing
+#' each returned patch to have a masked voxel at its center.
 #' @param randomSeed integer seed that allows reproducible patch extraction
 #' across runs.
 #' @param returnAsArray specifies the return type of the function.  If
@@ -186,14 +188,17 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
     if( !is.na( maskImage ) )
       {
       maskArray <- as.array( maskImage )
+      maskArray[which( maskArray != 0 )] <- 1
+
+      # The way we constrain patch selection using a mask is by assuming that
+      # each patch must have a masked voxel at its midPatchIndex.
+
       maskIndices <- which( maskArray != 0, arr.ind = TRUE )
 
       shiftedMaskIndices <- maskIndices
       negativeIndices <- c()
       for( d in seq_len( dimensionality ) )
         {
-        shiftedMaskIndices[, d] <- maskIndices[, d] + patchSize[d]
-        negativeIndices <- append( negativeIndices, which( shiftedMaskIndices[, d] > imageSize[d] ) )
         shiftedMaskIndices[, d] <- maskIndices[, d] - midPatchIndex[d]
         negativeIndices <- append( negativeIndices, which( shiftedMaskIndices[, d] <= 0 ) )
         shiftedMaskIndices[, d] <- maskIndices[, d] + midPatchIndex[d]
@@ -205,6 +210,16 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
         {
         maskIndices <- maskIndices[-negativeIndices,]
         }
+
+      # After pruning the mask indices, which were originally defined in terms of the
+      # midPatchIndex, we subtract the midPatchIndex so that it's now defined at the
+      # corner for patch selection.
+
+      for( d in seq_len( dimensionality ) )
+        {
+        maskIndices[, d] <- maskIndices[, d] - midPatchIndex[d]
+        }
+
       numberOfExtractedPatches <- min( maxNumberOfPatches, nrow( maskIndices ) )
 
       randomIndices <- maskIndices[
