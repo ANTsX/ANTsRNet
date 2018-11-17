@@ -48,7 +48,7 @@ reconstructImageFromPatches <- function( patches, domainImage,
       }
     } else {
     patchDimension <- dim( patches )
-    patchSize <- patchDimension[2:( 2 + dimensionality )]
+    patchSize <- patchDimension[2:( 2 + dimensionality - 1 )]
     if( length( patchDimension ) > dimensionality + 1 )
       {
       numberOfImageComponents <- patchDimension[dimensionality + 2]
@@ -175,13 +175,10 @@ reconstructImageFromPatches <- function( patches, domainImage,
           count <- count + 1
           }
         }
-      for( i in seq_len( imageSize[1] ) )
+      countArray[which( countArray == 0 )] <- 1
+      for( i in seq_len( numberOfImageComponents ) )
         {
-        for( j in seq_len( imageSize[2] ) )
-          {
-          factor <- max( 1, countArray[i, j] )
-          imageArray[i, j,] <- imageArray[i, j,] / factor
-          }
+        imageArray <- imageArray[,,, i] / countArray 
         }
       }
     } else {
@@ -255,7 +252,7 @@ reconstructImageFromPatches <- function( patches, domainImage,
           }
         }
       } else {
-      countArray <- array( 0, dim = dim( imageArray ) )
+      countArray <- array( 0, dim = dim( imageArray )[1:dimensionality] )
       for( i in seq.int( from = 1, to = imageSize[1] - patchSize[1] + 1,
         by = strideLengthVector[1] ) )
         {
@@ -298,16 +295,10 @@ reconstructImageFromPatches <- function( patches, domainImage,
             }
           }
         }
-      for( i in seq_len( imageSize[1] ) )
+      countArray[which( countArray == 0 )] <- 1
+      for( i in seq_len( numberOfImageComponents ) )
         {
-        for( j in seq_len( imageSize[2] ) )
-          {
-          for( k in seq_len( imageSize[3] ) )
-            {
-            factor <- max( 1, countArray[i, j, k] )
-            imageArray[i, j, k,] <- imageArray[i, j, k,] / factor
-            }
-          }
+        imageArray <- imageArray[,,, i] / countArray 
         }
       }
     }
