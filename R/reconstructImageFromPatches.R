@@ -178,7 +178,7 @@ reconstructImageFromPatches <- function( patches, domainImage,
       countArray[which( countArray == 0 )] <- 1
       for( i in seq_len( numberOfImageComponents ) )
         {
-        imageArray[,,, i] <- imageArray[,,, i] / countArray 
+        imageArray[,, i] <- imageArray[,, i] / countArray 
         }
       }
     } else {
