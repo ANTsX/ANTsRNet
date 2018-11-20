@@ -4,7 +4,8 @@
 
 A collection of deep learning architectures ported to the R language and tools for basic medical image processing.
 
-Applications available at [ANTsRNet Apps](https://github.com/ANTsRNet)
+Applications available at [ANTsRNet Apps](https://github.com/ANTsRNet)  
+
 Examples available at [ANTsRNetExamples](https://github.com/ntustison/ANTsRNetExamples).
 
 Documentation page [https://antsx.github.io/ANTsRNet/](https://antsx.github.io/ANTsRNet/).
