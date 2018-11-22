@@ -54,9 +54,7 @@ createResNetSuperResolutionModel2D <- function( inputImageSize,
     return( block )
     }
 
-  inputs <- layer_input( shape = inputImageSize )
-
-  makeResNetBlock2D <- function(  inputs,  numberOfFilters,
+  resNetBlock2D <- function(  inputs,  numberOfFilters,
     convolutionKernelSize, numberOfResidualBlocks  )
   {
   outputs <- inputs %>% layer_conv_2d( filters = numberOfFilters,
@@ -78,13 +76,18 @@ createResNetSuperResolutionModel2D <- function( inputImageSize,
   return( outputs )
   }
 
+  inputs <- layer_input( shape = inputImageSize )
 
-  outputs <- makeResNetBlock2D(  inputs,  numberOfFilters,
+  outputs <- resNetBlock2D( inputs, numberOfFilters,
     convolutionKernelSize, numberOfResidualBlocks  )
-  if ( numberOfResNetBlocks > 1 )
-    for ( nrnb in 2:numberOfResNetBlocks )
-      outputs <- makeResNetBlock2D(  outputs,  numberOfFilters,
+  if( numberOfResNetBlocks > 1 )
+    {
+    for( n in 2:numberOfResNetBlocks )
+      {
+      outputs <- resNetBlock2D(  outputs,  numberOfFilters,
         convolutionKernelSize, numberOfResidualBlocks )
+      }
+    }
 
   numberOfChannels <- tail( inputImageSize, 1 )
 
@@ -154,33 +157,37 @@ createResNetSuperResolutionModel3D <- function( inputImageSize,
     return( block )
     }
 
-  inputs <- layer_input( shape = inputImageSize )
-
-  makeResNetBlock3D <- function(  inputs,  numberOfFilters,
+  resNetBlock3D <- function( model,  numberOfFilters,
     convolutionKernelSize, numberOfResidualBlocks  )
-  {
-  outputs <- inputs %>% layer_conv_3d( filters = numberOfFilters,
-    kernel_size = convolutionKernelSize, activation = 'relu',
-    padding = 'same' )
-
-  residualBlocks <- residualBlock3D( outputs )
-  for( i in seq_len( numberOfResidualBlocks ) )
     {
-    residualBlocks <- residualBlock3D( residualBlocks, numberOfFilters,
+    outputs <- model %>% layer_conv_3d( filters = numberOfFilters,
+      kernel_size = convolutionKernelSize, activation = 'relu',
+      padding = 'same' )
+
+    residualBlocks <- residualBlock3D( outputs )
+    for( i in seq_len( numberOfResidualBlocks ) )
+      {
+      residualBlocks <- residualBlock3D( residualBlocks, numberOfFilters,
+        convolutionKernelSize )
+      }
+    outputs <- layer_add( list( residualBlocks, outputs ) )
+
+    outputs <- upscaleBlock3D( outputs, numberOfFilters,
       convolutionKernelSize )
     }
-  outputs <- layer_add( list( residualBlocks, outputs ) )
 
-  outputs <- upscaleBlock3D( outputs, numberOfFilters,
-    convolutionKernelSize )
-  }
+  inputs <- layer_input( shape = inputImageSize )
 
-  outputs <- makeResNetBlock3D(  inputs,  numberOfFilters,
+  outputs <- resNetBlock3D( inputs, numberOfFilters,
     convolutionKernelSize, numberOfResidualBlocks  )
-  if ( numberOfResNetBlocks > 1 )
-    for ( nrnb in 2:numberOfResNetBlocks )
-      outputs <- makeResNetBlock3D(  outputs,  numberOfFilters,
+  if( numberOfResNetBlocks > 1 )
+    {
+    for( n in 2:numberOfResNetBlocks )
+      {
+      outputs <- resNetBlock3D( outputs,  numberOfFilters,
         convolutionKernelSize, numberOfResidualBlocks )
+      }
+    }
 
   numberOfChannels <- tail( inputImageSize, 1 )
 
