@@ -32,7 +32,7 @@ getPretrainedNetwork <- function(fileid,
     return( validlist )
   myurl <- switch( fileid,
                    dbpn4x = "https://ndownloader.figshare.com/files/13347617",
-                   brainExtraction = "https://ndownloader.figshare.com/files/13606802",
+                   brainExtraction = "https://ndownloader.figshare.com/files/13729661",
                    protonLungMri = "https://ndownloader.figshare.com/files/13606799"
                    )
 
