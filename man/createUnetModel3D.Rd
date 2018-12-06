@@ -47,7 +47,8 @@ a u-net keras model
 }
 \description{
 Creates a keras model of the U-net deep learning architecture for image
-segmentation.  More information is provided at the authors' website:
+segmentation and regression.  More information is provided at the authors'
+website:
 }
 \details{
 \url{https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/}

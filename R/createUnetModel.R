@@ -1,7 +1,8 @@
 #' 2-D implementation of the U-net deep learning architecture.
 #'
 #' Creates a keras model of the U-net deep learning architecture for image
-#' segmentation.  More information is provided at the authors' website:
+#' segmentation and regression.  More information is provided at the authors'
+#' website:
 #'
 #'         \url{https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/}
 #'
@@ -124,7 +125,7 @@ createUnetModel2D <- function( inputImageSize,
   # Encoding path
 
   encodingConvolutionLayers <- list()
-  for( i in 1:numberOfLayers )
+  for( i in seq_len( numberOfLayers ) )
     {
     numberOfFilters <- numberOfFiltersAtBaseLayer * 2 ^ ( i - 1 )
 
@@ -227,7 +228,8 @@ createUnetModel2D <- function( inputImageSize,
 #' 3-D image segmentation implementation of the U-net deep learning architecture.
 #'
 #' Creates a keras model of the U-net deep learning architecture for image
-#' segmentation.  More information is provided at the authors' website:
+#' segmentation and regression.  More information is provided at the authors'
+#' website:
 #'
 #'         \url{https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/}
 #'

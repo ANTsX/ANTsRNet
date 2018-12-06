@@ -40,6 +40,8 @@ reference:
   contents:
   - '`createUnetModel2D`'
   - '`createUnetModel3D`'
+  - '`createResUnetModel2D`'
+  - '`createResUnetModel3D`'
 - title: U-net-specific helper functions
   desc: ~
   contents:

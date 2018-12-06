@@ -18,6 +18,9 @@ Documentation page [https://antsx.github.io/ANTsRNet/](https://antsx.github.io/A
     * [O. Ronneberger, P. Fischer, and T. Brox.  U-Net: Convolutional Networks for Biomedical Image Segmentation.](https://arxiv.org/abs/1505.04597)
     * [Fausto Milletari, Nassir Navab, Seyed-Ahmad Ahmadi. V-Net: Fully Convolutional Neural Networks for Volumetric Medical Image Segmentation.](https://arxiv.org/pdf/1606.04797.pdf)
 
+* U-Net + ResNet (2-D, 3-D)
+    * [Michal Drozdzal, Eugene Vorontsov, Gabriel Chartrand, Samuel Kadoury, and Chris Pal.  The Importance of Skip Connections in Biomedical Image Segmentation.](https://arxiv.org/abs/1608.04117)
+
 ### Image classification/regression
 
 * AlexNet (2-D, 3-D)

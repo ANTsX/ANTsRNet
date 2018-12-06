@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>2-D implementation of the U-net deep learning architecture. — createUnetModel2D • ANTsRNet</title>
+<title>2-D implementation of the Resnet + U-net deep learning architecture. — createResUnetModel2D • ANTsRNet</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,11 +30,10 @@
 
 
 
-<meta property="og:title" content="2-D implementation of the U-net deep learning architecture. — createUnetModel2D" />
+<meta property="og:title" content="2-D implementation of the Resnet + U-net deep learning architecture. — createResUnetModel2D" />
 
-<meta property="og:description" content="Creates a keras model of the U-net deep learning architecture for image
-segmentation and regression.  More information is provided at the authors'
-website:" />
+<meta property="og:description" content="Creates a keras model of the U-net + ResNet deep learning architecture for
+image segmentation and regression with the paper available here:" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -94,24 +93,22 @@ website:" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>2-D implementation of the U-net deep learning architecture.</h1>
+    <h1>2-D implementation of the Resnet + U-net deep learning architecture.</h1>
     
-    <div class="hidden name"><code>createUnetModel2D.Rd</code></div>
+    <div class="hidden name"><code>createResUnetModel2D.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Creates a keras model of the U-net deep learning architecture for image
-segmentation and regression.  More information is provided at the authors'
-website:</p>
+    <p>Creates a keras model of the U-net + ResNet deep learning architecture for
+image segmentation and regression with the paper available here:</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>createUnetModel2D</span>(<span class='no'>inputImageSize</span>, <span class='kw'>numberOfOutputs</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>numberOfLayers</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>numberOfFiltersAtBaseLayer</span> <span class='kw'>=</span> <span class='fl'>32</span>,
-  <span class='kw'>convolutionKernelSize</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>3</span>, <span class='fl'>3</span>), <span class='kw'>deconvolutionKernelSize</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>2</span>, <span class='fl'>2</span>),
-  <span class='kw'>poolSize</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>2</span>, <span class='fl'>2</span>), <span class='kw'>strides</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>2</span>, <span class='fl'>2</span>), <span class='kw'>dropoutRate</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>weightDecay</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"classification"</span>)</pre>
+    <pre class="usage"><span class='fu'>createResUnetModel2D</span>(<span class='no'>inputImageSize</span>, <span class='kw'>numberOfOutputs</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>numberOfFiltersAtBaseLayer</span> <span class='kw'>=</span> <span class='fl'>32</span>, <span class='kw'>bottleNeckBlockDepthSchedule</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>3</span>,
+  <span class='fl'>4</span>), <span class='kw'>convolutionKernelSize</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>3</span>, <span class='fl'>3</span>), <span class='kw'>deconvolutionKernelSize</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>2</span>,
+  <span class='fl'>2</span>), <span class='kw'>dropoutRate</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>weightDecay</span> <span class='kw'>=</span> <span class='fl'>0.0001</span>, <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"classification"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -130,13 +127,14 @@ the number of channels (e.g., red, green, and blue).  The batch size
 this is the number of outputs.</p></td>
     </tr>
     <tr>
-      <th>numberOfLayers</th>
-      <td><p>number of encoding/decoding layers.</p></td>
-    </tr>
-    <tr>
       <th>numberOfFiltersAtBaseLayer</th>
       <td><p>number of filters at the beginning and end
 of the <code>'U'</code>.  Doubles at each descending/ascending layer.</p></td>
+    </tr>
+    <tr>
+      <th>bottleNeckBlockDepthSchedule</th>
+      <td><p>vector that provides the encoding layer
+schedule for the number of bottleneck blocks per long skip connection.</p></td>
     </tr>
     <tr>
       <th>convolutionKernelSize</th>
@@ -147,14 +145,6 @@ during the encoding path</p></td>
       <th>deconvolutionKernelSize</th>
       <td><p>2-d vector defining the kernel size
 during the decoding</p></td>
-    </tr>
-    <tr>
-      <th>poolSize</th>
-      <td><p>2-d vector defining the region for each pooling layer.</p></td>
-    </tr>
-    <tr>
-      <th>strides</th>
-      <td><p>2-d vector describing the stride length in each direction.</p></td>
     </tr>
     <tr>
       <th>dropoutRate</th>
@@ -177,12 +167,10 @@ kernel weights of the convolution layers.  Default = 0.0.</p></td>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p><a href='https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/'>https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/</a></p>
-<p>with the paper available here:</p>
-<p><a href='https://arxiv.org/abs/1505.04597'>https://arxiv.org/abs/1505.04597</a></p>
-<p>This particular implementation was influenced by the following python
+    <p><a href='https://arxiv.org/abs/1608.04117'>https://arxiv.org/abs/1608.04117</a></p>
+<p>This particular implementation was ported from the following python
 implementation:</p>
-<p><a href='https://github.com/joelthelion/ultrasound-nerve-segmentation'>https://github.com/joelthelion/ultrasound-nerve-segmentation</a></p>
+<p><a href='https://github.com/veugene/fcn_maker/'>https://github.com/veugene/fcn_maker/</a></p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -230,30 +218,30 @@ implementation:</p>
 
 <span class='co'># Create the model</span>
 
-<span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'>createUnetModel2D</span>( <span class='fu'>c</span>( <span class='fu'>dim</span>( <span class='no'>domainImage</span> ), <span class='fl'>1</span> ),
-  <span class='kw'>numberOfOutputs</span> <span class='kw'>=</span> <span class='no'>numberOfLabels</span> )
-
+<span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'>createResUnetModel2D</span>( <span class='fu'>c</span>( <span class='fu'>dim</span>( <span class='no'>domainImage</span> ), <span class='fl'>1</span> ),
+  <span class='kw'>numberOfOutputs</span> <span class='kw'>=</span> <span class='no'>numberOfLabels</span> )</div><div class='output co'>#&gt; <span class='error'>Error in skipConnection(input, output): object 'input' not found</span></div><div class='input'>
 <span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/compile'>compile</a></span>( <span class='kw'>loss</span> <span class='kw'>=</span> <span class='no'>loss_multilabel_dice_coefficient_error</span>,
   <span class='kw'>optimizer</span> <span class='kw'>=</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/optimizer_adam'>optimizer_adam</a></span>( <span class='kw'>lr</span> <span class='kw'>=</span> <span class='fl'>0.0001</span> ),
-  <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='fu'>c</span>( <span class='no'>multilabel_dice_coefficient</span> ) )
+  <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='fu'>c</span>( <span class='no'>multilabel_dice_coefficient</span> ) )</div><div class='output co'>#&gt; <span class='error'>Error in eval(lhs, parent, parent): object 'model' not found</span></div><div class='input'>
+# Comment out the rest due to travis build constraints
 
-<span class='co'># Comment out the rest due to travis build constraints</span>
+# Fit the model
 
-<span class='co'># Fit the model</span>
+# track <- model %>% fit( X_train, Y_train,
+#              epochs = 100, batch_size = 4, verbose = 1, shuffle = TRUE,
+#              callbacks = list(
+#                callback_model_checkpoint( "resUnetModelInterimWeights.h5",
+#                    monitor = 'val_loss', save_best_only = TRUE ),
+#                callback_reduce_lr_on_plateau( monitor = "val_loss", factor = 0.1 )
+#              ),
+#              validation_split = 0.2 )
 
-<span class='co'># track &lt;- model %&gt;% fit( X_train, Y_train,</span>
-<span class='co'>#              epochs = 100, batch_size = 4, verbose = 1, shuffle = TRUE,</span>
-<span class='co'>#              callbacks = list(</span>
-<span class='co'>#                callback_model_checkpoint( "unetModelInterimWeights.h5",</span>
-<span class='co'>#                    monitor = 'val_loss', save_best_only = TRUE ),</span>
-<span class='co'>#                callback_reduce_lr_on_plateau( monitor = "val_loss", factor = 0.1 )</span>
-<span class='co'>#              ),</span>
-<span class='co'>#              validation_split = 0.2 )</span>
+# Save the model and/or save the model weights
 
-<span class='co'># Save the model and/or save the model weights</span>
+# save_model_hdf5( model, filepath = 'resUnetModel.h5' )
+# save_model_weights_hdf5( unetModel, filepath = 'resUnetModelWeights.h5' ) )
 
-<span class='co'># save_model_hdf5( model, filepath = 'unetModel.h5' )</span>
-<span class='co'># save_model_weights_hdf5( unetModel, filepath = 'unetModelWeights.h5' ) )</span></div></pre>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
