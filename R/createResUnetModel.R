@@ -209,7 +209,7 @@ createResUnetModel2D <- function( inputImageSize,
 
   skipConnection <- function( source, target, mergeMode = 'sum' )
     {
-    layerList <- list( input, blockLayer )
+    layerList <- list( source, target )
 
     if( mergeMode == 'sum' )
       {
@@ -581,7 +581,7 @@ createResUnetModel3D <- function( inputImageSize,
 
   skipConnection <- function( source, target, mergeMode = 'sum' )
     {
-    layerList <- list( input, blockLayer )
+    layerList <- list( source, target )
 
     if( mergeMode == 'sum' )
       {
