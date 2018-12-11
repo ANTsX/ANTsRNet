@@ -30,11 +30,11 @@ before_install:
 
 before_script:
   - pip install --upgrade --user pip
-  - pip install --upgrade --ignore-installed --user travis setuptools wheel virtualenv
-  - pip install --upgrade --ignore-installed --user travis pyyaml
-  - pip install --upgrade --ignore-installed --user travis requests Pillow scipy
-  - pip install --upgrade --ignore-installed --user travis Pillow scipy
-  - pip install --upgrade --ignore-installed --user travis scipy
-  - pip install --ignore-installed --user travis h5py
-  - pip install --ignore-installed --user travis keras
+  - pip install --user pyyaml
+  - pip install --user setuptools wheel virtualenv
+  - pip install --user requests Pillow scipy
+  - pip install --user  Pillow scipy
+  - pip install --user  scipy
+  - pip install --user  h5py
+  - pip install --user  keras
   - R -e 'tensorflow::install_tensorflow()'
