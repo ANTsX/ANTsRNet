@@ -29,7 +29,8 @@ before_install:
   - gh_binary_install  stnava/ITKR ANTsX/ANTsRCore ANTsX/ANTsR
 
 before_script:
-  - pip install --upgrade --user pip
+  - pip install --upgrade pip==9.0.3
+#  - pip install --upgrade --user pip
   - pip install --user pyyaml
   - pip install --user setuptools wheel virtualenv
   - pip install --user requests Pillow scipy
