@@ -1,7 +1,7 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 language: r
 
-dist: trusty
+# dist: trusty
 sudo: false
 warnings_are_errors: false # setting this false b/c of rcpp attribute error
 
@@ -28,8 +28,13 @@ before_install:
   - gh_binary_install  stnava/ITKR ANTsX/ANTsRCore ANTsX/ANTsR
 
 before_script:
-  - pip install --upgrade --ignore-installed --user travis pip setuptools wheel virtualenv
-  - pip install --upgrade --ignore-installed --user travis pyyaml requests Pillow scipy
+  - pip install --upgrade pip
+  - pip install --upgrade --user pip
+  - pip install --upgrade --ignore-installed --user travis setuptools wheel virtualenv
+  - pip install --upgrade --ignore-installed --user travis pyyaml
+  - pip install --upgrade --ignore-installed --user travis requests Pillow scipy
+  - pip install --upgrade --ignore-installed --user travis Pillow scipy
+  - pip install --upgrade --ignore-installed --user travis scipy
   - pip install --ignore-installed --user travis h5py
   - pip install --ignore-installed --user travis keras
   - R -e 'tensorflow::install_tensorflow()'
