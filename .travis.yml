@@ -1,6 +1,7 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 language: r
 
+dist: trusty
 sudo: false
 warnings_are_errors: false # setting this false b/c of rcpp attribute error
 
@@ -15,6 +16,7 @@ cache:
     - $HOME/.cache/pip
 
 before_install:
+  - tlmgr install index
   - export PACKAGE_NAME=ANTsRNet
   - wget -O travis_helpers.sh http://bit.ly/travis_helpers
   - source travis_helpers.sh
