@@ -1,7 +1,7 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 language: r
 
-dist: xenial
+# dist: xenial
 sudo: false
 warnings_are_errors: false # setting this false b/c of rcpp attribute error
 
@@ -28,7 +28,6 @@ before_install:
   - gh_binary_install  stnava/ITKR ANTsX/ANTsRCore ANTsX/ANTsR
 
 before_script:
-  - pip install --upgrade pip
   - pip install --upgrade --user pip
   - pip install --upgrade --ignore-installed --user travis setuptools wheel virtualenv
   - pip install --upgrade --ignore-installed --user travis pyyaml
