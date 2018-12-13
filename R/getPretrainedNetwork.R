@@ -22,7 +22,7 @@ getPretrainedNetwork <- function(fileid,
     print(myusage)
     return(NULL)
   }
-  validlist = c( "dbpn4x", "brainExtraction", "protonLungMri", "show" )
+  validlist = c( "dbpn4x", "brainExtraction", "brainSegmentation", "protonLungMri", "show" )
   if (  sum( validlist == fileid ) == 0 ) {
     message("Try:")
     print( validlist )
