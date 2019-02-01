@@ -117,7 +117,7 @@ createResUnetModel2D <- function( inputImageSize,
     deconvolutionKernelSize = c( 2, 2 ), weightDecay = 0.0, dropoutRate = 0.0 )
     {
     output <- input %>% layer_batch_normalization()
-    output <- output %>% layer_activation_relu()
+    output <- output %>% layer_activation_leaky_relu()
 
     if( downsample == TRUE )
       {
@@ -159,7 +159,7 @@ createResUnetModel2D <- function( inputImageSize,
     if( downsample )
       {
       output <- output %>% layer_batch_normalization()
-      output <- output %>% layer_activation_relu()
+      output <- output %>% layer_activation_leaky_relu()
 
       output <- output %>% layer_conv_2d(
         filters = numberOfFilters,
@@ -169,7 +169,7 @@ createResUnetModel2D <- function( inputImageSize,
       }
 
     output <- output %>% layer_batch_normalization()
-    output <- output %>% layer_activation_relu()
+    output <- output %>% layer_activation_leaky_relu()
 
     output <- output %>% layer_conv_2d(
       filters = numberOfFilters,
@@ -178,7 +178,7 @@ createResUnetModel2D <- function( inputImageSize,
       kernel_regularizer = regularizer_l2( weightDecay ) )
 
     output <- output %>% layer_batch_normalization()
-    output <- output %>% layer_activation_relu()
+    output <- output %>% layer_activation_leaky_relu()
 
     if( upsample )
       {
@@ -344,7 +344,7 @@ createResUnetModel2D <- function( inputImageSize,
     kernel_initializer = initializer_he_normal(),
     kernel_regularizer = regularizer_l2( weightDecay ) )
   model <- model %>% layer_batch_normalization()
-  model <- model %>% layer_activation_relu()
+  model <- model %>% layer_activation_leaky_relu()
 
   convActivation <- ''
   if( mode == 'classification' )
@@ -489,7 +489,7 @@ createResUnetModel3D <- function( inputImageSize,
     deconvolutionKernelSize = c( 2, 2, 2 ), weightDecay = 0.0, dropoutRate = 0.0 )
     {
     output <- input %>% layer_batch_normalization()
-    output <- output %>% layer_activation_relu()
+    output <- output %>% layer_activation_leaky_relu()
 
     if( downsample == TRUE )
       {
@@ -531,7 +531,7 @@ createResUnetModel3D <- function( inputImageSize,
     if( downsample )
       {
       output <- output %>% layer_batch_normalization()
-      output <- output %>% layer_activation_relu()
+      output <- output %>% layer_activation_leaky_relu()
 
       output <- output %>% layer_conv_3d(
         filters = numberOfFilters,
@@ -541,7 +541,7 @@ createResUnetModel3D <- function( inputImageSize,
       }
 
     output <- output %>% layer_batch_normalization()
-    output <- output %>% layer_activation_relu()
+    output <- output %>% layer_activation_leaky_relu()
 
     output <- output %>% layer_conv_3d(
       filters = numberOfFilters,
@@ -550,7 +550,7 @@ createResUnetModel3D <- function( inputImageSize,
       kernel_regularizer = regularizer_l2( weightDecay ) )
 
     output <- output %>% layer_batch_normalization()
-    output <- output %>% layer_activation_relu()
+    output <- output %>% layer_activation_leaky_relu()
 
     if( upsample )
       {
@@ -716,7 +716,7 @@ createResUnetModel3D <- function( inputImageSize,
     kernel_initializer = initializer_he_normal(),
     kernel_regularizer = regularizer_l2( weightDecay ) )
   model <- model %>% layer_batch_normalization()
-  model <- model %>% layer_activation_relu()
+  model <- model %>% layer_activation_leaky_relu()
 
   convActivation <- ''
   if( mode == 'classification' )
