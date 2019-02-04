@@ -22,7 +22,8 @@ getPretrainedNetwork <- function(fileid,
     print(myusage)
     return(NULL)
   }
-  validlist = c( "dbpn4x", "brainExtraction", "brainSegmentation", "denoising",
+  validlist = c( "dbpn4x", "brainExtraction", "brainSegmentation", "brainSegmentationPatchBased",
+                 "denoising",
                  "wholeTumorSegmentationT2Flair", "protonLungMri", "functionalLungMri", "show" )
   if (  sum( validlist == fileid ) == 0 ) {
     message("Try:")
@@ -35,6 +36,7 @@ getPretrainedNetwork <- function(fileid,
                    dbpn4x = "https://ndownloader.figshare.com/files/13347617",
                    brainExtraction = "https://ndownloader.figshare.com/files/13729661",
                    brainSegmentation = "https://ndownloader.figshare.com/files/13900010",
+                   brainSegmentationPatchBased = "https://ndownloader.figshare.com/files/14249717",
                    denoising = "https://ndownloader.figshare.com/files/14235296",
                    wholeTumorSegmentationT2Flair = "https://ndownloader.figshare.com/files/14087045",
                    protonLungMri = "https://ndownloader.figshare.com/files/13606799",
