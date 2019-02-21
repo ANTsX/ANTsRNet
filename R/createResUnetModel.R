@@ -244,9 +244,6 @@ createResUnetModel2D <- function( inputImageSize,
     {
     layerList <- list( source, target )
 
-    print( source$get_shape() )
-    print( target$get_shape() )
-
     if( mergeMode == 'sum' )
       {
       output <- layer_add( layerList )
