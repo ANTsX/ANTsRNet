@@ -163,11 +163,11 @@ createResNetModel2D <- function( inputImageSize,
   outputs <- outputs %>% layer_max_pooling_2d( pool_size = c( 3, 3 ),
     strides = c( 2, 2 ), padding = 'same' )
 
-  for( i in 1:length( layers ) )
+  for( i in seq_len( length( layers ) ) )
     {
     nFiltersIn <- lowestResolution * 2 ^ ( layers[i] )
     nFiltersOut <- 2 * nFiltersIn
-    for( j in 1:residualBlockSchedule[i] )
+    for( j in seq_len( residualBlockSchedule[i] ) )
       {
       projectShortcut <- FALSE
       if( i == 1 && j == 1 )
@@ -376,11 +376,11 @@ createResNetModel3D <- function( inputImageSize,
   outputs <- outputs %>% layer_max_pooling_3d( pool_size = c( 3, 3, 3 ),
     strides = c( 2, 2, 2 ), padding = 'same' )
 
-  for( i in 1:length( layers ) )
+  for( i in seq_len( length( layers ) ) )
     {
     nFiltersIn <- lowestResolution * 2 ^ ( layers[i] )
     nFiltersOut <- 2 * nFiltersIn
-    for( j in 1:residualBlockSchedule[i] )
+    for( j in seq_len( residualBlockSchedule[i] ) )
       {
       projectShortcut <- FALSE
       if( i == 1 && j == 1 )

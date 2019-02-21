@@ -116,10 +116,12 @@ createResUnetModel2D <- function( inputImageSize,
     upsample = FALSE, convolutionKernelSize = c( 3, 3 ),
     deconvolutionKernelSize = c( 2, 2 ), weightDecay = 0.0, dropoutRate = 0.0 )
     {
-    output <- input %>% layer_batch_normalization()
-    output <- output %>% layer_activation_leaky_relu()
+    numberOfOutputFilters <- numberOfFilters
 
-    if( downsample == TRUE )
+    output <- input %>% layer_batch_normalization()
+    output <- output %>% layer_activation_thresholded_relu( theta = 0 )
+
+    if( downsample )
       {
       output <- output %>% layer_max_pooling_2d( pool_size = c( 2, 2 ) )
       }
@@ -132,8 +134,7 @@ createResUnetModel2D <- function( inputImageSize,
       {
       output <- output %>%
         layer_conv_2d_transpose( filters = numberOfFilters,
-          kernel_size = deconvolutionKernelSize,
-          padding = 'valid',
+          kernel_size = deconvolutionKernelSize, padding = 'same',
           kernel_initializer = initializer_he_normal(),
           kernel_regularizer = regularizer_l2( weightDecay ) )
       output <- output %>% layer_upsampling_2d( size = c( 2, 2 ) )
@@ -144,11 +145,26 @@ createResUnetModel2D <- function( inputImageSize,
       output <- output %>% layer_dropout( rate = dropoutRate )
       }
 
+    # Modify the input so that it has the same size as the output
+
+    if( downsample )
+      {
+      input <- input %>% layer_conv_2d( filters = numberOfOutputFilters,
+        kernel_size = c( 1, 1 ), strides = c( 2, 2 ), padding = 'same' )
+      } else if( upsample ) {
+      input <- input %>%
+        layer_conv_2d_transpose( filters = numberOfOutputFilters,
+          kernel_size = c( 1, 1 ), padding = 'same' )
+      input <- input %>% layer_upsampling_2d( size = c( 2, 2 ) )
+      } else if( numberOfFilters != numberOfOutputFilters ) {
+      input <- input %>% layer_conv_2d( filters = numberOfOutputFilters,
+        kernel_size = c( 1, 1 ), padding = 'same' )
+      }
+
     output <- skipConnection( input, output )
 
     return( output )
     }
-
 
   bottleNeckBlock2D <- function( input, numberOfFilters, downsample = FALSE,
     upsample = FALSE, deconvolutionKernelSize = c( 2, 2 ), weightDecay = 0.0,
@@ -156,10 +172,12 @@ createResUnetModel2D <- function( inputImageSize,
     {
     output <- input
 
+    numberOfOutputFilters <- numberOfFilters
+
     if( downsample )
       {
       output <- output %>% layer_batch_normalization()
-      output <- output %>% layer_activation_leaky_relu()
+      output <- output %>% layer_activation_thresholded_relu( theta = 0 )
 
       output <- output %>% layer_conv_2d(
         filters = numberOfFilters,
@@ -169,37 +187,52 @@ createResUnetModel2D <- function( inputImageSize,
       }
 
     output <- output %>% layer_batch_normalization()
-    output <- output %>% layer_activation_leaky_relu()
+    output <- output %>% layer_activation_thresholded_relu( theta = 0 )
 
     output <- output %>% layer_conv_2d(
-      filters = numberOfFilters,
-      kernel_size = c( 1, 1 ), strides = c( 1, 1 ),
+      filters = numberOfFilters, kernel_size = c( 1, 1 ),
       kernel_initializer = initializer_he_normal(),
       kernel_regularizer = regularizer_l2( weightDecay ) )
 
     output <- output %>% layer_batch_normalization()
-    output <- output %>% layer_activation_leaky_relu()
+    output <- output %>% layer_activation_thresholded_relu( theta = 0 )
 
     if( upsample )
       {
       output <- output %>%
-        layer_conv_2d_transpose( filters = numberOfFilters * 4,
-          kernel_size = deconvolutionKernelSize,
-          padding = 'valid',
+        layer_conv_2d_transpose( filters = numberOfFilters,
+          kernel_size = deconvolutionKernelSize, padding = 'same',
           kernel_initializer = initializer_he_normal(),
           kernel_regularizer = regularizer_l2( weightDecay ) )
       output <- output %>% layer_upsampling_2d( size = c( 2, 2 ) )
       }
 
     output <- output %>% layer_conv_2d(
-      filters = numberOfFilters * 4,
-      kernel_size = c( 1, 1 ), strides = c( 1, 1 ),
+      filters = numberOfFilters * 4, kernel_size = c( 1, 1 ),
       kernel_initializer = initializer_he_normal(),
       kernel_regularizer = regularizer_l2( weightDecay ) )
+
+    numberOfOutputFilters <- numberOfFilters * 4
 
     if( dropoutRate > 0.0 )
       {
       output <- output %>% layer_dropout( rate = dropoutRate )
+      }
+
+    # Modify the input so that it has the same size as the output
+
+    if( downsample )
+      {
+      input <- input %>% layer_conv_2d( filters = numberOfOutputFilters,
+        kernel_size = c( 1, 1 ), strides = c( 2, 2 ), padding = 'same' )
+      } else if( upsample ) {
+      input <- input %>%
+        layer_conv_2d_transpose( filters = numberOfOutputFilters,
+          kernel_size = c( 1, 1 ), padding = 'same' )
+      input <- input %>% layer_upsampling_2d( size = c( 2, 2 ) )
+      } else if( numberOfFilters != numberOfOutputFilters ) {
+      input <- input %>% layer_conv_2d( filters = numberOfOutputFilters,
+        kernel_size = c( 1, 1 ), padding = 'valid' )
       }
 
     output <- skipConnection( input, output )
@@ -210,6 +243,9 @@ createResUnetModel2D <- function( inputImageSize,
   skipConnection <- function( source, target, mergeMode = 'sum' )
     {
     layerList <- list( source, target )
+
+    print( source$get_shape() )
+    print( target$get_shape() )
 
     if( mergeMode == 'sum' )
       {
@@ -228,16 +264,18 @@ createResUnetModel2D <- function( inputImageSize,
 
   inputs <- layer_input( shape = inputImageSize )
 
+  encodingLayersWithLongSkipConnections <- list()
+  encodingLayerCount <- 1
+
   # Preprocessing layer
 
   model <- inputs %>% layer_conv_2d( filters = numberOfFiltersAtBaseLayer,
-    kernel_size = convolutionKernelSize, activation = 'relu',
-    padding = 'same',
+    kernel_size = convolutionKernelSize, activation = 'relu', padding = 'same',
     kernel_initializer = initializer_he_normal(),
     kernel_regularizer = regularizer_l2( weightDecay ) )
 
-  encodingLayersWithLongSkipConnections <- list()
-  encodingLayerCount <- 1
+  encodingLayersWithLongSkipConnections[[encodingLayerCount]] <- model
+  encodingLayerCount <- encodingLayerCount + 1
 
   # Encoding initialization path
 
@@ -267,7 +305,6 @@ createResUnetModel2D <- function( inputImageSize,
         }
       model <- model %>% bottleNeckBlock2D( numberOfFilters = numberOfFilters,
         downsample = doDownsample,
-        convolutionKernelSize = convolutionKernelSize,
         deconvolutionKernelSize = deconvolutionKernelSize,
         weightDecay = weightDecay, dropoutRate = dropoutRate )
 
@@ -278,6 +315,7 @@ createResUnetModel2D <- function( inputImageSize,
         }
       }
     }
+  encodingLayerCount <- encodingLayerCount - 1
 
   # Transition path
 
@@ -285,13 +323,12 @@ createResUnetModel2D <- function( inputImageSize,
   model <- model %>%
     bottleNeckBlock2D( numberOfFilters = numberOfFilters,
       downsample = TRUE,
-      convolutionKernelSize = convolutionKernelSize,
       deconvolutionKernelSize = deconvolutionKernelSize,
       weightDecay = weightDecay, dropoutRate = dropoutRate )
+
   model <- model %>%
     bottleNeckBlock2D( numberOfFilters = numberOfFilters,
       upsample = TRUE,
-      convolutionKernelSize = convolutionKernelSize,
       deconvolutionKernelSize = deconvolutionKernelSize,
       weightDecay = weightDecay, dropoutRate = dropoutRate )
 
@@ -301,11 +338,11 @@ createResUnetModel2D <- function( inputImageSize,
   for( i in seq_len( numberOfBottleNeckLayers ) )
     {
     numberOfFilters <- numberOfFiltersAtBaseLayer *
-      2 ^ ( numberOfBottleNeckLayers - i  )
+      2 ^ ( numberOfBottleNeckLayers - i )
 
-    for( j in seq_len( bottleNeckBlockDepthSchedule[i] ) )
+    for( j in seq_len( bottleNeckBlockDepthSchedule[numberOfBottleNeckLayers - i + 1] ) )
       {
-      if( j == bottleNeckBlockDepthSchedule[i] )
+      if( j == bottleNeckBlockDepthSchedule[numberOfBottleNeckLayers - i + 1] )
         {
         doUpsample <- TRUE
         } else {
@@ -313,14 +350,15 @@ createResUnetModel2D <- function( inputImageSize,
         }
       model <- model %>% bottleNeckBlock2D( numberOfFilters = numberOfFilters,
         upsample = doUpsample,
-        convolutionKernelSize = convolutionKernelSize,
         deconvolutionKernelSize = deconvolutionKernelSize,
         weightDecay = weightDecay, dropoutRate = dropoutRate )
 
       if( j == 1 )
         {
+        model <- model %>% layer_conv_2d( filters = numberOfFilters * 4,
+          kernel_size = c( 1, 1 ), padding = 'same' )
+        model <- skipConnection( encodingLayersWithLongSkipConnections[[encodingLayerCount]], model )
         encodingLayerCount <- encodingLayerCount - 1
-        model <- skipConnection( model, encodingLayersWithLongSkipConnections[[encodingLayerCount]] )
         }
       }
     }
@@ -333,9 +371,6 @@ createResUnetModel2D <- function( inputImageSize,
     deconvolutionKernelSize = deconvolutionKernelSize,
     weightDecay = weightDecay, dropoutRate = dropoutRate )
 
-  encodingLayerCount <- encodingLayerCount - 1
-  model <- skipConnection( model, encodingLayersWithLongSkipConnections[[encodingLayerCount]] )
-
   # Postprocessing layer
 
   model <- model %>% layer_conv_2d( filters = numberOfFiltersAtBaseLayer,
@@ -343,8 +378,13 @@ createResUnetModel2D <- function( inputImageSize,
     padding = 'same',
     kernel_initializer = initializer_he_normal(),
     kernel_regularizer = regularizer_l2( weightDecay ) )
+
+  encodingLayerCount <- encodingLayerCount - 1
+
+  model <- skipConnection( encodingLayersWithLongSkipConnections[[encodingLayerCount]], model )
+
   model <- model %>% layer_batch_normalization()
-  model <- model %>% layer_activation_leaky_relu()
+  model <- model %>% layer_activation_thresholded_relu( theta = 0 )
 
   convActivation <- ''
   if( mode == 'classification' )
@@ -488,10 +528,12 @@ createResUnetModel3D <- function( inputImageSize,
     upsample = FALSE, convolutionKernelSize = c( 3, 3, 3 ),
     deconvolutionKernelSize = c( 2, 2, 2 ), weightDecay = 0.0, dropoutRate = 0.0 )
     {
-    output <- input %>% layer_batch_normalization()
-    output <- output %>% layer_activation_leaky_relu()
+    numberOfOutputFilters <- numberOfFilters
 
-    if( downsample == TRUE )
+    output <- input %>% layer_batch_normalization()
+    output <- output %>% layer_activation_thresholded_relu( theta = 0 )
+
+    if( downsample )
       {
       output <- output %>% layer_max_pooling_3d( pool_size = c( 2, 2, 2 ) )
       }
@@ -504,8 +546,7 @@ createResUnetModel3D <- function( inputImageSize,
       {
       output <- output %>%
         layer_conv_3d_transpose( filters = numberOfFilters,
-          kernel_size = deconvolutionKernelSize,
-          padding = 'valid',
+          kernel_size = deconvolutionKernelSize, padding = 'same',
           kernel_initializer = initializer_he_normal(),
           kernel_regularizer = regularizer_l2( weightDecay ) )
       output <- output %>% layer_upsampling_3d( size = c( 2, 2, 2 ) )
@@ -514,6 +555,22 @@ createResUnetModel3D <- function( inputImageSize,
     if( dropoutRate > 0.0 )
       {
       output <- output %>% layer_dropout( rate = dropoutRate )
+      }
+
+    # Modify the input so that it has the same size as the output
+
+    if( downsample )
+      {
+      input <- input %>% layer_conv_3d( filters = numberOfOutputFilters,
+        kernel_size = c( 1, 1, 1 ), strides = c( 2, 2, 2 ), padding = 'same' )
+      } else if( upsample ) {
+      input <- input %>%
+        layer_conv_3d_transpose( filters = numberOfOutputFilters,
+          kernel_size = c( 1, 1, 1 ), padding = 'same' )
+      input <- input %>% layer_upsampling_3d( size = c( 2, 2, 2 ) )
+      } else if( numberOfFilters != numberOfOutputFilters ) {
+      input <- input %>% layer_conv_3d( filters = numberOfOutputFilters,
+        kernel_size = c( 1, 1, 1 ), padding = 'same' )
       }
 
     output <- skipConnection( input, output )
@@ -521,19 +578,20 @@ createResUnetModel3D <- function( inputImageSize,
     return( output )
     }
 
-
   bottleNeckBlock3D <- function( input, numberOfFilters, downsample = FALSE,
     upsample = FALSE, deconvolutionKernelSize = c( 2, 2, 2 ), weightDecay = 0.0,
     dropoutRate = 0.0 )
     {
     output <- input
 
+    numberOfOutputFilters <- numberOfFilters
+
     if( downsample )
       {
       output <- output %>% layer_batch_normalization()
-      output <- output %>% layer_activation_leaky_relu()
+      output <- output %>% layer_activation_thresholded_relu( theta = 0 )
 
-      output <- output %>% layer_conv_3d(
+      output <- output %>% layer_conv_2d(
         filters = numberOfFilters,
         kernel_size = c( 1, 1, 1 ), strides = c( 2, 2, 2 ),
         kernel_initializer = initializer_he_normal(),
@@ -541,37 +599,52 @@ createResUnetModel3D <- function( inputImageSize,
       }
 
     output <- output %>% layer_batch_normalization()
-    output <- output %>% layer_activation_leaky_relu()
+    output <- output %>% layer_activation_thresholded_relu( theta = 0 )
 
     output <- output %>% layer_conv_3d(
-      filters = numberOfFilters,
-      kernel_size = c( 1, 1, 1 ), strides = c( 1, 1, 1 ),
+      filters = numberOfFilters, kernel_size = c( 1, 1, 1 ),
       kernel_initializer = initializer_he_normal(),
       kernel_regularizer = regularizer_l2( weightDecay ) )
 
     output <- output %>% layer_batch_normalization()
-    output <- output %>% layer_activation_leaky_relu()
+    output <- output %>% layer_activation_thresholded_relu( theta = 0 )
 
     if( upsample )
       {
       output <- output %>%
-        layer_conv_3d_transpose( filters = numberOfFilters * 4,
-          kernel_size = deconvolutionKernelSize,
-          padding = 'valid',
+        layer_conv_3d_transpose( filters = numberOfFilters,
+          kernel_size = deconvolutionKernelSize, padding = 'same',
           kernel_initializer = initializer_he_normal(),
           kernel_regularizer = regularizer_l2( weightDecay ) )
       output <- output %>% layer_upsampling_3d( size = c( 2, 2, 2 ) )
       }
 
     output <- output %>% layer_conv_3d(
-      filters = numberOfFilters * 4,
-      kernel_size = c( 1, 1, 1 ), strides = c( 1, 1, 1 ),
+      filters = numberOfFilters * 4, kernel_size = c( 1, 1, 1 ),
       kernel_initializer = initializer_he_normal(),
       kernel_regularizer = regularizer_l2( weightDecay ) )
+
+    numberOfOutputFilters <- numberOfFilters * 4
 
     if( dropoutRate > 0.0 )
       {
       output <- output %>% layer_dropout( rate = dropoutRate )
+      }
+
+    # Modify the input so that it has the same size as the output
+
+    if( downsample )
+      {
+      input <- input %>% layer_conv_3d( filters = numberOfOutputFilters,
+        kernel_size = c( 1, 1, 1 ), strides = c( 2, 2, 2 ), padding = 'same' )
+      } else if( upsample ) {
+      input <- input %>%
+        layer_conv_3d_transpose( filters = numberOfOutputFilters,
+          kernel_size = c( 1, 1, 1 ), padding = 'same' )
+      input <- input %>% layer_upsampling_3d( size = c( 2, 2, 2 ) )
+      } else if( numberOfFilters != numberOfOutputFilters ) {
+      input <- input %>% layer_conv_3d( filters = numberOfOutputFilters,
+        kernel_size = c( 1, 1, 1 ), padding = 'valid' )
       }
 
     output <- skipConnection( input, output )
@@ -600,16 +673,18 @@ createResUnetModel3D <- function( inputImageSize,
 
   inputs <- layer_input( shape = inputImageSize )
 
+  encodingLayersWithLongSkipConnections <- list()
+  encodingLayerCount <- 1
+
   # Preprocessing layer
 
   model <- inputs %>% layer_conv_3d( filters = numberOfFiltersAtBaseLayer,
-    kernel_size = convolutionKernelSize, activation = 'relu',
-    padding = 'same',
+    kernel_size = convolutionKernelSize, activation = 'relu', padding = 'same',
     kernel_initializer = initializer_he_normal(),
     kernel_regularizer = regularizer_l2( weightDecay ) )
 
-  encodingLayersWithLongSkipConnections <- list()
-  encodingLayerCount <- 1
+  encodingLayersWithLongSkipConnections[[encodingLayerCount]] <- model
+  encodingLayerCount <- encodingLayerCount + 1
 
   # Encoding initialization path
 
@@ -639,7 +714,6 @@ createResUnetModel3D <- function( inputImageSize,
         }
       model <- model %>% bottleNeckBlock3D( numberOfFilters = numberOfFilters,
         downsample = doDownsample,
-        convolutionKernelSize = convolutionKernelSize,
         deconvolutionKernelSize = deconvolutionKernelSize,
         weightDecay = weightDecay, dropoutRate = dropoutRate )
 
@@ -650,6 +724,7 @@ createResUnetModel3D <- function( inputImageSize,
         }
       }
     }
+  encodingLayerCount <- encodingLayerCount - 1
 
   # Transition path
 
@@ -657,13 +732,12 @@ createResUnetModel3D <- function( inputImageSize,
   model <- model %>%
     bottleNeckBlock3D( numberOfFilters = numberOfFilters,
       downsample = TRUE,
-      convolutionKernelSize = convolutionKernelSize,
       deconvolutionKernelSize = deconvolutionKernelSize,
       weightDecay = weightDecay, dropoutRate = dropoutRate )
+
   model <- model %>%
     bottleNeckBlock3D( numberOfFilters = numberOfFilters,
       upsample = TRUE,
-      convolutionKernelSize = convolutionKernelSize,
       deconvolutionKernelSize = deconvolutionKernelSize,
       weightDecay = weightDecay, dropoutRate = dropoutRate )
 
@@ -673,11 +747,11 @@ createResUnetModel3D <- function( inputImageSize,
   for( i in seq_len( numberOfBottleNeckLayers ) )
     {
     numberOfFilters <- numberOfFiltersAtBaseLayer *
-      2 ^ ( numberOfBottleNeckLayers - i  )
+      2 ^ ( numberOfBottleNeckLayers - i )
 
-    for( j in seq_len( bottleNeckBlockDepthSchedule[i] ) )
+    for( j in seq_len( bottleNeckBlockDepthSchedule[numberOfBottleNeckLayers - i + 1] ) )
       {
-      if( j == bottleNeckBlockDepthSchedule[i] )
+      if( j == bottleNeckBlockDepthSchedule[numberOfBottleNeckLayers - i + 1] )
         {
         doUpsample <- TRUE
         } else {
@@ -685,14 +759,15 @@ createResUnetModel3D <- function( inputImageSize,
         }
       model <- model %>% bottleNeckBlock3D( numberOfFilters = numberOfFilters,
         upsample = doUpsample,
-        convolutionKernelSize = convolutionKernelSize,
         deconvolutionKernelSize = deconvolutionKernelSize,
         weightDecay = weightDecay, dropoutRate = dropoutRate )
 
       if( j == 1 )
         {
+        model <- model %>% layer_conv_3d( filters = numberOfFilters * 4,
+          kernel_size = c( 1, 1, 1 ), padding = 'same' )
+        model <- skipConnection( encodingLayersWithLongSkipConnections[[encodingLayerCount]], model )
         encodingLayerCount <- encodingLayerCount - 1
-        model <- skipConnection( model, encodingLayersWithLongSkipConnections[[encodingLayerCount]] )
         }
       }
     }
@@ -705,9 +780,6 @@ createResUnetModel3D <- function( inputImageSize,
     deconvolutionKernelSize = deconvolutionKernelSize,
     weightDecay = weightDecay, dropoutRate = dropoutRate )
 
-  encodingLayerCount <- encodingLayerCount - 1
-  model <- skipConnection( model, encodingLayersWithLongSkipConnections[[encodingLayerCount]] )
-
   # Postprocessing layer
 
   model <- model %>% layer_conv_3d( filters = numberOfFiltersAtBaseLayer,
@@ -715,8 +787,13 @@ createResUnetModel3D <- function( inputImageSize,
     padding = 'same',
     kernel_initializer = initializer_he_normal(),
     kernel_regularizer = regularizer_l2( weightDecay ) )
+
+  encodingLayerCount <- encodingLayerCount - 1
+
+  model <- skipConnection( encodingLayersWithLongSkipConnections[[encodingLayerCount]], model )
+
   model <- model %>% layer_batch_normalization()
-  model <- model %>% layer_activation_leaky_relu()
+  model <- model %>% layer_activation_thresholded_relu( theta = 0 )
 
   convActivation <- ''
   if( mode == 'classification' )
@@ -741,4 +818,3 @@ createResUnetModel3D <- function( inputImageSize,
 
   return( unetModel )
 }
-
