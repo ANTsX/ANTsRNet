@@ -36,7 +36,7 @@ createAutoencoderModel <- function( numberOfUnitsPerLayer,
 
   autoencoderModel <- encoderModel
 
-  for( i in seq( from = numberOfEncodingLayers, to = 1, by = -1 ) )
+  for( i in seq( from = numberOfEncodingLayers, to = 2, by = -1 ) )
     {
     autoencoderModel <- autoencoderModel %>%
       layer_dense( units = numberOfUnitsPerLayer[i],
