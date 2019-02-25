@@ -62,6 +62,7 @@ reference:
   - '`createResNetSuperResolutionModel3D`'
   - '`createDeepBackProjectionNetworkModel2D`'
   - '`createDeepBackProjectionNetworkModel3D`'
+  - '`createUpDownResNetSuperResolutionModel2D`'
 - title: Super-resolution helper functions
   desc: ~
   contents:
@@ -79,6 +80,12 @@ reference:
   contents:
   - '`BilinearInterpolationLayer2D`'
   - '`TrilinearInterpolationLayer3D`'
+- title: Deep Embedded Clustering (DEC) helper functions
+  desc: ~
+  contents:
+  - '`DeepEmbeddedClusteringModel`'
+  - '`ClusteringLayer`'
+  - '`createAutoencoderModel`'
 - title: Custom loss functions
   desc: ~
   contents:
@@ -102,3 +109,5 @@ reference:
   contents:
   - '`extractImagePatches`'
   - '`reconstructImageFromPatches`'
+  - '`getPretrainedNetwork`'
+

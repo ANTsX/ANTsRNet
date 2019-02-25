@@ -108,7 +108,7 @@ image segmentation and regression with the paper available here:</p>
     <pre class="usage"><span class='fu'>createResUnetModel2D</span>(<span class='no'>inputImageSize</span>, <span class='kw'>numberOfOutputs</span> <span class='kw'>=</span> <span class='fl'>1</span>,
   <span class='kw'>numberOfFiltersAtBaseLayer</span> <span class='kw'>=</span> <span class='fl'>32</span>, <span class='kw'>bottleNeckBlockDepthSchedule</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>3</span>,
   <span class='fl'>4</span>), <span class='kw'>convolutionKernelSize</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>3</span>, <span class='fl'>3</span>), <span class='kw'>deconvolutionKernelSize</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>2</span>,
-  <span class='fl'>2</span>), <span class='kw'>dropoutRate</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>weightDecay</span> <span class='kw'>=</span> <span class='fl'>0.0001</span>, <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"classification"</span>)</pre>
+  <span class='fl'>2</span>), <span class='kw'>dropoutRate</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>weightDecay</span> <span class='kw'>=</span> <span class='fl'>1e-04</span>, <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"classification"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -219,72 +219,29 @@ implementation:</p>
 <span class='co'># Create the model</span>
 
 <span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'>createResUnetModel2D</span>( <span class='fu'>c</span>( <span class='fu'>dim</span>( <span class='no'>domainImage</span> ), <span class='fl'>1</span> ),
-  <span class='kw'>numberOfOutputs</span> <span class='kw'>=</span> <span class='no'>numberOfLabels</span> )</div><div class='output co'>#&gt; <span class='error'>Error in py_call_impl(callable, dots$args, dots$keywords): ValueError: Operands could not be broadcast together with shapes (256, 256, 32) (128, 128, 32)</span>
-#&gt; <span class='error'></span>
-#&gt; <span class='error'>Detailed traceback: </span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/lib/python3.6/site-packages/keras/layers/merge.py", line 547, in add</span>
-#&gt; <span class='error'>    return Add(**kwargs)(inputs)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/lib/python3.6/site-packages/keras/engine/base_layer.py", line 431, in __call__</span>
-#&gt; <span class='error'>    self.build(unpack_singleton(input_shapes))</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/lib/python3.6/site-packages/keras/layers/merge.py", line 90, in build</span>
-#&gt; <span class='error'>    output_shape = self._compute_elemwise_op_output_shape(output_shape, shape)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/lib/python3.6/site-packages/keras/layers/merge.py", line 61, in _compute_elemwise_op_output_shape</span>
-#&gt; <span class='error'>    str(shape1) + ' ' + str(shape2))</span></div><div class='input'>
+  <span class='kw'>numberOfOutputs</span> <span class='kw'>=</span> <span class='no'>numberOfLabels</span> )
+
 <span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/compile'>compile</a></span>( <span class='kw'>loss</span> <span class='kw'>=</span> <span class='no'>loss_multilabel_dice_coefficient_error</span>,
   <span class='kw'>optimizer</span> <span class='kw'>=</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/optimizer_adam'>optimizer_adam</a></span>( <span class='kw'>lr</span> <span class='kw'>=</span> <span class='fl'>0.0001</span> ),
-  <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='fu'>c</span>( <span class='no'>multilabel_dice_coefficient</span> ) )</div><div class='output co'>#&gt; <span class='error'>Error in py_call_impl(callable, dots$args, dots$keywords): RuntimeError: Evaluation error: ValueError: Dimension must be 2 but is 5 for 'loss_1/dense_1_loss/transpose' (op: 'Transpose') with input shapes: [?,?], [5].</span>
-#&gt; <span class='error'></span>
-#&gt; <span class='error'>Detailed traceback: </span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/lib/python3.6/site-packages/keras/backend/tensorflow_backend.py", line 1961, in permute_dimensions</span>
-#&gt; <span class='error'>    return tf.transpose(x, perm=pattern)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/lib/python3.6/site-packages/tensorflow/python/ops/array_ops.py", line 1476, in transpose</span>
-#&gt; <span class='error'>    ret = transpose_fn(a, perm, name=name)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/lib/python3.6/site-packages/tensorflow/python/ops/gen_array_ops.py", line 8218, in transpose</span>
-#&gt; <span class='error'>    "Transpose", x=x, perm=perm, name=name)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/lib/python3.6/site-packages/tensorflow/python/framework/op_def_library.py", line 787, in _apply_op_helper</span>
-#&gt; <span class='error'>    op_def=op_def)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/lib/python3.6/site-packages/tensorflow/python/framework/ops.py", line 3292, in create_op</span>
-#&gt; <span class='error'>    compute_device=compute_device)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/lib/python3.6/site-packages/tensorflow/python/framework/ops.py", line 3332, in _create_op_helper</span>
-#&gt; <span class='error'>    set_shapes_for_outputs(op)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/lib/python3.6/site-packages/tensorflow/python/framework/ops.py", line 2496, in set_shapes_for_outputs</span>
-#&gt; <span class='error'>    return _set_shapes_for_outputs(op)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/lib/python3.6/site-packages/tensorflow/python/framework/ops.py", line 2469, in _set_shapes_for_outputs</span>
-#&gt; <span class='error'>    shapes = shape_func(op)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/lib/python3.6/site-packages/tensorflow/python/framework/ops.py", line 2399, in call_with_requiring</span>
-#&gt; <span class='error'>    return call_cpp_shape_fn(op, require_shape_fn=True)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/lib/python3.6/site-packages/tensorflow/python/framework/common_shapes.py", line 627, in call_cpp_shape_fn</span>
-#&gt; <span class='error'>    require_shape_fn)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/lib/python3.6/site-packages/tensorflow/python/framework/common_shapes.py", line 691, in _call_cpp_shape_fn_impl</span>
-#&gt; <span class='error'>    raise ValueError(err.message)</span>
-#&gt; <span class='error'>.</span>
-#&gt; <span class='error'></span>
-#&gt; <span class='error'>Detailed traceback: </span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/lib/python3.6/site-packages/keras/engine/training.py", line 333, in compile</span>
-#&gt; <span class='error'>    sample_weight, mask)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/lib/python3.6/site-packages/keras/engine/training_utils.py", line 403, in weighted</span>
-#&gt; <span class='error'>    score_array = fn(y_true, y_pred)</span>
-#&gt; <span class='error'>  File "/Library/Frameworks/R.framework/Versions/3.5/Resources/library/reticulate/python/rpytools/call.py", line 21, in python_function</span>
-#&gt; <span class='error'>    raise RuntimeError(res[kErrorKey])</span></div><div class='input'>
-# Comment out the rest due to travis build constraints
+  <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='fu'>c</span>( <span class='no'>multilabel_dice_coefficient</span> ) )
 
-# Fit the model
+<span class='co'># Comment out the rest due to travis build constraints</span>
 
-# track <- model %>% fit( X_train, Y_train,
-#              epochs = 100, batch_size = 4, verbose = 1, shuffle = TRUE,
-#              callbacks = list(
-#                callback_model_checkpoint( "resUnetModelInterimWeights.h5",
-#                    monitor = 'val_loss', save_best_only = TRUE ),
-#                callback_reduce_lr_on_plateau( monitor = "val_loss", factor = 0.1 )
-#              ),
-#              validation_split = 0.2 )
+<span class='co'># Fit the model</span>
 
-# Save the model and/or save the model weights
+<span class='co'># track &lt;- model %&gt;% fit( X_train, Y_train,</span>
+<span class='co'>#              epochs = 100, batch_size = 4, verbose = 1, shuffle = TRUE,</span>
+<span class='co'>#              callbacks = list(</span>
+<span class='co'>#                callback_model_checkpoint( "resUnetModelInterimWeights.h5",</span>
+<span class='co'>#                    monitor = 'val_loss', save_best_only = TRUE ),</span>
+<span class='co'>#                callback_reduce_lr_on_plateau( monitor = "val_loss", factor = 0.1 )</span>
+<span class='co'>#              ),</span>
+<span class='co'>#              validation_split = 0.2 )</span>
 
-# save_model_hdf5( model, filepath = 'resUnetModel.h5' )
-# save_model_weights_hdf5( unetModel, filepath = 'resUnetModelWeights.h5' ) )
+<span class='co'># Save the model and/or save the model weights</span>
 
-</div></pre>
+<span class='co'># save_model_hdf5( model, filepath = 'resUnetModel.h5' )</span>
+<span class='co'># save_model_weights_hdf5( unetModel, filepath = 'resUnetModelWeights.h5' ) )</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

@@ -32,7 +32,8 @@
 
 <meta property="og:title" content="3-D implementation of the spatial transformer network. — createSpatialTransformerNetworkModel3D" />
 
-<meta property="og:description" content="Creates a keras model of the spatial transformer network:" />
+<meta property="og:description" content="Creates a keras model of the spatial transformer network:
+Creates a keras model of the spatial transformer network:" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -100,10 +101,14 @@
     <div class="ref-description">
     
     <p>Creates a keras model of the spatial transformer network:</p>
+<p>Creates a keras model of the spatial transformer network:</p>
     
     </div>
 
     <pre class="usage"><span class='fu'>createSpatialTransformerNetworkModel3D</span>(<span class='no'>inputImageSize</span>,
+  <span class='kw'>resampledSize</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>30</span>, <span class='fl'>30</span>, <span class='fl'>30</span>), <span class='kw'>numberOfClassificationLabels</span> <span class='kw'>=</span> <span class='fl'>10</span>)
+
+<span class='fu'>createSpatialTransformerNetworkModel3D</span>(<span class='no'>inputImageSize</span>,
   <span class='kw'>resampledSize</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>30</span>, <span class='fl'>30</span>, <span class='fl'>30</span>), <span class='kw'>numberOfClassificationLabels</span> <span class='kw'>=</span> <span class='fl'>10</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -124,21 +129,65 @@ the number of channels (e.g., red, green, and blue).  The batch size
       <th>numberOfClassificationLabels</th>
       <td><p>Number of classes.</p></td>
     </tr>
+    <tr>
+      <th>inputImageSize</th>
+      <td><p>Used for specifying the input tensor shape.  The
+shape (or dimension) of that tensor is the image dimensions followed by
+the number of channels (e.g., red, green, and blue).  The batch size
+(i.e., number of training images) is not specified a priori.</p></td>
+    </tr>
+    <tr>
+      <th>resampledSize</th>
+      <td><p>resampled size of the transformed input images.</p></td>
+    </tr>
+    <tr>
+      <th>numberOfClassificationLabels</th>
+      <td><p>Number of classes.</p></td>
+    </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>a keras model</p>
+<p>a keras model</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p><a href='https://arxiv.org/abs/1506.02025'>https://arxiv.org/abs/1506.02025</a></p>
 <p>based on the following python Keras model:</p>
 <p><a href='https://github.com/oarriaga/STN.keras/blob/master/src/models/STN.py'>https://github.com/oarriaga/STN.keras/blob/master/src/models/STN.py</a></p>
+<p><a href='https://arxiv.org/abs/1506.02025'>https://arxiv.org/abs/1506.02025</a></p>
+<p>based on the following python Keras model:</p>
+<p><a href='https://github.com/oarriaga/STN.keras/blob/master/src/models/STN.py'>https://github.com/oarriaga/STN.keras/blob/master/src/models/STN.py</a></p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
+</div><span class='co'># NOT RUN {</span>
+<span class='fu'>library</span>( <span class='no'>ANTsRNet</span> )
+<span class='fu'>library</span>( <span class='no'>keras</span> )
+
+<span class='no'>mnistData</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/dataset_mnist'>dataset_mnist</a></span>()
+<span class='no'>numberOfLabels</span> <span class='kw'>&lt;-</span> <span class='fl'>10</span>
+
+<span class='co'># Extract a small subset for something that can run quickly</span>
+
+<span class='no'>X_trainSmall</span> <span class='kw'>&lt;-</span> <span class='no'>mnistData</span>$<span class='no'>train</span>$<span class='no'>x</span>[<span class='fl'>1</span>:<span class='fl'>100</span>,,]
+<span class='no'>X_trainSmall</span> <span class='kw'>&lt;-</span> <span class='fu'>array</span>( <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>X_trainSmall</span>, <span class='kw'>dim</span> <span class='kw'>=</span> <span class='fu'>c</span>( <span class='fu'>dim</span>( <span class='no'>X_trainSmall</span> ), <span class='fl'>1</span> ) )
+<span class='no'>Y_trainSmall</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/to_categorical'>to_categorical</a></span>( <span class='no'>mnistData</span>$<span class='no'>train</span>$<span class='no'>y</span>[<span class='fl'>1</span>:<span class='fl'>100</span>], <span class='no'>numberOfLabels</span> )
+
+<span class='no'>X_testSmall</span> <span class='kw'>&lt;-</span> <span class='no'>mnistData</span>$<span class='no'>test</span>$<span class='no'>x</span>[<span class='fl'>1</span>:<span class='fl'>10</span>,,]
+<span class='no'>X_testSmall</span> <span class='kw'>&lt;-</span> <span class='fu'>array</span>( <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>X_testSmall</span>, <span class='kw'>dim</span> <span class='kw'>=</span> <span class='fu'>c</span>( <span class='fu'>dim</span>( <span class='no'>X_testSmall</span> ), <span class='fl'>1</span> ) )
+<span class='no'>Y_testSmall</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/to_categorical'>to_categorical</a></span>( <span class='no'>mnistData</span>$<span class='no'>test</span>$<span class='no'>y</span>[<span class='fl'>1</span>:<span class='fl'>10</span>], <span class='no'>numberOfLabels</span> )
+
+<span class='co'># We add a dimension of 1 to specify the channel size</span>
+
+<span class='no'>inputImageSize</span> <span class='kw'>&lt;-</span> <span class='fu'>c</span>( <span class='fu'>dim</span>( <span class='no'>X_trainSmall</span> )[<span class='fl'>2</span>:<span class='fl'>3</span>], <span class='fl'>1</span> )
+
+<span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='createSpatialTransformerNetworkModel2D.html'>createSpatialTransformerNetworkModel2D</a></span>( <span class='kw'>inputImageSize</span> <span class='kw'>=</span> <span class='no'>inputImageSize</span>,
+  <span class='kw'>resampledSize</span> <span class='kw'>=</span> <span class='fu'>c</span>( <span class='fl'>30</span>, <span class='fl'>30</span> ), <span class='kw'>numberOfClassificationLabels</span> <span class='kw'>=</span> <span class='no'>numberOfLabels</span> )
+
+<span class='co'># }</span><div class='input'>
 </div><span class='co'># NOT RUN {</span>
 <span class='fu'>library</span>( <span class='no'>ANTsRNet</span> )
 <span class='fu'>library</span>( <span class='no'>keras</span> )
@@ -179,6 +228,8 @@ the number of channels (e.g., red, green, and blue).  The batch size
 
     <h2>Author</h2>
     
+Tustison NJ
+
 Tustison NJ
 
   </div>

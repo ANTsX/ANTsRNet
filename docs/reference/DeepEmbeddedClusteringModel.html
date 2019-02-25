@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>getPretrainedNetwork — getPretrainedNetwork • ANTsRNet</title>
+<title>Deep embedded clustering (DEC) model class — DeepEmbeddedClusteringModel • ANTsRNet</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="getPretrainedNetwork — getPretrainedNetwork" />
+<meta property="og:title" content="Deep embedded clustering (DEC) model class — DeepEmbeddedClusteringModel" />
 
-<meta property="og:description" content="Downloads antsrnet pretrained network. 10.6084/m9.figshare.7246985" />
+<meta property="og:description" content="Deep embedded clustering (DEC) model class" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -92,60 +92,60 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>getPretrainedNetwork</h1>
+    <h1>Deep embedded clustering (DEC) model class</h1>
     
-    <div class="hidden name"><code>getPretrainedNetwork.Rd</code></div>
+    <div class="hidden name"><code>DeepEmbeddedClusteringModel.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Downloads antsrnet pretrained network. <a href='10.6084/m9.figshare.7246985'>10.6084/m9.figshare.7246985</a></p>
+    <p>Deep embedded clustering (DEC) model class</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>getPretrainedNetwork</span>(<span class='no'>fileid</span>, <span class='kw'>targetFileName</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+        
+    <h2 class="hasAnchor" id="usage"><a class="anchor" href="#usage"></a>Usage</h2>
+
+    
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>fileid</th>
-      <td><p>one of the permitted file ids or pass "show" to list all
-valid possibilities. Note that most require internet access to download.</p></td>
-    </tr>
-    <tr>
-      <th>targetFileName</th>
-      <td><p>optional target filename</p></td>
-    </tr>
-    <tr>
-      <th>verbose</th>
-      <td><p>If <code>TRUE</code>, suppress status messages
-(if any), and the progress bar.</p></td>
-    </tr>
-    </table>
-    
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>filename string</p>
+    
+    <dl class='dl-horizontal'>
+<dt>numberOfUnitsPerLayer</dt><dd><p>array describing the auteoencoder.</p></dd>
+<dt>numberOfClusters</dt><dd><p>number of clusters.</p></dd>
+<dt>alpha</dt><dd><p>parameter</p></dd>
+<dt>initializer</dt><dd><p>initializer for autoencoder</p></dd>
+</dl>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    
+    <p><code>$initialize</code> instantiates a new class.</p>
+<p><code>$pretrain</code></p>
+<p><code>$loadWeights</code></p>
+<p><code>$extractFeatures</code></p>
+<p><code>$predictClusterLabels</code></p>
+<p><code>$targetDistribution</code></p>
+<p><code>$compile</code></p>
+<p><code>$fit</code></p>
     
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='no'>net</span> <span class='kw'>&lt;-</span> <span class='fu'>getPretrainedNetwork</span>( <span class='st'>"dbpn4x"</span> )</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      
+      <li><a href="#usage">Usage</a></li>
+
       <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#value">Value</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
+
+      <li><a href="#details">Details</a></li>
+          </ul>
 
     <h2>Author</h2>
     
-Avants BB
+Tustison NJ
 
   </div>
 </div>

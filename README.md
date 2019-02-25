@@ -64,6 +64,11 @@ Documentation page [https://antsx.github.io/ANTsRNet/](https://antsx.github.io/A
 * Spatial transformer network (STN) (2-D, 3-D)
     * [Max Jaderberg, Karen Simonyan, Andrew Zisserman, and Koray Kavukcuoglu.  Spatial Transformer Networks.](https://arxiv.org/abs/1506.02025)
 
+### Clustering
+
+* __WIP:__  Deep embedded clustering (DEC)
+    * [Junyuan Xie, Ross Girshick, and Ali Farhadi.  Unsupervised Deep Embedding for Clustering Analysis.](https://arxiv.org/abs/1511.06335)
+
 --------------------------------------
 
 ## Installation
