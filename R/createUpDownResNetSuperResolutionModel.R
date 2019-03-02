@@ -12,6 +12,7 @@
 #' @param numberOfFilters the number of filters for each encoding layer.
 #' @param numberOfResidualBlocks the number of residual blocks.
 #' @param scale the upsampling amount, 2, 4 or 8
+#' @param numberOfOutputs the number of data targets, e.g. 2 for 2 targets
 #'
 #' @return a keras model for EDSR image super resolution
 #' @author Tustison NJ, Avants BB
@@ -25,7 +26,8 @@ createEnhancedDeepSuperResolutionModel2D <- function(
   convolutionKernelSize = c( 3, 3 ),
   numberOfFilters = 256,
   numberOfResidualBlocks = 32,
-  scale = 2 )
+  scale = 2,
+  numberOfOutputs = 1 )
 {
 
   residualBlock2D <- function( model, numberOfFilters, convolutionKernelSize )
@@ -86,9 +88,17 @@ createEnhancedDeepSuperResolutionModel2D <- function(
     activation = 'linear',
     padding = 'same' )
 
-  srModel <- keras_model(
-    inputs = inputs,
-    outputs = outputs )
+  if ( numberOfOutputs == 1 ) {
+    srModel <- keras_model(
+      inputs = inputs,
+      outputs = outputs )
+    } else {
+      olist = list()
+      for ( k in 1:numberOfOutputs ) olist[[ k ]] = outputs
+      srModel <- keras_model(
+        inputs = inputs,
+        outputs = olist )
+    }
 
 
   return( srModel )

@@ -6,7 +6,7 @@
 \usage{
 createEnhancedDeepSuperResolutionModel2D(inputImageSize,
   convolutionKernelSize = c(3, 3), numberOfFilters = 256,
-  numberOfResidualBlocks = 32, scale = 2)
+  numberOfResidualBlocks = 32, scale = 2, numberOfOutputs = 1)
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
@@ -22,6 +22,8 @@ convolution.}
 \item{numberOfResidualBlocks}{the number of residual blocks.}
 
 \item{scale}{the upsampling amount, 2, 4 or 8}
+
+\item{numberOfOutputs}{the number of data targets, e.g. 2 for 2 targets}
 }
 \value{
 a keras model for EDSR image super resolution
