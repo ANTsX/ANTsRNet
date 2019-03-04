@@ -70,7 +70,7 @@ createEnhancedDeepSuperResolutionModel2D <- function(
         block <- block %>% layer_conv_2d_transpose( filters = numberOfFilters,
           kernel_size = kernelSize, strides = strides, activation = 'relu',
           kernel_initializer = 'glorot_uniform', padding = 'same' )
-
+    return( block )
   }
 
   inputs <- layer_input( shape = inputImageSize )
