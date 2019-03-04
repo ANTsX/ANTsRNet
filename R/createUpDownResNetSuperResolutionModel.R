@@ -48,15 +48,9 @@ createEnhancedDeepSuperResolutionModel2D <- function(
     convolutionKernelSize, scale = 2 )
     {
     interp = 'bilinear'
-    interp = "nearest"
-    block <- model %>% layer_upsampling_2d(
+#    interp = "nearest"
+    block <- model %>% layer_upsampling_2d( size = c( scale, scale ),
       interpolation = interp )
-    if ( scale == 4 )
-      block <- block %>% layer_upsampling_2d(
-        interpolation = interp )
-    if ( scale == 8 )
-      block <- block %>% layer_upsampling_2d(
-        interpolation = interp )
     return( block )
     }
 
@@ -98,8 +92,12 @@ createEnhancedDeepSuperResolutionModel2D <- function(
   outputsX = layer_add( list( outputsX, residualBlocks ) )
 
 
-  outputs <- upscaleBlock2DConv( outputsX, numberOfFilters,
-          convolutionKernelSize, scale = scale )
+  outputs <- upscaleBlock2D( outputsX, numberOfFilters,
+          convolutionKernelSize, scale = scale ) %>%
+          layer_conv_2d( 
+              filters = numberOfFilters,
+              kernel_size = convolutionKernelSize,
+              padding = 'same' )
 
   numberOfChannels <- tail( inputImageSize, 1 )
   outputs <- outputs %>% layer_conv_2d(
