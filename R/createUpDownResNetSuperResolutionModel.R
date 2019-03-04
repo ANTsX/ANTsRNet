@@ -48,6 +48,7 @@ createEnhancedDeepSuperResolutionModel2D <- function(
     convolutionKernelSize, scale = 2 )
     {
     interp = 'bilinear'
+    interp = "nearest"
     block <- model %>% layer_upsampling_2d(
       interpolation = interp )
     if ( scale == 4 )
@@ -58,6 +59,26 @@ createEnhancedDeepSuperResolutionModel2D <- function(
         interpolation = interp )
     return( block )
     }
+
+  upscaleBlock2DConv <- function( model,
+    numberOfFilters, nChannels,
+    convolutionKernelSize, scale = 2 ) {
+    block <- model %>% layer_conv_2d_transpose( filters = numberOfFilters,
+      kernel_size = kernelSize, strides = strides,
+      kernel_initializer = 'glorot_uniform', padding = 'same' )%>% layer_activation_parametric_relu(
+        alpha_initializer = 'zero', shared_axes = c( 1, 2 ) )
+    if ( scale == 4 )
+        block <- block %>% layer_conv_2d_transpose( filters = numberOfFilters,
+          kernel_size = kernelSize, strides = strides,
+          kernel_initializer = 'glorot_uniform', padding = 'same' )%>% layer_activation_parametric_relu(
+            alpha_initializer = 'zero', shared_axes = c( 1, 2 ) )
+    if ( scale == 8 )
+        block <- block %>% layer_conv_2d_transpose( filters = numberOfFilters,
+          kernel_size = kernelSize, strides = strides,
+          kernel_initializer = 'glorot_uniform', padding = 'same' )%>% layer_activation_parametric_relu(
+            alpha_initializer = 'zero', shared_axes = c( 1, 2 ) )
+
+  }
 
   inputs <- layer_input( shape = inputImageSize )
   outputsX = residualBlocks = layer_conv_2d( inputs,
@@ -78,7 +99,7 @@ createEnhancedDeepSuperResolutionModel2D <- function(
   outputsX = layer_add( list( outputsX, residualBlocks ) )
 
 
-  outputs <- upscaleBlock2D( outputsX, numberOfFilters,
+  outputs <- upscaleBlock2DConv( outputsX, numberOfFilters,
           convolutionKernelSize, scale = scale )
 
   numberOfChannels <- tail( inputImageSize, 1 )
