@@ -7,7 +7,8 @@
 createDeepBackProjectionNetworkModel2D(inputImageSize,
   numberOfOutputs = 1, numberOfBaseFilters = 64,
   numberOfFeatureFilters = 256, numberOfBackProjectionStages = 7,
-  convolutionKernelSize = c(12, 12), strides = c(8, 8))
+  convolutionKernelSize = c(12, 12), strides = c(8, 8),
+  numberOfLossFunctions = 1)
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
@@ -35,6 +36,8 @@ original paper.  Factors used in the original implementation are as follows:
 original paper.  Factors used in the original implementation are as follows:
 2x --> \code{strides = c( 2, 2 )}, 4x --> \code{strides = c( 4, 4 )}, 8x -->
 \code{strides = c( 8, 8 )}. We default to 8x parameters.}
+
+\item{numberOfLossFunctions}{the number of data targets, e.g. 2 for 2 targets}
 }
 \value{
 a keras model defining the deep back-projection network.

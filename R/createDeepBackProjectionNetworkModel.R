@@ -38,6 +38,7 @@
 #' original paper.  Factors used in the original implementation are as follows:
 #' 2x --> \code{strides = c( 2, 2 )}, 4x --> \code{strides = c( 4, 4 )}, 8x -->
 #' \code{strides = c( 8, 8 )}. We default to 8x parameters.
+#' @param numberOfLossFunctions the number of data targets, e.g. 2 for 2 targets
 #'
 #' @return a keras model defining the deep back-projection network.
 #' @author Tustison NJ
@@ -55,7 +56,8 @@ createDeepBackProjectionNetworkModel2D <-
                                numberOfFeatureFilters = 256,
                                numberOfBackProjectionStages = 7,
                                convolutionKernelSize = c( 12, 12 ),
-                               strides = c( 8, 8 )
+                               strides = c( 8, 8 ),
+                               numberOfLossFunctions = 1
                              )
 {
 
@@ -197,7 +199,17 @@ createDeepBackProjectionNetworkModel2D <-
     kernel_size = c( 3, 3 ), strides = c( 1, 1 ), padding = 'same',
     kernel_initializer = "glorot_uniform" )
 
-  deepBackProjectionNetworkModel <- keras_model( inputs = inputs, outputs = outputs )
+  if ( numberOfLossFunctions == 1 ) {
+    deepBackProjectionNetworkModel <- keras_model(
+      inputs = inputs,
+      outputs = outputs )
+    } else {
+      olist = list()
+      for ( k in 1:numberOfLossFunctions ) olist[[ k ]] = outputs
+      deepBackProjectionNetworkModel <- keras_model(
+        inputs = inputs,
+        outputs = olist )
+    }
 
   return( deepBackProjectionNetworkModel )
 }
@@ -242,6 +254,7 @@ createDeepBackProjectionNetworkModel2D <-
 #' original paper.  Factors used in the original implementation are as follows:
 #' 2x --> \code{strides = c( 2, 2, 2 )}, 4x --> \code{strides = c( 4, 4, 4 )},
 #' 8x --> \code{strides = c( 8, 8, 8 )}. We default to 8x parameters.
+#' @param numberOfLossFunctions the number of data targets, e.g. 2 for 2 targets
 #'
 #' @return a keras model defining the deep back-projection network.
 #' @author Tustison NJ
@@ -259,7 +272,8 @@ createDeepBackProjectionNetworkModel3D <-
                                numberOfFeatureFilters = 256,
                                numberOfBackProjectionStages = 7,
                                convolutionKernelSize = c( 12, 12, 12 ),
-                               strides = c( 8, 8, 8 )
+                               strides = c( 8, 8, 8 ),
+                               numberOfLossFunctions = 1
                              )
 {
 
@@ -403,8 +417,17 @@ createDeepBackProjectionNetworkModel3D <-
     kernel_size = c( 3, 3, 3 ), strides = c( 1, 1, 1 ), padding = 'same',
     kernel_initializer = "glorot_uniform" )
 
-  deepBackProjectionNetworkModel <- keras_model( inputs = inputs, outputs = outputs )
+  if ( numberOfLossFunctions == 1 ) {
+    deepBackProjectionNetworkModel <- keras_model(
+      inputs = inputs,
+      outputs = outputs )
+    } else {
+      olist = list()
+      for ( k in 1:numberOfLossFunctions ) olist[[ k ]] = outputs
+      deepBackProjectionNetworkModel <- keras_model(
+        inputs = inputs,
+        outputs = olist )
+    }
 
   return( deepBackProjectionNetworkModel )
 }
-
