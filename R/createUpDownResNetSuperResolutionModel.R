@@ -66,19 +66,16 @@ createEnhancedDeepSuperResolutionModel2D <- function(
     kernelSize = c( 4, 4 )
     strides =  c( 2, 2 )
     block <- model %>% layer_conv_2d_transpose( filters = numberOfFilters,
-      kernel_size = kernelSize, strides = strides,
-      kernel_initializer = 'glorot_uniform', padding = 'same' )%>% layer_activation_parametric_relu(
-        alpha_initializer = 'zero', shared_axes = c( 1, 2 ) )
+      kernel_size = kernelSize, strides = strides, activation = 'relu',
+      kernel_initializer = 'glorot_uniform', padding = 'same' )
     if ( scale == 4 )
         block <- block %>% layer_conv_2d_transpose( filters = numberOfFilters,
-          kernel_size = kernelSize, strides = strides,
-          kernel_initializer = 'glorot_uniform', padding = 'same' )%>% layer_activation_parametric_relu(
-            alpha_initializer = 'zero', shared_axes = c( 1, 2 ) )
+          kernel_size = kernelSize, strides = strides, activation = 'relu',
+          kernel_initializer = 'glorot_uniform', padding = 'same' )
     if ( scale == 8 )
         block <- block %>% layer_conv_2d_transpose( filters = numberOfFilters,
-          kernel_size = kernelSize, strides = strides,
-          kernel_initializer = 'glorot_uniform', padding = 'same' )%>% layer_activation_parametric_relu(
-            alpha_initializer = 'zero', shared_axes = c( 1, 2 ) )
+          kernel_size = kernelSize, strides = strides, activation = 'relu',
+          kernel_initializer = 'glorot_uniform', padding = 'same' )
 
   }
 
