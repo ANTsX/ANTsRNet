@@ -94,15 +94,16 @@ createEnhancedDeepSuperResolutionModel2D <- function(
 
   outputs <- upscaleBlock2D( outputsX, numberOfFilters,
           convolutionKernelSize, scale = scale ) %>%
-          layer_conv_2d( 
+          layer_conv_2d( residualBlocks,
               filters = numberOfFilters,
               kernel_size = convolutionKernelSize,
+              activation = 'relu',
               padding = 'same' )
 
   numberOfChannels <- tail( inputImageSize, 1 )
   outputs <- outputs %>% layer_conv_2d(
     filters = numberOfChannels,
-    kernel_size = convolutionKernelSize,
+    kernel_size = c(1,1),
     activation = 'linear',
     padding = 'same' )
 
