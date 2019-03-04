@@ -63,6 +63,7 @@ createEnhancedDeepSuperResolutionModel2D <- function(
   upscaleBlock2DConv <- function( model,
     numberOfFilters, nChannels,
     convolutionKernelSize, scale = 2 ) {
+    kernelSize = c( 4, 4 )
     block <- model %>% layer_conv_2d_transpose( filters = numberOfFilters,
       kernel_size = kernelSize, strides = strides,
       kernel_initializer = 'glorot_uniform', padding = 'same' )%>% layer_activation_parametric_relu(
