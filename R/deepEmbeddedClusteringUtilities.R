@@ -149,7 +149,7 @@ ClusteringLayer <- R6::R6Class( "ClusteringLayer",
 )
 
 layer_clustering <- function( objects,
-  numberOfClusters, initialClusterWeights, alpha )
+  numberOfClusters, initialClusterWeights, alpha, name )
 {
   create_layer( ClusteringLayer, objects,
       list( numberOfClusters = numberOfClusters,
