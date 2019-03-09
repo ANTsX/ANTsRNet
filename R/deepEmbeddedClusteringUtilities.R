@@ -63,6 +63,7 @@ createAutoencoderModel <- function( numberOfUnitsPerLayer,
 #'  \item{numberOfClusters}{number of clusters.}
 #'  \item{initialClusterWeights}{}
 #'  \item{alpha}{parameter}
+#'  \item{alpha}{name}
 #' }
 #'
 #' @section Details:
@@ -84,6 +85,8 @@ ClusteringLayer <- R6::R6Class( "ClusteringLayer",
 
   inherit = KerasLayer,
 
+  lock_objects = FALSE,
+
   public = list(
 
     numberOfClusters = 10,
@@ -94,7 +97,8 @@ ClusteringLayer <- R6::R6Class( "ClusteringLayer",
 
     name = '',
 
-    initialize = function( numberOfClusters, initialClusterWeights = NULL, alpha = 1.0 )
+    initialize = function( numberOfClusters,
+      initialClusterWeights = NULL, alpha = 1.0, name = '' )
       {
       self$numberOfClusters <- numberOfClusters
       self$initialClusterWeights <- initialClusterWeights
@@ -108,10 +112,12 @@ ClusteringLayer <- R6::R6Class( "ClusteringLayer",
         {
         stop( paste0( "input_shape is not of length 2." ) )
         }
-      self$clusters <- self$add_weight(
-        self$numberOfClusters, shape = input_shape[1], initializer = 'glorot_uniform' )
 
-      if( ! is.null( sefl$initialClusterWeights ) )
+      self$clusters <- self$add_weight(
+        shape = list( self$numberOfClusters, input_shape[[2]] ),
+        initializer = initializer_glorot_uniform(), name = 'clusters' )
+
+      if( ! is.null( self$initialClusterWeights ) )
         {
         self$set_weights( self$initialClusterWeights )
         self$initialClusterWeights <- NULL
@@ -127,9 +133,9 @@ ClusteringLayer <- R6::R6Class( "ClusteringLayer",
       K <- keras::backend()
 
       q <- 1.0 / ( 1.0 + ( K$sum( K$square(
-        K$expand_dims( inputs, axis = 1 ) - self$clusters ), axis = 2 ) / self$alpha ) )
+        K$expand_dims( inputs, axis = 1L ) - self$clusters ), axis = 2L ) / self$alpha ) )
       q <- q^( ( self$alpha + 1.0 ) / 2.0 )
-      q <- K$transpose( K$transpose( q ) / K$sum( q, axis = 1 ) )
+      q <- K$transpose( K$transpose( q ) / K$sum( q, axis = 1L ) )
 
       return( q )
       },
@@ -149,12 +155,13 @@ ClusteringLayer <- R6::R6Class( "ClusteringLayer",
 )
 
 layer_clustering <- function( objects,
-  numberOfClusters, initialClusterWeights, alpha, name )
+  numberOfClusters, initialClusterWeights = NULL,
+  alpha = 1.0, name = '' )
 {
   create_layer( ClusteringLayer, objects,
       list( numberOfClusters = numberOfClusters,
             initialClusterWeights = initialClusterWeights,
-            alpha = alpha, name = '' )
+            alpha = alpha, name = name )
       )
 }
 
@@ -197,7 +204,9 @@ NULL
 #' @export
 DeepEmbeddedClusteringModel <- R6::R6Class( "DeepEmbeddedClusteringModel",
 
-  # inherit = ,
+  inherit = NULL,
+
+  lock_objects = FALSE,
 
   public = list(
 
@@ -217,18 +226,19 @@ DeepEmbeddedClusteringModel <- R6::R6Class( "DeepEmbeddedClusteringModel",
       self$alpha <- alpha
       self$initializer <- initializer
 
-      ae <- createAutoencoderModel( self$numberOfUnitsPerLayer, self$initializer )
+      ae <- createAutoencoderModel( self$numberOfUnitsPerLayer,
+        initializer = self$initializer )
 
       self$autoencoder <- ae$AutoencoderModel
       self$encoder <- ae$EncoderModel
 
-      clusteringLayer <- self$encoder %>%
+      clusteringLayer <- self$encoder$output %>%
         layer_clustering( self$numberOfClusters, name = "clustering" )
 
       self$model <- keras_model( inputs = self$encoder$input, outputs = clusteringLayer )
       },
 
-    pretrain = function( x, optimizer = 'adam', epochs = 200, batchSize = 256 )
+    pretrain = function( x, optimizer = 'adam', epochs = 200L, batchSize = 256L )
       {
       self$autoencoder$compile( optimizer = optimizer, loss = 'mse' )
       self$autoencoder$fit( x, x, batch_size = batchSize, epochs = epochs )

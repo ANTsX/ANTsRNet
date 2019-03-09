@@ -21,6 +21,7 @@ Clustering layer for Deep Embedded Clustering
 \item{numberOfClusters}{number of clusters.}
 \item{initialClusterWeights}{}
 \item{alpha}{parameter}
+\item{alpha}{name}
 }
 }
 
