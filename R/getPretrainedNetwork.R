@@ -10,9 +10,9 @@
 #' @return filename string
 #' @author Avants BB
 #' @examples
-#'
+#' \dontrun{
 #' net <- getPretrainedNetwork( "dbpn4x" )
-#'
+#' }
 #' @export getPretrainedNetwork
 getPretrainedNetwork <- function(fileid,
                          targetFileName = FALSE,

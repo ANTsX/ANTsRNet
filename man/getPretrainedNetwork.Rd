@@ -22,9 +22,9 @@ filename string
 Downloads antsrnet pretrained network. \url{10.6084/m9.figshare.7246985}
 }
 \examples{
-
+\dontrun{
 net <- getPretrainedNetwork( "dbpn4x" )
-
+}
 }
 \author{
 Avants BB
