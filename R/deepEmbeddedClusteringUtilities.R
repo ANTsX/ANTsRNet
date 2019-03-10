@@ -149,7 +149,7 @@ ClusteringLayer <- R6::R6Class( "ClusteringLayer",
 
       numberOfChannels <- as.integer( tail( unlist( input_shape[[1]] ), 1 ) )
 
-      return( list( input_shape[1], self$numberOfClusters ) )
+      return( list( input_shape[[1]], self$numberOfClusters ) )
       }
   )
 )
@@ -282,7 +282,7 @@ DeepEmbeddedClusteringModel <- R6::R6Class( "DeepEmbeddedClusteringModel",
       currentPrediction <- fitted( km )
       previousPrediction <- currentPrediction
 
-      self$model$get_layer( name = 'clustering' )$set_weights( as.array( km$centers ) )
+      self$model$get_layer( name = 'clustering' )$set_weights( list( km$centers ) )
 
       # Deep clustering
 
@@ -292,7 +292,7 @@ DeepEmbeddedClusteringModel <- R6::R6Class( "DeepEmbeddedClusteringModel",
 
       for( i in seq_len( maxNumberOfIterations ) )
         {
-        if( i %% updateInterval == 0 )
+        if( i %% updateInterval == 1 )
           {
           q <- self$model$predict( x, verbose = 0 )
           p <- self$targetDistribution( q )
@@ -303,14 +303,14 @@ DeepEmbeddedClusteringModel <- R6::R6Class( "DeepEmbeddedClusteringModel",
           deltaLabel <- sum( currentPrediction != previousPrediction ) / length( currentPrediction )
           previousPrediction <- currentPrediction
 
-          if( i > 0 && deltaLabel < tolerance )
+          if( i > 1 && deltaLabel < tolerance )
             {
             break
             }
           }
 
-        batchIndices <- indexArray[( index * batchSize + 1 ):min( ( index + 1 ) * batchSize + 1, dim( x )[1] )]
-        loss <- self$model$train_on_batch( x = x[batchIndices], y = p[batchIndices] )
+        batchIndices <- indexArray[( index * batchSize + 1 ):min( ( index + 1 ) * batchSize, dim( x )[1] )]
+        loss <- self$model$train_on_batch( x = x[batchIndices,], y = p[batchIndices,] )
         if( ( index + 1 ) * batchSize + 1 <= dim( x )[1] )
           {
           index <- index + 1
@@ -318,7 +318,7 @@ DeepEmbeddedClusteringModel <- R6::R6Class( "DeepEmbeddedClusteringModel",
           index <- 0
           }
         }
-      return( prediction )
+      return( currentPrediction )
       }
     )
   )
