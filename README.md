@@ -66,7 +66,7 @@ Documentation page [https://antsx.github.io/ANTsRNet/](https://antsx.github.io/A
 
 ### Clustering
 
-* __WIP:__  Deep embedded clustering (DEC)
+* Deep embedded clustering (DEC)
     * [Junyuan Xie, Ross Girshick, and Ali Farhadi.  Unsupervised Deep Embedding for Clustering Analysis.](https://arxiv.org/abs/1511.06335)
 
 --------------------------------------
