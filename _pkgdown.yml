@@ -86,6 +86,8 @@ reference:
   - '`DeepEmbeddedClusteringModel`'
   - '`ClusteringLayer`'
   - '`createAutoencoderModel`'
+  - '`createConvolutionalAutoencoderModel2D`'
+  - '`createConvolutionalAutoencoderModel3D`'
 - title: Custom loss functions
   desc: ~
   contents:

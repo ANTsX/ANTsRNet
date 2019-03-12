@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>2-D implementation of the SSD deep learning architecture. — createSsdModel2D • ANTsRNet</title>
+<title>Function for creating a 2-D symmetric convolutional autoencoder model. — createConvolutionalAutoencoderModel2D • ANTsRNet</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,10 +30,11 @@
 
 
 
-<meta property="og:title" content="2-D implementation of the SSD deep learning architecture. — createSsdModel2D" />
+<meta property="og:title" content="Function for creating a 2-D symmetric convolutional autoencoder model. — createConvolutionalAutoencoderModel2D" />
 
-<meta property="og:description" content="Creates a keras model of the SSD deep learning architecture for
-object detection based on the paper" />
+<meta property="og:description" content="Builds a convolutional autoencoder based on the specified array
+definining the number of units in the encoding branch.  Ported to
+Keras R from the Keras python implementation here:" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -93,93 +94,62 @@ object detection based on the paper" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>2-D implementation of the SSD deep learning architecture.</h1>
+    <h1>Function for creating a 2-D symmetric convolutional autoencoder model.</h1>
     
-    <div class="hidden name"><code>createSsdModel2D.Rd</code></div>
+    <div class="hidden name"><code>createConvolutionalAutoencoderModel2D.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Creates a keras model of the SSD deep learning architecture for
-object detection based on the paper</p>
+    <p>Builds a convolutional autoencoder based on the specified array
+definining the number of units in the encoding branch.  Ported to
+Keras R from the Keras python implementation here:</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>createSsdModel2D</span>(<span class='no'>inputImageSize</span>, <span class='no'>numberOfClassificationLabels</span>,
-  <span class='kw'>l2Regularization</span> <span class='kw'>=</span> <span class='fl'>5e-04</span>, <span class='kw'>minScale</span> <span class='kw'>=</span> <span class='fl'>0.1</span>, <span class='kw'>maxScale</span> <span class='kw'>=</span> <span class='fl'>0.9</span>,
-  <span class='kw'>aspectRatiosPerLayer</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='fu'>c</span>(<span class='st'>"1:1"</span>, <span class='st'>"2:1"</span>, <span class='st'>"1:2"</span>), <span class='fu'>c</span>(<span class='st'>"1:1"</span>, <span class='st'>"2:1"</span>,
-  <span class='st'>"1:2"</span>, <span class='st'>"3:1"</span>, <span class='st'>"1:3"</span>), <span class='fu'>c</span>(<span class='st'>"1:1"</span>, <span class='st'>"2:1"</span>, <span class='st'>"1:2"</span>, <span class='st'>"3:1"</span>, <span class='st'>"1:3"</span>), <span class='fu'>c</span>(<span class='st'>"1:1"</span>,
-  <span class='st'>"2:1"</span>, <span class='st'>"1:2"</span>, <span class='st'>"3:1"</span>, <span class='st'>"1:3"</span>), <span class='fu'>c</span>(<span class='st'>"1:1"</span>, <span class='st'>"2:1"</span>, <span class='st'>"1:2"</span>), <span class='fu'>c</span>(<span class='st'>"1:1"</span>, <span class='st'>"2:1"</span>,
-  <span class='st'>"1:2"</span>)), <span class='kw'>variances</span> <span class='kw'>=</span> <span class='fu'>rep</span>(<span class='fl'>1</span>, <span class='fl'>4</span>), <span class='kw'>style</span> <span class='kw'>=</span> <span class='fl'>300</span>)</pre>
+    <pre class="usage"><span class='fu'>createConvolutionalAutoencoderModel2D</span>(<span class='no'>inputImageSize</span>,
+  <span class='kw'>numberOfFiltersPerLayer</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>32</span>, <span class='fl'>64</span>, <span class='fl'>128</span>, <span class='fl'>10</span>),
+  <span class='kw'>convolutionKernelSize</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>5</span>, <span class='fl'>5</span>), <span class='kw'>deconvolutionKernelSize</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>5</span>, <span class='fl'>5</span>))</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>inputImageSize</th>
-      <td><p>Used for specifying the input tensor shape.  The
-shape (or dimension) of that tensor is the image dimensions followed by
-the number of channels (e.g., red, green, and blue).  The batch size
-(i.e., number of training images) is not specified a priori.</p></td>
+      <td><p>vector definining spatial dimensions + channels</p></td>
     </tr>
     <tr>
-      <th>numberOfClassificationLabels</th>
-      <td><p>Number of classification labels.
-Needs to include the background as one of the labels.</p></td>
+      <th>numberOfFiltersPerLayer</th>
+      <td><p>vector defining the number of convolutional
+filters in the encoding branch per layer</p></td>
     </tr>
     <tr>
-      <th>l2Regularization</th>
-      <td><p>The L2-regularization rate.  Default = 0.0005.</p></td>
+      <th>convolutionKernelSize</th>
+      <td><p>kernel size fo the convolutional filters</p></td>
     </tr>
     <tr>
-      <th>minScale</th>
-      <td><p>The smallest scaling factor for the size of the anchor
-boxes as a fraction of the shorter side of the input images.</p></td>
-    </tr>
-    <tr>
-      <th>maxScale</th>
-      <td><p>The largest scaling factor for the size of the anchor
-boxes as a fraction of the shorter side of the input images. All scaling
-factors between the smallest and the largest are linearly interpolated.</p></td>
-    </tr>
-    <tr>
-      <th>aspectRatiosPerLayer</th>
-      <td><p>A list containing one aspect ratio list for
-each predictor layer.  The default lists follows the original
-implementation except each aspect ratio is defined as a character string
-(e.g. <code>'1:2'</code>).</p></td>
-    </tr>
-    <tr>
-      <th>variances</th>
-      <td><p>A list of 4 floats &gt; 0 with scaling factors for the encoded
-predicted box coordinates. A variance value of 1.0 would apply no scaling at
-all to the predictions, while values in (0,1) upscale the encoded
-predictions and values greater than 1.0 downscale the encoded predictions.
-Defaults to 1.0.</p></td>
-    </tr>
-    <tr>
-      <th>style</th>
-      <td><p>300 or 512</p></td>
+      <th>deconvolutionKernelSize</th>
+      <td><p>kernel size fo the convolutional transpose
+filters</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>an SSD keras model</p>
+    <p>two models:  the convolutional encoder and convolutional auto-encoder</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>W. Liu, D. Anguelov, D. Erhan, C. Szegedy, S. Reed, C-Y. Fu, A. Berg.
-SSD: Single Shot MultiBox Detector.</p>
-<p>available here:</p>
-<p>https://arxiv.org/abs/1512.02325</p>
-<p>This particular implementation was influenced by the following python
-and R implementations:</p>
-<p>https://github.com/pierluigiferrari/ssd_keras
-https://github.com/rykov8/ssd_keras
-https://github.com/gsimchoni/ssdkeras</p>
+    <p><a href='https://github.com/XifengGuo/DCEC'>https://github.com/XifengGuo/DCEC</a></p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'>
+<span class='fu'>library</span>( <span class='no'>ANTsRNet</span> )
+<span class='fu'>library</span>( <span class='no'>keras</span> )
+
+<span class='no'>ae</span> <span class='kw'>&lt;-</span> <span class='fu'>createConvolutionalAutoencoderModel2D</span>( <span class='fu'>c</span>( <span class='fl'>32</span>, <span class='fl'>32</span>, <span class='fl'>1</span> ) )</div><div class='output co'>#&gt; <span class='error'>Error in as_integer_tuple(strides): object 'strides' not found</span></div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -189,7 +159,9 @@ https://github.com/gsimchoni/ssdkeras</p>
       <li><a href="#value">Value</a></li>
 
       <li><a href="#details">Details</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
     <h2>Author</h2>
     

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>2-D implementation of the deep embedded clustering (DEC) algorithm. — createSpatialTransformerNetworkModel2D • ANTsRNet</title>
+<title>2-D implementation of the spatial transformer network. — createSpatialTransformerNetworkModel2D • ANTsRNet</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,11 +30,9 @@
 
 
 
-<meta property="og:title" content="2-D implementation of the deep embedded clustering (DEC) algorithm. — createSpatialTransformerNetworkModel2D" />
+<meta property="og:title" content="2-D implementation of the spatial transformer network. — createSpatialTransformerNetworkModel2D" />
 
-<meta property="og:description" content="Creates a keras model of the deep embedded clustering algorithm
-described in the paper:
-Creates a keras model of the spatial transformer network:" />
+<meta property="og:description" content="Creates a keras model of the spatial transformer network:" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -94,23 +92,18 @@ Creates a keras model of the spatial transformer network:" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>2-D implementation of the deep embedded clustering (DEC) algorithm.</h1>
+    <h1>2-D implementation of the spatial transformer network.</h1>
     
     <div class="hidden name"><code>createSpatialTransformerNetworkModel2D.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Creates a keras model of the deep embedded clustering algorithm
-described in the paper:</p>
-<p>Creates a keras model of the spatial transformer network:</p>
+    <p>Creates a keras model of the spatial transformer network:</p>
     
     </div>
 
     <pre class="usage"><span class='fu'>createSpatialTransformerNetworkModel2D</span>(<span class='no'>inputImageSize</span>,
-  <span class='kw'>resampledSize</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>30</span>, <span class='fl'>30</span>), <span class='kw'>numberOfClassificationLabels</span> <span class='kw'>=</span> <span class='fl'>10</span>)
-
-<span class='fu'>createSpatialTransformerNetworkModel2D</span>(<span class='no'>inputImageSize</span>,
   <span class='kw'>resampledSize</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>30</span>, <span class='fl'>30</span>), <span class='kw'>numberOfClassificationLabels</span> <span class='kw'>=</span> <span class='fl'>10</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -120,7 +113,8 @@ described in the paper:</p>
       <th>inputImageSize</th>
       <td><p>Used for specifying the input tensor shape.  The
 shape (or dimension) of that tensor is the image dimensions followed by
-the number of channels (e.g., red, green, and blue).</p></td>
+the number of channels (e.g., red, green, and blue).  The batch size
+(i.e., number of training images) is not specified a priori.</p></td>
     </tr>
     <tr>
       <th>resampledSize</th>
@@ -130,40 +124,21 @@ the number of channels (e.g., red, green, and blue).</p></td>
       <th>numberOfClassificationLabels</th>
       <td><p>Number of classes.</p></td>
     </tr>
-    <tr>
-      <th>numberOfClusters</th>
-      <td><p>Number of clusters.</p></td>
-    </tr>
-    <tr>
-      <th>inputImageSize</th>
-      <td><p>Used for specifying the input tensor shape.  The
-shape (or dimension) of that tensor is the image dimensions followed by
-the number of channels (e.g., red, green, and blue).  The batch size
-(i.e., number of training images) is not specified a priori.</p></td>
-    </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>a keras model</p>
-<p>a keras model</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p><a href='https://arxiv.org/abs/1506.02025'>https://arxiv.org/abs/1506.02025</a></p>
 <p>based on the following python Keras model:</p>
 <p><a href='https://github.com/oarriaga/STN.keras/blob/master/src/models/STN.py'>https://github.com/oarriaga/STN.keras/blob/master/src/models/STN.py</a></p>
-<p><a href='https://arxiv.org/abs/1506.02025'>https://arxiv.org/abs/1506.02025</a></p>
-<p>based on the following python Keras model:</p>
-<p><a href='https://github.com/oarriaga/STN.keras/blob/master/src/models/STN.py'>https://github.com/oarriaga/STN.keras/blob/master/src/models/STN.py</a></p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='fu'>library</span>( <span class='no'>ANTsRNet</span> )
-<span class='fu'>library</span>( <span class='no'>keras</span> )
-
-<span class='co'># }</span><span class='co'># NOT RUN {</span>
 <span class='fu'>library</span>( <span class='no'>ANTsRNet</span> )
 <span class='fu'>library</span>( <span class='no'>keras</span> )
 
@@ -203,8 +178,6 @@ the number of channels (e.g., red, green, and blue).  The batch size
 
     <h2>Author</h2>
     
-Tustison NJ
-
 Tustison NJ
 
   </div>

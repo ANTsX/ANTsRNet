@@ -1,55 +1,3 @@
-#' Function for creating a symmetric autoencoder model.
-#'
-#' Builds an autoencoder based on the specified array definining the
-#' number of units in the encoding branch.  Ported to Keras R from the
-#' Keras python implementation here:
-#'
-#' \url{https://github.com/XifengGuo/DEC-keras/blob/master/DEC.py}
-#'
-#' @param numberOfUnitsLayer an array of defining the number of units
-#' in the encoding branch
-#'
-#' @return two models:  the encoder and auto-encoder
-#'
-#' @author Tustison NJ
-#' @export
-
-createAutoencoderModel <- function( numberOfUnitsPerLayer,
-                                    activation = 'relu',
-                                    initializer = 'glorot_uniform' )
-{
-  numberOfEncodingLayers <- length( numberOfUnitsPerLayer ) - 1
-
-  inputs <- layer_input( shape = numberOfUnitsPerLayer[1] )
-
-  encoderModel <- inputs
-
-  for( i in seq_len( numberOfEncodingLayers - 1 ) )
-    {
-    encoderModel <- encoderModel %>%
-      layer_dense( units = numberOfUnitsPerLayer[i+1],
-         activation = activation, kernel_initializer = initializer )
-    }
-
-  encoderModel <- encoderModel %>%
-    layer_dense( units = tail( numberOfUnitsPerLayer, 1 ) )
-
-  autoencoderModel <- encoderModel
-
-  for( i in seq( from = numberOfEncodingLayers, to = 2, by = -1 ) )
-    {
-    autoencoderModel <- autoencoderModel %>%
-      layer_dense( units = numberOfUnitsPerLayer[i],
-         activation = activation, kernel_initializer = initializer )
-    }
-
-  autoencoderModel <- autoencoderModel %>%
-    layer_dense( numberOfUnitsPerLayer[1], kernel_initializer = initializer )
-
-  return( list(
-    AutoencoderModel = keras_model( inputs = inputs, outputs = autoencoderModel ),
-    EncoderModel = keras_model( inputs = inputs, outputs = encoderModel ) ) )
-}
 
 #' Clustering layer for Deep Embedded Clustering
 #'
@@ -142,13 +90,6 @@ ClusteringLayer <- R6::R6Class( "ClusteringLayer",
 
     compute_output_shape = function( input_shape )
       {
-      if( length( input_shape ) != 2 )
-        {
-        stop( paste0( "input_shape is not of length 2." ) )
-        }
-
-      numberOfChannels <- as.integer( tail( unlist( input_shape[[1]] ), 1 ) )
-
       return( list( input_shape[[1]], self$numberOfClusters ) )
       }
   )
@@ -265,19 +206,45 @@ DeepEmbeddedClusteringModel <- R6::R6Class( "DeepEmbeddedClusteringModel",
 
     initializer = 'glorot_uniform',
 
+    convolutional = FALSE,
+
+    inputImageSize = NULL,
+
     initialize = function( numberOfUnitsPerLayer,
-      numberOfClusters, alpha = 1.0, initializer = 'glorot_uniform' )
+      numberOfClusters, alpha = 1.0, initializer = 'glorot_uniform',
+      convolutional = FALSE, inputImageSize = NULL )
       {
       self$numberOfUnitsPerLayer <- numberOfUnitsPerLayer
       self$numberOfClusters <- numberOfClusters
       self$alpha <- alpha
       self$initializer <- initializer
 
-      ae <- createAutoencoderModel( self$numberOfUnitsPerLayer,
-        initializer = self$initializer )
+      if( convolutional == TRUE )
+        {
+        if( is.null( inputImageSize ) )
+          {
+          stop( "Need to specify the input image size for CNN." )
+          }
+        if( length( inputImageSize ) == 3 )  # 2-D
+          {
+          ae <- createConvolutionalAutoencoderModel2D(
+            inputImageSize = inputImageSize,
+            numberOfFiltersPerLayer = self$numberOfUnitsPerLayer )
+          } else {
+          ae <- createConvolutionalAutoencoderModel3D(
+            inputImageSize = inputImageSize,
+            numberOfFiltersPerLayer = self$numberOfUnitsPerLayer )
+          }
 
-      self$autoencoder <- ae$AutoencoderModel
-      self$encoder <- ae$EncoderModel
+        self$autoencoder <- ae$ConvolutionalAutoencoderModel
+        self$encoder <- ae$ConvolutionalEncoderModel
+
+        } else {
+        ae <- createAutoencoderModel( self$numberOfUnitsPerLayer,
+          initializer = self$initializer )
+        self$autoencoder <- ae$AutoencoderModel
+        self$encoder <- ae$EncoderModel
+        }
 
       clusteringLayer <- self$encoder$output %>%
         layer_clustering( self$numberOfClusters, name = "clustering" )
@@ -314,9 +281,9 @@ DeepEmbeddedClusteringModel <- R6::R6Class( "DeepEmbeddedClusteringModel",
       return( p )
       },
 
-    compile = function( optimizer = 'sgd', loss = 'kld' )
+    compile = function( optimizer = 'sgd', loss = 'kld', lossWeights = 1.0 )
       {
-      self$model$compile( optimizer = optimizer, loss = loss )
+      self$model$compile( optimizer = optimizer, loss = loss, loss_weights = lossWeights )
       },
 
     fit = function( x, maxNumberOfIterations = 2e4, batchSize = 256, tolerance = 1e-3, updateInterval = 140 )
