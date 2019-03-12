@@ -334,9 +334,9 @@ DeepEmbeddedClusteringModel <- R6::R6Class( "DeepEmbeddedClusteringModel",
           {
           if( length( self$inputImageSize ) == 3 )  # 2-D
             {
-            loss <- self$model$train_on_batch( x = x[batchIndices,,,], y = p[batchIndices,] )
+            loss <- self$model$train_on_batch( x = x[batchIndices,,,, drop = FALSE], y = p[batchIndices,] )
             } else {
-            loss <- self$model$train_on_batch( x = x[batchIndices,,,,], y = p[batchIndices,] )
+            loss <- self$model$train_on_batch( x = x[batchIndices,,,,, drop = FALSE], y = p[batchIndices,] )
             }
           } else {  
           loss <- self$model$train_on_batch( x = x[batchIndices,], y = p[batchIndices,] )
