@@ -47,10 +47,7 @@ createEnhancedDeepSuperResolutionModel2D <- function(
     numberOfFilters, nChannels,
     convolutionKernelSize, scale = 2 )
     {
-    interp = 'bilinear'
-#    interp = "nearest"
-    block <- model %>% layer_upsampling_2d( size = c( scale, scale ),
-      interpolation = interp )
+    block <- model %>% layer_upsampling_2d( size = c( scale, scale ) )
     return( block )
     }
 
