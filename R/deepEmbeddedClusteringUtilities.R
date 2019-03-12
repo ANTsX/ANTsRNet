@@ -281,7 +281,7 @@ DeepEmbeddedClusteringModel <- R6::R6Class( "DeepEmbeddedClusteringModel",
       return( p )
       },
 
-    compile = function( optimizer = 'sgd', loss = 'kld', lossWeights = 1.0 )
+    compile = function( optimizer = 'sgd', loss = 'kld', lossWeights = NULL )
       {
       self$model$compile( optimizer = optimizer, loss = loss, loss_weights = lossWeights )
       },
