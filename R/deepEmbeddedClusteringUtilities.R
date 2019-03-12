@@ -218,21 +218,23 @@ DeepEmbeddedClusteringModel <- R6::R6Class( "DeepEmbeddedClusteringModel",
       self$numberOfClusters <- numberOfClusters
       self$alpha <- alpha
       self$initializer <- initializer
+      self$convolutional <- convolutional
+      self$inputImageSize <- inputImageSize
 
-      if( convolutional == TRUE )
+      if( self$convolutional == TRUE )
         {
-        if( is.null( inputImageSize ) )
+        if( is.null( self$inputImageSize ) )
           {
           stop( "Need to specify the input image size for CNN." )
           }
-        if( length( inputImageSize ) == 3 )  # 2-D
+        if( length( self$inputImageSize ) == 3 )  # 2-D
           {
           ae <- createConvolutionalAutoencoderModel2D(
-            inputImageSize = inputImageSize,
+            inputImageSize = self$inputImageSize,
             numberOfFiltersPerLayer = self$numberOfUnitsPerLayer )
           } else {
           ae <- createConvolutionalAutoencoderModel3D(
-            inputImageSize = inputImageSize,
+            inputImageSize = self$inputImageSize,
             numberOfFiltersPerLayer = self$numberOfUnitsPerLayer )
           }
 
@@ -281,7 +283,7 @@ DeepEmbeddedClusteringModel <- R6::R6Class( "DeepEmbeddedClusteringModel",
       return( p )
       },
 
-    compile = function( optimizer = 'sgd', loss = 'kld', lossWeights = 1.0 )
+    compile = function( optimizer = 'sgd', loss = 'kld', lossWeights = NULL )
       {
       self$model$compile( optimizer = optimizer, loss = loss, loss_weights = lossWeights )
       },
@@ -327,7 +329,19 @@ DeepEmbeddedClusteringModel <- R6::R6Class( "DeepEmbeddedClusteringModel",
           }
 
         batchIndices <- indexArray[( index * batchSize + 1 ):min( ( index + 1 ) * batchSize, dim( x )[1] )]
-        loss <- self$model$train_on_batch( x = x[batchIndices,], y = p[batchIndices,] )
+
+        if( self$convolutional == TRUE )
+          {
+          if( length( self$inputImageSize ) == 3 )  # 2-D
+            {
+            loss <- self$model$train_on_batch( x = x[batchIndices,,,], y = p[batchIndices,] )
+            } else {
+            loss <- self$model$train_on_batch( x = x[batchIndices,,,,], y = p[batchIndices,] )
+            }
+          } else {  
+          loss <- self$model$train_on_batch( x = x[batchIndices,], y = p[batchIndices,] )
+          }
+
         if( ( index + 1 ) * batchSize + 1 <= dim( x )[1] )
           {
           index <- index + 1
