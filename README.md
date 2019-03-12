@@ -68,7 +68,7 @@ Documentation page [https://antsx.github.io/ANTsRNet/](https://antsx.github.io/A
 
 * Deep embedded clustering (DEC)
     * [Junyuan Xie, Ross Girshick, and Ali Farhadi.  Unsupervised Deep Embedding for Clustering Analysis.](https://arxiv.org/abs/1511.06335)
-* __WIP:__  Deep convolutional embedded clustering (DCEC)
+* Deep convolutional embedded clustering (DCEC)
     * [Xifeng Guo, Xinwang Liu, En Zhu, and Jianping Yin.  Deep Clustering with Convolutional Autoencoders.](https://arxiv.org/abs/1511.06335)
 
 --------------------------------------
