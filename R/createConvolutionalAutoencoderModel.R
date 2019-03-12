@@ -30,6 +30,9 @@ createConvolutionalAutoencoderModel2D <- function( inputImageSize,
                                                    convolutionKernelSize = c( 5, 5 ),
                                                    deconvolutionKernelSize = c( 5, 5 ) )
 {
+  activation <- 'relu'
+  strides <- c( 2, 2 )
+
   numberOfEncodingLayers <- length( numberOfFiltersPerLayer ) - 1
 
   factor <- 2^numberOfEncodingLayers
@@ -135,6 +138,9 @@ createConvolutionalAutoencoderModel3D <- function( inputImageSize,
                                                    convolutionKernelSize = c( 5, 5, 5 ),
                                                    deconvolutionKernelSize = c( 5, 5, 5 ) )
 {
+  activation <- 'relu'
+  strides <- c( 2, 2, 2 )
+
   numberOfEncodingLayers <- length( numberOfFiltersPerLayer ) - 1
 
   factor <- numberOfEncodingLayers^2
