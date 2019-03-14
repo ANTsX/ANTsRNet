@@ -180,9 +180,9 @@ BilinearInterpolationLayer2D <- R6::R6Class( "BilinearInterpolationLayer2D",
   )
 )
 
-layer_bilinear_interpolation_2d <- function( objects, resampledSize ) {
+layer_bilinear_interpolation_2d <- function( objects, resampledSize, name = NULL ) {
 create_layer( BilinearInterpolationLayer2D, objects,
-    list( resampledSize = resampledSize )
+    list( resampledSize = resampledSize, name = name )
     )
 }
 
@@ -405,9 +405,9 @@ TrilinearInterpolationLayer3D <- R6::R6Class( "TrilinearInterpolationLayer3D",
   )
 )
 
-layer_trilinear_interpolation_3d <- function( objects, resampledSize ) {
+layer_trilinear_interpolation_3d <- function( objects, resampledSize, name = NULL ) {
 create_layer( TrilinearInterpolationLayer3D, objects,
-    list( resampledSize = resampledSize )
+    list( resampledSize = resampledSize, name = name )
     )
 }
 

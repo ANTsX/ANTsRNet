@@ -83,7 +83,8 @@ createSpatialTransformerNetworkModel2D <- function( inputImageSize,
   weights <- getInitialWeights2D( outputSize = 50L )
   outputs <- outputs %>% layer_dense( units = 6L, weights = weights )
 
-  outputs <- layer_bilinear_interpolation_2d( list( inputs, outputs ), resampledSize )
+  outputs <- layer_bilinear_interpolation_2d( list( inputs, outputs ),
+    resampledSize, name = "layer_bilinear_interpolation" )
   outputs <- outputs %>%
     layer_conv_2d( filters = 32L, kernel_size = c( 3, 3 ), padding = 'same' )
   outputs <- outputs %>% layer_activation_relu()
