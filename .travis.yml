@@ -29,7 +29,7 @@ before_install:
   - gh_binary_install  stnava/ITKR ANTsX/ANTsRCore ANTsX/ANTsR
 
 before_script:
-  - pyenv global 3.6
+#  - pyenv global 3.6
   - pip install --upgrade pip==9.0.3
 #  - pip install --upgrade --user pip
   - pip install --user pyyaml
