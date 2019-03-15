@@ -8,7 +8,11 @@ warnings_are_errors: false # setting this false b/c of rcpp attribute error
 env:
   - KERAS_BACKEND="tensorflow"
   - KERAS_IMPLEMENTATION="tensorflow"
-  - PYTHON=3.6
+
+addons:
+  apt:
+    packages:
+      - python3
 
 cache:
   packages: true
@@ -29,15 +33,11 @@ before_install:
   - Rscript -e 'install.packages("RcppEigen")'
   - gh_binary_install  stnava/ITKR ANTsX/ANTsRCore ANTsX/ANTsR
 
+
 before_script:
 #  - pyenv global 3.6
 #  - pip install --upgrade pip==9.0.3
-  - pip install --upgrade pip
-  - pip install --user pyyaml
-  - pip install --user setuptools wheel virtualenv
-  - pip install --user requests Pillow scipy
-  - pip install --user  Pillow scipy
-  - pip install --user  scipy
-  - pip install --user  h5py
-  - pip install --user  keras
+  - pip2.7 install --upgrade --ignore-installed --user travis virtualenv
+  - pip2.7 install --user setuptools wheel
+  - pip2.7 install --upgrade --ignore-installed --user travis keras h5py pyyaml requests Pillow scipy theano tensorflow
   - R -e 'tensorflow::install_tensorflow()'
