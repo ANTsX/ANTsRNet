@@ -130,8 +130,8 @@ BilinearInterpolationLayer2D <- R6::R6Class( "BilinearInterpolationLayer2D",
       y0 <- K$cast( y, dtype = 'int32' )
       y1 <- y0 + 1L
 
-      xMax <- as.integer( unlist( K$int_shape( image ) )[3] ) - 1L
-      yMax <- as.integer( unlist( K$int_shape( image ) )[2] ) - 1L
+      xMax <- as.integer( unlist( K$int_shape( image ) )[2] - 1L )
+      yMax <- as.integer( unlist( K$int_shape( image ) )[1] - 1L )
 
       x0 <- K$clip( x0, 0L, xMax )
       x1 <- K$clip( x1, 0L, xMax )
