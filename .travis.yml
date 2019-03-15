@@ -8,6 +8,7 @@ warnings_are_errors: false # setting this false b/c of rcpp attribute error
 env:
   - KERAS_BACKEND="tensorflow"
   - KERAS_IMPLEMENTATION="tensorflow"
+  - PYTHON=3.6
 
 cache:
   packages: true
@@ -30,8 +31,8 @@ before_install:
 
 before_script:
 #  - pyenv global 3.6
-  - pip install --upgrade pip==9.0.3
-#  - pip install --upgrade --user pip
+#  - pip install --upgrade pip==9.0.3
+  - pip install --upgrade pip
   - pip install --user pyyaml
   - pip install --user setuptools wheel virtualenv
   - pip install --user requests Pillow scipy
