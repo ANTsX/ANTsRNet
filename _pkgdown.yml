@@ -78,8 +78,8 @@ reference:
 - title: Registration and transform helper functions
   desc: ~
   contents:
-  - '`BilinearInterpolationLayer2D`'
-  - '`TrilinearInterpolationLayer3D`'
+  - '`SpatialTransformerLayer2D`'
+  - '`SpatialTransformerLayer3D`'
 - title: Deep Embedded Clustering (DEC) helper functions
   desc: ~
   contents:

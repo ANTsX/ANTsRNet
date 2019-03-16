@@ -83,8 +83,9 @@ createSpatialTransformerNetworkModel2D <- function( inputImageSize,
   weights <- getInitialWeights2D( outputSize = 50L )
   localization <- localization %>% layer_dense( units = 6L, weights = weights )
 
-  outputs <- layer_bilinear_interpolation_2d( list( inputs, localization ),
-    resampledSize, name = "layer_bilinear_interpolation" )
+  outputs <- layer_spatial_transformer_2d( list( inputs, localization ),
+    resampledSize, transformType = 'affine', interpolatorType = 'linear',
+    name = "layer_spatial_transformer" )
   outputs <- outputs %>%
     layer_conv_2d( filters = 32L, kernel_size = c( 3, 3 ), padding = 'same' )
   outputs <- outputs %>% layer_activation_relu()
@@ -191,7 +192,9 @@ createSpatialTransformerNetworkModel3D <- function( inputImageSize,
   weights <- getInitialWeights3D( outputSize = 50L )
   localization <- localization %>% layer_dense( units = 12L, weights = weights )
 
-  outputs <- layer_trilinear_interpolation_3d( list( inputs, localization ), resampledSize )
+  outputs <- layer_spatial_transformer_3d( list( inputs, localization ),
+    resampledSize, transformType = 'affine', interpolatorType = 'linear',
+    name = "layer_spatial_transformer" )
   outputs <- outputs %>%
     layer_conv_3d( filters = 32L, kernel_size = c( 3, 3, 3 ), padding = 'same' )
   outputs <- outputs %>% layer_activation_relu()

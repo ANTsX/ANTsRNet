@@ -1,9 +1,9 @@
-#' Bilinear interpolation layer (2-D)
+#' Spatial transformer layer (2-D)
 #'
 #' @docType class
 #'
 #' @section Usage:
-#' \preformatted{outputs <- layer_bilinear_interpolation_2d( inputs, resampledSize )}
+#' \preformatted{outputs <- layer_spatial_transformer_2d( inputs, resampledSize )}
 #'
 #' @section Arguments:
 #' \describe{
@@ -23,11 +23,11 @@
 #'
 #' @return resampled batch images.
 #'
-#' @name BilinearInterpolationLayer2D
+#' @name SpatialTransformerLayer2D
 NULL
 
 #' @export
-BilinearInterpolationLayer2D <- R6::R6Class( "BilinearInterpolationLayer2D",
+SpatialTransformerLayer2D <- R6::R6Class( "SpatialTransformerLayer2D",
 
   inherit = KerasLayer,
 
@@ -35,7 +35,11 @@ BilinearInterpolationLayer2D <- R6::R6Class( "BilinearInterpolationLayer2D",
 
     resampledSize = NULL,
 
-    initialize = function( resampledSize )
+    transformType = 'affine',
+
+    interpolatorType = 'linear',
+
+    initialize = function( resampledSize, transformType = 'affine', interpolatorType = 'linear' )
       {
       K <- keras::backend()
       if( K$backend() != 'tensorflow' )
@@ -48,6 +52,8 @@ BilinearInterpolationLayer2D <- R6::R6Class( "BilinearInterpolationLayer2D",
         }
 
       self$resampledSize <- resampledSize
+      self$transformType <- tolower( transformType )
+      self$interpolatorType <- tolower( interpolatorType )
       },
 
     call = function( inputs, mask = NULL )
@@ -55,8 +61,13 @@ BilinearInterpolationLayer2D <- R6::R6Class( "BilinearInterpolationLayer2D",
       images <- inputs[[1]]
       transformParameters <- inputs[[2]]
 
-      output <-
-        self$affineTransformImages( images, transformParameters, self$resampledSize )
+      if( self$transformType == 'affine' )
+        {
+        output <-
+          self$affineTransformImages( images, transformParameters, self$resampledSize )
+        } else {
+        stop( "Error:  unsupported transform type." )
+        }
 
       return( output )
       },
@@ -81,7 +92,13 @@ BilinearInterpolationLayer2D <- R6::R6Class( "BilinearInterpolationLayer2D",
       regularGrids <- self$makeRegularGrids( batchSize, resampledSize )
       sampledGrids <- K$batch_dot( transformParameters, regularGrids )
 
-      interpolatedImage <- self$interpolate( images, sampledGrids, resampledSize )
+      if( self$interpolatorType == 'linear' )
+        {
+        interpolatedImage <- self$linearInterpolate( images, sampledGrids, resampledSize )
+        } else {
+        stop( "Error:  unsupported interpolator type." )
+        }
+
       newOutputShape <- reticulate::tuple( batchSize, as.integer( resampledSize[1] ),
         as.integer( resampledSize[2] ), numberOfChannels )
       interpolatedImage <- K$reshape( interpolatedImage, shape = newOutputShape )
@@ -111,7 +128,7 @@ BilinearInterpolationLayer2D <- R6::R6Class( "BilinearInterpolationLayer2D",
       return( regularGrids )
       },
 
-    interpolate = function( images, sampledGrids, resampledSize )
+    linearInterpolate = function( images, sampledGrids, resampledSize )
       {
       K <- keras::backend()
 
@@ -177,21 +194,25 @@ BilinearInterpolationLayer2D <- R6::R6Class( "BilinearInterpolationLayer2D",
 
       return( interpolatedValues )
       }
+
   )
 )
 
-layer_bilinear_interpolation_2d <- function( objects, resampledSize, name = NULL ) {
-create_layer( BilinearInterpolationLayer2D, objects,
-    list( resampledSize = resampledSize, name = name )
+layer_spatial_transformer_2d <- function( objects,
+  resampledSize, transformType = 'affine',
+  interpolatorType = 'linear', name = NULL ) {
+create_layer( SpatialTransformerLayer2D, objects,
+    list( resampledSize = resampledSize, transformType = transformType,
+      interpolatorType = interpolatorType, name = name )
     )
 }
 
-#' Trilinear interpolation layer (3-D)
+#' Spatial transfomer layer (3-D)
 #'
 #' @docType class
 #'
 #' @section Usage:
-#' \preformatted{outputs <- layer_trilinear_interpolation_3d( inputs, resampledSize )}
+#' \preformatted{outputs <- layer_spatial_transformer_3d( inputs, resampledSize )}
 #'
 #' @section Arguments:
 #' \describe{
@@ -211,11 +232,11 @@ create_layer( BilinearInterpolationLayer2D, objects,
 #'
 #' @return resampled batch images.
 #'
-#' @name TrilinearInterpolationLayer3D
+#' @name SpatialTransformerLayer3D
 NULL
 
 #' @export
-TrilinearInterpolationLayer3D <- R6::R6Class( "TrilinearInterpolationLayer3D",
+SpatialTransformerLayer3D <- R6::R6Class( "SpatialTransformerLayer3D",
 
   inherit = KerasLayer,
 
@@ -223,7 +244,11 @@ TrilinearInterpolationLayer3D <- R6::R6Class( "TrilinearInterpolationLayer3D",
 
     resampledSize = NULL,
 
-    initialize = function( resampledSize )
+    transformType = 'affine',
+
+    interpolatorType = 'linear',
+
+    initialize = function( resampledSize, transformType = 'affine', interpolatorType = 'linear' )
       {
       K <- keras::backend()
       if( K$backend() != 'tensorflow' )
@@ -236,6 +261,8 @@ TrilinearInterpolationLayer3D <- R6::R6Class( "TrilinearInterpolationLayer3D",
         }
 
       self$resampledSize <- resampledSize
+      self$transformType <- tolower( transformType )
+      self$interpolatorType <- tolower( interpolatorType )
       },
 
     call = function( inputs, mask = NULL )
@@ -243,8 +270,13 @@ TrilinearInterpolationLayer3D <- R6::R6Class( "TrilinearInterpolationLayer3D",
       images <- inputs[[1]]
       transformParameters <- inputs[[2]]
 
-      output <-
-        self$affineTransformImages( images, transformParameters, self$resampledSize )
+      if( self$transformType == 'affine' )
+        {
+        output <-
+          self$affineTransformImages( images, transformParameters, self$resampledSize )
+        } else {
+        stop( "Error:  unsupported transform type." )
+        }
 
       return( output )
       },
@@ -270,7 +302,13 @@ TrilinearInterpolationLayer3D <- R6::R6Class( "TrilinearInterpolationLayer3D",
       regularGrids <- self$makeRegularGrids( batchSize, resampledSize )
       sampledGrids <- K$batch_dot( transformParameters, regularGrids )
 
-      interpolatedImage <- self$interpolate( images, sampledGrids, resampledSize )
+      if( self$interpolatorType == 'linear' )
+        {
+        interpolatedImage <- self$linearInterpolate( images, sampledGrids, resampledSize )
+        } else {
+        stop( "Error:  unsupported interpolator type." )
+        }
+
       newOutputShape <- reticulate::tuple( batchSize, as.integer( resampledSize[1] ),
         as.integer( resampledSize[2] ), as.integer( resampledSize[3] ), numberOfChannels )
       interpolatedImage <- K$reshape( interpolatedImage, shape = newOutputShape )
@@ -302,7 +340,7 @@ TrilinearInterpolationLayer3D <- R6::R6Class( "TrilinearInterpolationLayer3D",
       return( regularGrids )
       },
 
-    interpolate = function( images, sampledGrids, resampledSize )
+    linearInterpolate = function( images, sampledGrids, resampledSize )
       {
       K <- keras::backend()
 
@@ -405,9 +443,12 @@ TrilinearInterpolationLayer3D <- R6::R6Class( "TrilinearInterpolationLayer3D",
   )
 )
 
-layer_trilinear_interpolation_3d <- function( objects, resampledSize, name = NULL ) {
-create_layer( TrilinearInterpolationLayer3D, objects,
-    list( resampledSize = resampledSize, name = name )
+layer_spatial_transformer_3d <- function( objects,
+  resampledSize, transformType = 'affine',
+  interpolatorType = 'linear', name = NULL ) {
+create_layer( SpatialTransformerLayer3D, objects,
+    list( resampledSize = resampledSize, transformType = transformType,
+      interpolatorType = interpolatorType, name = name )
     )
 }
 
