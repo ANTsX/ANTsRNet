@@ -52,11 +52,11 @@ BilinearInterpolationLayer2D <- R6::R6Class( "BilinearInterpolationLayer2D",
 
     call = function( inputs, mask = NULL )
       {
-      image <- inputs[[1]]
+      images <- inputs[[1]]
       transformParameters <- inputs[[2]]
 
       output <-
-        self$affineTransformImage( image, transformParameters, self$resampledSize )
+        self$affineTransformImages( images, transformParameters, self$resampledSize )
 
       return( output )
       },
@@ -69,19 +69,19 @@ BilinearInterpolationLayer2D <- R6::R6Class( "BilinearInterpolationLayer2D",
           as.integer( self$resampledSize[2] ), numberOfChannels ) )
       },
 
-    affineTransformImage = function( image, affineTransformParameters, resampledSize )
+    affineTransformImages = function( images, affineTransformParameters, resampledSize )
       {
       K <- keras::backend()
 
-      batchSize <- K$shape( image )[1]
-      numberOfChannels <- K$shape( image )[4]
+      batchSize <- K$shape( images )[1]
+      numberOfChannels <- K$shape( images )[4]
       transformParameters <- K$reshape( affineTransformParameters,
         shape = reticulate::tuple( batchSize, 2L, 3L ) )
 
       regularGrids <- self$makeRegularGrids( batchSize, resampledSize )
       sampledGrids <- K$batch_dot( transformParameters, regularGrids )
 
-      interpolatedImage <- self$interpolate( image, sampledGrids, resampledSize )
+      interpolatedImage <- self$interpolate( images, sampledGrids, resampledSize )
       newOutputShape <- reticulate::tuple( batchSize, as.integer( resampledSize[1] ),
         as.integer( resampledSize[2] ), numberOfChannels )
       interpolatedImage <- K$reshape( interpolatedImage, shape = newOutputShape )
@@ -111,14 +111,14 @@ BilinearInterpolationLayer2D <- R6::R6Class( "BilinearInterpolationLayer2D",
       return( regularGrids )
       },
 
-    interpolate = function( image, sampledGrids, resampledSize )
+    interpolate = function( images, sampledGrids, resampledSize )
       {
       K <- keras::backend()
 
-      batchSize <- K$shape( image )[1]
-      height <- K$shape( image )[2]
-      width <- K$shape( image )[3]
-      numberOfChannels <- K$shape( image )[4]
+      batchSize <- K$shape( images )[1]
+      height <- K$shape( images )[2]
+      width <- K$shape( images )[3]
+      numberOfChannels <- K$shape( images )[4]
 
       x <- K$cast( K$flatten( sampledGrids[, 1,] ), dtype = 'float32' )
       y <- K$cast( K$flatten( sampledGrids[, 2,] ), dtype = 'float32' )
@@ -130,8 +130,8 @@ BilinearInterpolationLayer2D <- R6::R6Class( "BilinearInterpolationLayer2D",
       y0 <- K$cast( y, dtype = 'int32' )
       y1 <- y0 + 1L
 
-      xMax <- as.integer( unlist( K$int_shape( image ) )[2] - 1L )
-      yMax <- as.integer( unlist( K$int_shape( image ) )[1] - 1L )
+      xMax <- as.integer( unlist( K$int_shape( images ) )[2] - 1L )
+      yMax <- as.integer( unlist( K$int_shape( images ) )[1] - 1L )
 
       x0 <- K$clip( x0, 0L, xMax )
       x1 <- K$clip( x1, 0L, xMax )
@@ -149,13 +149,13 @@ BilinearInterpolationLayer2D <- R6::R6Class( "BilinearInterpolationLayer2D",
       indices10 <- base + y0 * width + x1
       indices11 <- base + y1 * width + x1
 
-      flatImage <- K$reshape( image, shape = c( -1L, numberOfChannels ) )
-      flatImage <- K$cast( flatImage, dtype = 'float32' )
+      flatImages <- K$reshape( images, shape = c( -1L, numberOfChannels ) )
+      flatImages <- K$cast( flatImages, dtype = 'float32' )
 
-      pixelValues00 <- K$gather( flatImage, indices00 )
-      pixelValues01 <- K$gather( flatImage, indices01 )
-      pixelValues10 <- K$gather( flatImage, indices10 )
-      pixelValues11 <- K$gather( flatImage, indices11 )
+      pixelValues00 <- K$gather( flatImages, indices00 )
+      pixelValues01 <- K$gather( flatImages, indices01 )
+      pixelValues10 <- K$gather( flatImages, indices10 )
+      pixelValues11 <- K$gather( flatImages, indices11 )
 
       x0 <- K$cast( x0, dtype = 'float32' )
       x1 <- K$cast( x1, dtype = 'float32' )
@@ -240,11 +240,11 @@ TrilinearInterpolationLayer3D <- R6::R6Class( "TrilinearInterpolationLayer3D",
 
     call = function( inputs, mask = NULL )
       {
-      image <- inputs[[1]]
+      images <- inputs[[1]]
       transformParameters <- inputs[[2]]
 
       output <-
-        self$affineTransformImage( image, transformParameters, self$resampledSize )
+        self$affineTransformImages( images, transformParameters, self$resampledSize )
 
       return( output )
       },
@@ -258,19 +258,19 @@ TrilinearInterpolationLayer3D <- R6::R6Class( "TrilinearInterpolationLayer3D",
           numberOfChannels ) )
       },
 
-    affineTransformImage = function( image, affineTransformParameters, resampledSize )
+    affineTransformImages = function( images, affineTransformParameters, resampledSize )
       {
       K <- keras::backend()
 
-      batchSize <- K$shape( image )[1]
-      numberOfChannels <- K$shape( image )[5]
+      batchSize <- K$shape( images )[1]
+      numberOfChannels <- K$shape( images )[5]
       transformParameters <- K$reshape( affineTransformParameters,
         shape = reticulate::tuple( batchSize, 3L, 4L ) )
 
       regularGrids <- self$makeRegularGrids( batchSize, resampledSize )
       sampledGrids <- K$batch_dot( transformParameters, regularGrids )
 
-      interpolatedImage <- self$interpolate( image, sampledGrids, resampledSize )
+      interpolatedImage <- self$interpolate( images, sampledGrids, resampledSize )
       newOutputShape <- reticulate::tuple( batchSize, as.integer( resampledSize[1] ),
         as.integer( resampledSize[2] ), as.integer( resampledSize[3] ), numberOfChannels )
       interpolatedImage <- K$reshape( interpolatedImage, shape = newOutputShape )
@@ -302,15 +302,15 @@ TrilinearInterpolationLayer3D <- R6::R6Class( "TrilinearInterpolationLayer3D",
       return( regularGrids )
       },
 
-    interpolate = function( image, sampledGrids, resampledSize )
+    interpolate = function( images, sampledGrids, resampledSize )
       {
       K <- keras::backend()
 
-      batchSize <- K$shape( image )[1]
-      height <- K$shape( image )[2]
-      width <- K$shape( image )[3]
-      depth <- K$shape( image )[4]
-      numberOfChannels <- K$shape( image )[5]
+      batchSize <- K$shape( images )[1]
+      height <- K$shape( images )[2]
+      width <- K$shape( images )[3]
+      depth <- K$shape( images )[4]
+      numberOfChannels <- K$shape( images )[5]
 
       x <- K$cast( K$flatten( sampledGrids[, 1,] ), dtype = 'float32' )
       y <- K$cast( K$flatten( sampledGrids[, 2,] ), dtype = 'float32' )
@@ -327,9 +327,9 @@ TrilinearInterpolationLayer3D <- R6::R6Class( "TrilinearInterpolationLayer3D",
       z0 <- K$cast( z, dtype = 'int32' )
       z1 <- z0 + 1L
 
-      xMax <- as.integer( unlist( K$int_shape( image ) )[2] ) - 1L
-      yMax <- as.integer( unlist( K$int_shape( image ) )[1] ) - 1L
-      zMax <- as.integer( unlist( K$int_shape( image ) )[3] ) - 1L
+      xMax <- as.integer( unlist( K$int_shape( images ) )[2] ) - 1L
+      yMax <- as.integer( unlist( K$int_shape( images ) )[1] ) - 1L
+      zMax <- as.integer( unlist( K$int_shape( images ) )[3] ) - 1L
 
       x0 <- K$clip( x0, 0L, xMax )
       x1 <- K$clip( x1, 0L, xMax )
@@ -353,17 +353,17 @@ TrilinearInterpolationLayer3D <- R6::R6Class( "TrilinearInterpolationLayer3D",
       indices110 <- base + z0 * ( width * height ) + y1 * width + x1
       indices111 <- base + z1 * ( width * height ) + y1 * width + x1
 
-      flatImage <- K$reshape( image, shape = c( -1L, numberOfChannels ) )
-      flatImage <- K$cast( flatImage, dtype = 'float32' )
+      flatImages <- K$reshape( images, shape = c( -1L, numberOfChannels ) )
+      flatImages <- K$cast( flatImages, dtype = 'float32' )
 
-      pixelValues000 <- K$gather( flatImage, indices000 )
-      pixelValues001 <- K$gather( flatImage, indices001 )
-      pixelValues010 <- K$gather( flatImage, indices010 )
-      pixelValues011 <- K$gather( flatImage, indices011 )
-      pixelValues100 <- K$gather( flatImage, indices100 )
-      pixelValues101 <- K$gather( flatImage, indices101 )
-      pixelValues110 <- K$gather( flatImage, indices110 )
-      pixelValues111 <- K$gather( flatImage, indices111 )
+      pixelValues000 <- K$gather( flatImages, indices000 )
+      pixelValues001 <- K$gather( flatImages, indices001 )
+      pixelValues010 <- K$gather( flatImages, indices010 )
+      pixelValues011 <- K$gather( flatImages, indices011 )
+      pixelValues100 <- K$gather( flatImages, indices100 )
+      pixelValues101 <- K$gather( flatImages, indices101 )
+      pixelValues110 <- K$gather( flatImages, indices110 )
+      pixelValues111 <- K$gather( flatImages, indices111 )
 
       x0 <- K$cast( x0, dtype = 'float32' )
       x1 <- K$cast( x1, dtype = 'float32' )

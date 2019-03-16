@@ -70,20 +70,20 @@ createSpatialTransformerNetworkModel2D <- function( inputImageSize,
 
   inputs <- layer_input( shape = inputImageSize )
 
-  outputs <- inputs
-  outputs <- outputs %>% layer_max_pooling_2d( pool_size = c( 2, 2 ) )
-  outputs <- outputs %>% layer_conv_2d( filters = 20, kernel_size = c( 5, 5 ) )
-  outputs <- outputs %>% layer_max_pooling_2d( pool_size = c( 2, 2 ) )
-  outputs <- outputs %>% layer_conv_2d( filters = 20, kernel_size = c( 5, 5 ) )
+  localization <- inputs
+  localization <- localization %>% layer_max_pooling_2d( pool_size = c( 2, 2 ) )
+  localization <- localization %>% layer_conv_2d( filters = 20, kernel_size = c( 5, 5 ) )
+  localization <- localization %>% layer_max_pooling_2d( pool_size = c( 2, 2 ) )
+  localization <- localization %>% layer_conv_2d( filters = 20, kernel_size = c( 5, 5 ) )
 
-  outputs <- outputs %>% layer_flatten()
-  outputs <- outputs %>% layer_dense( units = 50L )
-  outputs <- outputs %>% layer_activation_relu()
+  localization <- localization %>% layer_flatten()
+  localization <- localization %>% layer_dense( units = 50L )
+  localization <- localization %>% layer_activation_relu()
 
   weights <- getInitialWeights2D( outputSize = 50L )
-  outputs <- outputs %>% layer_dense( units = 6L, weights = weights )
+  localization <- localization %>% layer_dense( units = 6L, weights = weights )
 
-  outputs <- layer_bilinear_interpolation_2d( list( inputs, outputs ),
+  outputs <- layer_bilinear_interpolation_2d( list( inputs, localization ),
     resampledSize, name = "layer_bilinear_interpolation" )
   outputs <- outputs %>%
     layer_conv_2d( filters = 32L, kernel_size = c( 3, 3 ), padding = 'same' )
@@ -178,20 +178,20 @@ createSpatialTransformerNetworkModel3D <- function( inputImageSize,
 
   inputs <- layer_input( shape = inputImageSize )
 
-  outputs <- inputs
-  outputs <- outputs %>% layer_max_pooling_3d( pool_size = c( 2, 2, 2 ) )
-  outputs <- outputs %>% layer_conv_3d( filters = 20, kernel_size = c( 5, 5, 5 ) )
-  outputs <- outputs %>% layer_max_pooling_3d( pool_size = c( 2, 2, 2 ) )
-  outputs <- outputs %>% layer_conv_3d( filters = 20, kernel_size = c( 5, 5, 5 ) )
+  localization <- inputs
+  localization <- localization %>% layer_max_pooling_3d( pool_size = c( 2, 2, 2 ) )
+  localization <- localization %>% layer_conv_3d( filters = 20, kernel_size = c( 5, 5, 5 ) )
+  localization <- localization %>% layer_max_pooling_3d( pool_size = c( 2, 2, 2 ) )
+  localization <- localization %>% layer_conv_3d( filters = 20, kernel_size = c( 5, 5, 5 ) )
 
-  outputs <- outputs %>% layer_flatten()
-  outputs <- outputs %>% layer_dense( units = 50L )
-  outputs <- outputs %>% layer_activation_relu()
+  localization <- localization %>% layer_flatten()
+  localization <- localization %>% layer_dense( units = 50L )
+  localization <- localization %>% layer_activation_relu()
 
   weights <- getInitialWeights3D( outputSize = 50L )
-  outputs <- outputs %>% layer_dense( units = 12L, weights = weights )
+  localization <- localization %>% layer_dense( units = 12L, weights = weights )
 
-  outputs <- layer_trilinear_interpolation_3d( list( inputs, outputs ), resampledSize )
+  outputs <- layer_trilinear_interpolation_3d( list( inputs, localization ), resampledSize )
   outputs <- outputs %>%
     layer_conv_3d( filters = 32L, kernel_size = c( 3, 3, 3 ), padding = 'same' )
   outputs <- outputs %>% layer_activation_relu()
