@@ -170,7 +170,7 @@ BilinearInterpolationLayer2D <- R6::R6Class( "BilinearInterpolationLayer2D",
       interpolatedValues00 <- weight00 * pixelValues00
       interpolatedValues01 <- weight01 * pixelValues01
       interpolatedValues10 <- weight10 * pixelValues10
-      interpolatedValues11 <- weight10 * pixelValues11
+      interpolatedValues11 <- weight11 * pixelValues11
 
       interpolatedValues <- interpolatedValues00 + interpolatedValues01 +
         interpolatedValues10 + interpolatedValues11
