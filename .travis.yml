@@ -26,10 +26,11 @@ before_install:
   - wget -O travis_helpers.sh http://bit.ly/travis_helpers
   - source travis_helpers.sh
   - rm travis_helpers.sh
-  - echo "YESSAH"
+  - start_xvfb ;
+  - v8_install ;
   - Rscript -e 'install.packages("rsvd")'
   - Rscript -e 'install.packages("magic")'
-  - Rscript -e 'install.packages("psych")'
+  - Rscript -e 'install.packages(c("psych","colormap"))'
   - Rscript -e 'install.packages("RcppEigen")'
   - gh_binary_install  stnava/ITKR ANTsX/ANTsRCore ANTsX/ANTsR
 
