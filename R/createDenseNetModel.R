@@ -89,7 +89,7 @@ createDenseNetModel2D <- function( inputImageSize,
   concatenationAxis <- 1
   if( K$image_data_format() == 'channels_last' )
     {
-    concatenationAxis <- 4
+    concatenationAxis <- -1
     }
 
   convolutionFactory2D <- function( model, numberOfFilters, kernelSize = c( 3, 3 ),
@@ -122,13 +122,12 @@ createDenseNetModel2D <- function( inputImageSize,
   createDenseBlocks2D <- function( model, numberOfFilters, depth, growthRate,
     dropoutRate = 0.0, weightDecay = 1e-4 )
     {
-
     denseBlockLayers <- list( model )
-    for( i in 1:depth )
+    for( i in seq_len( depth ) )
       {
       model <- convolutionFactory2D( model, numberOfFilters = growthRate,
         kernelSize = c( 3, 3 ), dropoutRate = dropoutRate, weightDecay = weightDecay )
-      denseBlockLayers[[i+1]] <- model
+      denseBlockLayers[[i + 1]] <- model
       model <- layer_concatenate( denseBlockLayers, axis = concatenationAxis )
       numberOfFilters <- numberOfFilters + growthRate
       }
@@ -152,7 +151,7 @@ createDenseNetModel2D <- function( inputImageSize,
 
   nFilters <- numberOfFilters
 
-  for( i in 1:( numberOfDenseBlocks - 1 ) )
+  for( i in seq_len( numberOfDenseBlocks - 1 ) )
     {
     denseBlockLayer <- createDenseBlocks2D( outputs, numberOfFilters = nFilters,
       depth = numberOfLayers, growthRate = growthRate, dropoutRate = dropoutRate,
@@ -294,7 +293,7 @@ createDenseNetModel3D <- function( inputImageSize,
   concatenationAxis <- 1
   if( K$image_data_format() == 'channels_last' )
     {
-    concatenationAxis <- 5
+    concatenationAxis <- -1
     }
 
   convolutionFactory3D <- function( model, numberOfFilters, kernelSize = c( 3, 3, 3 ),
@@ -328,11 +327,11 @@ createDenseNetModel3D <- function( inputImageSize,
     dropoutRate = 0.0, weightDecay = 1e-4 )
     {
     denseBlockLayers <- list( model )
-    for( i in 1:depth )
+    for( i in seq_len( depth ) )
       {
       model <- convolutionFactory3D( model, numberOfFilters = growthRate,
         kernelSize = c( 3, 3, 3 ), dropoutRate = dropoutRate, weightDecay = weightDecay )
-      denseBlockLayers[[i+1]] <- model
+      denseBlockLayers[[i + 1]] <- model
       model <- layer_concatenate( denseBlockLayers, axis = concatenationAxis )
       numberOfFilters <- numberOfFilters + growthRate
       }
@@ -357,7 +356,7 @@ createDenseNetModel3D <- function( inputImageSize,
 
   nFilters <- numberOfFilters
 
-  for( i in 1:( numberOfDenseBlocks - 1 ) )
+  for( i in seq_len( numberOfDenseBlocks - 1 ) )
     {
     denseBlockLayer <- createDenseBlocks3D( outputs, numberOfFilters = nFilters,
       depth = numberOfLayers, growthRate = growthRate, dropoutRate = dropoutRate,
