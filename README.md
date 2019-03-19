@@ -21,6 +21,8 @@ Documentation page [https://antsx.github.io/ANTsRNet/](https://antsx.github.io/A
     * [Fausto Milletari, Nassir Navab, Seyed-Ahmad Ahmadi. V-Net: Fully Convolutional Neural Networks for Volumetric Medical Image Segmentation.](https://arxiv.org/pdf/1606.04797.pdf)
 * U-Net + ResNet (2-D, 3-D)
     * [Michal Drozdzal, Eugene Vorontsov, Gabriel Chartrand, Samuel Kadoury, and Chris Pal.  The Importance of Skip Connections in Biomedical Image Segmentation.](https://arxiv.org/abs/1608.04117)
+* __WIP:__  Dense U-Net (2-D, 3-D)
+    * [X. Li, H. Chen, X. Qi, Q. Dou, C.-W. Fu, P.-A. Heng. H-DenseUNet: Hybrid Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes.](https://arxiv.org/pdf/1709.07330.pdf)
 
 ### Image classification/regression
 
