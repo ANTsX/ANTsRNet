@@ -36,15 +36,17 @@ ScaleLayer <- R6::R6Class( "ScaleLayer",
 
   inherit = KerasLayer,
 
+  lock_objects = FALSE,
+
   public = list(
 
     axis = -1,
 
     momentum = 0.9,
 
-    betaInitializer = initializer_zeros(),
+    betaInitializer = NULL,
 
-    gammaInitializer = initializer_ones(),
+    gammaInitializer = NULL,
 
     weights = NULL,
 
@@ -65,7 +67,7 @@ ScaleLayer <- R6::R6Class( "ScaleLayer",
 
       self$inputShape <- input_shape
 
-      shape <- as.integer( input_shape[[self$channelAxis]] )
+      shape <- as.integer( input_shape[[self$axis]] )
 
       self$gamma <- K$variable( variable = self$gammaInitializer( shape ) )
       self$beta <- K$variable( variable = self$betaInitializer( shape ) )
@@ -95,7 +97,8 @@ ScaleLayer <- R6::R6Class( "ScaleLayer",
 )
 
 layer_scale <- function( objects,
-  axis, momentum, betaInitializer, gammaInitializer, weights ) {
+  axis = -1, momentum = 0.9, betaInitializer = initializer_zeros(),
+  gammaInitializer = initializer_ones(), weights = NULL ) {
 create_layer( ScaleLayer, objects,
     list( axis = axis, momentum = momentum, betaInitializer = betaInitializer,
       gammaInitializer = gammaInitializer, weights = weights )

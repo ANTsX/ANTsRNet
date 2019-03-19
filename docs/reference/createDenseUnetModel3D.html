@@ -108,7 +108,7 @@ image segmentation</p>
     <pre class="usage"><span class='fu'>createDenseUnetModel3D</span>(<span class='no'>inputImageSize</span>, <span class='kw'>numberOfOutputs</span> <span class='kw'>=</span> <span class='fl'>1</span>,
   <span class='kw'>numberOfLayersPerDenseBlock</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>3</span>, <span class='fl'>4</span>, <span class='fl'>12</span>, <span class='fl'>8</span>), <span class='kw'>growthRate</span> <span class='kw'>=</span> <span class='fl'>48</span>,
   <span class='kw'>initialNumberOfFilters</span> <span class='kw'>=</span> <span class='fl'>96</span>, <span class='kw'>reductionRate</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>depth</span> <span class='kw'>=</span> <span class='fl'>7</span>,
-  <span class='kw'>dropoutRate</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>weightDecay</span> <span class='kw'>=</span> <span class='fl'>1e-04</span>, <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"classification"</span>)</pre>
+  <span class='kw'>dropoutRate</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>weightDecay</span> <span class='kw'>=</span> <span class='fl'>0.0001</span>, <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"classification"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -216,32 +216,7 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 
 <span class='no'>X_train</span> <span class='kw'>&lt;-</span> ( <span class='no'>X_train</span> - <span class='fu'>mean</span>( <span class='no'>X_train</span> ) ) / <span class='fu'>sd</span>( <span class='no'>X_train</span> )
 
-<span class='co'># Create the model</span>
-
-<span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='createDenseUnetModel2D.html'>createDenseUnetModel2D</a></span>( <span class='fu'>c</span>( <span class='fu'>dim</span>( <span class='no'>domainImage</span> ), <span class='fl'>1</span> ),
-  <span class='kw'>numberOfOutputs</span> <span class='kw'>=</span> <span class='no'>numberOfLabels</span> )</div><div class='output co'>#&gt; <span class='error'>Error in eval(lhs, parent, parent): object 'outputs' not found</span></div><div class='input'>
-<span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/compile'>compile</a></span>( <span class='kw'>loss</span> <span class='kw'>=</span> <span class='no'>loss_multilabel_dice_coefficient_error</span>,
-  <span class='kw'>optimizer</span> <span class='kw'>=</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/optimizer_adam'>optimizer_adam</a></span>( <span class='kw'>lr</span> <span class='kw'>=</span> <span class='fl'>0.0001</span> ),
-  <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='fu'>c</span>( <span class='no'>multilabel_dice_coefficient</span> ) )</div><div class='output co'>#&gt; <span class='error'>Error in eval(lhs, parent, parent): object 'model' not found</span></div><div class='input'>
-# Comment out the rest due to travis build constraints
-
-# Fit the model
-
-# track <- model %>% fit( X_train, Y_train,
-#              epochs = 100, batch_size = 4, verbose = 1, shuffle = TRUE,
-#              callbacks = list(
-#                callback_model_checkpoint( "unetModelInterimWeights.h5",
-#                    monitor = 'val_loss', save_best_only = TRUE ),
-#                callback_reduce_lr_on_plateau( monitor = "val_loss", factor = 0.1 )
-#              ),
-#              validation_split = 0.2 )
-
-# Save the model and/or save the model weights
-
-# save_model_hdf5( model, filepath = 'unetModel.h5' )
-# save_model_weights_hdf5( unetModel, filepath = 'unetModelWeights.h5' ) )
-
-</div></pre>
+<span class='co'># Create the model</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

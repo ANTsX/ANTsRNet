@@ -95,12 +95,12 @@ X_train <- ( X_train - mean( X_train ) ) / sd( X_train )
 
 # Create the model
 
-model <- createDenseUnetModel2D( c( dim( domainImage ), 1 ),
-  numberOfOutputs = numberOfLabels )
+# model <- createDenseUnetModel2D( c( dim( domainImage ), 1 ),
+#  numberOfOutputs = numberOfLabels )
 
-model \%>\% compile( loss = loss_multilabel_dice_coefficient_error,
-  optimizer = optimizer_adam( lr = 0.0001 ),
-  metrics = c( multilabel_dice_coefficient ) )
+# model \%>\% compile( loss = loss_multilabel_dice_coefficient_error,
+#  optimizer = optimizer_adam( lr = 0.0001 ),
+#  metrics = c( multilabel_dice_coefficient ) )
 
 # Comment out the rest due to travis build constraints
 

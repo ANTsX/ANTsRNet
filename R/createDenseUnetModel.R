@@ -74,12 +74,12 @@
 #'
 #' # Create the model
 #'
-#' model <- createDenseUnetModel2D( c( dim( domainImage ), 1 ),
-#'   numberOfOutputs = numberOfLabels )
+#' # model <- createDenseUnetModel2D( c( dim( domainImage ), 1 ),
+#' #  numberOfOutputs = numberOfLabels )
 #'
-#' model %>% compile( loss = loss_multilabel_dice_coefficient_error,
-#'   optimizer = optimizer_adam( lr = 0.0001 ),
-#'   metrics = c( multilabel_dice_coefficient ) )
+#' # model %>% compile( loss = loss_multilabel_dice_coefficient_error,
+#' #  optimizer = optimizer_adam( lr = 0.0001 ),
+#' #  metrics = c( multilabel_dice_coefficient ) )
 #'
 #' # Comment out the rest due to travis build constraints
 #'
@@ -129,7 +129,7 @@ createDenseUnetModel2D <- function( inputImageSize,
     model <- model %>% layer_batch_normalization( axis = concatenationAxis,
       gamma_regularizer = regularizer_l2( weightDecay ),
       beta_regularizer = regularizer_l2( weightDecay ) )
-    model <- model %>% layer_scale( axis = concatenationAxis )
+    # model <- model %>% layer_scale( axis = concatenationAxis )
     model <- model %>% layer_activation( activation = 'relu' )
     model <- model %>% layer_conv_2d( filters = numberOfFilters * 4,
       kernel_size = c( 1, 1 ), use_bias = FALSE )
@@ -143,7 +143,7 @@ createDenseUnetModel2D <- function( inputImageSize,
 
     model <- model %>% layer_batch_normalization( axis = concatenationAxis,
       epsilon = 1.1e-5 )
-    model <- model %>% layer_scale( axis = concatenationAxis )
+    # model <- model %>% layer_scale( axis = concatenationAxis )
     model <- model %>% layer_activation( activation = 'relu' )
     model <- model %>% layer_zero_padding_2d( padding = c( 1, 1 ) )
     model <- model %>% layer_conv_2d( filters = numberOfFilters * 4,
@@ -163,7 +163,7 @@ createDenseUnetModel2D <- function( inputImageSize,
     model <- model %>% layer_batch_normalization( axis = concatenationAxis,
       gamma_regularizer = regularizer_l2( weightDecay ),
       beta_regularizer = regularizer_l2( weightDecay ) )
-    model <- model %>% layer_scale( axis = concatenationAxis )
+    # model <- model %>% layer_scale( axis = concatenationAxis )
     model <- model %>% layer_activation( activation = 'relu' )
     model <- model %>% layer_conv_2d( filters = numberOfFilters * 4,
       kernel_size = c( 1, 1 ), use_bias = FALSE )
@@ -209,12 +209,12 @@ createDenseUnetModel2D <- function( inputImageSize,
 
   # Initial convolution
 
-  outputs <- outputs %>% layer_zero_padding_2d( padding = c( 3, 3 ) )
+  outputs <- inputs %>% layer_zero_padding_2d( padding = c( 3, 3 ) )
   outputs <- outputs %>% layer_conv_2d( filters = initialNumberOfFilters,
     kernel_size = c( 7, 7 ), strides = c( 2, 2 ), use_bias = FALSE )
   outputs <- outputs %>% layer_batch_normalization( epsilon = 1.1e-5,
     axis = concatenationAxis )
-  outputs <- outputs %>% layer_scale( axis = concatenationAxis )
+  # outputs <- outputs %>% layer_scale( axis = concatenationAxis )
   outputs <- outputs %>% layer_activation_relu()
 
   boxLayers[[boxCount]] <- outputs
@@ -256,7 +256,7 @@ createDenseUnetModel2D <- function( inputImageSize,
 
   outputs <- outputs %>% layer_batch_normalization( epsilon = 1.1e-5,
     axis = concatenationAxis )
-  outputs <- outputs %>% layer_scale( axis = concatenationAxis )
+  # outputs <- outputs %>% layer_scale( axis = concatenationAxis )
   outputs <- outputs %>% layer_activation_relu()
 
   boxLayers[[boxCount]] <- outputs
@@ -386,31 +386,6 @@ createDenseUnetModel2D <- function( inputImageSize,
 #'
 #' # Create the model
 #'
-#' model <- createDenseUnetModel2D( c( dim( domainImage ), 1 ),
-#'   numberOfOutputs = numberOfLabels )
-#'
-#' model %>% compile( loss = loss_multilabel_dice_coefficient_error,
-#'   optimizer = optimizer_adam( lr = 0.0001 ),
-#'   metrics = c( multilabel_dice_coefficient ) )
-#'
-#' # Comment out the rest due to travis build constraints
-#'
-#' # Fit the model
-#'
-#' # track <- model %>% fit( X_train, Y_train,
-#' #              epochs = 100, batch_size = 4, verbose = 1, shuffle = TRUE,
-#' #              callbacks = list(
-#' #                callback_model_checkpoint( "unetModelInterimWeights.h5",
-#' #                    monitor = 'val_loss', save_best_only = TRUE ),
-#' #                callback_reduce_lr_on_plateau( monitor = "val_loss", factor = 0.1 )
-#' #              ),
-#' #              validation_split = 0.2 )
-#'
-#' # Save the model and/or save the model weights
-#'
-#' # save_model_hdf5( model, filepath = 'unetModel.h5' )
-#' # save_model_weights_hdf5( unetModel, filepath = 'unetModelWeights.h5' ) )
-#'
 #' @import keras
 #' @export
 createDenseUnetModel3D <- function( inputImageSize,
@@ -441,7 +416,7 @@ createDenseUnetModel3D <- function( inputImageSize,
     model <- model %>% layer_batch_normalization( axis = concatenationAxis,
       gamma_regularizer = regularizer_l2( weightDecay ),
       beta_regularizer = regularizer_l2( weightDecay ) )
-    model <- model %>% layer_scale( axis = concatenationAxis )
+    # model <- model %>% layer_scale( axis = concatenationAxis )
     model <- model %>% layer_activation( activation = 'relu' )
     model <- model %>% layer_conv_3d( filters = numberOfFilters * 4,
       kernel_size = c( 1, 1, 1 ), use_bias = FALSE )
@@ -455,7 +430,7 @@ createDenseUnetModel3D <- function( inputImageSize,
 
     model <- model %>% layer_batch_normalization( axis = concatenationAxis,
       epsilon = 1.1e-5 )
-    model <- model %>% layer_scale( axis = concatenationAxis )
+    # model <- model %>% layer_scale( axis = concatenationAxis )
     model <- model %>% layer_activation( activation = 'relu' )
     model <- model %>% layer_zero_padding_3d( padding = c( 1, 1, 1 ) )
     model <- model %>% layer_conv_3d( filters = numberOfFilters * 4,
@@ -475,7 +450,7 @@ createDenseUnetModel3D <- function( inputImageSize,
     model <- model %>% layer_batch_normalization( axis = concatenationAxis,
       gamma_regularizer = regularizer_l2( weightDecay ),
       beta_regularizer = regularizer_l2( weightDecay ) )
-    model <- model %>% layer_scale( axis = concatenationAxis )
+    # model <- model %>% layer_scale( axis = concatenationAxis )
     model <- model %>% layer_activation( activation = 'relu' )
     model <- model %>% layer_conv_3d( filters = numberOfFilters * 4,
       kernel_size = c( 1, 1, 1 ), use_bias = FALSE )
@@ -521,12 +496,12 @@ createDenseUnetModel3D <- function( inputImageSize,
 
   # Initial convolution
 
-  outputs <- outputs %>% layer_zero_padding_3d( padding = c( 3, 3, 3 ) )
+  outputs <- inputs %>% layer_zero_padding_3d( padding = c( 3, 3, 3 ) )
   outputs <- outputs %>% layer_conv_3d( filters = initialNumberOfFilters,
     kernel_size = c( 7, 7, 7 ), strides = c( 2, 2, 2 ), use_bias = FALSE )
   outputs <- outputs %>% layer_batch_normalization( epsilon = 1.1e-5,
     axis = concatenationAxis )
-  outputs <- outputs %>% layer_scale( axis = concatenationAxis )
+  # outputs <- outputs %>% layer_scale( axis = concatenationAxis )
   outputs <- outputs %>% layer_activation_relu()
 
   boxLayers[[boxCount]] <- outputs
@@ -568,7 +543,7 @@ createDenseUnetModel3D <- function( inputImageSize,
 
   outputs <- outputs %>% layer_batch_normalization( epsilon = 1.1e-5,
     axis = concatenationAxis )
-  outputs <- outputs %>% layer_scale( axis = concatenationAxis )
+  # outputs <- outputs %>% layer_scale( axis = concatenationAxis )
   outputs <- outputs %>% layer_activation_relu()
 
   boxLayers[[boxCount]] <- outputs
