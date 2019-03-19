@@ -84,11 +84,18 @@ createDenseNetModel2D <- function( inputImageSize,
                                    mode = 'classification'
                                  )
 {
+  K <- keras::backend()
+
+  concatenationAxis <- 1
+  if( K$image_data_format() == 'channels_last' )
+    {
+    concatenationAxis <- 4
+    }
 
   convolutionFactory2D <- function( model, numberOfFilters, kernelSize = c( 3, 3 ),
                                     dropoutRate = 0.0, weightDecay = 1e-4 )
     {
-    model <- model %>% layer_batch_normalization( axis = 1,
+    model <- model %>% layer_batch_normalization( axis = concatenationAxis,
       gamma_regularizer = regularizer_l2( weightDecay ),
       beta_regularizer = regularizer_l2( weightDecay ) )
     model <- model %>% layer_activation( activation = 'relu' )
@@ -115,14 +122,6 @@ createDenseNetModel2D <- function( inputImageSize,
   createDenseBlocks2D <- function( model, numberOfFilters, depth, growthRate,
     dropoutRate = 0.0, weightDecay = 1e-4 )
     {
-
-    K <- keras::backend()
-
-    concatenationAxis <- 1
-    if( K$image_data_format() == 'channels_last' )
-      {
-      concatenationAxis <- -1
-      }
 
     denseBlockLayers <- list( model )
     for( i in 1:depth )
@@ -171,7 +170,7 @@ createDenseNetModel2D <- function( inputImageSize,
   outputs <- denseBlockLayer$model
   nFilters <- denseBlockLayer$numberOfFilters
 
-  outputs <- outputs %>% layer_batch_normalization( axis = 1,
+  outputs <- outputs %>% layer_batch_normalization( axis = concatenationAxis,
     gamma_regularizer = regularizer_l2( weightDecay ),
     beta_regularizer = regularizer_l2( weightDecay ) )
 
@@ -290,11 +289,18 @@ createDenseNetModel3D <- function( inputImageSize,
                                    mode = 'classification'
                                  )
 {
+  K <- keras::backend()
+
+  concatenationAxis <- 1
+  if( K$image_data_format() == 'channels_last' )
+    {
+    concatenationAxis <- 5
+    }
 
   convolutionFactory3D <- function( model, numberOfFilters, kernelSize = c( 3, 3, 3 ),
                                     dropoutRate = 0.0, weightDecay = 1e-4 )
     {
-    model <- model %>% layer_batch_normalization( axis = 1,
+    model <- model %>% layer_batch_normalization( axis = concatenationAxis,
       gamma_regularizer = regularizer_l2( weightDecay ),
       beta_regularizer = regularizer_l2( weightDecay ) )
     model <- model %>% layer_activation( activation = 'relu' )
@@ -321,15 +327,6 @@ createDenseNetModel3D <- function( inputImageSize,
   createDenseBlocks3D <- function( model, numberOfFilters, depth, growthRate,
     dropoutRate = 0.0, weightDecay = 1e-4 )
     {
-
-    K <- keras::backend()
-
-    concatenationAxis <- 1
-    if( K$image_data_format() == 'channels_last' )
-      {
-      concatenationAxis <- -1
-      }
-
     denseBlockLayers <- list( model )
     for( i in 1:depth )
       {
@@ -378,7 +375,7 @@ createDenseNetModel3D <- function( inputImageSize,
   outputs <- denseBlockLayer$model
   nFilters <- denseBlockLayer$numberOfFilters
 
-  outputs <- outputs %>% layer_batch_normalization( axis = 1,
+  outputs <- outputs %>% layer_batch_normalization( axis = concatenationAxis,
     gamma_regularizer = regularizer_l2( weightDecay ),
     beta_regularizer = regularizer_l2( weightDecay ) )
 
