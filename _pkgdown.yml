@@ -42,11 +42,14 @@ reference:
   - '`createUnetModel3D`'
   - '`createResUnetModel2D`'
   - '`createResUnetModel3D`'
-- title: U-net-specific helper functions
+  - '`createDenseUnetModel2D`'
+  - '`createDenseUnetModel3D`'
+- title: Segmentation-specific helper functions
   desc: ~
   contents:
   - '`decodeUnet`'
   - '`encodeUnet`'
+  - '`ScaleLayer`'
 - title: Super-resolution models
   desc: ~
   contents:

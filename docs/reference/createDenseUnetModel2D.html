@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>3-D implementation of the Resnet + U-net deep learning architecture. — createResUnetModel3D • ANTsRNet</title>
+<title>2-D implementation of the dense U-net deep learning architecture. — createDenseUnetModel2D • ANTsRNet</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,10 +30,10 @@
 
 
 
-<meta property="og:title" content="3-D implementation of the Resnet + U-net deep learning architecture. — createResUnetModel3D" />
+<meta property="og:title" content="2-D implementation of the dense U-net deep learning architecture. — createDenseUnetModel2D" />
 
-<meta property="og:description" content="Creates a keras model of the U-net + ResNet deep learning architecture for
-image segmentation and regression with the paper available here:" />
+<meta property="og:description" content="Creates a keras model of the dense U-net deep learning architecture for
+image segmentation" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -93,23 +93,22 @@ image segmentation and regression with the paper available here:" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>3-D implementation of the Resnet + U-net deep learning architecture.</h1>
+    <h1>2-D implementation of the dense U-net deep learning architecture.</h1>
     
-    <div class="hidden name"><code>createResUnetModel3D.Rd</code></div>
+    <div class="hidden name"><code>createDenseUnetModel2D.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Creates a keras model of the U-net + ResNet deep learning architecture for
-image segmentation and regression with the paper available here:</p>
+    <p>Creates a keras model of the dense U-net deep learning architecture for
+image segmentation</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>createResUnetModel3D</span>(<span class='no'>inputImageSize</span>, <span class='kw'>numberOfOutputs</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>numberOfFiltersAtBaseLayer</span> <span class='kw'>=</span> <span class='fl'>32</span>, <span class='kw'>bottleNeckBlockDepthSchedule</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>3</span>,
-  <span class='fl'>4</span>), <span class='kw'>convolutionKernelSize</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>3</span>, <span class='fl'>3</span>, <span class='fl'>3</span>),
-  <span class='kw'>deconvolutionKernelSize</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>2</span>, <span class='fl'>2</span>, <span class='fl'>2</span>), <span class='kw'>dropoutRate</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>weightDecay</span> <span class='kw'>=</span> <span class='fl'>1e-04</span>, <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"classification"</span>)</pre>
+    <pre class="usage"><span class='fu'>createDenseUnetModel2D</span>(<span class='no'>inputImageSize</span>, <span class='kw'>numberOfOutputs</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>numberOfLayersPerDenseBlock</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>6</span>, <span class='fl'>12</span>, <span class='fl'>36</span>, <span class='fl'>24</span>), <span class='kw'>growthRate</span> <span class='kw'>=</span> <span class='fl'>48</span>,
+  <span class='kw'>initialNumberOfFilters</span> <span class='kw'>=</span> <span class='fl'>96</span>, <span class='kw'>reductionRate</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>depth</span> <span class='kw'>=</span> <span class='fl'>7</span>,
+  <span class='kw'>dropoutRate</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>weightDecay</span> <span class='kw'>=</span> <span class='fl'>1e-04</span>, <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"classification"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -118,8 +117,7 @@ image segmentation and regression with the paper available here:</p>
       <th>inputImageSize</th>
       <td><p>Used for specifying the input tensor shape.  The
 shape (or dimension) of that tensor is the image dimensions followed by
-the number of channels (e.g., red, green, and blue).  The batch size
-(i.e., number of training images) is not specified a priori.</p></td>
+the number of channels (e.g., red, green, and blue).</p></td>
     </tr>
     <tr>
       <th>numberOfOutputs</th>
@@ -128,50 +126,50 @@ the number of channels (e.g., red, green, and blue).  The batch size
 this is the number of outputs.</p></td>
     </tr>
     <tr>
-      <th>numberOfFiltersAtBaseLayer</th>
-      <td><p>number of filters at the beginning and end
-of the <code>'U'</code>.  Doubles at each descending/ascending layer.</p></td>
+      <th>growthRate</th>
+      <td><p>number of filters to add for each dense block layer
+(default = 48).</p></td>
     </tr>
     <tr>
-      <th>bottleNeckBlockDepthSchedule</th>
-      <td><p>vector that provides the encoding layer
-schedule for the number of bottleneck blocks per long skip connection.</p></td>
+      <th>initialNumberOfFilters</th>
+      <td><p>number of filters at the beginning</p></td>
     </tr>
     <tr>
-      <th>convolutionKernelSize</th>
-      <td><p>2-d vector defining the kernel size
-during the encoding path</p></td>
+      <th>reductionRate</th>
+      <td><p>reduction factor of transition blocks</p></td>
     </tr>
     <tr>
-      <th>deconvolutionKernelSize</th>
-      <td><p>2-d vector defining the kernel size
-during the decoding</p></td>
+      <th>depth</th>
+      <td><p>number of layers---must be equal to 3 * N + 4 where
+N is an integer (default = 7).</p></td>
     </tr>
     <tr>
       <th>dropoutRate</th>
-      <td><p>float between 0 and 1 to use between dense layers.</p></td>
+      <td><p>= per drop out layer rate (default = 0.2)</p></td>
     </tr>
     <tr>
       <th>weightDecay</th>
-      <td><p>weighting parameter for L2 regularization of the
-kernel weights of the convolution layers.  Default = 0.0.</p></td>
+      <td><p>= weight decay (default = 1e-4)</p></td>
     </tr>
     <tr>
-      <th>mode</th>
-      <td><p>'classification' or 'regression'.  Default = 'classification'.</p></td>
+      <th>numberOfLayersPerDenseBlocks</th>
+      <td><p>number of dense blocks per layer
+(default = 1).</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a u-net keras model</p>
+    <p>an DenseUnet keras model</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p><a href='https://arxiv.org/abs/1608.04117'>https://arxiv.org/abs/1608.04117</a></p>
-<p>This particular implementation was ported from the following python
-implementation:</p>
-<p><a href='https://github.com/veugene/fcn_maker/'>https://github.com/veugene/fcn_maker/</a></p>
+    <p>X. Li, H. Chen, X. Qi, Q. Dou, C.-W. Fu, P.-A. Heng. H-DenseUNet: Hybrid
+Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
+<p>available here:</p>
+<p>https://arxiv.org/pdf/1709.07330.pdf</p>
+<p>with the author's implementation available at:</p>
+<p>https://github.com/xmengli999/H-DenseUNet</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -219,30 +217,30 @@ implementation:</p>
 
 <span class='co'># Create the model</span>
 
-<span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='createResUnetModel2D.html'>createResUnetModel2D</a></span>( <span class='fu'>c</span>( <span class='fu'>dim</span>( <span class='no'>domainImage</span> ), <span class='fl'>1</span> ),
-  <span class='kw'>numberOfOutputs</span> <span class='kw'>=</span> <span class='no'>numberOfLabels</span> )
-
+<span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'>createDenseUnetModel2D</span>( <span class='fu'>c</span>( <span class='fu'>dim</span>( <span class='no'>domainImage</span> ), <span class='fl'>1</span> ),
+  <span class='kw'>numberOfOutputs</span> <span class='kw'>=</span> <span class='no'>numberOfLabels</span> )</div><div class='output co'>#&gt; <span class='error'>Error in eval(lhs, parent, parent): object 'outputs' not found</span></div><div class='input'>
 <span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/compile'>compile</a></span>( <span class='kw'>loss</span> <span class='kw'>=</span> <span class='no'>loss_multilabel_dice_coefficient_error</span>,
   <span class='kw'>optimizer</span> <span class='kw'>=</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/optimizer_adam'>optimizer_adam</a></span>( <span class='kw'>lr</span> <span class='kw'>=</span> <span class='fl'>0.0001</span> ),
-  <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='fu'>c</span>( <span class='no'>multilabel_dice_coefficient</span> ) )
+  <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='fu'>c</span>( <span class='no'>multilabel_dice_coefficient</span> ) )</div><div class='output co'>#&gt; <span class='error'>Error in eval(lhs, parent, parent): object 'model' not found</span></div><div class='input'>
+# Comment out the rest due to travis build constraints
 
-<span class='co'># Comment out the rest due to travis build constraints</span>
+# Fit the model
 
-<span class='co'># Fit the model</span>
+# track <- model %>% fit( X_train, Y_train,
+#              epochs = 100, batch_size = 4, verbose = 1, shuffle = TRUE,
+#              callbacks = list(
+#                callback_model_checkpoint( "unetModelInterimWeights.h5",
+#                    monitor = 'val_loss', save_best_only = TRUE ),
+#                callback_reduce_lr_on_plateau( monitor = "val_loss", factor = 0.1 )
+#              ),
+#              validation_split = 0.2 )
 
-<span class='co'># track &lt;- model %&gt;% fit( X_train, Y_train,</span>
-<span class='co'>#              epochs = 100, batch_size = 4, verbose = 1, shuffle = TRUE,</span>
-<span class='co'>#              callbacks = list(</span>
-<span class='co'>#                callback_model_checkpoint( "resUnetModelInterimWeights.h5",</span>
-<span class='co'>#                    monitor = 'val_loss', save_best_only = TRUE ),</span>
-<span class='co'>#                callback_reduce_lr_on_plateau( monitor = "val_loss", factor = 0.1 )</span>
-<span class='co'>#              ),</span>
-<span class='co'>#              validation_split = 0.2 )</span>
+# Save the model and/or save the model weights
 
-<span class='co'># Save the model and/or save the model weights</span>
+# save_model_hdf5( model, filepath = 'unetModel.h5' )
+# save_model_weights_hdf5( unetModel, filepath = 'unetModelWeights.h5' ) )
 
-<span class='co'># save_model_hdf5( model, filepath = 'resUnetModel.h5' )</span>
-<span class='co'># save_model_weights_hdf5( unetModel, filepath = 'resUnetModelWeights.h5' ) )</span></div></pre>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
