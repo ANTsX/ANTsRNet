@@ -108,7 +108,7 @@ image segmentation</p>
     <pre class="usage"><span class='fu'>createDenseUnetModel2D</span>(<span class='no'>inputImageSize</span>, <span class='kw'>numberOfOutputs</span> <span class='kw'>=</span> <span class='fl'>1</span>,
   <span class='kw'>numberOfLayersPerDenseBlock</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>6</span>, <span class='fl'>12</span>, <span class='fl'>36</span>, <span class='fl'>24</span>), <span class='kw'>growthRate</span> <span class='kw'>=</span> <span class='fl'>48</span>,
   <span class='kw'>initialNumberOfFilters</span> <span class='kw'>=</span> <span class='fl'>96</span>, <span class='kw'>reductionRate</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>depth</span> <span class='kw'>=</span> <span class='fl'>7</span>,
-  <span class='kw'>dropoutRate</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>weightDecay</span> <span class='kw'>=</span> <span class='fl'>0.0001</span>, <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"classification"</span>)</pre>
+  <span class='kw'>dropoutRate</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>weightDecay</span> <span class='kw'>=</span> <span class='fl'>1e-04</span>, <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"classification"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -217,12 +217,12 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 
 <span class='co'># Create the model</span>
 
-<span class='co'># model &lt;- createDenseUnetModel2D( c( dim( domainImage ), 1 ),</span>
-<span class='co'>#  numberOfOutputs = numberOfLabels )</span>
+<span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'>createDenseUnetModel2D</span>( <span class='fu'>c</span>( <span class='fu'>dim</span>( <span class='no'>domainImage</span> ), <span class='fl'>1</span> ),
+  <span class='kw'>numberOfOutputs</span> <span class='kw'>=</span> <span class='no'>numberOfLabels</span> )
 
-<span class='co'># model %&gt;% compile( loss = loss_multilabel_dice_coefficient_error,</span>
-<span class='co'>#  optimizer = optimizer_adam( lr = 0.0001 ),</span>
-<span class='co'>#  metrics = c( multilabel_dice_coefficient ) )</span>
+<span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/compile'>compile</a></span>( <span class='kw'>loss</span> <span class='kw'>=</span> <span class='no'>loss_multilabel_dice_coefficient_error</span>,
+  <span class='kw'>optimizer</span> <span class='kw'>=</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/optimizer_adam'>optimizer_adam</a></span>( <span class='kw'>lr</span> <span class='kw'>=</span> <span class='fl'>0.0001</span> ),
+  <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='fu'>c</span>( <span class='no'>multilabel_dice_coefficient</span> ) )
 
 <span class='co'># Comment out the rest due to travis build constraints</span>
 

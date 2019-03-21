@@ -96,6 +96,31 @@ X_train <- ( X_train - mean( X_train ) ) / sd( X_train )
 
 # Create the model
 
+model <- createDenseUnetModel2D( c( dim( domainImage ), 1 ),
+  numberOfOutputs = numberOfLabels )
+
+model \%>\% compile( loss = loss_multilabel_dice_coefficient_error,
+  optimizer = optimizer_adam( lr = 0.0001 ),
+  metrics = c( multilabel_dice_coefficient ) )
+
+# Comment out the rest due to travis build constraints
+
+# Fit the model
+
+# track <- model \%>\% fit( X_train, Y_train,
+#              epochs = 100, batch_size = 4, verbose = 1, shuffle = TRUE,
+#              callbacks = list(
+#                callback_model_checkpoint( "unetModelInterimWeights.h5",
+#                    monitor = 'val_loss', save_best_only = TRUE ),
+#                callback_reduce_lr_on_plateau( monitor = "val_loss", factor = 0.1 )
+#              ),
+#              validation_split = 0.2 )
+
+# Save the model and/or save the model weights
+
+# save_model_hdf5( model, filepath = 'unetModel.h5' )
+# save_model_weights_hdf5( unetModel, filepath = 'unetModelWeights.h5' ) )
+
 }
 \author{
 Tustison NJ

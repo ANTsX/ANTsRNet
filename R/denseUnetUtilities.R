@@ -28,7 +28,7 @@
 #'
 #' @return .
 #'
-#' @name SpatialTransformerLayer2D
+#' @name ScaleLayer
 NULL
 
 #' @export
@@ -40,7 +40,7 @@ ScaleLayer <- R6::R6Class( "ScaleLayer",
 
   public = list(
 
-    axis = -1,
+    axis = -1L,
 
     momentum = 0.9,
 
@@ -50,7 +50,7 @@ ScaleLayer <- R6::R6Class( "ScaleLayer",
 
     weights = NULL,
 
-    initialize = function( axis = -1, momentum = 0.9,
+    initialize = function( axis = -1L, momentum = 0.9,
       betaInitializer = initializer_zeros(),
       gammaInitializer = initializer_ones(), weights = NULL )
       {
@@ -67,10 +67,15 @@ ScaleLayer <- R6::R6Class( "ScaleLayer",
 
       self$inputShape <- input_shape
 
-      shape <- as.integer( input_shape[[self$axis]] )
+      index <- self$axis
+      if( self$axis == -1 )
+        {
+        index <- length( self$inputShape )
+        }
+      shape <- reticulate::tuple( input_shape[[index]] )
 
-      self$gamma <- K$variable( variable = self$gammaInitializer( shape ) )
-      self$beta <- K$variable( variable = self$betaInitializer( shape ) )
+      self$gamma <- K$variable( value = self$gammaInitializer( shape ) )
+      self$beta <- K$variable( self$betaInitializer( shape ) )
       self$trainable_weights <- list( self$gamma, self$beta )
 
       if( ! is.null( self$initial_weights ) )
@@ -85,10 +90,17 @@ ScaleLayer <- R6::R6Class( "ScaleLayer",
       K <- keras::backend()
 
       broadcastShape <- as.list( rep( 1, length( self$inputShape ) ) )
-      broadcastShape[[self$axis]] <- self$inputShape[self$axis]
 
-      output <- K$reshape( self$gamma, broadcastShape ) * inputs
-        + K$reshape( self$beta, broadcastShape )
+      index <- self$axis
+      if( self$axis == -1 )
+        {
+        index <- length( self$inputShape )
+        }
+      broadcastShape[[index]] <- self$inputShape[[index]]
+      broadcastShape <- K$cast( broadcastShape, dtype = "int32" )
+
+      output <- K$reshape( self$gamma, broadcastShape ) * inputs +
+        K$reshape( self$beta, broadcastShape )
 
       return( output )
       }

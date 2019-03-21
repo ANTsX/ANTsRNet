@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Spatial transformer layer (2-D) — SpatialTransformerLayer2D • ANTsRNet</title>
+<title>Custom scale layer — ScaleLayer • ANTsRNet</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Spatial transformer layer (2-D) — SpatialTransformerLayer2D" />
+<meta property="og:title" content="Custom scale layer — ScaleLayer" />
 
-<meta property="og:description" content="Spatial transformer layer (2-D)" />
+<meta property="og:description" content="Custom scale layer" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -92,34 +92,39 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Spatial transformer layer (2-D)</h1>
+    <h1>Custom scale layer</h1>
     
-    <div class="hidden name"><code>SpatialTransformerLayer2D.Rd</code></div>
+    <div class="hidden name"><code>ScaleLayer.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Spatial transformer layer (2-D)</p>
+    <p>Custom scale layer</p>
     
     </div>
 
         
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>resampled batch images.</p>
+    <p>.</p>
     
     <h2 class="hasAnchor" id="usage"><a class="anchor" href="#usage"></a>Usage</h2>
 
     
-    <pre>outputs &lt;- layer_spatial_transformer_2d( inputs, resampledSize )</pre>
+    <pre>outputs &lt;- layer_scale( inputs, resampledSize )</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
 
     
     <dl class='dl-horizontal'>
-<dt>inputs</dt><dd><p>list of size 2 where the first element are the images. The second
-element are the weights.</p></dd>
-<dt>resampledSize</dt><dd><p>size of the resampled output images.</p></dd>
+<dt>axis</dt><dd><p>integer specifying which axis to normalize.</p></dd>
+<dt>momentum</dt><dd><p>momentum value used for computation of the exponential
+average of the mean and standard deviation.</p></dd>
+<dt>weights</dt><dd><p>initialization weights with shapes.</p></dd>
+<dt>betaInitializer</dt><dd><p>initial bias parameter. Only used if weights
+aren't specified.</p></dd>
+<dt>gammaInitializer</dt><dd><p>initial scale parameter. Only used if weights
+aren't specified.</p></dd>
 </dl>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
