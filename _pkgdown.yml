@@ -91,6 +91,18 @@ reference:
   - '`createAutoencoderModel`'
   - '`createConvolutionalAutoencoderModel2D`'
   - '`createConvolutionalAutoencoderModel3D`'
+- title: Mixture density network functions
+  desc: ~
+  contents:
+  - '`MixtureDensityNetworkLayer`'
+  - '`activation_elu_plus_one_plus_epsilon`'
+  - '`getMixtureDensityLossFunction`'
+  - '`getMixtureDensitySamplingFunction`'
+  - '`getMixtureDensityMseAccuracyFunction`'
+  - '`splitMixtureParameters`'
+  - '`sampleFromCategoricalDistribution`'
+  - '`sampleFromOutput`'
+  - '`mixture_density_network_softmax`'
 - title: Custom loss functions
   desc: ~
   contents:

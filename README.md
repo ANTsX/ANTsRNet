@@ -72,6 +72,10 @@ Documentation page [https://antsx.github.io/ANTsRNet/](https://antsx.github.io/A
 * Deep convolutional embedded clustering (DCEC)
     * [Xifeng Guo, Xinwang Liu, En Zhu, and Jianping Yin.  Deep Clustering with Convolutional Autoencoders.](https://arxiv.org/abs/1511.06335)
 
+### Miscellaneous
+
+* __WIP:__ Mixture density network (MDN)
+
 --------------------------------------
 
 ## Installation
