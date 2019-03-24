@@ -55,6 +55,8 @@ MixtureDensityNetworkLayer <- R6::R6Class( "MixtureDensityNetworkLayer",
 
   inherit = KerasLayer,
 
+  lock_objects = FALSE,
+
   public = list(
 
     outputDimension = NULL,
@@ -74,11 +76,11 @@ MixtureDensityNetworkLayer <- R6::R6Class( "MixtureDensityNetworkLayer",
 
       with( tensorflow::tf$name_scope( "MixtureDensityNetwork" ),
         {
-        self$mu <- layer_dense( self$numberOfMixtures * self$outputDimension,
+        self$mu <- layer_dense( units = self$numberOfMixtures * self$outputDimension,
           name = "mdn_mu" )
-        self$sigma <- layer_dense( self$numberOfMixtures * self$outputDimension,
+        self$sigma <- layer_dense( units = self$numberOfMixtures * self$outputDimension,
           activation = activation_elu_plus_one_plus_epsilon, name = "mdn_sigma" )
-        self$pi <- layer_dense( self$numberOfMixtures, name = "mdn_pi" )
+        self$pi <- layer_dense( units = self$numberOfMixtures, name = "mdn_pi" )
         } )
       },
 
@@ -88,17 +90,17 @@ MixtureDensityNetworkLayer <- R6::R6Class( "MixtureDensityNetworkLayer",
       self$sigma$build( input_shape )
       self$pi$build( input_shape )
 
-      self$trainable_weights <- self$mu$trainable_weights +
-        self$sigma$trainable_weights + self$pi$trainable_weights
-      self$non_trainable_weights <- self$mu$non_trainable_weights +
-        self$sigma$non_trainable_weights + self$pi$non_trainable_weights
+      self$trainable_weights <- list( self$mu$trainable_weights,
+        self$sigma$trainable_weights, self$pi$trainable_weights )
+      self$non_trainable_weights <- list( self$mu$non_trainable_weights,
+        self$sigma$non_trainable_weights, self$pi$non_trainable_weights )
       },
 
     call = function( inputs, mask = NULL )
       {
       with( tensorflow::tf$name_scope( "MixtureDensityNetwork" ),
         {
-        output <- layers_concatenate( list( self$mu( inputs ),
+        output <- layer_concatenate( list( self$mu( inputs ),
           self$sigma( inputs ), self$pi( inputs ) ), name = "mnd_ouputs" )
         } )
       return( output )
@@ -142,15 +144,17 @@ getMixtureDensityLossFunction <- function( outputDimension, numberOfMixes )
 {
   lossFunction <- function( y_true, y_pred )
     {
+    outputDimension <- as.integer( outputDimension )
+    numberOfMixes <- as.integer( numberOfMixes )
     dimension <- as.integer( numberOfMixes * outputDimension )
 
     y_pred <- tensorflow::tf$reshape( y_pred,
-      c( -1, ( 2 * dimension ) + numberOfMixes ),
+      c( -1L, ( 2L * dimension ) + numberOfMixes ),
       name = 'reshape_ypred' )
     y_true <- tensorflow::tf$reshape( y_true,
-      c( -1, outputDimension ), name = 'reshape_ytrue' )
+      c( -1L, outputDimension ), name = 'reshape_ytrue' )
 
-    splitTensors <- tf$split( y_pred,
+    splitTensors <- tensorflow::tf$split( y_pred,
       num_or_size_splits = c( dimension, dimension, numberOfMixes ),
       axis = -1L, name = "mdn_coef_split" )
 
@@ -174,7 +178,7 @@ getMixtureDensityLossFunction <- function( outputDimension, numberOfMixes )
     for( i in seq_len( length( mu ) ) )
       {
       components[[i]] <- tfd$MultivariateNormalDiag(
-        loc = mu[[i]], scale = sigma[[i]] )
+        loc = mu[[i]], scale_diag = sigma[[i]] )
       }
     mixture <- tfd$Mixture( cat = categoricalDistribution,
       components = components )
@@ -212,13 +216,13 @@ getMixtureDensitySamplingFunction <- function( outputDimension, numberOfMixes )
 {
   samplingFunction <- function( y_pred )
     {
+    outputDimension <- as.integer( outputDimension )
+    numberOfMixes <- as.integer( numberOfMixes )
     dimension <- as.integer( numberOfMixes * outputDimension )
 
     y_pred <- tensorflow::tf$reshape( y_pred,
-      c( -1, ( 2 * dimension ) + numberOfMixes ),
+      c( -1L, ( 2L * dimension ) + numberOfMixes ),
       name = 'reshape_ypred' )
-    y_true <- tensorflow::tf$reshape( y_true,
-      c( -1, outputDimension ), name = 'reshape_ytrue' )
 
     splitTensors <- tf$split( y_pred,
       num_or_size_splits = c( dimension, dimension, numberOfMixes ),
@@ -244,7 +248,7 @@ getMixtureDensitySamplingFunction <- function( outputDimension, numberOfMixes )
     for( i in seq_len( length( mu ) ) )
       {
       components[[i]] <- tfd$MultivariateNormalDiag(
-        loc = mu[[i]], scale = sigma[[i]] )
+        loc = mu[[i]], scale_diag = sigma[[i]] )
       }
     mixture <- tfd$Mixture( cat = categoricalDistribution,
       components = components )
@@ -281,10 +285,12 @@ getMixtureDensityMseAccuracyFunction <- function( outputDimension, numberOfMixes
 {
   mseAccuracyFunction <- function( y_pred )
     {
+    outputDimension <- as.integer( outputDimension )
+    numberOfMixes <- as.integer( numberOfMixes )
     dimension <- as.integer( numberOfMixes * outputDimension )
 
     y_pred <- tensorflow::tf$reshape( y_pred,
-      c( -1, ( 2 * dimension ) + numberOfMixes ),
+      c( -1L, ( 2L * dimension ) + numberOfMixes ),
       name = 'reshape_ypred' )
 
     splitTensors <- tf$split( y_pred,
@@ -311,7 +317,7 @@ getMixtureDensityMseAccuracyFunction <- function( outputDimension, numberOfMixes
     for( i in seq_len( length( mu ) ) )
       {
       components[[i]] <- tfd$MultivariateNormalDiag(
-        loc = mu[[i]], scale = sigma[[i]] )
+        loc = mu[[i]], scale_diag = sigma[[i]] )
       }
     mixture <- tfd$Mixture( cat = categoricalDistribution,
       components = components )
@@ -415,6 +421,8 @@ sampleFromCategoricalDistribution <- function( distribution )
       return( i )
       }
     }
+  tensorflow::tf$logging$info( 'Error: sampling categorical model.' )
+
   return( -1 )
 }
 
