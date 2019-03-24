@@ -74,7 +74,8 @@ Documentation page [https://antsx.github.io/ANTsRNet/](https://antsx.github.io/A
 
 ### Miscellaneous
 
-* __WIP:__ Mixture density network (MDN)
+* __WIP:__ Mixture density networks (MDN)
+    * [Christopher M. Bishop](https://publications.aston.ac.uk/373/1/NCRG_94_004.pdf)
 
 --------------------------------------
 
