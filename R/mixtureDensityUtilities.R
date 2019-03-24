@@ -162,8 +162,6 @@ getMixtureDensityLossFunction <- function( outputDimension, numberOfMixes )
     outputSigma <- splitTensors[[2]]
     outputPi <- splitTensors[[3]]
 
-    print( outputPi )
-
     # Construct the mixture models
 
     tfp <- tensorflow::import( "tensorflow_probability" )
