@@ -162,13 +162,15 @@ getMixtureDensityLossFunction <- function( outputDimension, numberOfMixes )
     outputSigma <- splitTensors[[2]]
     outputPi <- splitTensors[[3]]
 
+    print( outputPi )
+
     # Construct the mixture models
 
     tfp <- tensorflow::import( "tensorflow_probability" )
     tfd <- tfp$distributions
 
     categoricalDistribution <- tfd$Categorical( logits = outputPi )
-    componentSplits <- c( dimension )
+    componentSplits <- rep.int( outputDimension, numberOfMixes )
     mu <- tensorflow::tf$split( outputMu,
       num_or_size_splits = componentSplits, axis = 1L )
     sigma <- tensorflow::tf$split( outputSigma,
@@ -238,7 +240,7 @@ getMixtureDensitySamplingFunction <- function( outputDimension, numberOfMixes )
     tfd <- tfp$distributions
 
     categoricalDistribution <- tfd$Categorical( logits = outputPi )
-    componentSplits <- c( dimension )
+    componentSplits <- rep.int( outputDimension, numberOfMixes )
     mu <- tensorflow::tf$split( outputMu,
       num_or_size_splits = componentSplits, axis = 1L )
     sigma <- tensorflow::tf$split( outputSigma,
@@ -307,7 +309,7 @@ getMixtureDensityMseAccuracyFunction <- function( outputDimension, numberOfMixes
     tfd <- tfp$distributions
 
     categoricalDistribution <- tfd$Categorical( logits = outputPi )
-    componentSplits <- c( dimension )
+    componentSplits <- rep.int( outputDimension, numberOfMixes )
     mu <- tensorflow::tf$split( outputMu,
       num_or_size_splits = componentSplits, axis = 1L )
     sigma <- tensorflow::tf$split( outputSigma,
