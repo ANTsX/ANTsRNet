@@ -109,7 +109,8 @@ MixtureDensityNetworkLayer <- R6::R6Class( "MixtureDensityNetworkLayer",
     compute_output_shape = function( input_shape )
       {
       return( list( unlist( input_shape[[1]] ),
-        2 * self$outputDimension * self$numberOfMixtures + self$numberOfMixtures ) )
+        as.integer( 2L * self$outputDimension * self$numberOfMixtures +
+          self$numberOfMixtures ) ) )
       }
 
   )
@@ -150,9 +151,9 @@ getMixtureDensityLossFunction <- function( outputDimension, numberOfMixes )
 
     y_pred <- tensorflow::tf$reshape( y_pred,
       c( -1L, ( 2L * dimension ) + numberOfMixes ),
-      name = 'reshape_ypred' )
+      name = 'reshape_ypred_loss' )
     y_true <- tensorflow::tf$reshape( y_true,
-      c( -1L, outputDimension ), name = 'reshape_ytrue' )
+      c( -1L, outputDimension ), name = 'reshape_ytrue_loss' )
 
     splitTensors <- tensorflow::tf$split( y_pred,
       num_or_size_splits = c( dimension, dimension, numberOfMixes ),
@@ -226,7 +227,7 @@ getMixtureDensitySamplingFunction <- function( outputDimension, numberOfMixes )
 
     splitTensors <- tf$split( y_pred,
       num_or_size_splits = c( dimension, dimension, numberOfMixes ),
-      axis = -1L, name = "mdn_coef_split" )
+      axis = 1L, name = "mdn_coef_split" )
 
     outputMu <- splitTensors[[1]]
     outputSigma <- splitTensors[[2]]
@@ -292,10 +293,12 @@ getMixtureDensityMseAccuracyFunction <- function( outputDimension, numberOfMixes
     y_pred <- tensorflow::tf$reshape( y_pred,
       c( -1L, ( 2L * dimension ) + numberOfMixes ),
       name = 'reshape_ypred' )
+    y_true <- tensorflow::tf$reshape( y_true,
+      c( -1L, outputDimension ), name = 'reshape_ytrue' )
 
     splitTensors <- tf$split( y_pred,
       num_or_size_splits = c( dimension, dimension, numberOfMixes ),
-      axis = -1L, name = "mdn_coef_split" )
+      axis = 1L, name = "mdn_coef_split" )
 
     outputMu <- splitTensors[[1]]
     outputSigma <- splitTensors[[2]]
@@ -324,7 +327,7 @@ getMixtureDensityMseAccuracyFunction <- function( outputDimension, numberOfMixes
 
     sample <- mixture$sample()
     mse <- tensorflow::tf$reduce_mean(
-      tensorflow::tf$square( sample - y_true ), axis = 1L )
+      tensorflow::tf$square( sample - y_true ), axis = -1L )
 
     return( mse )
     }
