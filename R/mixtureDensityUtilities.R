@@ -438,7 +438,7 @@ sampleFromCategoricalDistribution <- function( distribution )
 #' @param distribution input distribution from which to sample.
 #' @return a single sample
 #' @author Tustison NJ
-#' @examplesp
+#' @examples
 #'
 #' library( keras )
 #'
