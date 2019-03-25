@@ -360,9 +360,9 @@ splitMixtureParameters <- function(
    parameters, outputDimension, numberOfMixes )
 {
   dimension <- as.integer( numberOfMixes * outputDimension )
-  mu <- parameters[1:dimension]
-  sigma <- parameters[( dimension + 1 ):( 2 * dimension )]
-  pi_logits <- parameters[( 2 * dimension + 1 ):length( parameters )]
+  mu <- parameters[, 1:dimension, drop = FALSE]
+  sigma <- parameters[, ( dimension + 1 ):( 2 * dimension ), drop = FALSE]
+  pi_logits <- parameters[, ( 2 * dimension + 1 ):( 2 * dimension + numberOfMixes ), drop = FALSE]
   return( list( mu = mu, sigma = sigma, pi = pi_logits ) )
 }
 
@@ -416,7 +416,7 @@ sampleFromCategoricalDistribution <- function( distribution )
   r <- runif( 1 )
 
   accumulate <- 0
-  for( i in seq_length( length( distribution ) ) )
+  for( i in seq_len( length( distribution ) ) )
     {
     accumulate <- accumulate + distribution[i]
     if( accumulate >= r )
@@ -438,7 +438,7 @@ sampleFromCategoricalDistribution <- function( distribution )
 #' @param distribution input distribution from which to sample.
 #' @return a single sample
 #' @author Tustison NJ
-#' @examples
+#' @examplesp
 #'
 #' library( keras )
 #'
@@ -451,12 +451,12 @@ sampleFromOutput <- function( parameters, outputDimension,
   splits <- splitMixtureParameters( parameters, outputDimension,
     numberOfMixtures )
   piSoftmax <- mixture_density_network_softmax( splits$pi, temperature = temperature )
-  m <- sampleFromCategricalDistribution( piSoftmax )
+  m <- sampleFromCategoricalDistribution( piSoftmax )
 
   muVector <-
-    splits$mu[( m * outputDimension ):( ( m + 1 ) * outputDimension )]
+    splits$mu[( ( m - 1 ) * outputDimension + 1 ):( m * outputDimension )]
   sigmaVector <-
-    splits$sigma[( m * outputDimension ):( ( m + 1 ) * outputDimension )] *
+    splits$sigma[( ( m - 1 ) * outputDimension + 1 ):( m * outputDimension )] *
     sigmaTemperature
 
   sample <- mvtnorm::rmvnorm( 1, mean = muVector, sigma = diag( sigmaVector ) )
