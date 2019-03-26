@@ -4,12 +4,12 @@
 \alias{getMixtureDensitySamplingFunction}
 \title{Returns a sampling function for the mixture density.}
 \usage{
-getMixtureDensitySamplingFunction(outputDimension, numberOfMixes)
+getMixtureDensitySamplingFunction(outputDimension, numberOfMixtures)
 }
 \arguments{
 \item{outputDimension}{output dimension}
 
-\item{numberOfMixes}{number of mixture components}
+\item{numberOfMixtures}{number of mixture components}
 }
 \value{
 a function for sampling a mixture density

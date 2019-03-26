@@ -4,14 +4,14 @@
 \alias{splitMixtureParameters}
 \title{Splits the mixture parameters.}
 \usage{
-splitMixtureParameters(parameters, outputDimension, numberOfMixes)
+splitMixtureParameters(parameters, outputDimension, numberOfMixtures)
 }
 \arguments{
 \item{parameters}{vector parameter to split}
 
 \item{outputDimension}{output dimension}
 
-\item{numberOfMixes}{number of mixture components}
+\item{numberOfMixtures}{number of mixture components}
 }
 \value{
 separate mixture parameters

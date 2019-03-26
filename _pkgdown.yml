@@ -95,7 +95,6 @@ reference:
   desc: ~
   contents:
   - '`MixtureDensityNetworkLayer`'
-  - '`activation_elu_plus_one_plus_epsilon`'
   - '`getMixtureDensityLossFunction`'
   - '`getMixtureDensitySamplingFunction`'
   - '`getMixtureDensityMseAccuracyFunction`'

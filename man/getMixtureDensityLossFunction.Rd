@@ -4,12 +4,12 @@
 \alias{getMixtureDensityLossFunction}
 \title{Returns a loss function for the mixture density.}
 \usage{
-getMixtureDensityLossFunction(outputDimension, numberOfMixes)
+getMixtureDensityLossFunction(outputDimension, numberOfMixtures)
 }
 \arguments{
 \item{outputDimension}{output dimension}
 
-\item{numberOfMixes}{number of mixture components}
+\item{numberOfMixtures}{number of mixture components}
 }
 \value{
 a function providing the mean square error accuracy

@@ -4,12 +4,12 @@
 \alias{getMixtureDensityMseAccuracyFunction}
 \title{Returns a MSE accuracy function for the mixture density.}
 \usage{
-getMixtureDensityMseAccuracyFunction(outputDimension, numberOfMixes)
+getMixtureDensityMseAccuracyFunction(outputDimension, numberOfMixtures)
 }
 \arguments{
 \item{outputDimension}{output dimension}
 
-\item{numberOfMixes}{number of mixture components}
+\item{numberOfMixtures}{number of mixture components}
 }
 \value{
 a function providing the mean square error accuracy

@@ -30,6 +30,20 @@ Mixture density network layer
 \code{$call} main body.
 
 \code{$compute_output_shape} computes the output shape.
+
+Create custom density layers for each parameter of the
+mixed Gaussians. (mu, sigma, pi). I could not get the approach
+from the original implementation to work:
+
+https://github.com/ntustison/keras-mdn-layer/blob/master/mdn/\strong{init}.py#L28-L73
+
+where the author used the keras dense layers to create the
+custom MDN layer and assign the trainable weights directly
+thus circumventing the add_weight() function.  Instead, I
+recreated dense layer functionality using the keras definition
+here:
+
+https://github.com/keras-team/keras/blob/master/keras/layers/core.py#L796-L937
 }
 
 \author{

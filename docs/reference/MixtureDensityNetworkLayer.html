@@ -127,6 +127,16 @@
     <p><code>$initialize</code> instantiates a new class.</p>
 <p><code>$call</code> main body.</p>
 <p><code>$compute_output_shape</code> computes the output shape.</p>
+<p>Create custom density layers for each parameter of the
+mixed Gaussians. (mu, sigma, pi). I could not get the approach
+from the original implementation to work:</p>
+<p>https://github.com/ntustison/keras-mdn-layer/blob/master/mdn/<strong>init</strong>.py#L28-L73</p>
+<p>where the author used the keras dense layers to create the
+custom MDN layer and assign the trainable weights directly
+thus circumventing the add_weight() function.  Instead, I
+recreated dense layer functionality using the keras definition
+here:</p>
+<p>https://github.com/keras-team/keras/blob/master/keras/layers/core.py#L796-L937</p>
     
 
   </div>
