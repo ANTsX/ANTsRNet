@@ -22,7 +22,7 @@
 #' mixed Gaussians. (mu, sigma, pi). I could not get the approach
 #' from the original implementation to work:
 #'
-#'   https://github.com/ntustison/keras-mdn-layer/blob/master/mdn/__init__.py#L28-L73
+#'   https://github.com/cpmpercussion/keras-mdn-layer/blob/master/mdn/__init__.py#L28-L73
 #'
 #' where the author used the keras dense layers to create the
 #' custom MDN layer and assign the trainable weights directly
