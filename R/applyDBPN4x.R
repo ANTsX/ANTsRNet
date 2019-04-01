@@ -6,6 +6,9 @@
 #' @param modelFilename see \code{getPretrainedNetwork}
 #' @param expansionFactor size to upscale, should match network pretraining
 #' @param strideLength stride length should be less than patch size
+#' @param lowResolutionPatchSize patch size at low resolution that will be
+#' expanded by expansionFactor - needs to be consistent with trained model.
+#' @param standardDeviationOffset an offset added to the normalization of patches to prevent divisions by zero
 #' @param verbose If \code{TRUE}, show status messages
 #' @return image upscaled to resolution provided by network
 #' @author Avants BB
@@ -19,11 +22,12 @@ applyDBPNsr <- function(
   modelFilename,
   expansionFactor = 4,
   strideLength = 20,
+  lowResolutionPatchSize = c( 48, 48 ),
+  standardDeviationOffset = 0.01,
   verbose = FALSE )
 {
 if ( verbose ) print( paste( "perform-*x-sr" ) )
 channelSize = 1
-lowResolutionPatchSize <- c( 48, 48 ) # from EDSR paper
 highResolutionPatchSize <- round( lowResolutionPatchSize * expansionFactor )
 strl = strideLength
 ###############################################
@@ -49,7 +53,7 @@ for( j in seq_len( numberOfPatches ) )
   {
   xmean[ j ] = mean( X_test[j,,,1], na.rm = T )
   xsd[ j ] = sd( X_test[j,,,1], na.rm = T )
-  X_test[j,,,1] <- ( X_test[j,,,1] - xmean[j] ) / ( xsd[j] + 1 )
+  X_test[j,,,1] <- ( X_test[j,,,1] - xmean[j] ) / ( xsd[j] + standardDeviationOffset )
   }
 ########
 bigImg = resampleImage( iMath( image, "Normalize" ) * 255,
@@ -61,7 +65,7 @@ pred = predict( srModel, X_test, batch_size = 32 )
 if ( verbose ) print( paste( "     - Predict in:", Sys.time()-t1 ) )
 plist = list()
 for( j in seq_len( numberOfPatches ) )
-  plist[[j]] = ( pred[j,,,1] ) * ( xsd[j] + 1) + xmean[j]
+  plist[[j]] = ( pred[j,,,1] ) * ( xsd[j] + standardDeviationOffset) + xmean[j]
 if ( verbose ) print( "4. reconstruct" )
 predImg = reconstructImageFromPatches( plist,
   bigImg,   strideLength = strl * expansionFactor )

@@ -5,7 +5,8 @@
 \title{applyDBPNsr}
 \usage{
 applyDBPNsr(image, modelFilename, expansionFactor = 4,
-  strideLength = 20, verbose = FALSE)
+  strideLength = 20, lowResolutionPatchSize = c(48, 48),
+  standardDeviationOffset = 0.01, verbose = FALSE)
 }
 \arguments{
 \item{image}{input image}
@@ -15,6 +16,11 @@ applyDBPNsr(image, modelFilename, expansionFactor = 4,
 \item{expansionFactor}{size to upscale, should match network pretraining}
 
 \item{strideLength}{stride length should be less than patch size}
+
+\item{lowResolutionPatchSize}{patch size at low resolution that will be
+expanded by expansionFactor - needs to be consistent with trained model.}
+
+\item{standardDeviationOffset}{an offset added to the normalization of patches to prevent divisions by zero}
 
 \item{verbose}{If \code{TRUE}, show status messages}
 }
