@@ -37,7 +37,7 @@ createEnhancedDeepSuperResolutionModel2D <- function(
       padding = 'same' )
     block <- block %>% layer_conv_2d( filters = numberOfFilters,
       kernel_size = convolutionKernelSize, activation = 'linear',
-      padding = 'same' )
+      padding = 'same' ) %>% layer_batch_normalization()
     block <- layer_add( list( model, block ) )
 
     return( block )
