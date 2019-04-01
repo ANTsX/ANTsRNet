@@ -97,7 +97,7 @@ createEnhancedDeepSuperResolutionModel2D <- function(
   numberOfChannels <- tail( inputImageSize, 1 )
   outputs <- outputs %>% layer_conv_2d(
     filters = numberOfChannels,
-    kernel_size = c(1L,1L),
+    kernel_size = c(3L,3L),
     activation = 'linear',
     padding = 'same' )
 
