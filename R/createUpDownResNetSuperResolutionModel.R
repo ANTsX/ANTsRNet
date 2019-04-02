@@ -14,7 +14,7 @@
 #' @param scale the upsampling amount, 2, 4 or 8
 #' @param numberOfLossFunctions the number of data targets, e.g. 2 for 2 targets
 #' @param doBatchNormalization boolean for include BN in the residual blocks
-#' @param interpolation nearest, linear or conv for upscaling block
+#' @param interpolation nearest, bilinear or conv for upscaling block
 #'
 #' @return a keras model for EDSR image super resolution
 #' @author Tustison NJ, Avants BB
@@ -31,7 +31,7 @@ createEnhancedDeepSuperResolutionModel2D <- function(
   scale = 2,
   numberOfLossFunctions = 1,
   doBatchNormalization = FALSE,
-  interpolation = 'linear' )
+  interpolation = 'bilinear' )
 {
 
   residualBlock2D <- function( model, numberOfFilters, convolutionKernelSize, 
@@ -52,7 +52,7 @@ createEnhancedDeepSuperResolutionModel2D <- function(
   upscaleBlock2D <- function( model,
     numberOfFilters, nChannels,
     convolutionKernelSize, scale = 2, 
-    interpolation = "linear" )
+    interpolation = "bilinear" )
     {
     block <- model %>% layer_upsampling_2d( size = c( scale, scale ), 
       interpolation = interpolation )

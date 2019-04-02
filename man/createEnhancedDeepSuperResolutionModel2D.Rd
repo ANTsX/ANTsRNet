@@ -7,7 +7,7 @@
 createEnhancedDeepSuperResolutionModel2D(inputImageSize,
   convolutionKernelSize = c(3, 3), numberOfFilters = 256,
   numberOfResidualBlocks = 32, scale = 2, numberOfLossFunctions = 1,
-  doBatchNormalization = FALSE, interpolation = "linear")
+  doBatchNormalization = FALSE, interpolation = "bilinear")
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
@@ -28,7 +28,7 @@ convolution.}
 
 \item{doBatchNormalization}{boolean for include BN in the residual blocks}
 
-\item{interpolation}{nearest, linear or conv for upscaling block}
+\item{interpolation}{nearest, bilinear or conv for upscaling block}
 }
 \value{
 a keras model for EDSR image super resolution
