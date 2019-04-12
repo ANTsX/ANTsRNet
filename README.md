@@ -55,6 +55,7 @@ Documentation page [https://antsx.github.io/ANTsRNet/](https://antsx.github.io/A
     * [Chao Dong, Chen Change Loy, Kaiming He, and Xiaoou Tang.  Image Super-Resolution Using Deep Convolutional Networks.](https://arxiv.org/abs/1501.00092)
 * Denoising auto encoder super-resolution (DSRCNN) (2-D, 3-D)
 * Deep denoise super-resolution (DDSRCNN) (2-D, 3-D)
+    * [Xiao-Jiao Mao, Chunhua Shen, and Yu-Bin Yang.  Image Restoration Using Convolutional Auto-encoders with Symmetric Skip Connections]
 * ResNet super-resolution (SRResNet) (2-D, 3-D)
     * [Christian Ledig, Lucas Theis, Ferenc Huszar, Jose Caballero, Andrew Cunningham, Alejandro Acosta, Andrew Aitken, Alykhan Tejani, Johannes Totz, Zehan Wang, and Wenzhe Shi.  Photo-Realistic Single Image Super-Resolution Using a Generative Adversarial Network.](https://arxiv.org/abs/1609.04802)
 * Deep back-projection network (DBPN) (2-D, 3-D)
@@ -70,7 +71,7 @@ Documentation page [https://antsx.github.io/ANTsRNet/](https://antsx.github.io/A
 * Deep embedded clustering (DEC)
     * [Junyuan Xie, Ross Girshick, and Ali Farhadi.  Unsupervised Deep Embedding for Clustering Analysis.](https://arxiv.org/abs/1511.06335)
 * Deep convolutional embedded clustering (DCEC)
-    * [Xifeng Guo, Xinwang Liu, En Zhu, and Jianping Yin.  Deep Clustering with Convolutional Autoencoders.](https://arxiv.org/abs/1511.06335)
+    * [Xifeng Guo, Xinwang Liu, En Zhu, and Jianping Yin.  Deep Clustering with Convolutional Autoencoders.](https://xifengguo.github.io/papers/ICONIP17-DCEC.pdf)
 
 ### Miscellaneous
 
