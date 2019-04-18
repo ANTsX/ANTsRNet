@@ -213,7 +213,7 @@ implementation:</p>
 
 <span class='no'>inputImageSize</span> <span class='kw'>&lt;-</span> <span class='fu'>c</span>( <span class='fu'>dim</span>( <span class='no'>X_trainSmall</span> )[<span class='fl'>2</span>:<span class='fl'>3</span>], <span class='fl'>1</span> )
 
-<span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='createGoogLeNetModel2D.html'>createGoogLeNetModel2D</a></span>( <span class='kw'>inputImageSize</span> <span class='kw'>=</span> <span class='fu'>c</span>( <span class='no'>resampledImageSize</span>, <span class='fl'>1</span> ),
+<span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'>createVggModel2D</span>( <span class='kw'>inputImageSize</span> <span class='kw'>=</span> <span class='fu'>c</span>( <span class='no'>resampledImageSize</span>, <span class='fl'>1</span> ),
   <span class='kw'>numberOfClassificationLabels</span> <span class='kw'>=</span> <span class='no'>numberOfLabels</span> )
 
 <span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/compile'>compile</a></span>( <span class='kw'>loss</span> <span class='kw'>=</span> <span class='st'>'categorical_crossentropy'</span>,

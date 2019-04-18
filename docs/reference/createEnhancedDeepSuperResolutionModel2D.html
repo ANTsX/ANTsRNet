@@ -107,7 +107,8 @@ framework based on EDSR.</p>
 
     <pre class="usage"><span class='fu'>createEnhancedDeepSuperResolutionModel2D</span>(<span class='no'>inputImageSize</span>,
   <span class='kw'>convolutionKernelSize</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>3</span>, <span class='fl'>3</span>), <span class='kw'>numberOfFilters</span> <span class='kw'>=</span> <span class='fl'>256</span>,
-  <span class='kw'>numberOfResidualBlocks</span> <span class='kw'>=</span> <span class='fl'>32</span>, <span class='kw'>scale</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>numberOfLossFunctions</span> <span class='kw'>=</span> <span class='fl'>1</span>)</pre>
+  <span class='kw'>numberOfResidualBlocks</span> <span class='kw'>=</span> <span class='fl'>32</span>, <span class='kw'>scale</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>numberOfLossFunctions</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>doBatchNormalization</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>interpolation</span> <span class='kw'>=</span> <span class='st'>"bilinear"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -139,6 +140,14 @@ convolution.</p></td>
     <tr>
       <th>numberOfLossFunctions</th>
       <td><p>the number of data targets, e.g. 2 for 2 targets</p></td>
+    </tr>
+    <tr>
+      <th>doBatchNormalization</th>
+      <td><p>boolean for include BN in the residual blocks</p></td>
+    </tr>
+    <tr>
+      <th>interpolation</th>
+      <td><p>nearest, bilinear or conv for upscaling block</p></td>
     </tr>
     </table>
     
