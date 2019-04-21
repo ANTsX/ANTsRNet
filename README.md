@@ -66,6 +66,11 @@ Documentation page [https://antsx.github.io/ANTsRNet/](https://antsx.github.io/A
 * Spatial transformer network (STN) (2-D, 3-D)
     * [Max Jaderberg, Karen Simonyan, Andrew Zisserman, and Koray Kavukcuoglu.  Spatial Transformer Networks.](https://arxiv.org/abs/1506.02025)
 
+### Generative adverserial networks
+
+* Generative adverserial network (GAN)
+    * [Ian J. Goodfellow, Jean Pouget-Abadie, Mehdi Mirza, Bing Xu, David Warde-Farley, Sherjil Ozair, Aaron Courville, Yoshua Bengio.  Generative Adverserial Networks.](https://arxiv.org/abs/1406.2661)
+
 ### Clustering
 
 * Deep embedded clustering (DEC)
