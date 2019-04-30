@@ -20,7 +20,7 @@
 #' }
 #'
 #' @section Details:
-#'   \code{$initialize} instantiates a new class and builds the
+#'   \code{$initialize} {instantiates a new class and builds the
 #'       generator and discriminator.}
 #'   \code{$buildGenerator}{build generator.}
 #'   \code{$buildGenerator}{build discriminator.}

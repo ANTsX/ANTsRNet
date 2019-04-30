@@ -123,3 +123,36 @@ SSIM <- function( x, y, K = c( 0.01, 0.03 ) )
 
   return( SSI )
 }
+
+
+
+#' Gradient Magnitude Similarity Deviation
+#'
+#' A fast and simple metric that correlates to perceptual quality
+#'
+#' @param x input image.
+#' @param y input image.
+#'
+#' @return scalar
+#' @author Avants BB
+#' @examples
+#'
+#' library( ANTsR )
+#'
+#' r16 <- antsImageRead( getANTsRData( 'r16' ) )
+#' r85 <- antsImageRead( getANTsRData( 'r85' ) )
+#' value <- GMSD( r16, r85 )
+#'
+#' @export
+GMSD <- function( x, y )
+{
+  g1 = iMath( x, "Grad" )
+  g2 = iMath( y, "Grad" )
+  # see eqn 4 - 6 in https://arxiv.org/pdf/1308.3052.pdf
+  constval = 0.0026
+  gmsnum = 2.0 * g1 * g2 + constval
+  gmsden = g1^2 + g2^2 + constval
+  gmsval = ( gmsnum / gmsden )
+  onen =  1.0 / prod( dim( x ) )
+  return(   sqrt( onen * sum( ( gmsval - mean( gmsval )  )^2 ) ) )
+}
