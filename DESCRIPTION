@@ -11,6 +11,7 @@ Maintainer: Nicholas J. Tustison <ntustison@gmail.com>
 Description: Deep learning tools for medical image processing.
 License: Apache License (>=2.0)
 LazyLoad: yes
+StagedInstall: no
 Depends:
     R (>= 3.2), ANTsRCore, ANTsR
 Imports:
