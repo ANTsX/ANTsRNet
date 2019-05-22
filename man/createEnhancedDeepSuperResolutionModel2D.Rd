@@ -7,7 +7,8 @@
 createEnhancedDeepSuperResolutionModel2D(inputImageSize,
   convolutionKernelSize = c(3, 3), numberOfFilters = 256,
   numberOfResidualBlocks = 32, scale = 2, numberOfLossFunctions = 1,
-  doBatchNormalization = FALSE, interpolation = "bilinear")
+  numberOfOutputChannels = 1, doBatchNormalization = FALSE,
+  interpolation = "bilinear")
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
@@ -25,6 +26,8 @@ convolution.}
 \item{scale}{the upsampling amount, 2, 4 or 8}
 
 \item{numberOfLossFunctions}{the number of data targets, e.g. 2 for 2 targets}
+
+\item{numberOfOutputChannels}{the number of ouput channels}
 
 \item{doBatchNormalization}{boolean for include BN in the residual blocks}
 
