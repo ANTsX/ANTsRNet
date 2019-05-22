@@ -13,6 +13,7 @@
 #' @param numberOfResidualBlocks the number of residual blocks.
 #' @param scale the upsampling amount, 2, 4 or 8
 #' @param numberOfLossFunctions the number of data targets, e.g. 2 for 2 targets
+#' @param numberOfOutputChannels the number of ouput channels
 #' @param doBatchNormalization boolean for include BN in the residual blocks
 #' @param interpolation nearest, bilinear or conv for upscaling block
 #'
@@ -30,11 +31,12 @@ createEnhancedDeepSuperResolutionModel2D <- function(
   numberOfResidualBlocks = 32,
   scale = 2,
   numberOfLossFunctions = 1,
+  numberOfOutputChannels = 1,
   doBatchNormalization = FALSE,
   interpolation = 'bilinear' )
 {
 
-  residualBlock2D <- function( model, numberOfFilters, convolutionKernelSize, 
+  residualBlock2D <- function( model, numberOfFilters, convolutionKernelSize,
 			     doBatchNormalization = FALSE )
     {
     block <- model %>% layer_conv_2d( filters = numberOfFilters,
@@ -51,10 +53,10 @@ createEnhancedDeepSuperResolutionModel2D <- function(
 
   upscaleBlock2D <- function( model,
     numberOfFilters, nChannels,
-    convolutionKernelSize, scale = 2, 
+    convolutionKernelSize, scale = 2,
     interpolation = "bilinear" )
     {
-    block <- model %>% layer_upsampling_2d( size = c( scale, scale ), 
+    block <- model %>% layer_upsampling_2d( size = c( scale, scale ),
       interpolation = interpolation )
     return( block )
     }
@@ -101,9 +103,8 @@ createEnhancedDeepSuperResolutionModel2D <- function(
   if ( interpolation == 'conv' )
     outputs <- upscaleBlock2DConv( outputsX, numberOfFilters, scale = scale )
 
-  numberOfChannels <- tail( inputImageSize, 1 )
   outputs <- outputs %>% layer_conv_2d(
-    filters = numberOfChannels,
+    filters = numberOfOutputChannels,
     kernel_size = c(1L,1L),
     activation = 'linear',
     padding = 'same' )
