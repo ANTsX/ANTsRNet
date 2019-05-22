@@ -38,6 +38,7 @@
 #' original paper.  Factors used in the original implementation are as follows:
 #' 2x --> \code{strides = c( 2, 2 )}, 4x --> \code{strides = c( 4, 4 )}, 8x -->
 #' \code{strides = c( 8, 8 )}. We default to 8x parameters.
+#' @param lastConvolution the kernel size for the last convolutional layer
 #' @param numberOfLossFunctions the number of data targets, e.g. 2 for 2 targets
 #'
 #' @return a keras model defining the deep back-projection network.
@@ -57,6 +58,7 @@ createDeepBackProjectionNetworkModel2D <-
                                numberOfBackProjectionStages = 7,
                                convolutionKernelSize = c( 12, 12 ),
                                strides = c( 8, 8 ),
+                               lastConvolution = c( 3, 3 ),
                                numberOfLossFunctions = 1
                              )
 {
@@ -196,7 +198,7 @@ createDeepBackProjectionNetworkModel2D <-
 
   # Final convolution layer
   outputs <- model %>% layer_conv_2d( filters = numberOfOutputs,
-    kernel_size = c( 3, 3 ), strides = c( 1, 1 ), padding = 'same',
+    kernel_size = lastConvolution, strides = c( 1, 1 ), padding = 'same',
     kernel_initializer = "glorot_uniform" )
 
   if ( numberOfLossFunctions == 1 ) {
@@ -254,6 +256,7 @@ createDeepBackProjectionNetworkModel2D <-
 #' original paper.  Factors used in the original implementation are as follows:
 #' 2x --> \code{strides = c( 2, 2, 2 )}, 4x --> \code{strides = c( 4, 4, 4 )},
 #' 8x --> \code{strides = c( 8, 8, 8 )}. We default to 8x parameters.
+#' @param lastConvolution the kernel size for the last convolutional layer
 #' @param numberOfLossFunctions the number of data targets, e.g. 2 for 2 targets
 #'
 #' @return a keras model defining the deep back-projection network.
@@ -273,6 +276,7 @@ createDeepBackProjectionNetworkModel3D <-
                                numberOfBackProjectionStages = 7,
                                convolutionKernelSize = c( 12, 12, 12 ),
                                strides = c( 8, 8, 8 ),
+                               lastConvolution = c( 3, 3, 3 ),
                                numberOfLossFunctions = 1
                              )
 {
@@ -414,7 +418,7 @@ createDeepBackProjectionNetworkModel3D <-
 
   # Final convolution layer
   outputs <- model %>% layer_conv_3d( filters = numberOfOutputs,
-    kernel_size = c( 3, 3, 3 ), strides = c( 1, 1, 1 ), padding = 'same',
+    kernel_size = lastConvolution, strides = c( 1, 1, 1 ), padding = 'same',
     kernel_initializer = "glorot_uniform" )
 
   if ( numberOfLossFunctions == 1 ) {
