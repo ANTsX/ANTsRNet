@@ -164,13 +164,13 @@ createUnetModel2D <- function( inputImageSize,
   for( i in 2:numberOfLayers )
     {
     numberOfFilters <- numberOfFiltersAtBaseLayer * 2 ^ ( numberOfLayers - i )
-    deconvolution <- outputs %>%
+    deconv <- outputs %>%
       layer_conv_2d_transpose( filters = numberOfFilters,
         kernel_size = deconvolutionKernelSize,
         padding = 'same',
         kernel_regularizer = regularizer_l2( weightDecay ) )
-    deconvolution <- deconvolution %>% layer_upsampling_2d( size = poolSize )
-    outputs <- layer_concatenate( list( deconvolution,
+    deconv <- deconv %>% layer_upsampling_2d( size = poolSize )
+    outputs <- layer_concatenate( list( deconv,
       encodingConvolutionLayers[[numberOfLayers - i + 1]] ),
       axis = 3
       )
@@ -395,13 +395,13 @@ createUnetModel3D <- function( inputImageSize,
   for( i in 2:numberOfLayers )
     {
     numberOfFilters <- numberOfFiltersAtBaseLayer * 2 ^ ( numberOfLayers - i )
-    deconvolution <- outputs %>%
+    deconv <- outputs %>%
       layer_conv_3d_transpose( filters = numberOfFilters,
         kernel_size = deconvolutionKernelSize,
         padding = 'same',
         kernel_regularizer = regularizer_l2( weightDecay ) )
-    deconvolution <- deconvolution %>% layer_upsampling_3d( size = poolSize )
-    outputs <- layer_concatenate( list( deconvolution,
+    deconv <- deconv %>% layer_upsampling_3d( size = poolSize )
+    outputs <- layer_concatenate( list( deconv,
       encodingConvolutionLayers[[numberOfLayers - i + 1]] ),
       axis = 4 )
 
