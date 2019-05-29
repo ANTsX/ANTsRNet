@@ -175,28 +175,21 @@ createUnetModel2D <- function( inputImageSize,
       axis = 3
       )
 
+    outputs <- outputs %>%
+      layer_conv_2d( filters = numberOfFilters,
+        kernel_size = convolutionKernelSize,
+        activation = 'relu', padding = 'same',
+        kernel_regularizer = regularizer_l2( weightDecay ) )
+
     if( dropoutRate > 0.0 )
       {
-      outputs <- outputs %>%
-        layer_conv_2d( filters = numberOfFilters,
-          kernel_size = convolutionKernelSize,
-          activation = 'relu', padding = 'same',
-          kernel_regularizer = regularizer_l2( weightDecay ) ) %>%
-        layer_dropout( rate = dropoutRate ) %>%
-        layer_conv_2d( filters = numberOfFilters,
-          kernel_size = convolutionKernelSize,
-          activation = 'relu', padding = 'same',
-          kernel_regularizer = regularizer_l2( weightDecay ) )
-      } else {
-      outputs <- outputs %>%
-        layer_conv_2d( filters = numberOfFilters,
-          kernel_size = convolutionKernelSize,
-          activation = 'relu', padding = 'same',
-          kernel_regularizer = regularizer_l2( weightDecay ) ) %>%
-        layer_conv_2d( filters = numberOfFilters,
-          kernel_size = convolutionKernelSize,
-          activation = 'relu', padding = 'same',
-          kernel_regularizer = regularizer_l2( weightDecay ) )
+      outputs <- outputs %>% layer_dropout( rate = dropoutRate )
+
+    outputs <- outputs %>%
+      layer_conv_2d( filters = numberOfFilters,
+        kernel_size = convolutionKernelSize,
+        activation = 'relu', padding = 'same',
+        kernel_regularizer = regularizer_l2( weightDecay ) )
       }
     }
 
@@ -405,28 +398,21 @@ createUnetModel3D <- function( inputImageSize,
       encodingConvolutionLayers[[numberOfLayers - i + 1]] ),
       axis = 4 )
 
+    outputs <- outputs %>%
+      layer_conv_3d( filters = numberOfFilters,
+        kernel_size = convolutionKernelSize,
+        activation = 'relu', padding = 'same',
+        kernel_regularizer = regularizer_l2( weightDecay ) )
+
     if( dropoutRate > 0.0 )
       {
-      outputs <- outputs %>%
-        layer_conv_3d( filters = numberOfFilters,
-          kernel_size = convolutionKernelSize, activation = 'relu',
-          padding = 'same',
-          kernel_regularizer = regularizer_l2( weightDecay ) )  %>%
-        layer_dropout( rate = dropoutRate ) %>%
-        layer_conv_3d( filters = numberOfFilters,
-          kernel_size = convolutionKernelSize, activation = 'relu',
-          padding = 'same',
-          kernel_regularizer = regularizer_l2( weightDecay ) )
-      } else {
-      outputs <- outputs %>%
-        layer_conv_3d( filters = numberOfFilters,
-          kernel_size = convolutionKernelSize,
-          activation = 'relu', padding = 'same',
-          kernel_regularizer = regularizer_l2( weightDecay ) )  %>%
-        layer_conv_3d( filters = numberOfFilters,
-          kernel_size = convolutionKernelSize,
-          activation = 'relu', padding = 'same',
-          kernel_regularizer = regularizer_l2( weightDecay ) )
+      outputs <- outputs %>% layer_dropout( rate = dropoutRate )
+
+    outputs <- outputs %>%
+      layer_conv_3d( filters = numberOfFilters,
+        kernel_size = convolutionKernelSize,
+        activation = 'relu', padding = 'same',
+        kernel_regularizer = regularizer_l2( weightDecay ) )
       }
     }
 
