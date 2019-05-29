@@ -26,9 +26,9 @@
 #' @param numberOfFiltersAtBaseLayer number of filters at the beginning and end
 #' of the \verb{'U'}.  Doubles at each descending/ascending layer.
 #' @param convolutionKernelSize 2-d vector defining the kernel size
-#' during the encoding path
+#' during the encoding path.
 #' @param deconvolutionKernelSize 2-d vector defining the kernel size
-#' during the decoding
+#' during the decoding.
 #' @param poolSize 2-d vector defining the region for each pooling layer.
 #' @param strides 2-d vector describing the stride length in each direction.
 #' @param dropoutRate float between 0 and 1 to use between dense layers.
@@ -246,9 +246,9 @@ createUnetModel2D <- function( inputImageSize,
 #' @param numberOfFiltersAtBaseLayer number of filters at the beginning and end
 #' of the \verb{'U'}.  Doubles at each descending/ascending layer.
 #' @param convolutionKernelSize 3-d vector defining the kernel size
-#' during the encoding path
+#' during the encoding path.
 #' @param deconvolutionKernelSize 3-d vector defining the kernel size
-#' during the decoding
+#' during the decoding.
 #' @param poolSize 3-d vector defining the region for each pooling layer.
 #' @param strides 3-d vector describing the stride length in each direction.
 #' @param dropoutRate float between 0 and 1 to use between dense layers.
