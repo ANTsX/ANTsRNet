@@ -201,16 +201,16 @@ createDeepBackProjectionNetworkModel2D <-
     kernel_size = lastConvolution, strides = c( 1, 1 ), padding = 'same',
     kernel_initializer = "glorot_uniform" )
 
-  if ( numberOfLossFunctions == 1 ) {
-    deepBackProjectionNetworkModel <- keras_model(
-      inputs = inputs,
-      outputs = outputs )
+  if( numberOfLossFunctions == 1 )
+    {
+    deepBackProjectionNetworkModel <- keras_model( inputs = inputs, outputs = outputs )
     } else {
-      olist = list()
-      for ( k in 1:numberOfLossFunctions ) olist[[ k ]] = outputs
-      deepBackProjectionNetworkModel <- keras_model(
-        inputs = inputs,
-        outputs = olist )
+    outputList = list()
+    for( k in seq_len( numberOfLossFunctions ) )
+      {
+      outputList[[k]] = outputs
+      }
+    deepBackProjectionNetworkModel <- keras_model( inputs = inputs, outputs = outputList )
     }
 
   return( deepBackProjectionNetworkModel )
@@ -421,16 +421,16 @@ createDeepBackProjectionNetworkModel3D <-
     kernel_size = lastConvolution, strides = c( 1, 1, 1 ), padding = 'same',
     kernel_initializer = "glorot_uniform" )
 
-  if ( numberOfLossFunctions == 1 ) {
-    deepBackProjectionNetworkModel <- keras_model(
-      inputs = inputs,
-      outputs = outputs )
+  if( numberOfLossFunctions == 1 )
+    {
+    deepBackProjectionNetworkModel <- keras_model( inputs = inputs, outputs = outputs )
     } else {
-      olist = list()
-      for ( k in 1:numberOfLossFunctions ) olist[[ k ]] = outputs
-      deepBackProjectionNetworkModel <- keras_model(
-        inputs = inputs,
-        outputs = olist )
+    outputList = list()
+    for( k in seq_len( numberOfLossFunctions ) )
+      {
+      outputList[[k]] = outputs
+      }
+    deepBackProjectionNetworkModel <- keras_model( inputs = inputs, outputs = outputList )
     }
 
   return( deepBackProjectionNetworkModel )
