@@ -1,6 +1,6 @@
 #' Extract 2-D or 3-D image patches.
 #'
-#' @param image Input ANTs image with one or more components
+#' @param image Input ANTs image with one or more components.
 #' @param patchSize Width, height, and depth (if 3-D) of patches.
 #' @param maxNumberOfPatches Maximum number of patches returned.  If
 #' "all" is specified, then all patches in sequence (defined by the
