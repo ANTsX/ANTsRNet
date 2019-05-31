@@ -4,7 +4,7 @@
 #' @param patchSize Width, height, and depth (if 3-D) of patches.
 #' @param maxNumberOfPatches Maximum number of patches returned.  If
 #' "all" is specified, then all patches in sequence (defined by the
-#" strideLength are extracted.
+#' strideLength are extracted.
 #' @param strideLength Defines the sequential patch overlap for
 #' maxNumberOfPatches = all.  Can be a image-dimensional vector or a scalar.
 #' @param maskImage optional image specifying the sampling region for
