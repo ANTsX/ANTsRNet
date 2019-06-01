@@ -6,7 +6,7 @@
 #' reconstructed image.  If this is a mask image, the reconstruction will only
 #' use patches in the mask.
 #' @param strideLength Defines the sequential patch overlap for
-#' maxNumberOfPatches = all.  Can be a image-dimensional vector or a scalar.
+#' \code{maxNumberOfPatches = all}.  Can be a image-dimensional vector or a scalar.
 #' @param domainImageIsMask boolean specifying whether the domain image is a
 #' mask used to limit the region of reconstruction from the patches.
 #'
@@ -178,7 +178,7 @@ reconstructImageFromPatches <- function( patches, domainImage,
       countArray[which( countArray == 0 )] <- 1
       for( i in seq_len( numberOfImageComponents ) )
         {
-        imageArray[,, i] <- imageArray[,, i] / countArray 
+        imageArray[,, i] <- imageArray[,, i] / countArray
         }
       }
     } else {
@@ -298,7 +298,7 @@ reconstructImageFromPatches <- function( patches, domainImage,
       countArray[which( countArray == 0 )] <- 1
       for( i in seq_len( numberOfImageComponents ) )
         {
-        imageArray[,,, i] <- imageArray[,,, i] / countArray 
+        imageArray[,,, i] <- imageArray[,,, i] / countArray
         }
       }
     }

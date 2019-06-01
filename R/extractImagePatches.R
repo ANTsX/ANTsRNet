@@ -4,9 +4,9 @@
 #' @param patchSize Width, height, and depth (if 3-D) of patches.
 #' @param maxNumberOfPatches Maximum number of patches returned.  If
 #' "all" is specified, then all patches in sequence (defined by the
-#' strideLength are extracted.
+#' \code{strideLength} are extracted.
 #' @param strideLength Defines the sequential patch overlap for
-#' maxNumberOfPatches = all.  Can be a image-dimensional vector or a scalar.
+#' \code{maxNumberOfPatches = "all"}.  Can be a image-dimensional vector or a scalar.
 #' @param maskImage optional image specifying the sampling region for
 #' the patches when \code{maximumNumberOfPatches} does not equal "all".
 #' The way we constrain patch selection using a mask is by forcing
@@ -50,11 +50,11 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
 
   if( length( imageSize ) != length( patchSize ) )
     {
-    stop( "Mismatch between the image size and the specified patch size.\n" )
+    stop( "Mismatch between the image size and the specified patch size." )
     }
   if( any( patchSize > imageSize ) )
     {
-    stop( "Patch size is greater than the image size.\n")
+    stop( "Patch size is greater than the image size.")
     }
 
   imageArray <- as.array( image )
@@ -84,7 +84,7 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
       stop( paste0( "strideLength is not a scalar or vector of
         length dimensionality." ) )
       } else if( any( strideLength < 1 ) ) {
-      stop( paste0( "strideLength must be a positive integer." ) )
+      stop( paste0( "strideLength elements must be positive integers." ) )
       }
 
     numberOfExtractedPatches <- 1
@@ -196,19 +196,19 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
       maskIndices <- which( maskArray != 0, arr.ind = TRUE )
 
       shiftedMaskIndices <- maskIndices
-      negativeIndices <- c()
+      removeIndices <- c()
       for( d in seq_len( dimensionality ) )
         {
         shiftedMaskIndices[, d] <- maskIndices[, d] - midPatchIndex[d]
-        negativeIndices <- append( negativeIndices, which( shiftedMaskIndices[, d] <= 0 ) )
+        removeIndices <- append( removeIndices, which( shiftedMaskIndices[, d] <= 0 ) )
         shiftedMaskIndices[, d] <- maskIndices[, d] + midPatchIndex[d]
-        negativeIndices <- append( negativeIndices, which( shiftedMaskIndices[, d] > imageSize[d] ) )
+        removeIndices <- append( removeIndices, which( shiftedMaskIndices[, d] > imageSize[d] ) )
         }
 
-      negativeIndices <- unique( negativeIndices )
-      if( length( negativeIndices ) > 0 )
+      removeIndices <- unique( removeIndices )
+      if( length( removeIndices ) > 0 )
         {
-        maskIndices <- maskIndices[-negativeIndices,]
+        maskIndices <- maskIndices[-removeIndices,]
         }
 
       # After pruning the mask indices, which were originally defined in terms of the
