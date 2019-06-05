@@ -588,7 +588,7 @@ createResUnetModel3D <- function( inputImageSize,
       output <- output %>% layer_batch_normalization()
       output <- output %>% layer_activation_thresholded_relu( theta = 0 )
 
-      output <- output %>% layer_conv_2d(
+      output <- output %>% layer_conv_3d(
         filters = numberOfFilters,
         kernel_size = c( 1, 1, 1 ), strides = c( 2, 2, 2 ),
         kernel_initializer = initializer_he_normal(),
