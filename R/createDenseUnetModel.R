@@ -25,7 +25,7 @@
 #' @param growthRate number of filters to add for each dense block layer
 #' (default = 48).
 #' @param initialNumberOfFilters number of filters at the beginning
-#  (default = 96).
+#'  (default = 96).
 #' @param reductionRate reduction factor of transition blocks
 #' @param depth number of layers---must be equal to 3 * N + 4 where
 #' N is an integer (default = 7).
@@ -340,7 +340,7 @@ createDenseUnetModel2D <- function( inputImageSize,
 #' @param growthRate number of filters to add for each dense block layer
 #' (default = 48).
 #' @param initialNumberOfFilters number of filters at the beginning
-#  (default = 96).
+#'  (default = 96).
 #' @param reductionRate reduction factor of transition blocks
 #' @param depth number of layers---must be equal to 3 * N + 4 where
 #' N is an integer (default = 7).
