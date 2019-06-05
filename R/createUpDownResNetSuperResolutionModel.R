@@ -56,8 +56,7 @@ createEnhancedDeepSuperResolutionModel2D <- function(
     convolutionKernelSize, scale = 2,
     interpolation = "bilinear" )
     {
-    block <- model %>% layer_upsampling_2d( size = c( scale, scale ),
-      interpolation = interpolation )
+    block <- model %>% layer_upsampling_2d( size = c( scale, scale ) )
     return( block )
     }
 
