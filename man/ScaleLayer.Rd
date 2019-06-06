@@ -21,11 +21,6 @@ Custom scale layer
 \item{axis}{integer specifying which axis to normalize.}
 \item{momentum}{momentum value used for computation of the exponential
 average of the mean and standard deviation.}
-\item{weights}{initialization weights with shapes.}
-\item{betaInitializer}{initial bias parameter. Only used if weights
-aren't specified.}
-\item{gammaInitializer}{initial scale parameter. Only used if weights
-aren't specified.}
 }
 }
 

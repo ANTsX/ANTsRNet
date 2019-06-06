@@ -26,10 +26,10 @@ this is the number of outputs.}
 of the \verb{'U'}.  Doubles at each descending/ascending layer.}
 
 \item{convolutionKernelSize}{3-d vector defining the kernel size
-during the encoding path}
+during the encoding path.}
 
 \item{deconvolutionKernelSize}{3-d vector defining the kernel size
-during the decoding}
+during the decoding.}
 
 \item{poolSize}{3-d vector defining the region for each pooling layer.}
 

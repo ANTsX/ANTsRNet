@@ -109,7 +109,7 @@ resolution.  More information is provided at the authors' website:</p>
   <span class='kw'>numberOfOutputs</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>numberOfBaseFilters</span> <span class='kw'>=</span> <span class='fl'>64</span>,
   <span class='kw'>numberOfFeatureFilters</span> <span class='kw'>=</span> <span class='fl'>256</span>, <span class='kw'>numberOfBackProjectionStages</span> <span class='kw'>=</span> <span class='fl'>7</span>,
   <span class='kw'>convolutionKernelSize</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>12</span>, <span class='fl'>12</span>), <span class='kw'>strides</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>8</span>, <span class='fl'>8</span>),
-  <span class='kw'>numberOfLossFunctions</span> <span class='kw'>=</span> <span class='fl'>1</span>)</pre>
+  <span class='kw'>lastConvolution</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>3</span>, <span class='fl'>3</span>), <span class='kw'>numberOfLossFunctions</span> <span class='kw'>=</span> <span class='fl'>1</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -153,6 +153,10 @@ original paper.  Factors used in the original implementation are as follows:
 original paper.  Factors used in the original implementation are as follows:
 2x --&gt; <code>strides = c( 2, 2 )</code>, 4x --&gt; <code>strides = c( 4, 4 )</code>, 8x --&gt;
 <code>strides = c( 8, 8 )</code>. We default to 8x parameters.</p></td>
+    </tr>
+    <tr>
+      <th>lastConvolution</th>
+      <td><p>the kernel size for the last convolutional layer</p></td>
     </tr>
     <tr>
       <th>numberOfLossFunctions</th>

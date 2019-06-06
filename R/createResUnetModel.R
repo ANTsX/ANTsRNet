@@ -30,7 +30,7 @@
 #' kernel weights of the convolution layers.  Default = 0.0.
 #' @param mode 'classification' or 'regression'.  Default = 'classification'.
 #'
-#' @return a u-net keras model
+#' @return a res/u-net keras model
 #' @author Tustison NJ
 #' @examples
 #'
@@ -439,7 +439,7 @@ createResUnetModel2D <- function( inputImageSize,
 #' kernel weights of the convolution layers.  Default = 0.0.
 #' @param mode 'classification' or 'regression'.  Default = 'classification'.
 #'
-#' @return a u-net keras model
+#' @return a res/u-net keras model
 #' @author Tustison NJ
 #' @examples
 #'

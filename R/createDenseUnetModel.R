@@ -28,8 +28,8 @@
 #' @param reductionRate reduction factor of transition blocks
 #' @param depth number of layers---must be equal to 3 * N + 4 where
 #' N is an integer (default = 7).
-#' @param dropoutRate = per drop out layer rate (default = 0.2)
-#' @param weightDecay = weight decay (default = 1e-4)
+#' @param dropoutRate drop out layer rate (default = 0.2).
+#' @param weightDecay weight decay (default = 1e-4).
 #' @return an DenseUnet keras model
 #' @author Tustison NJ
 #' @examples
@@ -279,7 +279,7 @@ createDenseUnetModel2D <- function( inputImageSize,
     outputs <- outputs %>% layer_conv_2d( filters = localNumberOfFilters,
       kernel_size = c( 3, 3 ), padding = 'same', kernel_initializer = 'normal' )
 
-    if( i == numberOfDenseBlocks )
+    if( i == numberOfDenseBlocks - 1 )
       {
       outputs <- outputs %>% layer_dropout( rate = 0.3 )
       }
@@ -342,8 +342,8 @@ createDenseUnetModel2D <- function( inputImageSize,
 #' @param reductionRate reduction factor of transition blocks
 #' @param depth number of layers---must be equal to 3 * N + 4 where
 #' N is an integer (default = 7).
-#' @param dropoutRate = per drop out layer rate (default = 0.2)
-#' @param weightDecay = weight decay (default = 1e-4)
+#' @param dropoutRate drop out layer rate (default = 0.2).
+#' @param weightDecay weight decay (default = 1e-4).
 #' @return an DenseUnet keras model
 #' @author Tustison NJ
 #' @examples

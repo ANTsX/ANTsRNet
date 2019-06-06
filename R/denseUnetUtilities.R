@@ -10,11 +10,6 @@
 #'  \item{axis}{integer specifying which axis to normalize.}
 #'  \item{momentum}{momentum value used for computation of the exponential
 #'                  average of the mean and standard deviation.}
-#'  \item{weights}{initialization weights with shapes.}
-#'  \item{betaInitializer}{initial bias parameter. Only used if weights
-#'                         aren't specified.}
-#'  \item{gammaInitializer}{initial scale parameter. Only used if weights
-#'                          aren't specified.}
 #' }
 #'
 #' @section Details:
@@ -44,21 +39,10 @@ ScaleLayer <- R6::R6Class( "ScaleLayer",
 
     momentum = 0.9,
 
-    betaInitializer = NULL,
-
-    gammaInitializer = NULL,
-
-    weights = NULL,
-
-    initialize = function( axis = -1L, momentum = 0.9,
-      betaInitializer = initializer_zeros(),
-      gammaInitializer = initializer_ones(), weights = NULL )
+    initialize = function( axis = -1L, momentum = 0.9 )
       {
       self$axis <- axis
       self$momentum <- momentum
-      self$betaInitializer <- betaInitializer
-      self$gammaInitializer <- gammaInitializer
-      self$initial_weights <- weights
       },
 
     build = function( input_shape )
@@ -72,17 +56,18 @@ ScaleLayer <- R6::R6Class( "ScaleLayer",
         {
         index <- length( self$inputShape )
         }
-      shape <- reticulate::tuple( input_shape[[index]] )
+      output_shape <- reticulate::tuple( input_shape[[index]] )
 
-      self$gamma <- K$variable( value = self$gammaInitializer( shape ) )
-      self$beta <- K$variable( self$betaInitializer( shape ) )
-      self$trainable_weights <- list( self$gamma, self$beta )
-
-      if( ! is.null( self$initial_weights ) )
-        {
-        self$set_weights( self$initial_weights )
-        self$initial_weights <- NULL
-        }
+      self$gamma <- self$add_weight(
+        name = "gamma",
+        shape = output_shape,
+        initializer = initializer_ones(),
+        trainable = TRUE )
+      self$beta <- self$add_weight(
+        name = "beta",
+        shape = output_shape,
+        initializer = initializer_zeros(),
+        trainable = TRUE )
       },
 
     call = function( inputs, mask = NULL )
@@ -109,10 +94,8 @@ ScaleLayer <- R6::R6Class( "ScaleLayer",
 )
 
 layer_scale <- function( objects,
-  axis = -1, momentum = 0.9, betaInitializer = initializer_zeros(),
-  gammaInitializer = initializer_ones(), weights = NULL ) {
+  axis = -1, momentum = 0.9 ) {
 create_layer( ScaleLayer, objects,
-    list( axis = axis, momentum = momentum, betaInitializer = betaInitializer,
-      gammaInitializer = gammaInitializer, weights = weights )
+    list( axis = axis, momentum = momentum )
     )
 }

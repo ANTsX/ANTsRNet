@@ -21,19 +21,19 @@ this is the number of outputs.}
 \item{growthRate}{number of filters to add for each dense block layer
 (default = 48).}
 
-\item{initialNumberOfFilters}{number of filters at the beginning}
+\item{initialNumberOfFilters}{number of filters at the beginning
+(default = 96).}
 
 \item{reductionRate}{reduction factor of transition blocks}
 
 \item{depth}{number of layers---must be equal to 3 * N + 4 where
 N is an integer (default = 7).}
 
-\item{dropoutRate}{= per drop out layer rate (default = 0.2)}
+\item{dropoutRate}{drop out layer rate (default = 0.2).}
 
-\item{weightDecay}{= weight decay (default = 1e-4)}
+\item{weightDecay}{weight decay (default = 1e-4).}
 
-\item{numberOfLayersPerDenseBlocks}{number of dense blocks per layer
-(default = 1).}
+\item{numberOfLayersPerDenseBlocks}{number of dense blocks per layer.}
 }
 \value{
 an DenseUnet keras model

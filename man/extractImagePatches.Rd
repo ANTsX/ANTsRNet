@@ -9,15 +9,16 @@ extractImagePatches(image, patchSize, maxNumberOfPatches = "all",
   returnAsArray = FALSE)
 }
 \arguments{
-\item{image}{Input ANTs image with one or more components}
+\item{image}{Input ANTs image with one or more components.}
 
 \item{patchSize}{Width, height, and depth (if 3-D) of patches.}
 
 \item{maxNumberOfPatches}{Maximum number of patches returned.  If
-"all" is specified, then all patches in sequence (defined by the}
+"all" is specified, then all patches in sequence (defined by the
+\code{strideLength} are extracted.}
 
 \item{strideLength}{Defines the sequential patch overlap for
-maxNumberOfPatches = all.  Can be a image-dimensional vector or a scalar.}
+\code{maxNumberOfPatches = "all"}.  Can be a image-dimensional vector or a scalar.}
 
 \item{maskImage}{optional image specifying the sampling region for
 the patches when \code{maximumNumberOfPatches} does not equal "all".

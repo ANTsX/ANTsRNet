@@ -40,7 +40,7 @@ kernel weights of the convolution layers.  Default = 0.0.}
 \item{mode}{'classification' or 'regression'.  Default = 'classification'.}
 }
 \value{
-a u-net keras model
+a res/u-net keras model
 }
 \description{
 Creates a keras model of the U-net + ResNet deep learning architecture for
