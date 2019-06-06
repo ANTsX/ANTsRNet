@@ -111,15 +111,6 @@ createAlexNetModel2D <- function( inputImageSize,
       {
       K <- keras::backend()
 
-      #  Theano:  [batchSize, channelSize, widthSize, heightSize]
-      #  tensorflow:  [batchSize, widthSize, heightSize, channelSize]
-
-      if( K$image_data_format() == "channels_last" )
-        {
-        Xshape <- X$get_shape()
-        } else {
-        Xshape <- X$shape()
-        }
       X2 <- K$square( X )
 
       half <- as.integer( n / 2 )
@@ -129,13 +120,15 @@ createAlexNetModel2D <- function( inputImageSize,
         padding = list( c( 0L, 0L ), c( half, half ) ) )
       extraChannels <- K$permute_dimensions(
         extraChannels, c( 3L, 0L, 1L, 2L ) )
-      scale <- k
 
       Xdims <- K$int_shape( X )
-      ch <- as.integer( Xdims[[length( Xdims )]] )
+      numberOfChannels <- as.integer( Xdims[[length( Xdims )]] )
+
+      scale <- k
       for( i in 1:n )
         {
-        scale <- scale + alpha * extraChannels[,,, i:( i + ch - 1 )]
+        scale <- scale + alpha *
+          extraChannels[,,, i:( i + numberOfChannels - 1 )]
         }
       scale <- K$pow( scale, beta )
 
@@ -358,15 +351,7 @@ createAlexNetModel3D <- function( inputImageSize,
     normalizeTensor3D <- function( X )
       {
       K <- keras::backend()
-      #  Theano:  [batchSize, channelSize, widthSize, heightSize, depthSize]
-      #  tensorflow:  [batchSize, widthSize, heightSize, depthSize, channelSize]
 
-      if( K$image_data_format() == "channels_last" )
-        {
-        Xshape <- X$get_shape()
-        } else {
-        Xshape <- X$shape()
-        }
       X2 <- K$square( X )
 
       half <- as.integer( n / 2 )
@@ -376,13 +361,15 @@ createAlexNetModel3D <- function( inputImageSize,
         padding = list( c( 0L, 0L ), c( 0L, 0L ), c( half, half ) ) )
       extraChannels <- K$permute_dimensions(
         extraChannels, c( 4L, 0L, 1L, 2L, 3L ) )
-      scale <- k
 
       Xdims <- K$int_shape( X )
-      ch <- as.integer( Xdims[[length( Xdims )]] )
+      numberOfChannels <- as.integer( Xdims[[length( Xdims )]] )
+
+      scale <- k
       for( i in 1:n )
         {
-        scale <- scale + alpha * extraChannels[,,,, i:( i + ch - 1 )]
+        scale <- scale + alpha *
+          extraChannels[,,,, i:( i + numberOfChannels - 1 )]
         }
       scale <- K$pow( scale, beta )
 
