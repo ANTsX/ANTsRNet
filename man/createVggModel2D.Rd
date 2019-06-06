@@ -2,12 +2,12 @@
 % Please edit documentation in R/createVggModel.R
 \name{createVggModel2D}
 \alias{createVggModel2D}
-\title{2-D implementation of the Vgg deep learning architecture.}
+\title{2-D implementation of the VGG deep learning architecture.}
 \usage{
 createVggModel2D(inputImageSize, numberOfClassificationLabels = 1000,
   layers = c(1, 2, 3, 4, 4), lowestResolution = 64,
   convolutionKernelSize = c(3, 3), poolSize = c(2, 2), strides = c(2,
-  2), denseUnits = 4096, dropoutRate = 0, style = 19,
+  2), numberOfDenseUnits = 4096, dropoutRate = 0, style = 19,
   mode = "classification")
 }
 \arguments{
@@ -30,7 +30,7 @@ during the encoding path}
 
 \item{strides}{2-d vector describing the stride length in each direction.}
 
-\item{denseUnits}{integer for the number of units in the last layers.}
+\item{numberOfDenseUnits}{integer for the number of units in the last layers.}
 
 \item{dropoutRate}{float between 0 and 1 to use between dense layers.}
 
@@ -39,7 +39,7 @@ during the encoding path}
 \item{mode}{'classification' or 'regression'.  Default = 'classification'.}
 }
 \value{
-a VGG keras model to be used with subsequent fitting
+a VGG keras model
 }
 \description{
 Creates a keras model of the Vgg deep learning architecture for image

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>3-D implementation of the Vgg deep learning architecture. — createVggModel3D • ANTsRNet</title>
+<title>3-D implementation of the VGG deep learning architecture. — createVggModel3D • ANTsRNet</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,7 +30,7 @@
 
 
 
-<meta property="og:title" content="3-D implementation of the Vgg deep learning architecture. — createVggModel3D" />
+<meta property="og:title" content="3-D implementation of the VGG deep learning architecture. — createVggModel3D" />
 
 <meta property="og:description" content="Creates a keras model of the Vgg deep learning architecture for image
 recognition based on the paper" />
@@ -93,7 +93,7 @@ recognition based on the paper" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>3-D implementation of the Vgg deep learning architecture.</h1>
+    <h1>3-D implementation of the VGG deep learning architecture.</h1>
     
     <div class="hidden name"><code>createVggModel3D.Rd</code></div>
     </div>
@@ -108,7 +108,7 @@ recognition based on the paper</p>
     <pre class="usage"><span class='fu'>createVggModel3D</span>(<span class='no'>inputImageSize</span>, <span class='kw'>numberOfClassificationLabels</span> <span class='kw'>=</span> <span class='fl'>1000</span>,
   <span class='kw'>layers</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span>, <span class='fl'>4</span>, <span class='fl'>4</span>), <span class='kw'>lowestResolution</span> <span class='kw'>=</span> <span class='fl'>64</span>,
   <span class='kw'>convolutionKernelSize</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>3</span>, <span class='fl'>3</span>, <span class='fl'>3</span>), <span class='kw'>poolSize</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>2</span>, <span class='fl'>2</span>, <span class='fl'>2</span>),
-  <span class='kw'>strides</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>2</span>, <span class='fl'>2</span>, <span class='fl'>2</span>), <span class='kw'>denseUnits</span> <span class='kw'>=</span> <span class='fl'>4096</span>, <span class='kw'>dropoutRate</span> <span class='kw'>=</span> <span class='fl'>0</span>,
+  <span class='kw'>strides</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>2</span>, <span class='fl'>2</span>, <span class='fl'>2</span>), <span class='kw'>numberOfDenseUnits</span> <span class='kw'>=</span> <span class='fl'>4096</span>, <span class='kw'>dropoutRate</span> <span class='kw'>=</span> <span class='fl'>0</span>,
   <span class='kw'>style</span> <span class='kw'>=</span> <span class='fl'>19</span>, <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"classification"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -148,7 +148,7 @@ during the encoding path</p></td>
       <td><p>3-d vector describing the stride length in each direction.</p></td>
     </tr>
     <tr>
-      <th>denseUnits</th>
+      <th>numberOfDenseUnits</th>
       <td><p>integer for the number of units in the last layers.</p></td>
     </tr>
     <tr>
@@ -167,7 +167,7 @@ during the encoding path</p></td>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a VGG keras model to be used with subsequent fitting</p>
+    <p>a VGG keras model</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 

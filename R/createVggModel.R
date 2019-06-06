@@ -1,4 +1,4 @@
-#' 2-D implementation of the Vgg deep learning architecture.
+#' 2-D implementation of the VGG deep learning architecture.
 #'
 #' Creates a keras model of the Vgg deep learning architecture for image
 #' recognition based on the paper
@@ -27,12 +27,12 @@
 #' during the encoding path
 #' @param poolSize 2-d vector defining the region for each pooling layer.
 #' @param strides 2-d vector describing the stride length in each direction.
-#' @param denseUnits integer for the number of units in the last layers.
+#' @param numberOfDenseUnits integer for the number of units in the last layers.
 #' @param dropoutRate float between 0 and 1 to use between dense layers.
 #' @param style \verb{'16'} or \verb{'19'} for VGG16 or VGG19, respectively.
 #' @param mode 'classification' or 'regression'.  Default = 'classification'.
 #'
-#' @return a VGG keras model to be used with subsequent fitting
+#' @return a VGG keras model
 #' @author Tustison NJ
 #' @examples
 #'
@@ -93,7 +93,7 @@ createVggModel2D <- function( inputImageSize,
                                convolutionKernelSize = c( 3, 3 ),
                                poolSize = c( 2, 2 ),
                                strides = c( 2, 2 ),
-                               denseUnits = 4096,
+                               numberOfDenseUnits = 4096,
                                dropoutRate = 0.0,
                                style = 19,
                                mode = 'classification'
@@ -125,39 +125,31 @@ createVggModel2D <- function( inputImageSize,
                       activation = 'relu', padding = 'same' ) %>%
         layer_conv_2d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
                       activation = 'relu', padding = 'same' )
-      }  else {
-      if( style == 16 )
+      } else {
+      vggModel %>%
+        layer_conv_2d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
+                      activation = 'relu', padding = 'same' ) %>%
+        layer_conv_2d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
+                      activation = 'relu', padding = 'same' ) %>%
+        layer_conv_2d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
+                      activation = 'relu', padding = 'same' )
+      if( style == 19 )
         {
         vggModel %>%
-          layer_conv_2d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
-                        activation = 'relu', padding = 'same' ) %>%
-          layer_conv_2d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
-                        activation = 'relu', padding = 'same' ) %>%
-          layer_conv_2d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
-                        activation = 'relu', padding = 'same' )
-        } else {  # style == 19
-        vggModel %>%
-          layer_conv_2d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
-                        activation = 'relu', padding = 'same' ) %>%
-          layer_conv_2d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
-                        activation = 'relu', padding = 'same' ) %>%
-          layer_conv_2d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
-                        activation = 'relu', padding = 'same' ) %>%
           layer_conv_2d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
                         activation = 'relu', padding = 'same' )
         }
       }
-
     vggModel %>% layer_max_pooling_2d( pool_size = poolSize, strides = strides )
     }
 
   vggModel %>% layer_flatten()
-  vggModel %>% layer_dense( units = denseUnits, activation = 'relu' )
+  vggModel %>% layer_dense( units = numberOfDenseUnits, activation = 'relu' )
   if( dropoutRate > 0.0 )
     {
     vggModel %>% layer_dropout( rate = dropoutRate )
     }
-  vggModel %>% layer_dense( units = denseUnits, activation = 'relu' )
+  vggModel %>% layer_dense( units = numberOfDenseUnits, activation = 'relu' )
   if( dropoutRate > 0.0 )
     {
     vggModel %>% layer_dropout( rate = dropoutRate )
@@ -184,7 +176,7 @@ createVggModel2D <- function( inputImageSize,
   return( vggModel )
 }
 
-#' 3-D implementation of the Vgg deep learning architecture.
+#' 3-D implementation of the VGG deep learning architecture.
 #'
 #' Creates a keras model of the Vgg deep learning architecture for image
 #' recognition based on the paper
@@ -213,12 +205,12 @@ createVggModel2D <- function( inputImageSize,
 #' during the encoding path
 #' @param poolSize 3-d vector defining the region for each pooling layer.
 #' @param strides 3-d vector describing the stride length in each direction.
-#' @param denseUnits integer for the number of units in the last layers.
+#' @param numberOfDenseUnits integer for the number of units in the last layers.
 #' @param dropoutRate float between 0 and 1 to use between dense layers.
 #' @param style \verb{'16'} or \verb{'19'} for VGG16 or VGG19, respectively.
 #' @param mode 'classification' or 'regression'.  Default = 'classification'.
 #'
-#' @return a VGG keras model to be used with subsequent fitting
+#' @return a VGG keras model
 #' @author Tustison NJ
 #' @examples
 #' # Simple examples, must run successfully and quickly. These will be tested.
@@ -269,7 +261,7 @@ createVggModel3D <- function( inputImageSize,
                                convolutionKernelSize = c( 3, 3, 3 ),
                                poolSize = c( 2, 2, 2 ),
                                strides = c( 2, 2, 2 ),
-                               denseUnits = 4096,
+                               numberOfDenseUnits = 4096,
                                dropoutRate = 0.0,
                                style = 19,
                                mode = 'classification'
@@ -301,39 +293,31 @@ createVggModel3D <- function( inputImageSize,
                       activation = 'relu', padding = 'same' ) %>%
         layer_conv_3d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
                       activation = 'relu', padding = 'same' )
-      }  else {
-      if( style == 16 )
+      } else {
+      vggModel %>%
+        layer_conv_3d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
+                      activation = 'relu', padding = 'same' ) %>%
+        layer_conv_3d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
+                      activation = 'relu', padding = 'same' ) %>%
+        layer_conv_3d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
+                      activation = 'relu', padding = 'same' )
+      if( style == 19 )
         {
         vggModel %>%
-          layer_conv_3d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
-                        activation = 'relu', padding = 'same' ) %>%
-          layer_conv_3d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
-                        activation = 'relu', padding = 'same' ) %>%
-          layer_conv_3d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
-                        activation = 'relu', padding = 'same' )
-        } else {  # style == 19
-        vggModel %>%
-          layer_conv_3d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
-                        activation = 'relu', padding = 'same' ) %>%
-          layer_conv_3d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
-                        activation = 'relu', padding = 'same' ) %>%
-          layer_conv_3d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
-                        activation = 'relu', padding = 'same' ) %>%
           layer_conv_3d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
                         activation = 'relu', padding = 'same' )
         }
       }
-
     vggModel %>% layer_max_pooling_3d( pool_size = poolSize, strides = strides )
     }
 
   vggModel %>% layer_flatten()
-  vggModel %>% layer_dense( units = denseUnits, activation = 'relu' )
+  vggModel %>% layer_dense( units = numberOfDenseUnits, activation = 'relu' )
   if( dropoutRate > 0.0 )
     {
     vggModel %>% layer_dropout( rate = dropoutRate )
     }
-  vggModel %>% layer_dense( units = denseUnits, activation = 'relu' )
+  vggModel %>% layer_dense( units = numberOfDenseUnits, activation = 'relu' )
   if( dropoutRate > 0.0 )
     {
     vggModel %>% layer_dropout( rate = dropoutRate )
