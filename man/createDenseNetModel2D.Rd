@@ -28,9 +28,9 @@ N is an integer (default = 7).}
 \item{growthRate}{number of filters to add for each dense block layer
 (default = 12).}
 
-\item{dropoutRate}{= per drop out layer rate (default = 0.2)}
+\item{dropoutRate}{= per drop out layer rate (default = 0.2).}
 
-\item{weightDecay}{= weight decay (default = 1e-4)}
+\item{weightDecay}{= weight decay (default = 1e-4).}
 
 \item{mode}{'classification' or 'regression'.  Default = 'classification'.}
 }

@@ -14,11 +14,11 @@
 #' shape (or dimension) of that tensor is the image dimensions followed by
 #' the number of channels (e.g., red, green, and blue).  The batch size
 #' (i.e., number of training images) is not specified a priori.
-#' @param numberOfClassificationLabels Number of segmentation labels.
-#' @param depth integer determining the depth of the ntwork.  Related to the
+#' @param numberOfClassificationLabels Number of classification labels.
+#' @param depth integer determining the depth of the network.  Related to the
 #' actual number of layers by the \code{numberOfLayers = depth * 6 + 4}.
 #' Default = 2 (such that \code{numberOfLayers = 16}.)
-#' @param width integer determining the width of the network.  Default k = 1.
+#' @param width integer determining the width of the network.  Default = 1.
 #' @param residualBlockSchedule vector determining the number of filters
 #' per convolutional block. Default = \code{c( 16, 32, 64 )}.
 #' @param dropoutRate Dropout percentage.  Default = 0.0.
@@ -88,10 +88,11 @@ createWideResNetModel2D <- function( inputImageSize,
     channelAxis <- -1
     }
 
-  initialConvolutionLayer <- function( model, base )
+  initialConvolutionLayer <- function( model, numberOfFilters )
     {
-    model <- model %>% layer_conv_2d( filters = base, kernel_size = c( 3, 3 ),
-      padding = 'same', kernel_initializer = initializer_he_normal(),
+    model <- model %>% layer_conv_2d( filters = numberOfFilters,
+      kernel_size = c( 3, 3 ), padding = 'same',
+      kernel_initializer = initializer_he_normal(),
       kernel_regularizer = regularizer_l2( weightDecay ) )
 
     model <- model %>% layer_batch_normalization( axis = channelAxis, momentum = 0.1,
@@ -218,11 +219,11 @@ createWideResNetModel2D <- function( inputImageSize,
 #' shape (or dimension) of that tensor is the image dimensions followed by
 #' the number of channels (e.g., red, green, and blue).  The batch size
 #' (i.e., number of training images) is not specified a priori.
-#' @param numberOfClassificationLabels Number of segmentation labels.
+#' @param numberOfClassificationLabels Number of classification labels.
 #' @param depth integer determining the depth of the ntwork.  Related to the
 #' actual number of layers by the \code{numberOfLayers = depth * 6 + 4}.
 #' Default = 2 (such that \code{numberOfLayers = 16}.)
-#' @param width integer determining the width of the network.  Default k = 1.
+#' @param width integer determining the width of the network.  Default = 1.
 #' @param residualBlockSchedule vector determining the number of filters
 #' per convolutional block. Default = \code{c( 16, 32, 64 )}.
 #' @param dropoutRate Dropout percentage.  Default = 0.0.
@@ -295,10 +296,11 @@ createWideResNetModel3D <- function( inputImageSize,
     channelAxis <- -1
     }
 
-  initialConvolutionLayer <- function( model, base )
+  initialConvolutionLayer <- function( model, numberOfFilters )
     {
-    model <- model %>% layer_conv_3d( filters = base, kernel_size = c( 3, 3, 3 ),
-      padding = 'same', kernel_initializer = initializer_he_normal(),
+    model <- model %>% layer_conv_3d( filters = numberOfFilters,
+      kernel_size = c( 3, 3, 3 ), padding = 'same',
+      kernel_initializer = initializer_he_normal(),
       kernel_regularizer = regularizer_l2( weightDecay ) )
 
     model <- model %>% layer_batch_normalization( axis = channelAxis, momentum = 0.1,

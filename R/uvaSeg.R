@@ -25,12 +25,15 @@
 #' @author Avants BB
 #' @examples
 #'
+#' \dontrun{
+#'
 #' library(ANTsR)
 #' img <- ri( 1 ) %>% resampleImage( 4 ) %>% iMath( "Normalize" )
 #' mask = randomMask( getMask( img ), 50 )
 #' r = c( 3, 3 )
 #' patch = getNeighborhoodInMask( img, mask, r, boundary.condition = "NA" )
 #' uvaSegModel = uvaSegTrain( patch, 6 )
+#' }
 #'
 #' @export uvaSegTrain
 uvaSegTrain <- function( patches,
