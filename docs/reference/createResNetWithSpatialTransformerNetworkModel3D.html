@@ -6,7 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>2-D implementation of the Wide ResNet deep learning architecture. — createWideResNetModel2D • ANTsRNet</title>
+<title>3-D implementation of the ResNet deep learning architecture with a
+preceding spatial transformer network layer. — createResNetWithSpatialTransformerNetworkModel3D • ANTsRNet</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,10 +31,12 @@
 
 
 
-<meta property="og:title" content="2-D implementation of the Wide ResNet deep learning architecture. — createWideResNetModel2D" />
+<meta property="og:title" content="3-D implementation of the ResNet deep learning architecture with a
+preceding spatial transformer network layer. — createResNetWithSpatialTransformerNetworkModel3D" />
 
-<meta property="og:description" content="Creates a keras model of the Wide ResNet deep learning architecture for image
-classification/regression.  The paper is available here:" />
+<meta property="og:description" content="Creates a keras model of the ResNet deep learning architecture for image
+classification with a spatial transformer network (STN) layer.  The paper
+is available here:" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -95,22 +98,25 @@ classification/regression.  The paper is available here:" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>2-D implementation of the Wide ResNet deep learning architecture.</h1>
+    <h1>3-D implementation of the ResNet deep learning architecture with a
+preceding spatial transformer network layer.</h1>
     
-    <div class="hidden name"><code>createWideResNetModel2D.Rd</code></div>
+    <div class="hidden name"><code>createResNetWithSpatialTransformerNetworkModel3D.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Creates a keras model of the Wide ResNet deep learning architecture for image
-classification/regression.  The paper is available here:</p>
+    <p>Creates a keras model of the ResNet deep learning architecture for image
+classification with a spatial transformer network (STN) layer.  The paper
+is available here:</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>createWideResNetModel2D</span>(<span class='no'>inputImageSize</span>,
-  <span class='kw'>numberOfClassificationLabels</span> <span class='kw'>=</span> <span class='fl'>1000</span>, <span class='kw'>depth</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>width</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>residualBlockSchedule</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>16</span>, <span class='fl'>32</span>, <span class='fl'>64</span>), <span class='kw'>poolSize</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>8</span>, <span class='fl'>8</span>),
-  <span class='kw'>dropoutRate</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>weightDecay</span> <span class='kw'>=</span> <span class='fl'>5e-04</span>, <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"classification"</span>)</pre>
+    <pre class="usage"><span class='fu'>createResNetWithSpatialTransformerNetworkModel3D</span>(<span class='no'>inputImageSize</span>,
+  <span class='kw'>numberOfClassificationLabels</span> <span class='kw'>=</span> <span class='fl'>1000</span>, <span class='kw'>layers</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>4</span>,
+  <span class='kw'>residualBlockSchedule</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>3</span>, <span class='fl'>4</span>, <span class='fl'>6</span>, <span class='fl'>3</span>), <span class='kw'>lowestResolution</span> <span class='kw'>=</span> <span class='fl'>64</span>,
+  <span class='kw'>cardinality</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>resampledSize</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>64</span>, <span class='fl'>64</span>, <span class='fl'>64</span>),
+  <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"classification"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -124,35 +130,30 @@ the number of channels (e.g., red, green, and blue).  The batch size
     </tr>
     <tr>
       <th>numberOfClassificationLabels</th>
-      <td><p>Number of classification labels.</p></td>
+      <td><p>Number of segmentation labels.</p></td>
     </tr>
     <tr>
-      <th>depth</th>
-      <td><p>integer determining the depth of the network.  Related to the
-actual number of layers by the <code>numberOfLayers = depth * 6 + 4</code>.
-Default = 2 (such that <code>numberOfLayers = 16</code>.)</p></td>
-    </tr>
-    <tr>
-      <th>width</th>
-      <td><p>integer determining the width of the network.  Default = 1.</p></td>
+      <th>layers</th>
+      <td><p>a vector determining the number of 'filters' defined at
+for each layer.</p></td>
     </tr>
     <tr>
       <th>residualBlockSchedule</th>
-      <td><p>vector determining the number of filters
-per convolutional block. Default = <code><a href='https://www.rdocumentation.org/packages/base/topics/c'>c( 16, 32, 64 )</a></code>.</p></td>
+      <td><p>vector defining the how many residual blocks
+repeats.</p></td>
     </tr>
     <tr>
-      <th>poolSize</th>
-      <td><p>pool size for final average pooling layer.  Default = c( 8, 8 ).</p></td>
+      <th>lowestResolution</th>
+      <td><p>number of filters at the initial layer.</p></td>
     </tr>
     <tr>
-      <th>dropoutRate</th>
-      <td><p>Dropout percentage.  Default = 0.0.</p></td>
+      <th>cardinality</th>
+      <td><p>perform  ResNet (cardinality = 1) or ResNeXt
+(cardinality != 1 but powers of 2---try '32' )</p></td>
     </tr>
     <tr>
-      <th>weightDecay</th>
-      <td><p>weight for l2 regularizer in convolution layers.
-Default = 0.0005.</p></td>
+      <th>resampledSize</th>
+      <td><p>output image size of the spatial transformer network.</p></td>
     </tr>
     <tr>
       <th>mode</th>
@@ -162,18 +163,16 @@ Default = 0.0005.</p></td>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a Wide ResNet keras model</p>
+    <p>an ResNet keras model</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>https://arxiv.org/abs/1512.03385</p>
-<p>This particular implementation was influenced by the following python
-implementation:</p>
-<p>https://github.com/titu1994/Wide-Residual-Networks</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
+</div><span class='co'># NOT RUN {</span>
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>( <span class='no'>ANTsRNet</span> )
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>( <span class='no'>keras</span> )
 
@@ -194,22 +193,22 @@ implementation:</p>
 
 <span class='no'>inputImageSize</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>( <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/dim'>dim</a></span>( <span class='no'>X_trainSmall</span> )[<span class='fl'>2</span>:<span class='fl'>3</span>], <span class='fl'>1</span> )
 
-<span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'>createWideResNetModel2D</span>( <span class='kw'>inputImageSize</span> <span class='kw'>=</span> <span class='no'>inputImageSize</span>,
+<span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='createResNetModel2D.html'>createResNetModel2D</a></span>( <span class='kw'>inputImageSize</span> <span class='kw'>=</span> <span class='no'>inputImageSize</span>,
   <span class='kw'>numberOfClassificationLabels</span> <span class='kw'>=</span> <span class='no'>numberOfLabels</span> )
 
 <span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/keras/topics/reexports'>compile</a></span>( <span class='kw'>loss</span> <span class='kw'>=</span> <span class='st'>'categorical_crossentropy'</span>,
   <span class='kw'>optimizer</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/keras/topics/optimizer_adam'>optimizer_adam</a></span>( <span class='kw'>lr</span> <span class='kw'>=</span> <span class='fl'>0.0001</span> ),
   <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>( <span class='st'>'categorical_crossentropy'</span>, <span class='st'>'accuracy'</span> ) )
 
-<span class='co'># Comment out the rest due to travis build constraints</span>
-
-<span class='co'># track &lt;- model %&gt;% fit( X_trainSmall, Y_trainSmall, verbose = 1,</span>
-<span class='co'>#   epochs = 1, batch_size = 2, shuffle = TRUE, validation_split = 0.5 )</span>
+<span class='no'>track</span> <span class='kw'>&lt;-</span> <span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/keras/topics/reexports'>fit</a></span>( <span class='no'>X_trainSmall</span>, <span class='no'>Y_trainSmall</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>epochs</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>batch_size</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>shuffle</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>validation_split</span> <span class='kw'>=</span> <span class='fl'>0.5</span> )
 
 <span class='co'># Now test the model</span>
 
-<span class='co'># testingMetrics &lt;- model %&gt;% evaluate( X_testSmall, Y_testSmall )</span>
-<span class='co'># predictedData &lt;- model %&gt;% predict( X_testSmall, verbose = 1 )</span></div></pre>
+<span class='no'>testingMetrics</span> <span class='kw'>&lt;-</span> <span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/keras/topics/reexports'>evaluate</a></span>( <span class='no'>X_testSmall</span>, <span class='no'>Y_testSmall</span> )
+<span class='no'>predictedData</span> <span class='kw'>&lt;-</span> <span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/predict'>predict</a></span>( <span class='no'>X_testSmall</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>1</span> )
+
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
