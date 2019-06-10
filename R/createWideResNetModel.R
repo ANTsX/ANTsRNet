@@ -97,7 +97,7 @@ createWideResNetModel2D <- function( inputImageSize,
 
     model <- model %>% layer_batch_normalization( axis = channelAxis, momentum = 0.1,
       epsilon = 1.0e-5, gamma_initializer = "uniform" )
-    model <- model %>% layer_activation_relu()
+    model <- model %>% layer_activation( activation = "relu" )
 
     return( model )
     }
@@ -118,7 +118,7 @@ createWideResNetModel2D <- function( inputImageSize,
 
     model <- model %>% layer_batch_normalization( axis = channelAxis, momentum = 0.1,
       epsilon = 1.0e-5, gamma_initializer = "uniform" )
-    model <- model %>% layer_activation_relu()
+    model <- model %>% layer_activation( activation = "relu" )
 
     model <- model %>% layer_conv_2d( filters = numberOfFilters, kernel_size = c( 3, 3 ),
       padding = 'same', kernel_initializer = initializer_he_normal(),
@@ -140,7 +140,7 @@ createWideResNetModel2D <- function( inputImageSize,
 
       model <- model %>% layer_batch_normalization( axis = channelAxis, momentum = 0.1,
         epsilon = 1.0e-5, gamma_initializer = "uniform" )
-      model <- model %>% layer_activation_relu()
+      model <- model %>% layer_activation( activation = "relu" )
 
       model <- model %>% layer_conv_2d( filters = numberOfFilters, kernel_size = c( 3, 3 ),
         padding = 'same', kernel_initializer = initializer_he_normal(),
@@ -174,7 +174,7 @@ createWideResNetModel2D <- function( inputImageSize,
 
     outputs <- outputs %>% layer_batch_normalization( axis = channelAxis, momentum = 0.1,
       epsilon = 1.0e-5, gamma_initializer = "uniform" )
-    outputs <- outputs %>% layer_activation_relu()
+    outputs <- outputs %>% layer_activation( activation = "relu" )
     }
 
   outputs <- outputs %>% layer_average_pooling_2d( pool_size = poolSize )
@@ -305,7 +305,7 @@ createWideResNetModel3D <- function( inputImageSize,
 
     model <- model %>% layer_batch_normalization( axis = channelAxis, momentum = 0.1,
       epsilon = 1.0e-5, gamma_initializer = "uniform" )
-    model <- model %>% layer_activation_relu()
+    model <- model %>% layer_activation( activation = "relu" )
 
     return( model )
     }
@@ -326,7 +326,7 @@ createWideResNetModel3D <- function( inputImageSize,
 
     model <- model %>% layer_batch_normalization( axis = channelAxis, momentum = 0.1,
       epsilon = 1.0e-5, gamma_initializer = "uniform" )
-    model <- model %>% layer_activation_relu()
+    model <- model %>% layer_activation( activation = "relu" )
 
     model <- model %>% layer_conv_3d( filters = numberOfFilters, kernel_size = c( 3, 3, 3 ),
       padding = 'same', kernel_initializer = initializer_he_normal(),
@@ -348,7 +348,7 @@ createWideResNetModel3D <- function( inputImageSize,
 
       model <- model %>% layer_batch_normalization( axis = channelAxis, momentum = 0.1,
         epsilon = 1.0e-5, gamma_initializer = "uniform" )
-      model <- model %>% layer_activation_relu()
+      model <- model %>% layer_activation( activation = "relu" )
 
       model <- model %>% layer_conv_3d( filters = numberOfFilters, kernel_size = c( 3, 3, 3 ),
         padding = 'same', kernel_initializer = initializer_he_normal(),
@@ -382,7 +382,7 @@ createWideResNetModel3D <- function( inputImageSize,
 
     outputs <- outputs %>% layer_batch_normalization( axis = channelAxis, momentum = 0.1,
       epsilon = 1.0e-5, gamma_initializer = "uniform" )
-    outputs <- outputs %>% layer_activation_relu()
+    outputs <- outputs %>% layer_activation( activation = "relu" )
     }
 
   outputs <- outputs %>% layer_average_pooling_3d( pool_size = poolSize )

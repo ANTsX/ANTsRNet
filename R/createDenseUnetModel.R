@@ -214,7 +214,7 @@ createDenseUnetModel2D <- function( inputImageSize,
   outputs <- outputs %>% layer_batch_normalization( epsilon = 1.1e-5,
     axis = concatenationAxis )
   outputs <- outputs %>% layer_scale( axis = concatenationAxis )
-  outputs <- outputs %>% layer_activation_relu()
+  outputs <- outputs %>% layer_activation( activation = "relu" )
 
   boxLayers[[boxCount]] <- outputs
   boxCount <- boxCount + 1
@@ -257,7 +257,7 @@ createDenseUnetModel2D <- function( inputImageSize,
   outputs <- outputs %>% layer_batch_normalization( epsilon = 1.1e-5,
     axis = concatenationAxis )
   outputs <- outputs %>% layer_scale( axis = concatenationAxis )
-  outputs <- outputs %>% layer_activation_relu()
+  outputs <- outputs %>% layer_activation( activation = "relu" )
 
   boxLayers[[boxCount]] <- outputs
   boxCount <- boxCount - 1
@@ -285,7 +285,7 @@ createDenseUnetModel2D <- function( inputImageSize,
       }
 
     outputs <- outputs %>% layer_batch_normalization()
-    outputs <- outputs %>% layer_activation_relu()
+    outputs <- outputs %>% layer_activation( activation = "relu" )
     }
 
   convActivation <- ''
@@ -530,7 +530,7 @@ createDenseUnetModel3D <- function( inputImageSize,
   outputs <- outputs %>% layer_batch_normalization( epsilon = 1.1e-5,
     axis = concatenationAxis )
   outputs <- outputs %>% layer_scale( axis = concatenationAxis )
-  outputs <- outputs %>% layer_activation_relu()
+  outputs <- outputs %>% layer_activation( activation = "relu" )
 
   boxLayers[[boxCount]] <- outputs
   boxCount <- boxCount + 1
@@ -573,7 +573,7 @@ createDenseUnetModel3D <- function( inputImageSize,
   outputs <- outputs %>% layer_batch_normalization( epsilon = 1.1e-5,
     axis = concatenationAxis )
   outputs <- outputs %>% layer_scale( axis = concatenationAxis )
-  outputs <- outputs %>% layer_activation_relu()
+  outputs <- outputs %>% layer_activation( activation = "relu" )
 
   boxLayers[[boxCount]] <- outputs
   boxCount <- boxCount - 1
@@ -601,7 +601,7 @@ createDenseUnetModel3D <- function( inputImageSize,
       }
 
     outputs <- outputs %>% layer_batch_normalization()
-    outputs <- outputs %>% layer_activation_relu()
+    outputs <- outputs %>% layer_activation( activation = "relu" )
     }
 
   convActivation <- ''
