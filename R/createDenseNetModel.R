@@ -27,8 +27,8 @@
 #' (default = 1).
 #' @param growthRate number of filters to add for each dense block layer
 #' (default = 12).
-#' @param dropoutRate = per drop out layer rate (default = 0.2)
-#' @param weightDecay = weight decay (default = 1e-4)
+#' @param dropoutRate = per drop out layer rate (default = 0.2).
+#' @param weightDecay = weight decay (default = 1e-4).
 #' @param mode 'classification' or 'regression'.  Default = 'classification'.
 #' @return an DenseNet keras model
 #' @author Tustison NJ

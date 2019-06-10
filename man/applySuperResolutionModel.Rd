@@ -4,26 +4,21 @@
 \alias{applySuperResolutionModel}
 \title{applySuperResolutionModel}
 \usage{
-applySuperResolutionModel(image, model, expansionFactor = 4,
-  strideLength = 20, lowResolutionPatchSize = c(48, 48),
-  additiveOffset, standardDeviationOffset, verbose = FALSE)
+applySuperResolutionModel(image, model, strideLength = 20,
+  targetRange = c(-127.5, 127.5), batch_size = 32, verbose = FALSE)
 }
 \arguments{
 \item{image}{input image}
 
 \item{model}{model object or filename see \code{getPretrainedNetwork}}
 
-\item{expansionFactor}{size to upscale, should match network pretraining}
-
 \item{strideLength}{stride length should be less than patch size}
 
-\item{lowResolutionPatchSize}{patch size at low resolution that will be
-expanded by expansionFactor - needs to be consistent with trained model.}
+\item{targetRange}{a vector defining min max of each patch, eg -127.5, 127.5
+Output images will be scaled back to original intensity.  This range should
+match the mapping used in the training of the network.}
 
-\item{additiveOffset}{a single number to add to the patch intensity.  if this is missing, then it is not applied.  instead, the mean will be subtracted from the patch.}
-
-\item{standardDeviationOffset}{an offset added to the normalization of patches
-to prevent divisions by zero.  if this is missing, then it is not applied.}
+\item{batch_size}{for prediction call}
 
 \item{verbose}{If \code{TRUE}, show status messages}
 }
@@ -34,11 +29,8 @@ image upscaled to resolution provided by network
 Apply pretrained super-resolution network
 }
 \details{
-This function makes several assumptions about how the network was trained.
-It assumes input data was scaled to the range of 0 to 255.  Optionally,
-additional patch-wise mean subtraction and normalization by standard deviation
-is applied.  Otherwie, a single additive constant may be subtracted from each
-patch.  See the code if questions arise.
+This function does patch-wise pre-processing and image reconstruction given
+the input super-resolution model.
 }
 \examples{
 \dontrun{

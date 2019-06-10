@@ -15,13 +15,13 @@ shape (or dimension) of that tensor is the image dimensions followed by
 the number of channels (e.g., red, green, and blue).  The batch size
 (i.e., number of training images) is not specified a priori.}
 
-\item{numberOfClassificationLabels}{Number of segmentation labels.}
+\item{numberOfClassificationLabels}{Number of classification labels.}
 
-\item{depth}{integer determining the depth of the ntwork.  Related to the
+\item{depth}{integer determining the depth of the network.  Related to the
 actual number of layers by the \code{numberOfLayers = depth * 6 + 4}.
 Default = 2 (such that \code{numberOfLayers = 16}.)}
 
-\item{width}{integer determining the width of the network.  Default k = 1.}
+\item{width}{integer determining the width of the network.  Default = 1.}
 
 \item{residualBlockSchedule}{vector determining the number of filters
 per convolutional block. Default = \code{c( 16, 32, 64 )}.}
