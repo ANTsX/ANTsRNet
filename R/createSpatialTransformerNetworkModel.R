@@ -78,7 +78,7 @@ createSpatialTransformerNetworkModel2D <- function( inputImageSize,
 
   localization <- localization %>% layer_flatten()
   localization <- localization %>% layer_dense( units = 50L )
-  localization <- localization %>% layer_activation_relu()
+  localization <- localization %>% layer_activation( 'relu' )
 
   weights <- getInitialWeights2D( outputSize = 50L )
   localization <- localization %>% layer_dense( units = 6L, weights = weights )
@@ -88,17 +88,17 @@ createSpatialTransformerNetworkModel2D <- function( inputImageSize,
     name = "layer_spatial_transformer" )
   outputs <- outputs %>%
     layer_conv_2d( filters = 32L, kernel_size = c( 3, 3 ), padding = 'same' )
-  outputs <- outputs %>% layer_activation_relu()
+  outputs <- outputs %>% layer_activation('relu')
   outputs <- outputs %>% layer_max_pooling_2d( pool_size = c( 2, 2 ) )
   outputs <- outputs %>% layer_conv_2d( filters = 32L, kernel_size = c( 3, 3 ) )
-  outputs <- outputs %>% layer_activation_relu()
+  outputs <- outputs %>% layer_activation('relu')
   outputs <- outputs %>% layer_max_pooling_2d( pool_size = c( 2, 2 ) )
   outputs <- outputs %>% layer_flatten()
   outputs <- outputs %>% layer_dense( units = 256L )
-  outputs <- outputs %>% layer_activation_relu()
+  outputs <- outputs %>% layer_activation('relu')
   outputs <- outputs %>% layer_dense( units = numberOfClassificationLabels )
 
-  outputs <- outputs %>% layer_activation_softmax()
+  outputs <- outputs %>% layer_activation('softmax')
 
   stnModel <- keras_model( inputs = inputs, outputs = outputs )
 
@@ -187,7 +187,7 @@ createSpatialTransformerNetworkModel3D <- function( inputImageSize,
 
   localization <- localization %>% layer_flatten()
   localization <- localization %>% layer_dense( units = 50L )
-  localization <- localization %>% layer_activation_relu()
+  localization <- localization %>% layer_activation( 'relu' )
 
   weights <- getInitialWeights3D( outputSize = 50L )
   localization <- localization %>% layer_dense( units = 12L, weights = weights )
@@ -197,14 +197,14 @@ createSpatialTransformerNetworkModel3D <- function( inputImageSize,
     name = "layer_spatial_transformer" )
   outputs <- outputs %>%
     layer_conv_3d( filters = 32L, kernel_size = c( 3, 3, 3 ), padding = 'same' )
-  outputs <- outputs %>% layer_activation_relu()
+  outputs <- outputs %>% layer_activation('relu')
   outputs <- outputs %>% layer_max_pooling_3d( pool_size = c( 2, 2, 2 ) )
   outputs <- outputs %>% layer_conv_3d( filters = 32L, kernel_size = c( 3, 3, 3 ) )
-  outputs <- outputs %>% layer_activation_relu()
+  outputs <- outputs %>% layer_activation('relu')
   outputs <- outputs %>% layer_max_pooling_3d( pool_size = c( 2, 2, 2 ) )
   outputs <- outputs %>% layer_flatten()
   outputs <- outputs %>% layer_dense( units = 256L )
-  outputs <- outputs %>% layer_activation_relu()
+  outputs <- outputs %>% layer_activation('relu')
   outputs <- outputs %>% layer_dense( units = numberOfClassificationLabels )
 
   outputs <- outputs %>% layer_activation_softmax()
