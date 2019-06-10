@@ -28,7 +28,8 @@ applySuperResolutionModel <- function(
   batch_size = 32,
   verbose = FALSE )
 {
-strl = strideLength
+if ( length( strideLength ) == 1 )
+  strl = rep( strideLength, image@dimension ) else strl = strideLength
 ###############################################
 makeNChannelArray <-function( img, nchan, inRange, noizSD = 1 ) {
   X = array( dim = c( dim( img ), nchan ) )
@@ -163,7 +164,7 @@ if ( verbose ) print( paste( "     - Extract:", numberOfPatches, "in:", t1-t0 ) 
 if ( verbose ) print( "3. ##### prediction" )
 pred = predict( model, X_test, batch_size = batch_size )
 if ( verbose ) print( paste( "     - Predict in:", Sys.time()-t1 ) )
-bigStrides = strl * expansionFactor[1]
+bigStrides = strl * expansionFactor
 if ( channelSize == 1 ) {
   Y_test <- extractImagePatches(
     bigImg,
