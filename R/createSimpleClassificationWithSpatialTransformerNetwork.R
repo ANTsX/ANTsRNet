@@ -40,13 +40,14 @@
 #'
 #' inputImageSize <- c( dim( X_trainSmall )[2:3], 1 )
 #'
-#' model <- createSpatialTransformerNetworkModel2D( inputImageSize = inputImageSize,
+#' model <- createSimpleClassificationWithSpatialTransformerNetworkModel2D(
+#'   inputImageSize = inputImageSize,
 #'   resampledSize = c( 30, 30 ), numberOfClassificationLabels = numberOfLabels )
 #'
 #' }
 #' @import keras
 #' @export
-createSpatialTransformerNetworkModel2D <- function( inputImageSize,
+createSimpleClassificationWithSpatialTransformerNetworkModel2D <- function( inputImageSize,
   resampledSize = c( 30, 30 ), numberOfClassificationLabels = 10 )
 {
 
@@ -148,13 +149,14 @@ createSpatialTransformerNetworkModel2D <- function( inputImageSize,
 #'
 #' inputImageSize <- c( dim( X_trainSmall )[2:3], 1 )
 #'
-#' model <- createSpatialTransformerNetworkModel2D( inputImageSize = inputImageSize,
+#' model <- createSimpleClassificationWithSpatialTransformerNetworkModel2D(
+#'   inputImageSize = inputImageSize,
 #'   resampledSize = c( 30, 30 ), numberOfClassificationLabels = numberOfLabels )
 #'
 #'}
 #' @import keras
 #' @export
-createSpatialTransformerNetworkModel3D <- function( inputImageSize,
+createSimpleClassificationWithSpatialTransformerNetworkModel3D <- function( inputImageSize,
   resampledSize = c( 30, 30, 30 ), numberOfClassificationLabels = 10 )
 {
 

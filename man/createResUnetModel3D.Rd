@@ -8,7 +8,7 @@ createResUnetModel3D(inputImageSize, numberOfOutputs = 1,
   numberOfFiltersAtBaseLayer = 32, bottleNeckBlockDepthSchedule = c(3,
   4), convolutionKernelSize = c(3, 3, 3),
   deconvolutionKernelSize = c(2, 2, 2), dropoutRate = 0,
-  weightDecay = 0.0001, mode = "classification")
+  weightDecay = 1e-04, mode = "classification")
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
