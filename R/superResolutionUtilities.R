@@ -124,8 +124,6 @@ SSIM <- function( x, y, K = c( 0.01, 0.03 ) )
   return( SSI )
 }
 
-
-
 #' Gradient Magnitude Similarity Deviation
 #'
 #' A fast and simple metric that correlates to perceptual quality
@@ -146,13 +144,17 @@ SSIM <- function( x, y, K = c( 0.01, 0.03 ) )
 #' @export
 GMSD <- function( x, y )
 {
-  g1 = iMath( x, "Grad" )
-  g2 = iMath( y, "Grad" )
+  gx <- iMath( x, "Grad" )
+  gy <- iMath( y, "Grad" )
+
   # see eqn 4 - 6 in https://arxiv.org/pdf/1308.3052.pdf
-  constval = 0.0026
-  gmsnum = 2.0 * g1 * g2 + constval
-  gmsden = g1^2 + g2^2 + constval
-  gmsval = ( gmsnum / gmsden )
-  onen =  1.0 / prod( dim( x ) )
-  return(   sqrt( onen * sum( ( gmsval - mean( gmsval )  )^2 ) ) )
+
+  constant <- 0.0026
+  gmsd_numerator <- 2.0 * gx * gy + constant
+  gmsd_denominator <- g1^2 + g2^2 + constant
+  gmsd <- gmsd_numerator / gmsd_denominator
+
+  prefactor <-  1.0 / prod( dim( x ) )
+
+  return( sqrt( prefactor * sum( ( gmsd - mean( gmsd )  )^2 ) ) )
 }
