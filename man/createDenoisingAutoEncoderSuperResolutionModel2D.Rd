@@ -3,7 +3,7 @@
 %   R/createDenoisingAutoEncoderSuperResolutionModel.R
 \name{createDenoisingAutoEncoderSuperResolutionModel2D}
 \alias{createDenoisingAutoEncoderSuperResolutionModel2D}
-\title{2-D implementation of the expanded image super resolution architecture.}
+\title{2-D implementation of the denoising autoencoder image super resolution architecture.}
 \usage{
 createDenoisingAutoEncoderSuperResolutionModel2D(inputImageSize,
   convolutionKernelSizes = list(c(3, 3), c(5, 5)),
@@ -28,14 +28,10 @@ convolution layer.}
 a keras model for image super resolution
 }
 \description{
-Creates a keras model of the expanded image super resolution deep learning
-framework based on the following python implementation:
-}
-\details{
-\url{https://github.com/titu1994/Image-Super-Resolution}
+2-D implementation of the denoising autoencoder image super resolution architecture.
 }
 \examples{
-\dontrun{ 
+\dontrun{
 }
 }
 \author{

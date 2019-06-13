@@ -23,7 +23,6 @@
 #' \dontrun{
 #' }
 #' @import keras
-#' @importFrom ANTsRCore antsRegistration
 #' @export
 createDeepDenoiseSuperResolutionModel2D <- function( inputImageSize,
   layers = 2,
@@ -94,8 +93,10 @@ createDeepDenoiseSuperResolutionModel2D <- function( inputImageSize,
 
   numberOfChannels <- tail( inputImageSize, 1 )
 
+  finalConvolutionKernelSize <- convolutionKernelSize + 2
+
   outputs <- outputs %>% layer_conv_2d( filters = numberOfChannels,
-    kernel_size = convolutionKernelSize[[2]], activation = "linear",
+    kernel_size = finalConvolutionKernelSize, activation = "linear",
     padding = 'same' )
 
   srModel <- keras_model( inputs = inputs, outputs = outputs )
@@ -198,8 +199,10 @@ createDeepDenoiseSuperResolutionModel3D <- function( inputImageSize,
 
   numberOfChannels <- tail( inputImageSize, 1 )
 
+  finalConvolutionKernelSize <- convolutionKernelSize + 2
+
   outputs <- outputs %>% layer_conv_3d( filters = numberOfChannels,
-    kernel_size = convolutionKernelSize[[2]], activation = "linear",
+    kernel_size = finalConvolutionKernelSize, activation = "linear",
     padding = 'same' )
 
   srModel <- keras_model( inputs = inputs, outputs = outputs )
