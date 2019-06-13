@@ -151,7 +151,7 @@ GMSD <- function( x, y )
 
   constant <- 0.0026
   gmsd_numerator <- 2.0 * gx * gy + constant
-  gmsd_denominator <- g1^2 + g2^2 + constant
+  gmsd_denominator <- gx^2 + gy^2 + constant
   gmsd <- gmsd_numerator / gmsd_denominator
 
   prefactor <-  1.0 / prod( dim( x ) )
