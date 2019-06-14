@@ -88,7 +88,7 @@ if ( channelSize != ncomponents ) {
 }
 ###############
 t0 = Sys.time()
-if ( verbose ) print("2. extract patches")
+if ( verbose ) print( paste("2. extract patches:", channelSize ) )
 if ( channelSize == 1 ) {
   X_test <- extractImagePatches(
     image,
@@ -151,7 +151,8 @@ expansionFactor = highResolutionPatchSize/lowResolutionPatchSize
 bigImg = resampleImage( image,
   dim( image ) * expansionFactor, useVoxels = T )
 if ( channelSizeOut != channelSize ) {
-  bigImgSplit = splitChannels( bigImg )
+  if ( bigImg@components > 1 )
+    bigImgSplit = splitChannels( bigImg ) else bigImgSplit=list( bigImg )
   bigavg = antsAverageImages( bigImgSplit )
   blist = list()
   for ( k in 1:channelSizeOut ) {
