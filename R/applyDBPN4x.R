@@ -31,6 +31,17 @@ applySuperResolutionModel <- function(
 if ( length( strideLength ) == 1 )
   strl = rep( strideLength, image@dimension ) else strl = strideLength
 ###############################################
+
+linMatchIntensity <- function( fromImg, toImg ) {
+  mdl = lm(  as.numeric( toImg ) ~ as.numeric( fromImg ) )
+  pp = predict( mdl )
+  pp[ pp < min( toImg ) ] = min( toImg )
+  pp[ pp > max( toImg ) ] = max( toImg )
+  newImg = makeImage( dim( fromImg ), pp )
+  temp = antsCopyImageInfo( fromImg,  newImg )
+  return( newImg )
+}
+
 makeNChannelArray <-function( img, nchan, inRange, noizSD = 1 ) {
   X = array( dim = c( dim( img ), nchan ) )
   idiff = inRange[2] - inRange[1]
@@ -127,15 +138,14 @@ xvec = as.numeric( sliceArray( X_test, 1 ) )
 tempMat = matrix( nrow = numberOfPatches, ncol = length( xvec ))
 idiff = targetRange[2] - targetRange[1]
 if ( idiff < 0 ) stop("targetRange[2] - targetRange[1] must be positive")
-
 for( j in 1:numberOfPatches )
   {
   temp = as.numeric( sliceArray( X_test, j ) )
-  xmax = max( temp, na.rm = T )
   xmin = min( temp, na.rm = T )
+  temp = temp - xmin
+  xmax = max( temp, na.rm = T )
   if ( xmax == 0 ) xmax = 1
-  temp = ( temp - xmin ) / xmax
-  temp = temp * idiff + targetRange[1]
+  temp = temp / xmax * idiff + targetRange[1]
   tempMat[j,] = temp
   }
 X_test <- array( data = tempMat,
@@ -161,6 +171,24 @@ if ( verbose ) print( paste( "     - Extract:", numberOfPatches, "in:", t1-t0 ) 
 if ( verbose ) print( "3. ##### prediction" )
 pred = predict( model, X_test, batch_size = batch_size )
 if ( verbose ) print( paste( "     - Predict in:", Sys.time()-t1 ) )
+# ptchUp = array( dim = dim( pred )[1:(image@dimension+1)] )
+# pminX = rep( NA, nrow( pred ) )
+# pmxX = rep( NA, nrow( pred ) )
+# for ( sam in 1:dim( pred )[1] ) {
+#   arrer = as.numeric( sliceArray( X_test, j ) )
+#  arrer = array( arrer, dim = c( 1,lowResolutionPatchSize, nChannels ) )
+#  pminX[sam] = min( arrer )
+#  arrer = arrer - min( arrer )
+#  pmxX[sam] = max( arrer )
+#  arrer = arrer / max( arrer ) * 255 - 127.5
+#  pp = predict( mdl, arrer )
+#  temp = pp[1,,,1]
+#  for ( jj in 2:nChannels ) temp = temp + pp[1,,,jj]
+#  temp = ( temp / nChannels + 127.5 ) / 255 *
+#    pmxX[sam] + pminX[ sam ]
+#  ptchUp[ sam, ,  ] = temp
+#  }
+
 bigStrides = strl * expansionFactor
 if ( channelSizeOut == 1 ) {
   Y_test <- extractImagePatches(
