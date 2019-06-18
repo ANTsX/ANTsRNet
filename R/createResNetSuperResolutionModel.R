@@ -54,7 +54,7 @@ createResNetSuperResolutionModel2D <- function( inputImageSize,
     return( block )
     }
 
-  resNetBlock2D <- function(  inputs,  numberOfFilters,
+  resNetBlock2D <- function( inputs,  numberOfFilters,
     convolutionKernelSize, numberOfResidualBlocks  )
   {
   outputs <- inputs %>% layer_conv_2d( filters = numberOfFilters,
@@ -84,7 +84,7 @@ createResNetSuperResolutionModel2D <- function( inputImageSize,
     {
     for( n in 2:numberOfResNetBlocks )
       {
-      outputs <- resNetBlock2D(  outputs,  numberOfFilters,
+      outputs <- resNetBlock2D( outputs,  numberOfFilters,
         convolutionKernelSize, numberOfResidualBlocks )
       }
     }

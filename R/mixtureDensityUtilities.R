@@ -131,7 +131,7 @@ MixtureDensityNetworkLayer <- R6::R6Class( "MixtureDensityNetworkLayer",
         data_format = 'channels_last' )
 
       output <- layer_concatenate( list( muOutput, sigmaOutput, piOutput ),
-        name = "mnd_ouputs" )
+        name = "mdn_ouputs" )
 
       return( output )
       },
@@ -315,7 +315,7 @@ getMixtureDensitySamplingFunction <- function( outputDimension, numberOfMixtures
 #' @export
 getMixtureDensityMseAccuracyFunction <- function( outputDimension, numberOfMixtures )
 {
-  mseAccuracyFunction <- function( y_pred )
+  mseAccuracyFunction <- function( y_true, y_pred )
     {
     outputDimension <- as.integer( outputDimension )
     numberOfMixtures <- as.integer( numberOfMixtures )
@@ -417,7 +417,7 @@ mixture_density_network_softmax <- function( logits, temperature = 1.0 )
 {
   np <- reticulate::import( "numpy" )
 
-  e <- np$array( logits )
+  e <- np$array( logits ) / temperature
   e <- e - np$max( e )
   e <- np$exp( e )
   distribution <- e / np$sum( e )
