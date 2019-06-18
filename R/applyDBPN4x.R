@@ -88,7 +88,7 @@ if ( channelSize != ncomponents ) {
 }
 ###############
 t0 = Sys.time()
-if ( verbose ) print("2. extract patches")
+if ( verbose ) print( paste("2. extract patches:", channelSize ) )
 if ( channelSize == 1 ) {
   X_test <- extractImagePatches(
     image,
@@ -98,17 +98,13 @@ if ( channelSize == 1 ) {
 
 if ( channelSize > 1 ) {
   simg = splitChannels( image )
+  simg = mergeListToNDImage( makeImage( c( dim(image), 1) ) ,  simg )
+  if ( length( strl ) == 1 )
+    strl = c( rep( strl, image@dimension ) )
   X_test <- extractImagePatches(
-    simg[[1]],
-    lowResolutionPatchSize, maxNumberOfPatches = 'all',
-    strideLength = strl, returnAsArray = TRUE )
-  for ( k in 2:length( simg ) ) {
-    temp <- extractImagePatches(
-      simg[[k]],
-      lowResolutionPatchSize, maxNumberOfPatches = 'all',
-      strideLength = strl, returnAsArray = TRUE )
-    X_test = abind::abind( X_test, temp, along = shapeLength )
-  }
+    simg,
+    c(lowResolutionPatchSize, channelSize ), maxNumberOfPatches = 'all',
+    strideLength = c(strl, channelSize ), returnAsArray = TRUE )
 }
 #################################################
 numberOfPatches <- dim( X_test )[1]
@@ -151,7 +147,8 @@ expansionFactor = highResolutionPatchSize/lowResolutionPatchSize
 bigImg = resampleImage( image,
   dim( image ) * expansionFactor, useVoxels = T )
 if ( channelSizeOut != channelSize ) {
-  bigImgSplit = splitChannels( bigImg )
+  if ( bigImg@components > 1 )
+    bigImgSplit = splitChannels( bigImg ) else bigImgSplit=list( bigImg )
   bigavg = antsAverageImages( bigImgSplit )
   blist = list()
   for ( k in 1:channelSizeOut ) {
@@ -165,27 +162,21 @@ if ( verbose ) print( "3. ##### prediction" )
 pred = predict( model, X_test, batch_size = batch_size )
 if ( verbose ) print( paste( "     - Predict in:", Sys.time()-t1 ) )
 bigStrides = strl * expansionFactor
-if ( channelSize == 1 ) {
+if ( channelSizeOut == 1 ) {
   Y_test <- extractImagePatches(
     bigImg,
     highResolutionPatchSize, maxNumberOfPatches = 'all',
     strideLength = bigStrides, returnAsArray = FALSE )
   }
-if ( channelSize > 1 ) {
+if ( channelSizeOut > 1 ) {
   simg = splitChannels( bigImg )
+  simg = mergeListToNDImage( makeImage( c( dim(bigImg), 1) ) ,  simg )
+  if ( length( bigStrides ) == 1 )
+    strl = c( rep( bigStrides, bigImg@dimension ) )
   Y_test <- extractImagePatches(
-    simg[[1]],
-    highResolutionPatchSize, maxNumberOfPatches = 'all',
-    strideLength = bigStrides, returnAsArray = FALSE )
-  for ( k in 2:length( simg ) ) {
-    temp <- extractImagePatches(
-      simg[[k]],
-      highResolutionPatchSize, maxNumberOfPatches = 'all',
-      strideLength = bigStrides, returnAsArray = FALSE )
-    binddim = length( dim( temp[[1]] ))
-    for ( kk in 1:length( Y_test ) )
-      Y_test[[kk]] = abind::abind( Y_test[[kk]], temp[[kk]], along = binddim + 1 )
-  }
+    simg,
+    c(highResolutionPatchSize, channelSizeOut ), maxNumberOfPatches = 'all',
+    strideLength = c(bigStrides, channelSizeOut ), returnAsArray = FALSE )
 }
 # below is a fast simple linear regression model to map patch intensities
 # back to the original space defined by the upsampled image

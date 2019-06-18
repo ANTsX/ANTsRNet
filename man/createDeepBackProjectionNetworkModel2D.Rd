@@ -8,7 +8,8 @@ createDeepBackProjectionNetworkModel2D(inputImageSize,
   numberOfOutputs = 1, numberOfBaseFilters = 64,
   numberOfFeatureFilters = 256, numberOfBackProjectionStages = 7,
   convolutionKernelSize = c(12, 12), strides = c(8, 8),
-  lastConvolution = c(3, 3), numberOfLossFunctions = 1)
+  lastConvolution = c(3, 3), numberOfLossFunctions = 1,
+  doFeatureSmashing = TRUE)
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
@@ -40,6 +41,9 @@ original paper.  Factors used in the original implementation are as follows:
 \item{lastConvolution}{the kernel size for the last convolutional layer}
 
 \item{numberOfLossFunctions}{the number of data targets, e.g. 2 for 2 targets}
+
+\item{doFeatureSmashing}{if this is \code{FALSE}, then
+\code{numberOfBaseFilters} should equal \code{numberOfFeatureFilters}.}
 }
 \value{
 a keras model defining the deep back-projection network.

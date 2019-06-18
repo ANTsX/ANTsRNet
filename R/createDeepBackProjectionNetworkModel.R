@@ -40,6 +40,8 @@
 #' \code{strides = c( 8, 8 )}. We default to 8x parameters.
 #' @param lastConvolution the kernel size for the last convolutional layer
 #' @param numberOfLossFunctions the number of data targets, e.g. 2 for 2 targets
+#' @param doFeatureSmashing if this is \code{FALSE}, then
+#' \code{numberOfBaseFilters} should equal \code{numberOfFeatureFilters}.
 #'
 #' @return a keras model defining the deep back-projection network.
 #' @author Tustison NJ
@@ -59,9 +61,13 @@ createDeepBackProjectionNetworkModel2D <-
                                convolutionKernelSize = c( 12, 12 ),
                                strides = c( 8, 8 ),
                                lastConvolution = c( 3, 3 ),
-                               numberOfLossFunctions = 1
+                               numberOfLossFunctions = 1,
+                               doFeatureSmashing = TRUE
                              )
 {
+  if ( ! doFeatureSmashing & ( numberOfFeatureFilters != numberOfBaseFilters ) )
+    stop( paste("if not doFeatureSmashing == FALSE, then numberOfFeatureFilters
+    should equal numberOfBaseFilters.") )
 
   upBlock2D <- function( L, numberOfFilters = 64, kernelSize = c( 12, 12 ),
     strides = c( 8, 8 ), includeDenseConvolutionLayer = FALSE )
@@ -155,11 +161,13 @@ createDeepBackProjectionNetworkModel2D <-
     shared_axes = c( 1, 2 ) )
 
   # Feature smashing
-  model <- model %>% layer_conv_2d( filters = numberOfBaseFilters,
-    kernel_size = c( 1, 1 ), strides = c( 1, 1 ), padding = 'same',
-    kernel_initializer = "glorot_uniform" )
-  model <- model %>% layer_activation_parametric_relu( alpha_initializer = 'zero',
-    shared_axes = c( 1, 2 ) )
+  if ( doFeatureSmashing ) {
+    model <- model %>% layer_conv_2d( filters = numberOfBaseFilters,
+      kernel_size = c( 1, 1 ), strides = c( 1, 1 ), padding = 'same',
+      kernel_initializer = "glorot_uniform" )
+    model <- model %>% layer_activation_parametric_relu( alpha_initializer = 'zero',
+      shared_axes = c( 1, 2 ) )
+    }
 
   # Back projection
   upProjectionBlocks <- list()
@@ -258,6 +266,8 @@ createDeepBackProjectionNetworkModel2D <-
 #' 8x --> \code{strides = c( 8, 8, 8 )}. We default to 8x parameters.
 #' @param lastConvolution the kernel size for the last convolutional layer
 #' @param numberOfLossFunctions the number of data targets, e.g. 2 for 2 targets
+#' @param doFeatureSmashing if this is \code{FALSE}, then
+#' \code{numberOfBaseFilters} should equal \code{numberOfFeatureFilters}.
 #'
 #' @return a keras model defining the deep back-projection network.
 #' @author Tustison NJ
@@ -277,9 +287,13 @@ createDeepBackProjectionNetworkModel3D <-
                                convolutionKernelSize = c( 12, 12, 12 ),
                                strides = c( 8, 8, 8 ),
                                lastConvolution = c( 3, 3, 3 ),
-                               numberOfLossFunctions = 1
+                               numberOfLossFunctions = 1,
+                               doFeatureSmashing = TRUE
                              )
 {
+  if ( ! doFeatureSmashing & ( numberOfFeatureFilters != numberOfBaseFilters ) )
+    stop( paste("if not doFeatureSmashing == FALSE, then numberOfFeatureFilters
+    should equal numberOfBaseFilters.") )
 
   upBlock3D <- function( L, numberOfFilters = 64, kernelSize = c( 12, 12, 12 ),
     strides = c( 8, 8, 8 ), includeDenseConvolutionLayer = FALSE )
@@ -373,11 +387,13 @@ createDeepBackProjectionNetworkModel3D <-
     shared_axes = c( 1, 2 ) )
 
   # Feature smashing
-  model <- model %>% layer_conv_3d( filters = numberOfBaseFilters,
-    kernel_size = c( 1, 1, 1 ), strides = c( 1, 1, 1 ), padding = 'same',
-    kernel_initializer = "glorot_uniform" )
-  model <- model %>% layer_activation_parametric_relu( alpha_initializer = 'zero',
-    shared_axes = c( 1, 2, 3 ) )
+  if ( doFeatureSmashing ) {
+    model <- model %>% layer_conv_3d( filters = numberOfBaseFilters,
+      kernel_size = c( 1, 1, 1 ), strides = c( 1, 1, 1 ), padding = 'same',
+      kernel_initializer = "glorot_uniform" )
+    model <- model %>% layer_activation_parametric_relu( alpha_initializer = 'zero',
+      shared_axes = c( 1, 2, 3 ) )
+    }
 
   # Back projection
   upProjectionBlocks <- list()
