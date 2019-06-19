@@ -184,13 +184,13 @@ createUnetModel2D <- function( inputImageSize,
     if( dropoutRate > 0.0 )
       {
       outputs <- outputs %>% layer_dropout( rate = dropoutRate )
+      }
 
     outputs <- outputs %>%
       layer_conv_2d( filters = numberOfFilters,
         kernel_size = convolutionKernelSize,
         activation = 'relu', padding = 'same',
         kernel_regularizer = regularizer_l2( weightDecay ) )
-      }
     }
 
   convActivation <- ''
@@ -407,13 +407,13 @@ createUnetModel3D <- function( inputImageSize,
     if( dropoutRate > 0.0 )
       {
       outputs <- outputs %>% layer_dropout( rate = dropoutRate )
+      }
 
     outputs <- outputs %>%
       layer_conv_3d( filters = numberOfFilters,
         kernel_size = convolutionKernelSize,
         activation = 'relu', padding = 'same',
         kernel_regularizer = regularizer_l2( weightDecay ) )
-      }
     }
 
   convActivation <- ''

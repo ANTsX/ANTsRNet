@@ -116,7 +116,7 @@ VanillaGanModel <- R6::R6Class( "VanillaGanModel",
         model <- model %>% layer_batch_normalization( momentum = 0.8 )
         }
 
-      model <- model %>% layer_dense( units = prod( inputImageSize ) )
+      model <- model %>% layer_dense( units = prod( self$inputImageSize ) )
       model <- model %>% layer_reshape( target_shape = self$inputImageSize )
 
       noise <- layer_input( shape = c( self$latentDimension ) )
@@ -157,8 +157,8 @@ VanillaGanModel <- R6::R6Class( "VanillaGanModel",
         indices <- sample.int( dim( X_train )[1], batchSize )
         X_valid_batch <- X_train[indices,,,, drop = FALSE]
 
-        noise <- array( data = runif( n = batchSize * self$latentDimension,
-          min = 0, max = 1 ), dim = c( batchSize, self$latentDimension ) )
+        noise <- array( data = rnorm( n = batchSize * self$latentDimension,
+          mean = 0, sd = 1 ), dim = c( batchSize, self$latentDimension ) )
         X_fake_batch <- self$generator$predict( noise )
 
         dLossReal <- self$discriminator$train_on_batch( X_valid_batch, valid )
@@ -167,8 +167,8 @@ VanillaGanModel <- R6::R6Class( "VanillaGanModel",
 
         # train generator
 
-        noise <- array( data = runif( n = batchSize * self$latentDimension,
-          min = 0, max = 1 ), dim = c( batchSize, self$latentDimension ) )
+        noise <- array( data = rnorm( n = batchSize * self$latentDimension,
+          mean = 0, sd = 1 ), dim = c( batchSize, self$latentDimension ) )
         gLoss <- self$combinedModel$train_on_batch( noise, valid )
 
         cat( "Epoch ", epoch, ": [Discriminator loss: ", dLoss[[1]], " acc: ", dLoss[[2]], "] ",
