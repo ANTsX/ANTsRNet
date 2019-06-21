@@ -4,7 +4,9 @@
 #'
 #' Apply a patch-wise trained network to perform super-resolution. Can be applied
 #' to variable sized inputs. Warning: This function may be better used on CPU
-#' unless the GPU can accommodate the full image size.
+#' unless the GPU can accommodate the full image size. Warning 2: The global
+#' intensity range (min to max) of the output will match the input where the
+#' range is taken over all channels.
 #'
 #' @param image input image
 #' @param model model object or filename see \code{getPretrainedNetwork}
@@ -90,24 +92,19 @@ if ( ! missing( targetRange ) ) {
   }
 sliceArray <- function(  myArr, j ) {
   if ( shapeLength == 3 ) {
-    return( myArr[j,,] )
+    return( myArr[1,,j] )
   }
   if ( shapeLength == 4 ) {
-    return( myArr[j,,,] )
+    return( myArr[1,,,j] )
   }
   if ( shapeLength == 5 ) {
-    return( myArr[j,,,,] )
+    return( myArr[1,,,,j] )
   }
 }
 
 expansionFactor = ( dim( pred ) / dim( X_test ) )[-1][1:image@dimension]
 if ( verbose )
   print( paste( "expansionFactor: ", paste( expansionFactor, collapse= 'x' ) ) )
-img1 = as.antsImage( pp[1,,,1] + pp[1,,,2] + pp[1,,,3] )
-img1 = antsCopyImageInfo( limg[[1]], img1 )
-antsSetSpacing( img1, antsGetSpacing( limg[[1]] )/2 )
-limg = splitNDImageToList( img )[spanner]
-bigImg = resampleImage( limg[[kn+1]], antsGetSpacing( limg[[1]] )/2 )
 
 if ( tail(dim(pred),1) == 1 ) {
   ivec = sliceArray( pred, 1 )

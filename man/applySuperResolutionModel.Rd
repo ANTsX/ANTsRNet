@@ -29,7 +29,9 @@ Apply pretrained super-resolution network
 \details{
 Apply a patch-wise trained network to perform super-resolution. Can be applied
 to variable sized inputs. Warning: This function may be better used on CPU
-unless the GPU can accommodate the full image size.
+unless the GPU can accommodate the full image size. Warning 2: The global
+intensity range (min to max) of the output will match the input where the
+range is taken over all channels.
 }
 \examples{
 \dontrun{
