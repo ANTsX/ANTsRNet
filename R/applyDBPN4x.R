@@ -2,15 +2,15 @@
 #'
 #' Apply pretrained super-resolution network
 #'
-#' This function does patch-wise pre-processing and image reconstruction given
-#' the input super-resolution model.
+#' Apply a patch-wise trained network to perform super-resolution. Can be applied
+#' to variable sized inputs. Warning: This function may be better used on CPU
+#' unless the GPU can accommodate the full image size.
 #'
 #' @param image input image
 #' @param model model object or filename see \code{getPretrainedNetwork}
-#' @param strideLength stride length should be less than patch size
-#' @param targetRange a vector defining min max of each patch, eg -127.5, 127.5
-#' Output images will be scaled back to original intensity.  This range should
-#' match the mapping used in the training of the network.
+#' @param targetRange a vector defining min max of each the input image,
+#' eg -127.5, 127.5.  Output images will be scaled back to original intensity.
+#' This range should match the mapping used in the training of the network.
 #' @param batch_size for prediction call
 #' @param verbose If \code{TRUE}, show status messages
 #' @return image upscaled to resolution provided by network
@@ -23,15 +23,10 @@
 applySuperResolutionModel <- function(
   image,
   model,
-  strideLength = 20,
-  targetRange = c( -127.5, 127.5 ),
+  targetRange,
   batch_size = 32,
   verbose = FALSE )
 {
-if ( length( strideLength ) == 1 )
-  strl = rep( strideLength, image@dimension ) else strl = strideLength
-###############################################
-
 linMatchIntensity <- function( fromImg, toImg ) {
   mdl = lm(  as.numeric( toImg ) ~ as.numeric( fromImg ) )
   pp = predict( mdl )
@@ -40,54 +35,29 @@ linMatchIntensity <- function( fromImg, toImg ) {
   newImg = makeImage( dim( fromImg ), pp )
   temp = antsCopyImageInfo( fromImg,  newImg )
   return( newImg )
-}
-
-makeNChannelArray <-function( img, nchan, inRange, noizSD = 1 ) {
-  X = array( dim = c( dim( img ), nchan ) )
-  idiff = inRange[2] - inRange[1]
-  img = iMath( img, "Normalize") * idiff + inRange[1]
-  mynoise = makeImage( dim( img ), rnorm( prod(dim(img)), 0, noizSD ) )
-  mynoise = antsCopyImageInfo( img, mynoise )
-  temp = img + mynoise
-  temp[ temp < inRange[1] ] = inRange[1]
-  temp[ temp > inRange[2] ] = inRange[2]
-  for ( k in 1:nchan ) {
-    X[,,k] = as.array( temp )
   }
-  return( X )
-}
+if ( ! missing( targetRange ) )
+  if ( targetRange[1] > targetRange[2] )
+    targetRange = rev( targetRange )
 
 if ( verbose ) print( "1. load model" )
 tl1 = Sys.time()
-if ( is.character( model ) ) {
-  if ( file.exists( model ) ) {
-    model = load_model_hdf5( model )
-    } else stop("Model not found")
-  } else stop("Model not found")
-if ( verbose ) print( paste("     load --- in : ", Sys.time() - tl1 ) )
+if ( ! is.object( model )  )
+  if ( is.character( model ) ) {
+    if ( file.exists( model ) ) {
+      model = load_model_hdf5( model )
+      } else stop("Model not found")
+    }
+if ( verbose ) print( paste("load model in : ", Sys.time() - tl1 ) )
 shapeLength = length( model$input_shape )
 if ( shapeLength == 5 ) { # image dimension is 3
   if ( image@dimension != 3 ) stop("Expecting 3D input for this model")
-  lowResolutionPatchSize = c(
-    model$input_shape[[2]],
-    model$input_shape[[3]],
-    model$input_shape[[4]] )
   channelSize = model$input_shape[[5]]
-  highResolutionPatchSize = c(
-    model$output_shape[[2]],
-    model$output_shape[[3]],
-    model$output_shape[[4]] )
   channelSizeOut = model$output_shape[[5]]
 }
 if ( shapeLength == 4 ) { # image dimension is 2
   if ( image@dimension != 2 ) stop("Expecting 2D input for this model")
-  lowResolutionPatchSize = c(
-    model$input_shape[[2]],
-    model$input_shape[[3]] )
   channelSize = model$input_shape[[4]]
-  highResolutionPatchSize = c(
-    model$output_shape[[2]],
-    model$output_shape[[3]] )
   channelSizeOut = model$output_shape[[4]]
 }
 # check image components matches nchannels, otherwise replicate the input
@@ -98,27 +68,26 @@ if ( channelSize != ncomponents ) {
     'does not match ncomponents', ncomponents, 'of image') )
 }
 ###############
-t0 = Sys.time()
-if ( verbose ) print( paste("2. extract patches:", channelSize ) )
-if ( channelSize == 1 ) {
-  X_test <- extractImagePatches(
+X_test <- extractImagePatches(
     image,
-    lowResolutionPatchSize, maxNumberOfPatches = 'all',
-    strideLength = strl, returnAsArray = TRUE )
-  }
-
-if ( channelSize > 1 ) {
-  simg = splitChannels( image )
-  simg = mergeListToNDImage( makeImage( c( dim(image), 1) ) ,  simg )
-  if ( length( strl ) == 1 )
-    strl = c( rep( strl, image@dimension ) )
-  X_test <- extractImagePatches(
-    simg,
-    c(lowResolutionPatchSize, channelSize ), maxNumberOfPatches = 'all',
-    strideLength = c(strl, channelSize ), returnAsArray = TRUE )
+    dim( image ), maxNumberOfPatches = 1,
+    strideLength = dim( image ), returnAsArray = TRUE )
+if ( ! missing( targetRange ) ) {
+  X_test = X_test - min( X_test )
+  X_test = X_test / max( X_test ) * ( targetRange[2] - targetRange[1] ) + targetRange[1]
 }
 #################################################
-numberOfPatches <- dim( X_test )[1]
+if ( verbose ) print( "##### prediction" )
+t1 = Sys.time()
+pred = predict( model, X_test, batch_size = batch_size )
+if ( verbose ) print( paste( "     - Predict in:", Sys.time()-t1 ) )
+# below is a fast simple linear regression model to map patch intensities
+if ( verbose ) print( "4. reconstruct intensity" )
+if ( ! missing( targetRange ) ) {
+  temp = range( image )
+  pred = pred - min( pred )
+  pred = pred / max( pred ) * ( temp[2] - temp[1] ) + temp[1]
+  }
 sliceArray <- function(  myArr, j ) {
   if ( shapeLength == 3 ) {
     return( myArr[j,,] )
@@ -131,96 +100,28 @@ sliceArray <- function(  myArr, j ) {
   }
 }
 
-# this should work for all cases - pretty sure
-X_test <- array( data = X_test,
-  dim = c( numberOfPatches, lowResolutionPatchSize, channelSize ) )
-xvec = as.numeric( sliceArray( X_test, 1 ) )
-tempMat = matrix( nrow = numberOfPatches, ncol = length( xvec ))
-idiff = targetRange[2] - targetRange[1]
-if ( idiff < 0 ) stop("targetRange[2] - targetRange[1] must be positive")
-for( j in 1:numberOfPatches )
-  {
-  temp = as.numeric( sliceArray( X_test, j ) )
-  xmin = min( temp, na.rm = T )
-  temp = temp - xmin
-  xmax = max( temp, na.rm = T )
-  if ( xmax == 0 ) xmax = 1
-  temp = temp / xmax * idiff + targetRange[1]
-  tempMat[j,] = temp
-  }
-X_test <- array( data = tempMat,
-  dim = c( numberOfPatches, lowResolutionPatchSize, channelSize ) )
-rm( tempMat )
-gc()
-########
-expansionFactor = highResolutionPatchSize/lowResolutionPatchSize
-bigImg = resampleImage( image,
-  dim( image ) * expansionFactor, useVoxels = T )
-if ( channelSizeOut != channelSize ) {
-  if ( bigImg@components > 1 )
-    bigImgSplit = splitChannels( bigImg ) else bigImgSplit=list( bigImg )
-  bigavg = antsAverageImages( bigImgSplit )
-  blist = list()
-  for ( k in 1:channelSizeOut ) {
-    blist[[k]] = bigavg
-    }
-  bigImg = mergeChannels( blist )
-  }
-t1=Sys.time()
-if ( verbose ) print( paste( "     - Extract:", numberOfPatches, "in:", t1-t0 ) )
-if ( verbose ) print( "3. ##### prediction" )
-pred = predict( model, X_test, batch_size = batch_size )
-if ( verbose ) print( paste( "     - Predict in:", Sys.time()-t1 ) )
-# ptchUp = array( dim = dim( pred )[1:(image@dimension+1)] )
-# pminX = rep( NA, nrow( pred ) )
-# pmxX = rep( NA, nrow( pred ) )
-# for ( sam in 1:dim( pred )[1] ) {
-#   arrer = as.numeric( sliceArray( X_test, j ) )
-#  arrer = array( arrer, dim = c( 1,lowResolutionPatchSize, nChannels ) )
-#  pminX[sam] = min( arrer )
-#  arrer = arrer - min( arrer )
-#  pmxX[sam] = max( arrer )
-#  arrer = arrer / max( arrer ) * 255 - 127.5
-#  pp = predict( mdl, arrer )
-#  temp = pp[1,,,1]
-#  for ( jj in 2:nChannels ) temp = temp + pp[1,,,jj]
-#  temp = ( temp / nChannels + 127.5 ) / 255 *
-#    pmxX[sam] + pminX[ sam ]
-#  ptchUp[ sam, ,  ] = temp
-#  }
+expansionFactor = ( dim( pred ) / dim( X_test ) )[-1][1:image@dimension]
+if ( verbose )
+  print( paste( "expansionFactor: ", paste( expansionFactor, collapse= 'x' ) ) )
+img1 = as.antsImage( pp[1,,,1] + pp[1,,,2] + pp[1,,,3] )
+img1 = antsCopyImageInfo( limg[[1]], img1 )
+antsSetSpacing( img1, antsGetSpacing( limg[[1]] )/2 )
+limg = splitNDImageToList( img )[spanner]
+bigImg = resampleImage( limg[[kn+1]], antsGetSpacing( limg[[1]] )/2 )
 
-bigStrides = strl * expansionFactor
-if ( channelSizeOut == 1 ) {
-  Y_test <- extractImagePatches(
-    bigImg,
-    highResolutionPatchSize, maxNumberOfPatches = 'all',
-    strideLength = bigStrides, returnAsArray = FALSE )
-  }
-if ( channelSizeOut > 1 ) {
-  simg = splitChannels( bigImg )
-  simg = mergeListToNDImage( makeImage( c( dim(bigImg), 1) ) ,  simg )
-  if ( length( bigStrides ) == 1 )
-    strl = c( rep( bigStrides, bigImg@dimension ) )
-  Y_test <- extractImagePatches(
-    simg,
-    c(highResolutionPatchSize, channelSizeOut ), maxNumberOfPatches = 'all',
-    strideLength = c(bigStrides, channelSizeOut ), returnAsArray = FALSE )
+if ( tail(dim(pred),1) == 1 ) {
+  ivec = sliceArray( pred, 1 )
+  predImg = makeImage( dim( image ) * expansionFactor, ivec )
 }
-# below is a fast simple linear regression model to map patch intensities
-# back to the original space defined by the upsampled image
-if ( verbose ) print( "4. reconstruct intensity" )
-plist = list()
-for( j in seq_len( numberOfPatches ) ) {
-  temp = sliceArray( pred, j )
-  ivec1 = as.numeric( temp )
-  ivec2 = as.numeric( Y_test[[j]])
-  mybeta = cov(ivec1,ivec2)/var(ivec1)
-  ivec1t = mybeta * ivec1
-  ivec1t = ivec1t + mean( ivec2 ) - mean( ivec1t )
-  plist[[j]] = array( ivec1t, dim = dim( temp ) )
-  }
-if ( verbose ) print( "5. reconstruct full image" )
-predImg = reconstructImageFromPatches( plist,
-  bigImg,   strideLength = bigStrides )
+if ( tail(dim(pred),1) > 1 ) {
+  mcList = list()
+  for ( k in 1:tail(dim(pred),1) ) {
+    ivec = sliceArray( pred, k )
+    mcList[[k]] = makeImage( dim( image ) * expansionFactor, ivec )
+    }
+  predImg = mergeChannels( mcList )
+}
+predImg = antsCopyImageInfo( image, predImg )
+antsSetSpacing( predImg, antsGetSpacing( image ) / expansionFactor )
 return( predImg )
 }
