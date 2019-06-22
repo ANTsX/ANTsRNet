@@ -295,7 +295,7 @@ uvaSegTrain <- function( patches,
 #' @return segmentation and probability images are output
 #' @author Avants BB
 #' @examples
-#'
+#' \dontrun{
 #' library(ANTsR)
 #' img <- ri( 1 ) %>% resampleImage( 4 ) %>% iMath( "Normalize" )
 #' mask = randomMask( getMask( img ), 50 )
@@ -303,7 +303,7 @@ uvaSegTrain <- function( patches,
 #' uvaSegModel = uvaSegTrain( patch, 6 )
 #' tarImg = ri( 3 ) %>% resampleImage( 4 )
 #' uvaSegmentation = uvaSeg(tarImg, uvaSegModel, k = 3, getMask( tarImg ) )
-#'
+#' }
 #' @export uvaSeg
 #' @importFrom Rcpp cppFunction
 #' @importFrom utils download.file
