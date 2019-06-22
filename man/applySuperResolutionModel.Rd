@@ -4,19 +4,17 @@
 \alias{applySuperResolutionModel}
 \title{applySuperResolutionModel}
 \usage{
-applySuperResolutionModel(image, model, strideLength = 20,
-  targetRange = c(-127.5, 127.5), batch_size = 32, verbose = FALSE)
+applySuperResolutionModel(image, model, targetRange, batch_size = 32,
+  verbose = FALSE)
 }
 \arguments{
 \item{image}{input image}
 
 \item{model}{model object or filename see \code{getPretrainedNetwork}}
 
-\item{strideLength}{stride length should be less than patch size}
-
-\item{targetRange}{a vector defining min max of each patch, eg -127.5, 127.5
-Output images will be scaled back to original intensity.  This range should
-match the mapping used in the training of the network.}
+\item{targetRange}{a vector defining min max of each the input image,
+eg -127.5, 127.5.  Output images will be scaled back to original intensity.
+This range should match the mapping used in the training of the network.}
 
 \item{batch_size}{for prediction call}
 
@@ -29,8 +27,11 @@ image upscaled to resolution provided by network
 Apply pretrained super-resolution network
 }
 \details{
-This function does patch-wise pre-processing and image reconstruction given
-the input super-resolution model.
+Apply a patch-wise trained network to perform super-resolution. Can be applied
+to variable sized inputs. Warning: This function may be better used on CPU
+unless the GPU can accommodate the full image size. Warning 2: The global
+intensity range (min to max) of the output will match the input where the
+range is taken over all channels.
 }
 \examples{
 \dontrun{
