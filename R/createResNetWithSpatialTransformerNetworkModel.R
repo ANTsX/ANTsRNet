@@ -1,8 +1,8 @@
-#' 2-D implementation of the ResNet deep learning architecture with a 
+#' 2-D implementation of the ResNet deep learning architecture with a
 #' preceding spatial transformer network layer.
 #'
 #' Creates a keras model of the ResNet deep learning architecture for image
-#' classification with a spatial transformer network (STN) layer.  The paper 
+#' classification with a spatial transformer network (STN) layer.  The paper
 #' is available here:
 #'
 #'         https://arxiv.org/abs/1512.03385
@@ -26,6 +26,8 @@
 #' @author Tustison NJ
 #' @examples
 #'
+#' \dontrun{
+#'
 #' library( ANTsRNet )
 #' library( keras )
 #'
@@ -46,7 +48,7 @@
 #'
 #' inputImageSize <- c( dim( X_trainSmall )[2:3], 1 )
 #'
-#' model <- createResNetWithSpatialTransformerNetworkModel2D( 
+#' model <- createResNetWithSpatialTransformerNetworkModel2D(
 #'   inputImageSize = inputImageSize,
 #'   numberOfClassificationLabels = numberOfLabels )
 #'
@@ -64,6 +66,7 @@
 #' # testingMetrics <- model %>% evaluate( X_testSmall, Y_testSmall )
 #' # predictedData <- model %>% predict( X_testSmall, verbose = 1 )
 #'
+#' }
 #' @import keras
 #' @export
 createResNetWithSpatialTransformerNetworkModel2D <- function( inputImageSize,
@@ -251,11 +254,11 @@ createResNetWithSpatialTransformerNetworkModel2D <- function( inputImageSize,
   return( resNetModel )
 }
 
-#' 3-D implementation of the ResNet deep learning architecture with a 
+#' 3-D implementation of the ResNet deep learning architecture with a
 #' preceding spatial transformer network layer.
 #'
 #' Creates a keras model of the ResNet deep learning architecture for image
-#' classification with a spatial transformer network (STN) layer.  The paper 
+#' classification with a spatial transformer network (STN) layer.  The paper
 #' is available here:
 #'
 #'         https://arxiv.org/abs/1512.03385
@@ -301,7 +304,7 @@ createResNetWithSpatialTransformerNetworkModel2D <- function( inputImageSize,
 #'
 #' inputImageSize <- c( dim( X_trainSmall )[2:3], 1 )
 #'
-#' model <- createResNetWithSpatialTransformerNetworkModel2D( 
+#' model <- createResNetWithSpatialTransformerNetworkModel2D(
 #'   inputImageSize = inputImageSize,
 #'   numberOfClassificationLabels = numberOfLabels )
 #'
