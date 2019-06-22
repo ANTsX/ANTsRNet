@@ -20,6 +20,7 @@
 #' @param cardinality perform  ResNet (cardinality = 1) or ResNeXt
 #' (cardinality != 1 but powers of 2---try '32' )
 #' @param resampledSize output image size of the spatial transformer network.
+#' @param numberOfSpatialTransformerUnits number of units in the dense layer.
 #' @param mode 'classification' or 'regression'.  Default = 'classification'.
 #'
 #' @return an STN + ResNet keras model
@@ -75,6 +76,7 @@ createResNetWithSpatialTransformerNetworkModel2D <- function( inputImageSize,
                                                               residualBlockSchedule = c( 3, 4, 6, 3 ),
                                                               lowestResolution = 64,
                                                               cardinality = 1,
+                                                              numberOfSpatialTransformerUnits = 50,
                                                               resampledSize = c( 64, 64 ),
                                                               mode = 'classification'
                                                              )
@@ -174,28 +176,36 @@ createResNetWithSpatialTransformerNetworkModel2D <- function( inputImageSize,
     return( model )
     }
 
-  inputs <- layer_input( shape = inputImageSize )
 
   # The spatial transformer network part
 
-  localization <- inputs
-  localization <- localization %>% layer_max_pooling_2d( pool_size = c( 2, 2 ) )
-  localization <- localization %>% layer_conv_2d( filters = 20, kernel_size = c( 5, 5 ) )
-  localization <- localization %>% layer_max_pooling_2d( pool_size = c( 2, 2 ) )
-  localization <- localization %>% layer_conv_2d( filters = 20, kernel_size = c( 5, 5 ) )
+  localizationModel <- createResNetModel2D( inputImageSize = inputImageSize,
+     numberOfClassificationLabels = numberOfSpatialTransformerUnits,
+     mode = "regression" )
+  localization <- localizationModel$output %>% layer_activation( 'relu' )
 
-  localization <- localization %>% layer_flatten()
-  localization <- localization %>% layer_dense( units = 50L )
-  localization <- localization %>% layer_activation( 'relu' )
+  # inputs <- layer_input( shape = inputImageSize )
 
-  weights <- getInitialWeights2D( outputSize = 50L )
+  # localization <- inputs
+  # localization <- localization %>% layer_max_pooling_2d( pool_size = c( 2, 2 ) )
+  # localization <- localization %>% layer_conv_2d( filters = 20, kernel_size = c( 5, 5 ) )
+  # localization <- localization %>% layer_max_pooling_2d( pool_size = c( 2, 2 ) )
+  # localization <- localization %>% layer_conv_2d( filters = 20, kernel_size = c( 5, 5 ) )
+
+  # localization <- localization %>% layer_flatten()
+  # localization <- localization %>% layer_dense( units = 50L )
+  # localization <- localization %>% layer_activation( 'relu' )
+
+  weights <- getInitialWeights2D( outputSize = numberOfSpatialTransformerUnits )
   localization <- localization %>% layer_dense( units = 6L, weights = weights )
 
-  outputs <- layer_spatial_transformer_2d( list( inputs, localization ),
+  outputs <- layer_spatial_transformer_2d(
+    list( localizationModel$input, localization ),
     resampledSize, transformType = 'affine', interpolatorType = 'linear',
     name = "layer_spatial_transformer" )
-  outputs <- outputs %>%
-    layer_conv_2d( filters = 32L, kernel_size = c( 3, 3 ), padding = 'same' )
+
+  # outputs <- outputs %>%
+  #   layer_conv_2d( filters = 32L, kernel_size = c( 3, 3 ), padding = 'same' )
 
   # The ResNet part
 
@@ -249,7 +259,7 @@ createResNetWithSpatialTransformerNetworkModel2D <- function( inputImageSize,
   outputs <- outputs %>%
     layer_dense( units = numberOfClassificationLabels, activation = layerActivation )
 
-  resNetModel <- keras_model( inputs = inputs, outputs = outputs )
+  resNetModel <- keras_model( inputs = localizationModel$inputs, outputs = outputs )
 
   return( resNetModel )
 }
@@ -276,6 +286,7 @@ createResNetWithSpatialTransformerNetworkModel2D <- function( inputImageSize,
 #' @param cardinality perform  ResNet (cardinality = 1) or ResNeXt
 #' (cardinality != 1 but powers of 2---try '32' )
 #' @param resampledSize output image size of the spatial transformer network.
+#' @param numberOfSpatialTransformerUnits number of units in the dense layer.
 #' @param mode 'classification' or 'regression'.  Default = 'classification'.
 #'
 #' @return an ResNet keras model
@@ -330,6 +341,7 @@ createResNetWithSpatialTransformerNetworkModel3D <- function( inputImageSize,
                                                               lowestResolution = 64,
                                                               cardinality = 1,
                                                               resampledSize = c( 64, 64, 64 ),
+                                                              numberOfSpatialTransformerUnits = 50,
                                                               mode = 'classification'
                                                             )
 {
@@ -432,24 +444,33 @@ createResNetWithSpatialTransformerNetworkModel3D <- function( inputImageSize,
 
   # The spatial transformer network part
 
-  localization <- inputs
-  localization <- localization %>% layer_max_pooling_3d( pool_size = c( 2, 2, 2 ) )
-  localization <- localization %>% layer_conv_3d( filters = 20, kernel_size = c( 5, 5, 5 ) )
-  localization <- localization %>% layer_max_pooling_3d( pool_size = c( 2, 2, 2 ) )
-  localization <- localization %>% layer_conv_3d( filters = 20, kernel_size = c( 5, 5, 5 ) )
+  localizationModel <- createResNetModel3D( inputImageSize = inputImageSize,
+     numberOfClassificationLabels = numberOfSpatialTransformerUnits,
+     mode = "regression" )
+  localization <- localizationModel$output %>% layer_activation( 'relu' )
 
-  localization <- localization %>% layer_flatten()
-  localization <- localization %>% layer_dense( units = 50L )
-  localization <- localization %>% layer_activation( 'relu' )
+  # inputs <- layer_input( shape = inputImageSize )
 
-  weights <- getInitialWeights3D( outputSize = 50L )
+  # localization <- inputs
+  # localization <- localization %>% layer_max_pooling_3d( pool_size = c( 2, 2, 2 ) )
+  # localization <- localization %>% layer_conv_3d( filters = 20, kernel_size = c( 5, 5, 5 ) )
+  # localization <- localization %>% layer_max_pooling_3d( pool_size = c( 2, 2, 2 ) )
+  # localization <- localization %>% layer_conv_3d( filters = 20, kernel_size = c( 5, 5, 5 ) )
+
+  # localization <- localization %>% layer_flatten()
+  # localization <- localization %>% layer_dense( units = numberOfSpatialTransformerUnits )
+  # localization <- localization %>% layer_activation( 'relu' )
+
+  weights <- getInitialWeights3D( outputSize = numberOfSpatialTransformerUnits )
   localization <- localization %>% layer_dense( units = 12L, weights = weights )
 
-  outputs <- layer_spatial_transformer_3d( list( inputs, localization ),
+  outputs <- layer_spatial_transformer_3d(
+    list( localizationModel$input, localization ),
     resampledSize, transformType = 'affine', interpolatorType = 'linear',
     name = "layer_spatial_transformer" )
-  outputs <- outputs %>%
-    layer_conv_3d( filters = 32L, kernel_size = c( 3, 3, 3 ), padding = 'same' )
+
+  # outputs <- outputs %>%
+  #   layer_conv_3d( filters = 32L, kernel_size = c( 3, 3 ), padding = 'same' )
 
   # The ResNet part
 

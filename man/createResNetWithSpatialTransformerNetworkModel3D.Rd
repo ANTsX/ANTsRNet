@@ -10,7 +10,7 @@ createResNetWithSpatialTransformerNetworkModel3D(inputImageSize,
   numberOfClassificationLabels = 1000, layers = 1:4,
   residualBlockSchedule = c(3, 4, 6, 3), lowestResolution = 64,
   cardinality = 1, resampledSize = c(64, 64, 64),
-  mode = "classification")
+  numberOfSpatialTransformerUnits = 50, mode = "classification")
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
@@ -32,6 +32,8 @@ repeats.}
 (cardinality != 1 but powers of 2---try '32' )}
 
 \item{resampledSize}{output image size of the spatial transformer network.}
+
+\item{numberOfSpatialTransformerUnits}{number of units in the dense layer.}
 
 \item{mode}{'classification' or 'regression'.  Default = 'classification'.}
 }
@@ -70,7 +72,7 @@ Y_testSmall <- to_categorical( mnistData$test$y[1:10], numberOfLabels )
 
 inputImageSize <- c( dim( X_trainSmall )[2:3], 1 )
 
-model <- createResNetWithSpatialTransformerNetworkModel2D( 
+model <- createResNetWithSpatialTransformerNetworkModel2D(
   inputImageSize = inputImageSize,
   numberOfClassificationLabels = numberOfLabels )
 

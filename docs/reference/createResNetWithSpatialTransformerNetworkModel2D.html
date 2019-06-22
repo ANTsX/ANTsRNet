@@ -113,8 +113,8 @@ is available here:</p>
     <pre class="usage"><span class='fu'>createResNetWithSpatialTransformerNetworkModel2D</span>(<span class='no'>inputImageSize</span>,
   <span class='kw'>numberOfClassificationLabels</span> <span class='kw'>=</span> <span class='fl'>1000</span>, <span class='kw'>layers</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>4</span>,
   <span class='kw'>residualBlockSchedule</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>3</span>, <span class='fl'>4</span>, <span class='fl'>6</span>, <span class='fl'>3</span>), <span class='kw'>lowestResolution</span> <span class='kw'>=</span> <span class='fl'>64</span>,
-  <span class='kw'>cardinality</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>resampledSize</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>64</span>, <span class='fl'>64</span>),
-  <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"classification"</span>)</pre>
+  <span class='kw'>cardinality</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>numberOfSpatialTransformerUnits</span> <span class='kw'>=</span> <span class='fl'>50</span>,
+  <span class='kw'>resampledSize</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>64</span>, <span class='fl'>64</span>), <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"classification"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -150,6 +150,10 @@ repeats.</p></td>
 (cardinality != 1 but powers of 2---try '32' )</p></td>
     </tr>
     <tr>
+      <th>numberOfSpatialTransformerUnits</th>
+      <td><p>number of units in the dense layer.</p></td>
+    </tr>
+    <tr>
       <th>resampledSize</th>
       <td><p>output image size of the spatial transformer network.</p></td>
     </tr>
@@ -170,6 +174,7 @@ repeats.</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
+</div><span class='co'># NOT RUN {</span>
 <span class='fu'>library</span>( <span class='no'>ANTsRNet</span> )
 <span class='fu'>library</span>( <span class='no'>keras</span> )
 
@@ -206,7 +211,9 @@ repeats.</p></td>
 <span class='co'># Now test the model</span>
 
 <span class='co'># testingMetrics &lt;- model %&gt;% evaluate( X_testSmall, Y_testSmall )</span>
-<span class='co'># predictedData &lt;- model %&gt;% predict( X_testSmall, verbose = 1 )</span></div></pre>
+<span class='co'># predictedData &lt;- model %&gt;% predict( X_testSmall, verbose = 1 )</span>
+
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
