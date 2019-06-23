@@ -74,7 +74,7 @@ X_test <- extractImagePatches(
     image,
     dim( image ), maxNumberOfPatches = 1,
     strideLength = dim( image ), returnAsArray = TRUE )
-X_test = array( X_test, dim = c( dim( image ), image@components )
+X_test = array( X_test, dim = c( dim( image ), image@components ) )
 if ( ! missing( targetRange ) ) {
   X_test = X_test - min( X_test )
   X_test = X_test / max( X_test ) * ( targetRange[2] - targetRange[1] ) + targetRange[1]
