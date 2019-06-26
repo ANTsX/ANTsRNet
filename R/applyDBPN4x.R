@@ -103,18 +103,31 @@ sliceArray <- function(  myArr, j ) {
   }
 }
 
+sliceArrayChannel <- function(  myArr, j ) {
+  if ( shapeLength == 3 ) {
+    return( myArr[,,j] )
+  }
+  if ( shapeLength == 4 ) {
+    return( myArr[,,,j] )
+  }
+  if ( shapeLength == 5 ) {
+    return( myArr[,,,,j] )
+  }
+}
+
+
 expansionFactor = ( dim( pred ) / dim( X_test ) )[-1][1:image@dimension]
 if ( verbose )
   print( paste( "expansionFactor: ", paste( expansionFactor, collapse= 'x' ) ) )
 
 if ( tail(dim(pred),1) == 1 ) {
-  ivec = sliceArray( pred, 1 )
+  ivec = sliceArrayChannel( pred, 1 )
   predImg = makeImage( dim( image ) * expansionFactor, ivec )
 }
 if ( tail(dim(pred),1) > 1 ) {
   mcList = list()
   for ( k in 1:tail(dim(pred),1) ) {
-    ivec = sliceArray( pred, k )
+    ivec = sliceArrayChannel( pred, k )
     mcList[[k]] = makeImage( dim( image ) * expansionFactor, ivec )
     }
   predImg = mergeChannels( mcList )
