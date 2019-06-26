@@ -123,3 +123,174 @@ predImg = antsCopyImageInfo( image, predImg )
 antsSetSpacing( predImg, antsGetSpacing( image ) / expansionFactor )
 return( predImg )
 }
+
+
+
+
+
+#' applySuperResolutionModelPatch
+#'
+#' Apply pretrained super-resolution network by stitching together patches.
+#'
+#' Apply a patch-wise trained network to perform super-resolution. Can be applied
+#' to variable sized inputs. Warning: This function may be better used on CPU
+#' unless the GPU can accommodate the full patch size. Warning 2: The global
+#' intensity range (min to max) of the output will match the input where the
+#' range is taken over all channels.
+#'
+#' @param image input image
+#' @param model model object or filename see \code{getPretrainedNetwork}
+#' @param targetRange a vector defining min max of each the input image,
+#' eg -127.5, 127.5.  Output images will be scaled back to original intensity.
+#' This range should match the mapping used in the training of the network.
+#' @param lowResolutionPatchSize size of patches to upsample
+#' @param strideLength voxel/pixel steps between patches
+#' @param batch_size for prediction call
+#' @param verbose If \code{TRUE}, show status messages
+#' @return image upscaled to resolution provided by network
+#' @author Avants BB
+#' @examples
+#' \dontrun{
+#' simg <- applySuperResolutionModelPatch( ri( 1 ), getPretrainedNetwork( "dbpn4x" ) )
+#' }
+#' @export applySuperResolutionModelPatch
+applySuperResolutionModelPatch <- function(
+  image,
+  model,
+  targetRange,
+  lowResolutionPatchSize = 128,
+  strideLength = 16,
+  batch_size = 32,
+  verbose = FALSE )
+{
+linMatchIntensity <- function( fromImg, toImg ) {
+  mdl = lm(  as.numeric( toImg ) ~ as.numeric( fromImg ) )
+  pp = predict( mdl )
+  pp[ pp < min( toImg ) ] = min( toImg )
+  pp[ pp > max( toImg ) ] = max( toImg )
+  newImg = makeImage( dim( fromImg ), pp )
+  temp = antsCopyImageInfo( fromImg,  newImg )
+  return( newImg )
+  }
+if ( ! missing( targetRange ) )
+  if ( targetRange[1] > targetRange[2] )
+    targetRange = rev( targetRange )
+
+if ( verbose ) print( "1. load model" )
+tl1 = Sys.time()
+if ( ! is.object( model )  )
+  if ( is.character( model ) ) {
+    if ( file.exists( model ) ) {
+      model = load_model_hdf5( model )
+      } else stop("Model not found")
+    }
+if ( verbose ) print( paste("load model in : ", Sys.time() - tl1 ) )
+shapeLength = length( model$input_shape )
+if ( shapeLength == 5 ) { # image dimension is 3
+  if ( image@dimension != 3 ) stop("Expecting 3D input for this model")
+  channelSize = model$input_shape[[5]]
+  channelSizeOut = model$output_shape[[5]]
+}
+if ( shapeLength == 4 ) { # image dimension is 2
+  if ( image@dimension != 2 ) stop("Expecting 2D input for this model")
+  channelSize = model$input_shape[[4]]
+  channelSizeOut = model$output_shape[[4]]
+}
+# check image components matches nchannels, otherwise replicate the input
+ncomponents = image@components
+if ( channelSize != ncomponents ) {
+  stop( paste(
+    "ChannelSize of model", channelSize,
+    'does not match ncomponents', ncomponents, 'of image') )
+}
+
+sliceArray <- function(  myArr, j ) {
+  if ( shapeLength == 3 ) {
+    return( myArr[1,,j] )
+  }
+  if ( shapeLength == 4 ) {
+    return( myArr[1,,,j] )
+  }
+  if ( shapeLength == 5 ) {
+    return( myArr[1,,,,j] )
+  }
+}
+###############
+if ( length( lowResolutionPatchSize ) == 1 )
+  lowResolutionPatchSize = rep( lowResolutionPatchSize, image@dimension )
+if ( length( strideLength ) == 1 )
+  strideLength = rep( strideLength, image@dimension )
+X_test <- extractImagePatches(
+    image,
+    lowResolutionPatchSize,
+    maxNumberOfPatches = 'all',
+    strideLength = strideLength, returnAsArray = TRUE )
+numberOfPatches = nrow( X_test )
+X_test = array( X_test,
+  dim = c( numberOfPatches,  lowResolutionPatchSize, channelSize ) )
+if ( ! missing( targetRange ) ) {
+  xvec = as.numeric( sliceArray( X_test, 1 ) )
+	tempMat = matrix( nrow = numberOfPatches, ncol = length( xvec ) )
+  for( j in 1:numberOfPatches )
+  	  {
+  	  temp = as.numeric( sliceArray( X_test, j ) )
+      temp = temp - min( temp )
+      temp = temp / max( temp ) * ( targetRange[2] - targetRange[1] ) + targetRange[1]
+  	  tempMat[j,] = temp
+  	  }
+  	X_test <- array( data = tempMat,
+  	  dim = c( numberOfPatches, lowResolutionPatchSize, channelSize ) )
+  	rm( tempMat )
+  	gc()
+}
+#################################################
+if ( verbose ) print( "##### prediction" )
+t1 = Sys.time()
+pred = predict( model, X_test, batch_size = batch_size )
+if ( verbose ) print( paste( "     - Predict in:", Sys.time()-t1 ) )
+# below is a fast simple linear regression model to map patch intensities
+if ( verbose ) print( "4. reconstruct intensity" )
+
+expansionFactor = ( dim( pred ) / dim( X_test ) )[-1][1:image@dimension]
+if ( verbose )
+  print( paste( "expansionFactor: ", paste( expansionFactor, collapse= 'x' ) ) )
+
+bigStrides = strideLength * expansionFactor
+bigImg = resampleImage( image,
+  dim( image ) * expansionFactor, useVoxels = T )
+if ( channelSizeOut != bigImg@components ) {
+  if ( bigImg@components > 1 )
+    bigImgSplit = splitChannels( bigImg ) else bigImgSplit=list( bigImg )
+  bigavg = antsAverageImages( bigImgSplit )
+  blist = list()
+  for ( k in 1:channelSizeOut ) {
+    blist[[k]] = bigavg
+    }
+  bigImg = mergeChannels( blist )
+  }
+
+highResolutionPatchSize = lowResolutionPatchSize * expansionFactor
+Y_test <- extractImagePatches(
+    bigImg,
+    highResolutionPatchSize, maxNumberOfPatches = 'all',
+    strideLength = bigStrides, returnAsArray = FALSE )
+
+# below is a fast simple linear regression model to map patch intensities
+# back to the original space defined by the upsampled image
+if ( verbose ) print( "4. reconstruct intensity" )
+plist = list()
+for( j in seq_len( numberOfPatches ) ) {
+  temp = sliceArray( pred, j )
+  ivec1 = as.numeric( temp )
+  ivec2 = as.numeric( Y_test[[j]])
+  mybeta = cov(ivec1,ivec2)/var(ivec1)
+  ivec1t = mybeta * ivec1
+  ivec1t = ivec1t + mean( ivec2 ) - mean( ivec1t )
+  plist[[j]] = array( ivec1t, dim = dim( temp ) )
+  }
+if ( verbose ) print( "5. reconstruct full image" )
+predImg = reconstructImageFromPatches( plist,
+  bigImg,   strideLength = bigStrides )
+antsSetSpacing( predImg, antsGetSpacing( image ) / expansionFactor )
+return( predImg )
+}
