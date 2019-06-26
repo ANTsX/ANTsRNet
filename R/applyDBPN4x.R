@@ -93,13 +93,13 @@ if ( ! missing( targetRange ) ) {
   }
 sliceArray <- function(  myArr, j ) {
   if ( shapeLength == 3 ) {
-    return( myArr[1,,j] )
+    return( myArr[j,,] )
   }
   if ( shapeLength == 4 ) {
-    return( myArr[1,,,j] )
+    return( myArr[j,,,] )
   }
   if ( shapeLength == 5 ) {
-    return( myArr[1,,,,j] )
+    return( myArr[j,,,,] )
   }
 }
 
