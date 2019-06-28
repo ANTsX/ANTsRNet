@@ -524,7 +524,7 @@ createResNetWithSpatialTransformerNetworkModel3D <- function( inputImageSize,
   outputs <- outputs %>%
     layer_dense( units = numberOfClassificationLabels, activation = layerActivation )
 
-  resNetModel <- keras_model( inputs = inputs, outputs = outputs )
+  resNetModel <- keras_model( inputs = inputs = localizationModel$inputs, outputs = outputs )
 
   return( resNetModel )
 }
