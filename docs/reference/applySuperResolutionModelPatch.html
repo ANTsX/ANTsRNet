@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>getPretrainedNetwork — getPretrainedNetwork • ANTsRNet</title>
+<title>applySuperResolutionModelPatch — applySuperResolutionModelPatch • ANTsRNet</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="getPretrainedNetwork — getPretrainedNetwork" />
+<meta property="og:title" content="applySuperResolutionModelPatch — applySuperResolutionModelPatch" />
 
-<meta property="og:description" content="Downloads antsrnet pretrained network. 10.6084/m9.figshare.7246985" />
+<meta property="og:description" content="Apply pretrained super-resolution network by stitching together patches." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -92,41 +92,72 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>getPretrainedNetwork</h1>
+    <h1>applySuperResolutionModelPatch</h1>
     
-    <div class="hidden name"><code>getPretrainedNetwork.Rd</code></div>
+    <div class="hidden name"><code>applySuperResolutionModelPatch.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Downloads antsrnet pretrained network. <a href='10.6084/m9.figshare.7246985'>10.6084/m9.figshare.7246985</a></p>
+    <p>Apply pretrained super-resolution network by stitching together patches.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>getPretrainedNetwork</span>(<span class='no'>fileId</span>, <span class='no'>targetFileName</span>)</pre>
+    <pre class="usage"><span class='fu'>applySuperResolutionModelPatch</span>(<span class='no'>image</span>, <span class='no'>model</span>, <span class='no'>targetRange</span>,
+  <span class='kw'>lowResolutionPatchSize</span> <span class='kw'>=</span> <span class='fl'>128</span>, <span class='kw'>strideLength</span> <span class='kw'>=</span> <span class='fl'>16</span>, <span class='kw'>batch_size</span> <span class='kw'>=</span> <span class='fl'>32</span>,
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>targetFileName</th>
-      <td><p>optional target filename</p></td>
+      <th>image</th>
+      <td><p>input image</p></td>
     </tr>
     <tr>
-      <th>fileid</th>
-      <td><p>one of the permitted file ids or pass "show" to list all
-valid possibilities. Note that most require internet access to download.</p></td>
+      <th>model</th>
+      <td><p>model object or filename see <code>getPretrainedNetwork</code></p></td>
+    </tr>
+    <tr>
+      <th>targetRange</th>
+      <td><p>a vector defining min max of each the input image,
+eg -127.5, 127.5.  Output images will be scaled back to original intensity.
+This range should match the mapping used in the training of the network.</p></td>
+    </tr>
+    <tr>
+      <th>lowResolutionPatchSize</th>
+      <td><p>size of patches to upsample</p></td>
+    </tr>
+    <tr>
+      <th>strideLength</th>
+      <td><p>voxel/pixel steps between patches</p></td>
+    </tr>
+    <tr>
+      <th>batch_size</th>
+      <td><p>for prediction call</p></td>
+    </tr>
+    <tr>
+      <th>verbose</th>
+      <td><p>If <code>TRUE</code>, show status messages</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>filename string</p>
+    <p>image upscaled to resolution provided by network</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Apply a patch-wise trained network to perform super-resolution. Can be applied
+to variable sized inputs. Warning: This function may be better used on CPU
+unless the GPU can accommodate the full patch size. Warning 2: The global
+intensity range (min to max) of the output will match the input where the
+range is taken over all channels.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='no'>net</span> <span class='kw'>&lt;-</span> <span class='fu'>getPretrainedNetwork</span>( <span class='st'>"dbpn4x"</span> )
+<span class='no'>simg</span> <span class='kw'>&lt;-</span> <span class='fu'>applySuperResolutionModelPatch</span>( <span class='fu'>ri</span>( <span class='fl'>1</span> ), <span class='fu'><a href='getPretrainedNetwork.html'>getPretrainedNetwork</a></span>( <span class='st'>"dbpn4x"</span> ) )
 <span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -135,6 +166,8 @@ valid possibilities. Note that most require internet access to download.</p></td
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>

@@ -4,16 +4,13 @@
 \alias{getPretrainedNetwork}
 \title{getPretrainedNetwork}
 \usage{
-getPretrainedNetwork(fileid, targetFileName = FALSE, verbose = FALSE)
+getPretrainedNetwork(fileId, targetFileName)
 }
 \arguments{
-\item{fileid}{one of the permitted file ids or pass "show" to list all
-valid possibilities. Note that most require internet access to download.}
-
 \item{targetFileName}{optional target filename}
 
-\item{verbose}{If \code{TRUE}, suppress status messages
-(if any), and the progress bar.}
+\item{fileid}{one of the permitted file ids or pass "show" to list all
+valid possibilities. Note that most require internet access to download.}
 }
 \value{
 filename string
