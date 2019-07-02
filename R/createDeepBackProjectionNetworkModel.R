@@ -40,8 +40,6 @@
 #' \code{strides = c( 8, 8 )}. We default to 8x parameters.
 #' @param lastConvolution the kernel size for the last convolutional layer
 #' @param numberOfLossFunctions the number of data targets, e.g. 2 for 2 targets
-#' @param doFeatureSmashing if this is \code{FALSE}, then
-#' \code{numberOfBaseFilters} should equal \code{numberOfFeatureFilters}.
 #'
 #' @return a keras model defining the deep back-projection network.
 #' @author Tustison NJ
@@ -61,16 +59,12 @@ createDeepBackProjectionNetworkModel2D <-
                                convolutionKernelSize = c( 12, 12 ),
                                strides = c( 8, 8 ),
                                lastConvolution = c( 3, 3 ),
-                               numberOfLossFunctions = 1,
-                               doFeatureSmashing = TRUE
+                               numberOfLossFunctions = 1
                              )
 {
-  if ( ! doFeatureSmashing & ( numberOfFeatureFilters != numberOfBaseFilters ) )
-    stop( paste("if not doFeatureSmashing == FALSE, then numberOfFeatureFilters
-    should equal numberOfBaseFilters.") )
 
   upBlock2D <- function( L, numberOfFilters = 64, kernelSize = c( 12, 12 ),
-    strides = c( 8, 8 ), includeDenseConvolutionLayer = FALSE )
+    strides = c( 8, 8 ), includeDenseConvolutionLayer = TRUE )
     {
     if( includeDenseConvolutionLayer )
       {
@@ -111,7 +105,7 @@ createDeepBackProjectionNetworkModel2D <-
     }
 
   downBlock2D <- function( H, numberOfFilters = 64, kernelSize = c( 12, 12 ),
-    strides = c( 8, 8 ), includeDenseConvolutionLayer = FALSE )
+    strides = c( 8, 8 ), includeDenseConvolutionLayer = TRUE )
     {
     if( includeDenseConvolutionLayer )
       {
@@ -161,6 +155,7 @@ createDeepBackProjectionNetworkModel2D <-
     shared_axes = c( 1, 2 ) )
 
   # Feature smashing
+  doFeatureSmashing = TRUE
   if ( doFeatureSmashing ) {
     model <- model %>% layer_conv_2d( filters = numberOfBaseFilters,
       kernel_size = c( 1, 1 ), strides = c( 1, 1 ), padding = 'same',
@@ -266,8 +261,6 @@ createDeepBackProjectionNetworkModel2D <-
 #' 8x --> \code{strides = c( 8, 8, 8 )}. We default to 8x parameters.
 #' @param lastConvolution the kernel size for the last convolutional layer
 #' @param numberOfLossFunctions the number of data targets, e.g. 2 for 2 targets
-#' @param doFeatureSmashing if this is \code{FALSE}, then
-#' \code{numberOfBaseFilters} should equal \code{numberOfFeatureFilters}.
 #'
 #' @return a keras model defining the deep back-projection network.
 #' @author Tustison NJ
@@ -287,16 +280,12 @@ createDeepBackProjectionNetworkModel3D <-
                                convolutionKernelSize = c( 12, 12, 12 ),
                                strides = c( 8, 8, 8 ),
                                lastConvolution = c( 3, 3, 3 ),
-                               numberOfLossFunctions = 1,
-                               doFeatureSmashing = TRUE
+                               numberOfLossFunctions = 1
                              )
 {
-  if ( ! doFeatureSmashing & ( numberOfFeatureFilters != numberOfBaseFilters ) )
-    stop( paste("if not doFeatureSmashing == FALSE, then numberOfFeatureFilters
-    should equal numberOfBaseFilters.") )
 
   upBlock3D <- function( L, numberOfFilters = 64, kernelSize = c( 12, 12, 12 ),
-    strides = c( 8, 8, 8 ), includeDenseConvolutionLayer = FALSE )
+    strides = c( 8, 8, 8 ), includeDenseConvolutionLayer = TRUE )
     {
     if( includeDenseConvolutionLayer )
       {
@@ -337,7 +326,7 @@ createDeepBackProjectionNetworkModel3D <-
     }
 
   downBlock3D <- function( H, numberOfFilters = 64, kernelSize = c( 12, 12, 12 ),
-    strides = c( 8, 8, 8 ), includeDenseConvolutionLayer = FALSE )
+    strides = c( 8, 8, 8 ), includeDenseConvolutionLayer = TRUE )
     {
     if( includeDenseConvolutionLayer )
       {
@@ -387,6 +376,7 @@ createDeepBackProjectionNetworkModel3D <-
     shared_axes = c( 1, 2, 3 ) )
 
   # Feature smashing
+  doFeatureSmashing = TRUE
   if ( doFeatureSmashing ) {
     model <- model %>% layer_conv_3d( filters = numberOfBaseFilters,
       kernel_size = c( 1, 1, 1 ), strides = c( 1, 1, 1 ), padding = 'same',
@@ -402,7 +392,6 @@ createDeepBackProjectionNetworkModel3D <-
   model <- upBlock3D( model, numberOfFilters = numberOfBaseFilters,
     kernelSize = convolutionKernelSize, strides = strides )
   upProjectionBlocks[[1]] <- model
-  model <- layer_concatenate( upProjectionBlocks )
 
   for( i in seq_len( numberOfBackProjectionStages ) )
     {
@@ -411,7 +400,6 @@ createDeepBackProjectionNetworkModel3D <-
       model <- downBlock3D( model, numberOfFilters = numberOfBaseFilters,
         kernelSize = convolutionKernelSize, strides = strides )
       downProjectionBlocks[[i]] <- model
-      model <- layer_concatenate( downProjectionBlocks )
 
       model <- upBlock3D( model, numberOfFilters = numberOfBaseFilters,
         kernelSize = convolutionKernelSize, strides = strides )
