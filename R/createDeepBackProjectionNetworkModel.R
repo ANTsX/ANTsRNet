@@ -384,7 +384,7 @@ createDeepBackProjectionNetworkModel3D <-
     kernel_size = c( 3, 3, 3 ), strides = c( 1, 1, 1 ), padding = 'same',
     kernel_initializer = "glorot_uniform" )
   model <- model %>% layer_activation_parametric_relu( alpha_initializer = 'zero',
-    shared_axes = c( 1, 2 ) )
+    shared_axes = c( 1, 2, 3 ) )
 
   # Feature smashing
   if ( doFeatureSmashing ) {
