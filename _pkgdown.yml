@@ -13,6 +13,10 @@ reference:
   - '`createWideResNetModel3D`'
   - '`createVggModel2D`'
   - '`createVggModel3D`'
+  - '`createResNetWithSpatialTransformerNetworkModel2D`'
+  - '`createResNetWithSpatialTransformerNetworkModel3D`'
+  - '`createSimpleClassificationWithSpatialTransformerNetworkModel2D`'
+  - '`createSimpleClassificationWithSpatialTransformerNetworkModel3D`'
 - title: Object localization models
   desc: ~
   contents:
@@ -65,7 +69,6 @@ reference:
   - '`createResNetSuperResolutionModel3D`'
   - '`createDeepBackProjectionNetworkModel2D`'
   - '`createDeepBackProjectionNetworkModel3D`'
-  - '`createUpDownResNetSuperResolutionModel2D`'
 - title: Super-resolution helper functions
   desc: ~
   contents:
@@ -73,11 +76,6 @@ reference:
   - '`MAE`'
   - '`PSNR`'
   - '`SSIM`'
-- title: Registration and transform models
-  desc: ~
-  contents:
-  - '`createSpatialTransformerNetworkModel2D`'
-  - '`createSpatialTransformerNetworkModel3D`'
 - title: Registration and transform helper functions
   desc: ~
   contents:
@@ -126,4 +124,5 @@ reference:
   - '`extractImagePatches`'
   - '`reconstructImageFromPatches`'
   - '`getPretrainedNetwork`'
+  - '`ResizeTensorLayer`'
 
