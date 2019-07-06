@@ -26,9 +26,9 @@ library( keras )
 
 K <- keras::backend()
 
-inputTensor <- K$ones( c( 10L, 10L, 3L ) )
+inputTensor <- K$ones( c( 2L, 10L, 10L, 10L, 3L ) )
 
-interpolatorLayer <- ResizeTensorLayer( c( 15L, 15L ) )
+interpolatorLayer <- ResizeTensorLayer( c( 15L, 10L, 12L ) )
 outputTensor <- inputTensor \%>\% interpolatorLayer
 
 }

@@ -16,9 +16,9 @@
 #'
 #' K <- keras::backend()
 #'
-#' inputTensor <- K$ones( c( 10L, 10L, 3L ) )
+#' inputTensor <- K$ones( c( 2L, 10L, 10L, 10L, 3L ) )
 #'
-#' interpolatorLayer <- ResizeTensorLayer( c( 15L, 15L ) )
+#' interpolatorLayer <- ResizeTensorLayer( c( 15L, 10L, 12L ) )
 #' outputTensor <- inputTensor %>% interpolatorLayer
 #'
 #' @import keras
@@ -67,7 +67,8 @@ ResizeTensorLayer <- function( shape, interpolationType = 'nearestNeighbor' )
         }
       } else {
       # Do yz
-      squeezeTensor_yz <- tensorflow::tf$reshape( inputTensor, c( -1L, oldSize ) )
+      squeezeTensor_yz <-
+        tensorflow::tf$reshape( inputTensor, c( -1L, oldSize[2], oldSize[3], channelSize ) )
 
       newShape_yz <- c( newSize[2], newSize[3] )
 
@@ -91,7 +92,7 @@ ResizeTensorLayer <- function( shape, interpolationType = 'nearestNeighbor' )
 
       # Do x
 
-      reorientedTensor <- tensorflow::tf$transpose( resumeTensor_yz, c( 0, 3, 2, 1, 4 ) )
+      reorientedTensor <- tensorflow::tf$transpose( resumeTensor_yz, c( 0L, 3L, 2L, 1L, 4L ) )
 
       squeezeTensor_x <- tensorflow::tf$reshape( reorientedTensor,
         c( -1L, newSize[2], oldSize[1], channelSize ) )
@@ -104,19 +105,19 @@ ResizeTensorLayer <- function( shape, interpolationType = 'nearestNeighbor' )
         resizedTensor_x <-
           tensorflow::tf$image$resize_nearest_neighbor( squeezeTensor_x, size = newShape_x )
         } else if( interpolationType == 'linear' ) {
-        resizedTensor_yz <-
+        resizedTensor_x <-
           tensorflow::tf$image$resize_bilinear( squeezeTensor_x, size = newShape_x )
         } else if( interpolationType == 'cubic' ) {
-        resizedTensor_yz <-
+        resizedTensor_x <-
           tensorflow::tf$image$resize_bicubic( squeezeTensor_x, size = newShape_x )
         } else {
         stop( "Interpolation type not recognized." )
         }
 
       newShape_x <- c( batchSize, newSize[3], newSize[2], newSize[1], channelSize )
-      resumeTensor_x <- tensorflow::tf$reshape( resizedTensor_yz, newShape_yz )
+      resumeTensor_x <- tensorflow::tf$reshape( resizedTensor_x, newShape_x )
 
-      resizedTensor <- tensorflow::tf$transpose( resumeTensor_x, c( 0, 3, 2, 1, 4 ) )
+      resizedTensor <- tensorflow::tf$transpose( resumeTensor_x, c( 0L, 3L, 2L, 1L, 4L ) )
       }
 
     return( resizedTensor )

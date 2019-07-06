@@ -133,34 +133,10 @@ output tensor</p></td>
 
 <span class='no'>K</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>keras</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/backend'>backend</a></span>()
 
-<span class='no'>inputTensor</span> <span class='kw'>&lt;-</span> <span class='no'>K</span>$<span class='fu'>ones</span>( <span class='fu'>c</span>( <span class='fl'>10L</span>, <span class='fl'>10L</span>, <span class='fl'>3L</span> ) )
+<span class='no'>inputTensor</span> <span class='kw'>&lt;-</span> <span class='no'>K</span>$<span class='fu'>ones</span>( <span class='fu'>c</span>( <span class='fl'>2L</span>, <span class='fl'>10L</span>, <span class='fl'>10L</span>, <span class='fl'>3L</span> ) )
 
 <span class='no'>interpolatorLayer</span> <span class='kw'>&lt;-</span> <span class='fu'>ResizeTensorLayer</span>( <span class='fu'>c</span>( <span class='fl'>15L</span>, <span class='fl'>15L</span> ) )
-<span class='no'>outputTensor</span> <span class='kw'>&lt;-</span> <span class='no'>inputTensor</span> <span class='kw'>%&gt;%</span> <span class='no'>interpolatorLayer</span></div><div class='output co'>#&gt; <span class='error'>Error in py_call_impl(callable, dots$args, dots$keywords): RuntimeError: Evaluation error: ValueError: Shape must be rank 4 but is rank 3 for 'lambda_1/ResizeNearestNeighbor' (op: 'ResizeNearestNeighbor') with input shapes: [10,10,3], [2].</span>
-#&gt; <span class='error'></span>
-#&gt; <span class='error'>Detailed traceback: </span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/ops/gen_image_ops.py", line 3011, in resize_nearest_neighbor</span>
-#&gt; <span class='error'>    align_corners=align_corners, name=name)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/framework/op_def_library.py", line 788, in _apply_op_helper</span>
-#&gt; <span class='error'>    op_def=op_def)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/util/deprecation.py", line 507, in new_func</span>
-#&gt; <span class='error'>    return func(*args, **kwargs)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/framework/ops.py", line 3300, in create_op</span>
-#&gt; <span class='error'>    op_def=op_def)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/framework/ops.py", line 1823, in __init__</span>
-#&gt; <span class='error'>    control_input_ops)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/framework/ops.py", line 1662, in _create_c_op</span>
-#&gt; <span class='error'>    raise ValueError(str(e))</span>
-#&gt; <span class='error'>.</span>
-#&gt; <span class='error'></span>
-#&gt; <span class='error'>Detailed traceback: </span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/keras/engine/base_layer.py", line 457, in __call__</span>
-#&gt; <span class='error'>    output = self.call(inputs, **kwargs)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/keras/layers/core.py", line 687, in call</span>
-#&gt; <span class='error'>    return self.function(inputs, **arguments)</span>
-#&gt; <span class='error'>  File "/Library/Frameworks/R.framework/Versions/3.5/Resources/library/reticulate/python/rpytools/call.py", line 21, in python_function</span>
-#&gt; <span class='error'>    raise RuntimeError(res[kErrorKey])</span></div><div class='input'>
-</div></pre>
+<span class='no'>outputTensor</span> <span class='kw'>&lt;-</span> <span class='no'>inputTensor</span> <span class='kw'>%&gt;%</span> <span class='no'>interpolatorLayer</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
