@@ -124,5 +124,5 @@ reference:
   - '`extractImagePatches`'
   - '`reconstructImageFromPatches`'
   - '`getPretrainedNetwork`'
-  - '`ResizeTensorLayer`'
+  - '`ResampleTensorLayer`'
 
