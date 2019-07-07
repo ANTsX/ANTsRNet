@@ -1,3 +1,179 @@
+#' Resamples a spatial tensor.
+#'
+#' Resamples a spatial tensor based on the specified shape and interpolation type.
+#'
+#' @param shape vector or list of length 2 or 3 specifying the shape of the
+#' output tensor
+#' @param interpolationType type of interpolation for resampling.  Can be
+#' \code{nearestNeighbor}, \code{linear}, or \code{cubic}.
+#'
+#' @return a tensor
+#' @author Tustison NJ
+#' @examples
+#'
+#' library( keras )
+#'
+#' K <- keras::backend()
+#'
+#' # 2-D spatial tensor
+#'
+#' inputTensor <- K$ones( c( 2L, 10L, 10L, 3L ) )
+#'
+#' outputTensor <- resampleTensor( inputTensor, c( 12, 13 ), 'nearestNeighbor' )
+#' outputTensor <- resampleTensor( inputTensor, c( 12, 13 ), 'linear' )
+#' outputTensor <- resampleTensor( inputTensor, c( 12, 13 ), 'cubic' )
+#'
+#' # 3-D spatial tensor
+#'
+#' inputTensor <- K$ones( c( 2L, 10L, 10L, 10L, 3L ) )
+#'
+#' outputTensor <- resampleTensor( inputTensor, c( 12, 13, 14 ), 'nearestNeighbor' )
+#' outputTensor <- resampleTensor( inputTensor, c( 12, 13, 14 ), 'linear' )
+#' outputTensor <- resampleTensor( inputTensor, c( 12, 13, 14 ), 'cubic' )
+#'
+#' @import keras
+#' @export
+resampleTensor <- function( inputTensor, shape, interpolationType = 'nearestNeighbor' )
+  {
+  K <- keras::backend()
+
+  newSize <- as.integer( shape )
+  inputShape <- unlist( K$int_shape( inputTensor ) )
+
+  batchSize <- inputShape[1]
+  channelSize <- tail( inputShape, 1 )
+
+  dimensionality <- NULL
+  if( length( shape ) == 2 )
+    {
+    dimensionality <- 2
+    } else if( length( shape == 3 ) ) {
+    dimensionality <- 3
+    } else {
+    stop( "\'shape\' should be of length 2 for images or 3 for volumes." )
+    }
+
+  oldSize <- inputShape[2:( dimensionality + 1 )]
+
+  if( all( newSize == oldSize ) )
+    {
+    return( inputTensor )
+    }
+
+  resampledTensor <- NULL
+  if( dimensionality == 2 )
+    {
+    if( interpolationType == 'nearestNeighbor' )
+      {
+      resampledTensor <- tensorflow::tf$image$resize_nearest_neighbor( inputTensor, size = newSize )
+      } else if( interpolationType == 'linear' ) {
+      resampledTensor <- tensorflow::tf$image$resize_bilinear( inputTensor, size = newSize )
+      } else if( interpolationType == 'cubic' ) {
+      resampledTensor <- tensorflow::tf$image$resize_bicubic( inputTensor, size = newSize )
+      } else {
+      stop( "Interpolation type not recognized." )
+      }
+    } else {
+    # Do yz
+    squeezeTensor_yz <-
+      tensorflow::tf$reshape( inputTensor, c( -1L, oldSize[2], oldSize[3], channelSize ) )
+
+    newShape_yz <- c( newSize[2], newSize[3] )
+
+    resampledTensor_yz <- NULL
+    if( interpolationType == 'nearestNeighbor' )
+      {
+      resampledTensor_yz <-
+        tensorflow::tf$image$resize_nearest_neighbor( squeezeTensor_yz, size = newShape_yz )
+      } else if( interpolationType == 'linear' ) {
+      resampledTensor_yz <-
+        tensorflow::tf$image$resize_bilinear( squeezeTensor_yz, size = newShape_yz )
+      } else if( interpolationType == 'cubic' ) {
+      resampledTensor_yz <-
+        tensorflow::tf$image$resize_bicubic( squeezeTensor_yz, size = newShape_yz )
+      } else {
+      stop( "Interpolation type not recognized." )
+      }
+
+    newShape_yz <- c( batchSize, oldSize[1], newSize[2], newSize[3], channelSize )
+    resumeTensor_yz <- tensorflow::tf$reshape( resampledTensor_yz, newShape_yz )
+
+    # Do x
+
+    reorientedTensor <- tensorflow::tf$transpose( resumeTensor_yz, c( 0L, 3L, 2L, 1L, 4L ) )
+
+    squeezeTensor_x <- tensorflow::tf$reshape( reorientedTensor,
+      c( -1L, newSize[2], oldSize[1], channelSize ) )
+
+    newShape_x <- c( newSize[2], newSize[1] )
+
+    resampledTensor_x <- NULL
+    if( interpolationType == 'nearestNeighbor' )
+      {
+      resampledTensor_x <-
+        tensorflow::tf$image$resize_nearest_neighbor( squeezeTensor_x, size = newShape_x )
+      } else if( interpolationType == 'linear' ) {
+      resampledTensor_x <-
+        tensorflow::tf$image$resize_bilinear( squeezeTensor_x, size = newShape_x )
+      } else if( interpolationType == 'cubic' ) {
+      resampledTensor_x <-
+        tensorflow::tf$image$resize_bicubic( squeezeTensor_x, size = newShape_x )
+      } else {
+      stop( "Interpolation type not recognized." )
+      }
+
+    newShape_x <- c( batchSize, newSize[3], newSize[2], newSize[1], channelSize )
+    resumeTensor_x <- tensorflow::tf$reshape( resampledTensor_x, newShape_x )
+
+    resampledTensor <- tensorflow::tf$transpose( resumeTensor_x, c( 0L, 3L, 2L, 1L, 4L ) )
+    }
+
+  return( resampledTensor )
+  }
+
+#' Resamples a tensor.
+#'
+#' Resamples a tensor based on the reference tensor and interpolation type.
+#'
+#' @param referenceTensor Reference tensor of rank 4 or 5 (for 2-D or 3-D volumes,
+#'                        respectively).
+#' @param interpolationType type of interpolation for resampling.  Can be
+#' \code{nearestNeighbor}, \code{linear}, or \code{cubic}.
+#'
+#' @return a tensor
+#' @author Tustison NJ
+#' @examples
+#'
+#' library( keras )
+#'
+#' K <- keras::backend()
+#'
+#' inputTensor <- K$ones( c( 2L, 10L, 10L, 10L, 3L ) )
+#' referenceTensor <- K$ones( c( 2L, 12L, 13L, 14L, 3L ) )
+#'
+#' outputTensor <- resampleTensorLike( inputTensor, referenceTensor )
+#'
+#' @import keras
+#' @export
+resampleTensorLike <- function( inputTensor, referenceTensor, interpolationType = 'nearestNeighbor' )
+  {
+  K <- keras::backend()
+
+  referenceShape <- unlist( K$int_shape( referenceTensor ) )
+  if( length( referenceShape ) == 4 )
+    {
+    referenceShape <- referenceShape[2:3]
+    } else if( length( referenceShape ) == 5 ) {
+    referenceShape <- referenceShape[2:4]
+    } else {
+    stop( "Reference tensor must be of rank 4 or 5 (for 2-D images or 3-D volumes)." )
+    }
+
+  resampledTensor <- resampleTensor( inputTensor, referenceShape, interpolationType )
+
+  return( resampledTensor )
+  }
+
 #' Creates a resampled lambda layer
 #'
 #' Creates a lambda layer which interpolates/resizes an input tensor based
@@ -57,11 +233,11 @@ ResampleTensorLayer <- function( shape, interpolationType = 'nearestNeighbor' )
       {
       if( interpolationType == 'nearestNeighbor' )
         {
-        resampledTensor <- tensorflow::tf$image$resize_nearest_neighbor( inputTensor, size = shape )
+        resampledTensor <- tensorflow::tf$image$resize_nearest_neighbor( inputTensor, size = newSize )
         } else if( interpolationType == 'linear' ) {
-        resampledTensor <- tensorflow::tf$image$resize_bilinear( inputTensor, size = shape )
+        resampledTensor <- tensorflow::tf$image$resize_bilinear( inputTensor, size = newSize )
         } else if( interpolationType == 'cubic' ) {
-        resampledTensor <- tensorflow::tf$image$resize_bicubic( inputTensor, size = shape )
+        resampledTensor <- tensorflow::tf$image$resize_bicubic( inputTensor, size = newSize )
         } else {
         stop( "Interpolation type not recognized." )
         }
