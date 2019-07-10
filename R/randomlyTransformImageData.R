@@ -168,8 +168,8 @@ randomlyTransformImageData <- function( referenceImage,
   for( i in seq_len( numberOfSimulations ) )
     {
     singleSubjectImageList <- inputImageList[[randomIndices[i]]]
-    singleSubjectSegmentationImage <- NA
-    if( !is.na( segmentationImageList[[1]] ) )
+    singleSubjectSegmentationImage <- NULL
+    if( ! is.null( segmentationImageList[[1]] ) )
       {
       singleSubjectSegmentationImage <- segmentationImageList[[randomIndices[i]]]
       }
@@ -182,7 +182,7 @@ randomlyTransformImageData <- function( referenceImage,
           singleSubjectImageList[[j]], referenceImage,
             interpType = inputImageInterpolator )
         }
-      if( !is.na( singleSubjectSegmentationImage ) )
+      if( ! is.null( singleSubjectSegmentationImage ) )
         {
         singleSubjectSegmentationImage <- resampleImageToTarget(
           singleSubjectSegmentationImage, referenceImage,
@@ -223,7 +223,7 @@ randomlyTransformImageData <- function( referenceImage,
       }
     simulatedImageList[[i]] <- singleSubjectSimulatedImageList
 
-    if( !is.na( singleSubjectSegmentationImage ) )
+    if( ! is.null( singleSubjectSegmentationImage ) )
       {
       simulatedSegmentationImageList[[i]] <- applyAntsrTransform( transforms,
         singleSubjectSegmentationImage, referenceImage,
@@ -231,7 +231,7 @@ randomlyTransformImageData <- function( referenceImage,
       }
     }
 
-  if( is.na( segmentationImageList[[1]] ) )
+  if( is.null( segmentationImageList[[1]] ) )
     {
     return( list( simulatedImageList = simulatedImageList ) )
     }

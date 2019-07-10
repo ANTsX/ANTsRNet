@@ -104,7 +104,7 @@
     </div>
 
     <pre class="usage"><span class='fu'>extractImagePatches</span>(<span class='no'>image</span>, <span class='no'>patchSize</span>, <span class='kw'>maxNumberOfPatches</span> <span class='kw'>=</span> <span class='st'>"all"</span>,
-  <span class='kw'>strideLength</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>maskImage</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='no'>randomSeed</span>,
+  <span class='kw'>strideLength</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>maskImage</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>randomSeed</span>,
   <span class='kw'>returnAsArray</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -163,7 +163,7 @@ a single patch.  Otherwise the return type is an array of size
 <span class='no'>maskImage</span> <span class='kw'>&lt;-</span> <span class='fu'>getMask</span>( <span class='no'>image</span>, <span class='fl'>1</span>, <span class='fl'>1000</span> )
 <span class='no'>patchSet1</span> <span class='kw'>&lt;-</span> <span class='fu'>extractImagePatches</span>( <span class='no'>image</span>, <span class='fu'>c</span>( <span class='fl'>32</span>, <span class='fl'>32</span> ), <span class='fl'>10</span>, <span class='fu'>c</span>( <span class='fl'>32</span>, <span class='fl'>32</span> ), <span class='kw'>randomSeed</span> <span class='kw'>=</span> <span class='fl'>0</span> )
 <span class='no'>patchSet2</span> <span class='kw'>&lt;-</span> <span class='fu'>extractImagePatches</span>( <span class='no'>image</span>, <span class='fu'>c</span>( <span class='fl'>32</span>, <span class='fl'>32</span> ), <span class='fl'>10</span>, <span class='fu'>c</span>( <span class='fl'>32</span>, <span class='fl'>32</span> ), <span class='kw'>randomSeed</span> <span class='kw'>=</span> <span class='fl'>1</span> )
-<span class='co'># patchSet3 &lt;- extractImagePatches( image, c( 32, 32 ), 10, c( 32, 32 ), maskImage, randomSeed = 0 )</span></div></pre>
+<span class='no'>patchSet3</span> <span class='kw'>&lt;-</span> <span class='fu'>extractImagePatches</span>( <span class='no'>image</span>, <span class='fu'>c</span>( <span class='fl'>32</span>, <span class='fl'>32</span> ), <span class='fl'>10</span>, <span class='fu'>c</span>( <span class='fl'>32</span>, <span class='fl'>32</span> ), <span class='no'>maskImage</span>, <span class='kw'>randomSeed</span> <span class='kw'>=</span> <span class='fl'>0</span> )</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

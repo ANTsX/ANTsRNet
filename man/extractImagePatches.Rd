@@ -5,7 +5,7 @@
 \title{Extract 2-D or 3-D image patches.}
 \usage{
 extractImagePatches(image, patchSize, maxNumberOfPatches = "all",
-  strideLength = 1, maskImage = NA, randomSeed,
+  strideLength = 1, maskImage = NULL, randomSeed,
   returnAsArray = FALSE)
 }
 \arguments{
@@ -47,7 +47,7 @@ image <- antsImageRead( getANTsRData( "r16" ) )
 maskImage <- getMask( image, 1, 1000 )
 patchSet1 <- extractImagePatches( image, c( 32, 32 ), 10, c( 32, 32 ), randomSeed = 0 )
 patchSet2 <- extractImagePatches( image, c( 32, 32 ), 10, c( 32, 32 ), randomSeed = 1 )
-# patchSet3 <- extractImagePatches( image, c( 32, 32 ), 10, c( 32, 32 ), maskImage, randomSeed = 0 )
+patchSet3 <- extractImagePatches( image, c( 32, 32 ), 10, c( 32, 32 ), maskImage, randomSeed = 0 )
 
 }
 \author{
