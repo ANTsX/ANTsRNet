@@ -8,6 +8,8 @@ resampleTensorLike(inputTensor, referenceTensor,
   interpolationType = "nearestNeighbor")
 }
 \arguments{
+\item{inputTensor}{tensor to be resampled.}
+
 \item{referenceTensor}{Reference tensor of rank 4 or 5 (for 2-D or 3-D volumes,
 respectively).}
 

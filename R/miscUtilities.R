@@ -2,6 +2,7 @@
 #'
 #' Resamples a spatial tensor based on the specified shape and interpolation type.
 #'
+#' @param inputTensor tensor to be resampled.
 #' @param shape vector or list of length 2 or 3 specifying the shape of the
 #' output tensor
 #' @param interpolationType type of interpolation for resampling.  Can be
@@ -135,6 +136,7 @@ resampleTensor <- function( inputTensor, shape, interpolationType = 'nearestNeig
 #'
 #' Resamples a tensor based on the reference tensor and interpolation type.
 #'
+#' @param inputTensor tensor to be resampled.
 #' @param referenceTensor Reference tensor of rank 4 or 5 (for 2-D or 3-D volumes,
 #'                        respectively).
 #' @param interpolationType type of interpolation for resampling.  Can be

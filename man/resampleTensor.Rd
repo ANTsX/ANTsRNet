@@ -7,6 +7,8 @@
 resampleTensor(inputTensor, shape, interpolationType = "nearestNeighbor")
 }
 \arguments{
+\item{inputTensor}{tensor to be resampled.}
+
 \item{shape}{vector or list of length 2 or 3 specifying the shape of the
 output tensor}
 
