@@ -83,12 +83,12 @@ InpaintingDeepFillModel <- R6::R6Class( "InpaintingDeepFillModel",
       output <- NULL
       if( self$dimensionality == 2 )
         {
-        output <- model %>% layer_conv_2d( x, number_of_filters = numberOfFilters,
+        output <- model %>% layer_conv_2d( x, filters = numberOfFilters,
             kernel_size = kernelSize, strides = stride,
             dilation_rate = dilationRate, activation = activation, padding = 'same',
             trainable = trainable, name = name )
         } else {
-        output <- model %>% layer_conv_3d( x, number_of_filters = numberOfFilters,
+        output <- model %>% layer_conv_3d( x, filters = numberOfFilters,
             kernel_size = kernelSize, strides = stride,
             dilation_rate = dilationRate, activation = activation, padding = 'same',
             trainable = trainable, name = name )
@@ -104,11 +104,11 @@ InpaintingDeepFillModel <- R6::R6Class( "InpaintingDeepFillModel",
       output <- NULL
       if( self$dimensionality == 2 )
         {
-        output <- model %>% layer_conv_2d( x, number_of_filters = numberOfFilters,
+        output <- model %>% layer_conv_2d( x, filters = numberOfFilters,
             kernel_size = kernelSize, strides = stride, dilation_rate = dilationRate,
             activation = activation, padding = 'same', trainable = trainable, name = name )
         } else {
-        output <- model %>% layer_conv_3d( x, number_of_filters = numberOfFilters,
+        output <- model %>% layer_conv_3d( x, filters = numberOfFilters,
             kernel_size = kernelSize, strides = stride,
             dilation_rate = dilationRate, activation = activation, padding = 'same',
             trainable = trainable, name = name )
@@ -284,7 +284,7 @@ InpaintingDeepFillModel <- R6::R6Class( "InpaintingDeepFillModel",
         offset <- self$tf$stack( c( as.integer( offset / newForegroundShape[3] ),
                                     offset %% newForegroundShape[3] ), axis = -1L )
 
-        bg <- backgroundGroups[[[i]]][1,,,]
+        bg <- backgroundGroups[[i]][1,,,]
 
         y <- self$tf$nn$conv2d_transpose( y, bg,
                 self$tf$concat( list( list( 1 ), foregroundShape[2:( dimensionality + 2 )] ), axis = 0L ),
@@ -310,7 +310,7 @@ InpaintingDeepFillModel <- R6::R6Class( "InpaintingDeepFillModel",
       offsets <- offsets - self$tf$concat( list( height, width ), axis = 3L )
 
       return( list( y, offsets ) )
-      }
+      },
 
     contextualAttentionLayer3D = function( foregroundTensor, backgroundTensor,
       mask, kernelSize = 3, stride = 1, dilationRate = 1 )
@@ -428,7 +428,7 @@ InpaintingDeepFillModel <- R6::R6Class( "InpaintingDeepFillModel",
         y <- self$tf$reshape( y, c( 1, newForegroundShape[2] * newForegroundShape[3] * newForegroundShape[4],
                                        newBackgroundShape[2] * newBackgroundShape[3] * newBackgroundShape[4], 1 ) )
         y <- self$tf$nn$conv3d( f, fusionWeight, strides = c( 1, 1, 1, 1, 1 ), padding = 'SAME' )
-        y <- self$tf$reshape( y, c( 1, newForegroundShape[2], newForegroundShape[3], newForegroundShape[4]
+        y <- self$tf$reshape( y, c( 1, newForegroundShape[2], newForegroundShape[3], newForegroundShape[4],
                                        newBackgroundShape[2], newBackgroundShape[3], newBackgroundShape[4] ) )
         y <- self$tf$transpose( y, c( 0, 2, 1, 3, 5, 4, 6 ) )
 
@@ -445,7 +445,7 @@ InpaintingDeepFillModel <- R6::R6Class( "InpaintingDeepFillModel",
         offset <- self$tf$stack( c( as.integer( offset / newForegroundShape[4] ),
                                     offset %% newForegroundShape[4] ), axis = -1L )
 
-        bg <- backgroundGroups[[[i]]][1,,,,]
+        bg <- backgroundGroups[[i]][1,,,,]
 
         y <- self$tf$nn$conv3d_transpose( y, bg,
                 self$tf$concat( list( list( 1 ), foregroundShape[2:( dimensionality + 2 )] ), axis = 0L ),
@@ -474,7 +474,7 @@ InpaintingDeepFillModel <- R6::R6Class( "InpaintingDeepFillModel",
       offsets <- offsets - self$tf$concat( list( height, width, depth ), axis = 4L )
 
       return( list( y, offsets ) )
-      }
+      },
 
     buildNetwork = function()
       {
@@ -625,10 +625,7 @@ InpaintingDeepFillModel <- R6::R6Class( "InpaintingDeepFillModel",
 
         return( list( localDiscriminator, globalDiscriminator ) )
         }
-      },
-
-    compile = function()
-
+      }
     )
   )
 
