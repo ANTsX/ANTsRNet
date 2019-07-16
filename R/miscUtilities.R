@@ -39,7 +39,9 @@ resampleTensor <- function( inputTensor, shape, interpolationType = 'nearestNeig
   K <- keras::backend()
 
   newSize <- as.integer( shape )
-  inputShape <- unlist( K$int_shape( inputTensor ) )
+  inputShape <- K$int_shape( inputTensor )
+  inputShape[sapply( inputShape, is.null )] <- NA
+  inputShape <- unlist( inputShape )
 
   batchSize <- inputShape[1]
   channelSize <- tail( inputShape, 1 )
@@ -161,7 +163,10 @@ resampleTensorLike <- function( inputTensor, referenceTensor, interpolationType 
   {
   K <- keras::backend()
 
-  referenceShape <- unlist( K$int_shape( referenceTensor ) )
+  referenceShape <- K$int_shape( referenceTensor )
+  referenceShape[sapply( referenceShape, is.null )] <- NA
+  referenceShape <- unlist( referenceShape )
+
   if( length( referenceShape ) == 4 )
     {
     referenceShape <- referenceShape[2:3]
@@ -208,7 +213,9 @@ ResampleTensorLayer <- function( shape, interpolationType = 'nearestNeighbor' )
     K <- keras::backend()
 
     newSize <- as.integer( shape )
-    inputShape <- unlist( K$int_shape( inputTensor ) )
+    inputShape <- K$int_shape( inputTensor )
+    inputShape[sapply( inputShape, is.null )] <- NA
+    inputShape <- unlist( inputShape )
 
     batchSize <- inputShape[1]
     channelSize <- tail( inputShape, 1 )
