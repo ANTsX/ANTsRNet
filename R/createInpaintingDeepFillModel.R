@@ -129,11 +129,17 @@ InpaintingDeepFillModel <- R6::R6Class( "InpaintingDeepFillModel",
       {
       if( self$dimensionality == 2 )
         {
-        output <- self$contextualAttentionLayer2D( foregroundTensor, backgroundTensor,
-                          mask, kernelSize, stride, dilationRate )
+        output <- layer_lambda( f = self$contextualAttentionLayer2D,
+          arguments = list( backgroundTensor, mask, kernelSize, stride, dilationRate, doFusion ) )
+
+        # output <- self$contextualAttentionLayer2D( foregroundTensor, backgroundTensor,
+        #                   mask, kernelSize, stride, dilationRate )
         } else {
-        output <- self$contextualAttentionLayer3D( foregroundTensor, backgroundTensor,
-                          mask, kernelSize, stride, dilationRate )
+        output <- layer_lambda( f = self$contextualAttentionLayer3D,
+          arguments = list( backgroundTensor, mask, kernelSize, stride, dilationRate, doFusion ) )
+
+        # output <- self$contextualAttentionLayer3D( foregroundTensor, backgroundTensor,
+        #                   mask, kernelSize, stride, dilationRate )
         }
       return( output )
       },
@@ -235,7 +241,7 @@ InpaintingDeepFillModel <- R6::R6Class( "InpaintingDeepFillModel",
       fusionWeight <- self$tf$reshape( self$tf$eye( 3L ), c( 3L, 3L, 1L, 1L ) )
 
       yGroups <- list()
-      offsets <- list()
+      # offsets <- list()
       for( i in seq_len( numberOfIterations ) )
         {
         rg <- resampledBackgroundGroups[[i]][1,,,,]
@@ -276,10 +282,10 @@ InpaintingDeepFillModel <- R6::R6Class( "InpaintingDeepFillModel",
         y <- tf$nn$softmax( y * 10.0, axis = 3L )
         y <- y * maskData
 
-        offset <- tf$argmax( y, axis = 3L, output_type = tf$int32 )
-        offset <- tf$stack( c( tf$cast(
-           offset / tf$constant( newForegroundShape[2] ), dtype = tf$int32 ),
-             offset %% newForegroundShape[2] ), axis = -1L )
+        # offset <- tf$argmax( y, axis = 3L, output_type = tf$int32 )
+        # offset <- tf$stack( c( tf$cast(
+        #    offset / tf$constant( newForegroundShape[2] ), dtype = tf$int32 ),
+        #      offset %% newForegroundShape[2] ), axis = -1L )
 
         bg <- backgroundGroups[[i]][1,,,,]
 
@@ -288,7 +294,7 @@ InpaintingDeepFillModel <- R6::R6Class( "InpaintingDeepFillModel",
                     foregroundShape[2:( self$dimensionality + 2 )] ), axis = 0L ),
                 strides = c( 1, dilationRate, dilationRate, 1 ) ) / 4.0
         yGroups[[i]] <- y
-        offsets[[i]] <- offset
+        # offsets[[i]] <- offset
         }
 
       y <- self$tf$concat( yGroups, axis = 0L )
@@ -298,7 +304,6 @@ InpaintingDeepFillModel <- R6::R6Class( "InpaintingDeepFillModel",
 
       # offsets <- tf$concat( offsets, axis = 0L )
       # offsets$set_shape( c( backgroundShape[1], newBackgroundShape, self$dimensionality ) )
-
       # dx = tf$tile( tf$reshape( tf$range( newBackgroundShape[1] ),
       #                           c( 1L, newBackgroundShape[1], 1L, 1L ) ),
       #                           c( backgroundShape[1], 1L, newBackgroundShape[2], 1L ) )
@@ -307,289 +312,145 @@ InpaintingDeepFillModel <- R6::R6Class( "InpaintingDeepFillModel",
       #                           c( backgroundShape[1], newBackgroundShape[1], 1L, 1L ) )
       # offsets <- offsets - tf$concat( list( dx, dy ), axis = 3L )
 
-      return( list( y, offsets ) )
+      return( y )
       },
 
-    # contextualAttentionLayer3D = function( foregroundTensor, backgroundTensor,
-    #   mask, kernelSize = 3, stride = 1, dilationRate = 1 )
-    #   {
-    #   K <- keras::backend()
-
-    #   # Get tensor shapes
-
-    #   foregroundShape <- unlist( K$int_shape( foregroundTensor ) )
-    #   backgroundShape <- unlist( K$int_shape( backgroundTensor ) )
-
-    #   if( length( foregroundShape ) != 5 )
-    #     {
-    #     stop( "Error in contextual attention layer:  input tensors must be of rank 5." )
-    #     }
-    #   if( ! all( foregroundShape[2:5] == backgroundShape[2:5] ) )
-    #     {
-    #     stop( "Error in contextual attention layer:  foregroundShape != backGroundShape." )
-    #     }
-
-    #   # Extract patches from background and reshape to be
-    #   #  c( batchSize, kernelSize, kernelSize, channelSize, height*width*depth )
-
-    #   kernelSize <- as.integer( 2 * dilationRate )
-    #   strideLength <- as.integer( stride * dilationRate )
-
-    #   backgroundPatches <- self$tf$extract_volume_patches( backgroundTensor,
-    #                                ksizes = c( 1, kernelSize, kernelSize, kernelSize, 1 ),
-    #                                strides = c( 1, strideLength, strideLength, strideLength, 1 ),
-    #                                padding = 'SAME' )
-    #   backgroundPatches <- self$tf$reshape( backgroundPatches,
-    #                                c( backgroundShape[1], -1, kernelSize, kernelSize, kernelSize, backgroundShape[5] ) )
-    #   backgroundPatches <- self$tf$transpose( backgroundPatches, c( 0, 2, 3, 4, 5, 1 ) )
-
-    #   # Resample foreground, background, and mask
-
-    #   newForegroundShape <- as.integer( foregroundShape[2:( self$dimensionality + 1 )] /
-    #                                     dilationRate )
-    #   foregroundTensor <- resampleTensor( foregroundTensor, shape = newForegroundShape,
-    #                                       interpolationType = 'nearestNeighbor' )
-
-    #   newBackgroundShape <- as.integer( backgroundShape[2:( self$dimensionality + 1 )] /
-    #                                     dilationRate )
-    #   backgroundTensor <- resampleTensor( backgroundTensor, shape = newBackgroundShape,
-    #                                       interpolationType = 'nearestNeighbor' )
-
-    #   newMaskShape <- maskShape
-    #   if( ! is.null( mask ) )
-    #     {
-    #     newMaskShape <- as.integer( maskShape[2:( self$dimensionality + 1 )] / dilationRate )
-    #     mask <- resampleTensor( mask, shape = newMaskShape, interpolationType = 'nearestNeighbor' )
-    #     }
-
-    #   # Create resampled background patches
-
-    #   resampledBackgroundPatches <- self$tf$extract_volume_patches( backgroundTensor,
-    #                                       ksizes = c( 1, kernelSize, kernelSize, kernelSize, 1 ),
-    #                                       strides = c( 1, strideLength, strideLength, strideLength, 1 ),
-    #                                       padding = 'SAME' )
-    #   resampledBackgroundPatches <- self$tf$reshape( resampledBackgroundPatches,
-    #                                        c( newBackgroundShape[1], -1, kernelSize, kernelSize, kernelSize, backgroundShape[5] ) )
-    #   resampledBackgroundPatches <- self$tf$transpose( resampledBackgroundPatches, c( 0, 2, 3, 4, 5, 1 ) )
-
-    #   # Process mask
-
-    #   if( is.null( mask ) )
-    #     {
-    #     maskShape <- c( 1, backgroundShape[2:( self$dimensionality + 1 )], 1 )
-    #     mask = self$tf$zeros( maskShape )
-    #     }
-
-    #   maskPatches <- self$tf$extract_image_patches( mask,
-    #                                ksizes = c( 1, kernelSize, kernelSize, kernelSize, 1 ),
-    #                                strides = c( 1, strideLength, strideLength, strideLength, 1 ),
-    #                                rates = c( 1, 1, 1, 1, 1 ), padding = 'SAME' )
-    #   maskPatches <- self$tf$reshape( maskPatches,
-    #                                c( 1, -1, kernelSize, kernelSize, kernelSize, 1 ) )
-    #   maskPatches <- self$tf$transpose( maskPatches, c( 0, 2, 3, 4, 5, 1 ) )
-
-    #   maskData <- self$tf$cast( self$tf$equal( self$tf$reduce_mean( maskPatches[1,,,,],
-    #               axis = c( 0L, 1L, 2L, 3L ), keep_dims = TRUE ), 0.0 ), self$tf$float32 )
-
-    #   # Split into groups
-
-    #   foregroundGroups <- self$tf$split( foregroundPatches, newForegroundShape[1], axis = 0L )
-    #   backgroundGroups <- self$tf$split( backgroundPatches, newBackgroundShape[1], axis = 0L )
-    #   resampledBackgroundGroups <- self$tf$split( resampledBackgroundPatches,
-    #                                               backgroundShape[1], axis = 0L )
-
-    #   numberOfIterations <- min( c( length( foregroundGroups ) ),
-    #                              c( length( backgroundGroups ) ),
-    #                              c( length( resampledBackgroundGroups ) ) )
-
-    #   fusionWeight <- self$tf$reshape( self$tf$eye( 3 ), c( 3, 3, 3, 1, 1 ) )
-
-    #   yGroups <- list()
-    #   offsets <- list()
-    #   for( i in seq_len( numberOfIterations ) )
-    #     {
-    #     rg <- resampledBackgroundGroups[[i]][1,,,,]
-    #     rgNorm <- rg / self$tf$maximum( self$tf$sqrt( self$tf$reduce_sum(
-    #                      self$tf$square( rg ), axis = c( 0L, 1L, 2L, 3L ) ) ), 1e-4 )
-    #     fg <- foregroundGroups[[i]]
-
-    #     y <- self$tf$nn$conv3d( fg, rgNorm, strides = c( 1, 1, 1, 1, 1 ), padding = 'SAME' )
-
-    #     # fusion to encourage large patches
-
-    #     y <- self$tf$reshape( y, c( 1, newForegroundShape[2] * newForegroundShape[3] * newForegroundShape[4],
-    #                                    newBackgroundShape[2] * newBackgroundShape[3] * newBackgroundShape[4], 1 ) )
-    #     y <- self$tf$nn$conv3d( f, fusionWeight, strides = c( 1, 1, 1, 1, 1 ), padding = 'SAME' )
-    #     y <- self$tf$reshape( y, c( 1, newForegroundShape[2], newForegroundShape[3], newForegroundShape[4],
-    #                                    newBackgroundShape[2], newBackgroundShape[3], newBackgroundShape[4] ) )
-    #     y <- self$tf$transpose( y, c( 0, 2, 1, 3, 5, 4, 6 ) )
-    #     y <- self$tf$reshape( y, c( 1, newForegroundShape[2] * newForegroundShape[3] * newForegroundShape[4],
-    #                                    newBackgroundShape[2] * newBackgroundShape[3] * newBackgroundShape[4], 1 ) )
-    #     y <- self$tf$nn$conv3d( f, fusionWeight, strides = c( 1, 1, 1, 1, 1 ), padding = 'SAME' )
-    #     y <- self$tf$reshape( y, c( 1, newForegroundShape[2], newForegroundShape[3], newForegroundShape[4],
-    #                                    newBackgroundShape[2], newBackgroundShape[3], newBackgroundShape[4] ) )
-    #     y <- self$tf$transpose( y, c( 0, 2, 1, 3, 5, 4, 6 ) )
-
-    #     y <- self$tf$reshape( y, c( 1, newForegroundShape[2], newForegroundShape[3], newForegroundShape[4],
-    #                                    newBackgroundShape[2] * newBackgroundShape[3] * newBackgroundShape[4] ) )
-
-    #     # softmax to match
-
-    #     y <- y * maskData
-    #     y <- self$tf$nn$softmax( yi * 10.0, axis = 4L )
-    #     y <- y * maskData
-
-    #     offset <- self$tf$argmax( y, axis = 4L, output_type = self$tf$int32 )
-    #     offset <- self$tf$stack( c( as.integer( offset / newForegroundShape[4] ),
-    #                                 offset %% newForegroundShape[4] ), axis = -1L )
-
-    #     bg <- backgroundGroups[[i]][1,,,,]
-
-    #     y <- self$tf$nn$conv3d_transpose( y, bg,
-    #             self$tf$concat( list( list( 1 ),
-    #                 foregroundShape[2:( self$dimensionality + 2 )] ), axis = 0L ),
-    #             strides = c( 1, dilationRate, dilationRate, dilationRate ) ) / 4.0
-    #     yGroups[[i]] <- y
-    #     offsets[[i]] <- offset
-    #     }
-
-    #   y <- self$tf$concat( y, axis = 0L )
-    #   y$set_shape( foregroundShape )
-
-    #   # calculate offsets
-
-    #   offsets <- self$tf$concat( offsets, axis = 0L )
-    #   offsets$set_shape( c( newBackgroundShape[1:( self$dimensionality + 1 )], self$dimensionality ) )
-
-    #   height = self$tf$tile( self$tf$reshape( self$tf$range( newBackgroundShape[2] ),
-    #                                           c( 1L, newBackgroundShape[2], 1L, 1L, 1L ) ),
-    #                          c( newBackgroundShape[1], 1L, newBackgroundShape[3], newBackgroundShape[4], 1L ) )
-    #   width = self$tf$tile( self$tf$reshape( self$tf$range( newBackgroundShape[3] ),
-    #                                           c( 1L, 1L, newBackgroundShape[3], 1L, 1L ) ),
-    #                          c( newBackgroundShape[1], newBackgroundShape[2], 1L, newBackgroundShape[4], 1L ) )
-    #   depth = self$tf$tile( self$tf$reshape( self$tf$range( newBackgroundShape[4] ),
-    #                                           c( 1L, 1L, 1L, newBackgroundShape[4], 1L ) ),
-    #                          c( newBackgroundShape[1], newBackgroundShape[2], newBackgroundShape[3], 1L, 1L ) )
-    #   offsets <- offsets - self$tf$concat( list( height, width, depth ), axis = 4L )
-
-    #   return( list( y, offsets ) )
-    #   },
-
-    buildNetwork = function( mask = NULL, trainable = TRUE )
+    buildNetwork = function( trainable = TRUE )
       {
       K <- keras::backend()
 
-      inputs <- layer_input( batch_shape = c( self$batchSize, self$inputImageSize ) )
+      imageInput <- layer_input( batch_shape = c( self$batchSize, self$inputImageSize ) )
+      maskInput <- layer_input( batch_shape = c( 1, self$inputImageSize[1:self$dimensionality], 1 ) )
 
-      model <- inputs
+      output <- imageInput
+
+      ones <- NULL
       if( self$dimensionality == 2 )
         {
-        ones <- K$ones_like( model )[,,,1, drop = FALSE]
+        ones <- output %>% layer_lambda( f = function( X )
+          { K$ones_like( X )[,,,1, drop = FALSE] } )
         } else {
-        ones <- K$ones_like( model )[,,,,1, drop = FALSE]
+        # ones <- K$ones_like( output )[,,,,1, drop = FALSE]
+        ones <- output %>% layer_lambda( f = function( X )
+          { K$ones_like( X )[,,,1, drop = FALSE] } )
         }
 
-      model <- layer_concatenate( list( model, ones, ones * mask ),
+      maskedOnes <- NULL
+      if( ! is.null( mask ) )
+        {
+        maskedOnes <- list( ones, maskInput ) %>% layer_lambda( f = function( inputs )
+          { return( inputs[[1]] * inputs[[2]] ) } )
+        } else {
+        maskedOnes <- maskInput %>% layer_lambda( f = function( X ){ return( X + 0 ) } )
+        }
+
+      cat( "HERE A\n" )
+
+      output <- layer_concatenate( list( output, ones, maskedOnes ),
                  axis = as.integer( self$dimensionality + 1 ) )
+      cat( "HERE B\n" )
 
       # Stage 1
 
-      model <- self$generativeConvolutionLayer( model,     self$numberOfFiltersBaseLayer, 5L, 1L, 1L )
-      model <- self$generativeConvolutionLayer( model, 2 * self$numberOfFiltersBaseLayer, 3L, 2L, 1L )
-      model <- self$generativeConvolutionLayer( model, 2 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
-      model <- self$generativeConvolutionLayer( model, 4 * self$numberOfFiltersBaseLayer, 3L, 2L, 1L )
-      model <- self$generativeConvolutionLayer( model, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
-      model <- self$generativeConvolutionLayer( model, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
+      cat( "HERE 0\n" )
 
-      resampledMask <- resampleTensorLike( mask, model, 'nearestNeighbor' )
+      output <- self$generativeConvolutionLayer( output,     self$numberOfFiltersBaseLayer, 5L, 1L, 1L )
+      output <- self$generativeConvolutionLayer( output, 2 * self$numberOfFiltersBaseLayer, 3L, 2L, 1L )
+      output <- self$generativeConvolutionLayer( output, 2 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
+      output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 2L, 1L )
+      output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
+      output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
 
-      model <- self$generativeConvolutionLayer( model, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 2L )
-      model <- self$generativeConvolutionLayer( model, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 4L )
-      model <- self$generativeConvolutionLayer( model, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 8L )
-      model <- self$generativeConvolutionLayer( model, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 16L )
+      outputShape <- unlist( K$int_shape( output ) )[2:( self$dimensionality + 1 )]
 
-      model <- self$generativeConvolutionLayer( model, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
-      model <- self$generativeConvolutionLayer( model, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
+      cat( "HERE 1\n" )
+      resampledMaskInput <- maskInput %>% layer_lambda( f = resampleTensor( X ),
+        arguments = list( shape = outputShape, interpolationType = 'nearestNeighbor' ) )
+      cat( "HERE 2\n" )
 
-      model <- self$generativeDeconvolutionLayer( model, 2 * self$numberOfFiltersBaseLayer )
-      model <- self$generativeConvolutionLayer( model, 2 * self$numberOfFiltersBaseLayer, 3L, 1L )
-      model <- self$generativeDeconvolutionLayer( model, self$numberOfFiltersBaseLayer )
+      output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 2L )
+      output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 4L )
+      output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 8L )
+      output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 16L )
 
-      model <- self$generativeConvolutionLayer( model, as.integer( self$numberOfFiltersBaseLayer / 2 ), 3L, 1L )
-      model <- self$generativeConvolutionLayer( model, 3L, 3L, 1L, activation = NULL )
+      output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
+      output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
 
-      model <- self$tf$clip_by_value( model, -1.0, 1.0 )
-      modelStage1 <- model
+      output <- self$generativeDeconvolutionLayer( output, 2 * self$numberOfFiltersBaseLayer )
+      output <- self$generativeConvolutionLayer( output, 2 * self$numberOfFiltersBaseLayer, 3L, 1L )
+      output <- self$generativeDeconvolutionLayer( output, self$numberOfFiltersBaseLayer )
+
+      output <- self$generativeConvolutionLayer( output, as.integer( self$numberOfFiltersBaseLayer / 2 ), 3L, 1L )
+      output <- self$generativeConvolutionLayer( output, 3L, 3L, 1L, activation = NULL )
+
+      cat( "HERE 3\n" )
+      output <- output %>% layer_lambda( function( X )
+        { return( self$tf$clip_by_value( X, -1.0, 1.0 ) ) } )
+      cat( "HERE 4\n" )
+
+      modelStage1 <- keras_model( inputs = list( imageInput, maskInput ), outputs = output )
 
       # Stage 2
 
-      model <- model * mask + inputs * ( 1.0 - mask )
-      model$set_shape( inputs$get_shape()$as_list() )
+      cat( "HERE 4.5\n" )
+      output <- output * mask + inputs * ( 1.0 - mask )
+      cat( "HERE 5\n" )
+      output$set_shape( inputs$get_shape()$as_list() )
+      cat( "HERE 6\n" )
 
       # Conv branch
 
-      modelNow <- layer_concatenate( list( model, ones, ones * mask ),
+      outputNow <- layer_concatenate( list( output, ones, ones * mask ),
                                      axis = as.integer( self$dimensionality + 1 ) )
-      model <- self$generativeConvolutionLayer( modelNow,  self$numberOfFiltersBaseLayer, 5, 1L, 1L )
-      model <- self$generativeConvolutionLayer( model,     self$numberOfFiltersBaseLayer, 3L, 2L, 1L )
-      model <- self$generativeConvolutionLayer( model, 2 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
-      model <- self$generativeConvolutionLayer( model, 2 * self$numberOfFiltersBaseLayer, 3L, 2L, 1L )
-      model <- self$generativeConvolutionLayer( model, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
-      model <- self$generativeConvolutionLayer( model, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
+      output <- self$generativeConvolutionLayer( outputNow,  self$numberOfFiltersBaseLayer, 5, 1L, 1L )
+      output <- self$generativeConvolutionLayer( output,     self$numberOfFiltersBaseLayer, 3L, 2L, 1L )
+      output <- self$generativeConvolutionLayer( output, 2 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
+      output <- self$generativeConvolutionLayer( output, 2 * self$numberOfFiltersBaseLayer, 3L, 2L, 1L )
+      output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
+      output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
 
-      model <- self$generativeConvolutionLayer( model, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 2L )
-      model <- self$generativeConvolutionLayer( model, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 4L )
-      model <- self$generativeConvolutionLayer( model, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 8L )
-      model <- self$generativeConvolutionLayer( model, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 16L )
-
-      modelHallu <- model
-
-      # Attention branch
-
-      model <- self$generativeConvolutionLayer( modelNow,  self$numberOfFiltersBaseLayer, 5, 1L, 1L )
-      model <- self$generativeConvolutionLayer( model,     self$numberOfFiltersBaseLayer, 3L, 2L, 1L )
-      model <- self$generativeConvolutionLayer( model, 2 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
-      model <- self$generativeConvolutionLayer( model, 4 * self$numberOfFiltersBaseLayer, 3L, 2L, 1L )
-      model <- self$generativeConvolutionLayer( model, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
-      model <- self$generativeConvolutionLayer( model, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L,
-                                           activation = 'relu' )
+      cat( "HERE 7\n" )
+      output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 2L )
+      output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 4L )
+      output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 8L )
+      output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 16L )
 
       cat( "HERE 8\n" )
 
-      tensorShape <- c( self$batchSize, self$inputImageSize )
+      outputHallu <- output
 
-      foregroundTensor <- K$ones( tensorShape )
-      backgroundTensor <- K$ones( tensorShape )
-      mask2 <- K$ones( c( 1, 128, 128, 1 ) )
+      # Attention branch
 
-      attention <- self$contextualAttentionLayer( foregroundTensor, backgroundTensor, mask2, 3L, 1L, dilationRate = 2L )
+      output <- self$generativeConvolutionLayer( outputNow,  self$numberOfFiltersBaseLayer, 5, 1L, 1L )
+      output <- self$generativeConvolutionLayer( output,     self$numberOfFiltersBaseLayer, 3L, 2L, 1L )
+      output <- self$generativeConvolutionLayer( output, 2 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
+      output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 2L, 1L )
+      output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
+      output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L,
+                                           activation = 'relu' )
 
-      # attention <- self$contextualAttentionLayer( model, model, resampledMask, 3L, 1L, dilationRate = 2L )
+      output <- self$contextualAttentionLayer( output, output, resampledMaskInput, 3L, 1L, dilationRate = 2L )
 
-      cat( "HERE9\n" )
-      model <- attention$model
-      offsets <- attention$offsets
+      output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
+      output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
 
-      model <- self$generativeConvolutionLayer( model, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
-      model <- self$generativeConvolutionLayer( model, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
-
-      model <- layer_concatenate( list( modelHallu, model ),
+      output <- layer_concatenate( list( outputHallu, output ),
                                   axis = as.integer( self$dimensionality + 1 ) )
 
-      model <- self$generativeConvolutionLayer( model, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
-      model <- self$generativeConvolutionLayer( model, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
-      model <- self$generativeDeconvolutionLayer( model, 2 * self$numberOfFiltersBaseLayer )
-      model <- self$generativeConvolutionLayer( model, 2 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
-      model <- self$generativeDeconvolutionLayer( model,   self$numberOfFiltersBaseLayer )
-      model <- self$generativeConvolutionLayer( model, as.integer( 0.5 * self$numberOfFiltersBaseLayer ), 3L, 1L, 1L )
-      model <- self$generativeConvolutionLayer( model, 3L, 3L, 1L, 1L )
+      output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
+      output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
+      output <- self$generativeDeconvolutionLayer( output, 2 * self$numberOfFiltersBaseLayer )
+      output <- self$generativeConvolutionLayer( output, 2 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
+      output <- self$generativeDeconvolutionLayer( output,   self$numberOfFiltersBaseLayer )
+      output <- self$generativeConvolutionLayer( output, as.integer( 0.5 * self$numberOfFiltersBaseLayer ), 3L, 1L, 1L )
+      output <- self$generativeConvolutionLayer( output, 3L, 3L, 1L, 1L )
 
-      model <- self$tf$clip_by_value( model, -1.0, 1.0 )
-      modelStage2 <- model
+      output <- output %>% layer_lambda( function( X )
+        { X <- self$tf$clip_by_value( X, -1.0, 1.0 ) } )
+      modelStage2 <- keras_model( inputs = list( imageInput, maskInput ), outputs = output )
 
-      cat( "HERE 9\n" )
 
-      return( list( modelStage1, modelStage2, offsets ) )
+      return( list( modelStage1 = modelStage1, modelStage2 = modelStage2 ) )
       },
 
     buildLocalDiscriminator = function( model, reuse = FALSE, trainable = TRUE )

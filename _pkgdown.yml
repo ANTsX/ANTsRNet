@@ -126,5 +126,6 @@ reference:
   - '`getPretrainedNetwork`'
   - '`resampleTensor`'
   - '`resampleTensorLike`'
-  - '`ResampleTensorLayer`'
+  - '`ResampleTensorLayer2D`'
+  - '`ResampleTensorLayer3D`'
 
