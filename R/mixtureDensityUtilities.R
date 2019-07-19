@@ -146,6 +146,15 @@ MixtureDensityNetworkLayer <- R6::R6Class( "MixtureDensityNetworkLayer",
   )
 )
 
+#' Mixture density layer
+#'
+#' Wraps a custom mixture density layer.
+#'
+#' @param outputDimension output dimension
+#' @param numberOfMixtures number of Gaussians used to model the function
+#'
+#' @return a keras layer tensor
+#' @export
 layer_mixture_density <- function( objects,
   outputDimension, numberOfMixtures, trainable = TRUE ) {
 create_layer( MixtureDensityNetworkLayer, objects,

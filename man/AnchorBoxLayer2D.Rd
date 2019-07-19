@@ -16,11 +16,11 @@ Anchor box layer for SSD architecture (2-D).
 \section{Usage}{
 
 \preformatted{anchorBoxGenerator <- AnchorBoxLayer2D$new( imageSize,
-     scale, nextScale, aspectRatios = c( '1:1', '2:1', '1:2' ), 
+     scale, nextScale, aspectRatios = c( '1:1', '2:1', '1:2' ),
      variances = 1.0 )
 
-anchorBoxGenerator$call( x, mask = NULL ) 
-anchorBoxGenerator$compute_output_shape( input_shape ) 
+anchorBoxGenerator$call( x, mask = NULL )
+anchorBoxGenerator$compute_output_shape( input_shape )
 }
 }
 

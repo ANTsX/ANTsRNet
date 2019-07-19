@@ -22,9 +22,9 @@ available here:
 
 \preformatted{layer <- L2NormalizationLayer3D$new( scale )
 
-layer$call( x, mask = NULL ) 
+layer$call( x, mask = NULL )
 layer$build( input_shape )
-layer$compute_output_shape( input_shape ) 
+layer$compute_output_shape( input_shape )
 }
 }
 

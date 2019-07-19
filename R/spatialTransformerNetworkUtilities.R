@@ -198,6 +198,16 @@ SpatialTransformerLayer2D <- R6::R6Class( "SpatialTransformerLayer2D",
   )
 )
 
+#' spatial transformer layer (2-D)
+#'
+#' Wraps a custom spatial transformer layer
+#'
+#' @param resampledSize size of the output in voxels
+#' @param transformType the spatial transform
+#' @param interpolatorType interpolation used for the sampling
+#'
+#' @return a keras layer tensor
+#' @export
 layer_spatial_transformer_2d <- function( objects,
   resampledSize, transformType = 'affine',
   interpolatorType = 'linear', name = NULL ) {
@@ -443,6 +453,16 @@ SpatialTransformerLayer3D <- R6::R6Class( "SpatialTransformerLayer3D",
   )
 )
 
+#' spatial transformer layer (3-D)
+#'
+#' Wraps a custom spatial transformer layer
+#'
+#' @param resampledSize size of the output in voxels
+#' @param transformType the spatial transform
+#' @param interpolatorType interpolation used for the sampling
+#'
+#' @return a keras layer tensor
+#' @export
 layer_spatial_transformer_3d <- function( objects,
   resampledSize, transformType = 'affine',
   interpolatorType = 'linear', name = NULL ) {

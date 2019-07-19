@@ -116,7 +116,13 @@ InpaintingDeepFillModel <- R6::R6Class( "InpaintingDeepFillModel",
       shape <- unlist( shape )
 
       newSize <- as.integer( 2.0 * shape[2:( self$dimensionality + 1 )] )
-      resizedModel <- resampleTensor( model, newSize )
+      resizedModel <- NULL
+      if( self$dimensionality == 2 )
+        {
+        resizedModel <- layer_resample_tensor_2d( model, newSize, "nearestNeighbor" )
+        } else {
+        resizedModel <- layer_resample_tensor_3d( model, newSize, "nearestNeighbor" )
+        }
       output <- self$generativeConvolutionLayer( resizedModel,
         numberOfFilters = numberOfFilters, kernelSize = 3, stride = 1,
         trainable = trainable )
@@ -344,15 +350,10 @@ InpaintingDeepFillModel <- R6::R6Class( "InpaintingDeepFillModel",
         maskedOnes <- maskInput %>% layer_lambda( f = function( X ){ return( X + 0 ) } )
         }
 
-      cat( "HERE A\n" )
-
       output <- layer_concatenate( list( output, ones, maskedOnes ),
                  axis = as.integer( self$dimensionality + 1 ) )
-      cat( "HERE B\n" )
 
       # Stage 1
-
-      cat( "HERE 0\n" )
 
       output <- self$generativeConvolutionLayer( output,     self$numberOfFiltersBaseLayer, 5L, 1L, 1L )
       output <- self$generativeConvolutionLayer( output, 2 * self$numberOfFiltersBaseLayer, 3L, 2L, 1L )
@@ -363,10 +364,16 @@ InpaintingDeepFillModel <- R6::R6Class( "InpaintingDeepFillModel",
 
       outputShape <- unlist( K$int_shape( output ) )[2:( self$dimensionality + 1 )]
 
-      cat( "HERE 1\n" )
-      resampledMaskInput <- maskInput %>% layer_lambda( f = resampleTensor( X ),
-        arguments = list( shape = outputShape, interpolationType = 'nearestNeighbor' ) )
-      cat( "HERE 2\n" )
+
+      resampledMaskInput <- NULL
+      if( self$dimensionality == 2 )
+        {
+        resampledMaskInput <- layer_resample_tensor_2d( maskInput,
+          shape = outputShape, interpolationType = 'nearestNeighbor' )
+        } else {
+        resampledMaskInput <- layer_resample_tensor_3d( maskInput,
+          shape = outputShape, interpolationType = 'nearestNeighbor' )
+        }
 
       output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 2L )
       output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 4L )
@@ -383,24 +390,19 @@ InpaintingDeepFillModel <- R6::R6Class( "InpaintingDeepFillModel",
       output <- self$generativeConvolutionLayer( output, as.integer( self$numberOfFiltersBaseLayer / 2 ), 3L, 1L )
       output <- self$generativeConvolutionLayer( output, 3L, 3L, 1L, activation = NULL )
 
-      cat( "HERE 3\n" )
       output <- output %>% layer_lambda( function( X )
         { return( self$tf$clip_by_value( X, -1.0, 1.0 ) ) } )
-      cat( "HERE 4\n" )
 
       modelStage1 <- keras_model( inputs = list( imageInput, maskInput ), outputs = output )
 
       # Stage 2
 
-      cat( "HERE 4.5\n" )
-      output <- output * mask + inputs * ( 1.0 - mask )
-      cat( "HERE 5\n" )
-      output$set_shape( inputs$get_shape()$as_list() )
-      cat( "HERE 6\n" )
+      output <- output * mask + imageInput * ( 1.0 - mask )
+      output$set_shape( imageInput$get_shape()$as_list() )
 
       # Conv branch
 
-      outputNow <- layer_concatenate( list( output, ones, ones * mask ),
+      outputNow <- layer_concatenate( list( output, ones, maskedOnes ),
                                      axis = as.integer( self$dimensionality + 1 ) )
       output <- self$generativeConvolutionLayer( outputNow,  self$numberOfFiltersBaseLayer, 5, 1L, 1L )
       output <- self$generativeConvolutionLayer( output,     self$numberOfFiltersBaseLayer, 3L, 2L, 1L )
@@ -409,17 +411,19 @@ InpaintingDeepFillModel <- R6::R6Class( "InpaintingDeepFillModel",
       output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
       output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
 
-      cat( "HERE 7\n" )
+      cat( "HERE 0\n" )
       output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 2L )
       output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 4L )
       output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 8L )
       output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 16L )
 
-      cat( "HERE 8\n" )
+      cat( "HERE 1\n" )
 
       outputHallu <- output
 
       # Attention branch
+
+      cat( "HERE 2\n" )
 
       output <- self$generativeConvolutionLayer( outputNow,  self$numberOfFiltersBaseLayer, 5, 1L, 1L )
       output <- self$generativeConvolutionLayer( output,     self$numberOfFiltersBaseLayer, 3L, 2L, 1L )
@@ -429,7 +433,11 @@ InpaintingDeepFillModel <- R6::R6Class( "InpaintingDeepFillModel",
       output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L,
                                            activation = 'relu' )
 
+      cat( "HERE 3\n" )
+
       output <- self$contextualAttentionLayer( output, output, resampledMaskInput, 3L, 1L, dilationRate = 2L )
+
+      cat( "HERE 4\n" )
 
       output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
       output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
