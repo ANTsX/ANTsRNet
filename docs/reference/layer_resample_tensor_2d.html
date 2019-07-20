@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Anchor box layer for SSD architecture (3-D). — AnchorBoxLayer3D • ANTsRNet</title>
+<title>Resampling a spatial tensor (2-D). — layer_resample_tensor_2d • ANTsRNet</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Anchor box layer for SSD architecture (3-D). — AnchorBoxLayer3D" />
+<meta property="og:title" content="Resampling a spatial tensor (2-D). — layer_resample_tensor_2d" />
 
-<meta property="og:description" content="Anchor box layer for SSD architecture (3-D)." />
+<meta property="og:description" content="Resamples a spatial tensor based on the specified shape and interpolation type." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -92,75 +92,51 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Anchor box layer for SSD architecture (3-D).</h1>
+    <h1>Resampling a spatial tensor (2-D).</h1>
     
-    <div class="hidden name"><code>AnchorBoxLayer3D.Rd</code></div>
+    <div class="hidden name"><code>layer_resample_tensor_2d.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Anchor box layer for SSD architecture (3-D).</p>
+    <p>Resamples a spatial tensor based on the specified shape and interpolation type.</p>
     
     </div>
 
-        
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>a 6-D tensor with shape
-\( batchSize \times widthSize \times heightSize \times depthSize \times numberOfBoxes \times 12 \)
-In the last dimension, the first 6 values correspond to the
-3-D coordinates of the bounding boxes and the other 6 are the variances.</p>
-    
-    <h2 class="hasAnchor" id="usage"><a class="anchor" href="#usage"></a>Usage</h2>
-
-    
-    <pre>anchorBoxGenerator &lt;- AnchorBoxLayer3D$new( imageSize,
-     scale, nextScale, aspectRatios = c( '1:1:1', '2:1:1', '1:2:1', '1:1:2' ),
-     variances = 1.0 )
-    anchorBoxGenerator$call( x, mask = NULL )
-anchorBoxGenerator$compute_output_shape( input_shape )
-</pre>
+    <pre class="usage"><span class='fu'>layer_resample_tensor_2d</span>(<span class='no'>object</span>, <span class='no'>shape</span>,
+  <span class='kw'>interpolationType</span> <span class='kw'>=</span> <span class='st'>"nearestNeighbor"</span>, <span class='kw'>name</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>trainable</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>shape</th>
+      <td><p>vector or list of length 2 specifying the shape of the output tensor.</p></td>
+    </tr>
+    <tr>
+      <th>interpolationType</th>
+      <td><p>type of interpolation for resampling.  Can be
+<code>nearestNeighbor</code>, <code>linear</code>, or <code>cubic</code>.</p></td>
+    </tr>
+    <tr>
+      <th>inputTensor</th>
+      <td><p>tensor to be resampled.</p></td>
+    </tr>
+    </table>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    
-    <dl class='dl-horizontal'>
-<dt>anchorBoxGenerator</dt><dd><p>A <code>process</code> object.</p></dd>
-<dt>imageSize</dt><dd><p>size of the input image.</p></dd>
-<dt>scale</dt><dd><p>scale of each box (in pixels).</p></dd>
-<dt>nextScale</dt><dd><p>next scale of each box (in pixels).</p></dd>
-<dt>aspectRatios</dt><dd><p>vector describing the geometries of the anchor boxes
-for this layer.</p></dd>
-<dt>variances</dt><dd><p>a list of 6 floats &gt; 0 with scaling factors for the encoded
-predicted box coordinates. A variance value of 1.0 would apply no scaling at
-all to the predictions, while values in (0,1) upscale the encoded
-predictions and values greater than 1.0 downscale the encoded predictions.
-Defaults to 1.0.</p></dd>
-<dt>x</dt><dd><p></p></dd>
-<dt>mask</dt><dd><p></p></dd>
-<dt>input_shape</dt><dd><p></p></dd>
-</dl>
-    
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    
-    <p><code>$initialize</code> instantiates a new class.</p>
-<p><code>$call</code> main body.</p>
-<p><code>$compute_output_shape</code> computes the output shape.</p>
+    <p>a keras layer tensor</p>
     
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-
-      <li><a href="#usage">Usage</a></li>
-
-      <li><a href="#arguments">Arguments</a></li>
-
-      <li><a href="#details">Details</a></li>
           </ul>
 
     <h2>Author</h2>

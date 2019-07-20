@@ -653,6 +653,14 @@ L2NormalizationLayer2D <- R6::R6Class( "L2NormalizationLayer2D",
     )
 )
 
+#' Normalization layer (2-D)
+#'
+#' Wraps a custom layer for the SSD network
+#'
+#' @param scale box scale
+#'
+#' @return a keras layer tensor
+#' @export
 layer_l2_normalization_2d <- function( object, scale = 20, name = NULL,
   trainable = TRUE ) {
   create_layer( L2NormalizationLayer2D, object,

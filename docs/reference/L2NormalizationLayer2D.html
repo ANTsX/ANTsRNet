@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>L2 2-D normalization layer for SSD300/512 architecture. — L2NormalizationLayer2D • ANTsRNet</title>
+<title>Contextual attention layer (2-D) — L2NormalizationLayer2D • ANTsRNet</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,9 +30,11 @@
 
 
 
-<meta property="og:title" content="L2 2-D normalization layer for SSD300/512 architecture. — L2NormalizationLayer2D" />
+<meta property="og:title" content="Contextual attention layer (2-D) — L2NormalizationLayer2D" />
 
-<meta property="og:description" content="L2 2-D normalization layer for SSD300/512 architecture described in" />
+<meta property="og:description" content="Contextual attention layer for generative image inpainting described in
+Contextual attention layer for generative image inpainting described in
+L2 2-D normalization layer for SSD300/512 architecture described in" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -92,14 +94,16 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>L2 2-D normalization layer for SSD300/512 architecture.</h1>
+    <h1>Contextual attention layer (2-D)</h1>
     
     <div class="hidden name"><code>L2NormalizationLayer2D.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>L2 2-D normalization layer for SSD300/512 architecture described in</p>
+    <p>Contextual attention layer for generative image inpainting described in</p>
+<p>Contextual attention layer for generative image inpainting described in</p>
+<p>L2 2-D normalization layer for SSD300/512 architecture described in</p>
     
     </div>
 
@@ -107,10 +111,20 @@
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>output tensor with the same shape as the input.</p>
+<p>output tensor with the same shape as the input.</p>
+<p>output tensor with the same shape as the input.</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Wei Liu, Andrew Rabinovich, and Alexander C. Berg.  ParseNet: Looking Wider
+    <p>Jiahui Yu, et al., Generative Image Inpainting with Contextual Attention,
+CVPR 2018.</p>
+<p>available here:</p>
+<p><code>https://arxiv.org/abs/1801.07892</code></p>
+<p>Jiahui Yu, et al., Generative Image Inpainting with Contextual Attention,
+CVPR 2018.</p>
+<p>available here:</p>
+<p><code>https://arxiv.org/abs/1801.07892</code></p>
+<p>Wei Liu, Andrew Rabinovich, and Alexander C. Berg.  ParseNet: Looking Wider
 to See Better.</p>
 <p>available here:</p>
 <p><code>https://arxiv.org/abs/1506.04579</code></p>
@@ -118,10 +132,20 @@ to See Better.</p>
     <h2 class="hasAnchor" id="usage"><a class="anchor" href="#usage"></a>Usage</h2>
 
     
-    <pre>layer &lt;- L2NormalizationLayer2D$new( scale )
-    layer$call( x, mask = NULL ) 
+    <pre>layer &lt;- ContextualAttentionLayer2D$new( scale )
+    layer$call( x, mask = NULL )
 layer$build( input_shape )
-layer$compute_output_shape( input_shape ) 
+layer$compute_output_shape( input_shape )
+</pre>
+    <pre>layer &lt;- ContextualAttentionLayer2D$new( scale )
+    layer$call( x, mask = NULL )
+layer$build( input_shape )
+layer$compute_output_shape( input_shape )
+</pre>
+    <pre>layer &lt;- L2NormalizationLayer2D$new( scale )
+    layer$call( x, mask = NULL )
+layer$build( input_shape )
+layer$compute_output_shape( input_shape )
 </pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -134,10 +158,28 @@ layer$compute_output_shape( input_shape )
 <dt>mask</dt><dd><p></p></dd>
 <dt>input_shape</dt><dd><p></p></dd>
 </dl>
+    <dl class='dl-horizontal'>
+<dt>layer</dt><dd><p>A <code>process</code> object.</p></dd>
+</dl>
+    <dl class='dl-horizontal'>
+<dt>layer</dt><dd><p>A <code>process</code> object.</p></dd>
+<dt>scale</dt><dd><p>feature scale.  Default = 20</p></dd>
+<dt>x</dt><dd><p></p></dd>
+<dt>mask</dt><dd><p></p></dd>
+<dt>input_shape</dt><dd><p></p></dd>
+</dl>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     
+    <p><code>$initialize</code> instantiates a new class.</p>
+<p><code>$build</code></p>
+<p><code>$call</code> main body.</p>
+<p><code>$compute_output_shape</code> computes the output shape.</p>
+    <p><code>$initialize</code> instantiates a new class.</p>
+<p><code>$build</code></p>
+<p><code>$call</code> main body.</p>
+<p><code>$compute_output_shape</code> computes the output shape.</p>
     <p><code>$initialize</code> instantiates a new class.</p>
 <p><code>$build</code></p>
 <p><code>$call</code> main body.</p>
@@ -162,6 +204,10 @@ layer$compute_output_shape( input_shape )
 
     <h2>Author</h2>
     
+Tustison NJ
+
+Tustison NJ
+
 Tustison NJ
 
   </div>

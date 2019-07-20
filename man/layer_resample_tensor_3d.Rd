@@ -5,7 +5,8 @@
 \title{Resampling a spatial tensor (3-D).}
 \usage{
 layer_resample_tensor_3d(object, shape,
-  interpolationType = "nearestNeighbor", name = NULL)
+  interpolationType = "nearestNeighbor", name = NULL,
+  trainable = FALSE)
 }
 \arguments{
 \item{shape}{vector or list of length 3 specifying the shape of the output tensor.}

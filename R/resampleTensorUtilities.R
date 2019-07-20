@@ -301,11 +301,11 @@ ResampleTensorLayer2D <- R6::R6Class( "ResampleTensorLayer2D",
 #' @import keras
 #' @export
 layer_resample_tensor_2d <- function( object, shape,
-    interpolationType = 'nearestNeighbor', name = NULL ) {
+    interpolationType = 'nearestNeighbor', name = NULL,
+    trainable = FALSE ) {
 create_layer( ResampleTensorLayer2D, object,
     list( shape = shape, interpolationType = interpolationType,
-        name = name )
-    )
+        name = name, trainable = trainable ) )
 }
 
 #' Creates a resample tensor lambda layer (3-D)
@@ -471,10 +471,10 @@ ResampleTensorLayer3D <- R6::R6Class( "ResampleTensorLayer3D",
 #' @return a keras layer tensor
 #' @export
 layer_resample_tensor_3d <- function( object, shape,
-    interpolationType = 'nearestNeighbor', name = NULL ) {
+    interpolationType = 'nearestNeighbor', name = NULL,
+    trainable = FALSE ) {
 create_layer( ResampleTensorLayer3D, object,
     list( shape = shape, interpolationType = interpolationType,
-        name = name )
-    )
+        name = name, trainable = trainable ) )
 }
 

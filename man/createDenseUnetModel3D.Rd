@@ -7,7 +7,7 @@
 createDenseUnetModel3D(inputImageSize, numberOfOutputs = 1,
   numberOfLayersPerDenseBlock = c(3, 4, 12, 8), growthRate = 48,
   initialNumberOfFilters = 96, reductionRate = 0, depth = 7,
-  dropoutRate = 0, weightDecay = 0.0001, mode = "classification")
+  dropoutRate = 0, weightDecay = 1e-04, mode = "classification")
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The

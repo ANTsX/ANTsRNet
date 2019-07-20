@@ -7,7 +7,7 @@
 createWideResNetModel2D(inputImageSize,
   numberOfClassificationLabels = 1000, depth = 2, width = 1,
   residualBlockSchedule = c(16, 32, 64), poolSize = c(8, 8),
-  dropoutRate = 0, weightDecay = 0.0005, mode = "classification")
+  dropoutRate = 0, weightDecay = 5e-04, mode = "classification")
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
