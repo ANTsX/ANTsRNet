@@ -284,9 +284,9 @@ InpaintingDeepFillModel <- R6::R6Class( "InpaintingDeepFillModel",
       with( self$tf$variable_scope( 'globalDiscriminator', reuse = reuse ) )
         {
         numberOfFilters <- 64
-        numberOfLayers <- numberOfLayers
-
         localNumberOfFilters <- numberOfFilters * c( 1, 2, 4, 4 )
+        numberOfLayers <- length( localNumberOfFilters )
+
         for( i in seq_len( numberOfLayers ) )
           {
           model <- discriminativeConvolutionLayer( model,
@@ -382,7 +382,7 @@ ContextualAttentionLayer2D <- R6::R6Class( "ContextualAttentionLayer2D",
     tf = tensorflow::tf,
 
     initialize = function( kernelSize = 3L, stride = 1L,
-                           dilationRate = 1L, fusionKernelSize = 0L )
+                           dilationRate = 1L, fusionKernelSize = 3L )
       {
       self$kernelSize = kernelSize
       self$stride = stride
@@ -437,7 +437,6 @@ ContextualAttentionLayer2D <- R6::R6Class( "ContextualAttentionLayer2D",
                                    ksizes = c( 1, backgroundKernelSize, backgroundKernelSize, 1 ),
                                    strides = c( 1, stridexRate, stridexRate, 1 ),
                                    rates = c( 1, 1, 1, 1 ), padding = 'SAME' )
-
       backgroundPatches <- self$tf$reshape( backgroundPatches,
                                    c( self$tf$shape( backgroundTensor )[1], -1L,
                                       backgroundKernelSize, backgroundKernelSize,
@@ -509,9 +508,6 @@ ContextualAttentionLayer2D <- R6::R6Class( "ContextualAttentionLayer2D",
                                  c( length( backgroundGroups ) ),
                                  c( length( resampledBackgroundGroups ) ) )
 
-      fusionKernel <- self$tf$reshape( self$tf$eye( self$fusionKernelSize ),
-        c( self$fusionKernelSize, self$fusionKernelSize, 1L, 1L ) )
-
       outputGroups <- list()
       for( i in seq_len( numberOfIterations ) )
         {
@@ -526,6 +522,9 @@ ContextualAttentionLayer2D <- R6::R6Class( "ContextualAttentionLayer2D",
 
         if( self$fusionKernelSize > 0L )
           {
+          fusionKernel <- self$tf$reshape( self$tf$eye( self$fusionKernelSize ),
+            c( self$fusionKernelSize, self$fusionKernelSize, 1L, 1L ) )
+
           output <- tf$reshape( output, c( 1L,
                                  as.integer( newForegroundShape[1] * newForegroundShape[2] ),
                                  as.integer( newBackgroundShape[1] * newBackgroundShape[2] ),
@@ -557,7 +556,7 @@ ContextualAttentionLayer2D <- R6::R6Class( "ContextualAttentionLayer2D",
 
         output <- self$tf$nn$conv2d_transpose( output, bg,
                 self$tf$concat( list( list( 1L ), foregroundShape[2:4] ), axis = 0L ),
-                strides = c( 1,self$ dilationRate, self$dilationRate, 1 ) ) / 4.0
+                strides = c( 1, self$dilationRate, self$dilationRate, 1 ) ) / 4.0
         outputGroups[[i]] <- output
         }
 
@@ -658,7 +657,7 @@ ContextualAttentionLayer3D <- R6::R6Class( "ContextualAttentionLayer3D",
     tf = tensorflow::tf,
 
     initialize = function( kernelSize = 3L, stride = 1L,
-                           dilationRate = 1L, fusionKernelSize = 0L )
+                           dilationRate = 1L, fusionKernelSize = 3L )
       {
       self$kernelSize = kernelSize
       self$stride = stride
@@ -783,9 +782,6 @@ ContextualAttentionLayer3D <- R6::R6Class( "ContextualAttentionLayer3D",
                                  c( length( backgroundGroups ) ),
                                  c( length( resampledBackgroundGroups ) ) )
 
-      fusionKernel <- self$tf$reshape( self$tf$eye( self$fusionKernelSize ),
-        c( self$fusionKernelSize, self$fusionKernelSize, 1L, 1L ) )
-
       outputGroups <- list()
       for( i in seq_len( numberOfIterations ) )
         {
@@ -800,11 +796,13 @@ ContextualAttentionLayer3D <- R6::R6Class( "ContextualAttentionLayer3D",
 
         if( self$fusionKernelSize > 0L )
           {
+          fusionKernel <- self$tf$reshape( self$tf$eye( self$fusionKernelSize ),
+            c( self$fusionKernelSize, self$fusionKernelSize, 1L, 1L ) )
+
           output <- tf$reshape( output, c( 1L,
                                  as.integer( newForegroundShape[1] * newForegroundShape[2] * newForegroundShape[3] ),
                                  as.integer( newBackgroundShape[1] * newBackgroundShape[2] * newBackgroundShape[3] ),
                                  1L ) )
-
           output <- tf$nn$conv2d( output, fusionKernel, strides = c( 1, 1, 1, 1 ), padding = 'SAME' )
           output <- tf$reshape( output, c( 1L, newForegroundShape[1], newForegroundShape[2], newForegroundShape[3],
                                  newBackgroundShape[1], newBackgroundShape[2], newBackgroundShape[3] ) )

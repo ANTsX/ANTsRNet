@@ -395,6 +395,9 @@ ResampleTensorLayer3D <- R6::R6Class( "ResampleTensorLayer3D",
       inputShape <- unlist( inputShape )
       oldSize <- inputShape[2:( dimensionality + 1 )]
 
+      batchSize <- inputShape[1]
+      channelSize <- tail( inputShape, 1 )
+
       if( all( newSize == oldSize ) )
         {
         return( x + 0 )
