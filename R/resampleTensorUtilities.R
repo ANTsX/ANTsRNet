@@ -68,11 +68,11 @@ resampleTensor <- function( inputTensor, shape, interpolationType = 'nearestNeig
     {
     if( interpolationType == 'nearestNeighbor' )
       {
-      resampledTensor <- tensorflow::tf$image$resize_nearest_neighbor( inputTensor, size = newSize )
+      resampledTensor <- tensorflow::tf$image$resize_nearest_neighbor( inputTensor, size = newSize, align_corners = TRUE )
       } else if( interpolationType == 'linear' ) {
-      resampledTensor <- tensorflow::tf$image$resize_bilinear( inputTensor, size = newSize )
+      resampledTensor <- tensorflow::tf$image$resize_bilinear( inputTensor, size = newSize, align_corners = TRUE )
       } else if( interpolationType == 'cubic' ) {
-      resampledTensor <- tensorflow::tf$image$resize_bicubic( inputTensor, size = newSize )
+      resampledTensor <- tensorflow::tf$image$resize_bicubic( inputTensor, size = newSize, align_corners = TRUE )
       } else {
       stop( "Interpolation type not recognized." )
       }
@@ -87,13 +87,13 @@ resampleTensor <- function( inputTensor, shape, interpolationType = 'nearestNeig
     if( interpolationType == 'nearestNeighbor' )
       {
       resampledTensor_yz <-
-        tensorflow::tf$image$resize_nearest_neighbor( squeezeTensor_yz, size = newShape_yz )
+        tensorflow::tf$image$resize_nearest_neighbor( squeezeTensor_yz, size = newShape_yz, align_corners = TRUE )
       } else if( interpolationType == 'linear' ) {
       resampledTensor_yz <-
-        tensorflow::tf$image$resize_bilinear( squeezeTensor_yz, size = newShape_yz )
+        tensorflow::tf$image$resize_bilinear( squeezeTensor_yz, size = newShape_yz, align_corners = TRUE )
       } else if( interpolationType == 'cubic' ) {
       resampledTensor_yz <-
-        tensorflow::tf$image$resize_bicubic( squeezeTensor_yz, size = newShape_yz )
+        tensorflow::tf$image$resize_bicubic( squeezeTensor_yz, size = newShape_yz, align_corners = TRUE )
       } else {
       stop( "Interpolation type not recognized." )
       }
@@ -114,13 +114,13 @@ resampleTensor <- function( inputTensor, shape, interpolationType = 'nearestNeig
     if( interpolationType == 'nearestNeighbor' )
       {
       resampledTensor_x <-
-        tensorflow::tf$image$resize_nearest_neighbor( squeezeTensor_x, size = newShape_x )
+        tensorflow::tf$image$resize_nearest_neighbor( squeezeTensor_x, size = newShape_x, align_corners = TRUE )
       } else if( interpolationType == 'linear' ) {
       resampledTensor_x <-
-        tensorflow::tf$image$resize_bilinear( squeezeTensor_x, size = newShape_x )
+        tensorflow::tf$image$resize_bilinear( squeezeTensor_x, size = newShape_x, align_corners = TRUE )
       } else if( interpolationType == 'cubic' ) {
       resampledTensor_x <-
-        tensorflow::tf$image$resize_bicubic( squeezeTensor_x, size = newShape_x )
+        tensorflow::tf$image$resize_bicubic( squeezeTensor_x, size = newShape_x, align_corners = TRUE )
       } else {
       stop( "Interpolation type not recognized." )
       }
@@ -276,11 +276,11 @@ ResampleTensorLayer2D <- R6::R6Class( "ResampleTensorLayer2D",
       resampledTensor <- NULL
       if( self$interpolationType == 'nearestNeighbor' )
         {
-        resampledTensor <- tensorflow::tf$image$resize_nearest_neighbor( x, size = newSize )
+        resampledTensor <- tensorflow::tf$image$resize_nearest_neighbor( x, size = newSize, align_corners = TRUE )
         } else if( self$interpolationType == 'linear' ) {
-        resampledTensor <- tensorflow::tf$image$resize_bilinear( x, size = newSize )
+        resampledTensor <- tensorflow::tf$image$resize_bilinear( x, size = newSize, align_corners = TRUE )
         } else if( self$interpolationType == 'cubic' ) {
-        resampledTensor <- tensorflow::tf$image$resize_bicubic( x, size = newSize )
+        resampledTensor <- tensorflow::tf$image$resize_bicubic( x, size = newSize, align_corners = TRUE )
         }
       return( resampledTensor )
       }
@@ -411,13 +411,13 @@ ResampleTensorLayer3D <- R6::R6Class( "ResampleTensorLayer3D",
       if( self$interpolationType == 'nearestNeighbor' )
         {
         resampledTensor_yz <-
-          tensorflow::tf$image$resize_nearest_neighbor( squeezeTensor_yz, size = newShape_yz )
+          tensorflow::tf$image$resize_nearest_neighbor( squeezeTensor_yz, size = newShape_yz, align_corners = TRUE )
         } else if( self$interpolationType == 'linear' ) {
         resampledTensor_yz <-
-          tensorflow::tf$image$resize_bilinear( squeezeTensor_yz, size = newShape_yz )
+          tensorflow::tf$image$resize_bilinear( squeezeTensor_yz, size = newShape_yz, align_corners = TRUE )
         } else if( self$interpolationType == 'cubic' ) {
         resampledTensor_yz <-
-          tensorflow::tf$image$resize_bicubic( squeezeTensor_yz, size = newShape_yz )
+          tensorflow::tf$image$resize_bicubic( squeezeTensor_yz, size = newShape_yz, align_corners = TRUE )
         } else {
         stop( "Interpolation type not recognized." )
         }
@@ -438,13 +438,13 @@ ResampleTensorLayer3D <- R6::R6Class( "ResampleTensorLayer3D",
       if( self$interpolationType == 'nearestNeighbor' )
         {
         resampledTensor_x <-
-          tensorflow::tf$image$resize_nearest_neighbor( squeezeTensor_x, size = newShape_x )
+          tensorflow::tf$image$resize_nearest_neighbor( squeezeTensor_x, size = newShape_x, align_corners = TRUE )
         } else if( self$interpolationType == 'linear' ) {
         resampledTensor_x <-
-          tensorflow::tf$image$resize_bilinear( squeezeTensor_x, size = newShape_x )
+          tensorflow::tf$image$resize_bilinear( squeezeTensor_x, size = newShape_x, align_corners = TRUE )
         } else if( self$interpolationType == 'cubic' ) {
         resampledTensor_x <-
-          tensorflow::tf$image$resize_bicubic( squeezeTensor_x, size = newShape_x )
+          tensorflow::tf$image$resize_bicubic( squeezeTensor_x, size = newShape_x, align_corners = TRUE )
         } else {
         stop( "Interpolation type not recognized." )
         }
