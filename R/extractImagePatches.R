@@ -337,7 +337,7 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
 #' patchCoordsI <- extractImagePatchCoordinates( image, c( 32, 32 ), 10, c( 32, 32 ),
 #'   maskImage, randomSeed = 0, physicalCoordinates = FALSE )
 #'
-#' @export
+#' @export extractImagePatchCoordinates
 extractImagePatchCoordinates <- function( image, patchSize, maxNumberOfPatches = 'all',
   strideLength = 1, maskImage = NULL, physicalCoordinates = TRUE,
   cornerCoordinates = TRUE, randomSeed )
