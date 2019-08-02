@@ -6,7 +6,7 @@
 \usage{
 extractImagePatchCoordinates(image, patchSize,
   maxNumberOfPatches = "all", strideLength = 1, maskImage = NULL,
-  physicalCoordinates = TRUE, randomSeed)
+  physicalCoordinates = TRUE, cornerCoordinates = TRUE, randomSeed)
 }
 \arguments{
 \item{image}{Input ANTs image with one or more components.}
@@ -27,6 +27,9 @@ each returned patch to have a masked voxel at its center.}
 
 \item{physicalCoordinates}{boolean to determine whether indices or spatial
 coordinates are returned.}
+
+\item{cornerCoordinates}{boolean to determine whether indices or spatial
+coordinates of the corner or the center are returned.}
 
 \item{randomSeed}{integer seed that allows reproducible patch extraction
 across runs.}

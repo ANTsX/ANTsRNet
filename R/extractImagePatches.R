@@ -319,6 +319,8 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
 #' each returned patch to have a masked voxel at its center.
 #' @param physicalCoordinates boolean to determine whether indices or spatial
 #' coordinates are returned.
+#' @param cornerCoordinates boolean to determine whether indices or spatial
+#' coordinates of the corner or the center are returned.
 #' @param randomSeed integer seed that allows reproducible patch extraction
 #' across runs.
 #'
@@ -338,7 +340,7 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
 #' @export
 extractImagePatchCoordinates <- function( image, patchSize, maxNumberOfPatches = 'all',
   strideLength = 1, maskImage = NULL, physicalCoordinates = TRUE,
-  randomSeed )
+  cornerCoordinates = TRUE, randomSeed )
 {
 
   indexList = list()
@@ -423,8 +425,9 @@ extractImagePatchCoordinates <- function( image, patchSize, maxNumberOfPatches =
           {
           startIndex <- c( i, j )
           endIndex <- startIndex + patchSize - 1
-          indexList[[ count ]] = c( i, j ) + midPatchIndex
-          count <- count + 1
+          indexList[[ count ]] = c( i, j )
+          if ( ! cornerCoordinates )
+            indexList[[ count ]] = indexList[[ count ]] + midPatchIndex
           }
         }
       } else {
@@ -436,7 +439,9 @@ extractImagePatchCoordinates <- function( image, patchSize, maxNumberOfPatches =
             {
             startIndex <- c( i, j, k )
             endIndex <- startIndex + patchSize - 1
-            indexList[[ count ]] = c( i, j, k ) + midPatchIndex
+            indexList[[ count ]] = c( i, j, k )
+            if ( ! cornerCoordinates )
+              indexList[[ count ]] = indexList[[ count ]] + midPatchIndex
             count <- count + 1
             }
           }
@@ -495,10 +500,11 @@ extractImagePatchCoordinates <- function( image, patchSize, maxNumberOfPatches =
         }
       }
 
-
-      for( d in seq_len( dimensionality ) )
-        {
-        randomIndices[, d] <- randomIndices[, d] + midPatchIndex[d]
+      if ( ! cornerCoordinates ) {
+        for( d in seq_len( dimensionality ) )
+          {
+          randomIndices[, d] <- randomIndices[, d] + midPatchIndex[d]
+          }
         }
       return( toPhysical( randomIndices, physicalCoordinates ) )
     }
