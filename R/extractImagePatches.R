@@ -345,7 +345,7 @@ extractImagePatchCoordinates <- function( image, patchSize, maxNumberOfPatches =
 
   indexList = list()
   toPhysical <- function( inds, physical ) {
-    offsetter = rep( 0, image@dimension )
+    offsetter = rep( 1, image@dimension )
     if ( is.list( inds ) ) {
       ptmat = matrix( nrow = length( inds ), ncol = image@dimension )
       for ( k in 1:length( inds ) ) {
