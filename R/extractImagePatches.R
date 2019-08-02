@@ -345,10 +345,11 @@ extractImagePatchCoordinates <- function( image, patchSize, maxNumberOfPatches =
 
   indexList = list()
   toPhysical <- function( inds, physical ) {
+    offsetter = rep( 0, image@dimension )
     if ( is.list( inds ) ) {
       ptmat = matrix( nrow = length( inds ), ncol = image@dimension )
       for ( k in 1:length( inds ) ) {
-        ptmat[k,] = antsTransformIndexToPhysicalPoint( image, inds[[k]] )
+        ptmat[k,] = inds[[k]] + offsetter 
       }
       if ( physical ) return( antsTransformIndexToPhysicalPoint( image, ptmat ) )
       if ( !physical ) return( ptmat )
@@ -356,7 +357,7 @@ extractImagePatchCoordinates <- function( image, patchSize, maxNumberOfPatches =
     if ( is.array( inds ) ) {
       ptmat = matrix( nrow = length( inds ), ncol = image@dimension )
       for ( k in 1:nrow( inds ) ) {
-        ptmat[k,] = antsTransformIndexToPhysicalPoint( image, inds[k,] )
+        ptmat[k,] = inds[k,] + offsetter
       }
       ptmat=ptmat[ !is.na( ptmat[,1] ),]
       if ( physical ) return( antsTransformIndexToPhysicalPoint( image, ptmat ) )
