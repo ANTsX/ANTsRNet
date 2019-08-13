@@ -79,8 +79,11 @@ VanillaGanModel <- R6::R6Class( "VanillaGanModel",
       self$latentDimension <- latentDimension
 
       self$discriminator <- self$buildDiscriminator()
+
+      optimizer <- optimizer_adam( lr = 0.0002, beta_1 = 0.5 )
+
       self$discriminator$compile( loss = 'binary_crossentropy',
-        optimizer = optimizer_adam( lr = 0.0001 ), metrics = list( 'acc' ) )
+        optimizer = optimizer, metrics = list( 'acc' ) )
       self$discriminator$trainable <- FALSE
 
       self$generator <- self$buildGenerator()
@@ -92,7 +95,7 @@ VanillaGanModel <- R6::R6Class( "VanillaGanModel",
 
       self$combinedModel <- keras_model( inputs = z, outputs = validity )
       self$combinedModel$compile( loss = 'binary_crossentropy',
-      optimizer = optimizer_adam( lr = 0.0002, beta_1 = 0.5 ) )
+        optimizer = optimizer )
       },
 
     buildGenerator = function()
@@ -116,7 +119,8 @@ VanillaGanModel <- R6::R6Class( "VanillaGanModel",
         model <- model %>% layer_batch_normalization( momentum = 0.8 )
         }
 
-      model <- model %>% layer_dense( units = prod( self$inputImageSize ), activation = 'tanh' )
+      model <- model %>% layer_dense(
+        units = prod( self$inputImageSize ), activation = 'tanh' )
       model <- model %>% layer_reshape( target_shape = self$inputImageSize )
 
       noise <- layer_input( shape = c( self$latentDimension ) )
@@ -166,7 +170,8 @@ VanillaGanModel <- R6::R6Class( "VanillaGanModel",
 
         dLossReal <- self$discriminator$train_on_batch( X_valid_batch, valid )
         dLossFake <- self$discriminator$train_on_batch( X_fake_batch, fake )
-        dLoss <- list( 0.5 * ( dLossReal[[1]] + dLossFake[[1]] ), 0.5 * ( dLossReal[[2]] + dLossFake[[2]] ) )
+        dLoss <- list( 0.5 * ( dLossReal[[1]] + dLossFake[[1]] ),
+                       0.5 * ( dLossReal[[2]] + dLossFake[[2]] ) )
 
         # train generator
 
@@ -174,14 +179,16 @@ VanillaGanModel <- R6::R6Class( "VanillaGanModel",
           mean = 0, sd = 1 ), dim = c( batchSize, self$latentDimension ) )
         gLoss <- self$combinedModel$train_on_batch( noise, valid )
 
-        cat( "Epoch ", epoch, ": [Discriminator loss: ", dLoss[[1]], " acc: ", dLoss[[2]], "] ",
-          "[Generator loss: ", gLoss, "]\n", sep = '' )
+        cat( "Epoch ", epoch, ": [Discriminator loss: ", dLoss[[1]],
+             " acc: ", dLoss[[2]], "] ", "[Generator loss: ", gLoss, "]\n",
+             sep = '' )
 
         if( ! is.na( sampleInterval ) )
           {
           if( ( ( epoch - 1 ) %% sampleInterval ) == 0 )
             {
-            noise <- array( data = rnorm( n = 1 * self$latentDimension, mean = 0, sd = 1 ),
+            noise <- array( data = rnorm( n = 1 * self$latentDimension,
+                                          mean = 0, sd = 1 ),
                             dim = c( 1, self$latentDimension ) )
             X_generated <- ganModel$generator$predict( noise )
 
