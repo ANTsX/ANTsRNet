@@ -92,7 +92,7 @@ VanillaGanModel <- R6::R6Class( "VanillaGanModel",
 
       self$combinedModel <- keras_model( inputs = z, outputs = validity )
       self$combinedModel$compile( loss = 'binary_crossentropy',
-      optimizer = optimizer_adam( lr = 0.0001 ) )
+      optimizer = optimizer_adam( lr = 0.0002, beta_1 = 0.5 ) )
       },
 
     buildGenerator = function()
@@ -116,7 +116,7 @@ VanillaGanModel <- R6::R6Class( "VanillaGanModel",
         model <- model %>% layer_batch_normalization( momentum = 0.8 )
         }
 
-      model <- model %>% layer_dense( units = prod( self$inputImageSize ) )
+      model <- model %>% layer_dense( units = prod( self$inputImageSize ), activation = 'tanh' )
       model <- model %>% layer_reshape( target_shape = self$inputImageSize )
 
       noise <- layer_input( shape = c( self$latentDimension ) )
@@ -134,6 +134,8 @@ VanillaGanModel <- R6::R6Class( "VanillaGanModel",
       model <- model %>% layer_flatten( input_shape = self$inputImageSize )
       model <- model %>% layer_dense( units = 512 )
       model <- model %>% layer_activation_leaky_relu( alpha = 0.2 )
+      model <- model %>% layer_dense( units = 256 )
+      model <- model %>% layer_activation_leaky_relu( alpha = 0.2 )
       model <- model %>% layer_dense( units = 1, activation = 'sigmoid' )
 
       image <- layer_input( shape = c( self$inputImageSize ) )
@@ -145,7 +147,8 @@ VanillaGanModel <- R6::R6Class( "VanillaGanModel",
       return( discriminator )
       },
 
-    train = function( X_train, numberOfEpochs, batchSize = 128 )
+    train = function( X_train, numberOfEpochs, batchSize = 128,
+      sampleInterval = NA, sampleFilePrefix = 'sample' )
       {
       valid <- array( data = 1, dim = c( batchSize, 1 ) )
       fake <- array( data = 0, dim = c( batchSize, 1 ) )
@@ -173,6 +176,28 @@ VanillaGanModel <- R6::R6Class( "VanillaGanModel",
 
         cat( "Epoch ", epoch, ": [Discriminator loss: ", dLoss[[1]], " acc: ", dLoss[[2]], "] ",
           "[Generator loss: ", gLoss, "]\n", sep = '' )
+
+        if( ! is.na( sampleInterval ) )
+          {
+          if( ( ( epoch - 1 ) %% sampleInterval ) == 0 )
+            {
+            noise <- array( data = rnorm( n = 1 * self$latentDimension, mean = 0, sd = 1 ),
+                            dim = c( 1, self$latentDimension ) )
+            X_generated <- ganModel$generator$predict( noise )
+
+            # Convert to [0,255] to write as jpg using ANTsR
+
+            X_generated <- 255 * ( X_generated - min( X_generated ) ) /
+              ( max( X_generated ) - min( X_generated ) )
+            X_generated <- drop( X_generated )
+            X_generated[] <- as.integer( X_generated )
+
+            imageFileName <- paste0( sampleFilePrefix, "_iteration" , epoch, ".jpg" )
+            cat( "   --> writing sample image: ", imageFileName, "\n" )
+            antsImageWrite( as.antsImage( X_generated, pixeltype = "unsigned char" ),
+              imageFileName )
+            }
+          }
         }
       }
     )
