@@ -39,7 +39,7 @@ reference:
   - '`encodeSsd2D`'
   - '`encodeSsd3D`'
   - '`jaccardSimilarity`'
-- title: Segmentation models.
+- title: Segmentation
   desc: ~
   contents:
   - '`createUnetModel2D`'
@@ -54,7 +54,7 @@ reference:
   - '`decodeUnet`'
   - '`encodeUnet`'
   - '`ScaleLayer`'
-- title: Super-resolution models
+- title: Super-resolution
   desc: ~
   contents:
   - '`createDeepDenoiseSuperResolutionModel2D`'
@@ -76,12 +76,17 @@ reference:
   - '`MAE`'
   - '`PSNR`'
   - '`SSIM`'
-- title: Registration and transform helper functions
+- title: Registration and transforms
   desc: ~
   contents:
   - '`SpatialTransformerLayer2D`'
   - '`SpatialTransformerLayer3D`'
-- title: Deep Embedded Clustering (DEC) helper functions
+- title: Generative adverserial networks (GAN)
+  desc: ~
+  contents:
+  - '`VanillaGanModel`'
+  - '`DeepConvolutionalGanModel`'
+- title: Deep embedded clustering (DEC)
   desc: ~
   contents:
   - '`DeepEmbeddedClusteringModel`'
@@ -89,7 +94,7 @@ reference:
   - '`createAutoencoderModel`'
   - '`createConvolutionalAutoencoderModel2D`'
   - '`createConvolutionalAutoencoderModel3D`'
-- title: Mixture density network functions
+- title: Mixture density networks
   desc: ~
   contents:
   - '`MixtureDensityNetworkLayer`'
@@ -100,7 +105,7 @@ reference:
   - '`sampleFromCategoricalDistribution`'
   - '`sampleFromOutput`'
   - '`mixture_density_network_softmax`'
-- title: Custom loss functions
+- title: Custom losses
   desc: ~
   contents:
   - '`loss_multilabel_dice_coefficient_error`'
@@ -109,7 +114,7 @@ reference:
   - '`multilabel_dice_coefficient`'
   - '`peak_signal_to_noise_ratio`'
   - '`pearson_correlation_coefficient`'
-- title: Data augmentation functions
+- title: Data augmentation
   desc: ~
   contents:
   - '`basisWarp`'

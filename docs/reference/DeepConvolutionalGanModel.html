@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Vanilla GAN model — VanillaGanModel • ANTsRNet</title>
+<title>Deep convolutional GAN (DCGAN) model — DeepConvolutionalGanModel • ANTsRNet</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Vanilla GAN model — VanillaGanModel" />
+<meta property="og:title" content="Deep convolutional GAN (DCGAN) model — DeepConvolutionalGanModel" />
 
-<meta property="og:description" content="Original generative adverserial network from the paper:" />
+<meta property="og:description" content="Deep conviolutional generative adverserial network from the paper:" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -92,23 +92,23 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Vanilla GAN model</h1>
+    <h1>Deep convolutional GAN (DCGAN) model</h1>
     
-    <div class="hidden name"><code>VanillaGanModel.Rd</code></div>
+    <div class="hidden name"><code>DeepConvolutionalGanModel.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Original generative adverserial network from the paper:</p>
+    <p>Deep conviolutional generative adverserial network from the paper:</p>
     
     </div>
 
         
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>https://arxiv.org/abs/1406.2661</p>
+    <p>https://arxiv.org/abs/1511.06434</p>
 <p>and ported from the Keras (python) implementation:</p>
-<p>https://github.com/eriklindernoren/Keras-GAN/blob/master/gan/gan.py</p>
+<p>https://github.com/eriklindernoren/Keras-GAN/blob/master/dcgan/dcgan.py</p>
     
     <h2 class="hasAnchor" id="usage"><a class="anchor" href="#usage"></a>Usage</h2>
 
@@ -153,7 +153,7 @@ generator and discriminator.
 
 <span class='co'># Instantiate the DCEC model</span>
 
-<span class='no'>ganModel</span> <span class='kw'>&lt;-</span> <span class='no'>VanillaGanModel</span>$<span class='fu'>new</span>(
+<span class='no'>ganModel</span> <span class='kw'>&lt;-</span> <span class='no'>DeepConvolutionalGanModel</span>$<span class='fu'>new</span>(
    <span class='kw'>inputImageSize</span> <span class='kw'>=</span> <span class='no'>inputImageSize</span>,
    <span class='kw'>latentDimension</span> <span class='kw'>=</span> <span class='fl'>100</span> )
 

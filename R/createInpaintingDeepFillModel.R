@@ -204,7 +204,7 @@ InpaintingDeepFillModel <- R6::R6Class( "InpaintingDeepFillModel",
       output <- list( output, maskInput, imageInput ) %>% layer_lambda( f = function( inputs )
           { return( inputs[[1]] * inputs[[2]] + inputs[[3]] * ( 1.0 - inputs[[2]] ) ) } )
 
-      # # Conv branch
+      # Conv branch
 
       outputNow <- layer_concatenate( list( output, ones, maskedOnes ),
                                      axis = as.integer( self$dimensionality + 1 ) )
@@ -222,7 +222,7 @@ InpaintingDeepFillModel <- R6::R6Class( "InpaintingDeepFillModel",
 
       outputHallu <- output
 
-      # # Attention branch
+      # Attention branch
 
       output <- self$generativeConvolutionLayer( outputNow,  self$numberOfFiltersBaseLayer, 5, 1L, 1L )
       output <- self$generativeConvolutionLayer( output,     self$numberOfFiltersBaseLayer, 3L, 2L, 1L )
@@ -310,9 +310,157 @@ InpaintingDeepFillModel <- R6::R6Class( "InpaintingDeepFillModel",
         }
       },
 
-    train = function( X_train, numberOfEpochs = 200, batchSize = 32 )
+    train = function( X_train, numberOfEpochs = 200, maskRegionSize = NA, limitTrainingToCoarseNetwork = FALSE )
       {
-      cat( "HERE\n" )
+
+      network <- self$buildNetwork()
+
+      modelStage1 <- network$modelStage1
+      modelStage2 <- network$modelStage2
+
+      # Build spatial discount mask
+
+      gamma <- 0.9
+      discountMask <- array( data = 1, dim = maskRegionSize )
+      if( self$dimensionality == 2 )
+        {
+        for( i in seq_len( maskRegionSize[1] ) )
+          {
+          for( j in seq_len( maskRegionSize[2] ) )
+            {
+            discountMask <- max( gamma ^ min( i, maskRegionSize[1] - i ),
+                                 gamma ^ min( j, maskRegionSize[2] - j ) )
+            }
+          }
+        } else {
+        for( i in seq_len( maskRegionSize[1] ) )
+          {
+          for( j in seq_len( maskRegionSize[2] ) )
+            {
+            for( k in seq_len( maskRegionSize[3] ) )
+              {
+              discountMask <- max( gamma ^ min( i, maskRegionSize[1] - i ),
+                                   gamma ^ min( j, maskRegionSize[2] - j ),
+                                   gamma ^ min( k, maskRegionSize[3] - k ) )
+              }
+            }
+          }
+        }
+      discountMask <- array( data = discountMask, dim = c( 1, dim( discountMask ), 1 ) )
+
+      # Perform batchwise training
+
+      for( i in seq_len( numberOfEpochs ) )
+        {
+        # Sample batch from full data set
+
+        batchIndices <- sample.int( dim( X_train )[1], self$batchSize )
+
+        X_batch <- X_train
+        if( self$dimensionality == 2 )
+          {
+          X_batch <- X_train[batchIndices,,,, drop = FALSE]
+          } else {
+          X_batch <- X_train[batchIndices,,,,, drop = FALSE]
+          }
+
+        # Generate random mask
+
+        beginCorner <- rep( 0, self$dimensionality )
+        for( i in seq_len( self$dimensionality ) )
+          {
+          beginCorner[d] <- runif( 1, min = 1, max = self$inputImageSize[d] - maskRegionSize[d] + 1 )
+          }
+        randomMask <- drop( array( data = 0, dim = head( self$inputImageSize, self$dimensionality ) ) )
+
+        endCorner <- beginCorner + maskRegionSize
+        if( self$dimensionality == 2 )
+          {
+          randomMask[beginCorner[1]:endCorner[1],
+                     beginCorner[2]:endCorner[2]] <- 1
+          } else {
+          randomMask[beginCorner[1]:endCorner[1],
+                     beginCorner[2]:endCorner[2],
+                     beginCorner[3]:endCorner[3]] <- 1
+          }
+
+        X_mask <- array( data = randomMask, dim = c( 1, dim( randomMask ), 1 ) )
+
+        # mask the batch data
+
+        X_masked <- apply( X_batch, self$dimensionality + 1,
+          function( x ) x * ( 1.0 - X_mask ) )
+        X_predictedStage1 <- modelStage1$predict( X_masked )
+        X_predictedStage2 <- modelStage2$predict( X_masked )
+        X_complete <- X_predicted * X_mask + X_masked * ( 1.0 - X_mask )
+
+        # Get local mask region patches
+
+        if( self$dimensionality == 2 )
+          {
+          X_maskLocalPatch <- X_mask[,beginCorner[1]:endCorner[1],
+                                      beginCorner[2]:endCorner[2],]
+          X_batchLocalPatch <- X_batch[,beginCorner[1]:endCorner[1],
+                                        beginCorner[2]:endCorner[2],]
+          X_maskedLocalPatch <- X_masked[,beginCorner[1]:endCorner[1],
+                                          beginCorner[2]:endCorner[2],]
+          X_predictedStage1LocalPatch <- X_predictedStage1[,beginCorner[1]:endCorner[1],
+                                                            beginCorner[2]:endCorner[2],]
+          X_predictedStage2LocalPatch <- X_predictedStage2[,beginCorner[1]:endCorner[1],
+                                                            beginCorner[2]:endCorner[2],]
+          X_completeLocalPatch <- X_complete[,beginCorner[1]:endCorner[1],
+                                              beginCorner[2]:endCorner[2],]
+          } else {
+          X_maskLocalPatch <- X_mask[,beginCorner[1]:endCorner[1],
+                                      beginCorner[2]:endCorner[2],
+                                      beginCorner[3]:endCorner[3],]
+          X_batchLocalPatch <- X_batch[,beginCorner[1]:endCorner[1],
+                                        beginCorner[2]:endCorner[2],
+                                        beginCorner[3]:endCorner[3],]
+          X_maskedLocalPatch <- X_masked[,beginCorner[1]:endCorner[1],
+                                          beginCorner[2]:endCorner[2],
+                                          beginCorner[3]:endCorner[3],]
+          X_predictedStage1LocalPatch <- X_predictedStage1[,beginCorner[1]:endCorner[1],
+                                                            beginCorner[2]:endCorner[2],
+                                                            beginCorner[3]:endCorner[3],]
+          X_predictedStage2LocalPatch <- X_predictedStage2[,beginCorner[1]:endCorner[1],
+                                                            beginCorner[2]:endCorner[2],
+                                                            beginCorner[3]:endCorner[3],]
+          X_completeLocalPatch <- X_complete[,beginCorner[1]:endCorner[1],
+                                              beginCorner[2]:endCorner[2],
+                                              beginCorner[3]:endCorner[3],]
+          }
+
+        # Calculate losses
+
+        losses <- list()
+        l1Alpha <- 1.2
+
+        losses$l1Loss <- l1Alpha * mean( abs( X_batchLocalPatch - X_predictedStage1LocalPatch ) *
+                             discountMask )
+        if( ! limitTrainingToCoarseNetwork )
+          {
+          losses$l1Loss <- losses$l1Loss + mean( abs( X_batchLocalPatch - X_predictedStage2LocalPatch ) *
+                             discountMask )
+          }
+        losses$aeLoss <- l1Alpha * mean( abs( X_batch - X_predictedStage1 ) * ( 1.0 - X_mask ) )
+        if( ! limitTrainingToCoarseNetwork )
+          {
+          losses$aeLoss <- losses$aeLoss + mean( abs( X_batch - X_predictedStage1 ) * ( 1.0 - X_mask ) )
+          }
+        losses$aeLoss <- losses$aeLoss / mean( 1.0 - X_mask )
+
+        # Add global and local Wasserstein GAN losses
+
+
+
+
+        }
+
+
+      losses <- list()
+
+
       }
 
     )
