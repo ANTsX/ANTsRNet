@@ -101,7 +101,7 @@ WassersteinGanModel <- R6::R6Class( "WassersteinGanModel",
 
       self$combinedModel <- keras_model( inputs = z, outputs = validity )
       self$combinedModel$compile( loss = self$wassersteinLoss,
-        optimizer = optimizer, metrics = list( 'acc' ) )
+        optimizer = optimizer )
       },
 
     wassersteinLoss = function( y_true, y_pred )
@@ -110,30 +110,87 @@ WassersteinGanModel <- R6::R6Class( "WassersteinGanModel",
       return( K$mean( y_true * y_pred ) )
       },
 
-    buildGenerator = function()
+    buildGenerator = function( numberOfFiltersPerLayer = c( 128, 64, 32 ),
+      kernelSize = 3 )
       {
       model <- keras_model_sequential()
 
-      for( i in seq_len( 3 ) )
+      # To build the generator, we create the reverse encoder model
+      # and simply build the reverse model
+
+      encoder <- NA
+      if( self$dimensionality == 2 )
         {
-        numberOfUnits <- 2 ^ ( 8 + i - 1 )
-
-        if( i == 1 )
-          {
-          model <- model %>% layer_dense(
-            input_shape = self$latentDimension, units = numberOfUnits )
-          } else {
-          model <- model %>% layer_dense( units = numberOfUnits )
-          }
-
-        model <- model %>% layer_dense( units = numberOfUnits )
-        model <- model %>% layer_activation_leaky_relu( alpha = 0.2 )
-        model <- model %>% layer_batch_normalization( momentum = 0.8 )
+        aeModel <- createConvolutionalAutoencoderModel2D(
+          inputImageSize = self$inputImageSize,
+          numberOfFiltersPerLayer =
+            c( rev( numberOfFiltersPerLayer ), self$latentDimension ),
+          convolutionKernelSize = c( 5, 5 ),
+          deconvolutionKernelSize = c( 5, 5 ) )
+        encoder <- aeModel$ConvolutionalEncoderModel
+        } else {
+        aeModel <- createConvolutionalAutoencoderModel3D(
+          inputImageSize = self$inputImageSize,
+          numberOfFiltersPerLayer =
+            c( rev( numberOfFiltersPerLayer ), self$latentDimension ),
+          convolutionKernelSize = c( 5, 5, 5 ),
+          deconvolutionKernelSize = c( 5, 5, 5 ) )
+        encoder <- aeModel$ConvolutionalEncoderModel
         }
 
-      model <- model %>% layer_dense(
-        units = prod( self$inputImageSize ), activation = 'tanh' )
-      model <- model %>% layer_reshape( target_shape = self$inputImageSize )
+      encoderLayers <- encoder$layers
+
+      penultimateLayer <- encoderLayers[[length( encoderLayers ) - 1]]
+
+      model <- model %>% layer_dense( units = penultimateLayer$output_shape[[2]],
+        input_shape = c( self$latentDimension ), activation = "relu" )
+
+      convLayer <- encoderLayers[[length( encoderLayers ) - 2]]
+      resampledSize <- convLayer$output_shape
+      model <- model %>% layer_reshape( unlist( resampledSize ) )
+      model <- model %>% layer_conv_2d(
+        filters = numberOfFiltersPerLayer[1], kernel_size = kernelSize,
+        padding = 'same' )
+
+      count <- 2
+      for( i in seq( from = length( encoderLayers ) - 3, to = 2, by = -1 ) )
+        {
+        convLayer <- encoderLayers[[i]]
+        resampledSize <- unlist( convLayer$output_shape )[1:self$dimensionality]
+
+        if( self$dimensionality == 2 )
+          {
+          model <- model %>% layer_resample_tensor_2d( shape = resampledSize,
+            interpolationType = 'linear' )
+          model <- model %>% layer_conv_2d(
+            filters = numberOfFiltersPerLayer[count], kernel_size = kernelSize,
+            padding = 'same' )
+          } else {
+          model <- model %>% layer_resample_tensor_3d( shape = resampledSize,
+            interpolationType = 'linear' )
+          model <- model %>% layer_conv_3d(
+            filters = numberOfFiltersPerLayer[count], kernel_size = kernelSize )
+          }
+        model <- model %>% layer_batch_normalization( momentum = 0.8 )
+        model <- model %>% layer_activation( "relu" )
+        count <- count + 1
+        }
+
+      numberOfChannels <- tail( self$inputImageSize, 1 )
+      if( self$dimensionality == 2 )
+        {
+        model <- model %>% layer_resample_tensor_2d(
+          shape = as.integer( self$inputImageSize[1:self$dimensionality] ),
+          interpolationType = 'linear' )
+        model <- model %>% layer_conv_2d( filters = numberOfChannels,
+          kernel_size = kernelSize, activation = 'tanh', padding = 'same' )
+        } else {
+        model <- model %>% layer_resample_tensor_3d(
+          shape = as.integer( self$inputImageSize[1:self$dimensionality] ),
+          interpolationType = 'linear' )
+        model <- model %>% layer_conv_3d( filters = numberOfChannels,
+          kernel_size = kernelSize, activation = 'tanh', padding = 'same' )
+        }
 
       noise <- layer_input( shape = c( self$latentDimension ) )
       image <- model( noise )
@@ -143,24 +200,36 @@ WassersteinGanModel <- R6::R6Class( "WassersteinGanModel",
       return( generator )
       },
 
-    buildDiscriminator = function()
+    buildCritic = function( numberOfFiltersPerLayer = c( 32, 64, 128, 256 ),
+       kernelSize = 3, dropoutRate = 0.25 )
       {
       model <- keras_model_sequential()
 
-      model <- model %>% layer_flatten( input_shape = self$inputImageSize )
-      model <- model %>% layer_dense( units = 512 )
-      model <- model %>% layer_activation_leaky_relu( alpha = 0.2 )
-      model <- model %>% layer_dense( units = 256 )
-      model <- model %>% layer_activation_leaky_relu( alpha = 0.2 )
+      for( i in seq_len( length( numberOfFiltersPerLayer ) ) )
+        {
+        if( self$dimensionality )
+          {
+          model <- model %>% layer_conv_2d( input_shape = self$inputImageSize,
+            filters = numberOfFiltersPerLayer[i], kernel_size = kernelSize )
+          } else {
+          model <- model %>% layer_conv_3d( input_shape = self$inputImageSize,
+            filters = numberOfFiltersPerLayer[i], kernel_size = kernelSize )
+          }
+        model <- model %>% layer_batch_normalization( momentum = 0.8 )
+        model <- model %>% layer_activation_leaky_relu( alpha = 0.2 )
+        model <- model %>% layer_dropout( rate = dropoutRate )
+        }
+
+      model <- model %>% layer_flatten()
       model <- model %>% layer_dense( units = 1, activation = 'sigmoid' )
 
       image <- layer_input( shape = c( self$inputImageSize ) )
 
       validity <- model( image )
 
-      discriminator <- keras_model( inputs = image, outputs = validity )
+      critic <- keras_model( inputs = image, outputs = validity )
 
-      return( discriminator )
+      return( critic )
       },
 
     train = function( X_train, numberOfEpochs, batchSize = 128,
@@ -171,8 +240,6 @@ WassersteinGanModel <- R6::R6Class( "WassersteinGanModel",
 
       for( epoch in seq_len( numberOfEpochs ) )
         {
-        # train discriminator
-
         indices <- sample.int( dim( X_train )[1], batchSize )
         X_valid_batch <- X_train[indices,,,, drop = FALSE]
 
@@ -185,10 +252,23 @@ WassersteinGanModel <- R6::R6Class( "WassersteinGanModel",
         dLoss <- list( 0.5 * ( dLossReal[[1]] + dLossFake[[1]] ),
                        0.5 * ( dLossReal[[2]] + dLossFake[[2]] ) )
 
+        # Clip critic weights
+
+        for( i in seq_len( length( self$critic$layers ) ) )
+          {
+          weights <- self$critic$layers[[i]]$get_weights()
+          for( j in seq_len( length( weights ) ) )
+            {
+            weights[[j]][which( weights[[j]] < -self$clipValue )] <- -self$clipValue
+            weights[[j]][which( weights[[j]] > self$clipValue )] <- self$clipValue
+            }
+          self$critic$layers[[i]]$set_weights( weights )
+          }
+
         # train generator
 
         noise <- array( data = rnorm( n = batchSize * self$latentDimension,
-          mean = 0, sd = 1 ), dim = c( batchSize, self$latentDimension ) )
+          mean = 0, sd = 1 ), dim = c( batchSize, selffor$latentDimension ) )
         gLoss <- self$combinedModel$train_on_batch( noise, valid )
 
         cat( "Epoch ", epoch, ": [Discriminator loss: ", dLoss[[1]],
