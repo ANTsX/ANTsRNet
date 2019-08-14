@@ -208,10 +208,10 @@ DeepConvolutionalGanModel <- R6::R6Class( "DeepConvolutionalGanModel",
         {
         if( self$dimensionality )
           {
-          model <- model %>% layer_conv_2d(
+          model <- model %>% layer_conv_2d( input_shape = self$inputImageSize,
             filters = numberOfFiltersPerLayer[i], kernel_size = kernelSize )
           } else {
-          model <- model %>% layer_conv_3d(
+          model <- model %>% layer_conv_3d( input_shape = self$inputImageSize,
             filters = numberOfFiltersPerLayer[i], kernel_size = kernelSize )
           }
         model <- model %>% layer_batch_normalization( momentum = 0.8 )
