@@ -206,7 +206,7 @@ DeepConvolutionalGanModel <- R6::R6Class( "DeepConvolutionalGanModel",
 
       for( i in seq_len( length( numberOfFiltersPerLayer ) ) )
         {
-        if( self$dimensionality )
+        if( self$dimensionality == 2 )
           {
           model <- model %>% layer_conv_2d( input_shape = self$inputImageSize,
             filters = numberOfFiltersPerLayer[i], kernel_size = kernelSize )

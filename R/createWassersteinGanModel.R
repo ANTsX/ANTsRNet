@@ -20,9 +20,9 @@
 #'
 #' @section Details:
 #'   \code{$initialize} {instantiates a new class and builds the
-#'       generator and discriminator.}
+#'       generator and critic.}
 #'   \code{$buildGenerator}{build generator.}
-#'   \code{$buildGenerator}{build discriminator.}
+#'   \code{$buildGenerator}{build critic.}
 #'
 #' @author Tustison NJ
 #'
@@ -70,6 +70,8 @@ WassersteinGanModel <- R6::R6Class( "WassersteinGanModel",
 
     inputImageSize = c( 28, 28, 1 ),
 
+    dimensionality = 2,
+
     latentDimension = 100,
 
     numberOfCriticIterations = 5,
@@ -83,6 +85,16 @@ WassersteinGanModel <- R6::R6Class( "WassersteinGanModel",
       self$latentDimension <- latentDimension
       self$numberOfCriticIterations <- numberOfCriticIterations
       self$clipValue <- clipValue
+
+      self$dimensionality <- NA
+      if( length( self$inputImageSize ) == 3 )
+        {
+        self$dimensionality <- 2
+        } else if( length( self$inputImageSize ) == 4 ) {
+        self$dimensionality <- 3
+        } else {
+        stop( "Incorrect size for inputImageSize.\n" )
+        }
 
       optimizer <- optimizer_rmsprop( lr = 0.00005 )
 
@@ -207,7 +219,7 @@ WassersteinGanModel <- R6::R6Class( "WassersteinGanModel",
 
       for( i in seq_len( length( numberOfFiltersPerLayer ) ) )
         {
-        if( self$dimensionality )
+        if( self$dimensionality == 2 )
           {
           model <- model %>% layer_conv_2d( input_shape = self$inputImageSize,
             filters = numberOfFiltersPerLayer[i], kernel_size = kernelSize )
@@ -247,8 +259,8 @@ WassersteinGanModel <- R6::R6Class( "WassersteinGanModel",
           mean = 0, sd = 1 ), dim = c( batchSize, self$latentDimension ) )
         X_fake_batch <- self$generator$predict( noise )
 
-        dLossReal <- self$discriminator$train_on_batch( X_valid_batch, valid )
-        dLossFake <- self$discriminator$train_on_batch( X_fake_batch, fake )
+        dLossReal <- self$critic$train_on_batch( X_valid_batch, valid )
+        dLossFake <- self$critic$train_on_batch( X_fake_batch, fake )
         dLoss <- list( 0.5 * ( dLossReal[[1]] + dLossFake[[1]] ),
                        0.5 * ( dLossReal[[2]] + dLossFake[[2]] ) )
 
@@ -268,10 +280,10 @@ WassersteinGanModel <- R6::R6Class( "WassersteinGanModel",
         # train generator
 
         noise <- array( data = rnorm( n = batchSize * self$latentDimension,
-          mean = 0, sd = 1 ), dim = c( batchSize, selffor$latentDimension ) )
+          mean = 0, sd = 1 ), dim = c( batchSize, self$latentDimension ) )
         gLoss <- self$combinedModel$train_on_batch( noise, valid )
 
-        cat( "Epoch ", epoch, ": [Discriminator loss: ", dLoss[[1]],
+        cat( "Epoch ", epoch, ": [Critic loss: ", dLoss[[1]],
              " acc: ", dLoss[[2]], "] ", "[Generator loss: ", gLoss, "]\n",
              sep = '' )
 
