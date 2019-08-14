@@ -86,6 +86,7 @@ reference:
   contents:
   - '`VanillaGanModel`'
   - '`DeepConvolutionalGanModel`'
+  - '`WassersteinGanModel`'
 - title: Deep embedded clustering (DEC)
   desc: ~
   contents:

@@ -178,8 +178,6 @@ VanillaGanModel <- R6::R6Class( "VanillaGanModel",
           mean = 0, sd = 1 ), dim = c( batchSize, self$latentDimension ) )
         gLoss <- self$combinedModel$train_on_batch( noise, valid )
 
-        print( gLoss )
-
         cat( "Epoch ", epoch, ": [Discriminator loss: ", dLoss[[1]],
              " acc: ", dLoss[[2]], "] ", "[Generator loss: ", gLoss, "]\n",
              sep = '' )
