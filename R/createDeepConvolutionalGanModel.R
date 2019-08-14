@@ -171,7 +171,7 @@ DeepConvolutionalGanModel <- R6::R6Class( "DeepConvolutionalGanModel",
             filters = numberOfFiltersPerLayer[count], kernel_size = kernelSize )
           }
         model <- model %>% layer_batch_normalization( momentum = 0.8 )
-        model <- model %>% layer_activation_relu()
+        model <- model %>% layer_activation( "relu" )
         count <- count + 1
         }
 
