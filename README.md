@@ -70,7 +70,6 @@ Documentation page [https://antsx.github.io/ANTsRNet/](https://antsx.github.io/A
 
 * Original GAN
     * [Ian J. Goodfellow, Jean Pouget-Abadie, Mehdi Mirza, Bing Xu, David Warde-Farley, Sherjil Ozair, Aaron Courville, Yoshua Bengio.  Generative Adverserial Networks.](https://arxiv.org/abs/1406.2661)
-
 * Deep Convolutional GAN
     * [Alec Radford, Luke Metz, Soumith Chintala.  Unsupervised Representation Learning with Deep Convolutional Generative Adversarial Networks.](https://arxiv.org/abs/1511.06434)
 
