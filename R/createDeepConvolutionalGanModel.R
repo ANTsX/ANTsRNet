@@ -109,7 +109,7 @@ DeepConvolutionalGanModel <- R6::R6Class( "DeepConvolutionalGanModel",
         optimizer = optimizer )
       },
 
-    buildGenerator = function( numberOfFiltersPerLayer = c( 128, 64, 32 ),
+    buildGenerator = function( numberOfFiltersPerLayer = c( 128, 64 ),
       kernelSize = 3 )
       {
       model <- keras_model_sequential()
@@ -150,6 +150,7 @@ DeepConvolutionalGanModel <- R6::R6Class( "DeepConvolutionalGanModel",
       model <- model %>% layer_conv_2d(
         filters = numberOfFiltersPerLayer[1], kernel_size = kernelSize,
         padding = 'same' )
+      model <- model %>% layer_batch_normalization( momentum = 0.8 )
 
       count <- 2
       for( i in seq( from = length( encoderLayers ) - 3, to = 2, by = -1 ) )
