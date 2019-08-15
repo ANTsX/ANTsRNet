@@ -99,7 +99,6 @@ WassersteinGanModel <- R6::R6Class( "WassersteinGanModel",
       optimizer <- optimizer_rmsprop( lr = 0.00005 )
 
       self$critic <- self$buildCritic()
-
       self$critic$compile( loss = self$wassersteinLoss,
         optimizer = optimizer, metrics = list( 'acc' ) )
       self$critic$trainable <- FALSE
@@ -113,7 +112,7 @@ WassersteinGanModel <- R6::R6Class( "WassersteinGanModel",
 
       self$combinedModel <- keras_model( inputs = z, outputs = validity )
       self$combinedModel$compile( loss = self$wassersteinLoss,
-        optimizer = optimizer )
+        optimizer = optimizer, metrics = list( "acc" ) )
       },
 
     wassersteinLoss = function( y_true, y_pred )
@@ -122,8 +121,8 @@ WassersteinGanModel <- R6::R6Class( "WassersteinGanModel",
       return( K$mean( y_true * y_pred ) )
       },
 
-    buildGenerator = function( numberOfFiltersPerLayer = c( 128, 64, 32 ),
-      kernelSize = 3 )
+    buildGenerator = function( numberOfFiltersPerLayer = c( 128, 64 ),
+      kernelSize = 4 )
       {
       model <- keras_model_sequential()
 
@@ -143,7 +142,6 @@ WassersteinGanModel <- R6::R6Class( "WassersteinGanModel",
         } else {
         aeModel <- createConvolutionalAutoencoderModel3D(
           inputImageSize = self$inputImageSize,
-          numberOfFiltersPerLayer =
             c( rev( numberOfFiltersPerLayer ), self$latentDimension ),
           convolutionKernelSize = c( 5, 5, 5 ),
           deconvolutionKernelSize = c( 5, 5, 5 ) )
@@ -156,16 +154,12 @@ WassersteinGanModel <- R6::R6Class( "WassersteinGanModel",
 
       model <- model %>% layer_dense( units = penultimateLayer$output_shape[[2]],
         input_shape = c( self$latentDimension ), activation = "relu" )
-
       convLayer <- encoderLayers[[length( encoderLayers ) - 2]]
       resampledSize <- convLayer$output_shape
       model <- model %>% layer_reshape( unlist( resampledSize ) )
-      model <- model %>% layer_conv_2d(
-        filters = numberOfFiltersPerLayer[1], kernel_size = kernelSize,
-        padding = 'same' )
 
-      count <- 2
-      for( i in seq( from = length( encoderLayers ) - 3, to = 2, by = -1 ) )
+      count <- 1
+      for( i in seq( from = length( encoderLayers ) - 2, to = 2, by = -1 ) )
         {
         convLayer <- encoderLayers[[i]]
         resampledSize <- unlist( convLayer$output_shape )[1:self$dimensionality]
@@ -195,14 +189,15 @@ WassersteinGanModel <- R6::R6Class( "WassersteinGanModel",
           shape = as.integer( self$inputImageSize[1:self$dimensionality] ),
           interpolationType = 'linear' )
         model <- model %>% layer_conv_2d( filters = numberOfChannels,
-          kernel_size = kernelSize, activation = 'tanh', padding = 'same' )
+          kernel_size = kernelSize, padding = 'same' )
         } else {
         model <- model %>% layer_resample_tensor_3d(
           shape = as.integer( self$inputImageSize[1:self$dimensionality] ),
           interpolationType = 'linear' )
         model <- model %>% layer_conv_3d( filters = numberOfChannels,
-          kernel_size = kernelSize, activation = 'tanh', padding = 'same' )
+          kernel_size = kernelSize, padding = 'same' )
         }
+      model <- model %>% layer_activation( "tanh" )
 
       noise <- layer_input( shape = c( self$latentDimension ) )
       image <- model( noise )
@@ -212,7 +207,7 @@ WassersteinGanModel <- R6::R6Class( "WassersteinGanModel",
       return( generator )
       },
 
-    buildCritic = function( numberOfFiltersPerLayer = c( 32, 64, 128, 256 ),
+    buildCritic = function( numberOfFiltersPerLayer = c( 16, 32, 64, 128 ),
        kernelSize = 3, dropoutRate = 0.25 )
       {
       model <- keras_model_sequential()
@@ -222,10 +217,12 @@ WassersteinGanModel <- R6::R6Class( "WassersteinGanModel",
         if( self$dimensionality == 2 )
           {
           model <- model %>% layer_conv_2d( input_shape = self$inputImageSize,
-            filters = numberOfFiltersPerLayer[i], kernel_size = kernelSize )
+            filters = numberOfFiltersPerLayer[i], kernel_size = kernelSize,
+            strides = 2, padding = 'same' )
           } else {
           model <- model %>% layer_conv_3d( input_shape = self$inputImageSize,
-            filters = numberOfFiltersPerLayer[i], kernel_size = kernelSize )
+            filters = numberOfFiltersPerLayer[i], kernel_size = kernelSize,
+            strides = 2, padding = 'same' )
           }
         model <- model %>% layer_batch_normalization( momentum = 0.8 )
         model <- model %>% layer_activation_leaky_relu( alpha = 0.2 )
@@ -233,7 +230,7 @@ WassersteinGanModel <- R6::R6Class( "WassersteinGanModel",
         }
 
       model <- model %>% layer_flatten()
-      model <- model %>% layer_dense( units = 1, activation = 'sigmoid' )
+      model <- model %>% layer_dense( units = 1 )
 
       image <- layer_input( shape = c( self$inputImageSize ) )
 
@@ -252,29 +249,34 @@ WassersteinGanModel <- R6::R6Class( "WassersteinGanModel",
 
       for( epoch in seq_len( numberOfEpochs ) )
         {
-        indices <- sample.int( dim( X_train )[1], batchSize )
-        X_valid_batch <- X_train[indices,,,, drop = FALSE]
+        # train critic
 
-        noise <- array( data = rnorm( n = batchSize * self$latentDimension,
-          mean = 0, sd = 1 ), dim = c( batchSize, self$latentDimension ) )
-        X_fake_batch <- self$generator$predict( noise )
-
-        dLossReal <- self$critic$train_on_batch( X_valid_batch, valid )
-        dLossFake <- self$critic$train_on_batch( X_fake_batch, fake )
-        dLoss <- list( 0.5 * ( dLossReal[[1]] + dLossFake[[1]] ),
-                       0.5 * ( dLossReal[[2]] + dLossFake[[2]] ) )
-
-        # Clip critic weights
-
-        for( i in seq_len( length( self$critic$layers ) ) )
+        for( c in seq_len( self$numberOfCriticIterations ) )
           {
-          weights <- self$critic$layers[[i]]$get_weights()
-          for( j in seq_len( length( weights ) ) )
+          indices <- sample.int( dim( X_train )[1], batchSize )
+          X_valid_batch <- X_train[indices,,,, drop = FALSE]
+
+          noise <- array( data = rnorm( n = batchSize * self$latentDimension,
+            mean = 0, sd = 1 ), dim = c( batchSize, self$latentDimension ) )
+          X_fake_batch <- self$generator$predict( noise )
+
+          dLossReal <- self$critic$train_on_batch( X_valid_batch, valid )
+          dLossFake <- self$critic$train_on_batch( X_fake_batch, fake )
+          dLoss <- list( 0.5 * ( dLossReal[[1]] + dLossFake[[1]] ),
+                         0.5 * ( dLossReal[[2]] + dLossFake[[2]] ) )
+
+          # Clip critic weights
+
+          for( i in seq_len( length( self$critic$layers ) ) )
             {
-            weights[[j]][which( weights[[j]] < -self$clipValue )] <- -self$clipValue
-            weights[[j]][which( weights[[j]] > self$clipValue )] <- self$clipValue
+            weights <- self$critic$layers[[i]]$get_weights()
+            for( j in seq_len( length( weights ) ) )
+              {
+              weights[[j]][which( weights[[j]] < -self$clipValue )] <- -self$clipValue
+              weights[[j]][which( weights[[j]] > self$clipValue )] <- self$clipValue
+              }
+            self$critic$layers[[i]]$set_weights( weights )
             }
-          self$critic$layers[[i]]$set_weights( weights )
           }
 
         # train generator
@@ -283,30 +285,55 @@ WassersteinGanModel <- R6::R6Class( "WassersteinGanModel",
           mean = 0, sd = 1 ), dim = c( batchSize, self$latentDimension ) )
         gLoss <- self$combinedModel$train_on_batch( noise, valid )
 
-        cat( "Epoch ", epoch, ": [Critic loss: ", dLoss[[1]],
-             " acc: ", dLoss[[2]], "] ", "[Generator loss: ", gLoss, "]\n",
+        cat( "Epoch ", epoch, ": [Critic loss: ", 1.0 - dLoss[[1]],
+             "[Generator loss: ", 1.0 - gLoss[[1]], "]\n",
              sep = '' )
 
-        if( ! is.na( sampleInterval ) )
+        if( self$dimensionality == 2 )
           {
-          if( ( ( epoch - 1 ) %% sampleInterval ) == 0 )
+          if( ! is.na( sampleInterval ) )
             {
-            noise <- array( data = rnorm( n = 1 * self$latentDimension,
-                                          mean = 0, sd = 1 ),
-                            dim = c( 1, self$latentDimension ) )
-            X_generated <- ganModel$generator$predict( noise )
+            if( ( ( epoch - 1 ) %% sampleInterval ) == 0 )
+              {
+              # Do a 5x5 grid
 
-            # Convert to [0,255] to write as jpg using ANTsR
+              predictedBatchSize <- 5 * 5
+              noise <- array( data = rnorm( n = predictedBatchSize * self$latentDimension,
+                                            mean = 0, sd = 1 ),
+                              dim = c( predictedBatchSize, self$latentDimension ) )
+              X_generated <- ganModel$generator$predict( noise )
 
-            X_generated <- 255 * ( X_generated - min( X_generated ) ) /
-              ( max( X_generated ) - min( X_generated ) )
-            X_generated <- drop( X_generated )
-            X_generated[] <- as.integer( X_generated )
+              # Convert to [0,255] to write as jpg using ANTsR
 
-            imageFileName <- paste0( sampleFilePrefix, "_iteration" , epoch, ".jpg" )
-            cat( "   --> writing sample image: ", imageFileName, "\n" )
-            antsImageWrite( as.antsImage( X_generated, pixeltype = "unsigned char" ),
-              imageFileName )
+              X_generated <- 255 * ( X_generated - min( X_generated ) ) /
+                ( max( X_generated ) - min( X_generated ) )
+              X_generated <- drop( X_generated )
+              X_generated[] <- as.integer( X_generated )
+
+              X_tiled <- array( data = 0,
+                dim = c( 5 * dim( X_generated )[2], 5 * dim( X_generated )[3] ) )
+              for( i in 1:5 )
+                {
+                indices_i <- ( ( i - 1 ) * dim( X_generated )[2] + 1 ):( i * dim( X_generated )[2] )
+                for( j in 1:5 )
+                  {
+                  indices_j <- ( ( j - 1 ) * dim( X_generated )[3] + 1 ):( j * dim( X_generated )[3] )
+
+                  X_tiled[indices_i, indices_j] <- X_generated[( i - 1 ) * 5 + j,,]
+                  }
+                }
+
+              sampleDir <- dirname( sampleFilePrefix )
+              if( ! dir.exists( sampleDir ) )
+                {
+                dir.create( sampleDir, showWarnings = TRUE, recursive = TRUE )
+                }
+
+              imageFileName <- paste0( sampleFilePrefix, "_iteration" , epoch, ".jpg" )
+              cat( "   --> writing sample image: ", imageFileName, "\n" )
+              antsImageWrite( as.antsImage( t( X_tiled ), pixeltype = "unsigned char" ),
+                imageFileName )
+              }
             }
           }
         }
