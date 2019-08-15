@@ -70,12 +70,24 @@ VanillaGanModel <- R6::R6Class( "VanillaGanModel",
 
     inputImageSize = c( 28, 28, 1 ),
 
+    dimensionality = 2,
+
     latentDimension = 100,
 
     initialize = function( inputImageSize, latentDimension = 100 )
       {
       self$inputImageSize <- inputImageSize
       self$latentDimension <- latentDimension
+
+      self$dimensionality <- NA
+      if( length( self$inputImageSize ) == 3 )
+        {
+        self$dimensionality <- 2
+        } else if( length( self$inputImageSize ) == 4 ) {
+        self$dimensionality <- 3
+        } else {
+        stop( "Incorrect size for inputImageSize.\n" )
+        }
 
       optimizer <- optimizer_adam( lr = 0.0002, beta_1 = 0.5 )
 
@@ -182,26 +194,51 @@ VanillaGanModel <- R6::R6Class( "VanillaGanModel",
              " acc: ", dLoss[[2]], "] ", "[Generator loss: ", gLoss, "]\n",
              sep = '' )
 
-        if( ! is.na( sampleInterval ) )
+        if( self$dimensionality == 2 )
           {
-          if( ( ( epoch - 1 ) %% sampleInterval ) == 0 )
+          if( ! is.na( sampleInterval ) )
             {
-            noise <- array( data = rnorm( n = 1 * self$latentDimension,
-                                          mean = 0, sd = 1 ),
-                            dim = c( 1, self$latentDimension ) )
-            X_generated <- ganModel$generator$predict( noise )
+            if( ( ( epoch - 1 ) %% sampleInterval ) == 0 )
+              {
+              # Do a 5x5 grid
 
-            # Convert to [0,255] to write as jpg using ANTsR
+              predictedBatchSize <- 5 * 5
+              noise <- array( data = rnorm( n = predictedBatchSize * self$latentDimension,
+                                            mean = 0, sd = 1 ),
+                              dim = c( predictedBatchSize, self$latentDimension ) )
+              X_generated <- ganModel$generator$predict( noise )
 
-            X_generated <- 255 * ( X_generated - min( X_generated ) ) /
-              ( max( X_generated ) - min( X_generated ) )
-            X_generated <- drop( X_generated )
-            X_generated[] <- as.integer( X_generated )
+              # Convert to [0,255] to write as jpg using ANTsR
 
-            imageFileName <- paste0( sampleFilePrefix, "_iteration" , epoch, ".jpg" )
-            cat( "   --> writing sample image: ", imageFileName, "\n" )
-            antsImageWrite( as.antsImage( X_generated, pixeltype = "unsigned char" ),
-              imageFileName )
+              X_generated <- 255 * ( X_generated - min( X_generated ) ) /
+                ( max( X_generated ) - min( X_generated ) )
+              X_generated <- drop( X_generated )
+              X_generated[] <- as.integer( X_generated )
+
+              X_tiled <- array( data = 0,
+                dim = c( 5 * dim( X_generated )[2], 5 * dim( X_generated )[3] ) )
+              for( i in 1:5 )
+                {
+                indices_i <- ( ( i - 1 ) * dim( X_generated )[2] + 1 ):( i * dim( X_generated )[2] )
+                for( j in 1:5 )
+                  {
+                  indices_j <- ( ( j - 1 ) * dim( X_generated )[3] + 1 ):( j * dim( X_generated )[3] )
+
+                  X_tiled[indices_i, indices_j] <- X_generated[( i - 1 ) * 5 + j,,]
+                  }
+                }
+
+              sampleDir <- dirname( sampleFilePrefix )
+              if( ! dir.exists( sampleDir ) )
+                {
+                dir.create( sampleDir, showWarnings = TRUE, recursive = TRUE )
+                }
+
+              imageFileName <- paste0( sampleFilePrefix, "_iteration" , epoch, ".jpg" )
+              cat( "   --> writing sample image: ", imageFileName, "\n" )
+              antsImageWrite( as.antsImage( t( X_tiled ), pixeltype = "unsigned char" ),
+                imageFileName )
+              }
             }
           }
         }

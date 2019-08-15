@@ -92,7 +92,6 @@ DeepConvolutionalGanModel <- R6::R6Class( "DeepConvolutionalGanModel",
       optimizer <- optimizer_adam( lr = 0.0002, beta_1 = 0.5 )
 
       self$discriminator <- self$buildDiscriminator()
-
       self$discriminator$compile( loss = 'binary_crossentropy',
         optimizer = optimizer, metrics = list( 'acc' ) )
       self$discriminator$trainable <- FALSE
@@ -143,17 +142,12 @@ DeepConvolutionalGanModel <- R6::R6Class( "DeepConvolutionalGanModel",
 
       model <- model %>% layer_dense( units = penultimateLayer$output_shape[[2]],
         input_shape = c( self$latentDimension ), activation = "relu" )
-
       convLayer <- encoderLayers[[length( encoderLayers ) - 2]]
       resampledSize <- convLayer$output_shape
       model <- model %>% layer_reshape( unlist( resampledSize ) )
-      model <- model %>% layer_conv_2d(
-        filters = numberOfFiltersPerLayer[1], kernel_size = kernelSize,
-        padding = 'same' )
-      model <- model %>% layer_batch_normalization( momentum = 0.8 )
 
-      count <- 2
-      for( i in seq( from = length( encoderLayers ) - 3, to = 2, by = -1 ) )
+      count <- 1
+      for( i in seq( from = length( encoderLayers ) - 2, to = 2, by = -1 ) )
         {
         convLayer <- encoderLayers[[i]]
         resampledSize <- unlist( convLayer$output_shape )[1:self$dimensionality]
@@ -183,14 +177,15 @@ DeepConvolutionalGanModel <- R6::R6Class( "DeepConvolutionalGanModel",
           shape = as.integer( self$inputImageSize[1:self$dimensionality] ),
           interpolationType = 'linear' )
         model <- model %>% layer_conv_2d( filters = numberOfChannels,
-          kernel_size = kernelSize, activation = 'tanh', padding = 'same' )
+          kernel_size = kernelSize, padding = 'same' )
         } else {
         model <- model %>% layer_resample_tensor_3d(
           shape = as.integer( self$inputImageSize[1:self$dimensionality] ),
           interpolationType = 'linear' )
         model <- model %>% layer_conv_3d( filters = numberOfChannels,
-          kernel_size = kernelSize, activation = 'tanh', padding = 'same' )
+          kernel_size = kernelSize, padding = 'same' )
         }
+      model <- model %>% layer_activation( "tanh" )
 
       noise <- layer_input( shape = c( self$latentDimension ) )
       image <- model( noise )
@@ -266,26 +261,51 @@ DeepConvolutionalGanModel <- R6::R6Class( "DeepConvolutionalGanModel",
              " acc: ", dLoss[[2]], "] ", "[Generator loss: ", gLoss, "]\n",
              sep = '' )
 
-        if( ! is.na( sampleInterval ) )
+        if( self$dimensionality == 2 )
           {
-          if( ( ( epoch - 1 ) %% sampleInterval ) == 0 )
+          if( ! is.na( sampleInterval ) )
             {
-            noise <- array( data = rnorm( n = 1 * self$latentDimension,
-                                          mean = 0, sd = 1 ),
-                            dim = c( 1, self$latentDimension ) )
-            X_generated <- ganModel$generator$predict( noise )
+            if( ( ( epoch - 1 ) %% sampleInterval ) == 0 )
+              {
+              # Do a 5x5 grid
 
-            # Convert to [0,255] to write as jpg using ANTsR
+              predictedBatchSize <- 5 * 5
+              noise <- array( data = rnorm( n = predictedBatchSize * self$latentDimension,
+                                            mean = 0, sd = 1 ),
+                              dim = c( predictedBatchSize, self$latentDimension ) )
+              X_generated <- ganModel$generator$predict( noise )
 
-            X_generated <- 255 * ( X_generated - min( X_generated ) ) /
-              ( max( X_generated ) - min( X_generated ) )
-            X_generated <- drop( X_generated )
-            X_generated[] <- as.integer( X_generated )
+              # Convert to [0,255] to write as jpg using ANTsR
 
-            imageFileName <- paste0( sampleFilePrefix, "_iteration" , epoch, ".jpg" )
-            cat( "   --> writing sample image: ", imageFileName, "\n" )
-            antsImageWrite( as.antsImage( X_generated, pixeltype = "unsigned char" ),
-              imageFileName )
+              X_generated <- 255 * ( X_generated - min( X_generated ) ) /
+                ( max( X_generated ) - min( X_generated ) )
+              X_generated <- drop( X_generated )
+              X_generated[] <- as.integer( X_generated )
+
+              X_tiled <- array( data = 0,
+                dim = c( 5 * dim( X_generated )[2], 5 * dim( X_generated )[3] ) )
+              for( i in 1:5 )
+                {
+                indices_i <- ( ( i - 1 ) * dim( X_generated )[2] + 1 ):( i * dim( X_generated )[2] )
+                for( j in 1:5 )
+                  {
+                  indices_j <- ( ( j - 1 ) * dim( X_generated )[3] + 1 ):( j * dim( X_generated )[3] )
+
+                  X_tiled[indices_i, indices_j] <- X_generated[( i - 1 ) * 5 + j,,]
+                  }
+                }
+
+              sampleDir <- dirname( sampleFilePrefix )
+              if( ! dir.exists( sampleDir ) )
+                {
+                dir.create( sampleDir, showWarnings = TRUE, recursive = TRUE )
+                }
+
+              imageFileName <- paste0( sampleFilePrefix, "_iteration" , epoch, ".jpg" )
+              cat( "   --> writing sample image: ", imageFileName, "\n" )
+              antsImageWrite( as.antsImage( t( X_tiled ), pixeltype = "unsigned char" ),
+                imageFileName )
+              }
             }
           }
         }
