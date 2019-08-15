@@ -210,10 +210,12 @@ DeepConvolutionalGanModel <- R6::R6Class( "DeepConvolutionalGanModel",
         if( self$dimensionality == 2 )
           {
           model <- model %>% layer_conv_2d( input_shape = self$inputImageSize,
-            filters = numberOfFiltersPerLayer[i], kernel_size = kernelSize )
+            filters = numberOfFiltersPerLayer[i], kernel_size = kernelSize,
+            strides = 2, padding = 'same' )
           } else {
           model <- model %>% layer_conv_3d( input_shape = self$inputImageSize,
-            filters = numberOfFiltersPerLayer[i], kernel_size = kernelSize )
+            filters = numberOfFiltersPerLayer[i], kernel_size = kernelSize,
+            strides = 2, padding = 'same' )
           }
         model <- model %>% layer_batch_normalization( momentum = 0.8 )
         model <- model %>% layer_activation_leaky_relu( alpha = 0.2 )
