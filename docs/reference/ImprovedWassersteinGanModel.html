@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Wasserstein GAN model — WassersteinGanModel • ANTsRNet</title>
+<title>Improved Wasserstein GAN model — ImprovedWassersteinGanModel • ANTsRNet</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,9 +30,10 @@
 
 
 
-<meta property="og:title" content="Wasserstein GAN model — WassersteinGanModel" />
+<meta property="og:title" content="Improved Wasserstein GAN model — ImprovedWassersteinGanModel" />
 
-<meta property="og:description" content="Wasserstein generative adverserial network from the paper:" />
+<meta property="og:description" content="Improved Wasserstein generative adverserial network (with
+gradient penalty) from the paper:" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -92,23 +93,24 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Wasserstein GAN model</h1>
+    <h1>Improved Wasserstein GAN model</h1>
     
-    <div class="hidden name"><code>WassersteinGanModel.Rd</code></div>
+    <div class="hidden name"><code>ImprovedWassersteinGanModel.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Wasserstein generative adverserial network from the paper:</p>
+    <p>Improved Wasserstein generative adverserial network (with
+gradient penalty) from the paper:</p>
     
     </div>
 
         
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>https://arxiv.org/abs/1701.07875</p>
+    <p>https://arxiv.org/abs/1704.00028</p>
 <p>and ported from the Keras (python) implementation:</p>
-<p>https://github.com/eriklindernoren/Keras-GAN/blob/master/wgan/wgan.py</p>
+<p>https://github.com/eriklindernoren/Keras-GAN/blob/master/wgan_gp/wgan_gp.py</p>
     
     <h2 class="hasAnchor" id="usage"><a class="anchor" href="#usage"></a>Usage</h2>
 
@@ -153,7 +155,7 @@ generator and critic.
 
 <span class='co'># Instantiate the WGAN model</span>
 
-<span class='no'>ganModel</span> <span class='kw'>&lt;-</span> <span class='no'>WassersteinGanModel</span>$<span class='fu'>new</span>(
+<span class='no'>ganModel</span> <span class='kw'>&lt;-</span> <span class='no'>ImprovedWassersteinGanModel</span>$<span class='fu'>new</span>(
    <span class='kw'>inputImageSize</span> <span class='kw'>=</span> <span class='no'>inputImageSize</span>,
    <span class='kw'>latentDimension</span> <span class='kw'>=</span> <span class='fl'>100</span> )
 

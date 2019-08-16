@@ -1,12 +1,13 @@
-#' Wasserstein GAN model
+#' Improved Wasserstein GAN model
 #'
-#' Wasserstein generative adverserial network from the paper:
+#' Improved Wasserstein generative adverserial network (with
+#' gradient penalty) from the paper:
 #'
-#'   https://arxiv.org/abs/1701.07875
+#'   https://arxiv.org/abs/1704.00028
 #'
 #' and ported from the Keras (python) implementation:
 #'
-#'   https://github.com/eriklindernoren/Keras-GAN/blob/master/wgan/wgan.py
+#'   https://github.com/eriklindernoren/Keras-GAN/blob/master/wgan_gp/wgan_gp.py
 #'
 #' @docType class
 #'
@@ -49,18 +50,18 @@
 #'
 #' # Instantiate the WGAN model
 #'
-#' ganModel <- WassersteinGanModel$new(
+#' ganModel <- ImprovedWassersteinGanModel$new(
 #'    inputImageSize = inputImageSize,
 #'    latentDimension = 100 )
 #'
 #' ganModel$train( x, numberOfEpochs = 100 )
 #' }
 #'
-#' @name WassersteinGanModel
+#' @name ImprovedWassersteinGanModel
 NULL
 
 #' @export
-WassersteinGanModel <- R6::R6Class( "WassersteinGanModel",
+ImprovedWassersteinGanModel <- R6::R6Class( "ImprovedWassersteinGanModel",
 
   inherit = NULL,
 
@@ -76,15 +77,12 @@ WassersteinGanModel <- R6::R6Class( "WassersteinGanModel",
 
     numberOfCriticIterations = 5,
 
-    clipValue = 0.01,
-
     initialize = function( inputImageSize, latentDimension = 100,
       numberOfCriticIterations = 5, clipValue = 0.01 )
       {
       self$inputImageSize <- inputImageSize
       self$latentDimension <- latentDimension
       self$numberOfCriticIterations <- numberOfCriticIterations
-      self$clipValue <- clipValue
 
       self$dimensionality <- NA
       if( length( self$inputImageSize ) == 3 )
@@ -98,21 +96,65 @@ WassersteinGanModel <- R6::R6Class( "WassersteinGanModel",
 
       optimizer <- optimizer_rmsprop( lr = 0.00005 )
 
-      self$critic <- self$buildCritic()
-      self$critic$compile( loss = self$wassersteinLoss,
-        optimizer = optimizer, metrics = list( 'acc' ) )
-      self$critic$trainable <- FALSE
-
       self$generator <- self$buildGenerator()
+      self$critic <- self$buildCritic()
 
-      z <- layer_input( shape = c( self$latentDimension ) )
-      image <- self$generator( z )
+      self$generator$trainable <- FALSE
 
+      realImage <- layer_input( shape = self$inputImageSize )
+
+      criticNoise <- layer_input( shape = c( self$latentDimension ) )
+      fakeImage <- self$generator( criticNoise )
+
+      fakeValidity <- self$critic( fakeImage )
+      realValidity <- self$critic( realImage )
+
+      interpolatedImage <- list( fakeImage, realImage ) %>%
+        layer_lambda(
+          f = function( X )
+            {
+            K <- keras::backend()
+            inputShape <- K$int_shape( X[[1]] )
+            batchSize <- inputShape[[1]]
+            if( self$dimensionality == 2 )
+              {
+              alpha <- K$random_uniform( c( batchSize, 1L, 1L, 1L ) )
+              } else {
+              alpha <- K$random_uniform( c( batchSize, 1L, 1L, 1L, 1L ) )
+              }
+            return( alpha * X[[1]] + ( 1.0 - alpha ) * X[[2]] )
+            }
+          )
+
+      interpolatedValidity <- self$critic( interpolatedImage )
+
+      partialGradientPenaltyLoss <- custom_metric( "partialGradientPenaltyLoss",
+        function( y_true, y_pred )
+          {
+          self$gradientPenaltyLoss( y_true, y_pred,
+            averagedSamples = interpolatedImage )
+          }
+        )
+
+      # Construct the critic model
+
+      self$criticModel <- keras_model( inputs = list( realImage, criticNoise ),
+        outputs = list( realValidity, fakeValidity, interpolatedValidity ) )
+      self$criticModel$compile( loss = list(
+        self$wassersteinLoss, self$wassersteinLoss, partialGradientPenaltyLoss ),
+        optimizer = optimizer, loss_weights = list( 1, 1, 10 ) )
+
+      # Freeze the critic's layers for the generator model
+      self$critic$trainable <- FALSE
+      self$generator$trainable <- TRUE
+
+      noise <- layer_input( shape = c( self$latentDimension ) )
+      image <- self$generator( noise )
       validity <- self$critic( image )
 
-      self$combinedModel <- keras_model( inputs = z, outputs = validity )
-      self$combinedModel$compile( loss = self$wassersteinLoss,
-        optimizer = optimizer, metrics = list( "acc" ) )
+      self$generatorModel <- keras_model( inputs = noise, outputs = validity )
+      self$generatorModel$compile( loss = self$wassersteinLoss,
+        optimizer = optimizer )
       },
 
     wassersteinLoss = function( y_true, y_pred )
@@ -121,6 +163,18 @@ WassersteinGanModel <- R6::R6Class( "WassersteinGanModel",
 
       K <- keras::backend()
       return( K$mean( y_true * y_pred ) )
+      },
+
+    gradientPenaltyLoss = function( y_true, y_pred, averagedSamples )
+      {
+      K <- keras::backend()
+      gradients <- K$gradients( y_pred, averagedSamples )[1]
+      gradientsSquared <- K$square( gradients )
+      gradientsSquaredSum <- K$sum( gradientsSquared,
+        axis = seq( 2, length( gradientsSquared$shape ) ) )
+      gradientsL2Norm <- K$sqrt( gradientsSquaredSum )
+      gradientPenalty <- K$square( 1.0 - gradientsL2Norm )
+      return( K$mean( gradientPenalty ) )
       },
 
     buildGenerator = function( numberOfFiltersPerLayer = c( 128, 64 ),
@@ -257,10 +311,12 @@ WassersteinGanModel <- R6::R6Class( "WassersteinGanModel",
       {
       valid <- array( data = -1, dim = c( batchSize, 1 ) )
       fake <- array( data = 1, dim = c( batchSize, 1 ) )
+      dummy <- array( data = 0, dim = c( batchSize, 1 ) )
 
       for( epoch in seq_len( numberOfEpochs ) )
         {
-        # train critic
+
+        # Train critic
 
         for( c in seq_len( self$numberOfCriticIterations ) )
           {
@@ -269,35 +325,17 @@ WassersteinGanModel <- R6::R6Class( "WassersteinGanModel",
 
           noise <- array( data = rnorm( n = batchSize * self$latentDimension,
             mean = 0, sd = 1 ), dim = c( batchSize, self$latentDimension ) )
-          X_fake_batch <- self$generator$predict( noise )
 
-          dLossReal <- self$critic$train_on_batch( X_valid_batch, valid )
-          dLossFake <- self$critic$train_on_batch( X_fake_batch, fake )
-          dLoss <- list( 0.5 * ( dLossReal[[1]] + dLossFake[[1]] ),
-                         0.5 * ( dLossReal[[2]] + dLossFake[[2]] ) )
-
-          # Clip critic weights
-
-          for( i in seq_len( length( self$critic$layers ) ) )
-            {
-            weights <- self$critic$layers[[i]]$get_weights()
-            for( j in seq_len( length( weights ) ) )
-              {
-              weights[[j]][which( weights[[j]] < -self$clipValue )] <- -self$clipValue
-              weights[[j]][which( weights[[j]] > self$clipValue )] <- self$clipValue
-              }
-            self$critic$layers[[i]]$set_weights( weights )
-            }
+          dLoss <- self$criticModel$train_on_batch(
+            list( X_valid_batch, noise ), list( valid, fake, dummy ) )
           }
 
-        # train generator
+        # Train generator
 
-        noise <- array( data = rnorm( n = batchSize * self$latentDimension,
-          mean = 0, sd = 1 ), dim = c( batchSize, self$latentDimension ) )
-        gLoss <- self$combinedModel$train_on_batch( noise, valid )
+        gLoss <- self$generatorModel$train_on_batch( noise, valid )
 
-        cat( "Epoch ", epoch, ": [Critic loss: ", 1.0 - dLoss[[1]],
-             "] [Generator loss: ", 1.0 - gLoss[[1]], "]\n",
+        cat( "Epoch ", epoch, ": [Critic loss: ", dLoss[[1]],
+             "] [Generator loss: ", gLoss, "]\n",
              sep = '' )
 
         if( self$dimensionality == 2 )
