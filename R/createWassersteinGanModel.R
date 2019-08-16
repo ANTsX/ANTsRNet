@@ -215,17 +215,25 @@ WassersteinGanModel <- R6::R6Class( "WassersteinGanModel",
 
       for( i in seq_len( length( numberOfFiltersPerLayer ) ) )
         {
+        strides = 2
+        if( i == length( numberOfFiltersPerLayer ) )
+          {
+          strides = 1
+          }
         if( self$dimensionality == 2 )
           {
           model <- model %>% layer_conv_2d( input_shape = self$inputImageSize,
             filters = numberOfFiltersPerLayer[i], kernel_size = kernelSize,
-            strides = 2, padding = 'same' )
+            strides = strides, padding = 'same' )
           } else {
           model <- model %>% layer_conv_3d( input_shape = self$inputImageSize,
             filters = numberOfFiltersPerLayer[i], kernel_size = kernelSize,
-            strides = 2, padding = 'same' )
+            strides = strides, padding = 'same' )
           }
-        model <- model %>% layer_batch_normalization( momentum = 0.8 )
+        if( i > 1 )
+          {
+          model <- model %>% layer_batch_normalization( momentum = 0.8 )
+          }
         model <- model %>% layer_activation_leaky_relu( alpha = 0.2 )
         model <- model %>% layer_dropout( rate = dropoutRate )
         }
@@ -245,8 +253,8 @@ WassersteinGanModel <- R6::R6Class( "WassersteinGanModel",
     train = function( X_train, numberOfEpochs, batchSize = 128,
       sampleInterval = NA, sampleFilePrefix = 'sample' )
       {
-      valid <- array( data = 1, dim = c( batchSize, 1 ) )
-      fake <- array( data = 0, dim = c( batchSize, 1 ) )
+      valid <- array( data = -1, dim = c( batchSize, 1 ) )
+      fake <- array( data = 1, dim = c( batchSize, 1 ) )
 
       for( epoch in seq_len( numberOfEpochs ) )
         {
