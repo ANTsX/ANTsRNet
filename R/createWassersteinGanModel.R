@@ -142,7 +142,8 @@ WassersteinGanModel <- R6::R6Class( "WassersteinGanModel",
         } else {
         aeModel <- createConvolutionalAutoencoderModel3D(
           inputImageSize = self$inputImageSize,
-            c( rev( numberOfFiltersPerLayer ), self$latentDimension ),
+            numberOfFiltersPerLayer =
+              c( rev( numberOfFiltersPerLayer ), self$latentDimension ),
           convolutionKernelSize = c( 5, 5, 5 ),
           deconvolutionKernelSize = c( 5, 5, 5 ) )
         encoder <- aeModel$ConvolutionalEncoderModel
@@ -286,7 +287,7 @@ WassersteinGanModel <- R6::R6Class( "WassersteinGanModel",
         gLoss <- self$combinedModel$train_on_batch( noise, valid )
 
         cat( "Epoch ", epoch, ": [Critic loss: ", 1.0 - dLoss[[1]],
-             "[Generator loss: ", 1.0 - gLoss[[1]], "]\n",
+             "] [Generator loss: ", 1.0 - gLoss[[1]], "]\n",
              sep = '' )
 
         if( self$dimensionality == 2 )
