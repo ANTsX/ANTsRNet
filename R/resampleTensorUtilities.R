@@ -395,7 +395,6 @@ ResampleTensorLayer3D <- R6::R6Class( "ResampleTensorLayer3D",
       inputShape <- unlist( inputShape )
       oldSize <- inputShape[2:( dimensionality + 1 )]
 
-      batchSize <- inputShape[1]
       channelSize <- tail( inputShape, 1 )
 
       if( all( newSize == oldSize ) )
@@ -425,7 +424,7 @@ ResampleTensorLayer3D <- R6::R6Class( "ResampleTensorLayer3D",
         stop( "Interpolation type not recognized." )
         }
 
-      newShape_yz <- c( batchSize, oldSize[1], newSize[2], newSize[3], channelSize )
+      newShape_yz <- c( -1L, oldSize[1], newSize[2], newSize[3], channelSize )
       resumeTensor_yz <- tensorflow::tf$reshape( resampledTensor_yz, newShape_yz )
 
       # Do x
@@ -452,7 +451,7 @@ ResampleTensorLayer3D <- R6::R6Class( "ResampleTensorLayer3D",
         stop( "Interpolation type not recognized." )
         }
 
-      newShape_x <- c( batchSize, newSize[3], newSize[2], newSize[1], channelSize )
+      newShape_x <- c( -1L, newSize[3], newSize[2], newSize[1], channelSize )
       resumeTensor_x <- tensorflow::tf$reshape( resampledTensor_x, newShape_x )
 
       resampledTensor <- tensorflow::tf$transpose( resumeTensor_x, c( 0L, 3L, 2L, 1L, 4L ) )
