@@ -104,7 +104,6 @@ MixtureDensityNetworkLayer <- R6::R6Class( "MixtureDensityNetworkLayer",
         shape = shape( units2 ),
         initializer = initializer_zeros(),
         trainable = TRUE )
-
       },
 
     call = function( inputs, mask = NULL )

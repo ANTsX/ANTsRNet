@@ -53,7 +53,8 @@ InpaintingDeepFillModel <- R6::R6Class( "InpaintingDeepFillModel",
 
     tf = tensorflow::tf,
 
-    initialize = function( inputImageSize, batchSize = 32, numberOfFiltersBaseLayer = 32L )
+    initialize = function( inputImageSize, batchSize = 32,
+      numberOfFiltersBaseLayer = 32L )
       {
       self$inputImageSize <- inputImageSize
       if( length( inputImageSize ) == 3 )
@@ -76,33 +77,34 @@ InpaintingDeepFillModel <- R6::R6Class( "InpaintingDeepFillModel",
         {
         output <- model %>% layer_conv_2d( filters = numberOfFilters,
             kernel_size = kernelSize, strides = stride,
-            dilation_rate = dilationRate, activation = activation, padding = 'same',
-            trainable = trainable, name = name )
+            dilation_rate = dilationRate, activation = activation,
+            padding = 'same',vtrainable = trainable, name = name )
         } else {
         output <- model %>% layer_conv_3d( filters = numberOfFilters,
             kernel_size = kernelSize, strides = stride,
-            dilation_rate = dilationRate, activation = activation, padding = 'same',
-            trainable = trainable, name = name )
+            dilation_rate = dilationRate, activation = activation,
+            padding = 'same', trainable = trainable, name = name )
         }
 
       return( output )
       },
 
     discriminativeConvolutionLayer = function( model, numberOfFilters,
-      kernelSize = 5L, stride = 2L, dilationRate = 1L, activation = 'leaky_relu',
-      trainable = TRUE, name = '' )
+      kernelSize = 5L, stride = 2L, dilationRate = 1L,
+      activation = 'leaky_relu', trainable = TRUE, name = '' )
       {
       output <- NULL
       if( self$dimensionality == 2 )
         {
         output <- model %>% layer_conv_2d( filters = numberOfFilters,
-            kernel_size = kernelSize, strides = stride, dilation_rate = dilationRate,
-            activation = activation, padding = 'same', trainable = trainable, name = name )
+            kernel_size = kernelSize, strides = stride,
+            dilation_rate = dilationRate, activation = activation,
+            padding = 'same', trainable = trainable, name = name )
         } else {
         output <- model %>% layer_conv_3d( filters = numberOfFilters,
             kernel_size = kernelSize, strides = stride,
-            dilation_rate = dilationRate, activation = activation, padding = 'same',
-            trainable = trainable, name = name )
+            dilation_rate = dilationRate, activation = activation,
+            padding = 'same',vtrainable = trainable, name = name )
         }
       return( output )
       },
@@ -119,9 +121,9 @@ InpaintingDeepFillModel <- R6::R6Class( "InpaintingDeepFillModel",
       resizedModel <- NULL
       if( self$dimensionality == 2 )
         {
-        resizedModel <- layer_resample_tensor_2d( model, newSize, "nearestNeighbor" )
+        resizedModel <- layer_resample_tensor_2d( model, newSize )
         } else {
-        resizedModel <- layer_resample_tensor_3d( model, newSize, "nearestNeighbor" )
+        resizedModel <- layer_resample_tensor_3d( model, newSize )
         }
       output <- self$generativeConvolutionLayer( resizedModel,
         numberOfFilters = numberOfFilters, kernelSize = 3, stride = 1,
@@ -134,8 +136,10 @@ InpaintingDeepFillModel <- R6::R6Class( "InpaintingDeepFillModel",
       {
       K <- keras::backend()
 
-      imageInput <- layer_input( batch_shape = c( self$batchSize, self$inputImageSize ) )
-      maskInput <- layer_input( batch_shape = c( 1, self$inputImageSize[1:self$dimensionality], 1 ) )
+      imageInput <- layer_input( batch_shape =
+        c( self$batchSize, self$inputImageSize ) )
+      maskInput <- layer_input( batch_shape =
+        c( 1, self$inputImageSize[1:self$dimensionality], 1 ) )
 
       output <- imageInput
 
@@ -150,21 +154,29 @@ InpaintingDeepFillModel <- R6::R6Class( "InpaintingDeepFillModel",
           { K$ones_like( X )[,,,1, drop = FALSE] } )
         }
 
-      maskedOnes <- list( ones, maskInput ) %>% layer_lambda( f = function( inputs )
+      maskedOnes <- list( ones, maskInput ) %>% layer_lambda(
+        f = function( inputs )
           { return( inputs[[1]] * inputs[[2]] ) } )
       output <- layer_concatenate( list( output, ones, maskedOnes ),
                  axis = as.integer( self$dimensionality + 1 ) )
 
       # Stage 1
 
-      output <- self$generativeConvolutionLayer( output,     self$numberOfFiltersBaseLayer, 5L, 1L, 1L )
-      output <- self$generativeConvolutionLayer( output, 2 * self$numberOfFiltersBaseLayer, 3L, 2L, 1L )
-      output <- self$generativeConvolutionLayer( output, 2 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
-      output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 2L, 1L )
-      output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
-      output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
+      output <- self$generativeConvolutionLayer( output,
+        self$numberOfFiltersBaseLayer, 5L, 1L, 1L )
+      output <- self$generativeConvolutionLayer( output,
+        2 * self$numberOfFiltersBaseLayer, 3L, 2L, 1L )
+      output <- self$generativeConvolutionLayer( output,
+        2 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
+      output <- self$generativeConvolutionLayer( output,
+        4 * self$numberOfFiltersBaseLayer, 3L, 2L, 1L )
+      output <- self$generativeConvolutionLayer( output,
+        4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
+      output <- self$generativeConvolutionLayer( output,
+        4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
 
-      outputShape <- unlist( K$int_shape( output ) )[2:( self$dimensionality + 1 )]
+      outputShape <- unlist(
+        K$int_shape( output ) )[2:( self$dimensionality + 1 )]
 
       resampledMaskInput <- NULL
       if( self$dimensionality == 2 )
@@ -176,93 +188,136 @@ InpaintingDeepFillModel <- R6::R6Class( "InpaintingDeepFillModel",
           shape = outputShape, interpolationType = 'nearestNeighbor' )
         }
 
-      output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 2L )
-      output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 4L )
-      output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 8L )
-      output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 16L )
+      output <- self$generativeConvolutionLayer(
+        output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 2L )
+      output <- self$generativeConvolutionLayer(
+        output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 4L )
+      output <- self$generativeConvolutionLayer(
+        output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 8L )
+      output <- self$generativeConvolutionLayer(
+        output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 16L )
 
-      output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
-      output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
+      output <- self$generativeConvolutionLayer(
+        output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
+      output <- self$generativeConvolutionLayer(
+        output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
 
-      output <- self$generativeDeconvolutionLayer( output, 2 * self$numberOfFiltersBaseLayer )
-      output <- self$generativeConvolutionLayer( output, 2 * self$numberOfFiltersBaseLayer, 3L, 1L )
-      output <- self$generativeDeconvolutionLayer( output, self$numberOfFiltersBaseLayer )
+      output <- self$generativeDeconvolutionLayer(
+        output, 2 * self$numberOfFiltersBaseLayer )
+      output <- self$generativeConvolutionLayer(
+        output, 2 * self$numberOfFiltersBaseLayer, 3L, 1L )
+      output <- self$generativeDeconvolutionLayer(
+        output, self$numberOfFiltersBaseLayer )
 
-      output <- self$generativeConvolutionLayer( output, as.integer( self$numberOfFiltersBaseLayer / 2 ), 3L, 1L )
-      output <- self$generativeConvolutionLayer( output, 3L, 3L, 1L, activation = NULL )
+      output <- self$generativeConvolutionLayer(
+        output, as.integer( self$numberOfFiltersBaseLayer / 2 ), 3L, 1L )
+      output <- self$generativeConvolutionLayer(
+        output, 3L, 3L, 1L, activation = NULL )
 
       output <- output %>% layer_lambda( function( X )
         { return( self$tf$clip_by_value( X, -1.0, 1.0 ) ) } )
 
-      modelStage1 <- keras_model( inputs = list( imageInput, maskInput ), outputs = output )
+      modelStage1 <- keras_model( inputs = list( imageInput, maskInput ),
+        outputs = output )
 
       # Stage 2
 
-      maskedOnes <- list( ones, maskInput ) %>% layer_lambda( f = function( inputs )
+      maskedOnes <- list( ones, maskInput ) %>%
+        layer_lambda( f = function( inputs )
           { return( inputs[[1]] * inputs[[2]] ) } )
 
-      output <- list( output, maskInput, imageInput ) %>% layer_lambda( f = function( inputs )
-          { return( inputs[[1]] * inputs[[2]] + inputs[[3]] * ( 1.0 - inputs[[2]] ) ) } )
+      output <- list( output, maskInput, imageInput ) %>%
+        layer_lambda( f = function( inputs )
+          { return( inputs[[1]] * inputs[[2]] + inputs[[3]] *
+            ( 1.0 - inputs[[2]] ) )
+          } )
 
       # Conv branch
 
       outputNow <- layer_concatenate( list( output, ones, maskedOnes ),
-                                     axis = as.integer( self$dimensionality + 1 ) )
-      output <- self$generativeConvolutionLayer( outputNow,  self$numberOfFiltersBaseLayer, 5, 1L, 1L )
-      output <- self$generativeConvolutionLayer( output,     self$numberOfFiltersBaseLayer, 3L, 2L, 1L )
-      output <- self$generativeConvolutionLayer( output, 2 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
-      output <- self$generativeConvolutionLayer( output, 2 * self$numberOfFiltersBaseLayer, 3L, 2L, 1L )
-      output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
-      output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
+        axis = as.integer( self$dimensionality + 1 ) )
+      output <- self$generativeConvolutionLayer( outputNow,
+        self$numberOfFiltersBaseLayer, 5, 1L, 1L )
+      output <- self$generativeConvolutionLayer( output,
+       self$numberOfFiltersBaseLayer, 3L, 2L, 1L )
+      output <- self$generativeConvolutionLayer( output,
+        2 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
+      output <- self$generativeConvolutionLayer( output,
+        2 * self$numberOfFiltersBaseLayer, 3L, 2L, 1L )
+      output <- self$generativeConvolutionLayer( output,
+        4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
+      output <- self$generativeConvolutionLayer( output,
+        4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
 
-      output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 2L )
-      output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 4L )
-      output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 8L )
-      output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 16L )
+      output <- self$generativeConvolutionLayer( output,
+        4 * self$numberOfFiltersBaseLayer, 3L, 1L, 2L )
+      output <- self$generativeConvolutionLayer( output,
+        4 * self$numberOfFiltersBaseLayer, 3L, 1L, 4L )
+      output <- self$generativeConvolutionLayer( output,
+        4 * self$numberOfFiltersBaseLayer, 3L, 1L, 8L )
+      output <- self$generativeConvolutionLayer( output,
+        4 * self$numberOfFiltersBaseLayer, 3L, 1L, 16L )
 
       outputHallu <- output
 
       # Attention branch
 
-      output <- self$generativeConvolutionLayer( outputNow,  self$numberOfFiltersBaseLayer, 5, 1L, 1L )
-      output <- self$generativeConvolutionLayer( output,     self$numberOfFiltersBaseLayer, 3L, 2L, 1L )
-      output <- self$generativeConvolutionLayer( output, 2 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
-      output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 2L, 1L )
-      output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
-      output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L,
-                                           activation = 'relu' )
+      output <- self$generativeConvolutionLayer( outputNow,
+        self$numberOfFiltersBaseLayer, 5, 1L, 1L )
+      output <- self$generativeConvolutionLayer( output,
+        self$numberOfFiltersBaseLayer, 3L, 2L, 1L )
+      output <- self$generativeConvolutionLayer( output,
+        2 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
+      output <- self$generativeConvolutionLayer( output,
+        4 * self$numberOfFiltersBaseLayer, 3L, 2L, 1L )
+      output <- self$generativeConvolutionLayer( output,
+        4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
+      output <- self$generativeConvolutionLayer( output,
+        4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L, activation = 'relu' )
 
       contextualInputList <- list( output, output, resampledMaskInput )
       if( self$dimensionality == 2 )
         {
-        output <- layer_contextual_attention_2d( contextualInputList, 3L, 1L, dilationRate = 2L )
+        output <- layer_contextual_attention_2d(
+          contextualInputList, 3L, 1L, dilationRate = 2L )
         } else {
-        output <- layer_contextual_attention_3d( contextualInputList, 3L, 1L, dilationRate = 2L )
+        output <- layer_contextual_attention_3d(
+          contextualInputList, 3L, 1L, dilationRate = 2L )
         }
 
-      output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
-      output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
+      output <- self$generativeConvolutionLayer(
+        output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
+      output <- self$generativeConvolutionLayer( output,
+        4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
 
       output <- layer_concatenate( list( outputHallu, output ),
-                                  axis = as.integer( self$dimensionality + 1 ) )
+        axis = as.integer( self$dimensionality + 1 ) )
 
-      output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
-      output <- self$generativeConvolutionLayer( output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
-      output <- self$generativeDeconvolutionLayer( output, 2 * self$numberOfFiltersBaseLayer )
-      output <- self$generativeConvolutionLayer( output, 2 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
-      output <- self$generativeDeconvolutionLayer( output,   self$numberOfFiltersBaseLayer )
-      output <- self$generativeConvolutionLayer( output, as.integer( 0.5 * self$numberOfFiltersBaseLayer ), 3L, 1L, 1L )
+      output <- self$generativeConvolutionLayer(
+        output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
+      output <- self$generativeConvolutionLayer(
+        output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
+      output <- self$generativeDeconvolutionLayer(
+        output, 2 * self$numberOfFiltersBaseLayer )
+      output <- self$generativeConvolutionLayer(
+        output, 2 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
+      output <- self$generativeDeconvolutionLayer(
+        output,   self$numberOfFiltersBaseLayer )
+      output <- self$generativeConvolutionLayer(
+        output, as.integer( 0.5 * self$numberOfFiltersBaseLayer ), 3L, 1L, 1L )
       output <- self$generativeConvolutionLayer( output, 3L, 3L, 1L, 1L )
 
       output <- output %>% layer_lambda( function( X )
         { return( self$tf$clip_by_value( X, -1.0, 1.0 ) ) } )
 
-      modelStage2 <- keras_model( inputs = list( imageInput, maskInput ), outputs = output )
+      modelStage2 <- keras_model( inputs = list( imageInput, maskInput ),
+        outputs = output )
 
       return( list( modelStage1 = modelStage1, modelStage2 = modelStage2 ) )
       },
 
-    buildLocalDiscriminator = function( model, reuse = FALSE, trainable = TRUE )
+    buildLocalWganGpDiscriminator = function( model, reuse = FALSE,
+      trainable = TRUE )
       {
       with( self$tf$variable_scope( 'localDiscriminator', reuse = reuse ) )
         {
@@ -279,7 +334,8 @@ InpaintingDeepFillModel <- R6::R6Class( "InpaintingDeepFillModel",
         }
       },
 
-    buildGlobalDiscriminator = function( model, reuse = FALSE, trainable = TRUE )
+    buildGlobalWganGpDiscriminator = function( model,
+      reuse = FALSE, trainable = TRUE )
       {
       with( self$tf$variable_scope( 'globalDiscriminator', reuse = reuse ) )
         {
@@ -296,12 +352,15 @@ InpaintingDeepFillModel <- R6::R6Class( "InpaintingDeepFillModel",
         }
       },
 
-    buildCombinedDiscriminator = function( localBatch, globalBatch, reuse = FALSE, trainable = TRUE )
+    buildCombinedWganGpDiscriminator = function( localModel,
+      globalModel, reuse = FALSE, trainable = TRUE )
       {
       with( self$tf$variable_scope( 'discriminator', reuse = reuse ) )
         {
-        localDiscriminator <- self$buildLocalDiscriminator( localBatch, reuse = reuse, trainable = trainable )
-        globalDiscriminator <- self$buildGlobalDiscriminator( globalBatch, reuse = reuse, trainable = trainable )
+        localDiscriminator <- self$buildLocalWganGpDiscriminator(
+           localModel, reuse = reuse, trainable = trainable )
+        globalDiscriminator <- self$buildGlobalWganGpDiscriminator(
+           globalModel, reuse = reuse, trainable = trainable )
 
         localDiscriminator <- localDiscriminator %>% layer_dense( 1 )
         globalDiscriminator <- globalDiscriminator %>% layer_dense( 1 )
@@ -310,8 +369,45 @@ InpaintingDeepFillModel <- R6::R6Class( "InpaintingDeepFillModel",
         }
       },
 
-    train = function( X_train, numberOfEpochs = 200, maskRegionSize = NA, limitTrainingToCoarseNetwork = FALSE )
+    randomWeightedImage = function( X, Y )
       {
+      K <- keras::backend()
+      inputShape <- K$int_shape( X )
+      batchSize <- inputShape[[1]]
+      if( self$dimensionality == 2 )
+        {
+        alpha <- K$random_uniform( c( batchSize, 1L, 1L, 1L ) )
+        } else {
+        alpha <- K$random_uniform( c( batchSize, 1L, 1L, 1L, 1L ) )
+        }
+      return( ( 1.0 - alpha ) * X + alpha * Y )
+      },
+
+    wassersteinLoss = function( X, Y )
+      {
+      K <- keras::backend()
+      dLoss <- K$tf$reduce_mean( Y - X )
+      gLoss <- -K$tf$reduce_mean( Y )
+      return( gLoss, dLoss )
+      },
+
+    gradientPenaltyLoss = function( X, Y, mask = NA, norm = 1.0 )
+      {
+      K <- keras::backend()
+      gradients <- K$tf$gradients( Y, X )[0]
+      if( is.na( mask ) )
+        {
+        mask <- K$tf$ones_like( gradients )
+        }
+      slopes <- K$tf$sqrt( K$tf$reduce_sum( K$tf$square( gradients ) * mask,
+        axis = 1:( self$dimensionality + 1 ) ) )
+      return( K$tf$reduce_mean( K$tf$square( slopes - norm ) ) )
+      },
+
+    train = function( X_train, numberOfEpochs = 200, maskRegionSize = NA,
+      limitTrainingToCoarseNetwork = FALSE )
+      {
+      K <- keras::backend()
 
       network <- self$buildNetwork()
 
@@ -329,7 +425,7 @@ InpaintingDeepFillModel <- R6::R6Class( "InpaintingDeepFillModel",
           for( j in seq_len( maskRegionSize[2] ) )
             {
             discountMask <- max( gamma ^ min( i, maskRegionSize[1] - i ),
-                                 gamma ^ min( j, maskRegionSize[2] - j ) )
+              gamma ^ min( j, maskRegionSize[2] - j ) )
             }
           }
         } else {
@@ -340,13 +436,14 @@ InpaintingDeepFillModel <- R6::R6Class( "InpaintingDeepFillModel",
             for( k in seq_len( maskRegionSize[3] ) )
               {
               discountMask <- max( gamma ^ min( i, maskRegionSize[1] - i ),
-                                   gamma ^ min( j, maskRegionSize[2] - j ),
-                                   gamma ^ min( k, maskRegionSize[3] - k ) )
+                gamma ^ min( j, maskRegionSize[2] - j ),
+                gamma ^ min( k, maskRegionSize[3] - k ) )
               }
             }
           }
         }
-      discountMask <- array( data = discountMask, dim = c( 1, dim( discountMask ), 1 ) )
+      discountMask <- array( data = discountMask,
+        dim = c( 1, dim( discountMask ), 1 ) )
 
       # Perform batchwise training
 
@@ -355,6 +452,8 @@ InpaintingDeepFillModel <- R6::R6Class( "InpaintingDeepFillModel",
         # Sample batch from full data set
 
         batchIndices <- sample.int( dim( X_train )[1], self$batchSize )
+
+        # Build graph with losses
 
         X_batch <- X_train
         if( self$dimensionality == 2 )
@@ -369,9 +468,11 @@ InpaintingDeepFillModel <- R6::R6Class( "InpaintingDeepFillModel",
         beginCorner <- rep( 0, self$dimensionality )
         for( i in seq_len( self$dimensionality ) )
           {
-          beginCorner[d] <- runif( 1, min = 1, max = self$inputImageSize[d] - maskRegionSize[d] + 1 )
+          beginCorner[d] <- runif( 1, min = 1,
+            max = self$inputImageSize[d] - maskRegionSize[d] + 1 )
           }
-        randomMask <- drop( array( data = 0, dim = head( self$inputImageSize, self$dimensionality ) ) )
+        randomMask <- drop( array( data = 0,
+          dim = head( self$inputImageSize, self$dimensionality ) ) )
 
         endCorner <- beginCorner + maskRegionSize
         if( self$dimensionality == 2 )
@@ -404,12 +505,15 @@ InpaintingDeepFillModel <- R6::R6Class( "InpaintingDeepFillModel",
                                         beginCorner[2]:endCorner[2],]
           X_maskedLocalPatch <- X_masked[,beginCorner[1]:endCorner[1],
                                           beginCorner[2]:endCorner[2],]
-          X_predictedStage1LocalPatch <- X_predictedStage1[,beginCorner[1]:endCorner[1],
-                                                            beginCorner[2]:endCorner[2],]
-          X_predictedStage2LocalPatch <- X_predictedStage2[,beginCorner[1]:endCorner[1],
-                                                            beginCorner[2]:endCorner[2],]
-          X_completeLocalPatch <- X_complete[,beginCorner[1]:endCorner[1],
-                                              beginCorner[2]:endCorner[2],]
+          X_predictedStage1LocalPatch <-
+            X_predictedStage1[,beginCorner[1]:endCorner[1],
+                               beginCorner[2]:endCorner[2],]
+          X_predictedStage2LocalPatch <-
+            X_predictedStage2[,beginCorner[1]:endCorner[1],
+                               beginCorner[2]:endCorner[2],]
+          X_completeLocalPatch <-
+            X_complete[,beginCorner[1]:endCorner[1],
+                        beginCorner[2]:endCorner[2],]
           } else {
           X_maskLocalPatch <- X_mask[,beginCorner[1]:endCorner[1],
                                       beginCorner[2]:endCorner[2],
@@ -420,49 +524,106 @@ InpaintingDeepFillModel <- R6::R6Class( "InpaintingDeepFillModel",
           X_maskedLocalPatch <- X_masked[,beginCorner[1]:endCorner[1],
                                           beginCorner[2]:endCorner[2],
                                           beginCorner[3]:endCorner[3],]
-          X_predictedStage1LocalPatch <- X_predictedStage1[,beginCorner[1]:endCorner[1],
-                                                            beginCorner[2]:endCorner[2],
-                                                            beginCorner[3]:endCorner[3],]
-          X_predictedStage2LocalPatch <- X_predictedStage2[,beginCorner[1]:endCorner[1],
-                                                            beginCorner[2]:endCorner[2],
-                                                            beginCorner[3]:endCorner[3],]
+          X_predictedStage1LocalPatch <-
+            X_predictedStage1[,beginCorner[1]:endCorner[1],
+                               beginCorner[2]:endCorner[2],
+                               beginCorner[3]:endCorner[3],]
+          X_predictedStage2LocalPatch <-
+            X_predictedStage2[,beginCorner[1]:endCorner[1],
+                               beginCorner[2]:endCorner[2],
+                               beginCorner[3]:endCorner[3],]
           X_completeLocalPatch <- X_complete[,beginCorner[1]:endCorner[1],
                                               beginCorner[2]:endCorner[2],
                                               beginCorner[3]:endCorner[3],]
           }
+
+
+
+
 
         # Calculate losses
 
         losses <- list()
         l1Alpha <- 1.2
 
-        losses$l1Loss <- l1Alpha * mean( abs( X_batchLocalPatch - X_predictedStage1LocalPatch ) *
-                             discountMask )
+        losses$l1Loss <- l1Alpha * mean( abs( X_batchLocalPatch -
+          X_predictedStage1LocalPatch ) * discountMask )
         if( ! limitTrainingToCoarseNetwork )
           {
-          losses$l1Loss <- losses$l1Loss + mean( abs( X_batchLocalPatch - X_predictedStage2LocalPatch ) *
-                             discountMask )
+          losses$l1Loss <- losses$l1Loss + mean( abs( X_batchLocalPatch -
+            X_predictedStage2LocalPatch ) * discountMask )
           }
-        losses$aeLoss <- l1Alpha * mean( abs( X_batch - X_predictedStage1 ) * ( 1.0 - X_mask ) )
+        losses$aeLoss <- l1Alpha * mean( abs( X_batch - X_predictedStage1 ) *
+          ( 1.0 - X_mask ) )
         if( ! limitTrainingToCoarseNetwork )
           {
-          losses$aeLoss <- losses$aeLoss + mean( abs( X_batch - X_predictedStage1 ) * ( 1.0 - X_mask ) )
+          losses$aeLoss <- losses$aeLoss + mean(
+            abs( X_batch - X_predictedStage1 ) * ( 1.0 - X_mask ) )
           }
         losses$aeLoss <- losses$aeLoss / mean( 1.0 - X_mask )
 
         # Add global and local Wasserstein GAN losses
 
+        modelBatch <- layer_input( batch_shape = dim( X_batch ) )
+        modelComplete <- layer_input( batch_shape = dim( X_complete ) )
+        modelPositiveNegative <- list( modelBatch, modelComplete ) %>%
+          layer_concatenate( axis = 0 )
+        mask <- layer_input( shape = dim( X_mask ) )
 
+        modelBatchLocalPatch <-
+          layer_input( batch_shape = dim( X_batchLocalPatch ) )
+        modelCompleteLocalPatch <-
+          layer_input( batch_shape = dim( X_completeLocalPatch ) )
+        modelPositiveNegativeLocalPatch <-
+          list( modelBatchLocalPatch, modelCompleteLocalPatch ) %>%
+            layer_concatenate( axis = 0 )
 
+        wganGpModel <- self$buildCombinedWganGpDiscriminator(
+          modelPositiveNegativeLocalPatch, modelPositiveNegative )
+        localComponents <- K$tf$split( wganGpModel$localDiscriminator, 2 )
+        globalComponents <- K$tf$split( wganGpModel$globalDiscriminator, 2 )
 
+        # WGAN Loss
+
+        lossLocal <- self$wassersteinLoss(
+          localComponents[[1]], localComponents[[2]] )
+        lossGlobal <- self$wassersteinLoss(
+          globalComponents[[1]], globalComponents[[2]] )
+
+        losses$dLoss <- lossLocal$dLoss + lossGlobal$dLoss
+        losses$gLoss <- lossLocal$gLoss + lossGlobal$gLoss
+
+        # Gradient penalty loss
+
+        interpolatedLocal <-
+          randomWeightedImage( modelBatchLocalPatch, modelCompleteLocalPatch )
+        interpolatedGlobal <- randomWeightedImage( modelBatch, modelComplete )
+
+        wganGpInterpolatedModel <- self$buildCombinedWganGpDiscriminator(
+          interpolatedLocal, interpolatedGlobal )
+
+        # Apply penalty
+
+        wganGpLambda <- 10.0
+        wganGpAlpha <- 0.001
+
+        localPenalty <- self$gradientPenaltyLoss( interpolatedLocal,
+          wgandGpInterpolatedModel$localDiscriminator, mask = localPatchMask )
+        globalPenalty <- self$gradientPenaltyLoss( interpolatedGlobal,
+          wgandGpInterpolatedModel$globalDiscriminator, mask = mask )
+
+        losses$wganGpLosses <- wganGpLambda * ( localPenalty + globalPenalty )
+        losses$dLoss <- losses$dLoss + losses$wganGpLosses
+
+        if( limitTrainingToCoarseNetwork == TRUE )
+          {
+          losses$gLoss <- 0
+          } else {
+          losses$gLoss <- wganGpAlpha * losses$gLoss
+          }
+        losses$gLoss <- l1Alpha * losses$l1Loss
         }
-
-
-      losses <- list()
-
-
       }
-
     )
   )
 
@@ -576,52 +737,58 @@ ContextualAttentionLayer2D <- R6::R6Class( "ContextualAttentionLayer2D",
         }
 
       # Extract patches from background and reshape to be
-      #  c( batchSize, backgroundKernelSize, backgroundKernelSize, channelSize, height*width )
+      #  c( batchSize, backgroundKernelSize, backgroundKernelSize, channelSize,
+      #     height*width )
 
       backgroundKernelSize <- as.integer( 2 * self$dilationRate )
       stridexRate <- as.integer( self$stride * self$dilationRate )
 
       backgroundPatches <- self$tf$extract_image_patches( backgroundTensor,
-                                   ksizes = c( 1, backgroundKernelSize, backgroundKernelSize, 1 ),
-                                   strides = c( 1, stridexRate, stridexRate, 1 ),
-                                   rates = c( 1, 1, 1, 1 ), padding = 'SAME' )
+        ksizes = c( 1, backgroundKernelSize, backgroundKernelSize, 1 ),
+        strides = c( 1, stridexRate, stridexRate, 1 ),
+        rates = c( 1, 1, 1, 1 ), padding = 'SAME' )
       backgroundPatches <- self$tf$reshape( backgroundPatches,
-                                   c( self$tf$shape( backgroundTensor )[1], -1L,
-                                      backgroundKernelSize, backgroundKernelSize,
-                                      self$tf$shape( backgroundTensor )[4] ) )
-      backgroundPatches <- self$tf$transpose( backgroundPatches, c( 0L, 2L, 3L, 4L, 1L ) )
+        c( self$tf$shape( backgroundTensor )[1], -1L,
+           backgroundKernelSize, backgroundKernelSize,
+           self$tf$shape( backgroundTensor )[4] ) )
+      backgroundPatches <- self$tf$transpose( backgroundPatches,
+        c( 0L, 2L, 3L, 4L, 1L ) )
 
       # Resample foreground, background, and mask
 
-      newForegroundShape <- as.integer( foregroundShape[2:3] / self$dilationRate )
+      newForegroundShape <- as.integer(
+        foregroundShape[2:3] / self$dilationRate )
       resampledForegroundTensor <- layer_resample_tensor_2d( foregroundTensor,
-                                         shape = newForegroundShape,
-                                         interpolationType = 'nearestNeighbor' )
+        shape = newForegroundShape,
+        interpolationType = 'nearestNeighbor' )
 
-      newBackgroundShape <- as.integer( backgroundShape[2:3] / self$dilationRate )
+      newBackgroundShape <-
+        as.integer( backgroundShape[2:3] / self$dilationRate )
       resampledBackgroundTensor <- layer_resample_tensor_2d( backgroundTensor,
-                                         shape = newBackgroundShape,
-                                         interpolationType = 'nearestNeighbor' )
+        shape = newBackgroundShape,
+        interpolationType = 'nearestNeighbor' )
 
       newMaskShape <- maskShape
       if( ! is.null( mask ) )
         {
         newMaskShape <- as.integer( maskShape[2:3] / self$dilationRate )
         mask <- layer_resample_tensor_2d( mask,
-                       shape = newMaskShape, interpolationType = 'nearestNeighbor' )
+          shape = newMaskShape, interpolationType = 'nearestNeighbor' )
         }
 
       # Create resampled background patches
 
-      resampledBackgroundPatches <- self$tf$extract_image_patches( resampledBackgroundTensor,
-                                          ksizes = c( 1, self$kernelSize, self$kernelSize, 1 ),
-                                          strides = c( 1, self$stride, self$stride, 1 ),
-                                          rates = c( 1, 1, 1, 1 ), padding = 'SAME' )
+      resampledBackgroundPatches <- self$tf$extract_image_patches(
+        resampledBackgroundTensor,
+        ksizes = c( 1, self$kernelSize, self$kernelSize, 1 ),
+        strides = c( 1, self$stride, self$stride, 1 ),
+        rates = c( 1, 1, 1, 1 ), padding = 'SAME' )
       resampledBackgroundPatches <- self$tf$reshape( resampledBackgroundPatches,
-                                       c( self$tf$shape( resampledBackgroundTensor )[1], -1L,
-                                          self$kernelSize, self$kernelSize,
-                                          self$tf$shape( resampledBackgroundTensor )[4] ) )
-      resampledBackgroundPatches <- self$tf$transpose( resampledBackgroundPatches, c( 0L, 2L, 3L, 4L, 1L ) )
+        c( self$tf$shape( resampledBackgroundTensor )[1], -1L,
+           self$kernelSize, self$kernelSize,
+           self$tf$shape( resampledBackgroundTensor )[4] ) )
+      resampledBackgroundPatches <- self$tf$transpose(
+        resampledBackgroundPatches, c( 0L, 2L, 3L, 4L, 1L ) )
 
       # Process mask
 
@@ -632,39 +799,40 @@ ContextualAttentionLayer2D <- R6::R6Class( "ContextualAttentionLayer2D",
         }
 
       maskPatches <- self$tf$extract_image_patches( mask,
-                                   ksizes = c( 1, self$kernelSize, self$kernelSize, 1 ),
-                                   strides = c( 1, self$stride, self$stride, 1 ),
-                                   rates = c( 1, 1, 1, 1 ), padding = 'SAME' )
+        ksizes = c( 1, self$kernelSize, self$kernelSize, 1 ),
+        strides = c( 1, self$stride, self$stride, 1 ),
+        rates = c( 1, 1, 1, 1 ), padding = 'SAME' )
       maskPatches <- self$tf$reshape( maskPatches,
-                                   c( 1L, -1L, self$kernelSize, self$kernelSize, 1L ) )
+        c( 1L, -1L, self$kernelSize, self$kernelSize, 1L ) )
       maskPatches <- self$tf$transpose( maskPatches, c( 0L, 2L, 3L, 4L, 1L ) )
 
       maskPatches <- maskPatches[1,,,,]
       maskData <- self$tf$cast( self$tf$equal( self$tf$reduce_mean( maskPatches,
-                  axis = c( 0L, 1L, 2L ), keep_dims = TRUE ), 0.0 ), self$tf$float32 )
+        axis = c( 0L, 1L, 2L ), keep_dims = TRUE ), 0.0 ), self$tf$float32 )
 
       # Split into groups
 
       resampledForegroundGroups <- self$tf$split( resampledForegroundTensor,
-                              resampledForegroundTensor$get_shape()$as_list()[1], axis = 0L )
+        resampledForegroundTensor$get_shape()$as_list()[1], axis = 0L )
       backgroundGroups <- self$tf$split( backgroundPatches,
-                              backgroundTensor$get_shape()$as_list()[1], axis = 0L )
+        backgroundTensor$get_shape()$as_list()[1], axis = 0L )
       resampledBackgroundGroups <- self$tf$split( resampledBackgroundPatches,
-                              resampledBackgroundTensor$get_shape()$as_list()[1], axis = 0L )
+        resampledBackgroundTensor$get_shape()$as_list()[1], axis = 0L )
 
       numberOfIterations <- min( c( length( resampledForegroundGroups ) ),
-                                 c( length( backgroundGroups ) ),
-                                 c( length( resampledBackgroundGroups ) ) )
+        c( length( backgroundGroups ) ),
+        c( length( resampledBackgroundGroups ) ) )
 
       outputGroups <- list()
       for( i in seq_len( numberOfIterations ) )
         {
         rg <- resampledBackgroundGroups[[i]][1,,,,]
         rgNorm <- rg / self$tf$maximum( self$tf$sqrt( self$tf$reduce_sum(
-                         self$tf$square( rg ), axis = c( 0L, 1L, 2L ) ) ), 1e-4 )
+          self$tf$square( rg ), axis = c( 0L, 1L, 2L ) ) ), 1e-4 )
         fg <- resampledForegroundGroups[[i]]
 
-        output <- self$tf$nn$conv2d( fg, rgNorm, strides = c( 1, 1, 1, 1 ), padding = 'SAME' )
+        output <- self$tf$nn$conv2d( fg, rgNorm, strides = c( 1, 1, 1, 1 ),
+          padding = 'SAME' )
 
         # fusion to encourage large patches
 
@@ -674,25 +842,30 @@ ContextualAttentionLayer2D <- R6::R6Class( "ContextualAttentionLayer2D",
             c( self$fusionKernelSize, self$fusionKernelSize, 1L, 1L ) )
 
           output <- tf$reshape( output, c( 1L,
-                                 as.integer( newForegroundShape[1] * newForegroundShape[2] ),
-                                 as.integer( newBackgroundShape[1] * newBackgroundShape[2] ),
-                                 1L ) )
-          output <- tf$nn$conv2d( output, fusionKernel, strides = c( 1, 1, 1, 1 ), padding = 'SAME' )
-          output <- tf$reshape( output, c( 1L, newForegroundShape[1], newForegroundShape[2],
-                                 newBackgroundShape[1], newBackgroundShape[2] ) )
+            as.integer( newForegroundShape[1] * newForegroundShape[2] ),
+            as.integer( newBackgroundShape[1] * newBackgroundShape[2] ), 1L ) )
+          output <- tf$nn$conv2d( output, fusionKernel,
+            strides = c( 1, 1, 1, 1 ), padding = 'SAME' )
+          output <- tf$reshape( output, c( 1L, newForegroundShape[1],
+            newForegroundShape[2], newBackgroundShape[1],
+            newBackgroundShape[2] ) )
 
           output <- tf$transpose( output, c( 0L, 2L, 1L, 4L, 3L ) )
-          output <- tf$reshape( output, c( 1L, newForegroundShape[1] * newForegroundShape[2],
-                                 newBackgroundShape[1] * newBackgroundShape[2], 1L ) )
-          output <- tf$nn$conv2d( output, fusionKernel, strides = c( 1, 1, 1, 1 ), padding = 'SAME' )
-          output <- tf$reshape( output, c( 1L, newForegroundShape[2], newForegroundShape[1],
-                                 newBackgroundShape[2], newBackgroundShape[1] ) )
+          output <- tf$reshape( output,
+            c( 1L, newForegroundShape[1] * newForegroundShape[2],
+            newBackgroundShape[1] * newBackgroundShape[2], 1L ) )
+          output <- tf$nn$conv2d( output, fusionKernel,
+            strides = c( 1, 1, 1, 1 ), padding = 'SAME' )
+          output <- tf$reshape( output, c( 1L, newForegroundShape[2],
+            newForegroundShape[1], newBackgroundShape[2],
+            newBackgroundShape[1] ) )
 
           output <- tf$transpose( output, c( 0L, 2L, 1L, 4L, 3L ) )
           }
 
-        output <- tf$reshape( output, c( 1L, newForegroundShape[1], newForegroundShape[2],
-                               newBackgroundShape[1] * newBackgroundShape[2] ) )
+        output <- tf$reshape( output, c( 1L, newForegroundShape[1],
+          newForegroundShape[2],
+          newBackgroundShape[1] * newBackgroundShape[2] ) )
 
         # softmax to match
 
@@ -703,8 +876,8 @@ ContextualAttentionLayer2D <- R6::R6Class( "ContextualAttentionLayer2D",
         bg <- backgroundGroups[[i]][1,,,,]
 
         output <- self$tf$nn$conv2d_transpose( output, bg,
-                self$tf$concat( list( list( 1L ), foregroundShape[2:4] ), axis = 0L ),
-                strides = c( 1, self$dilationRate, self$dilationRate, 1 ) ) / 4.0
+          self$tf$concat( list( list( 1L ), foregroundShape[2:4] ), axis = 0L ),
+          strides = c( 1, self$dilationRate, self$dilationRate, 1 ) ) / 4.0
         outputGroups[[i]] <- output
         }
 
@@ -851,51 +1024,59 @@ ContextualAttentionLayer3D <- R6::R6Class( "ContextualAttentionLayer3D",
         }
 
       # Extract patches from background and reshape to be
-      #  c( batchSize, backgroundKernelSize, backgroundKernelSize, backgroundKernelSize, channelSize, height*width*depth )
+      #  c( batchSize, backgroundKernelSize, backgroundKernelSize,
+      #     backgroundKernelSize, channelSize, height*width*depth )
 
       backgroundKernelSize <- as.integer( 2 * self$dilationRate )
       stridexRate <- as.integer( self$stride * self$dilationRate )
 
       backgroundPatches <- self$tf$extract_volume_patches( backgroundTensor,
-                                   ksizes = c( 1, backgroundKernelSize, backgroundKernelSize, backgroundKernelSize, 1 ),
-                                   strides = c( 1, stridexRate, stridexRate, stridexRate, 1 ),
-                                   rates = c( 1, 1, 1, 1, 1 ), padding = 'SAME' )
+        ksizes = c( 1, backgroundKernelSize, backgroundKernelSize,
+          backgroundKernelSize, 1 ),
+        strides = c( 1, stridexRate, stridexRate, stridexRate, 1 ),
+        rates = c( 1, 1, 1, 1, 1 ), padding = 'SAME' )
       backgroundPatches <- self$tf$reshape( backgroundPatches,
-                                   c( self$tf$shape( backgroundTensor )[1], -1L,
-                                      backgroundKernelSize, backgroundKernelSize, backgroundKernelSize,
-                                      self$tf$shape( backgroundTensor )[5] ) )
-      backgroundPatches <- self$tf$transpose( backgroundPatches, c( 0L, 2L, 3L, 4L, 5L, 1L ) )
+        c( self$tf$shape( backgroundTensor )[1], -1L,
+           backgroundKernelSize, backgroundKernelSize, backgroundKernelSize,
+           self$tf$shape( backgroundTensor )[5] ) )
+      backgroundPatches <- self$tf$transpose( backgroundPatches,
+        c( 0L, 2L, 3L, 4L, 5L, 1L ) )
 
       # Resample foreground, background, and mask
 
-      newForegroundShape <- as.integer( foregroundShape[2:4] / self$dilationRate )
+      newForegroundShape <-
+        as.integer( foregroundShape[2:4] / self$dilationRate )
       resampledForegroundTensor <- layer_resample_tensor_3d( foregroundTensor,
-                                         shape = newForegroundShape,
-                                         interpolationType = 'nearestNeighbor' )
+        shape = newForegroundShape,
+        interpolationType = 'nearestNeighbor' )
 
-      newBackgroundShape <- as.integer( backgroundShape[2:4] / self$dilationRate )
+      newBackgroundShape <-
+        as.integer( backgroundShape[2:4] / self$dilationRate )
       resampledBackgroundTensor <- layer_resample_tensor_3d( backgroundTensor,
-                                         shape = newBackgroundShape,
-                                         interpolationType = 'nearestNeighbor' )
+        shape = newBackgroundShape,
+        interpolationType = 'nearestNeighbor' )
 
       newMaskShape <- maskShape
       if( ! is.null( mask ) )
         {
         newMaskShape <- as.integer( maskShape[2:4] / self$dilationRate )
         mask <- layer_resample_tensor_3d( mask,
-                       shape = newMaskShape, interpolationType = 'nearestNeighbor' )
+          shape = newMaskShape, interpolationType = 'nearestNeighbor' )
         }
 
       # Create resampled background patches
-      resampledBackgroundPatches <- self$tf$extract_volume_patches( resampledBackgroundTensor,
-                                          ksizes = c( 1, self$kernelSize, self$kernelSize, self$kernelSize, 1 ),
-                                          strides = c( 1, self$stride, self$stride, self$stride, 1 ),
-                                          rates = c( 1, 1, 1, 1, 1 ), padding = 'SAME' )
+
+      resampledBackgroundPatches <- self$tf$extract_volume_patches(
+        resampledBackgroundTensor, ksizes =
+          c( 1, self$kernelSize, self$kernelSize, self$kernelSize, 1 ),
+        strides = c( 1, self$stride, self$stride, self$stride, 1 ),
+        rates = c( 1, 1, 1, 1, 1 ), padding = 'SAME' )
       resampledBackgroundPatches <- self$tf$reshape( resampledBackgroundPatches,
-                                       c( self$tf$shape( resampledBackgroundTensor )[1], -1L,
-                                          self$kernelSize, self$kernelSize, self$kernelSize,
-                                          self$tf$shape( resampledBackgroundTensor )[5] ) )
-      resampledBackgroundPatches <- self$tf$transpose( resampledBackgroundPatches, c( 0L, 2L, 3L, 4L, 5L, 1L ) )
+        c( self$tf$shape( resampledBackgroundTensor )[1], -1L,
+           self$kernelSize, self$kernelSize, self$kernelSize,
+           self$tf$shape( resampledBackgroundTensor )[5] ) )
+      resampledBackgroundPatches <- self$tf$transpose(
+         resampledBackgroundPatches, c( 0L, 2L, 3L, 4L, 5L, 1L ) )
 
       # Process mask
 
@@ -906,39 +1087,40 @@ ContextualAttentionLayer3D <- R6::R6Class( "ContextualAttentionLayer3D",
         }
 
       maskPatches <- self$tf$extract_volume_patches( mask,
-                                   ksizes = c( 1, self$kernelSize, self$kernelSize, self$kernelSize, 1 ),
-                                   strides = c( 1, self$stride, self$stride, self$stride, 1 ),
-                                   rates = c( 1, 1, 1, 1, 1 ), padding = 'SAME' )
+        ksizes = c( 1, self$kernelSize, self$kernelSize, self$kernelSize, 1 ),
+        strides = c( 1, self$stride, self$stride, self$stride, 1 ),
+        rates = c( 1, 1, 1, 1, 1 ), padding = 'SAME' )
       maskPatches <- self$tf$reshape( maskPatches,
-                                   c( 1L, -1L, self$kernelSize, self$kernelSize, self$kernelSize, 1L ) )
+        c( 1L, -1L, self$kernelSize, self$kernelSize, self$kernelSize, 1L ) )
       maskPatches <- self$tf$transpose( maskPatches, c( 0L, 2L, 3L, 4L, 5L, 1L ) )
 
       maskPatches <- maskPatches[1,,,,,]
       maskData <- self$tf$cast( self$tf$equal( self$tf$reduce_mean( maskPatches,
-                  axis = c( 0L, 1L, 2L, 3L ), keep_dims = TRUE ), 0.0 ), self$tf$float32 )
+        axis = c( 0L, 1L, 2L, 3L ), keep_dims = TRUE ), 0.0 ), self$tf$float32 )
 
       # Split into groups
 
       resampledForegroundGroups <- self$tf$split( resampledForegroundTensor,
-                              resampledForegroundTensor$get_shape()$as_list()[1], axis = 0L )
+        resampledForegroundTensor$get_shape()$as_list()[1], axis = 0L )
       backgroundGroups <- self$tf$split( backgroundPatches,
-                              backgroundTensor$get_shape()$as_list()[1], axis = 0L )
+        backgroundTensor$get_shape()$as_list()[1], axis = 0L )
       resampledBackgroundGroups <- self$tf$split( resampledBackgroundPatches,
-                              resampledBackgroundTensor$get_shape()$as_list()[1], axis = 0L )
+        resampledBackgroundTensor$get_shape()$as_list()[1], axis = 0L )
 
       numberOfIterations <- min( c( length( resampledForegroundGroups ) ),
-                                 c( length( backgroundGroups ) ),
-                                 c( length( resampledBackgroundGroups ) ) )
+        c( length( backgroundGroups ) ),
+        c( length( resampledBackgroundGroups ) ) )
 
       outputGroups <- list()
       for( i in seq_len( numberOfIterations ) )
         {
         rg <- resampledBackgroundGroups[[i]][1,,,,,]
         rgNorm <- rg / self$tf$maximum( self$tf$sqrt( self$tf$reduce_sum(
-                         self$tf$square( rg ), axis = c( 0L, 1L, 2L, 3L ) ) ), 1e-4 )
+          self$tf$square( rg ), axis = c( 0L, 1L, 2L, 3L ) ) ), 1e-4 )
         fg <- resampledForegroundGroups[[i]]
 
-        output <- self$tf$nn$conv2d( fg, rgNorm, strides = c( 1, 1, 1, 1 ), padding = 'SAME' )
+        output <- self$tf$nn$conv2d( fg, rgNorm, strides = c( 1, 1, 1, 1 ),
+          padding = 'SAME' )
 
         # fusion to encourage large patches
 
@@ -948,32 +1130,49 @@ ContextualAttentionLayer3D <- R6::R6Class( "ContextualAttentionLayer3D",
             c( self$fusionKernelSize, self$fusionKernelSize, 1L, 1L ) )
 
           output <- tf$reshape( output, c( 1L,
-                                 as.integer( newForegroundShape[1] * newForegroundShape[2] * newForegroundShape[3] ),
-                                 as.integer( newBackgroundShape[1] * newBackgroundShape[2] * newBackgroundShape[3] ),
-                                 1L ) )
-          output <- tf$nn$conv2d( output, fusionKernel, strides = c( 1, 1, 1, 1 ), padding = 'SAME' )
-          output <- tf$reshape( output, c( 1L, newForegroundShape[1], newForegroundShape[2], newForegroundShape[3],
-                                 newBackgroundShape[1], newBackgroundShape[2], newBackgroundShape[3] ) )
+            as.integer( newForegroundShape[1] * newForegroundShape[2] *
+              newForegroundShape[3] ),
+            as.integer( newBackgroundShape[1] * newBackgroundShape[2] *
+              newBackgroundShape[3] ),
+            1L ) )
+          output <- tf$nn$conv2d( output, fusionKernel,
+            strides = c( 1, 1, 1, 1 ), padding = 'SAME' )
+          output <- tf$reshape( output, c( 1L, newForegroundShape[1],
+            newForegroundShape[2], newForegroundShape[3],
+            newBackgroundShape[1], newBackgroundShape[2],
+            newBackgroundShape[3] ) )
 
           output <- tf$transpose( output, c( 0L, 3L, 1L, 2L, 6L, 4L, 5L ) )
-          output <- tf$reshape( output, c( 1L, newForegroundShape[1] * newForegroundShape[2] * newForegroundShape[3],
-                                 newBackgroundShape[1] * newBackgroundShape[2] * newBackgroundShape[3], 1L ) )
-          output <- tf$nn$conv2d( output, fusionKernel, strides = c( 1, 1, 1, 1 ), padding = 'SAME' )
-          output <- tf$reshape( output, c( 1L, newForegroundShape[3], newForegroundShape[1], newForegroundShape[2],
-                                 newBackgroundShape[3], newBackgroundShape[1], newBackgroundShape[2] ) )
+          output <- tf$reshape( output, c( 1L, newForegroundShape[1] *
+            newForegroundShape[2] * newForegroundShape[3],
+            newBackgroundShape[1] * newBackgroundShape[2] *
+            newBackgroundShape[3], 1L ) )
+          output <- tf$nn$conv2d( output, fusionKernel,
+            strides = c( 1, 1, 1, 1 ), padding = 'SAME' )
+          output <- tf$reshape( output, c( 1L, newForegroundShape[3],
+            newForegroundShape[1], newForegroundShape[2],
+            newBackgroundShape[3], newBackgroundShape[1],
+            newBackgroundShape[2] ) )
 
           output <- tf$transpose( output, c( 0L, 3L, 1L, 2L, 6L, 4L, 5L ) )
-          output <- tf$reshape( output, c( 1L, newForegroundShape[1] * newForegroundShape[2] * newForegroundShape[3],
-                                 newBackgroundShape[1] * newBackgroundShape[2] * newBackgroundShape[3], 1L ) )
-          output <- tf$nn$conv2d( output, fusionKernel, strides = c( 1, 1, 1, 1 ), padding = 'SAME' )
-          output <- tf$reshape( output, c( 1L, newForegroundShape[2], newForegroundShape[3], newForegroundShape[1],
-                                 newBackgroundShape[2], newBackgroundShape[3], newBackgroundShape[1] ) )
+          output <- tf$reshape( output, c( 1L, newForegroundShape[1] *
+            newForegroundShape[2] * newForegroundShape[3],
+            newBackgroundShape[1] * newBackgroundShape[2] *
+            newBackgroundShape[3], 1L ) )
+          output <- tf$nn$conv2d( output, fusionKernel,
+            strides = c( 1, 1, 1, 1 ), padding = 'SAME' )
+          output <- tf$reshape( output, c( 1L, newForegroundShape[2],
+            newForegroundShape[3], newForegroundShape[1],
+            newBackgroundShape[2], newBackgroundShape[3],
+            newBackgroundShape[1] ) )
 
           output <- tf$transpose( output, c( 0L, 3L, 1L, 2L, 6L, 4L, 5L ) )
           }
 
-        output <- tf$reshape( output, c( 1L, newForegroundShape[1], newForegroundShape[2], newForegroundShape[3],
-                               newBackgroundShape[1] * newBackgroundShape[2] * newBackgroundShape[3] ) )
+        output <- tf$reshape( output, c( 1L, newForegroundShape[1],
+          newForegroundShape[2], newForegroundShape[3],
+          newBackgroundShape[1] * newBackgroundShape[2] *
+          newBackgroundShape[3] ) )
 
         # softmax to match
 
@@ -984,8 +1183,9 @@ ContextualAttentionLayer3D <- R6::R6Class( "ContextualAttentionLayer3D",
         bg <- backgroundGroups[[i]][1,,,,,]
 
         output <- self$tf$nn$conv2d_transpose( output, bg,
-                self$tf$concat( list( list( 1L ), foregroundShape[2:5] ), axis = 0L ),
-                strides = c( 1, self$dilationRate, self$dilationRate, self$dilationRate, 1 ) ) / 4.0
+          self$tf$concat( list( list( 1L ), foregroundShape[2:5] ), axis = 0L ),
+          strides = c( 1, self$dilationRate, self$dilationRate,
+            self$dilationRate, 1 ) ) / 4.0
         outputGroups[[i]] <- output
         }
 
