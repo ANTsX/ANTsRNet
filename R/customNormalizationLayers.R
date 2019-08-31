@@ -74,8 +74,6 @@ InstanceNormalizationLayer <- R6::R6Class( "InstanceNormalizationLayer",
 
     gammaConstraint = NULL,
 
-    interpolationType = 'nearestNeighbor',
-
     initialize = function( axis = NULL, epsilon = 1e-3, center = TRUE, scale = TRUE,
       betaInitializer = "zeros", gammaInitializer = "ones",  betaRegularizer = NULL,
       gammaRegularizer = NULL, betaConstraint = NULL, gammaConstraint = NULL )
