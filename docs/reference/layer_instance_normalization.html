@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Resampling a spatial tensor (2-D). — layer_instance_normalization • ANTsRNet</title>
+<title>Instance normalization layer — layer_instance_normalization • ANTsRNet</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Resampling a spatial tensor (2-D). — layer_instance_normalization" />
+<meta property="og:title" content="Instance normalization layer — layer_instance_normalization" />
 
-<meta property="og:description" content="Resamples a spatial tensor based on the specified shape and interpolation type." />
+<meta property="og:description" content="Creates an instance normalization layer" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -92,36 +92,70 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Resampling a spatial tensor (2-D).</h1>
+    <h1>Instance normalization layer</h1>
     
     <div class="hidden name"><code>layer_instance_normalization.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Resamples a spatial tensor based on the specified shape and interpolation type.</p>
+    <p>Creates an instance normalization layer</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>layer_instance_normalization</span>(<span class='no'>object</span>, <span class='no'>shape</span>,
-  <span class='kw'>interpolationType</span> <span class='kw'>=</span> <span class='st'>"nearestNeighbor"</span>, <span class='kw'>name</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>trainable</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>layer_instance_normalization</span>(<span class='no'>object</span>, <span class='kw'>axis</span> <span class='kw'>=</span> -<span class='fl'>1L</span>, <span class='kw'>epsilon</span> <span class='kw'>=</span> <span class='fl'>0.001</span>,
+  <span class='kw'>center</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>scale</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>betaInitializer</span> <span class='kw'>=</span> <span class='st'>"zeros"</span>,
+  <span class='kw'>gammaInitializer</span> <span class='kw'>=</span> <span class='st'>"ones"</span>, <span class='kw'>betaRegularizer</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>gammaRegularizer</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>betaConstraint</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>gammaConstraint</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>trainable</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>shape</th>
-      <td><p>vector or list of length 2 specifying the shape of the output tensor.</p></td>
+      <th>axis</th>
+      <td><p>Integer specifying which axis should be normalized, typically
+the feature axis.  For example, after a Conv2D layer with
+<code>channels_first</code>, set axis = 1.  Setting <code>axis=-1L</code> will
+normalize all values in each instance of the batch.  Axis 0
+is the batch dimension for tensorflow backend so we throw an
+error if <code>axis = 0</code>.</p></td>
     </tr>
     <tr>
-      <th>interpolationType</th>
-      <td><p>type of interpolation for resampling.  Can be
-<code>nearestNeighbor</code>, <code>linear</code>, or <code>cubic</code>.</p></td>
+      <th>epsilon</th>
+      <td><p>Small float added to the variance to avoid dividing by 0.</p></td>
     </tr>
     <tr>
-      <th>inputTensor</th>
-      <td><p>tensor to be resampled.</p></td>
+      <th>center</th>
+      <td><p>If TRUE, add <code>beta</code> offset to normalized tensor.</p></td>
+    </tr>
+    <tr>
+      <th>scale</th>
+      <td><p>If TRUE, multiply by <code>gamma</code>.</p></td>
+    </tr>
+    <tr>
+      <th>betaInitializer</th>
+      <td><p>Intializer for the beta weight.</p></td>
+    </tr>
+    <tr>
+      <th>gammaInitializer</th>
+      <td><p>Intializer for the gamma weight.</p></td>
+    </tr>
+    <tr>
+      <th>betaRegularizer</th>
+      <td><p>Regularizer for the beta weight.</p></td>
+    </tr>
+    <tr>
+      <th>gammaRegularizer</th>
+      <td><p>Regularizer for the gamma weight.</p></td>
+    </tr>
+    <tr>
+      <th>betaConstraint</th>
+      <td><p>Optional constraint for the beta weight.</p></td>
+    </tr>
+    <tr>
+      <th>gammaConstraint</th>
+      <td><p>Optional constraint for the gamma weight.</p></td>
     </tr>
     </table>
     

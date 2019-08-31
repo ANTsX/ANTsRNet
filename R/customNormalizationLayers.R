@@ -181,23 +181,39 @@ InstanceNormalizationLayer <- R6::R6Class( "InstanceNormalizationLayer",
   )
 )
 
-#' Resampling a spatial tensor (2-D).
+#' Instance normalization layer
 #'
-#' Resamples a spatial tensor based on the specified shape and interpolation type.
+#' Creates an instance normalization layer
 #'
-#' @param inputTensor tensor to be resampled.
-#' @param shape vector or list of length 2 specifying the shape of the output tensor.
-#' @param interpolationType type of interpolation for resampling.  Can be
-#' \code{nearestNeighbor}, \code{linear}, or \code{cubic}.
+#' @param axis Integer specifying which axis should be normalized, typically
+#'               the feature axis.  For example, after a Conv2D layer with
+#'               `channels_first`, set axis = 1.  Setting `axis=-1L` will
+#'               normalize all values in each instance of the batch.  Axis 0
+#'               is the batch dimension for tensorflow backend so we throw an
+#'               error if `axis = 0`.
+#' @param epsilon Small float added to the variance to avoid dividing by 0.
+#' @param center If TRUE, add `beta` offset to normalized tensor.
+#' @param scale If TRUE, multiply by `gamma`.
+#' @param betaInitializer Intializer for the beta weight.
+#' @param gammaInitializer Intializer for the gamma weight.
+#' @param betaRegularizer Regularizer for the beta weight.
+#' @param gammaRegularizer Regularizer for the gamma weight.
+#' @param betaConstraint Optional constraint for the beta weight.
+#' @param gammaConstraint Optional constraint for the gamma weight.
 #'
 #' @return a keras layer tensor
 #' @author Tustison NJ
 #' @import keras
 #' @export
-layer_instance_normalization <- function( object, shape,
-    interpolationType = 'nearestNeighbor', name = NULL,
-    trainable = FALSE ) {
-create_layer( ResampleTensorLayer2D, object,
-    list( shape = shape, interpolationType = interpolationType,
-        name = name, trainable = trainable ) )
+layer_instance_normalization <- function( object, axis = -1L,
+  epsilon = 1e-3, center = TRUE, scale = TRUE,
+  betaInitializer = "zeros", gammaInitializer = "ones",
+  betaRegularizer = NULL, gammaRegularizer = NULL,
+  betaConstraint = NULL, gammaConstraint = NULL, trainable = TRUE ) {
+create_layer( InstanceNormalizationLayer, object,
+    list( axis = axis, epsilon = epsilon, center = center,
+      scale = scale, betaInitializer = "zeros",
+      gammaInitializer = "ones", betaRegularizer = NULL,
+      gammaRegularizer = NULL, betaConstraint = NULL,
+      gammaConstraint = NULL, trainable = trainable ) )
 }

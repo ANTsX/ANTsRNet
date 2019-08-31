@@ -2,25 +2,45 @@
 % Please edit documentation in R/customNormalizationLayers.R
 \name{layer_instance_normalization}
 \alias{layer_instance_normalization}
-\title{Resampling a spatial tensor (2-D).}
+\title{Instance normalization layer}
 \usage{
-layer_instance_normalization(object, shape,
-  interpolationType = "nearestNeighbor", name = NULL,
-  trainable = FALSE)
+layer_instance_normalization(object, axis = -1L, epsilon = 0.001,
+  center = TRUE, scale = TRUE, betaInitializer = "zeros",
+  gammaInitializer = "ones", betaRegularizer = NULL,
+  gammaRegularizer = NULL, betaConstraint = NULL,
+  gammaConstraint = NULL, trainable = TRUE)
 }
 \arguments{
-\item{shape}{vector or list of length 2 specifying the shape of the output tensor.}
+\item{axis}{Integer specifying which axis should be normalized, typically
+the feature axis.  For example, after a Conv2D layer with
+\code{channels_first}, set axis = 1.  Setting \code{axis=-1L} will
+normalize all values in each instance of the batch.  Axis 0
+is the batch dimension for tensorflow backend so we throw an
+error if \code{axis = 0}.}
 
-\item{interpolationType}{type of interpolation for resampling.  Can be
-\code{nearestNeighbor}, \code{linear}, or \code{cubic}.}
+\item{epsilon}{Small float added to the variance to avoid dividing by 0.}
 
-\item{inputTensor}{tensor to be resampled.}
+\item{center}{If TRUE, add \code{beta} offset to normalized tensor.}
+
+\item{scale}{If TRUE, multiply by \code{gamma}.}
+
+\item{betaInitializer}{Intializer for the beta weight.}
+
+\item{gammaInitializer}{Intializer for the gamma weight.}
+
+\item{betaRegularizer}{Regularizer for the beta weight.}
+
+\item{gammaRegularizer}{Regularizer for the gamma weight.}
+
+\item{betaConstraint}{Optional constraint for the beta weight.}
+
+\item{gammaConstraint}{Optional constraint for the gamma weight.}
 }
 \value{
 a keras layer tensor
 }
 \description{
-Resamples a spatial tensor based on the specified shape and interpolation type.
+Creates an instance normalization layer
 }
 \author{
 Tustison NJ
