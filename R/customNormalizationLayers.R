@@ -155,7 +155,7 @@ InstanceNormalizationLayer <- R6::R6Class( "InstanceNormalizationLayer",
       reductionAxes[[1]] <- NULL
 
       mean <- K$mean( inputs, reductionAxes, keepdims = TRUE )
-      stddev <- K$std( inputs, reductionAxes, keepdims = TRUE )
+      stddev <- K$sd( inputs, reductionAxes, keepdims = TRUE )
 
       normed <- ( inputs - mean ) / ( stddev + epsilon )
 
