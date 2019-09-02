@@ -284,7 +284,7 @@ CycleGanModel <- R6::R6Class( "CycleGanModel",
         imagesA <- X_trainA[indicesA,,,, drop = FALSE]
 
         indicesB <- sample.int( dim( X_trainB )[1], batchSize )
-        imagesB <- X_trainB[indicesAB,,,, drop = FALSE]
+        imagesB <- X_trainB[indicesB,,,, drop = FALSE]
 
         # train discriminator
 
