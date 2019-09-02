@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Instance normalization layer — layer_instance_normalization • ANTsRNet</title>
+<title>Cycle GAN model — CycleGanModel • ANTsRNet</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Instance normalization layer — layer_instance_normalization" />
+<meta property="og:title" content="Cycle GAN model — CycleGanModel" />
 
-<meta property="og:description" content="Creates an instance normalization layer" />
+<meta property="og:description" content="Deep conviolutional generative adverserial network from the paper:" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -92,86 +92,71 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Instance normalization layer</h1>
+    <h1>Cycle GAN model</h1>
     
-    <div class="hidden name"><code>layer_instance_normalization.Rd</code></div>
+    <div class="hidden name"><code>CycleGanModel.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Creates an instance normalization layer</p>
+    <p>Deep conviolutional generative adverserial network from the paper:</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>layer_instance_normalization</span>(<span class='no'>object</span>, <span class='kw'>axis</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>epsilon</span> <span class='kw'>=</span> <span class='fl'>0.001</span>,
-  <span class='kw'>center</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>scale</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>betaInitializer</span> <span class='kw'>=</span> <span class='st'>"zeros"</span>,
-  <span class='kw'>gammaInitializer</span> <span class='kw'>=</span> <span class='st'>"ones"</span>, <span class='kw'>betaRegularizer</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>gammaRegularizer</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>betaConstraint</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>gammaConstraint</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>trainable</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+        
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>https://arxiv.org/pdf/1703.10593</p>
+<p>and ported from the Keras (python) implementation:</p>
+<p>https://github.com/eriklindernoren/Keras-GAN/blob/master/cyclegan/cyclegan.py</p>
+    
+    <h2 class="hasAnchor" id="usage"><a class="anchor" href="#usage"></a>Usage</h2>
+
+    
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>axis</th>
-      <td><p>Integer specifying which axis should be normalized, typically
-the feature axis.  For example, after a Conv2D layer with
-<code>channels_first</code>, set axis = 1.  Setting <code>axis=-1L</code> will
-normalize all values in each instance of the batch.  Axis 0
-is the batch dimension for tensorflow backend so we throw an
-error if <code>axis = 0</code>.</p></td>
-    </tr>
-    <tr>
-      <th>epsilon</th>
-      <td><p>Small float added to the variance to avoid dividing by 0.</p></td>
-    </tr>
-    <tr>
-      <th>center</th>
-      <td><p>If TRUE, add <code>beta</code> offset to normalized tensor.</p></td>
-    </tr>
-    <tr>
-      <th>scale</th>
-      <td><p>If TRUE, multiply by <code>gamma</code>.</p></td>
-    </tr>
-    <tr>
-      <th>betaInitializer</th>
-      <td><p>Intializer for the beta weight.</p></td>
-    </tr>
-    <tr>
-      <th>gammaInitializer</th>
-      <td><p>Intializer for the gamma weight.</p></td>
-    </tr>
-    <tr>
-      <th>betaRegularizer</th>
-      <td><p>Regularizer for the beta weight.</p></td>
-    </tr>
-    <tr>
-      <th>gammaRegularizer</th>
-      <td><p>Regularizer for the gamma weight.</p></td>
-    </tr>
-    <tr>
-      <th>betaConstraint</th>
-      <td><p>Optional constraint for the beta weight.</p></td>
-    </tr>
-    <tr>
-      <th>gammaConstraint</th>
-      <td><p>Optional constraint for the gamma weight.</p></td>
-    </tr>
-    </table>
-    
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a keras layer tensor</p>
+    
+    <dl class='dl-horizontal'>
+<dt>inputImageSize</dt><dd><p></p></dd>
+<dt>latentDimension</dt><dd><p></p></dd>
+</dl>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    
+    <p><code>$initialize</code> instantiates a new class and builds the
+generator and discriminator.
+<code>$buildGenerator</code>build generator.
+<code>$buildGenerator</code>build discriminator.</p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><span class='co'># NOT RUN {</span>
+<span class='fu'>library</span>( <span class='no'>keras</span> )
+<span class='fu'>library</span>( <span class='no'>ANTsRNet</span> )
+
+<span class='kw pkg'>keras</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/backend'>backend</a></span>()$<span class='fu'>clear_session</span>()
+
+<span class='no'>ganModel</span> <span class='kw'>&lt;-</span> <span class='no'>CycleGanModel</span>$<span class='fu'>new</span>(
+   <span class='kw'>inputImageSize</span> <span class='kw'>=</span> <span class='no'>inputImageSize</span> )
+<span class='co'># }</span><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#value">Value</a></li>
-          </ul>
+      <li><a href="#details">Details</a></li>
+
+      <li><a href="#usage">Usage</a></li>
+
+      <li><a href="#arguments">Arguments</a></li>
+
+      <li><a href="#details">Details</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
     <h2>Author</h2>
     

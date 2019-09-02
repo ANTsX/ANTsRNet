@@ -88,6 +88,9 @@ reference:
   - '`DeepConvolutionalGanModel`'
   - '`WassersteinGanModel`'
   - '`ImprovedWassersteinGanModel`'
+  - '`CycleGanModel`'
+  - '`InstanceNormalizationLayer`'
+  - '`layer_instance_normalization`'
 - title: Deep embedded clustering (DEC)
   desc: ~
   contents:

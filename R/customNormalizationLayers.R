@@ -52,9 +52,11 @@ InstanceNormalizationLayer <- R6::R6Class( "InstanceNormalizationLayer",
 
   inherit = KerasLayer,
 
+  lock_objects = FALSE,
+
   public = list(
 
-    axis = -1L,
+    axis = NULL,
 
     epsilon = 1e-3,
 
@@ -79,7 +81,7 @@ InstanceNormalizationLayer <- R6::R6Class( "InstanceNormalizationLayer",
       gammaRegularizer = NULL, betaConstraint = NULL, gammaConstraint = NULL )
       {
       self$axis = axis
-      if( self$axis == 1 )
+      if( ! is.null( self$axis ) && self$axis == 1L )
         {
         stop( "Error:  axis can't be 1." )
         }
@@ -96,17 +98,17 @@ InstanceNormalizationLayer <- R6::R6Class( "InstanceNormalizationLayer",
 
     build = function( input_shape )
       {
-      dimensionality <- length( input_shape )
+      dimensionality <- as.integer( length( input_shape ) )
 
-      if( ( self$axis != -1L ) && ( dimensionality == 2 ) )
+      if( ( ! is.null( self$axis ) ) && ( dimensionality == 3L ) )
         {
         stop( "Error:  Cannot specify an axis for rank 1 tensor." )
         }
 
       shape <- NULL
-      if( self$axis == -1L )
+      if( is.null( self$axis ) )
         {
-        shape <- shape( 1 )
+        shape <- shape( 1L )
         } else {
         shape <- shape( input_shape[self$axis] )
         }
@@ -136,7 +138,6 @@ InstanceNormalizationLayer <- R6::R6Class( "InstanceNormalizationLayer",
         } else {
         self$gamma <- NULL
         }
-
       },
 
    call = function( inputs, mask = NULL )
@@ -144,21 +145,22 @@ InstanceNormalizationLayer <- R6::R6Class( "InstanceNormalizationLayer",
       K <- keras::backend()
 
       inputShape <- K$int_shape( inputs )
-      reductionAxes <- list( seq( from = 1, to = length( inputShape ) ) )
+      reductionAxes <- as.list( seq( from = 0,
+        to = as.integer( length( inputShape ) - 1 ) ) )
 
-      if( self$axis != -1 )
+      if( ! is.null( self$axis ) )
         {
         reductionAxes[[self$axis]] <- NULL
         }
       reductionAxes[[1]] <- NULL
 
       mean <- K$mean( inputs, reductionAxes, keepdims = TRUE )
-      stddev <- K$sd( inputs, reductionAxes, keepdims = TRUE )
+      stddev <- K$std( inputs, reductionAxes, keepdims = TRUE )
 
-      normed <- ( inputs - mean ) / ( stddev + epsilon )
+      normed <- ( inputs - mean ) / ( stddev + self$epsilon )
 
-      broadcastShape <- rep( 1, length( inputShape ) )
-      if( self$axis != -1L )
+      broadcastShape <- rep( 1L, length( inputShape ) )
+      if( ! is.null( self$axis ) )
         {
         broadcastShape[self$axis] <- inputShape[self$axis]
         }
@@ -173,7 +175,6 @@ InstanceNormalizationLayer <- R6::R6Class( "InstanceNormalizationLayer",
         broadcastBeta <- K$reshape( self$beta, broadcastShape )
         normed <- normed + broadcastBeta
         }
-
       return( normed )
       }
   )
@@ -203,7 +204,7 @@ InstanceNormalizationLayer <- R6::R6Class( "InstanceNormalizationLayer",
 #' @author Tustison NJ
 #' @import keras
 #' @export
-layer_instance_normalization <- function( object, axis = -1L,
+layer_instance_normalization <- function( object, axis = NULL,
   epsilon = 1e-3, center = TRUE, scale = TRUE,
   betaInitializer = "zeros", gammaInitializer = "ones",
   betaRegularizer = NULL, gammaRegularizer = NULL,

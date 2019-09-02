@@ -4,7 +4,7 @@
 \alias{layer_instance_normalization}
 \title{Instance normalization layer}
 \usage{
-layer_instance_normalization(object, axis = -1L, epsilon = 0.001,
+layer_instance_normalization(object, axis = NULL, epsilon = 0.001,
   center = TRUE, scale = TRUE, betaInitializer = "zeros",
   gammaInitializer = "ones", betaRegularizer = NULL,
   gammaRegularizer = NULL, betaConstraint = NULL,
