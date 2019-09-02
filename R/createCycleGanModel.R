@@ -293,18 +293,23 @@ CycleGanModel <- R6::R6Class( "CycleGanModel",
 
         dALossReal <- self$discriminatorA$train_on_batch( imagesA, valid )
         dALossFake <- self$discriminatorA$train_on_batch( fakeImagesA, fake )
-        dALoss <- 0.5 * ( dALossReal + dALossFake )
 
         dBLossReal <- self$discriminatorB$train_on_batch( imagesB, valid )
         dBLossFake <- self$discriminatorB$train_on_batch( fakeImagesB, fake )
-        dBLoss <- 0.5 * ( dBLossReal + dBLossFake )
 
-        dLoss <- 0.5 * ( dALoss + dBLoss )
+        dLoss <- list()
+        for( i in seq_len( length( dALossReal ) ) )
+          {
+          dLoss[[i]] <- 0.25 * ( dALossReal[[i]] + dALossFake[[i]] +
+            dBLossReal[[i]] + dBLossFake[[i]] )
+          }
 
         # train generator
 
         gLoss <- self$combinedModel$train_on_batch( list( imagesA, imagesB ),
           list( valid, valid, imagesA, imagesB, imagesA, imagesB ) )
+
+        cat( "Length ", length( gLoss ), "\n" )
 
         cat( "Epoch ", epoch, ": [Discriminator loss: ", dLoss[[1]],
              " acc: ", dLoss[[2]], "] ", "[Generator loss: ", gLoss[1], ", ",
