@@ -312,9 +312,9 @@ CycleGanModel <- R6::R6Class( "CycleGanModel",
         cat( "Length ", length( gLoss ), "\n" )
 
         cat( "Epoch ", epoch, ": [Discriminator loss: ", dLoss[[1]],
-             " acc: ", dLoss[[2]], "] ", "[Generator loss: ", gLoss[1], ", ",
-             mean( gLoss[2:4] ), ", ", mean( gLoss[4:6] ),
-             mean( gLoss[6:7] ), "]\n",
+             " acc: ", dLoss[[2]], "] ", "[Generator loss: ", gLoss[[1]], ", ",
+             mean(  unlist( gLoss )[2:4] ), ", ", mean(  unlist( gLoss )[4:6] ),
+             mean( unlist( gLoss )[6:7] ), "]\n",
              sep = '' )
 
         # if( self$dimensionality == 2 )
