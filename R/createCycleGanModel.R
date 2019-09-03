@@ -309,61 +309,66 @@ CycleGanModel <- R6::R6Class( "CycleGanModel",
         gLoss <- self$combinedModel$train_on_batch( list( imagesA, imagesB ),
           list( valid, valid, imagesA, imagesB, imagesA, imagesB ) )
 
-        cat( "Length ", length( gLoss ), "\n" )
-
         cat( "Epoch ", epoch, ": [Discriminator loss: ", dLoss[[1]],
              " acc: ", dLoss[[2]], "] ", "[Generator loss: ", gLoss[[1]], ", ",
-             mean(  unlist( gLoss )[2:4] ), ", ", mean(  unlist( gLoss )[4:6] ),
-             mean( unlist( gLoss )[6:7] ), "]\n",
+             mean( unlist( gLoss )[2:4] ), ", ", mean( unlist( gLoss )[4:6] ),
+             ", ", mean( unlist( gLoss )[6:7] ), "]\n",
              sep = '' )
 
-        # if( self$dimensionality == 2 )
-        #   {
-        #   if( ! is.na( sampleInterval ) )
-        #     {
-        #     if( ( ( epoch - 1 ) %% sampleInterval ) == 0 )
-        #       {
-        #       # Do a 5x5 grid
+        if( self$dimensionality == 2 )
+          {
+          if( ! is.na( sampleInterval ) )
+            {
+            if( ( ( epoch - 1 ) %% sampleInterval ) == 0 )
+              {
+              # Do a 2x3 grid
+              #
+              # imageA  |  translated( imageA ) | reconstructed( imageA )
+              # imageB  |  translated( imageB ) | reconstructed( imageB )
 
-        #       predictedBatchSize <- 5 * 5
-        #       noise <- array( data = rnorm( n = predictedBatchSize * self$latentDimension,
-        #                                     mean = 0, sd = 1 ),
-        #                       dim = c( predictedBatchSize, self$latentDimension ) )
-        #       X_generated <- ganModel$generator$predict( noise )
+              indexA <- sample.int( dim( X_trainA )[1], 1 )
+              imageA <- X_trainA[indexA,,,, drop = FALSE]
 
-        #       # Convert to [0,255] to write as jpg using ANTsR
+              indexB <- sample.int( dim( X_trainB )[1], 1 )
+              imageB <- X_trainB[indexB,,,, drop = FALSE]
 
-        #       X_generated <- 255 * ( X_generated - min( X_generated ) ) /
-        #         ( max( X_generated ) - min( X_generated ) )
-        #       X_generated <- drop( X_generated )
-        #       X_generated[] <- as.integer( X_generated )
+              X <- list()
+              X[[1]] <- imageA
+              X[[2]] <- self$generatorAtoB$predict( X[[1]] )
+              X[[3]] <- self$generatorBtoA$predict( X[[2]] )
 
-        #       X_tiled <- array( data = 0,
-        #         dim = c( 5 * dim( X_generated )[2], 5 * dim( X_generated )[3] ) )
-        #       for( i in 1:5 )
-        #         {
-        #         indices_i <- ( ( i - 1 ) * dim( X_generated )[2] + 1 ):( i * dim( X_generated )[2] )
-        #         for( j in 1:5 )
-        #           {
-        #           indices_j <- ( ( j - 1 ) * dim( X_generated )[3] + 1 ):( j * dim( X_generated )[3] )
+              X[[4]] <- imageB
+              X[[5]] <- self$generatorBtoA$predict( X[[4]] )
+              X[[6]] <- self$generatorAtoB$predict( X[[5]] )
 
-        #           X_tiled[indices_i, indices_j] <- X_generated[( i - 1 ) * 5 + j,,]
-        #           }
-        #         }
+              for( i in seq_len( length( X ) ) )
+                {
+                X[[i]] <- ( X[[i]] - min( X[[i]] ) ) /
+                  ( max( X[[i]] ) - min( X[[i]] ) )
+                X[[i]] <- drop( X[[i]] )
+                }
+              XrowA <- image_append(
+                         c( image_read( X[[1]] ),
+                            image_read( X[[2]] ),
+                            image_read( X[[3]] ) ) )
+              XrowB <- image_append(
+                         c( image_read( X[[4]] ),
+                            image_read( X[[5]] ),
+                            image_read( X[[6]] ) ) )
+              XAB <- image_append( c( XrowA, XrowB ), stack = TRUE )
 
-        #       sampleDir <- dirname( sampleFilePrefix )
-        #       if( ! dir.exists( sampleDir ) )
-        #         {
-        #         dir.create( sampleDir, showWarnings = TRUE, recursive = TRUE )
-        #         }
+              sampleDir <- dirname( sampleFilePrefix )
+              if( ! dir.exists( sampleDir ) )
+                {
+                dir.create( sampleDir, showWarnings = TRUE, recursive = TRUE )
+                }
 
-        #       imageFileName <- paste0( sampleFilePrefix, "_iteration" , epoch, ".jpg" )
-        #       cat( "   --> writing sample image: ", imageFileName, "\n" )
-        #       antsImageWrite( as.antsImage( t( X_tiled ), pixeltype = "unsigned char" ),
-        #         imageFileName )
-        #       }
-        #     }
-        #   }
+              imageFileName <- paste0( sampleFilePrefix, "_iteration" , epoch, ".jpg" )
+              cat( "   --> writing sample image: ", imageFileName, "\n" )
+              image_write( XAB, path = imageFileName, format = "jpg")
+              }
+            }
+          }
         }
       }
     )
