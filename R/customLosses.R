@@ -76,22 +76,9 @@ multilabel_dice_coefficient <- function( y_true, y_pred )
   return ( ( 2.0 * unionOverlap + smoothingFactor ) /
     ( 1.0 + unionOverlap + smoothingFactor ) )
 }
-attr( multilabel_dice_coefficient, "py_function_name" ) <-
-  "multilabel_dice_coefficient"
 
-#' Multilabel dice loss function.
-#'
-#' @param y_true true encoded labels
-#' @param y_pred predicted encoded labels
-#'
-#' @rdname loss_multilabel_dice_coefficient_error
-#' @export
-loss_multilabel_dice_coefficient_error <- function( y_true, y_pred )
-{
-  return( -multilabel_dice_coefficient( y_true, y_pred ) )
-}
-attr( loss_multilabel_dice_coefficient_error, "py_function_name" ) <-
-  "multilabel_dice_coefficient_error"
+metric_multilabel_dice_coefficient <-
+  custom_metric( "multilabel_dice_coefficient", multilabel_dice_coefficient )
 
 #' Peak-signal-to-noise ratio.
 #'
@@ -112,22 +99,9 @@ peak_signal_to_noise_ratio <- function( y_true, y_pred )
 
   return( -10.0 * K$log( K$mean( K$square( y_pred - y_true ) ) ) / K$log( 10.0 ) )
 }
-attr( peak_signal_to_noise_ratio, "py_function_name" ) <-
-  "peak_signal_to_noise_ratio"
 
-#' Peak-signal-to-noise ratio.
-#'
-#' @param y_true true encoded labels
-#' @param y_pred predicted encoded labels
-#'
-#' @rdname loss_peak_signal_to_noise_ratio_error
-#' @export
-loss_peak_signal_to_noise_ratio_error <- function( y_true, y_pred )
-{
-  return( -peak_signal_to_noise_ratio( y_true, y_pred ) )
-}
-attr( loss_peak_signal_to_noise_ratio_error, "py_function_name" ) <-
-  "peak_signal_to_noise_ratio_error"
+metric_peak_signal_to_noise_ratio <-
+  custom_metric( "peak_signal_to_noise_ratio", peak_signal_to_noise_ratio )
 
 #' Pearson correlation coefficient.
 #'
@@ -162,22 +136,9 @@ pearson_correlation_coefficient <- function( y_true, y_pred )
 
   return( coefficient )
 }
-attr( pearson_correlation_coefficient, "py_function_name" ) <-
-  "pearson_correlation_coefficient"
-
-#' Pearson correlation coefficient
-#'
-#' @param y_true true encoded labels
-#' @param y_pred predicted encoded labels
-#'
-#' @rdname loss_pearson_correlation_coefficient_error
-#' @export
-loss_pearson_correlation_coefficient_error <- function( y_true, y_pred )
-{
-  return( -pearson_correlation_coefficient( y_true, y_pred ) )
-}
-attr( loss_pearson_correlation_coefficient_error, "py_function_name" ) <-
-  "pearson_correlation_coefficient_error"
+pearson_correlation_coefficient <-
+  custom_metric( "pearson_correlation_coefficient",
+    pearson_correlation_coefficient )
 
 #' Loss function for the SSD deep learning architecture.
 #'

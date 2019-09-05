@@ -113,9 +113,6 @@ reference:
 - title: Custom losses
   desc: ~
   contents:
-  - '`loss_multilabel_dice_coefficient_error`'
-  - '`loss_peak_signal_to_noise_ratio_error`'
-  - '`loss_pearson_correlation_coefficient_error`'
   - '`multilabel_dice_coefficient`'
   - '`peak_signal_to_noise_ratio`'
   - '`pearson_correlation_coefficient`'

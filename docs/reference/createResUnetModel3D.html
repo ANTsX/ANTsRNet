@@ -109,7 +109,7 @@ image segmentation and regression with the paper available here:</p>
   <span class='kw'>numberOfFiltersAtBaseLayer</span> <span class='kw'>=</span> <span class='fl'>32</span>, <span class='kw'>bottleNeckBlockDepthSchedule</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>3</span>,
   <span class='fl'>4</span>), <span class='kw'>convolutionKernelSize</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>3</span>, <span class='fl'>3</span>, <span class='fl'>3</span>),
   <span class='kw'>deconvolutionKernelSize</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>2</span>, <span class='fl'>2</span>, <span class='fl'>2</span>), <span class='kw'>dropoutRate</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>weightDecay</span> <span class='kw'>=</span> <span class='fl'>0.0001</span>, <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"classification"</span>)</pre>
+  <span class='kw'>weightDecay</span> <span class='kw'>=</span> <span class='fl'>1e-04</span>, <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"classification"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -224,25 +224,26 @@ implementation:</p>
 
 <span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/compile'>compile</a></span>( <span class='kw'>loss</span> <span class='kw'>=</span> <span class='no'>loss_multilabel_dice_coefficient_error</span>,
   <span class='kw'>optimizer</span> <span class='kw'>=</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/optimizer_adam'>optimizer_adam</a></span>( <span class='kw'>lr</span> <span class='kw'>=</span> <span class='fl'>0.0001</span> ),
-  <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='fu'>c</span>( <span class='no'>multilabel_dice_coefficient</span> ) )
+  <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='fu'>c</span>( <span class='no'>multilabel_dice_coefficient</span> ) )</div><div class='output co'>#&gt; <span class='error'>Error in compile(., loss = loss_multilabel_dice_coefficient_error, optimizer = optimizer_adam(lr = 1e-04),     metrics = c(multilabel_dice_coefficient)): object 'loss_multilabel_dice_coefficient_error' not found</span></div><div class='input'>
+# Comment out the rest due to travis build constraints
 
-<span class='co'># Comment out the rest due to travis build constraints</span>
+# Fit the model
 
-<span class='co'># Fit the model</span>
+# track <- model %>% fit( X_train, Y_train,
+#              epochs = 100, batch_size = 4, verbose = 1, shuffle = TRUE,
+#              callbacks = list(
+#                callback_model_checkpoint( "resUnetModelInterimWeights.h5",
+#                    monitor = 'val_loss', save_best_only = TRUE ),
+#                callback_reduce_lr_on_plateau( monitor = "val_loss", factor = 0.1 )
+#              ),
+#              validation_split = 0.2 )
 
-<span class='co'># track &lt;- model %&gt;% fit( X_train, Y_train,</span>
-<span class='co'>#              epochs = 100, batch_size = 4, verbose = 1, shuffle = TRUE,</span>
-<span class='co'>#              callbacks = list(</span>
-<span class='co'>#                callback_model_checkpoint( "resUnetModelInterimWeights.h5",</span>
-<span class='co'>#                    monitor = 'val_loss', save_best_only = TRUE ),</span>
-<span class='co'>#                callback_reduce_lr_on_plateau( monitor = "val_loss", factor = 0.1 )</span>
-<span class='co'>#              ),</span>
-<span class='co'>#              validation_split = 0.2 )</span>
+# Save the model and/or save the model weights
 
-<span class='co'># Save the model and/or save the model weights</span>
+# save_model_hdf5( model, filepath = 'resUnetModel.h5' )
+# save_model_weights_hdf5( unetModel, filepath = 'resUnetModelWeights.h5' ) )
 
-<span class='co'># save_model_hdf5( model, filepath = 'resUnetModel.h5' )</span>
-<span class='co'># save_model_weights_hdf5( unetModel, filepath = 'resUnetModelWeights.h5' ) )</span></div></pre>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
