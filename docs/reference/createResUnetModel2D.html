@@ -221,9 +221,9 @@ implementation:</p>
 <span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'>createResUnetModel2D</span>( <span class='fu'>c</span>( <span class='fu'>dim</span>( <span class='no'>domainImage</span> ), <span class='fl'>1</span> ),
   <span class='kw'>numberOfOutputs</span> <span class='kw'>=</span> <span class='no'>numberOfLabels</span> )
 
-<span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/compile'>compile</a></span>( <span class='kw'>loss</span> <span class='kw'>=</span> <span class='no'>loss_multilabel_dice_coefficient_error</span>,
+<span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/compile'>compile</a></span>( <span class='kw'>loss</span> <span class='kw'>=</span> <span class='no'>categorical_cross_entropy</span>,
   <span class='kw'>optimizer</span> <span class='kw'>=</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/optimizer_adam'>optimizer_adam</a></span>( <span class='kw'>lr</span> <span class='kw'>=</span> <span class='fl'>0.0001</span> ),
-  <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='fu'>c</span>( <span class='no'>multilabel_dice_coefficient</span> ) )</div><div class='output co'>#&gt; <span class='error'>Error in compile(., loss = loss_multilabel_dice_coefficient_error, optimizer = optimizer_adam(lr = 1e-04),     metrics = c(multilabel_dice_coefficient)): object 'loss_multilabel_dice_coefficient_error' not found</span></div><div class='input'>
+  <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='fu'>c</span>( <span class='no'>metric_multilabel_dice_coefficient</span> ) )</div><div class='output co'>#&gt; <span class='error'>Error in compile(., loss = categorical_cross_entropy, optimizer = optimizer_adam(lr = 1e-04),     metrics = c(metric_multilabel_dice_coefficient)): object 'categorical_cross_entropy' not found</span></div><div class='input'>
 # Comment out the rest due to travis build constraints
 
 # Fit the model

@@ -1,21 +1,9 @@
-#' Model loss function for multilabel problems--- multilabel dice coefficient
-#'
-#' Based on the keras loss function (losses.R):
-#'
-#'    \url{https://github.com/rstudio/keras/blob/master/R/losses.R}
+#' Dice function for multilabel problems
 #'
 #' @param y_true True labels (Tensor)
 #' @param y_pred Predictions (Tensor of the same shape as \code{y_true})
-#'
-#' @details Loss functions are to be supplied in the loss parameter of the
-#' \code{compile()} function.
-#'
-#' Loss functions can be specified either using the name of a built in loss
-#' function (e.g. \code{loss = binary_crossentropy}), a reference to a built in loss
-#' function (e.g. \code{loss = binary_crossentropy()}) or by passing an
-#' arbitrary function that returns a scalar for each data-point.
-#' The actual optimized objective is the mean of the output array across all
-#' datapoints.
+#' @return Dice value
+#' @author Tustison NJ
 #' @export
 multilabel_dice_coefficient <- function( y_true, y_pred )
 {
@@ -77,20 +65,22 @@ multilabel_dice_coefficient <- function( y_true, y_pred )
     ( 1.0 + unionOverlap + smoothingFactor ) )
 }
 
-metric_multilabel_dice_coefficient <-
-  custom_metric( "multilabel_dice_coefficient", multilabel_dice_coefficient )
-
-#' Peak-signal-to-noise ratio.
-#'
-#' Based on the keras loss function (losses.R):
-#'
-#'    \url{https://github.com/rstudio/keras/blob/master/R/losses.R}
+#' Dice metric for multilabel problems
 #'
 #' @param y_true True labels (Tensor)
 #' @param y_pred Predictions (Tensor of the same shape as \code{y_true})
+#' @return Dice value
+#' @author Tustison NJ
+#' @export
+metric_multilabel_dice_coefficient <-
+  custom_metric( "multilabel_dice_coefficient", multilabel_dice_coefficient )
+
+#' Function to calculate peak-signal-to-noise ratio.
 #'
-#' @details Loss functions are to be supplied in the loss parameter of the
-#' \code{compile()} function.
+#' @param y_true True labels (Tensor)
+#' @param y_pred Predictions (Tensor of the same shape as \code{y_true})
+#' @return PSNR value
+#' @author Tustison NJ
 #'
 #' @export
 peak_signal_to_noise_ratio <- function( y_true, y_pred )
@@ -100,20 +90,23 @@ peak_signal_to_noise_ratio <- function( y_true, y_pred )
   return( -10.0 * K$log( K$mean( K$square( y_pred - y_true ) ) ) / K$log( 10.0 ) )
 }
 
-metric_peak_signal_to_noise_ratio <-
-  custom_metric( "peak_signal_to_noise_ratio", peak_signal_to_noise_ratio )
-
-#' Pearson correlation coefficient.
-#'
-#' Based on the code found here:
-#'
-#'    \url{https://github.com/rstudio/keras/issues/160}
+#' Metric to calculate peak-signal-to-noise ratio.
 #'
 #' @param y_true True labels (Tensor)
 #' @param y_pred Predictions (Tensor of the same shape as \code{y_true})
+#' @return PSNR value
+#' @author Tustison NJ
 #'
-#' @details Loss functions are to be supplied in the loss parameter of the
-#' \code{compile()} function.
+#' @export
+metric_peak_signal_to_noise_ratio <-
+  custom_metric( "peak_signal_to_noise_ratio", peak_signal_to_noise_ratio )
+
+#' Function for Pearson correlation coefficient.
+#'
+#' @param y_true True labels (Tensor)
+#' @param y_pred Predictions (Tensor of the same shape as \code{y_true})
+#' @return Correlation
+#' @author Tustison NJ
 #'
 #' @export
 pearson_correlation_coefficient <- function( y_true, y_pred )
@@ -136,6 +129,15 @@ pearson_correlation_coefficient <- function( y_true, y_pred )
 
   return( coefficient )
 }
+
+#' Metric for Pearson correlation coefficient.
+#'
+#' @param y_true True labels (Tensor)
+#' @param y_pred Predictions (Tensor of the same shape as \code{y_true})
+#' @return Correlation
+#' @author Tustison NJ
+#'
+#' @export
 metric_pearson_correlation_coefficient <-
   custom_metric( "pearson_correlation_coefficient",
     pearson_correlation_coefficient )

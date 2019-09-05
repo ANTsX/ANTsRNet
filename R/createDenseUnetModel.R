@@ -76,7 +76,7 @@
 #' model <- createDenseUnetModel2D( c( dim( domainImage ), 1 ),
 #'   numberOfOutputs = numberOfLabels )
 #'
-#' model %>% compile( loss = categorical_cross_entropy,
+#' model %>% compile( loss = categorical_crossentropy,
 #'   optimizer = optimizer_adam( lr = 0.0001 ),
 #'   metrics = c( metric_multilabel_dice_coefficient ) )
 #'
@@ -392,7 +392,7 @@ createDenseUnetModel2D <- function( inputImageSize,
 #' model <- createDenseUnetModel2D( c( dim( domainImage ), 1 ),
 #'   numberOfOutputs = numberOfLabels )
 #'
-#' model %>% compile( loss = categorical_cross_entropy,
+#' model %>% compile( loss = categorical_crossentropy,
 #'   optimizer = optimizer_adam( lr = 0.0001 ),
 #'   metrics = c( metric_multilabel_dice_coefficient ) )
 #'
