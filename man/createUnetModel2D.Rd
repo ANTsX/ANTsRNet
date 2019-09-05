@@ -117,8 +117,7 @@ attr(loss_dice, "py_function_name") <- "multilabel_dice_coefficient"
 
 model \%>\% compile( loss = loss_dice,
   optimizer = optimizer_adam( lr = 0.0001 ),
-  metrics = c( metric_multilabel_dice_coefficient,
-    categorical_crossentropy ) )
+  metrics = metric_multilabel_dice_coefficient )
 
 # Comment out the rest due to travis build constraints
 

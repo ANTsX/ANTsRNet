@@ -227,12 +227,23 @@ implementation:</p>
 
 <span class='co'># Create the model</span>
 
+<span class='co'># Create the model</span>
+
 <span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='createUnetModel2D.html'>createUnetModel2D</a></span>( <span class='fu'>c</span>( <span class='fu'>dim</span>( <span class='no'>domainImage</span> ), <span class='fl'>1</span> ),
   <span class='kw'>numberOfOutputs</span> <span class='kw'>=</span> <span class='no'>numberOfLabels</span> )
 
-<span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/compile'>compile</a></span>( <span class='kw'>loss</span> <span class='kw'>=</span> <span class='no'>categorical_crossentropy</span>,
+<span class='no'>metric_multilabel_dice_coefficient</span> <span class='kw'>&lt;-</span>
+  <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/metric_binary_accuracy'>custom_metric</a></span>( <span class='st'>"multilabel_dice_coefficient"</span>,
+    <span class='no'>multilabel_dice_coefficient</span> )
+
+<span class='no'>loss_dice</span> <span class='kw'>&lt;-</span> <span class='kw'>function</span>( <span class='no'>y_true</span>, <span class='no'>y_pred</span> ) {
+  -<span class='fu'><a href='multilabel_dice_coefficient.html'>multilabel_dice_coefficient</a></span>(<span class='no'>y_true</span>, <span class='no'>y_pred</span>)
+}
+<span class='fu'>attr</span>(<span class='no'>loss_dice</span>, <span class='st'>"py_function_name"</span>) <span class='kw'>&lt;-</span> <span class='st'>"multilabel_dice_coefficient"</span>
+
+<span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/compile'>compile</a></span>( <span class='kw'>loss</span> <span class='kw'>=</span> <span class='no'>loss_dice</span>,
   <span class='kw'>optimizer</span> <span class='kw'>=</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/optimizer_adam'>optimizer_adam</a></span>( <span class='kw'>lr</span> <span class='kw'>=</span> <span class='fl'>0.0001</span> ),
-  <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='fu'>c</span>( <span class='no'>metric_multilabel_dice_coefficient</span> ) )
+  <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='no'>metric_multilabel_dice_coefficient</span> )
 
 <span class='co'># Comment out the rest due to travis build constraints</span>
 

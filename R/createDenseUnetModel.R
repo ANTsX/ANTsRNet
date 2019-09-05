@@ -73,12 +73,24 @@
 #'
 #' # Create the model
 #'
+#' # Create the model
+#'
 #' model <- createDenseUnetModel2D( c( dim( domainImage ), 1 ),
 #'   numberOfOutputs = numberOfLabels )
 #'
-#' model %>% compile( loss = categorical_crossentropy,
+#' metric_multilabel_dice_coefficient <-
+#'   custom_metric( "multilabel_dice_coefficient",
+#'     multilabel_dice_coefficient )
+#'
+#' loss_dice <- function( y_true, y_pred ) {
+#'   -multilabel_dice_coefficient(y_true, y_pred)
+#' }
+#' attr(loss_dice, "py_function_name") <- "multilabel_dice_coefficient"
+#'
+#' model %>% compile( loss = loss_dice,
 #'   optimizer = optimizer_adam( lr = 0.0001 ),
-#'   metrics = c( metric_multilabel_dice_coefficient ) )
+#'   metrics = c( metric_multilabel_dice_coefficient,
+#'     metric_categorical_crossentropy ) )
 #'
 #' # Comment out the rest due to travis build constraints
 #'
@@ -392,9 +404,19 @@ createDenseUnetModel2D <- function( inputImageSize,
 #' model <- createDenseUnetModel2D( c( dim( domainImage ), 1 ),
 #'   numberOfOutputs = numberOfLabels )
 #'
-#' model %>% compile( loss = categorical_crossentropy,
+#' metric_multilabel_dice_coefficient <-
+#'   custom_metric( "multilabel_dice_coefficient",
+#'     multilabel_dice_coefficient )
+#'
+#' loss_dice <- function( y_true, y_pred ) {
+#'   -multilabel_dice_coefficient(y_true, y_pred)
+#' }
+#' attr(loss_dice, "py_function_name") <- "multilabel_dice_coefficient"
+#'
+#' model %>% compile( loss = loss_dice,
 #'   optimizer = optimizer_adam( lr = 0.0001 ),
-#'   metrics = c( metric_multilabel_dice_coefficient ) )
+#'   metrics = c( metric_multilabel_dice_coefficient,
+#'     metric_categorical_crossentropy ) )
 #'
 #' # Comment out the rest due to travis build constraints
 #'
