@@ -110,12 +110,14 @@ reference:
   - '`sampleFromCategoricalDistribution`'
   - '`sampleFromOutput`'
   - '`mixture_density_network_softmax`'
-- title: Custom metrics 
+- title: Custom metrics/losses 
   desc: ~
   contents:
   - '`multilabel_dice_coefficient`'
   - '`peak_signal_to_noise_ratio`'
   - '`pearson_correlation_coefficient`'
+  - '`categorical_focal_gain`'
+  - '`categorical_focal_loss`'
 - title: Data augmentation
   desc: ~
   contents:

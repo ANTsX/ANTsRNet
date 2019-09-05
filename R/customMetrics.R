@@ -164,6 +164,124 @@ pearson_correlation_coefficient <- function( y_true, y_pred )
   return( coefficient )
 }
 
+#' Function for categorical focal gain
+#'
+#' The negative of the categorical focal loss discussed
+#' in this paper:
+#'
+#'   https://arxiv.org/pdf/1708.02002.pdf
+#'
+#' and ported from this implementation:
+#'
+#'    https://github.com/umbertogriffo/focal-loss-keras/blob/master/losses.py
+#'
+#' Used to handle imbalanced classes.
+#'
+#'           m
+#'      FL = ∑  alpha * (1 - p_o,c)^gamma * y_o,c * log(p_o,c)
+#'          c=1
+#'      where m = number of classes, c = class and o = observation
+#'
+#' @param y_true True labels (Tensor)
+#' @param y_pred Predictions (Tensor of the same shape as \code{y_true})
+#' @param gamma focusing parameter for modulating factor (1-p). Default = 2.0.
+#' @param alpha weighing factor in balanced cross entropy. Default = 0.25.
+#'
+#' @return function value
+#' @author Tustison NJ
+#'
+#' @examples
+#'
+#' library( ANTsRNet )
+#' library( keras )
+#'
+#' model <- createUnetModel2D( c( 64, 64, 1 ) )
+#'
+#' metric_categorical_focal_gain <-
+#'   custom_metric( "categorical_focal_gain",
+#'     categorical_focal_gain( alpha = 0.25, gamma = 2.0 ) )
+#'
+#' model %>% compile( loss = categorical_focal_loss( alpha = 0.25, gamma = 2.0 ),
+#'  optimizer = optimizer_adam( lr = 0.0001 ),
+#'    metrics = c( metric_categorical_focal_gain ) )
+#'
+#' @import keras
+#' @export
+categorical_focal_gain <- function( y_true, y_pred, gamma = 2.0, alpha = 0.25 )
+{
+  categorical_focal_gain_fixed <- function( y_true, y_pred )
+    {
+    K <- keras::backend()
+
+    y_pred <- y_pred / K$sum( y_pred, axis = -1L, keepdims = TRUE )
+    y_pred <- K$clip( y_pred, K$epsilon(), 1.0 - K$epsilon() )
+    cross_entropy = y_true * K$log( y_pred )
+    gain <- alpha * K$pow( 1.0 - y_pred, gamma ) * cross_entropy
+    return( K$sum( gain, axis = -1L ) )
+    }
+
+  return( categorical_focal_gain_fixed )
+}
+
+#' Function for categorical focal gain
+#'
+#' The negative of the categorical focal loss discussed
+#' in this paper:
+#'
+#'   https://arxiv.org/pdf/1708.02002.pdf
+#'
+#' and ported from this implementation:
+#'
+#'    https://github.com/umbertogriffo/focal-loss-keras/blob/master/losses.py
+#'
+#' Used to handle imbalanced classes.
+#'
+#'           m
+#'      FL = ∑  alpha * (1 - p_o,c)^gamma * y_o,c * log(p_o,c)
+#'          c=1
+#'      where m = number of classes, c = class and o = observation
+#'
+#' @param y_true True labels (Tensor)
+#' @param y_pred Predictions (Tensor of the same shape as \code{y_true})
+#' @param gamma focusing parameter for modulating factor (1-p). Default = 2.0.
+#' @param alpha weighing factor in balanced cross entropy. Default = 0.25.
+#'
+#' @return function value
+#' @author Tustison NJ
+#'
+#' @examples
+#'
+#' library( ANTsRNet )
+#' library( keras )
+#'
+#' model <- createUnetModel2D( c( 64, 64, 1 ) )
+#'
+#' metric_categorical_focal_gain <-
+#'   custom_metric( "categorical_focal_gain",
+#'     categorical_focal_gain( alpha = 0.25, gamma = 2.0 ) )
+#'
+#' model %>% compile( loss = categorical_focal_loss( alpha = 0.25, gamma = 2.0 ),
+#'  optimizer = optimizer_adam( lr = 0.0001 ),
+#'    metrics = c( metric_categorical_focal_gain ) )
+#'
+#' @import keras
+#' @export
+categorical_focal_loss <- function( y_true, y_pred, gamma = 2.0, alpha = 0.25 )
+{
+  categorical_focal_loss_fixed <- function( y_true, y_pred )
+    {
+    K <- keras::backend()
+
+    y_pred <- y_pred / K$sum( y_pred, axis = -1L, keepdims = TRUE )
+    y_pred <- K$clip( y_pred, K$epsilon(), 1.0 - K$epsilon() )
+    cross_entropy = y_true * K$log( y_pred )
+    gain <- alpha * K$pow( 1.0 - y_pred, gamma ) * cross_entropy
+    return( -K$sum( gain, axis = -1L ) )
+    }
+
+  return( categorical_focal_loss_fixed )
+}
+
 #' Loss function for the SSD deep learning architecture.
 #'
 #' Creates an R6 class object for use with the SSD deep learning architecture
