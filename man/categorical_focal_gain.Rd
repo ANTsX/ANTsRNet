@@ -30,11 +30,6 @@ and ported from this implementation:
 https://github.com/umbertogriffo/focal-loss-keras/blob/master/losses.py
 
 Used to handle imbalanced classes.
-
-m
-FL = ∑  alpha * (1 - p_o,c)^gamma * y_o,c * log(p_o,c)
-c=1
-where m = number of classes, c = class and o = observation
 }
 \examples{
 

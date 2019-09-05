@@ -177,11 +177,6 @@ pearson_correlation_coefficient <- function( y_true, y_pred )
 #'
 #' Used to handle imbalanced classes.
 #'
-#'           m
-#'      FL = ∑  alpha * (1 - p_o,c)^gamma * y_o,c * log(p_o,c)
-#'          c=1
-#'      where m = number of classes, c = class and o = observation
-#'
 #' @param y_true True labels (Tensor)
 #' @param y_pred Predictions (Tensor of the same shape as \code{y_true})
 #' @param gamma focusing parameter for modulating factor (1-p). Default = 2.0.
@@ -235,11 +230,6 @@ categorical_focal_gain <- function( y_true, y_pred, gamma = 2.0, alpha = 0.25 )
 #'    https://github.com/umbertogriffo/focal-loss-keras/blob/master/losses.py
 #'
 #' Used to handle imbalanced classes.
-#'
-#'           m
-#'      FL = ∑  alpha * (1 - p_o,c)^gamma * y_o,c * log(p_o,c)
-#'          c=1
-#'      where m = number of classes, c = class and o = observation
 #'
 #' @param y_true True labels (Tensor)
 #' @param y_pred Predictions (Tensor of the same shape as \code{y_true})
