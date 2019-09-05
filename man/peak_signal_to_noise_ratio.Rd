@@ -19,22 +19,15 @@ Function to calculate peak-signal-to-noise ratio.
 }
 \examples{
 
-library( ANTsR )
 library( ANTsRNet )
-library( keras )
 
-domainImage <- antsImageRead( getANTsRData( "r16" ) )
-
-# Create the model
-
-model <- createUnetModel2D( c( dim( domainImage ), 1 ),
-  numberOfOutputs = numberOfLabels )
+model <- createUnetModel2D( c( 64, 64, 1 ) )
 
 metric_peak_signal_to_noise_ratio <-
   custom_metric( "peak_signal_to_noise_ratio",
     peak_signal_to_noise_ratio )
 
-model \%>\% compile( loss = categorical_crossentropy,
+model \%>\% compile( loss = loss_categorical_crossentropy,
   optimizer = optimizer_adam( lr = 0.0001 ),
   metrics = c( metric_peak_signal_to_noise_ratio ) )
 

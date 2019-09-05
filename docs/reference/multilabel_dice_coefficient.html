@@ -125,18 +125,12 @@
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='fu'>library</span>( <span class='no'>ANTsR</span> )
 <span class='fu'>library</span>( <span class='no'>ANTsRNet</span> )
-<span class='fu'>library</span>( <span class='no'>keras</span> )
 
-<span class='no'>domainImage</span> <span class='kw'>&lt;-</span> <span class='fu'>antsImageRead</span>( <span class='fu'>getANTsRData</span>( <span class='st'>"r16"</span> ) )
+<span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='createUnetModel2D.html'>createUnetModel2D</a></span>( <span class='fu'>c</span>( <span class='fl'>64</span>, <span class='fl'>64</span>, <span class='fl'>1</span> ) )
 
-<span class='co'># Create the model</span>
-
-<span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='createUnetModel2D.html'>createUnetModel2D</a></span>( <span class='fu'>c</span>( <span class='fu'>dim</span>( <span class='no'>domainImage</span> ), <span class='fl'>1</span> ),
-  <span class='kw'>numberOfOutputs</span> <span class='kw'>=</span> <span class='no'>numberOfLabels</span> )</div><div class='output co'>#&gt; <span class='error'>Error in createUnetModel2D(c(dim(domainImage), 1), numberOfOutputs = numberOfLabels): object 'numberOfLabels' not found</span></div><div class='input'>
 <span class='no'>metric_multilabel_dice_coefficient</span> <span class='kw'>&lt;-</span>
-  <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/metric_binary_accuracy'>custom_metric</a></span>( <span class='st'>"multilabel_dice_coefficient"</span>,
+  <span class='fu'>custom_metric</span>( <span class='st'>"multilabel_dice_coefficient"</span>,
     <span class='no'>multilabel_dice_coefficient</span> )
 
 <span class='no'>loss_dice</span> <span class='kw'>&lt;-</span> <span class='kw'>function</span>( <span class='no'>y_true</span>, <span class='no'>y_pred</span> ) {
@@ -144,11 +138,10 @@
 }
 <span class='fu'>attr</span>(<span class='no'>loss_dice</span>, <span class='st'>"py_function_name"</span>) <span class='kw'>&lt;-</span> <span class='st'>"multilabel_dice_coefficient"</span>
 
-<span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/compile'>compile</a></span>( <span class='kw'>loss</span> <span class='kw'>=</span> <span class='no'>loss_dice</span>,
-  <span class='kw'>optimizer</span> <span class='kw'>=</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/optimizer_adam'>optimizer_adam</a></span>( <span class='kw'>lr</span> <span class='kw'>=</span> <span class='fl'>0.0001</span> ),
+<span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'>compile</span>( <span class='kw'>loss</span> <span class='kw'>=</span> <span class='no'>loss_dice</span>,
+  <span class='kw'>optimizer</span> <span class='kw'>=</span> <span class='fu'>optimizer_adam</span>( <span class='kw'>lr</span> <span class='kw'>=</span> <span class='fl'>0.0001</span> ),
   <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='fu'>c</span>( <span class='no'>metric_multilabel_dice_coefficient</span>,
-    <span class='no'>categorical_crossentropy</span> ) )</div><div class='output co'>#&gt; <span class='error'>Error in eval(lhs, parent, parent): object 'model' not found</span></div><div class='input'>
-</div></pre>
+    <span class='no'>metric_categorical_crossentropy</span> ) )</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

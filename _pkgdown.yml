@@ -110,7 +110,7 @@ reference:
   - '`sampleFromCategoricalDistribution`'
   - '`sampleFromOutput`'
   - '`mixture_density_network_softmax`'
-- title: Custom losses
+- title: Custom metrics 
   desc: ~
   contents:
   - '`multilabel_dice_coefficient`'

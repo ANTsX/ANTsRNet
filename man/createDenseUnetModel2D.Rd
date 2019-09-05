@@ -95,8 +95,6 @@ X_train <- ( X_train - mean( X_train ) ) / sd( X_train )
 
 # Create the model
 
-# Create the model
-
 model <- createDenseUnetModel2D( c( dim( domainImage ), 1 ),
   numberOfOutputs = numberOfLabels )
 

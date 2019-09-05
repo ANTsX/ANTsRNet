@@ -57,47 +57,9 @@ https://github.com/xmengli999/H-DenseUNet
 \examples{
 
 
-library( ANTsR )
 library( ANTsRNet )
-library( keras )
 
-imageIDs <- c( "r16", "r27", "r30", "r62", "r64", "r85" )
-trainingBatchSize <- length( imageIDs )
-
-# Perform simple 3-tissue segmentation.
-
-segmentationLabels <- c( 1, 2, 3 )
-numberOfLabels <- length( segmentationLabels )
-initialization <- paste0( 'KMeans[', numberOfLabels, ']' )
-
-domainImage <- antsImageRead( getANTsRData( imageIDs[1] ) )
-
-X_train <- array( data = NA, dim = c( trainingBatchSize, dim( domainImage ), 1 ) )
-Y_train <- array( data = NA, dim = c( trainingBatchSize, dim( domainImage ) ) )
-
-images <- list()
-segmentations <- list()
-
-for( i in seq_len( trainingBatchSize ) )
-  {
-  cat( "Processing image", imageIDs[i], "\\n" )
-  image <- antsImageRead( getANTsRData( imageIDs[i] ) )
-  mask <- getMask( image )
-  segmentation <- atropos( image, mask, initialization )$segmentation
-
-  X_train[i,,, 1] <- as.array( image )
-  Y_train[i,,] <- as.array( segmentation )
-  }
-Y_train <- encodeUnet( Y_train, segmentationLabels )
-
-# Perform a simple normalization
-
-X_train <- ( X_train - mean( X_train ) ) / sd( X_train )
-
-# Create the model
-
-model <- createDenseUnetModel2D( c( dim( domainImage ), 1 ),
-  numberOfOutputs = numberOfLabels )
+model <- createDenseUnetModel3D( c( 64, 64, 64, 1 ) )
 
 metric_multilabel_dice_coefficient <-
   custom_metric( "multilabel_dice_coefficient",
@@ -113,23 +75,7 @@ model \%>\% compile( loss = loss_dice,
   metrics = c( metric_multilabel_dice_coefficient,
     metric_categorical_crossentropy ) )
 
-# Comment out the rest due to travis build constraints
-
-# Fit the model
-
-# track <- model \%>\% fit( X_train, Y_train,
-#              epochs = 100, batch_size = 4, verbose = 1, shuffle = TRUE,
-#              callbacks = list(
-#                callback_model_checkpoint( "unetModelInterimWeights.h5",
-#                    monitor = 'val_loss', save_best_only = TRUE ),
-#                callback_reduce_lr_on_plateau( monitor = "val_loss", factor = 0.1 )
-#              ),
-#              validation_split = 0.2 )
-
-# Save the model and/or save the model weights
-
-# save_model_hdf5( model, filepath = 'unetModel.h5' )
-# save_model_weights_hdf5( unetModel, filepath = 'unetModelWeights.h5' ) )
+print( model )
 
 }
 \author{

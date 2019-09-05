@@ -19,16 +19,9 @@ Dice function for multilabel problems
 }
 \examples{
 
-library( ANTsR )
 library( ANTsRNet )
-library( keras )
 
-domainImage <- antsImageRead( getANTsRData( "r16" ) )
-
-# Create the model
-
-model <- createUnetModel2D( c( dim( domainImage ), 1 ),
-  numberOfOutputs = numberOfLabels )
+model <- createUnetModel2D( c( 64, 64, 1 ) )
 
 metric_multilabel_dice_coefficient <-
   custom_metric( "multilabel_dice_coefficient",
@@ -42,7 +35,7 @@ attr(loss_dice, "py_function_name") <- "multilabel_dice_coefficient"
 model \%>\% compile( loss = loss_dice,
   optimizer = optimizer_adam( lr = 0.0001 ),
   metrics = c( metric_multilabel_dice_coefficient,
-    categorical_crossentropy ) )
+    metric_categorical_crossentropy ) )
 
 }
 \author{
