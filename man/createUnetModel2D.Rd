@@ -106,6 +106,10 @@ X_train <- ( X_train - mean( X_train ) ) / sd( X_train )
 model <- createUnetModel2D( c( dim( domainImage ), 1 ),
   numberOfOutputs = numberOfLabels )
 
+metric_multilabel_dice_coefficient <-
+  custom_metric( "multilabel_dice_coefficient",
+    multilabel_dice_coefficient )
+
 model \%>\% compile( loss = categorical_crossentropy,
   optimizer = optimizer_adam( lr = 0.0001 ),
   metrics = c( metric_multilabel_dice_coefficient ) )

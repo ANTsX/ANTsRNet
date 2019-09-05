@@ -4,6 +4,30 @@
 #' @param y_pred Predictions (Tensor of the same shape as \code{y_true})
 #' @return Dice value
 #' @author Tustison NJ
+#'
+#' @examples
+#' @examples
+#'
+#' library( ANTsR )
+#' library( ANTsRNet )
+#' library( keras )
+#'
+#' domainImage <- antsImageRead( getANTsRData( "r16" ) )
+#'
+#' # Create the model
+#'
+#' model <- createUnetModel2D( c( dim( domainImage ), 1 ),
+#'   numberOfOutputs = numberOfLabels )
+#'
+#' metric_multilabel_dice_coefficient <-
+#'   custom_metric( "multilabel_dice_coefficient",
+#'     multilabel_dice_coefficient )
+#'
+#' model %>% compile( loss = categorical_crossentropy,
+#'   optimizer = optimizer_adam( lr = 0.0001 ),
+#'   metrics = c( metric_multilabel_dice_coefficient ) )
+#'
+#' @import keras
 #' @export
 multilabel_dice_coefficient <- function( y_true, y_pred )
 {
@@ -65,16 +89,6 @@ multilabel_dice_coefficient <- function( y_true, y_pred )
     ( 1.0 + unionOverlap + smoothingFactor ) )
 }
 
-#' Dice metric for multilabel problems
-#'
-#' @param y_true True labels (Tensor)
-#' @param y_pred Predictions (Tensor of the same shape as \code{y_true})
-#' @return Dice value
-#' @author Tustison NJ
-#' @export
-metric_multilabel_dice_coefficient <-
-  custom_metric( "multilabel_dice_coefficient", multilabel_dice_coefficient )
-
 #' Function to calculate peak-signal-to-noise ratio.
 #'
 #' @param y_true True labels (Tensor)
@@ -82,6 +96,28 @@ metric_multilabel_dice_coefficient <-
 #' @return PSNR value
 #' @author Tustison NJ
 #'
+#' @examples
+#'
+#' library( ANTsR )
+#' library( ANTsRNet )
+#' library( keras )
+#'
+#' domainImage <- antsImageRead( getANTsRData( "r16" ) )
+#'
+#' # Create the model
+#'
+#' model <- createUnetModel2D( c( dim( domainImage ), 1 ),
+#'   numberOfOutputs = numberOfLabels )
+#'
+#' metric_peak_signal_to_noise_ratio <-
+#'   custom_metric( "peak_signal_to_noise_ratio",
+#'     peak_signal_to_noise_ratio )
+#'
+#' model %>% compile( loss = categorical_crossentropy,
+#'   optimizer = optimizer_adam( lr = 0.0001 ),
+#'   metrics = c( metric_peak_signal_to_noise_ratio ) )
+#'
+#' @import keras
 #' @export
 peak_signal_to_noise_ratio <- function( y_true, y_pred )
 {
@@ -90,17 +126,6 @@ peak_signal_to_noise_ratio <- function( y_true, y_pred )
   return( -10.0 * K$log( K$mean( K$square( y_pred - y_true ) ) ) / K$log( 10.0 ) )
 }
 
-#' Metric to calculate peak-signal-to-noise ratio.
-#'
-#' @param y_true True labels (Tensor)
-#' @param y_pred Predictions (Tensor of the same shape as \code{y_true})
-#' @return PSNR value
-#' @author Tustison NJ
-#'
-#' @export
-metric_peak_signal_to_noise_ratio <-
-  custom_metric( "peak_signal_to_noise_ratio", peak_signal_to_noise_ratio )
-
 #' Function for Pearson correlation coefficient.
 #'
 #' @param y_true True labels (Tensor)
@@ -108,6 +133,28 @@ metric_peak_signal_to_noise_ratio <-
 #' @return Correlation
 #' @author Tustison NJ
 #'
+#' @examples
+#'
+#' library( ANTsR )
+#' library( ANTsRNet )
+#' library( keras )
+#'
+#' domainImage <- antsImageRead( getANTsRData( "r16" ) )
+#'
+#' # Create the model
+#'
+#' model <- createUnetModel2D( c( dim( domainImage ), 1 ),
+#'   numberOfOutputs = numberOfLabels )
+#'
+#' metric_pearson_correlation_coefficient <-
+#'   custom_metric( "pearson_correlation_coefficient",
+#'     pearson_correlation_coefficient )
+#'
+#' model %>% compile( loss = categorical_crossentropy,
+#'   optimizer = optimizer_adam( lr = 0.0001 ),
+#'   metrics = c( metric_pearson_correlation_coefficient ) )
+#'
+#' @import keras
 #' @export
 pearson_correlation_coefficient <- function( y_true, y_pred )
 {
@@ -129,18 +176,6 @@ pearson_correlation_coefficient <- function( y_true, y_pred )
 
   return( coefficient )
 }
-
-#' Metric for Pearson correlation coefficient.
-#'
-#' @param y_true True labels (Tensor)
-#' @param y_pred Predictions (Tensor of the same shape as \code{y_true})
-#' @return Correlation
-#' @author Tustison NJ
-#'
-#' @export
-metric_pearson_correlation_coefficient <-
-  custom_metric( "pearson_correlation_coefficient",
-    pearson_correlation_coefficient )
 
 #' Loss function for the SSD deep learning architecture.
 #'

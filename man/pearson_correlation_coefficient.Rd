@@ -17,6 +17,28 @@ Correlation
 \description{
 Function for Pearson correlation coefficient.
 }
+\examples{
+
+library( ANTsR )
+library( ANTsRNet )
+library( keras )
+
+domainImage <- antsImageRead( getANTsRData( "r16" ) )
+
+# Create the model
+
+model <- createUnetModel2D( c( dim( domainImage ), 1 ),
+  numberOfOutputs = numberOfLabels )
+
+metric_pearson_correlation_coefficient <-
+  custom_metric( "pearson_correlation_coefficient",
+    pearson_correlation_coefficient )
+
+model \%>\% compile( loss = categorical_crossentropy,
+  optimizer = optimizer_adam( lr = 0.0001 ),
+  metrics = c( metric_pearson_correlation_coefficient ) )
+
+}
 \author{
 Tustison NJ
 }
