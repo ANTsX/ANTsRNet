@@ -229,7 +229,7 @@ categorical_focal_gain <- function( y_true, y_pred, gamma = 2.0, alpha = 0.25 )
 #'
 #'    https://github.com/umbertogriffo/focal-loss-keras/blob/master/losses.py
 #'
-#' Used to handle imbalanced classes.
+#' Used to handle imbalanced classes .
 #'
 #' @param y_true True labels (Tensor)
 #' @param y_pred Predictions (Tensor of the same shape as \code{y_true})
