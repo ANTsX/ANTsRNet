@@ -86,9 +86,15 @@
 #'   custom_metric( "multilabel_dice_coefficient",
 #'     multilabel_dice_coefficient )
 #'
-#' model %>% compile( loss = categorical_crossentropy,
+#' loss_dice <- function( y_true, y_pred ) {
+#'   -multilabel_dice_coefficient(y_true, y_pred)
+#' }
+#' attr(loss_dice, "py_function_name") <- "multilabel_dice_coefficient"
+#'
+#' model %>% compile( loss = loss_dice,
 #'   optimizer = optimizer_adam( lr = 0.0001 ),
-#'   metrics = c( metric_multilabel_dice_coefficient ) )
+#'   metrics = c( metric_multilabel_dice_coefficient,
+#'     categorical_crossentropy ) )
 #'
 #' # Comment out the rest due to travis build constraints
 #'
