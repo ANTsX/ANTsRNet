@@ -454,6 +454,7 @@ createResUnetModel2D <- function( inputImageSize,
 #' @examples
 #'
 #' library( ANTsRNet )
+#' library( keras )
 #'
 #' model <- createResUnetModel3D( c( 64, 64, 64, 1 ) )
 #'

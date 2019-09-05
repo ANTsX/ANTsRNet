@@ -20,6 +20,7 @@ Function for Pearson correlation coefficient.
 \examples{
 
 library( ANTsRNet )
+library( keras )
 
 model <- createUnetModel2D( c( 64, 64, 1 ) )
 

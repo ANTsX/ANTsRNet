@@ -56,8 +56,8 @@ https://github.com/xmengli999/H-DenseUNet
 }
 \examples{
 
-
 library( ANTsRNet )
+library( keras )
 
 model <- createDenseUnetModel3D( c( 64, 64, 64, 1 ) )
 

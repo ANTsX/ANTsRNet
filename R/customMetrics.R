@@ -6,9 +6,9 @@
 #' @author Tustison NJ
 #'
 #' @examples
-#' @examples
 #'
 #' library( ANTsRNet )
+#' library( keras )
 #'
 #' model <- createUnetModel2D( c( 64, 64, 1 ) )
 #'
@@ -98,6 +98,7 @@ multilabel_dice_coefficient <- function( y_true, y_pred )
 #' @examples
 #'
 #' library( ANTsRNet )
+#' library( keras )
 #'
 #' model <- createUnetModel2D( c( 64, 64, 1 ) )
 #'
@@ -128,6 +129,7 @@ peak_signal_to_noise_ratio <- function( y_true, y_pred )
 #' @examples
 #'
 #' library( ANTsRNet )
+#' library( keras )
 #'
 #' model <- createUnetModel2D( c( 64, 64, 1 ) )
 #'

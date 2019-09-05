@@ -358,9 +358,8 @@ createDenseUnetModel2D <- function( inputImageSize,
 #' @author Tustison NJ
 #' @examples
 #'
-#' @examples
-#'
 #' library( ANTsRNet )
+#' library( keras )
 #'
 #' model <- createDenseUnetModel3D( c( 64, 64, 64, 1 ) )
 #'
