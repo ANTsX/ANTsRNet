@@ -4,7 +4,7 @@
 \alias{pearson_correlation_coefficient}
 \title{Pearson correlation coefficient.}
 \usage{
-pearson_correlation_coefficient(...)
+pearson_correlation_coefficient(y_true, y_pred)
 }
 \arguments{
 \item{y_true}{True labels (Tensor)}

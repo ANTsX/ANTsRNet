@@ -108,9 +108,9 @@ X_train <- ( X_train - mean( X_train ) ) / sd( X_train )
 model <- createUnetModel2D( c( dim( domainImage ), 1 ),
   numberOfOutputs = numberOfLabels )
 
-model \%>\% compile( loss = loss_multilabel_dice_coefficient_error,
+model \%>\% compile( loss = categorical_cross_entropy,
   optimizer = optimizer_adam( lr = 0.0001 ),
-  metrics = c( multilabel_dice_coefficient ) )
+  metrics = c( metric_multilabel_dice_coefficient ) )
 
 # Comment out the rest due to travis build constraints
 

@@ -136,7 +136,7 @@ pearson_correlation_coefficient <- function( y_true, y_pred )
 
   return( coefficient )
 }
-pearson_correlation_coefficient <-
+metric_pearson_correlation_coefficient <-
   custom_metric( "pearson_correlation_coefficient",
     pearson_correlation_coefficient )
 
