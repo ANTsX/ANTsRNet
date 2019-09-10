@@ -21,7 +21,7 @@
 #' library( ANTsRNet )
 #' library( keras )
 #'
-#' ae <- createConvolutionalAutoencoder2D( c( 32, 32, 1 ) )
+#' ae <- createConvolutionalAutoencoderModel2D( c( 32, 32, 1 ) )
 #'
 #' @export
 
@@ -132,7 +132,7 @@ createConvolutionalAutoencoderModel2D <- function( inputImageSize,
 #' library( ANTsRNet )
 #' library( keras )
 #'
-#' ae <- createConvolutionalAutoencoder2D( c( 32, 32, 1 ) )
+#' ae <- createConvolutionalAutoencoderModel2D( c( 32, 32, 1 ) )
 #'
 #' @export
 
