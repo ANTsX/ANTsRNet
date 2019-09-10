@@ -19,7 +19,7 @@
 #' library( ANTsRNet )
 #' library( keras )
 #'
-#' ae <- createAutoencoder( c( 784, 500, 500, 2000, 10 ) )
+#' ae <- createAutoencoderModel( c( 784, 500, 500, 2000, 10 ) )
 #'
 #' @export
 
