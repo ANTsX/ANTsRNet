@@ -21,7 +21,7 @@
 #' library( ANTsRNet )
 #' library( keras )
 #'
-#' ae <- createConvolutionalAutoencoderModel2D( c( 32, 32, 1 ) )
+#' ae <- createConvolutionalAutoencoder2D( c( 32, 32, 1 ) )
 #'
 #' @export
 
@@ -45,7 +45,7 @@ createConvolutionalAutoencoderModel2D <- function( inputImageSize,
 
   inputs <- layer_input( shape = inputImageSize )
 
-  encoderModel <- inputs
+  encoder <- inputs
 
   for( i in seq_len( numberOfEncodingLayers ) )
     {
@@ -56,28 +56,28 @@ createConvolutionalAutoencoderModel2D <- function( inputImageSize,
       localPadding <- padding
       kernelSize <- convolutionKernelSize - 2
       }
-    encoderModel <- encoderModel %>%
+    encoder <- encoder %>%
       layer_conv_2d( filters = numberOfFiltersPerLayer[i],
         kernel_size = kernelSize, strides = strides,
         activation = activation, padding = localPadding )
     }
 
-  encoderModel <- encoderModel %>%
+  encoder <- encoder %>%
     layer_flatten() %>%
     layer_dense( units = tail( numberOfFiltersPerLayer, 1 ) )
 
-  autoencoderModel <- encoderModel
+  autoencoder <- encoder
 
   penultimateNumberOfFilters <-
-    numberOfFiltersPerLayer[length( numberOfFiltersPerLayer ) - 1]
+    numberOfFiltersPerLayer[numberOfEncodingLayers]
 
   numberOfUnitsForEncoderOutput <- penultimateNumberOfFilters *
     prod( floor( inputImageSize[1:2] / factor ) )
 
-  autoencoderModel <- autoencoderModel %>%
+  autoencoder <- autoencoder %>%
     layer_dense( units = numberOfUnitsForEncoderOutput, activation = activation )
 
-  autoencoderModel <- autoencoderModel %>%
+  autoencoder <- autoencoder %>%
     layer_reshape( target_shape = c( floor( inputImageSize[1:2] / factor ),
       penultimateNumberOfFilters ) )
 
@@ -90,22 +90,23 @@ createConvolutionalAutoencoderModel2D <- function( inputImageSize,
       localPadding <- padding
       kernelSize <- deconvolutionKernelSize - 2
       }
-    autoencoderModel <- autoencoderModel %>%
+    autoencoder <- autoencoder %>%
       layer_conv_2d_transpose( filters = numberOfFiltersPerLayer[i-1],
         kernel_size = kernelSize, strides = strides,
         padding = localPadding )
     }
 
-  autoencoderModel <- autoencoderModel %>%
+  autoencoder <- autoencoder %>%
     layer_conv_2d_transpose( filters = tail( inputImageSize, 1 ),
       kernel_size = deconvolutionKernelSize, strides = strides,
       padding = 'same' )
 
+  autoencoderModel <-  keras_model( inputs = inputs, outputs = autoencoder )
+  encoderModel <-  keras_model( inputs = inputs, outputs = encoder )
+
   return( list(
-    ConvolutionalAutoencoderModel = keras_model(
-      inputs = inputs, outputs = autoencoderModel ),
-    ConvolutionalEncoderModel = keras_model(
-      inputs = inputs, outputs = encoderModel ) ) )
+    convolutionalAutoencoderModel = autoencoderModel,
+    convolutionalEncoderModel = encoderModel ) )
 }
 
 #' Function for creating a 3-D symmetric convolutional autoencoder model.
@@ -131,7 +132,7 @@ createConvolutionalAutoencoderModel2D <- function( inputImageSize,
 #' library( ANTsRNet )
 #' library( keras )
 #'
-#' ae <- createConvolutionalAutoencoderModel2D( c( 32, 32, 1 ) )
+#' ae <- createConvolutionalAutoencoder2D( c( 32, 32, 1 ) )
 #'
 #' @export
 
@@ -155,7 +156,7 @@ createConvolutionalAutoencoderModel3D <- function( inputImageSize,
 
   inputs <- layer_input( shape = inputImageSize )
 
-  encoderModel <- inputs
+  encoder <- inputs
 
   for( i in seq_len( numberOfEncodingLayers ) )
     {
@@ -166,28 +167,28 @@ createConvolutionalAutoencoderModel3D <- function( inputImageSize,
       localPadding <- padding
       kernelSize <- convolutionKernelSize - 2
       }
-    encoderModel <- encoderModel %>%
+    encoder <- encoder %>%
       layer_conv_3d( filters = numberOfFiltersPerLayer[i],
         kernel_size = convolutionKernelSize, strides = strides,
         activation = activation, padding = localPadding )
     }
 
-  encoderModel <- encoderModel %>%
+  encoder <- encoder %>%
     layer_flatten() %>%
     layer_dense( units = tail( numberOfFiltersPerLayer, 1 ) )
 
-  autoencoderModel <- encoderModel
+  autoencoder <- encoder
 
   penultimateNumberOfFilters <-
-    numberOfFiltersPerLayer[length( numberOfFiltersPerLayer ) - 1]
+    numberOfFiltersPerLayer[numberOfEncodingLayers]
 
   numberOfUnitsForEncoderOutput <- penultimateNumberOfFilters *
     prod( floor( inputImageSize[1:3] / factor ) )
 
-  autoencoderModel <- autoencoderModel %>%
+  autoencoder <- autoencoder %>%
     layer_dense( units = numberOfUnitsForEncoderOutput, activation = activation )
 
-  autoencoderModel <- autoencoderModel %>%
+  autoencoder <- autoencoder %>%
     layer_reshape( target_shape = c( floor( inputImageSize[1:3] / factor ),
       penultimateNumberOfFilters ) )
 
@@ -200,22 +201,23 @@ createConvolutionalAutoencoderModel3D <- function( inputImageSize,
       localPadding <- padding
       kernelSize <- deconvolutionKernelSize - 2
       }
-    autoencoderModel <- autoencoderModel %>%
+    autoencoder <- autoencoder %>%
       layer_conv_3d_transpose( filters = numberOfFiltersPerLayer[i-1],
         kernel_size = kernelSize, strides = strides,
         padding = localPadding )
     }
 
-  autoencoderModel <- autoencoderModel %>%
+  autoencoder <- autoencoder %>%
     layer_conv_3d_transpose( filters = tail( inputImageSize, 1 ),
       kernel_size = deconvolutionKernelSize, strides = strides,
       padding = 'same' )
 
+  autoencoderModel <-  keras_model( inputs = inputs, outputs = autoencoder )
+  encoderModel <-  keras_model( inputs = inputs, outputs = encoder )
+
   return( list(
-    ConvolutionalAutoencoderModel = keras_model(
-      inputs = inputs, outputs = autoencoderModel ),
-    ConvolutionalEncoderModel = keras_model(
-      inputs = inputs, outputs = encoderModel ) ) )
+    convolutionalAutoencoderModel = autoencoderModel,
+    convolutionalEncoderModel = encoderModel ) )
 }
 
 

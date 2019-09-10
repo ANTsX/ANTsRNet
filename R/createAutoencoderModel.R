@@ -19,7 +19,7 @@
 #' library( ANTsRNet )
 #' library( keras )
 #'
-#' ae <- createAutoencoderModel( c( 784, 500, 500, 2000, 10 ) )
+#' ae <- createAutoencoder( c( 784, 500, 500, 2000, 10 ) )
 #'
 #' @export
 
@@ -31,32 +31,32 @@ createAutoencoderModel <- function( numberOfUnitsPerLayer,
 
   inputs <- layer_input( shape = numberOfUnitsPerLayer[1] )
 
-  encoderModel <- inputs
+  encoder <- inputs
 
   for( i in seq_len( numberOfEncodingLayers - 1 ) )
     {
-    encoderModel <- encoderModel %>%
+    encoder <- encoder %>%
       layer_dense( units = numberOfUnitsPerLayer[i+1],
          activation = activation, kernel_initializer = initializer )
     }
 
-  encoderModel <- encoderModel %>%
+  encoder <- encoder %>%
     layer_dense( units = tail( numberOfUnitsPerLayer, 1 ) )
 
-  autoencoderModel <- encoderModel
+  autoencoder <- encoder
 
   for( i in seq( from = numberOfEncodingLayers, to = 2, by = -1 ) )
     {
-    autoencoderModel <- autoencoderModel %>%
+    autoencoder <- autoencoder %>%
       layer_dense( units = numberOfUnitsPerLayer[i],
          activation = activation, kernel_initializer = initializer )
     }
 
-  autoencoderModel <- autoencoderModel %>%
+  autoencoder <- autoencoder %>%
     layer_dense( numberOfUnitsPerLayer[1], kernel_initializer = initializer )
 
   return( list(
-    AutoencoderModel = keras_model( inputs = inputs, outputs = autoencoderModel ),
-    EncoderModel = keras_model( inputs = inputs, outputs = encoderModel ) ) )
+    autoencoderModel = keras_model( inputs = inputs, outputs = autoencoder ),
+    encoderModel = keras_model( inputs = inputs, outputs = encoder ) ) )
 }
 

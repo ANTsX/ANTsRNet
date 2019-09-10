@@ -420,8 +420,6 @@ ResampleTensorLayer3D <- R6::R6Class( "ResampleTensorLayer3D",
         } else if( self$interpolationType == 'cubic' ) {
         resampledTensor_yz <-
           tensorflow::tf$image$resize_bicubic( squeezeTensor_yz, size = newShape_yz, align_corners = TRUE )
-        } else {
-        stop( "Interpolation type not recognized." )
         }
 
       newShape_yz <- c( -1L, oldSize[1], newSize[2], newSize[3], channelSize )
@@ -447,8 +445,6 @@ ResampleTensorLayer3D <- R6::R6Class( "ResampleTensorLayer3D",
         } else if( self$interpolationType == 'cubic' ) {
         resampledTensor_x <-
           tensorflow::tf$image$resize_bicubic( squeezeTensor_x, size = newShape_x, align_corners = TRUE )
-        } else {
-        stop( "Interpolation type not recognized." )
         }
 
       newShape_x <- c( -1L, newSize[3], newSize[2], newSize[1], channelSize )

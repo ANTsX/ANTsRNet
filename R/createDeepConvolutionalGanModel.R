@@ -125,7 +125,7 @@ DeepConvolutionalGanModel <- R6::R6Class( "DeepConvolutionalGanModel",
             c( rev( numberOfFiltersPerLayer ), self$latentDimension ),
           convolutionKernelSize = c( 5, 5 ),
           deconvolutionKernelSize = c( 5, 5 ) )
-        encoder <- aeModel$ConvolutionalEncoderModel
+        encoder <- aeModel$convolutionalEncoderModel
         } else {
         aeModel <- createConvolutionalAutoencoderModel3D(
           inputImageSize = self$inputImageSize,
@@ -133,7 +133,7 @@ DeepConvolutionalGanModel <- R6::R6Class( "DeepConvolutionalGanModel",
             c( rev( numberOfFiltersPerLayer ), self$latentDimension ),
           convolutionKernelSize = c( 5, 5, 5 ),
           deconvolutionKernelSize = c( 5, 5, 5 ) )
-        encoder <- aeModel$ConvolutionalEncoderModel
+        encoder <- aeModel$convolutionalEncoderModel
         }
 
       encoderLayers <- encoder$layers

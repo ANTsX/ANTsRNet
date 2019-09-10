@@ -29,7 +29,7 @@ and ported from this implementation:
 
 https://github.com/umbertogriffo/focal-loss-keras/blob/master/losses.py
 
-Used to handle imbalanced classes.
+Used to handle imbalanced classes .
 }
 \examples{
 

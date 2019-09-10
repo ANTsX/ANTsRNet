@@ -238,14 +238,14 @@ DeepEmbeddedClusteringModel <- R6::R6Class( "DeepEmbeddedClusteringModel",
             numberOfFiltersPerLayer = self$numberOfUnitsPerLayer )
           }
 
-        self$autoencoder <- ae$ConvolutionalAutoencoderModel
-        self$encoder <- ae$ConvolutionalEncoderModel
+        self$autoencoder <- ae$convolutionalAutoencoderModel
+        self$encoder <- ae$convolutionalEncoderModel
 
         } else {
         ae <- createAutoencoderModel( self$numberOfUnitsPerLayer,
           initializer = self$initializer )
-        self$autoencoder <- ae$AutoencoderModel
-        self$encoder <- ae$EncoderModel
+        self$autoencoder <- ae$autoencoderModel
+        self$encoder <- ae$encoderModel
         }
 
       clusteringLayer <- self$encoder$output %>%
@@ -338,7 +338,7 @@ DeepEmbeddedClusteringModel <- R6::R6Class( "DeepEmbeddedClusteringModel",
             } else {
             loss <- self$model$train_on_batch( x = x[batchIndices,,,,, drop = FALSE], y = p[batchIndices,] )
             }
-          } else {  
+          } else {
           loss <- self$model$train_on_batch( x = x[batchIndices,], y = p[batchIndices,] )
           }
 

@@ -36,7 +36,7 @@ Keras R from the Keras python implementation here:
 library( ANTsRNet )
 library( keras )
 
-ae <- createConvolutionalAutoencoderModel2D( c( 32, 32, 1 ) )
+ae <- createConvolutionalAutoencoder2D( c( 32, 32, 1 ) )
 
 }
 \author{

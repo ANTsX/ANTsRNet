@@ -140,7 +140,7 @@ WassersteinGanModel <- R6::R6Class( "WassersteinGanModel",
             c( rev( numberOfFiltersPerLayer ), self$latentDimension ),
           convolutionKernelSize = c( 5, 5 ),
           deconvolutionKernelSize = c( 5, 5 ) )
-        encoder <- aeModel$ConvolutionalEncoderModel
+        encoder <- aeModel$convolutionalEncoderModel
         } else {
         aeModel <- createConvolutionalAutoencoderModel3D(
           inputImageSize = self$inputImageSize,
@@ -148,7 +148,7 @@ WassersteinGanModel <- R6::R6Class( "WassersteinGanModel",
               c( rev( numberOfFiltersPerLayer ), self$latentDimension ),
           convolutionKernelSize = c( 5, 5, 5 ),
           deconvolutionKernelSize = c( 5, 5, 5 ) )
-        encoder <- aeModel$ConvolutionalEncoderModel
+        encoder <- aeModel$convolutionalEncoderModel
         }
 
       encoderLayers <- encoder$layers
