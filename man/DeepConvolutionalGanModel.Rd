@@ -5,7 +5,7 @@
 \alias{DeepConvolutionalGanModel}
 \title{Deep convolutional GAN (DCGAN) model}
 \description{
-Deep conviolutional generative adverserial network from the paper:
+Deep convolutional generative adverserial network from the paper:
 }
 \details{
 https://arxiv.org/abs/1511.06434

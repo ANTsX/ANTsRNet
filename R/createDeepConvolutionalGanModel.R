@@ -1,6 +1,6 @@
 #' Deep convolutional GAN (DCGAN) model
 #'
-#' Deep conviolutional generative adverserial network from the paper:
+#' Deep convolutional generative adverserial network from the paper:
 #'
 #'   https://arxiv.org/abs/1511.06434
 #'
@@ -171,17 +171,16 @@ DeepConvolutionalGanModel <- R6::R6Class( "DeepConvolutionalGanModel",
         }
 
       numberOfChannels <- tail( self$inputImageSize, 1 )
+      spatialDimensions <- as.integer( self$inputImageSize[1:self$dimensionality] )
       if( self$dimensionality == 2 )
         {
         model <- model %>% layer_resample_tensor_2d(
-          shape = as.integer( self$inputImageSize[1:self$dimensionality] ),
-          interpolationType = 'linear' )
+          shape = spatialDimensions, interpolationType = 'linear' )
         model <- model %>% layer_conv_2d( filters = numberOfChannels,
           kernel_size = kernelSize, padding = 'same' )
         } else {
         model <- model %>% layer_resample_tensor_3d(
-          shape = as.integer( self$inputImageSize[1:self$dimensionality] ),
-          interpolationType = 'linear' )
+          shape = spatialDimensions, interpolationType = 'linear' )
         model <- model %>% layer_conv_3d( filters = numberOfChannels,
           kernel_size = kernelSize, padding = 'same' )
         }
@@ -273,7 +272,7 @@ DeepConvolutionalGanModel <- R6::R6Class( "DeepConvolutionalGanModel",
               noise <- array( data = rnorm( n = predictedBatchSize * self$latentDimension,
                                             mean = 0, sd = 1 ),
                               dim = c( predictedBatchSize, self$latentDimension ) )
-              X_generated <- ganModel$generator$predict( noise )
+              X_generated <- self$generator$predict( noise )
 
               # Convert to [0,255] to write as jpg using ANTsR
 

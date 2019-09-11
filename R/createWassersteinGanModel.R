@@ -312,7 +312,7 @@ WassersteinGanModel <- R6::R6Class( "WassersteinGanModel",
               noise <- array( data = rnorm( n = predictedBatchSize * self$latentDimension,
                                             mean = 0, sd = 1 ),
                               dim = c( predictedBatchSize, self$latentDimension ) )
-              X_generated <- ganModel$generator$predict( noise )
+              X_generated <- self$generator$predict( noise )
 
               # Convert to [0,255] to write as jpg using ANTsR
 
