@@ -100,7 +100,7 @@ InstanceNormalizationLayer <- R6::R6Class( "InstanceNormalizationLayer",
       {
       dimensionality <- as.integer( length( input_shape ) )
 
-      if( ( ! is.null( self$axis ) ) && ( dimensionality == 3L ) )
+      if( ( ! is.null( self$axis ) ) && ( dimensionality == 2L ) )
         {
         stop( "Error:  Cannot specify an axis for rank 1 tensor." )
         }

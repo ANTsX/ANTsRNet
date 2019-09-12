@@ -1,6 +1,6 @@
 #' Cycle GAN model
 #'
-#' Deep conviolutional generative adverserial network from the paper:
+#' Cycle generative adverserial network from the paper:
 #'
 #'   https://arxiv.org/pdf/1703.10593
 #'
@@ -174,18 +174,18 @@ CycleGanModel <- R6::R6Class( "CycleGanModel",
         return( decoder )
         }
 
-       input <- layer_input( shape = self$inputImageSize )
+      input <- layer_input( shape = self$inputImageSize )
 
-       encodingLayers <- list()
+      encodingLayers <- list()
 
-       encodingLayers[[1]] <- buildEncodingLayer( input,
-         self$numberOfFiltersAtBaseLayer[1], kernelSize = 4 )
-       encodingLayers[[2]] <- buildEncodingLayer( encodingLayers[[1]],
-         self$numberOfFiltersAtBaseLayer[1] * 2, kernelSize = 4 )
-       encodingLayers[[3]] <- buildEncodingLayer( encodingLayers[[2]],
-         self$numberOfFiltersAtBaseLayer[1] * 4, kernelSize = 4 )
-       encodingLayers[[4]] <- buildEncodingLayer( encodingLayers[[3]],
-         self$numberOfFiltersAtBaseLayer[1] * 8, kernelSize = 4 )
+      encodingLayers[[1]] <- buildEncodingLayer( input,
+        self$numberOfFiltersAtBaseLayer[1], kernelSize = 4 )
+      encodingLayers[[2]] <- buildEncodingLayer( encodingLayers[[1]],
+        self$numberOfFiltersAtBaseLayer[1] * 2, kernelSize = 4 )
+      encodingLayers[[3]] <- buildEncodingLayer( encodingLayers[[2]],
+        self$numberOfFiltersAtBaseLayer[1] * 4, kernelSize = 4 )
+      encodingLayers[[4]] <- buildEncodingLayer( encodingLayers[[3]],
+        self$numberOfFiltersAtBaseLayer[1] * 8, kernelSize = 4 )
 
       decodingLayers <- list()
       decodingLayers[[1]] <- buildDecodingLayer( encodingLayers[[4]],
@@ -204,7 +204,7 @@ CycleGanModel <- R6::R6Class( "CycleGanModel",
            kernel_size = 4, strides = 1, padding = 'same',
           activation = 'tanh' )
         } else {
-        decodingLayers[[4]] <- decodingLayers[[4]] %>%
+        decodingLayers[[4]] <- decodingLayers[[3]] %>%
           layer_upsampling_3d( size = 2 )
         decodingLayers[[4]] <- decodingLayers[[4]] %>%
           layer_conv_3d( self$numberOfChannels,
@@ -212,9 +212,9 @@ CycleGanModel <- R6::R6Class( "CycleGanModel",
           activation = 'tanh' )
         }
 
-      model <- keras_model( inputs = input, outputs = decodingLayers[[4]] )
+      generator <- keras_model( inputs = input, outputs = decodingLayers[[4]] )
 
-      return( model )
+      return( generator )
       },
 
     buildDiscriminator = function()
@@ -311,8 +311,8 @@ CycleGanModel <- R6::R6Class( "CycleGanModel",
 
         cat( "Epoch ", epoch, ": [Discriminator loss: ", dLoss[[1]],
              " acc: ", dLoss[[2]], "] ", "[Generator loss: ", gLoss[[1]], ", ",
-             mean( unlist( gLoss )[2:4] ), ", ", mean( unlist( gLoss )[4:6] ),
-             ", ", mean( unlist( gLoss )[6:7] ), "]\n",
+             mean( unlist( gLoss )[2:3] ), ", ", mean( unlist( gLoss )[4:5] ),
+             ", ", mean( unlist( gLoss )[6] ), "]\n",
              sep = '' )
 
         if( self$dimensionality == 2 )
