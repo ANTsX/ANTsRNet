@@ -78,7 +78,7 @@ ImprovedWassersteinGanModel <- R6::R6Class( "ImprovedWassersteinGanModel",
     numberOfCriticIterations = 5,
 
     initialize = function( inputImageSize, latentDimension = 100,
-      numberOfCriticIterations = 5, clipValue = 0.01 )
+      numberOfCriticIterations = 5 )
       {
       self$inputImageSize <- inputImageSize
       self$latentDimension <- latentDimension
@@ -102,7 +102,6 @@ ImprovedWassersteinGanModel <- R6::R6Class( "ImprovedWassersteinGanModel",
       self$generator$trainable <- FALSE
 
       realImage <- layer_input( shape = self$inputImageSize )
-
       criticNoise <- layer_input( shape = c( self$latentDimension ) )
       fakeImage <- self$generator( criticNoise )
 
@@ -171,7 +170,7 @@ ImprovedWassersteinGanModel <- R6::R6Class( "ImprovedWassersteinGanModel",
       gradients <- K$gradients( y_pred, averagedSamples )[1]
       gradientsSquared <- K$square( gradients )
       gradientsSquaredSum <- K$sum( gradientsSquared,
-        axis = seq( 2, length( gradientsSquared$shape ) ) )
+        axis = seq( 1, length( gradientsSquared$shape ) ) )
       gradientsL2Norm <- K$sqrt( gradientsSquaredSum )
       gradientPenalty <- K$square( 1.0 - gradientsL2Norm )
       return( K$mean( gradientPenalty ) )
