@@ -89,6 +89,7 @@ reference:
   - '`WassersteinGanModel`'
   - '`ImprovedWassersteinGanModel`'
   - '`CycleGanModel`'
+  - '`SuperResolutionGanModel`'
   - '`InstanceNormalizationLayer`'
   - '`layer_instance_normalization`'
 - title: Deep embedded clustering (DEC)
@@ -110,7 +111,7 @@ reference:
   - '`sampleFromCategoricalDistribution`'
   - '`sampleFromOutput`'
   - '`mixture_density_network_softmax`'
-- title: Custom metrics/losses 
+- title: Custom metrics/losses
   desc: ~
   contents:
   - '`multilabel_dice_coefficient`'

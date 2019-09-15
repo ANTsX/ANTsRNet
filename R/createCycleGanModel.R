@@ -281,10 +281,18 @@ CycleGanModel <- R6::R6Class( "CycleGanModel",
       for( epoch in seq_len( numberOfEpochs ) )
         {
         indicesA <- sample.int( dim( X_trainA )[1], batchSize )
-        imagesA <- X_trainA[indicesA,,,, drop = FALSE]
-
         indicesB <- sample.int( dim( X_trainB )[1], batchSize )
-        imagesB <- X_trainB[indicesB,,,, drop = FALSE]
+
+        imagesA <- NULL
+        imagesB <- NULL
+        if( self$dimensionality == 2 )
+          {
+          imagesA <- X_trainA[indicesA,,,, drop = FALSE]
+          imagesB <- X_trainB[indicesB,,,, drop = FALSE]
+          } else {
+          imagesA <- X_trainA[indicesA,,,,, drop = FALSE]
+          imagesB <- X_trainB[indicesB,,,,, drop = FALSE]
+          }
 
         # train discriminator
 

@@ -265,7 +265,14 @@ WassersteinGanModel <- R6::R6Class( "WassersteinGanModel",
         for( c in seq_len( self$numberOfCriticIterations ) )
           {
           indices <- sample.int( dim( X_train )[1], batchSize )
-          X_valid_batch <- X_train[indices,,,, drop = FALSE]
+
+          X_valid_batch <- NULL
+          if( self$dimensionality == 2 )
+            {
+            X_valid_batch <- X_train[indices,,,, drop = FALSE]
+            } else {
+            X_valid_batch <- X_train[indices,,,,, drop = FALSE]
+            }
 
           noise <- array( data = rnorm( n = batchSize * self$latentDimension,
             mean = 0, sd = 1 ), dim = c( batchSize, self$latentDimension ) )
