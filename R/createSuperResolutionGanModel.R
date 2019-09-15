@@ -14,7 +14,7 @@
 #'
 #' @section Arguments:
 #' \describe{
-#'  \item{inputImageSize}{}
+#'  \item{lowResolutionImageSize}{}
 #'  \item{numberOfResidualBlocks}{}
 #' }
 #'
@@ -35,7 +35,7 @@
 #' keras::backend()$clear_session()
 #'
 #' ganModel <- SuperResolutionGanModel$new(
-#'    inputImageSize = inputImageSize )
+#'    lowResolutionImageSize = lowResolutionImageSize )
 #' }
 #'
 #' @name SuperResolutionGanModel
@@ -52,7 +52,7 @@ SuperResolutionGanModel <- R6::R6Class( "SuperResolutionGanModel",
 
     dimensionality = 2,
 
-    inputImageSize = c( 128, 128, 3 ),
+    highResolutionImageSize = c( 224, 224, 3 ),
 
     numberOfChannels = 3,
 
@@ -64,12 +64,12 @@ SuperResolutionGanModel <- R6::R6Class( "SuperResolutionGanModel",
 
     useImageNetWeights = TRUE,
 
-    initialize = function( inputImageSize,
+    initialize = function( lowResolutionImageSize,
       numberOfResidualBlocks = 16, numberOfFiltersAtBaseLayer = c( 64, 64 ),
       scaleFactor = 2, useImageNetWeights = TRUE )
       {
-      self$inputImageSize <- inputImageSize
-      self$numberOfChannels <- tail( self$inputImageSize, 1 )
+      self$lowResolutionImageSize <- lowResolutionImageSize
+      self$numberOfChannels <- tail( self$lowResolutionImageSize, 1 )
       self$numberOfResidualBlocks <- numberOfResidualBlocks
       self$numberOfFiltersAtBaseLayer <- numberOfFiltersAtBaseLayer
       self$useImageNetWeights <- useImageNetWeights
@@ -81,10 +81,10 @@ SuperResolutionGanModel <- R6::R6Class( "SuperResolutionGanModel",
         }
 
       self$dimensionality <- NA
-      if( length( self$inputImageSize ) == 3 )
+      if( length( self$lowResolutionImageSize ) == 3 )
         {
         self$dimensionality <- 2
-        } else if( length( self$inputImageSize ) == 4 ) {
+        } else if( length( self$lowResolutionImageSize ) == 4 ) {
         self$dimensionality <- 3
         if( self$useImageNetWeights == TRUE )
           {
@@ -92,47 +92,51 @@ SuperResolutionGanModel <- R6::R6Class( "SuperResolutionGanModel",
           warning( "Warning: imageNet weights are unavailable for 3D." )
           }
         } else {
-        stop( "Incorrect size for inputImageSize.\n" )
+        stop( "Incorrect size for lowResolutionImageSize.\n" )
         }
 
       optimizer <- optimizer_adam( lr = 0.0002, beta_1 = 0.5 )
 
-      # Build discriminator
+      # Images
 
-      self$discriminator <- self$buildDiscriminator(
-        numberOfFiltersAtBaseLayer = self$numberOfFiltersAtBaseLayer[1] )
-      self$discriminator$compile( loss = 'mse',
-        optimizer = optimizer, metrics = list( 'acc' ) )
+      self$highResolutionImageSize <- c( as.integer( self$scaleFactor ) *
+        self$lowResolutionImageSize[1:self$dimensionality], self$numberOfChannels )
+
+      imageHighResolution <- layer_input( shape = self$highResolutionImageSize )
+
+      imageLowResolution <- layer_input( shape = self$lowResolutionImageSize )
 
       # Build generator
 
       self$generator <- self$buildGenerator()
 
-      # Images
+      fakeImageHighResolution <- self$generator( imageLowResolution )
 
-      highResolutionShape <- c( as.integer( self$scaleFactor ) *
-        self$inputImageSize[1:self$dimensionality], self$numberOfChannels )
+      # Build discriminator
 
-      imageHighResolution <- layer_input( shape = highResholutionShape )
-      imageLowResolution <- layer_input( shape = self$inputImageSize )
-
-      fakeImageHighResolution <- self$generator$predict( imageLowResolution )
+      self$discriminator <- self$buildDiscriminator()
+      self$discriminator$compile( loss = 'mse',
+        optimizer = optimizer, metrics = list( 'acc' ) )
 
       # Vgg
 
       vggTmp <- NULL
       if( self$dimensionality == 2 )
         {
-        vggTmp <- createVggModel2D( highResolutionShape, style = '19' )
-        if( self$useImageNetWeights == TRUE )
+        vggTmp <- createVggModel2D( self$highResolutionImageSize, style = '19' )
+        if( self$useImageNetWeights == TRUE &&
+          all( self$highResolutionImageSize == c( 224, 224, 3 ) ) )
           {
-          kerasVgg <- application_vgg19( input_shape = highResolutionShape,
-            weights = 'imagenet' )
-          vggTmp$load_weights( kerasVgg$get_weights() )
+          kerasVgg <- application_vgg19()
+          vggTmp$set_weights( kerasVgg$get_weights() )
+          } else {
+          self$useImageNetWeights <- FALSE
+          warning( "Input image size doesn't work for image net weights." )
           }
         } else {
-        vggTmp <- createVggModel3D( highResolutionShape, style = '19' )
+        vggTmp <- createVggModel3D( self$highResolutionImageSize, style = '19' )
         }
+
       self$vggModel <- keras_model( inputs = vggTmp$input,
         outputs = vggTmp$layers[[20]]$output )
 
@@ -150,17 +154,18 @@ SuperResolutionGanModel <- R6::R6Class( "SuperResolutionGanModel",
       if( self$useImageNetWeights )
         {
         fakeFeatures <- self$vggModel( fakeImageHighResolution )
-        self$combinedModel = keras_model( inputs = list( imageHighResolution, imageLowResolution ),
+        self$combinedModel = keras_model( inputs = list( imageLowResolution, imageHighResolution ),
                                           outputs = list( validity, fakeFeatures ) )
         self$combinedModel$compile( loss = list( 'binary_crossentropy', 'mse' ),
           loss_weights = list( 1e-3, 1 ), optimizer = optimizer )
         } else {
-        self$combinedModel = keras_model( inputs = list( imageHighResolution, imageLowResolution ),
+        self$combinedModel = keras_model( inputs = list( imageLowResolution, imageHighResolution ),
                                           outputs = validity )
         self$combinedModel$compile( loss = list( 'binary_crossentropy' ),
           optimizer = optimizer )
         }
       },
+
 
     buildGenerator = function( numberOfFilters = 64 )
       {
@@ -170,28 +175,28 @@ SuperResolutionGanModel <- R6::R6Class( "SuperResolutionGanModel",
 
         if( self$dimensionality == 2 )
           {
-          model <- model %>% layer_conv_2d( filters = numberOfFilters,
+          input <- input %>% layer_conv_2d( filters = numberOfFilters,
             kernel_size = kernelSize, strides = 1, padding = 'same' )
           } else {
-          model <- model %>% layer_conv_3d( filters = numberOfFiltersIn,
+          input <- input %>% layer_conv_3d( filters = numberOfFilters,
             kernel_size = kernelSize, strides = 1, padding = 'same' )
           }
-        model <- model %>% layer_activation_relu()
-        model <- model %>% layer_batch_normalization( momentum = 0.8 )
+        input <- input %>% layer_activation_relu()
+        input <- input %>% layer_batch_normalization( momentum = 0.8 )
         if( self$dimensionality == 2 )
           {
-          model <- model %>% layer_conv_2d( filters = numberOfFiltersIn,
+          input <- input %>% layer_conv_2d( filters = numberOfFilters,
             kernel_size = kernelSize, strides = 1, padding = 'same' )
           } else {
-          model <- model %>% layer_conv_3d( filters = numberOfFiltersIn,
+          input <- input %>% layer_conv_3d( filters = numberOfFilters,
             kernel_size = kernelSize, strides = 1, padding = 'same' )
           }
-        model <- model %>% layer_batch_normalization( momentum = 0.8 )
-        model <- list( model, shortcut ) %>% layer_add()
-        return( model )
+        input <- input %>% layer_batch_normalization( momentum = 0.8 )
+        input <- list( input, shortcut ) %>% layer_add()
+        return( input )
         }
 
-      buildDeconvolutionLayer <- function( input, numberOfFilters = 256 )
+      buildDeconvolutionLayer <- function( input, numberOfFilters = 256, kernelSize = 3 )
         {
         model <- input
         if( self$dimensionality == 2 )
@@ -208,7 +213,7 @@ SuperResolutionGanModel <- R6::R6Class( "SuperResolutionGanModel",
         return( model )
         }
 
-      image <- layer_input( shape = inputImageSize )
+      image <- layer_input( shape = self$lowResolutionImageSize )
 
       preResidual <- image
       if( self$dimensionality == 2 )
@@ -243,15 +248,15 @@ SuperResolutionGanModel <- R6::R6Class( "SuperResolutionGanModel",
 
       # upsampling
 
-      if( self$scalingFactor >= 2 )
+      if( self$scaleFactor >= 2 )
         {
         model <- buildDeconvolutionLayer( model )
         }
-      if( self$scalingFactor >= 4 )
+      if( self$scaleFactor >= 4 )
         {
         model <- buildDeconvolutionLayer( model )
         }
-      if( self$scalingFactor == 8 )
+      if( self$scaleFactor == 8 )
         {
         model <- buildDeconvolutionLayer( model )
         }
@@ -294,7 +299,7 @@ SuperResolutionGanModel <- R6::R6Class( "SuperResolutionGanModel",
         return( layer )
         }
 
-      image <- layer_input( shape = c( self$inputImageSize ) )
+      image <- layer_input( shape = self$highResolutionImageSize )
 
       model <- image %>% buildLayer( self$numberOfFiltersAtBaseLayer[2],
         normalization = FALSE )

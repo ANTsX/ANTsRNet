@@ -21,7 +21,7 @@ https://github.com/eriklindernoren/Keras-GAN/blob/master/srgan/srgan.py
 \section{Arguments}{
 
 \describe{
-\item{inputImageSize}{}
+\item{lowResolutionImageSize}{}
 \item{numberOfResidualBlocks}{}
 }
 }
@@ -43,7 +43,7 @@ library( ANTsRNet )
 keras::backend()$clear_session()
 
 ganModel <- SuperResolutionGanModel$new(
-   inputImageSize = inputImageSize )
+   lowResolutionImageSize = lowResolutionImageSize )
 }
 
 }
