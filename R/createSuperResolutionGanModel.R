@@ -102,15 +102,15 @@ SuperResolutionGanModel <- R6::R6Class( "SuperResolutionGanModel",
       self$highResolutionImageSize <- c( as.integer( self$scaleFactor ) *
         self$lowResolutionImageSize[1:self$dimensionality], self$numberOfChannels )
 
-      imageHighResolution <- layer_input( shape = self$highResolutionImageSize )
+      highResolutionImage <- layer_input( shape = self$highResolutionImageSize )
 
-      imageLowResolution <- layer_input( shape = self$lowResolutionImageSize )
+      lowResolutionImage <- layer_input( shape = self$lowResolutionImageSize )
 
       # Build generator
 
       self$generator <- self$buildGenerator()
 
-      fakeImageHighResolution <- self$generator( imageLowResolution )
+      fakeHighResolutionImage <- self$generator( lowResolutionImage )
 
       # Build discriminator
 
@@ -124,10 +124,10 @@ SuperResolutionGanModel <- R6::R6Class( "SuperResolutionGanModel",
       if( self$dimensionality == 2 )
         {
         vggTmp <- createVggModel2D( self$highResolutionImageSize, style = '19' )
-        if( self$useImageNetWeights == TRUE &&
-          all( self$highResolutionImageSize == c( 224, 224, 3 ) ) )
+        if( self$useImageNetWeights == TRUE )
           {
-          kerasVgg <- application_vgg19()
+          kerasVgg <- application_vgg19( include_top = FALSE, weights = "imagenet",
+            input_shape = self$highResolutionImageSize )
           vggTmp$set_weights( kerasVgg$get_weights() )
           } else {
           self$useImageNetWeights <- FALSE
@@ -136,30 +136,33 @@ SuperResolutionGanModel <- R6::R6Class( "SuperResolutionGanModel",
         } else {
         vggTmp <- createVggModel3D( self$highResolutionImageSize, style = '19' )
         }
+      vggTmp$outputs <- list( vggTmp$layers[[10]]$output )
 
-      self$vggModel <- keras_model( inputs = vggTmp$input,
-        outputs = vggTmp$layers[[20]]$output )
+      highResolutionImageFeatures <- vggTmp( highResolutionImage )
+
+      self$vggModel <- keras_model( inputs = highResolutionImage,
+        outputs = highResolutionImageFeatures )
 
       self$discriminatorPatchSize <- c(
-        unlist( vggTmp$layers[[20]]$output_shape )[1:self$dimensionality], 1 )
+        unlist( self$vggModel$output_shape )[1:self$dimensionality], 1 )
 
       # Discriminator
 
       self$discriminator$trainable <- FALSE
 
-      validity <- self$discriminator( fakeImageHighResolution )
+      validity <- self$discriminator( fakeHighResolutionImage )
 
       # Combined model
 
       if( self$useImageNetWeights )
         {
-        fakeFeatures <- self$vggModel( fakeImageHighResolution )
-        self$combinedModel = keras_model( inputs = list( imageLowResolution, imageHighResolution ),
+        fakeFeatures <- self$vggModel( fakeHighResolutionImage )
+        self$combinedModel = keras_model( inputs = list( lowResolutionImage, highResolutionImage ),
                                           outputs = list( validity, fakeFeatures ) )
         self$combinedModel$compile( loss = list( 'binary_crossentropy', 'mse' ),
           loss_weights = list( 1e-3, 1 ), optimizer = optimizer )
         } else {
-        self$combinedModel = keras_model( inputs = list( imageLowResolution, imageHighResolution ),
+        self$combinedModel = keras_model( inputs = list( lowResolutionImage, highResolutionImage ),
                                           outputs = validity )
         self$combinedModel$compile( loss = list( 'binary_crossentropy' ),
           optimizer = optimizer )
@@ -400,19 +403,19 @@ SuperResolutionGanModel <- R6::R6Class( "SuperResolutionGanModel",
 
               indices <- sample.int( dim( X_trainLowResolution )[1], 2 )
 
-              imageLowResolution <- X_trainLowResolution[indices[1],,,, drop = FALSE]
-              imageHighResolution <- X_trainHighResolution[indices[1],,,, drop = FALSE]
+              lowResolutionImage <- X_trainLowResolution[indices[1],,,, drop = FALSE]
+              highResolutionImage <- X_trainHighResolution[indices[1],,,, drop = FALSE]
 
-              X[[1]] <- imageLowResolution
-              X[[2]] <- self$generator$predict( imageLowResolution )
-              X[[3]] <- imageHighResolution
+              X[[1]] <- lowResolutionImage
+              X[[2]] <- self$generator$predict( lowResolutionImage )
+              X[[3]] <- highResolutionImage
 
-              imageLowResolution <- X_trainLowResolution[indices[2],,,, drop = FALSE]
-              imageHighResolution <- X_trainHighResolution[indices[2],,,, drop = FALSE]
+              lowResolutionImage <- X_trainLowResolution[indices[2],,,, drop = FALSE]
+              highResolutionImage <- X_trainHighResolution[indices[2],,,, drop = FALSE]
 
-              X[[4]] <- imageLowResolution
-              X[[5]] <- self$generator$predict( imageLowResolution )
-              X[[6]] <- imageHighResolution
+              X[[4]] <- lowResolutionImage
+              X[[5]] <- self$generator$predict( lowResolutionImage )
+              X[[6]] <- highResolutionImage
 
               for( i in seq_len( length( X ) ) )
                 {
