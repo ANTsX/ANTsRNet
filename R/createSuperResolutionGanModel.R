@@ -52,7 +52,9 @@ SuperResolutionGanModel <- R6::R6Class( "SuperResolutionGanModel",
 
     dimensionality = 2,
 
-    highResolutionImageSize = c( 224, 224, 3 ),
+    lowResolutionImageSize = c( 64, 64, 3 ),
+
+    highResolutionImageSize = c( 256, 256, 3 ),
 
     numberOfChannels = 3,
 
@@ -120,31 +122,13 @@ SuperResolutionGanModel <- R6::R6Class( "SuperResolutionGanModel",
 
       # Vgg
 
-      vggTmp <- NULL
-      if( self$dimensionality == 2 )
-        {
-        vggTmp <- createVggModel2D( self$highResolutionImageSize, style = '19' )
-        if( self$useImageNetWeights == TRUE )
-          {
-          kerasVgg <- application_vgg19( include_top = FALSE, weights = "imagenet",
-            input_shape = self$highResolutionImageSize )
-          vggTmp$set_weights( kerasVgg$get_weights() )
-          } else {
-          self$useImageNetWeights <- FALSE
-          warning( "Input image size doesn't work for image net weights." )
-          }
-        } else {
-        vggTmp <- createVggModel3D( self$highResolutionImageSize, style = '19' )
-        }
-      vggTmp$outputs <- list( vggTmp$layers[[10]]$output )
+      self$vggModel <- self$buildTruncatedVggModel()
+      self$vggModel$trainable <- FALSE
+      self$vggModel$compile( loss = 'mse', optimizer = optimizer,
+        metrics = list( 'accuracy') )
 
-      highResolutionImageFeatures <- vggTmp( highResolutionImage )
-
-      self$vggModel <- keras_model( inputs = highResolutionImage,
-        outputs = highResolutionImageFeatures )
-
-      self$discriminatorPatchSize <- c(
-        unlist( self$vggModel$output_shape )[1:self$dimensionality], 1 )
+      self$discriminatorPatchSize <- c( 16, 16, 1 )
+        # unlist( self$vggModel$output_shape )[1:self$dimensionality], 1 )
 
       # Discriminator
 
@@ -154,7 +138,7 @@ SuperResolutionGanModel <- R6::R6Class( "SuperResolutionGanModel",
 
       # Combined model
 
-      if( self$useImageNetWeights )
+      if( self$useImageNetWeights == TRUE )
         {
         fakeFeatures <- self$vggModel( fakeHighResolutionImage )
         self$combinedModel = keras_model( inputs = list( lowResolutionImage, highResolutionImage ),
@@ -169,6 +153,32 @@ SuperResolutionGanModel <- R6::R6Class( "SuperResolutionGanModel",
         }
       },
 
+    buildTruncatedVggModel = function()
+      {
+      vggTmp <- NULL
+      if( self$dimensionality == 2 )
+        {
+        vggTmp <- createVggModel2D( c( 224, 224, 3 ), style = '19' )
+        if( self$useImageNetWeights == TRUE )
+          {
+          kerasVgg <- application_vgg19( include_top = FALSE, weights = "imagenet",
+            input_shape = c( 224, 224, 3 ) )
+          vggTmp$set_weights( kerasVgg$get_weights() )
+          }
+        } else {
+        vggTmp <- createVggModel3D( self$highResolutionImageSize, style = '19' )
+        }
+
+      vggTmp$outputs = list( vggTmp$layers[[10]]$output )
+
+      highResolutionImage <- layer_input( self$highResolutionImageSize )
+      highResolutionImageFeatures <- vggTmp( highResolutionImage )
+
+      vggModel <- keras_model( inputs = highResolutionImage,
+        outputs = highResolutionImageFeatures )
+
+      return( vggModel )
+      },
 
     buildGenerator = function( numberOfFilters = 64 )
       {
@@ -306,7 +316,7 @@ SuperResolutionGanModel <- R6::R6Class( "SuperResolutionGanModel",
 
       model <- image %>% buildLayer( self$numberOfFiltersAtBaseLayer[2],
         normalization = FALSE )
-      model <- image %>% buildLayer( self$numberOfFiltersAtBaseLayer[2],
+      model <- model %>% buildLayer( self$numberOfFiltersAtBaseLayer[2],
         strides = 2 )
       model <- model %>% buildLayer( self$numberOfFiltersAtBaseLayer[2] * 2 )
       model <- model %>% buildLayer( self$numberOfFiltersAtBaseLayer[2] * 2,
@@ -332,38 +342,30 @@ SuperResolutionGanModel <- R6::R6Class( "SuperResolutionGanModel",
       batchSize = 128, sampleInterval = NA, sampleFilePrefix = 'sample' )
       {
 
-      valid <- NULL
-      fake <- NULL
-      if( self$useImageNetWeights )
-        {
-        valid <- array( data = 1, dim = c( batchSize, self$discriminatorPatchSize ) )
-        fake <- array( data = 0, dim = c( batchSize, self$discriminatorPatchSize ) )
-        } else {
-        valid <- array( data = 1, dim = c( batchSize, 1 ) )
-        fake <- array( data = 0, dim = c( batchSize, 1 ) )
-        }
+      valid <- array( data = 1, dim = c( batchSize, self$discriminatorPatchSize ) )
+      fake <- array( data = 0, dim = c( batchSize, self$discriminatorPatchSize ) )
 
       for( epoch in seq_len( numberOfEpochs ) )
         {
         indices <- sample.int( dim( X_trainLowResolution )[1], batchSize )
 
-        imagesLowResolution <- NULL
-        imagesHighResolution <- NULL
+        lowResolutionImages <- NULL
+        highResolutionImages <- NULL
         if( self$dimensionality == 2 )
           {
-          imagesLowResolution <- X_trainLowResolution[indices,,,, drop = FALSE]
-          imagesHighResolution <- X_trainHighResolution[indices,,,, drop = FALSE]
+          lowResolutionImages <- X_trainLowResolution[indices,,,, drop = FALSE]
+          highResolutionImages <- X_trainHighResolution[indices,,,, drop = FALSE]
           } else {
-          imagesLowResolution <- X_trainLowResolution[indices,,,,, drop = FALSE]
-          imagesHighResolution <- X_trainHighResolution[indices,,,,, drop = FALSE]
+          lowResolutionImages <- X_trainLowResolution[indices,,,,, drop = FALSE]
+          highResolutionImages <- X_trainHighResolution[indices,,,,, drop = FALSE]
           }
 
         # train discriminator
 
-        fakeImagesHighResolution <- self$generator$predict( imagesLowResolution )
+        fakeHighResolutionImages <- self$generator$predict( lowResolutionImages )
 
-        dLossReal <- self$discriminator$train_on_batch( imagesHighResolution, valid )
-        dLossFake <- self$discriminator$train_on_batch( fakeImagesHighResolution, fake )
+        dLossReal <- self$discriminator$train_on_batch( highResolutionImages, valid )
+        dLossFake <- self$discriminator$train_on_batch( fakeHighResolutionImages, fake )
 
         dLoss <- list()
         for( i in seq_len( length( dLossReal ) ) )
@@ -376,13 +378,13 @@ SuperResolutionGanModel <- R6::R6Class( "SuperResolutionGanModel",
         gLoss <- NULL
         if( self$useImageNetWeights == TRUE )
           {
-          imageFeatures = self$vggModel$predict( imagesHighResolution )
+          imageFeatures = self$vggModel$predict( highResolutionImages )
           gLoss <- self$combinedModel$train_on_batch(
-            list( imagesLowResolution, imagesHighResolution ),
+            list( lowResolutionImages, highResolutionImages ),
             list( valid, imageFeatures ) )
           } else {
           gLoss <- self$combinedModel$train_on_batch(
-            list( imagesLowResolution, imagesHighResolution ), valid )
+            list( lowResolutionImages, highResolutionImages ), valid )
           }
 
         cat( "Epoch ", epoch, ": [Discriminator loss: ", dLoss[[1]], "] ",
