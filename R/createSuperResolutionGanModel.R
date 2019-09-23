@@ -161,8 +161,7 @@ SuperResolutionGanModel <- R6::R6Class( "SuperResolutionGanModel",
         vggTmp <- createVggModel2D( c( 224, 224, 3 ), style = '19' )
         if( self$useImageNetWeights == TRUE )
           {
-          kerasVgg <- application_vgg19( include_top = FALSE, weights = "imagenet",
-            input_shape = c( 224, 224, 3 ) )
+          kerasVgg <- application_vgg19( weights = "imagenet" )
           vggTmp$set_weights( kerasVgg$get_weights() )
           }
         } else {
