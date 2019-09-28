@@ -67,8 +67,8 @@ SuperResolutionGanModel <- R6::R6Class( "SuperResolutionGanModel",
     useImageNetWeights = TRUE,
 
     initialize = function( lowResolutionImageSize,
-      numberOfResidualBlocks = 16, numberOfFiltersAtBaseLayer = c( 64, 64 ),
-      scaleFactor = 2, useImageNetWeights = TRUE )
+      scaleFactor = 2, useImageNetWeights = TRUE,
+      numberOfResidualBlocks = 16, numberOfFiltersAtBaseLayer = c( 64, 64 ) )
       {
       self$lowResolutionImageSize <- lowResolutionImageSize
       self$numberOfChannels <- tail( self$lowResolutionImageSize, 1 )
@@ -127,8 +127,13 @@ SuperResolutionGanModel <- R6::R6Class( "SuperResolutionGanModel",
       self$vggModel$compile( loss = 'mse', optimizer = optimizer,
         metrics = list( 'accuracy') )
 
-      self$discriminatorPatchSize <- c( 16, 16, 1 )
-        # unlist( self$vggModel$output_shape )[1:self$dimensionality], 1 )
+      if( self$dimensionality == 2 )
+        {
+        self$discriminatorPatchSize <- c( 16, 16, 1 )
+        } else {
+        self$discriminatorPatchSize <- c( 16, 16, 16, 1 )
+        }
+      # unlist( self$vggModel$output_shape )[1:self$dimensionality], 1 )
 
       # Discriminator
 
@@ -158,12 +163,15 @@ SuperResolutionGanModel <- R6::R6Class( "SuperResolutionGanModel",
       vggTmp <- NULL
       if( self$dimensionality == 2 )
         {
-        vggTmp <- createVggModel2D( c( 224, 224, 3 ), style = '19' )
         if( self$useImageNetWeights == TRUE )
           {
+          vggTmp <- createVggModel2D( c( 224, 224, 3 ), style = '19' )
           kerasVgg <- application_vgg19( weights = "imagenet" )
           vggTmp$set_weights( kerasVgg$get_weights() )
+          } else {
+          vggTmp <- createVggModel2D( self$highResolutionImageSize, style = '19' )
           }
+
         } else {
         vggTmp <- createVggModel3D( self$highResolutionImageSize, style = '19' )
         }
@@ -333,7 +341,6 @@ SuperResolutionGanModel <- R6::R6Class( "SuperResolutionGanModel",
       validity <- model %>% layer_dense( units = 1, activation = 'sigmoid' )
 
       discriminator <- keras_model( inputs = image, outputs = validity )
-
       return( discriminator )
       },
 
