@@ -13,6 +13,7 @@ addons:
   apt:
     packages:
       - python3
+      - libstdc++6
 
 cache:
   packages: true
