@@ -2,6 +2,9 @@
 language: r
 
 dist: xenial
+services:
+  - xvfb
+  
 sudo: false
 warnings_are_errors: false # setting this false b/c of rcpp attribute error
 
@@ -27,7 +30,6 @@ before_install:
   - wget -O travis_helpers.sh http://bit.ly/travis_helpers
   - source travis_helpers.sh
   - rm travis_helpers.sh
-  - start_xvfb ;
   - v8_install ;
   - Rscript -e 'install.packages("rsvd")'
   - Rscript -e 'install.packages("magic")'
