@@ -44,4 +44,4 @@ before_script:
   - pip2.7 install --upgrade --ignore-installed --user travis virtualenv
   - pip2.7 install --user setuptools wheel
   - pip2.7 install --upgrade --ignore-installed --user travis keras h5py pyyaml requests Pillow scipy theano tensorflow
-  - R -e 'tensorflow::install_tensorflow()'
+  - R -e 'tensorflow::install_tensorflow(version = 1.9.0)'
