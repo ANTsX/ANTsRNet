@@ -384,7 +384,7 @@ createResNetModel3D <- function( inputImageSize,
     return( model )
     }
 
-  inputs <- layer_input( shape = inputImageSize )
+  inputImage <- layer_input( shape = inputImageSize )
 
   nFilters <- lowestResolution
 
