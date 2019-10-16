@@ -14,6 +14,9 @@
 #' shape (or dimension) of that tensor is the image dimensions followed by
 #' the number of channels (e.g., red, green, and blue).  The batch size
 #' (i.e., number of training images) is not specified a priori.
+#' @param inputScalarsSize Optional integer specifying the size of the input
+#' vector for scalars that get concatenated to the fully connected layer at 
+#' the end of the network.  
 #' @param numberOfClassificationLabels Number of segmentation labels.
 #' @param layers a vector determining the number of 'filters' defined at
 #' for each layer.
@@ -68,6 +71,7 @@
 #' @import keras
 #' @export
 createResNetModel2D <- function( inputImageSize,
+                                 inputScalarsSize = 0,
                                  numberOfClassificationLabels = 1000,
                                  layers = 1:4,
                                  residualBlockSchedule = c( 3, 4, 6, 3 ),
@@ -153,11 +157,11 @@ createResNetModel2D <- function( inputImageSize,
     return( model )
     }
 
-  inputs <- layer_input( shape = inputImageSize )
+  inputImage <- layer_input( shape = inputImageSize )    
 
   nFilters <- lowestResolution
 
-  outputs <- inputs %>% layer_conv_2d( filters = nFilters,
+  outputs <- inputImage %>% layer_conv_2d( filters = nFilters,
     kernel_size = c( 7, 7 ), strides = c( 2, 2 ), padding = 'same' )
   outputs <- addCommonLayers( outputs )
   outputs <- outputs %>% layer_max_pooling_2d( pool_size = c( 3, 3 ),
@@ -202,10 +206,20 @@ createResNetModel2D <- function( inputImageSize,
     stop( 'Error: unrecognized mode.' )
     }
 
-  outputs <- outputs %>%
-    layer_dense( units = numberOfClassificationLabels, activation = layerActivation )
-
-  resNetModel <- keras_model( inputs = inputs, outputs = outputs )
+  resNetModel <- NULL
+  if( inputScalarsSize > 0 )
+    {
+    inputScalars <- layer_input( shape = c( inputScalarsSize ) )
+    concatenatedLayer <- layer_concatenate( list( outputs, inputScalars ) ) 
+    outputs <- concatenatedLayer %>% 
+      layer_dense( units = numberOfClassificationLabels, activation = layerActivation )
+    resNetModel <- keras_model( inputs = list( inputImage, inputScalars ), 
+                                outputs = outputs )
+    } else {
+    outputs <- outputs %>%
+      layer_dense( units = numberOfClassificationLabels, activation = layerActivation )
+    resNetModel <- keras_model( inputs = inputImage, outputs = outputs )
+    }
 
   return( resNetModel )
 }
@@ -226,6 +240,9 @@ createResNetModel2D <- function( inputImageSize,
 #' shape (or dimension) of that tensor is the image dimensions followed by
 #' the number of channels (e.g., red, green, and blue).  The batch size
 #' (i.e., number of training images) is not specified a priori.
+#' @param inputScalarsSize Optional integer specifying the size of the input
+#' vector for scalars that get concatenated to the fully connected layer at 
+#' the end of the network.  
 #' @param numberOfClassificationLabels Number of segmentation labels.
 #' @param layers a vector determining the number of 'filters' defined at
 #' for each layer.
@@ -281,6 +298,7 @@ createResNetModel2D <- function( inputImageSize,
 #' @import keras
 #' @export
 createResNetModel3D <- function( inputImageSize,
+                                 inputScalarsSize = 0,
                                  numberOfClassificationLabels = 1000,
                                  layers = 1:4,
                                  residualBlockSchedule = c( 3, 4, 6, 3 ),
@@ -415,10 +433,20 @@ createResNetModel3D <- function( inputImageSize,
     stop( 'Error: unrecognized mode.' )
     }
 
-  outputs <- outputs %>%
-    layer_dense( units = numberOfClassificationLabels, activation = layerActivation )
-
-  resNetModel <- keras_model( inputs = inputs, outputs = outputs )
+  resNetModel <- NULL
+  if( inputScalarsSize > 0 )
+    {
+    inputScalars <- layer_input( shape = c( inputScalarsSize ) )
+    concatenatedLayer <- layer_concatenate( list( outputs, inputScalars ) ) 
+    outputs <- concatenatedLayer %>% 
+      layer_dense( units = numberOfClassificationLabels, activation = layerActivation )
+    resNetModel <- keras_model( inputs = list( inputImage, inputScalars ), 
+                                outputs = outputs )
+    } else {
+    outputs <- outputs %>%
+      layer_dense( units = numberOfClassificationLabels, activation = layerActivation )
+    resNetModel <- keras_model( inputs = inputImage, outputs = outputs )
+    }
 
   return( resNetModel )
 }
