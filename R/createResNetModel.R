@@ -388,7 +388,7 @@ createResNetModel3D <- function( inputImageSize,
 
   nFilters <- lowestResolution
 
-  outputs <- inputs %>% layer_conv_3d( filters = nFilters,
+  outputs <- inputImage %>% layer_conv_3d( filters = nFilters,
     kernel_size = c( 7, 7, 7 ), strides = c( 2, 2, 2 ), padding = 'same' )
   outputs <- addCommonLayers( outputs )
   outputs <- outputs %>% layer_max_pooling_3d( pool_size = c( 3, 3, 3 ),
