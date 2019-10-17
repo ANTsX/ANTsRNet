@@ -107,7 +107,7 @@ website:</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>createUnetModel3D</span>(<span class='no'>inputImageSize</span>, <span class='kw'>numberOfOutputs</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+    <pre class="usage"><span class='fu'>createUnetModel3D</span>(<span class='no'>inputImageSize</span>, <span class='kw'>numberOfOutputs</span> <span class='kw'>=</span> <span class='fl'>2</span>,
   <span class='kw'>numberOfLayers</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>numberOfFiltersAtBaseLayer</span> <span class='kw'>=</span> <span class='fl'>32</span>,
   <span class='kw'>convolutionKernelSize</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>3</span>, <span class='fl'>3</span>, <span class='fl'>3</span>), <span class='kw'>deconvolutionKernelSize</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>2</span>, <span class='fl'>2</span>,
   <span class='fl'>2</span>), <span class='kw'>poolSize</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>2</span>, <span class='fl'>2</span>, <span class='fl'>2</span>), <span class='kw'>strides</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>2</span>, <span class='fl'>2</span>, <span class='fl'>2</span>), <span class='kw'>dropoutRate</span> <span class='kw'>=</span> <span class='fl'>0</span>,
@@ -207,71 +207,71 @@ implementation:</p>
   <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='no'>metric_multilabel_dice_coefficient</span> )
 
 <span class='fu'>print</span>( <span class='no'>model</span> )</div><div class='output co'>#&gt; Model
-#&gt; Model: "model_18"
+#&gt; Model: "model_19"
 #&gt; ________________________________________________________________________________
 #&gt; Layer (type)              Output Shape      Param #  Connected to               
 #&gt; ================================================================================
-#&gt; input_15 (InputLayer)     (None, 64, 64, 64 0                                   
+#&gt; input_16 (InputLayer)     (None, 64, 64, 64 0                                   
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_120 (Conv3D)       (None, 64, 64, 64 896      input_15[0][0]             
+#&gt; conv3d_135 (Conv3D)       (None, 64, 64, 64 896      input_16[0][0]             
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_121 (Conv3D)       (None, 64, 64, 64 27680    conv3d_120[0][0]           
+#&gt; conv3d_136 (Conv3D)       (None, 64, 64, 64 27680    conv3d_135[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; max_pooling3d_3 (MaxPooli (None, 32, 32, 32 0        conv3d_121[0][0]           
+#&gt; max_pooling3d_6 (MaxPooli (None, 32, 32, 32 0        conv3d_136[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_122 (Conv3D)       (None, 32, 32, 32 55360    max_pooling3d_3[0][0]      
+#&gt; conv3d_137 (Conv3D)       (None, 32, 32, 32 55360    max_pooling3d_6[0][0]      
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_123 (Conv3D)       (None, 32, 32, 32 110656   conv3d_122[0][0]           
+#&gt; conv3d_138 (Conv3D)       (None, 32, 32, 32 110656   conv3d_137[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; max_pooling3d_4 (MaxPooli (None, 16, 16, 16 0        conv3d_123[0][0]           
+#&gt; max_pooling3d_7 (MaxPooli (None, 16, 16, 16 0        conv3d_138[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_124 (Conv3D)       (None, 16, 16, 16 221312   max_pooling3d_4[0][0]      
+#&gt; conv3d_139 (Conv3D)       (None, 16, 16, 16 221312   max_pooling3d_7[0][0]      
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_125 (Conv3D)       (None, 16, 16, 16 442496   conv3d_124[0][0]           
+#&gt; conv3d_140 (Conv3D)       (None, 16, 16, 16 442496   conv3d_139[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; max_pooling3d_5 (MaxPooli (None, 8, 8, 8, 1 0        conv3d_125[0][0]           
+#&gt; max_pooling3d_8 (MaxPooli (None, 8, 8, 8, 1 0        conv3d_140[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_126 (Conv3D)       (None, 8, 8, 8, 2 884992   max_pooling3d_5[0][0]      
+#&gt; conv3d_141 (Conv3D)       (None, 8, 8, 8, 2 884992   max_pooling3d_8[0][0]      
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_127 (Conv3D)       (None, 8, 8, 8, 2 1769728  conv3d_126[0][0]           
+#&gt; conv3d_142 (Conv3D)       (None, 8, 8, 8, 2 1769728  conv3d_141[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_transpose_9 (Conv3 (None, 8, 8, 8, 1 262272   conv3d_127[0][0]           
+#&gt; conv3d_transpose_12 (Conv (None, 8, 8, 8, 1 262272   conv3d_142[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; up_sampling3d_12 (UpSampl (None, 16, 16, 16 0        conv3d_transpose_9[0][0]   
+#&gt; up_sampling3d_12 (UpSampl (None, 16, 16, 16 0        conv3d_transpose_12[0][0]  
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_134 (Concaten (None, 16, 16, 16 0        up_sampling3d_12[0][0]     
-#&gt;                                                      conv3d_125[0][0]           
+#&gt; concatenate_137 (Concaten (None, 16, 16, 16 0        up_sampling3d_12[0][0]     
+#&gt;                                                      conv3d_140[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_128 (Conv3D)       (None, 16, 16, 16 884864   concatenate_134[0][0]      
+#&gt; conv3d_143 (Conv3D)       (None, 16, 16, 16 884864   concatenate_137[0][0]      
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_129 (Conv3D)       (None, 16, 16, 16 442496   conv3d_128[0][0]           
+#&gt; conv3d_144 (Conv3D)       (None, 16, 16, 16 442496   conv3d_143[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_transpose_10 (Conv (None, 16, 16, 16 65600    conv3d_129[0][0]           
+#&gt; conv3d_transpose_13 (Conv (None, 16, 16, 16 65600    conv3d_144[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; up_sampling3d_13 (UpSampl (None, 32, 32, 32 0        conv3d_transpose_10[0][0]  
+#&gt; up_sampling3d_13 (UpSampl (None, 32, 32, 32 0        conv3d_transpose_13[0][0]  
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_135 (Concaten (None, 32, 32, 32 0        up_sampling3d_13[0][0]     
-#&gt;                                                      conv3d_123[0][0]           
+#&gt; concatenate_138 (Concaten (None, 32, 32, 32 0        up_sampling3d_13[0][0]     
+#&gt;                                                      conv3d_138[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_130 (Conv3D)       (None, 32, 32, 32 221248   concatenate_135[0][0]      
+#&gt; conv3d_145 (Conv3D)       (None, 32, 32, 32 221248   concatenate_138[0][0]      
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_131 (Conv3D)       (None, 32, 32, 32 110656   conv3d_130[0][0]           
+#&gt; conv3d_146 (Conv3D)       (None, 32, 32, 32 110656   conv3d_145[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_transpose_11 (Conv (None, 32, 32, 32 16416    conv3d_131[0][0]           
+#&gt; conv3d_transpose_14 (Conv (None, 32, 32, 32 16416    conv3d_146[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; up_sampling3d_14 (UpSampl (None, 64, 64, 64 0        conv3d_transpose_11[0][0]  
+#&gt; up_sampling3d_14 (UpSampl (None, 64, 64, 64 0        conv3d_transpose_14[0][0]  
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_136 (Concaten (None, 64, 64, 64 0        up_sampling3d_14[0][0]     
-#&gt;                                                      conv3d_121[0][0]           
+#&gt; concatenate_139 (Concaten (None, 64, 64, 64 0        up_sampling3d_14[0][0]     
+#&gt;                                                      conv3d_136[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_132 (Conv3D)       (None, 64, 64, 64 55328    concatenate_136[0][0]      
+#&gt; conv3d_147 (Conv3D)       (None, 64, 64, 64 55328    concatenate_139[0][0]      
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_133 (Conv3D)       (None, 64, 64, 64 27680    conv3d_132[0][0]           
+#&gt; conv3d_148 (Conv3D)       (None, 64, 64, 64 27680    conv3d_147[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_134 (Conv3D)       (None, 64, 64, 64 33       conv3d_133[0][0]           
+#&gt; conv3d_149 (Conv3D)       (None, 64, 64, 64 66       conv3d_148[0][0]           
 #&gt; ================================================================================
-#&gt; Total params: 5,599,713
-#&gt; Trainable params: 5,599,713
+#&gt; Total params: 5,599,746
+#&gt; Trainable params: 5,599,746
 #&gt; Non-trainable params: 0
 #&gt; ________________________________________________________________________________
 #&gt; 

@@ -4,7 +4,7 @@
 \alias{createUnetModel3D}
 \title{3-D image segmentation implementation of the U-net deep learning architecture.}
 \usage{
-createUnetModel3D(inputImageSize, numberOfOutputs = 1,
+createUnetModel3D(inputImageSize, numberOfOutputs = 2,
   numberOfLayers = 4, numberOfFiltersAtBaseLayer = 32,
   convolutionKernelSize = c(3, 3, 3), deconvolutionKernelSize = c(2, 2,
   2), poolSize = c(2, 2, 2), strides = c(2, 2, 2), dropoutRate = 0,

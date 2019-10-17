@@ -4,7 +4,7 @@
 \alias{createUnetModel2D}
 \title{2-D implementation of the U-net deep learning architecture.}
 \usage{
-createUnetModel2D(inputImageSize, numberOfOutputs = 1,
+createUnetModel2D(inputImageSize, numberOfOutputs = 2,
   numberOfLayers = 4, numberOfFiltersAtBaseLayer = 32,
   convolutionKernelSize = c(3, 3), deconvolutionKernelSize = c(2, 2),
   poolSize = c(2, 2), strides = c(2, 2), dropoutRate = 0,

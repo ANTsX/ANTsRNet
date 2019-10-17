@@ -4,15 +4,20 @@
 \alias{createResNetModel3D}
 \title{3-D implementation of the ResNet deep learning architecture.}
 \usage{
-createResNetModel3D(inputImageSize, numberOfClassificationLabels = 1000,
-  layers = 1:4, residualBlockSchedule = c(3, 4, 6, 3),
-  lowestResolution = 64, cardinality = 1, mode = "classification")
+createResNetModel3D(inputImageSize, inputScalarsSize = 0,
+  numberOfClassificationLabels = 1000, layers = 1:4,
+  residualBlockSchedule = c(3, 4, 6, 3), lowestResolution = 64,
+  cardinality = 1, mode = "classification")
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
 shape (or dimension) of that tensor is the image dimensions followed by
 the number of channels (e.g., red, green, and blue).  The batch size
 (i.e., number of training images) is not specified a priori.}
+
+\item{inputScalarsSize}{Optional integer specifying the size of the input
+vector for scalars that get concatenated to the fully connected layer at
+the end of the network.}
 
 \item{numberOfClassificationLabels}{Number of segmentation labels.}
 

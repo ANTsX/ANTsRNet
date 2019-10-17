@@ -48,6 +48,7 @@ reference:
   - '`createResUnetModel3D`'
   - '`createDenseUnetModel2D`'
   - '`createDenseUnetModel3D`'
+  - '`createNoBrainerUnetModel3D`'
 - title: Segmentation-specific helper functions
   desc: ~
   contents:

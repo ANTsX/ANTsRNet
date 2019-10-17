@@ -105,9 +105,10 @@ classification.  The paper is available here:</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>createResNetModel2D</span>(<span class='no'>inputImageSize</span>, <span class='kw'>numberOfClassificationLabels</span> <span class='kw'>=</span> <span class='fl'>1000</span>,
-  <span class='kw'>layers</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>4</span>, <span class='kw'>residualBlockSchedule</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>3</span>, <span class='fl'>4</span>, <span class='fl'>6</span>, <span class='fl'>3</span>),
-  <span class='kw'>lowestResolution</span> <span class='kw'>=</span> <span class='fl'>64</span>, <span class='kw'>cardinality</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"classification"</span>)</pre>
+    <pre class="usage"><span class='fu'>createResNetModel2D</span>(<span class='no'>inputImageSize</span>, <span class='kw'>inputScalarsSize</span> <span class='kw'>=</span> <span class='fl'>0</span>,
+  <span class='kw'>numberOfClassificationLabels</span> <span class='kw'>=</span> <span class='fl'>1000</span>, <span class='kw'>layers</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>4</span>,
+  <span class='kw'>residualBlockSchedule</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>3</span>, <span class='fl'>4</span>, <span class='fl'>6</span>, <span class='fl'>3</span>), <span class='kw'>lowestResolution</span> <span class='kw'>=</span> <span class='fl'>64</span>,
+  <span class='kw'>cardinality</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"classification"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -118,6 +119,12 @@ classification.  The paper is available here:</p>
 shape (or dimension) of that tensor is the image dimensions followed by
 the number of channels (e.g., red, green, and blue).  The batch size
 (i.e., number of training images) is not specified a priori.</p></td>
+    </tr>
+    <tr>
+      <th>inputScalarsSize</th>
+      <td><p>Optional integer specifying the size of the input
+vector for scalars that get concatenated to the fully connected layer at
+the end of the network.</p></td>
     </tr>
     <tr>
       <th>numberOfClassificationLabels</th>
