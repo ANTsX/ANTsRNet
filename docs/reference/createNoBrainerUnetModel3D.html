@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>3-D implementation of the "NoBrainer" U-net architecture — createNoBrainerUnetModel3D • ANTsRNet</title>
+<title>Implementation of the "NoBrainer" U-net architecture — createNoBrainerUnetModel3D • ANTsRNet</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,7 +30,7 @@
 
 
 
-<meta property="og:title" content="3-D implementation of the "NoBrainer" U-net architecture — createNoBrainerUnetModel3D" />
+<meta property="og:title" content="Implementation of the "NoBrainer" U-net architecture — createNoBrainerUnetModel3D" />
 
 <meta property="og:description" content="Creates a keras model implementation of the u-net architecture
 avaialable here:" />
@@ -93,7 +93,7 @@ avaialable here:" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>3-D implementation of the "NoBrainer" U-net architecture</h1>
+    <h1>Implementation of the "NoBrainer" U-net architecture</h1>
     
     <div class="hidden name"><code>createNoBrainerUnetModel3D.Rd</code></div>
     </div>
@@ -150,110 +150,33 @@ during the decoding.</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='co'># Simple examples, must run successfully and quickly. These will be tested.</span>
-
+</div><span class='co'># NOT RUN {</span>
 <span class='fu'>library</span>( <span class='no'>ANTsRNet</span> )
 <span class='fu'>library</span>( <span class='no'>keras</span> )
 
-<span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'>createNoBrainerUnetModel3D</span>( <span class='fu'>c</span>( <span class='fl'>128</span>, <span class='fl'>128</span>, <span class='fl'>128</span>, <span class='fl'>1</span> ) )
+<span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'>createNoBrainerUnetModel3D</span>( <span class='fu'>list</span>( <span class='kw'>NULL</span>, <span class='kw'>NULL</span>, <span class='kw'>NULL</span>, <span class='fl'>1</span> ) )
 <span class='no'>url</span> <span class='kw'>&lt;-</span> <span class='st'>"https://github.com/neuronets/nobrainer-models/releases/download/0.1/brain-extraction-unet-128iso-weights.h5"</span>
 <span class='no'>weightsFile</span> <span class='kw'>&lt;-</span> <span class='st'>"nobrainerWeights.h5"</span>
 <span class='fu'>download.file</span>( <span class='no'>url</span>, <span class='no'>weightsFile</span> )
 <span class='no'>model</span>$<span class='fu'>load_weights</span>( <span class='no'>weightsFile</span> )
 
-<span class='fu'>print</span>( <span class='no'>model</span> )</div><div class='output co'>#&gt; Model
-#&gt; Model: "model_14"
-#&gt; ________________________________________________________________________________
-#&gt; Layer (type)              Output Shape      Param #  Connected to               
-#&gt; ================================================================================
-#&gt; input_11 (InputLayer)     (None, 128, 128,  0                                   
-#&gt; ________________________________________________________________________________
-#&gt; conv3d_64 (Conv3D)        (None, 128, 128,  448      input_11[0][0]             
-#&gt; ________________________________________________________________________________
-#&gt; re_lu_1 (ReLU)            (None, 128, 128,  0        conv3d_64[0][0]            
-#&gt; ________________________________________________________________________________
-#&gt; conv3d_65 (Conv3D)        (None, 128, 128,  13856    re_lu_1[0][0]              
-#&gt; ________________________________________________________________________________
-#&gt; re_lu_2 (ReLU)            (None, 128, 128,  0        conv3d_65[0][0]            
-#&gt; ________________________________________________________________________________
-#&gt; max_pooling3d_2 (MaxPooli (None, 64, 64, 64 0        re_lu_2[0][0]              
-#&gt; ________________________________________________________________________________
-#&gt; conv3d_66 (Conv3D)        (None, 64, 64, 64 27680    max_pooling3d_2[0][0]      
-#&gt; ________________________________________________________________________________
-#&gt; re_lu_3 (ReLU)            (None, 64, 64, 64 0        conv3d_66[0][0]            
-#&gt; ________________________________________________________________________________
-#&gt; conv3d_67 (Conv3D)        (None, 64, 64, 64 55360    re_lu_3[0][0]              
-#&gt; ________________________________________________________________________________
-#&gt; re_lu_4 (ReLU)            (None, 64, 64, 64 0        conv3d_67[0][0]            
-#&gt; ________________________________________________________________________________
-#&gt; max_pooling3d_3 (MaxPooli (None, 32, 32, 32 0        re_lu_4[0][0]              
-#&gt; ________________________________________________________________________________
-#&gt; conv3d_68 (Conv3D)        (None, 32, 32, 32 110656   max_pooling3d_3[0][0]      
-#&gt; ________________________________________________________________________________
-#&gt; re_lu_5 (ReLU)            (None, 32, 32, 32 0        conv3d_68[0][0]            
-#&gt; ________________________________________________________________________________
-#&gt; conv3d_69 (Conv3D)        (None, 32, 32, 32 221312   re_lu_5[0][0]              
-#&gt; ________________________________________________________________________________
-#&gt; re_lu_6 (ReLU)            (None, 32, 32, 32 0        conv3d_69[0][0]            
-#&gt; ________________________________________________________________________________
-#&gt; max_pooling3d_4 (MaxPooli (None, 16, 16, 16 0        re_lu_6[0][0]              
-#&gt; ________________________________________________________________________________
-#&gt; conv3d_70 (Conv3D)        (None, 16, 16, 16 442496   max_pooling3d_4[0][0]      
-#&gt; ________________________________________________________________________________
-#&gt; re_lu_7 (ReLU)            (None, 16, 16, 16 0        conv3d_70[0][0]            
-#&gt; ________________________________________________________________________________
-#&gt; conv3d_71 (Conv3D)        (None, 16, 16, 16 884992   re_lu_7[0][0]              
-#&gt; ________________________________________________________________________________
-#&gt; re_lu_8 (ReLU)            (None, 16, 16, 16 0        conv3d_71[0][0]            
-#&gt; ________________________________________________________________________________
-#&gt; conv3d_transpose_1 (Conv3 (None, 32, 32, 32 524544   re_lu_8[0][0]              
-#&gt; ________________________________________________________________________________
-#&gt; concatenate_131 (Concaten (None, 32, 32, 32 0        re_lu_6[0][0]              
-#&gt;                                                      conv3d_transpose_1[0][0]   
-#&gt; ________________________________________________________________________________
-#&gt; conv3d_72 (Conv3D)        (None, 32, 32, 32 1327232  concatenate_131[0][0]      
-#&gt; ________________________________________________________________________________
-#&gt; re_lu_9 (ReLU)            (None, 32, 32, 32 0        conv3d_72[0][0]            
-#&gt; ________________________________________________________________________________
-#&gt; conv3d_73 (Conv3D)        (None, 32, 32, 32 442496   re_lu_9[0][0]              
-#&gt; ________________________________________________________________________________
-#&gt; re_lu_10 (ReLU)           (None, 32, 32, 32 0        conv3d_73[0][0]            
-#&gt; ________________________________________________________________________________
-#&gt; conv3d_transpose_2 (Conv3 (None, 64, 64, 64 131200   re_lu_10[0][0]             
-#&gt; ________________________________________________________________________________
-#&gt; concatenate_132 (Concaten (None, 64, 64, 64 0        re_lu_4[0][0]              
-#&gt;                                                      conv3d_transpose_2[0][0]   
-#&gt; ________________________________________________________________________________
-#&gt; conv3d_74 (Conv3D)        (None, 64, 64, 64 331840   concatenate_132[0][0]      
-#&gt; ________________________________________________________________________________
-#&gt; re_lu_11 (ReLU)           (None, 64, 64, 64 0        conv3d_74[0][0]            
-#&gt; ________________________________________________________________________________
-#&gt; conv3d_75 (Conv3D)        (None, 64, 64, 64 110656   re_lu_11[0][0]             
-#&gt; ________________________________________________________________________________
-#&gt; re_lu_12 (ReLU)           (None, 64, 64, 64 0        conv3d_75[0][0]            
-#&gt; ________________________________________________________________________________
-#&gt; conv3d_transpose_3 (Conv3 (None, 128, 128,  32832    re_lu_12[0][0]             
-#&gt; ________________________________________________________________________________
-#&gt; concatenate_133 (Concaten (None, 128, 128,  0        re_lu_2[0][0]              
-#&gt;                                                      conv3d_transpose_3[0][0]   
-#&gt; ________________________________________________________________________________
-#&gt; conv3d_76 (Conv3D)        (None, 128, 128,  82976    concatenate_133[0][0]      
-#&gt; ________________________________________________________________________________
-#&gt; re_lu_13 (ReLU)           (None, 128, 128,  0        conv3d_76[0][0]            
-#&gt; ________________________________________________________________________________
-#&gt; conv3d_77 (Conv3D)        (None, 128, 128,  27680    re_lu_13[0][0]             
-#&gt; ________________________________________________________________________________
-#&gt; re_lu_14 (ReLU)           (None, 128, 128,  0        conv3d_77[0][0]            
-#&gt; ________________________________________________________________________________
-#&gt; conv3d_78 (Conv3D)        (None, 128, 128,  33       re_lu_14[0][0]             
-#&gt; ================================================================================
-#&gt; Total params: 4,768,289
-#&gt; Trainable params: 4,768,289
-#&gt; Non-trainable params: 0
-#&gt; ________________________________________________________________________________
-#&gt; 
-#&gt; </div><div class='input'>
-</div></pre>
+<span class='no'>url</span> <span class='kw'>&lt;-</span> <span class='st'>"https://github.com/ANTsXNet/BrainExtraction/blob/master/Data/Example/1097782_defaced_MPRAGE.nii.gz?raw=true"</span>
+<span class='no'>imageFile</span> <span class='kw'>&lt;-</span> <span class='st'>"head.nii.gz"</span>
+<span class='fu'>download.file</span>( <span class='no'>url</span>, <span class='no'>imageFile</span> )
+
+<span class='no'>image</span> <span class='kw'>=</span> ( <span class='fu'>antsImageRead</span>( <span class='no'>imageFile</span> ) <span class='kw'>%&gt;%</span> <span class='fu'>iMath</span>( <span class='st'>"Normalize"</span> ) ) * <span class='fl'>255.0</span>
+<span class='no'>imageResampled</span> <span class='kw'>&lt;-</span> <span class='fu'>resampleImage</span>( <span class='no'>image</span>, <span class='fu'>rep</span>( <span class='fl'>256</span>, <span class='fl'>3</span> ), <span class='kw'>useVoxels</span> <span class='kw'>=</span> <span class='fl'>TRUE</span> )
+<span class='no'>imageArray</span> <span class='kw'>&lt;-</span> <span class='fu'>array</span>( <span class='fu'>as.array</span>( <span class='no'>imageResampled</span> ), <span class='kw'>dim</span> <span class='kw'>=</span> <span class='fu'>c</span>( <span class='fl'>1</span>, <span class='fu'>dim</span>( <span class='no'>imageResampled</span> ), <span class='fl'>1</span> ) )
+
+<span class='no'>brainMaskArray</span> <span class='kw'>&lt;-</span> <span class='fu'>predict</span>( <span class='no'>model</span>, <span class='no'>imageArray</span> )
+<span class='no'>brainMaskResampled</span> <span class='kw'>&lt;-</span> <span class='fu'>as.antsImage</span>( <span class='no'>brainMaskArray</span>[<span class='fl'>1</span>,,,,<span class='fl'>1</span>] ) <span class='kw'>%&gt;%</span>
+  <span class='fu'>antsCopyImageInfo2</span>( <span class='no'>imageResampled</span> )
+<span class='no'>brainMaskImage</span> <span class='kw'>=</span> <span class='fu'>resampleImage</span>( <span class='no'>brainMaskResampled</span>, <span class='fu'>dim</span>( <span class='no'>image</span> ),
+  <span class='kw'>useVoxels</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>interpType</span> <span class='kw'>=</span> <span class='st'>"nearestneighbor"</span> )
+<span class='no'>minimumBrainVolume</span> <span class='kw'>&lt;-</span> <span class='fu'>round</span>( <span class='fl'>649933.7</span> / <span class='fu'>prod</span>( <span class='fu'>antsGetSpacing</span>( <span class='no'>image</span> ) ) )
+<span class='no'>brainMaskLabeled</span> <span class='kw'>=</span> <span class='fu'>labelClusters</span>( <span class='no'>brainMaskImage</span>, <span class='no'>minimumBrainVolume</span> )
+<span class='fu'>antsImageWrite</span>( <span class='no'>brainMaskLabeled</span>, <span class='st'>'brainMask.nii.gz'</span> )
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

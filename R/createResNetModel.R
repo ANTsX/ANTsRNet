@@ -15,8 +15,8 @@
 #' the number of channels (e.g., red, green, and blue).  The batch size
 #' (i.e., number of training images) is not specified a priori.
 #' @param inputScalarsSize Optional integer specifying the size of the input
-#' vector for scalars that get concatenated to the fully connected layer at 
-#' the end of the network.  
+#' vector for scalars that get concatenated to the fully connected layer at
+#' the end of the network.
 #' @param numberOfClassificationLabels Number of segmentation labels.
 #' @param layers a vector determining the number of 'filters' defined at
 #' for each layer.
@@ -157,7 +157,7 @@ createResNetModel2D <- function( inputImageSize,
     return( model )
     }
 
-  inputImage <- layer_input( shape = inputImageSize )    
+  inputImage <- layer_input( shape = inputImageSize )
 
   nFilters <- lowestResolution
 
@@ -210,10 +210,10 @@ createResNetModel2D <- function( inputImageSize,
   if( inputScalarsSize > 0 )
     {
     inputScalars <- layer_input( shape = c( inputScalarsSize ) )
-    concatenatedLayer <- layer_concatenate( list( outputs, inputScalars ) ) 
-    outputs <- concatenatedLayer %>% 
+    concatenatedLayer <- layer_concatenate( list( outputs, inputScalars ) )
+    outputs <- concatenatedLayer %>%
       layer_dense( units = numberOfClassificationLabels, activation = layerActivation )
-    resNetModel <- keras_model( inputs = list( inputImage, inputScalars ), 
+    resNetModel <- keras_model( inputs = list( inputImage, inputScalars ),
                                 outputs = outputs )
     } else {
     outputs <- outputs %>%
@@ -241,8 +241,8 @@ createResNetModel2D <- function( inputImageSize,
 #' the number of channels (e.g., red, green, and blue).  The batch size
 #' (i.e., number of training images) is not specified a priori.
 #' @param inputScalarsSize Optional integer specifying the size of the input
-#' vector for scalars that get concatenated to the fully connected layer at 
-#' the end of the network.  
+#' vector for scalars that get concatenated to the fully connected layer at
+#' the end of the network.
 #' @param numberOfClassificationLabels Number of segmentation labels.
 #' @param layers a vector determining the number of 'filters' defined at
 #' for each layer.
@@ -437,10 +437,10 @@ createResNetModel3D <- function( inputImageSize,
   if( inputScalarsSize > 0 )
     {
     inputScalars <- layer_input( shape = c( inputScalarsSize ) )
-    concatenatedLayer <- layer_concatenate( list( outputs, inputScalars ) ) 
-    outputs <- concatenatedLayer %>% 
+    concatenatedLayer <- layer_concatenate( list( outputs, inputScalars ) )
+    outputs <- concatenatedLayer %>%
       layer_dense( units = numberOfClassificationLabels, activation = layerActivation )
-    resNetModel <- keras_model( inputs = list( inputImage, inputScalars ), 
+    resNetModel <- keras_model( inputs = list( inputImage, inputScalars ),
                                 outputs = outputs )
     } else {
     outputs <- outputs %>%
