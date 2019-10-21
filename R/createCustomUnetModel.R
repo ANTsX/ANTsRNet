@@ -164,10 +164,16 @@ createNoBrainerUnetModel3D <- function( inputImageSize )
 #' @return a u-net keras model
 #' @author Tustison NJ
 #' @examples
+#' \dontrun{
 #'
+#' model1 <- createHippMapp3rUnetModel3D( c( 160, 160, 128, 1 ), doFirstNetwork = TRUE )
+#' model2 <- createHippMapp3rUnetModel3D( c( 112, 112, 64, 1 ), doFirstNetwork = FALSE )
+#'
+#' }
 #' @import keras
 #' @export
-createHippMapp3rUnetModel3D <- function( inputImageSize )
+createHippMapp3rUnetModel3D <- function( inputImageSize,
+                                         doFirstNetwork = TRUE )
 {
   layer_convB_3d <- function( input, numberOfFilters, kernelSize = 3, strides = 1 )
     {
@@ -208,6 +214,12 @@ createHippMapp3rUnetModel3D <- function( inputImageSize )
   convolutionKernelSize <- c( 3, 3, 3 )
   deconvolutionKernelSize <- c( 2, 2, 2 )
 
+  numberOfLayers <- 6
+  if( doFirstNetwork == FALSE )
+    {
+    numberOfLayers <- 5
+    }
+
   inputs <- layer_input( shape = inputImageSize )
 
   # Encoding path
@@ -215,7 +227,7 @@ createHippMapp3rUnetModel3D <- function( inputImageSize )
   add <- NULL
 
   encodingConvolutionLayers <- list()
-  for( i in seq_len( 6 ) )
+  for( i in seq_len( numberOfLayers ) )
     {
     numberOfFilters = numberOfFiltersAtBaseLayer * 2 ^ ( i - 1 )
 
@@ -238,38 +250,52 @@ createHippMapp3rUnetModel3D <- function( inputImageSize )
   outputs <- unlist( tail( encodingConvolutionLayers, 1 ) )[[1]]
 
   # 256
-  numberOfFilters <- numberOfFiltersAtBaseLayer * 2 ^ 4
+  numberOfFilters <- numberOfFiltersAtBaseLayer * 2 ^ ( numberOfLayers - 2 )
   outputs <- upsampleBlock3D( outputs, numberOfFilters )
 
-  # 256, 128
-  outputs <- list( encodingConvolutionLayers[[5]], outputs ) %>%
-    layer_concatenate()
-  outputs <- featureBlock3D( outputs, numberOfFilters )
-  numberOfFilters <- numberOfFiltersAtBaseLayer * 2 ^ 3
-  outputs <- upsampleBlock3D( outputs, numberOfFilters )
+  if( doFirstNetwork == TRUE )
+    {
+    # 256, 128
+    outputs <- list( encodingConvolutionLayers[[5]], outputs ) %>%
+      layer_concatenate()
+    outputs <- featureBlock3D( outputs, numberOfFilters )
+    numberOfFilters <- numberOfFilters / 2
+    outputs <- upsampleBlock3D( outputs, numberOfFilters )
+    }
 
   # 128, 64
   outputs <- list( encodingConvolutionLayers[[4]], outputs ) %>%
     layer_concatenate()
   outputs <- featureBlock3D( outputs, numberOfFilters )
-  numberOfFilters <- numberOfFiltersAtBaseLayer * 2 ^ 2
+  numberOfFilters <- numberOfFilters / 2
   outputs <- upsampleBlock3D( outputs, numberOfFilters )
 
   # 64, 32
   outputs <- list( encodingConvolutionLayers[[3]], outputs ) %>%
     layer_concatenate()
   feature64 <- featureBlock3D( outputs, numberOfFilters )
-  numberOfFilters <- numberOfFiltersAtBaseLayer * 2 ^ 1
+  numberOfFilters <- numberOfFilters / 2
   outputs <- upsampleBlock3D( feature64, numberOfFilters )
-  back64 <- layer_convB_3d( feature64, 1, 1 ) %>% layer_upsampling_3d()
+  if( doFirstNetwork == TRUE )
+    {
+    back64 <- layer_convB_3d( feature64, 1, 1 )
+    } else {
+    back64 <- feature64 %>% layer_conv_3d( filters = 1, kernel_size = 1 )
+    }
+  back64 <- back64 %>% layer_upsampling_3d()
 
   # 32, 16
   outputs <- list( encodingConvolutionLayers[[2]], outputs ) %>%
     layer_concatenate()
   feature32 <- featureBlock3D( outputs, numberOfFilters )
-  numberOfFilters <- numberOfFiltersAtBaseLayer
+  numberOfFilters <- numberOfFilters / 2
   outputs <- upsampleBlock3D( feature32, numberOfFilters )
-  back32 <- layer_convB_3d( feature32, 1, 1 )
+  if( doFirstNetwork == TRUE )
+    {
+    back32 <- layer_convB_3d( feature32, 1, 1 )
+    } else {
+    back32 <- feature32 %>% layer_conv_3d( filters = 1, kernel_size = 1 )
+    }
   back32 <- list( back64, back32 ) %>% layer_add()
   back32 <- back32 %>% layer_upsampling_3d()
 
@@ -278,7 +304,12 @@ createHippMapp3rUnetModel3D <- function( inputImageSize )
     layer_concatenate()
   outputs <- layer_convB_3d( outputs, numberOfFilters, 3 )
   outputs <- layer_convB_3d( outputs, numberOfFilters, 1 )
-  outputs <- layer_convB_3d( outputs, 1, 1 )
+  if( doFirstNetwork == TRUE )
+    {
+    outputs <- layer_convB_3d( outputs, 1, 1 )
+    } else {
+    outputs <- outputs %>% layer_conv_3d( filters = 1, kernel_size = 1 )
+    }
   outputs <- list( back32, outputs ) %>% layer_add()
   outputs <- outputs %>% layer_activation( 'sigmoid' )
 

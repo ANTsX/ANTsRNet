@@ -4,7 +4,7 @@
 \alias{createHippMapp3rUnetModel3D}
 \title{Implementation of the "HippMapp3r" U-net architecture}
 \usage{
-createHippMapp3rUnetModel3D(inputImageSize)
+createHippMapp3rUnetModel3D(inputImageSize, doFirstNetwork = TRUE)
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
@@ -26,7 +26,12 @@ with the implementation available here:
 \url{https://github.com/mgoubran/HippMapp3r}
 }
 \examples{
+\dontrun{
 
+model1 <- createHippMapp3rUnetModel3D( c( 160, 160, 128, 1 ), doFirstNetwork = TRUE )
+model2 <- createHippMapp3rUnetModel3D( c( 112, 112, 64, 1 ), doFirstNetwork = FALSE )
+
+}
 }
 \author{
 Tustison NJ
