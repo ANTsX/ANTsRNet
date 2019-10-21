@@ -49,6 +49,7 @@ reference:
   - '`createDenseUnetModel2D`'
   - '`createDenseUnetModel3D`'
   - '`createNoBrainerUnetModel3D`'
+  - '`createHippMapp3rUnetModel3D`'
 - title: Segmentation-specific helper functions
   desc: ~
   contents:

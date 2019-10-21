@@ -4,25 +4,12 @@
 \alias{createNoBrainerUnetModel3D}
 \title{Implementation of the "NoBrainer" U-net architecture}
 \usage{
-createNoBrainerUnetModel3D(inputImageSize, numberOfOutputs = 1,
-  numberOfFiltersAtBaseLayer = 16, convolutionKernelSize = c(3, 3, 3),
-  deconvolutionKernelSize = c(2, 2, 2))
+createNoBrainerUnetModel3D(inputImageSize)
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
 shape (or dimension) of that tensor is the image dimensions followed by
 the number of channels (e.g., red, green, and blue).}
-
-\item{numberOfOutputs}{Number of segmentation labels.}
-
-\item{numberOfFiltersAtBaseLayer}{number of filters at the beginning and end
-of the \verb{'U'}.  Doubles at each descending/ascending layer. Default = 16.}
-
-\item{convolutionKernelSize}{3-d vector defining the kernel size
-during the encoding path.}
-
-\item{deconvolutionKernelSize}{3-d vector defining the kernel size
-during the decoding.}
 }
 \value{
 a u-net keras model
@@ -32,7 +19,7 @@ Creates a keras model implementation of the u-net architecture
 avaialable here:
 }
 \details{
-\url{https://github.com/neuronets/nobrainer/blob/master/nobrainer/models/unet.py}
+\url{https://github.com/neuronets/nobrainer/}
 }
 \examples{
 
@@ -64,6 +51,7 @@ minimumBrainVolume <- round( 649933.7 / prod( antsGetSpacing( image ) ) )
 brainMaskLabeled = labelClusters( brainMaskImage, minimumBrainVolume )
 antsImageWrite( brainMaskLabeled, 'brainMask.nii.gz' )
 }
+
 }
 \author{
 Tustison NJ

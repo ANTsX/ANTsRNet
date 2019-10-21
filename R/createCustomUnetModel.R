@@ -3,18 +3,11 @@
 #' Creates a keras model implementation of the u-net architecture
 #' avaialable here:
 #'
-#'         \url{https://github.com/neuronets/nobrainer/blob/master/nobrainer/models/unet.py}
+#'         \url{https://github.com/neuronets/nobrainer/}
 #'
 #' @param inputImageSize Used for specifying the input tensor shape.  The
 #' shape (or dimension) of that tensor is the image dimensions followed by
 #' the number of channels (e.g., red, green, and blue).
-#' @param numberOfOutputs Number of segmentation labels.
-#' @param numberOfFiltersAtBaseLayer number of filters at the beginning and end
-#' of the \verb{'U'}.  Doubles at each descending/ascending layer. Default = 16.
-#' @param convolutionKernelSize 3-d vector defining the kernel size
-#' during the encoding path.
-#' @param deconvolutionKernelSize 3-d vector defining the kernel size
-#' during the decoding.
 #'
 #' @return a u-net keras model
 #' @author Tustison NJ
@@ -51,13 +44,13 @@
 #'
 #' @import keras
 #' @export
-createNoBrainerUnetModel3D <- function( inputImageSize,
-                                        numberOfOutputs = 1,
-                                        numberOfFiltersAtBaseLayer = 16,
-                                        convolutionKernelSize = c( 3, 3, 3 ),
-                                        deconvolutionKernelSize = c( 2, 2, 2 )
-                                      )
+createNoBrainerUnetModel3D <- function( inputImageSize )
 {
+
+  numberOfOutputs <- 1
+  numberOfFiltersAtBaseLayer <- 16
+  convolutionKernelSize <- c( 3, 3, 3 )
+  deconvolutionKernelSize <- c( 2, 2, 2 )
 
   inputs <- layer_input( shape = inputImageSize )
 
@@ -146,6 +139,148 @@ createNoBrainerUnetModel3D <- function( inputImageSize,
   outputs <- outputs %>%
     layer_conv_3d( filters = numberOfOutputs,
       kernel_size = 1, activation = convActivation )
+
+  unetModel <- keras_model( inputs = inputs, outputs = outputs )
+
+  return( unetModel )
+}
+
+
+#' Implementation of the "HippMapp3r" U-net architecture
+#'
+#' Creates a keras model implementation of the u-net architecture
+#' described here:
+#'
+#'     \url{https://onlinelibrary.wiley.com/doi/pdf/10.1002/hbm.24811}
+#'
+#' with the implementation available here:
+#'
+#'     \url{https://github.com/mgoubran/HippMapp3r}
+#'
+#' @param inputImageSize Used for specifying the input tensor shape.  The
+#' shape (or dimension) of that tensor is the image dimensions followed by
+#' the number of channels (e.g., red, green, and blue).
+#'
+#' @return a u-net keras model
+#' @author Tustison NJ
+#' @examples
+#'
+#' @import keras
+#' @export
+createHippMapp3rUnetModel3D <- function( inputImageSize )
+{
+  layer_convB_3d <- function( input, numberOfFilters, kernelSize = 3, strides = 1 )
+    {
+    block <- input %>% layer_conv_3d( filters = numberOfFilters,
+      kernel_size = kernelSize, strides = strides, padding = 'same' )
+    block <- block %>% layer_instance_normalization( axis = 5 )
+    block <- block %>% layer_activation_leaky_relu()
+
+    return( block )
+    }
+
+  residualBlock3D <- function( input, numberOfFilters, kernelSize = 3 )
+    {
+    block <- layer_convB_3d( input, numberOfFilters )
+    block <- block %>% layer_spatial_dropout_3d( rate = 0.3 )
+    block <- layer_convB_3d( block, numberOfFilters )
+
+    return( block )
+    }
+
+  upsampleBlock3D <- function( input, numberOfFilters, kernelSize = 3 )
+    {
+    block <- input %>% layer_upsampling_3d()
+    block <- layer_convB_3d( block, numberOfFilters )
+
+    return( block )
+    }
+
+  featureBlock3D <- function( input, numberOfFilters, kernelSize = 3 )
+    {
+    block <- layer_convB_3d( input, numberOfFilters )
+    block <- layer_convB_3d( block, numberOfFilters, kernelSize = 1 )
+
+    return( block )
+    }
+
+  numberOfFiltersAtBaseLayer <- 16
+  convolutionKernelSize <- c( 3, 3, 3 )
+  deconvolutionKernelSize <- c( 2, 2, 2 )
+
+  inputs <- layer_input( shape = inputImageSize )
+
+  # Encoding path
+
+  add <- NULL
+
+  encodingConvolutionLayers <- list()
+  for( i in seq_len( 6 ) )
+    {
+    numberOfFilters = numberOfFiltersAtBaseLayer * 2 ^ ( i - 1 )
+
+    conv <- NULL
+    if( i == 1 )
+      {
+      conv <- layer_convB_3d( inputs, numberOfFilters )
+      } else {
+      conv <- layer_convB_3d( add, numberOfFilters, strides = 2 )
+      }
+    residualBlock <- residualBlock3D( conv, numberOfFilters,
+      convolutionKernelSize )
+    add <- list( conv, residualBlock ) %>% layer_add()
+
+    encodingConvolutionLayers[[i]] <- add
+    }
+
+  # Decoding path
+
+  outputs <- unlist( tail( encodingConvolutionLayers, 1 ) )[[1]]
+
+  # 256
+  numberOfFilters <- numberOfFiltersAtBaseLayer * 2 ^ 4
+  outputs <- upsampleBlock3D( outputs, numberOfFilters )
+
+  # 256, 128
+  outputs <- list( encodingConvolutionLayers[[5]], outputs ) %>%
+    layer_concatenate()
+  outputs <- featureBlock3D( outputs, numberOfFilters )
+  numberOfFilters <- numberOfFiltersAtBaseLayer * 2 ^ 3
+  outputs <- upsampleBlock3D( outputs, numberOfFilters )
+
+  # 128, 64
+  outputs <- list( encodingConvolutionLayers[[4]], outputs ) %>%
+    layer_concatenate()
+  outputs <- featureBlock3D( outputs, numberOfFilters )
+  numberOfFilters <- numberOfFiltersAtBaseLayer * 2 ^ 2
+  outputs <- upsampleBlock3D( outputs, numberOfFilters )
+
+  # 64, 32
+  outputs <- list( encodingConvolutionLayers[[3]], outputs ) %>%
+    layer_concatenate()
+  feature64 <- featureBlock3D( outputs, numberOfFilters )
+  numberOfFilters <- numberOfFiltersAtBaseLayer * 2 ^ 1
+  outputs <- upsampleBlock3D( feature64, numberOfFilters )
+  back64 <- layer_convB_3d( feature64, 1, 1 ) %>% layer_upsampling_3d()
+
+  # 32, 16
+  outputs <- list( encodingConvolutionLayers[[2]], outputs ) %>%
+    layer_concatenate()
+  feature32 <- featureBlock3D( outputs, numberOfFilters )
+  numberOfFilters <- numberOfFiltersAtBaseLayer
+  outputs <- upsampleBlock3D( feature32, numberOfFilters )
+  back32 <- layer_convB_3d( feature32, 1, 1 )
+  back32 <- list( back64, back32 ) %>% layer_add()
+  back32 <- back32 %>% layer_upsampling_3d()
+
+  # final
+  outputs <- list( encodingConvolutionLayers[[1]], outputs ) %>%
+    layer_concatenate()
+  outputs <- layer_convB_3d( outputs, numberOfFilters, 3 )
+  outputs <- layer_convB_3d( outputs, numberOfFilters, 1 )
+  outputs <- layer_convB_3d( outputs, 1, 1 )
+  outputs <- list( back32, outputs ) %>% layer_add()
+  outputs <- outputs %>% layer_activation( 'sigmoid' )
 
   unetModel <- keras_model( inputs = inputs, outputs = outputs )
 

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Implementation of the "NoBrainer" U-net architecture — createNoBrainerUnetModel3D • ANTsRNet</title>
+<title>Implementation of the "HippMapp3r" U-net architecture — createHippMapp3rUnetModel3D • ANTsRNet</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,10 +30,10 @@
 
 
 
-<meta property="og:title" content="Implementation of the "NoBrainer" U-net architecture — createNoBrainerUnetModel3D" />
+<meta property="og:title" content="Implementation of the "HippMapp3r" U-net architecture — createHippMapp3rUnetModel3D" />
 
 <meta property="og:description" content="Creates a keras model implementation of the u-net architecture
-avaialable here:" />
+described here:" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -93,19 +93,19 @@ avaialable here:" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Implementation of the "NoBrainer" U-net architecture</h1>
+    <h1>Implementation of the "HippMapp3r" U-net architecture</h1>
     
-    <div class="hidden name"><code>createNoBrainerUnetModel3D.Rd</code></div>
+    <div class="hidden name"><code>createHippMapp3rUnetModel3D.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
     <p>Creates a keras model implementation of the u-net architecture
-avaialable here:</p>
+described here:</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>createNoBrainerUnetModel3D</span>(<span class='no'>inputImageSize</span>)</pre>
+    <pre class="usage"><span class='fu'>createHippMapp3rUnetModel3D</span>(<span class='no'>inputImageSize</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -124,38 +124,13 @@ the number of channels (e.g., red, green, and blue).</p></td>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p><a href='https://github.com/neuronets/nobrainer/'>https://github.com/neuronets/nobrainer/</a></p>
+    <p><a href='https://onlinelibrary.wiley.com/doi/pdf/10.1002/hbm.24811'>https://onlinelibrary.wiley.com/doi/pdf/10.1002/hbm.24811</a></p>
+<p>with the implementation available here:</p>
+<p><a href='https://github.com/mgoubran/HippMapp3r'>https://github.com/mgoubran/HippMapp3r</a></p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-</div><span class='co'># NOT RUN {</span>
-<span class='fu'>library</span>( <span class='no'>ANTsRNet</span> )
-<span class='fu'>library</span>( <span class='no'>keras</span> )
-
-<span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'>createNoBrainerUnetModel3D</span>( <span class='fu'>list</span>( <span class='kw'>NULL</span>, <span class='kw'>NULL</span>, <span class='kw'>NULL</span>, <span class='fl'>1</span> ) )
-<span class='no'>url</span> <span class='kw'>&lt;-</span> <span class='st'>"https://github.com/neuronets/nobrainer-models/releases/download/0.1/brain-extraction-unet-128iso-weights.h5"</span>
-<span class='no'>weightsFile</span> <span class='kw'>&lt;-</span> <span class='st'>"nobrainerWeights.h5"</span>
-<span class='fu'>download.file</span>( <span class='no'>url</span>, <span class='no'>weightsFile</span> )
-<span class='no'>model</span>$<span class='fu'>load_weights</span>( <span class='no'>weightsFile</span> )
-
-<span class='no'>url</span> <span class='kw'>&lt;-</span> <span class='st'>"https://github.com/ANTsXNet/BrainExtraction/blob/master/Data/Example/1097782_defaced_MPRAGE.nii.gz?raw=true"</span>
-<span class='no'>imageFile</span> <span class='kw'>&lt;-</span> <span class='st'>"head.nii.gz"</span>
-<span class='fu'>download.file</span>( <span class='no'>url</span>, <span class='no'>imageFile</span> )
-
-<span class='no'>image</span> <span class='kw'>=</span> ( <span class='fu'>antsImageRead</span>( <span class='no'>imageFile</span> ) <span class='kw'>%&gt;%</span> <span class='fu'>iMath</span>( <span class='st'>"Normalize"</span> ) ) * <span class='fl'>255.0</span>
-<span class='no'>imageResampled</span> <span class='kw'>&lt;-</span> <span class='fu'>resampleImage</span>( <span class='no'>image</span>, <span class='fu'>rep</span>( <span class='fl'>256</span>, <span class='fl'>3</span> ), <span class='kw'>useVoxels</span> <span class='kw'>=</span> <span class='fl'>TRUE</span> )
-<span class='no'>imageArray</span> <span class='kw'>&lt;-</span> <span class='fu'>array</span>( <span class='fu'>as.array</span>( <span class='no'>imageResampled</span> ), <span class='kw'>dim</span> <span class='kw'>=</span> <span class='fu'>c</span>( <span class='fl'>1</span>, <span class='fu'>dim</span>( <span class='no'>imageResampled</span> ), <span class='fl'>1</span> ) )
-
-<span class='no'>brainMaskArray</span> <span class='kw'>&lt;-</span> <span class='fu'>predict</span>( <span class='no'>model</span>, <span class='no'>imageArray</span> )
-<span class='no'>brainMaskResampled</span> <span class='kw'>&lt;-</span> <span class='fu'>as.antsImage</span>( <span class='no'>brainMaskArray</span>[<span class='fl'>1</span>,,,,<span class='fl'>1</span>] ) <span class='kw'>%&gt;%</span>
-  <span class='fu'>antsCopyImageInfo2</span>( <span class='no'>imageResampled</span> )
-<span class='no'>brainMaskImage</span> <span class='kw'>=</span> <span class='fu'>resampleImage</span>( <span class='no'>brainMaskResampled</span>, <span class='fu'>dim</span>( <span class='no'>image</span> ),
-  <span class='kw'>useVoxels</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>interpType</span> <span class='kw'>=</span> <span class='st'>"nearestneighbor"</span> )
-<span class='no'>minimumBrainVolume</span> <span class='kw'>&lt;-</span> <span class='fu'>round</span>( <span class='fl'>649933.7</span> / <span class='fu'>prod</span>( <span class='fu'>antsGetSpacing</span>( <span class='no'>image</span> ) ) )
-<span class='no'>brainMaskLabeled</span> <span class='kw'>=</span> <span class='fu'>labelClusters</span>( <span class='no'>brainMaskImage</span>, <span class='no'>minimumBrainVolume</span> )
-<span class='fu'>antsImageWrite</span>( <span class='no'>brainMaskLabeled</span>, <span class='st'>'brainMask.nii.gz'</span> )
-<span class='co'># }</span><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
