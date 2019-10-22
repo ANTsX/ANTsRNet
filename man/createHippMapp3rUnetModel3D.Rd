@@ -10,6 +10,9 @@ createHippMapp3rUnetModel3D(inputImageSize, doFirstNetwork = TRUE)
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
 shape (or dimension) of that tensor is the image dimensions followed by
 the number of channels (e.g., red, green, and blue).}
+
+\item{doFirstNetwork}{boolean dictating if the model built should be the
+first (initial) network or second (refinement) network.}
 }
 \value{
 a u-net keras model
@@ -30,6 +33,9 @@ with the implementation available here:
 
 model1 <- createHippMapp3rUnetModel3D( c( 160, 160, 128, 1 ), doFirstNetwork = TRUE )
 model2 <- createHippMapp3rUnetModel3D( c( 112, 112, 64, 1 ), doFirstNetwork = FALSE )
+
+json_config <- model_to_json( model1 )
+writeLines( json_config, "/Users/ntustison/Desktop/model1_config.json" )
 
 }
 }

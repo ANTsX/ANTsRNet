@@ -116,6 +116,11 @@ described here:</p>
 shape (or dimension) of that tensor is the image dimensions followed by
 the number of channels (e.g., red, green, and blue).</p></td>
     </tr>
+    <tr>
+      <th>doFirstNetwork</th>
+      <td><p>boolean dictating if the model built should be the
+first (initial) network or second (refinement) network.</p></td>
+    </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -133,6 +138,9 @@ the number of channels (e.g., red, green, and blue).</p></td>
     <pre class="examples"><span class='co'># NOT RUN {</span>
 <span class='no'>model1</span> <span class='kw'>&lt;-</span> <span class='fu'>createHippMapp3rUnetModel3D</span>( <span class='fu'>c</span>( <span class='fl'>160</span>, <span class='fl'>160</span>, <span class='fl'>128</span>, <span class='fl'>1</span> ), <span class='kw'>doFirstNetwork</span> <span class='kw'>=</span> <span class='fl'>TRUE</span> )
 <span class='no'>model2</span> <span class='kw'>&lt;-</span> <span class='fu'>createHippMapp3rUnetModel3D</span>( <span class='fu'>c</span>( <span class='fl'>112</span>, <span class='fl'>112</span>, <span class='fl'>64</span>, <span class='fl'>1</span> ), <span class='kw'>doFirstNetwork</span> <span class='kw'>=</span> <span class='fl'>FALSE</span> )
+
+<span class='no'>json_config</span> <span class='kw'>&lt;-</span> <span class='fu'>model_to_json</span>( <span class='no'>model1</span> )
+<span class='fu'>writeLines</span>( <span class='no'>json_config</span>, <span class='st'>"/Users/ntustison/Desktop/model1_config.json"</span> )
 
 <span class='co'># }</span></pre>
   </div>

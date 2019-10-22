@@ -160,6 +160,8 @@ createNoBrainerUnetModel3D <- function( inputImageSize )
 #' @param inputImageSize Used for specifying the input tensor shape.  The
 #' shape (or dimension) of that tensor is the image dimensions followed by
 #' the number of channels (e.g., red, green, and blue).
+#' @param doFirstNetwork boolean dictating if the model built should be the
+#' first (initial) network or second (refinement) network.
 #'
 #' @return a u-net keras model
 #' @author Tustison NJ
@@ -168,6 +170,9 @@ createNoBrainerUnetModel3D <- function( inputImageSize )
 #'
 #' model1 <- createHippMapp3rUnetModel3D( c( 160, 160, 128, 1 ), doFirstNetwork = TRUE )
 #' model2 <- createHippMapp3rUnetModel3D( c( 112, 112, 64, 1 ), doFirstNetwork = FALSE )
+#'
+#' json_config <- model_to_json( model1 )
+#' writeLines( json_config, "/Users/ntustison/Desktop/model1_config.json" )
 #'
 #' }
 #' @import keras
@@ -185,7 +190,7 @@ createHippMapp3rUnetModel3D <- function( inputImageSize,
     return( block )
     }
 
-  residualBlock3D <- function( input, numberOfFilters, kernelSize = 3 )
+  residualBlock3D <- function( input, numberOfFilters )
     {
     block <- layer_convB_3d( input, numberOfFilters )
     block <- block %>% layer_spatial_dropout_3d( rate = 0.3 )
@@ -194,7 +199,7 @@ createHippMapp3rUnetModel3D <- function( inputImageSize,
     return( block )
     }
 
-  upsampleBlock3D <- function( input, numberOfFilters, kernelSize = 3 )
+  upsampleBlock3D <- function( input, numberOfFilters )
     {
     block <- input %>% layer_upsampling_3d()
     block <- layer_convB_3d( block, numberOfFilters )
@@ -202,7 +207,7 @@ createHippMapp3rUnetModel3D <- function( inputImageSize,
     return( block )
     }
 
-  featureBlock3D <- function( input, numberOfFilters, kernelSize = 3 )
+  featureBlock3D <- function( input, numberOfFilters )
     {
     block <- layer_convB_3d( input, numberOfFilters )
     block <- layer_convB_3d( block, numberOfFilters, kernelSize = 1 )
@@ -211,8 +216,6 @@ createHippMapp3rUnetModel3D <- function( inputImageSize,
     }
 
   numberOfFiltersAtBaseLayer <- 16
-  convolutionKernelSize <- c( 3, 3, 3 )
-  deconvolutionKernelSize <- c( 2, 2, 2 )
 
   numberOfLayers <- 6
   if( doFirstNetwork == FALSE )
@@ -238,8 +241,7 @@ createHippMapp3rUnetModel3D <- function( inputImageSize,
       } else {
       conv <- layer_convB_3d( add, numberOfFilters, strides = 2 )
       }
-    residualBlock <- residualBlock3D( conv, numberOfFilters,
-      convolutionKernelSize )
+    residualBlock <- residualBlock3D( conv, numberOfFilters )
     add <- list( conv, residualBlock ) %>% layer_add()
 
     encodingConvolutionLayers[[i]] <- add
@@ -276,6 +278,7 @@ createHippMapp3rUnetModel3D <- function( inputImageSize,
   feature64 <- featureBlock3D( outputs, numberOfFilters )
   numberOfFilters <- numberOfFilters / 2
   outputs <- upsampleBlock3D( feature64, numberOfFilters )
+  back64 <- NULL
   if( doFirstNetwork == TRUE )
     {
     back64 <- layer_convB_3d( feature64, 1, 1 )
@@ -290,6 +293,7 @@ createHippMapp3rUnetModel3D <- function( inputImageSize,
   feature32 <- featureBlock3D( outputs, numberOfFilters )
   numberOfFilters <- numberOfFilters / 2
   outputs <- upsampleBlock3D( feature32, numberOfFilters )
+  back32 <- NULL
   if( doFirstNetwork == TRUE )
     {
     back32 <- layer_convB_3d( feature32, 1, 1 )
