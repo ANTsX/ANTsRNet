@@ -129,34 +129,9 @@ the number of channels (e.g., red, green, and blue).</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-</div><span class='co'># NOT RUN {</span>
 <span class='fu'>library</span>( <span class='no'>ANTsRNet</span> )
-<span class='fu'>library</span>( <span class='no'>keras</span> )
 
-<span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'>createNoBrainerUnetModel3D</span>( <span class='fu'>list</span>( <span class='kw'>NULL</span>, <span class='kw'>NULL</span>, <span class='kw'>NULL</span>, <span class='fl'>1</span> ) )
-<span class='no'>url</span> <span class='kw'>&lt;-</span> <span class='st'>"https://github.com/neuronets/nobrainer-models/releases/download/0.1/brain-extraction-unet-128iso-weights.h5"</span>
-<span class='no'>weightsFile</span> <span class='kw'>&lt;-</span> <span class='st'>"nobrainerWeights.h5"</span>
-<span class='fu'>download.file</span>( <span class='no'>url</span>, <span class='no'>weightsFile</span> )
-<span class='no'>model</span>$<span class='fu'>load_weights</span>( <span class='no'>weightsFile</span> )
-
-<span class='no'>url</span> <span class='kw'>&lt;-</span> <span class='st'>"https://github.com/ANTsXNet/BrainExtraction/blob/master/Data/Example/1097782_defaced_MPRAGE.nii.gz?raw=true"</span>
-<span class='no'>imageFile</span> <span class='kw'>&lt;-</span> <span class='st'>"head.nii.gz"</span>
-<span class='fu'>download.file</span>( <span class='no'>url</span>, <span class='no'>imageFile</span> )
-
-<span class='no'>image</span> <span class='kw'>=</span> ( <span class='fu'>antsImageRead</span>( <span class='no'>imageFile</span> ) <span class='kw'>%&gt;%</span> <span class='fu'>iMath</span>( <span class='st'>"Normalize"</span> ) ) * <span class='fl'>255.0</span>
-<span class='no'>imageResampled</span> <span class='kw'>&lt;-</span> <span class='fu'>resampleImage</span>( <span class='no'>image</span>, <span class='fu'>rep</span>( <span class='fl'>256</span>, <span class='fl'>3</span> ), <span class='kw'>useVoxels</span> <span class='kw'>=</span> <span class='fl'>TRUE</span> )
-<span class='no'>imageArray</span> <span class='kw'>&lt;-</span> <span class='fu'>array</span>( <span class='fu'>as.array</span>( <span class='no'>imageResampled</span> ), <span class='kw'>dim</span> <span class='kw'>=</span> <span class='fu'>c</span>( <span class='fl'>1</span>, <span class='fu'>dim</span>( <span class='no'>imageResampled</span> ), <span class='fl'>1</span> ) )
-
-<span class='no'>brainMaskArray</span> <span class='kw'>&lt;-</span> <span class='fu'>predict</span>( <span class='no'>model</span>, <span class='no'>imageArray</span> )
-<span class='no'>brainMaskResampled</span> <span class='kw'>&lt;-</span> <span class='fu'>as.antsImage</span>( <span class='no'>brainMaskArray</span>[<span class='fl'>1</span>,,,,<span class='fl'>1</span>] ) <span class='kw'>%&gt;%</span>
-  <span class='fu'>antsCopyImageInfo2</span>( <span class='no'>imageResampled</span> )
-<span class='no'>brainMaskImage</span> <span class='kw'>=</span> <span class='fu'>resampleImage</span>( <span class='no'>brainMaskResampled</span>, <span class='fu'>dim</span>( <span class='no'>image</span> ),
-  <span class='kw'>useVoxels</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>interpType</span> <span class='kw'>=</span> <span class='st'>"nearestneighbor"</span> )
-<span class='no'>minimumBrainVolume</span> <span class='kw'>&lt;-</span> <span class='fu'>round</span>( <span class='fl'>649933.7</span> / <span class='fu'>prod</span>( <span class='fu'>antsGetSpacing</span>( <span class='no'>image</span> ) ) )
-<span class='no'>brainMaskLabeled</span> <span class='kw'>=</span> <span class='fu'>labelClusters</span>( <span class='no'>brainMaskImage</span>, <span class='no'>minimumBrainVolume</span> )
-<span class='fu'>antsImageWrite</span>( <span class='no'>brainMaskLabeled</span>, <span class='st'>'brainMask.nii.gz'</span> )
-<span class='co'># }</span><div class='input'>
-</div></pre>
+<span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'>createNoBrainerUnetModel3D</span>( <span class='fu'>list</span>( <span class='kw'>NULL</span>, <span class='kw'>NULL</span>, <span class='kw'>NULL</span>, <span class='fl'>1</span> ) )</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

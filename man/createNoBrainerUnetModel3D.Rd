@@ -23,34 +23,9 @@ avaialable here:
 }
 \examples{
 
-\dontrun{
-
 library( ANTsRNet )
-library( keras )
 
 model <- createNoBrainerUnetModel3D( list( NULL, NULL, NULL, 1 ) )
-url <- "https://github.com/neuronets/nobrainer-models/releases/download/0.1/brain-extraction-unet-128iso-weights.h5"
-weightsFile <- "nobrainerWeights.h5"
-download.file( url, weightsFile )
-model$load_weights( weightsFile )
-
-url <- "https://github.com/ANTsXNet/BrainExtraction/blob/master/Data/Example/1097782_defaced_MPRAGE.nii.gz?raw=true"
-imageFile <- "head.nii.gz"
-download.file( url, imageFile )
-
-image = ( antsImageRead( imageFile ) \%>\% iMath( "Normalize" ) ) * 255.0
-imageResampled <- resampleImage( image, rep( 256, 3 ), useVoxels = TRUE )
-imageArray <- array( as.array( imageResampled ), dim = c( 1, dim( imageResampled ), 1 ) )
-
-brainMaskArray <- predict( model, imageArray )
-brainMaskResampled <- as.antsImage( brainMaskArray[1,,,,1] ) \%>\%
-  antsCopyImageInfo2( imageResampled )
-brainMaskImage = resampleImage( brainMaskResampled, dim( image ),
-  useVoxels = TRUE, interpType = "nearestneighbor" )
-minimumBrainVolume <- round( 649933.7 / prod( antsGetSpacing( image ) ) )
-brainMaskLabeled = labelClusters( brainMaskImage, minimumBrainVolume )
-antsImageWrite( brainMaskLabeled, 'brainMask.nii.gz' )
-}
 
 }
 \author{
