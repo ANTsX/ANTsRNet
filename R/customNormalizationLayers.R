@@ -113,19 +113,6 @@ InstanceNormalizationLayer <- R6::R6Class( "InstanceNormalizationLayer",
         shape <- shape( input_shape[self$axis] )
         }
 
-      if( self$center )
-        {
-        self$beta <- self$add_weight(
-          name = "beta",
-          shape = shape,
-          initializer = self$betaInitializer,
-          regularizer = self$betaRegularizer,
-          constraint = self$betaConstraint,
-          trainable = TRUE )
-        } else {
-        self$beta <- NULL
-        }
-
       if( self$scale )
         {
         self$gamma <- self$add_weight(
@@ -137,6 +124,19 @@ InstanceNormalizationLayer <- R6::R6Class( "InstanceNormalizationLayer",
           trainable = TRUE )
         } else {
         self$gamma <- NULL
+        }
+
+      if( self$center )
+        {
+        self$beta <- self$add_weight(
+          name = "beta",
+          shape = shape,
+          initializer = self$betaInitializer,
+          regularizer = self$betaRegularizer,
+          constraint = self$betaConstraint,
+          trainable = TRUE )
+        } else {
+        self$beta <- NULL
         }
       },
 
