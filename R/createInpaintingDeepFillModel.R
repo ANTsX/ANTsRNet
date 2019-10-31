@@ -78,7 +78,7 @@ InpaintingDeepFillModel <- R6::R6Class( "InpaintingDeepFillModel",
         output <- model %>% layer_conv_2d( filters = numberOfFilters,
             kernel_size = kernelSize, strides = stride,
             dilation_rate = dilationRate, activation = activation,
-            padding = 'same',vtrainable = trainable, name = name )
+            padding = 'same', trainable = trainable, name = name )
         } else {
         output <- model %>% layer_conv_3d( filters = numberOfFilters,
             kernel_size = kernelSize, strides = stride,
@@ -104,7 +104,7 @@ InpaintingDeepFillModel <- R6::R6Class( "InpaintingDeepFillModel",
         output <- model %>% layer_conv_3d( filters = numberOfFilters,
             kernel_size = kernelSize, strides = stride,
             dilation_rate = dilationRate, activation = activation,
-            padding = 'same',vtrainable = trainable, name = name )
+            padding = 'same', trainable = trainable, name = name )
         }
       return( output )
       },
@@ -686,7 +686,7 @@ ContextualAttentionLayer2D <- R6::R6Class( "ContextualAttentionLayer2D",
 
     dilationRate = 1L,
 
-    fusionKernelSize = 0L,
+    fusionKernelSize = 3L,
 
     tf = tensorflow::tf,
 
@@ -973,7 +973,7 @@ ContextualAttentionLayer3D <- R6::R6Class( "ContextualAttentionLayer3D",
 
     dilationRate = 1L,
 
-    fusionKernelSize = 0L,
+    fusionKernelSize = 3L,
 
     tf = tensorflow::tf,
 
