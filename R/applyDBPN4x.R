@@ -1,3 +1,29 @@
+#' linMatchIntensity
+#'
+#' regression between two image intensity spaces
+#'
+#' @param fromImg image whose intensity function we will match to the \code{toImg}
+#' @param toImg defines the reference intensity function.
+#' @param polyOrder of polynomial fit.  default is none or just linear fit.
+#' @param truncate boolean which turns on/off the clipping of intensity.
+#' @return the \code{fromImg} matched to the \code{toImg}
+#' @author Avants BB
+#'
+#' @export
+linMatchIntensity <- function( fromImg, toImg, polyOrder = 1, truncate = TRUE ) {
+  tovec = as.numeric( toImg )
+  fromvec = as.numeric( fromImg )
+  mdl = lm( tovec  ~  stats::poly( fromvec, polyOrder ) )
+  pp = predict( mdl )
+  if ( truncate ) {
+    pp[ pp < min( toImg ) ] = min( toImg )
+    pp[ pp > max( toImg ) ] = max( toImg )
+  }
+  newImg = makeImage( dim( fromImg ), pp )
+  temp = antsCopyImageInfo( fromImg,  newImg )
+  return( newImg )
+  }
+
 #' applySuperResolutionModel
 #'
 #' Apply pretrained super-resolution network
@@ -14,6 +40,7 @@
 #' eg -127.5, 127.5.  Output images will be scaled back to original intensity.
 #' This range should match the mapping used in the training of the network.
 #' @param batch_size for prediction call
+#' @param linmatchOrder if not missing, then apply \code{linMatchIntensity} with given fit parameter
 #' @param verbose If \code{TRUE}, show status messages
 #' @return image upscaled to resolution provided by network
 #' @author Avants BB
@@ -27,17 +54,9 @@ applySuperResolutionModel <- function(
   model,
   targetRange,
   batch_size = 32,
+  linmatchOrder,
   verbose = FALSE )
 {
-linMatchIntensity <- function( fromImg, toImg ) {
-  mdl = lm(  as.numeric( toImg ) ~ as.numeric( fromImg ) )
-  pp = predict( mdl )
-  pp[ pp < min( toImg ) ] = min( toImg )
-  pp[ pp > max( toImg ) ] = max( toImg )
-  newImg = makeImage( dim( fromImg ), pp )
-  temp = antsCopyImageInfo( fromImg,  newImg )
-  return( newImg )
-  }
 if ( ! missing( targetRange ) )
   if ( targetRange[1] > targetRange[2] )
     targetRange = rev( targetRange )
@@ -91,6 +110,7 @@ if ( ! missing( targetRange ) ) {
   pred = pred - min( pred )
   pred = pred / max( pred ) * ( temp[2] - temp[1] ) + temp[1]
   }
+
 sliceArray <- function(  myArr, j ) {
   if ( shapeLength == 3 ) {
     return( myArr[j,,] )
@@ -123,6 +143,10 @@ if ( verbose )
 if ( tail(dim(pred),1) == 1 ) {
   ivec = sliceArrayChannel( pred, 1 )
   predImg = makeImage( dim( image ) * expansionFactor, ivec )
+  if ( ! missing( linmatchOrder ) ) {
+    bilin = resampleImageToTarget( image, predImg )
+    predImg = linMatchIntensity( predImg, bilin, polyOrder = linmatchOrder  )
+    }
 }
 if ( tail(dim(pred),1) > 1 ) {
   mcList = list()
@@ -176,15 +200,6 @@ applySuperResolutionModelPatch <- function(
   batch_size = 32,
   verbose = FALSE )
 {
-linMatchIntensity <- function( fromImg, toImg ) {
-  mdl = lm(  as.numeric( toImg ) ~ as.numeric( fromImg ) )
-  pp = predict( mdl )
-  pp[ pp < min( toImg ) ] = min( toImg )
-  pp[ pp > max( toImg ) ] = max( toImg )
-  newImg = makeImage( dim( fromImg ), pp )
-  temp = antsCopyImageInfo( fromImg,  newImg )
-  return( newImg )
-  }
 if ( ! missing( targetRange ) )
   if ( targetRange[1] > targetRange[2] )
     targetRange = rev( targetRange )
