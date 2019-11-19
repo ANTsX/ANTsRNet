@@ -155,14 +155,11 @@ createDeepBackProjectionNetworkModel2D <-
     shared_axes = c( 1, 2 ) )
 
   # Feature smashing
-  doFeatureSmashing = TRUE
-  if ( doFeatureSmashing ) {
-    model <- model %>% layer_conv_2d( filters = numberOfBaseFilters,
-      kernel_size = c( 1, 1 ), strides = c( 1, 1 ), padding = 'same',
-      kernel_initializer = "glorot_uniform" )
-    model <- model %>% layer_activation_parametric_relu( alpha_initializer = 'zero',
-      shared_axes = c( 1, 2 ) )
-    }
+  model <- model %>% layer_conv_2d( filters = numberOfBaseFilters,
+    kernel_size = c( 1, 1 ), strides = c( 1, 1 ), padding = 'same',
+    kernel_initializer = "glorot_uniform" )
+  model <- model %>% layer_activation_parametric_relu( alpha_initializer = 'zero',
+    shared_axes = c( 1, 2 ) )
 
   # Back projection
   upProjectionBlocks <- list()
@@ -376,14 +373,11 @@ createDeepBackProjectionNetworkModel3D <-
     shared_axes = c( 1, 2, 3 ) )
 
   # Feature smashing
-  doFeatureSmashing = TRUE
-  if ( doFeatureSmashing ) {
-    model <- model %>% layer_conv_3d( filters = numberOfBaseFilters,
-      kernel_size = c( 1, 1, 1 ), strides = c( 1, 1, 1 ), padding = 'same',
-      kernel_initializer = "glorot_uniform" )
-    model <- model %>% layer_activation_parametric_relu( alpha_initializer = 'zero',
-      shared_axes = c( 1, 2, 3 ) )
-    }
+  model <- model %>% layer_conv_3d( filters = numberOfBaseFilters,
+    kernel_size = c( 1, 1, 1 ), strides = c( 1, 1, 1 ), padding = 'same',
+    kernel_initializer = "glorot_uniform" )
+  model <- model %>% layer_activation_parametric_relu( alpha_initializer = 'zero',
+    shared_axes = c( 1, 2, 3 ) )
 
   # Back projection
   upProjectionBlocks <- list()
