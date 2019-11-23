@@ -158,3 +158,178 @@ GMSD <- function( x, y )
 
   return( sqrt( prefactor * sum( ( gmsd - mean( gmsd )  )^2 ) ) )
 }
+
+#' Apply a pretrained model for super resolution.
+#'
+#' Helper function for applying a pretrained super resolution model.
+#' Apply a patch-wise trained network to perform super-resolution. Can be applied
+#' to variable sized inputs. Warning: This function may be better used on CPU
+#' unless the GPU can accommodate the full image size. Warning 2: The global
+#' intensity range (min to max) of the output will match the input where the
+#' range is taken over all channels.
+#'
+#' @param image input image.
+#' @param model pretrained model or filename (cf \code{getPretrainedNetwork}).
+#' @param targetRange a vector defining the \code{c(min, max)} of each input
+#'                    image (e.g., -127.5, 127.5).  Output images will be scaled
+#'                    back to original intensity. This range should match the
+#'                    mapping used in the training of the network.
+#' @param batchSize batch size used for the prediction call.
+#' @param regressionOrder if specified, then apply the function
+#'                        \code{regressionMatchImage} with
+#'                        \code{polyOrder = regressionOrder}.
+#' @param verbose If \code{TRUE}, show status messages.
+#' @return super-resolution image upscaled to resolution specified by the network.
+#' @author Avants BB
+#' @examples
+#' \dontrun{
+#' image <- applySuperResolutionModelToImage( ri( 1 ), getPretrainedNetwork( "dbpn4x" ) )
+#' }
+#' @export
+applySuperResolutionModelToImage <- function( image, model,
+  targetRange = c( -127.5, 127.5 ), batchSize = 32, regressionOrder = NA,
+  verbose = FALSE )
+{
+  channelAxis <- 1L
+  if( keras::backend()$image_data_format() == "channels_last" )
+    {
+    channelAxis <- -1L
+    }
+
+  shapeLength <- length( model$input_shape )
+
+  if( shapeLength < 4 || shapeLength > 5 )
+    {
+    stop( "Unexpected input shape." )
+    } else if( shapeLength == 5 && image@dimension != 3 )
+    {
+    stop( "Expecting 3D input for this model." )
+    } else if( shapeLength == 4 && image@dimension != 2 ) {
+    stop( "Expecting 2D input for this model." )
+    }
+
+  if( channelAxis == -1L )
+    {
+    channelAxis <- shapeLength
+    }
+  channelSize <- model$input_shape[[channelAxis]]
+
+  if( channelSize != image@components )
+    {
+    stop( paste( "Channel size of model", channelSize,
+      'does not match ncomponents=', image@components, 'of the input image.') )
+    }
+
+  if( targetRange[1] > targetRange[2] )
+    {
+    targetRange = rev( targetRange )
+    }
+
+  if( ! is.object( model ) && is.character( model ) )
+    {
+    if( file.exists( model ) )
+      {
+      startTime <- Sys.time()
+      if( verbose )
+        {
+        cat( "Load model." )
+        }
+      model <- load_model_hdf5( model )
+      if( verbose )
+        {
+        elapsedTime <- Sys.time() - startTime
+        cat( "  (elapsed time: ", elapsedTime, ")" )
+        }
+      } else {
+      stop( "Model not found." )
+      }
+    }
+
+  imagePatches <- extractImagePatches(
+    image, dim( image ), maxNumberOfPatches = 1,
+    strideLength = dim( image ), returnAsArray = TRUE )
+  imagePatches <- array( imagePatches, dim = c( 1,  dim( image ),
+    image@components ) )
+  imagePatches <- imagePatches - min( imagePatches )
+  imagePatches <- imagePatches / max( imagePatches ) *
+    ( targetRange[2] - targetRange[1] ) + targetRange[1]
+
+  if( verbose )
+    {
+    cat( "Prediction\n" )
+    }
+  startTime <- Sys.time()
+  prediction <- predict( model, imagePatches, batch_size = batchSize )
+
+  if( verbose )
+    {
+    elapsedTime <- Sys.time() - startTime
+    cat( " (elapsed time: ", elapsedTime, ")" )
+    }
+
+  if( verbose )
+    {
+    cat( "Reconstruct intensities." )
+    }
+
+  intensityRange <- range( image )
+  prediction <- prediction - min( prediction )
+  prediction <- prediction / max( prediction ) *
+    ( intensityRange[2] - intensityRange[1] ) + intensityRange[1]
+
+  sliceArrayChannel <- function( inputArray, slice )
+    {
+    if( channelAxis == 1 )
+      {
+      if( shapeLength == 4 )
+        {
+        return( inputArray[slice,,,] )
+        } else {
+        return( inputArray[slice,,,,] )
+        }
+      } else {
+      if( shapeLength == 4 )
+        {
+        return( inputArray[,,,slice] )
+        } else {
+        return( inputArray[,,,,slice] )
+        }
+      }
+    }
+
+  expansionFactor <- ( dim( prediction ) / dim( imagePatches ) )[-1][1:image@dimension]
+  if( channelAxis == 1 )
+    {
+    expansionFactor <- ( dim( prediction ) / dim( imagePatches ) )[2:( 1 + image@dimension )]
+    }
+  if ( verbose )
+    {
+    cat( "ExpansionFactor:", paste( expansionFactor, collapse = 'x' ) )
+    }
+
+  if( image@components == 1 )
+    {
+    imageArray <- sliceArrayChannel( prediction, 1 )
+    predictionImage = makeImage( dim( image ) * expansionFactor, imageArray )
+    if( ! is.na( regressionOrder ) )
+      {
+      referenceImage <- resampleImageToTarget( image, predictionImage )
+      predictionImage <- regressionMatchImage( predictionImage, referenceImage,
+        polyOrder = regressionOrder  )
+      }
+    } else {
+    imageComponentList <- list()
+    for( k in seq_len( image@components ) )
+      {
+      imageArray <- sliceArrayChannel( prediction, k )
+      imageComponentList[[k]] <- makeImage(
+        dim( image ) * expansionFactor, imageArray )
+      }
+    predictionImage <- mergeChannels( imageComponentList )
+    }
+
+  predictionImage <- antsCopyImageInfo( image, predictionImage )
+  antsSetSpacing( predictionImage, antsGetSpacing( image ) / expansionFactor )
+  return( predictionImage )
+  }
+

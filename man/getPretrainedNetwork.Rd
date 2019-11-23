@@ -16,7 +16,7 @@ valid possibilities. Note that most require internet access to download.}
 filename string
 }
 \description{
-Downloads antsrnet pretrained network. \url{10.6084/m9.figshare.7246985}
+Downloads pretrained network/weights.
 }
 \examples{
 \dontrun{

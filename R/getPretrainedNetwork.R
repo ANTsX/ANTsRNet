@@ -1,6 +1,6 @@
 #' getPretrainedNetwork
 #'
-#' Downloads antsrnet pretrained network. \url{10.6084/m9.figshare.7246985}
+#' Downloads pretrained network/weights.
 #'
 #' @param fileid one of the permitted file ids or pass "show" to list all
 #'   valid possibilities. Note that most require internet access to download.
@@ -21,6 +21,7 @@ getPretrainedNetwork <- function( fileId,
     }
 
   validList = c( "dbpn4x",
+                 "mriSuperResolution",
                  "brainExtraction",
                  "brainSegmentation",
                  "brainSegmentationPatchBased",
@@ -46,6 +47,7 @@ getPretrainedNetwork <- function( fileId,
 
   url <- switch( fileId,
                  dbpn4x = "https://ndownloader.figshare.com/files/13347617",
+                 mriSuperResolution = "https://ndownloader.figshare.com/files/19430123",
                  brainExtraction = "https://ndownloader.figshare.com/files/13729661",
                  brainSegmentation = "https://ndownloader.figshare.com/files/13900010",
                  brainSegmentationPatchBased = "https://ndownloader.figshare.com/files/14249717",

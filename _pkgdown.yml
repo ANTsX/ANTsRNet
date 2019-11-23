@@ -71,6 +71,7 @@ reference:
   - '`createResNetSuperResolutionModel3D`'
   - '`createDeepBackProjectionNetworkModel2D`'
   - '`createDeepBackProjectionNetworkModel3D`'
+  - '`applySuperResolutionModelToImage`'
 - title: Super-resolution helper functions
   desc: ~
   contents:
@@ -136,6 +137,7 @@ reference:
   - '`extractImagePatches`'
   - '`reconstructImageFromPatches`'
   - '`getPretrainedNetwork`'
+  - '`regressionMatchImage`'
   - '`resampleTensor`'
   - '`resampleTensorLike`'
   - '`ResampleTensorLayer2D`'
