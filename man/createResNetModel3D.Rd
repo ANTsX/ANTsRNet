@@ -7,7 +7,7 @@
 createResNetModel3D(inputImageSize, inputScalarsSize = 0,
   numberOfClassificationLabels = 1000, layers = 1:4,
   residualBlockSchedule = c(3, 4, 6, 3), lowestResolution = 64,
-  cardinality = 1, mode = "classification")
+  cardinality = 1, squeezeAndExcite = FALSE, mode = "classification")
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
@@ -31,6 +31,8 @@ repeats.}
 
 \item{cardinality}{perform  ResNet (cardinality = 1) or ResNeXt
 (cardinality != 1 but powers of 2---try '32' )}
+
+\item{squeezeAndExcite}{boolean to add the squeeze-and-excite block variant.}
 
 \item{mode}{'classification' or 'regression'.  Default = 'classification'.}
 }

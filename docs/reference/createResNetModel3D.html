@@ -108,7 +108,7 @@ classification.  The paper is available here:</p>
     <pre class="usage"><span class='fu'>createResNetModel3D</span>(<span class='no'>inputImageSize</span>, <span class='kw'>inputScalarsSize</span> <span class='kw'>=</span> <span class='fl'>0</span>,
   <span class='kw'>numberOfClassificationLabels</span> <span class='kw'>=</span> <span class='fl'>1000</span>, <span class='kw'>layers</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>4</span>,
   <span class='kw'>residualBlockSchedule</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>3</span>, <span class='fl'>4</span>, <span class='fl'>6</span>, <span class='fl'>3</span>), <span class='kw'>lowestResolution</span> <span class='kw'>=</span> <span class='fl'>64</span>,
-  <span class='kw'>cardinality</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"classification"</span>)</pre>
+  <span class='kw'>cardinality</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>squeezeAndExcite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"classification"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -148,6 +148,10 @@ repeats.</p></td>
       <th>cardinality</th>
       <td><p>perform  ResNet (cardinality = 1) or ResNeXt
 (cardinality != 1 but powers of 2---try '32' )</p></td>
+    </tr>
+    <tr>
+      <th>squeezeAndExcite</th>
+      <td><p>boolean to add the squeeze-and-excite block variant.</p></td>
     </tr>
     <tr>
       <th>mode</th>

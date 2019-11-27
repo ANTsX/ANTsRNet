@@ -25,6 +25,7 @@
 #' @param lowestResolution number of filters at the initial layer.
 #' @param cardinality perform  ResNet (cardinality = 1) or ResNeXt
 #' (cardinality != 1 but powers of 2---try '32' )
+#' @param squeezeAndExcite boolean to add the squeeze-and-excite block variant.
 #' @param mode 'classification' or 'regression'.  Default = 'classification'.
 #'
 #' @return an ResNet keras model
@@ -77,6 +78,7 @@ createResNetModel2D <- function( inputImageSize,
                                  residualBlockSchedule = c( 3, 4, 6, 3 ),
                                  lowestResolution = 64,
                                  cardinality = 1,
+                                 squeezeAndExcite = FALSE,
                                  mode = 'classification'
                                )
 {
@@ -125,8 +127,36 @@ createResNetModel2D <- function( inputImageSize,
     return( groupedModel )
     }
 
+  squeezeAndExciteBlock2D <- function( model, ratio = 16 )
+    {
+    K <- keras::backend()
+
+    initial <- model
+    numberOfFilters <- K$int_shape( initial )[[2]]
+    if( K$image_data_format() == "channels_last" )
+      {
+      numberOfFilters <- K$int_shape( initial )[[4]]
+      }
+    blockShape <- c( 1, 1, numberOfFilters )
+
+    block <- initial %>% layer_global_average_pooling_2d()
+    block <- block %>% layer_reshape( target_shape = blockShape )
+    block <- block %>% layer_dense( units = as.integer( numberOfFilters / ratio ),
+      activation = 'relu', kernel_initializer = 'he_normal', use_bias = FALSE )
+    block <- block %>% layer_dense( units = numberOfFilters, activation = 'sigmoid',
+      kernel_initializer = 'he_normal', use_bias = FALSE )
+
+    if( K$image_data_format() == "channels_first" )
+      {
+      block <- block %>% layer_permute( c( 4, 2, 3 ) )
+      }
+    x <- list( initial, block ) %>% layer_multiply()
+
+    return( x )
+    }
+
   residualBlock2D <- function( model, numberOfFiltersIn, numberOfFiltersOut,
-    strides = c( 1, 1 ), projectShortcut = FALSE )
+    strides = c( 1, 1 ), projectShortcut = FALSE, squeezeAndExcite = FALSE )
     {
     shortcut <- model
 
@@ -148,6 +178,11 @@ createResNetModel2D <- function( inputImageSize,
       shortcut <- shortcut %>% layer_conv_2d( filters = numberOfFiltersOut,
         kernel_size = c( 1, 1 ), strides = strides, padding = 'same' )
       shortcut <- shortcut %>% layer_batch_normalization()
+      }
+
+    if( squeezeAndExcite == TRUE )
+      {
+      model <- squeezeAndExciteBlock2D( model )
       }
 
     model <- layer_add( list( shortcut, model ) )
@@ -186,7 +221,7 @@ createResNetModel2D <- function( inputImageSize,
         }
       outputs <- residualBlock2D( outputs, numberOfFiltersIn = nFiltersIn,
         numberOfFiltersOut = nFiltersOut, strides = strides,
-        projectShortcut = projectShortcut )
+        projectShortcut = projectShortcut, squeezeAndExcite = squeezeAndExite )
       }
     }
   outputs <- outputs %>% layer_global_average_pooling_2d()
@@ -251,6 +286,7 @@ createResNetModel2D <- function( inputImageSize,
 #' @param lowestResolution number of filters at the initial layer.
 #' @param cardinality perform  ResNet (cardinality = 1) or ResNeXt
 #' (cardinality != 1 but powers of 2---try '32' )
+#' @param squeezeAndExcite boolean to add the squeeze-and-excite block variant.
 #' @param mode 'classification' or 'regression'.  Default = 'classification'.
 #'
 #' @return an ResNet keras model
@@ -304,6 +340,7 @@ createResNetModel3D <- function( inputImageSize,
                                  residualBlockSchedule = c( 3, 4, 6, 3 ),
                                  lowestResolution = 64,
                                  cardinality = 1,
+                                 squeezeAndExcite = FALSE,
                                  mode = 'classification'
                                )
 {
@@ -352,8 +389,36 @@ createResNetModel3D <- function( inputImageSize,
     return( groupedModel )
     }
 
+  squeezeAndExciteBlock3D <- function( model, ratio = 16 )
+    {
+    K <- keras::backend()
+
+    initial <- model
+    numberOfFilters <- K$int_shape( initial )[[2]]
+    if( K$image_data_format() == "channels_last" )
+      {
+      numberOfFilters <- K$int_shape( initial )[[5]]
+      }
+    blockShape <- c( 1, 1, 1, numberOfFilters )
+
+    block <- initial %>% layer_global_average_pooling_3d()
+    block <- block %>% layer_reshape( target_shape = blockShape )
+    block <- block %>% layer_dense( units = as.integer( numberOfFilters / ratio ),
+      activation = 'relu', kernel_initializer = 'he_normal', use_bias = FALSE )
+    block <- block %>% layer_dense( units = numberOfFilters, activation = 'sigmoid',
+      kernel_initializer = 'he_normal', use_bias = FALSE )
+
+    if( K$image_data_format() == "channels_first" )
+      {
+      block <- block %>% layer_permute( c( 5, 2, 3, 4 ) )
+      }
+    x <- list( initial, block ) %>% layer_multiply()
+
+    return( x )
+    }
+
   residualBlock3D <- function( model, numberOfFiltersIn, numberOfFiltersOut,
-    strides = c( 1, 1, 1 ), projectShortcut = FALSE )
+    strides = c( 1, 1, 1 ), projectShortcut = FALSE, squeezeAndExcite = FALSE )
     {
     shortcut <- model
 
@@ -375,6 +440,11 @@ createResNetModel3D <- function( inputImageSize,
       shortcut <- shortcut %>% layer_conv_3d( filters = numberOfFiltersOut,
         kernel_size = c( 1, 1, 1 ), strides = strides, padding = 'same' )
       shortcut <- shortcut %>% layer_batch_normalization()
+      }
+
+    if( squeezeAndExcite == TRUE )
+      {
+      model <- squeezeAndExciteBlock3D( model )
       }
 
     model <- layer_add( list( shortcut, model ) )
@@ -413,7 +483,7 @@ createResNetModel3D <- function( inputImageSize,
         }
       outputs <- residualBlock3D( outputs, numberOfFiltersIn = nFiltersIn,
         numberOfFiltersOut = nFiltersOut, strides = strides,
-        projectShortcut = projectShortcut )
+        projectShortcut = projectShortcut, squeezeAndExcite = squeezeAndExite )
       }
     }
   outputs <- outputs %>% layer_global_average_pooling_3d()
