@@ -55,7 +55,7 @@ getPretrainedNetwork <- function( fileId,
                  denoising = "https://ndownloader.figshare.com/files/14235296",
                  wholeTumorSegmentationT2Flair = "https://ndownloader.figshare.com/files/14087045",
                  protonLungMri = "https://ndownloader.figshare.com/files/13606799",
-                 ctHumanLung = "https://ndownloader.figshare.com/files/16874150",
+                 ctHumanLung = "https://ndownloader.figshare.com/files/20005217",
                  functionalLungMri = "https://ndownloader.figshare.com/files/13824167",
                  hippMapp3rInitial = "https://ndownloader.figshare.com/files/18068408",
                  hippMapp3rRefine = "https://ndownloader.figshare.com/files/18068411"
