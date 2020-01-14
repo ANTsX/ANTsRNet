@@ -344,3 +344,191 @@ createVggModel3D <- function( inputImageSize,
   return( vggModel )
 }
 
+
+
+#' 2-D implementation of the VGG deep learning architecture without classification
+#' layers.
+#'
+#' Creates a keras model of the Vgg deep learning architecture for image
+#' recognition based on the paper
+#'
+#' K. Simonyan and A. Zisserman, Very Deep Convolutional Networks for
+#'   Large-Scale Image Recognition
+#'
+#' available here:
+#'
+#'         \url{https://arxiv.org/abs/1409.1556}
+#'
+#' This particular implementation was influenced by the following python
+#' implementation:
+#'
+#'         \url{https://gist.github.com/baraldilorenzo/8d096f48a1be4a2d660d}
+#'
+#' @param inputImageSize Used for specifying the input tensor shape.  The
+#' shape (or dimension) of that tensor is the image dimensions followed by
+#' the number of channels (e.g., red, green, and blue).  The batch size
+#' (i.e., number of training images) is not specified a priori.
+#' @param layers a vector determining the number of filters defined at
+#' for each layer.
+#' @param lowestResolution number of filters at the beginning.
+#' @param convolutionKernelSize 2-d vector definining the kernel size
+#' during the encoding path
+#' @param poolSize 2-d vector defining the region for each pooling layer.
+#' @param strides 2-d vector describing the stride length in each direction.
+#' @param dropoutRate float between 0 and 1 to use between dense layers.
+#' @param style \verb{'16'} or \verb{'19'} for VGG16 or VGG19, respectively.
+#'
+#' @return a VGG keras model
+#' @author Tustison NJ
+#' @import keras
+#' @export
+createFullyConvolutionalVggModel2D <- function( inputImageSize,
+                               layers = c( 1, 2, 3, 4, 4 ),
+                               lowestResolution = 64,
+                               convolutionKernelSize = c( 3, 3 ),
+                               poolSize = c( 2, 2 ),
+                               strides = c( 2, 2 ),
+                               dropoutRate = 0.0,
+                               style = 19,
+                               mode = 'classification'
+                             )
+{
+
+  if( style != 19 && style != 16 )
+    {
+    stop( "Incorrect style.  Must be either '16' or '19'." )
+    }
+
+  vggModel <- keras_model_sequential()
+
+  for( i in 1:length( layers ) )
+    {
+    numberOfFilters <- lowestResolution * 2 ^ ( layers[i] - 1 )
+
+    if( i == 1 )
+      {
+      vggModel %>%
+        layer_conv_2d( input_shape = inputImageSize, filters = numberOfFilters,
+                      kernel_size = convolutionKernelSize, activation = 'relu',
+                      padding = 'same' ) %>%
+        layer_conv_2d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
+                      activation = 'relu', padding = 'same' )
+      } else if( i == 2 ) {
+      vggModel %>%
+        layer_conv_2d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
+                      activation = 'relu', padding = 'same' ) %>%
+        layer_conv_2d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
+                      activation = 'relu', padding = 'same' )
+      } else {
+      vggModel %>%
+        layer_conv_2d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
+                      activation = 'relu', padding = 'same' ) %>%
+        layer_conv_2d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
+                      activation = 'relu', padding = 'same' ) %>%
+        layer_conv_2d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
+                      activation = 'relu', padding = 'same' )
+      if( style == 19 )
+        {
+        vggModel %>%
+          layer_conv_2d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
+                        activation = 'relu', padding = 'same' )
+        }
+      }
+    vggModel %>% layer_max_pooling_2d( pool_size = poolSize, strides = strides )
+    }
+
+  return( vggModel )
+}
+
+#' 3-D implementation of the VGG deep learning architecture without classification
+#' layers.
+#'
+#' Creates a keras model of the Vgg deep learning architecture for image
+#' recognition based on the paper
+#'
+#' K. Simonyan and A. Zisserman, Very Deep Convolutional Networks for
+#'   Large-Scale Image Recognition
+#'
+#' available here:
+#'
+#'         \url{https://arxiv.org/abs/1409.1556}
+#'
+#' This particular implementation was influenced by the following python
+#' implementation:
+#'
+#'         \url{https://gist.github.com/baraldilorenzo/8d096f48a1be4a2d660d}
+#'
+#' @param inputImageSize Used for specifying the input tensor shape.  The
+#' shape (or dimension) of that tensor is the image dimensions followed by
+#' the number of channels (e.g., red, green, and blue).  The batch size
+#' (i.e., number of training images) is not specified a priori.
+#' @param layers a vector determining the number of 'filters' defined at
+#' for each layer.
+#' @param lowestResolution number of filters at the beginning.
+#' @param convolutionKernelSize 3-d vector definining the kernel size
+#' during the encoding path
+#' @param poolSize 3-d vector defining the region for each pooling layer.
+#' @param strides 3-d vector describing the stride length in each direction.
+#' @param dropoutRate float between 0 and 1 to use between dense layers.
+#' @param style \verb{'16'} or \verb{'19'} for VGG16 or VGG19, respectively.
+#'
+#' @return a VGG keras model
+#' @author Tustison NJ
+#' @import keras
+#' @export
+createFullyConvolutionalVggModel3D <- function( inputImageSize,
+                               layers = c( 1, 2, 3, 4, 4 ),
+                               lowestResolution = 64,
+                               convolutionKernelSize = c( 3, 3, 3 ),
+                               poolSize = c( 2, 2, 2 ),
+                               strides = c( 2, 2, 2 ),
+                               dropoutRate = 0.0,
+                               style = 19,
+                               mode = 'classification'
+                             )
+{
+
+  if( style != 19 && style != 16 )
+    {
+    stop( "Incorrect style.  Must be either '16' or '19'." )
+    }
+
+  vggModel <- keras_model_sequential()
+
+  for( i in 1:length( layers ) )
+    {
+    numberOfFilters <- lowestResolution * 2 ^ ( layers[i] - 1 )
+
+    if( i == 1 )
+      {
+      vggModel %>%
+        layer_conv_3d( input_shape = inputImageSize, filters = numberOfFilters,
+                      kernel_size = convolutionKernelSize, activation = 'relu',
+                      padding = 'same' ) %>%
+        layer_conv_3d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
+                      activation = 'relu', padding = 'same' )
+      } else if( i == 2 ) {
+      vggModel %>%
+        layer_conv_3d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
+                      activation = 'relu', padding = 'same' ) %>%
+        layer_conv_3d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
+                      activation = 'relu', padding = 'same' )
+      } else {
+      vggModel %>%
+        layer_conv_3d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
+                      activation = 'relu', padding = 'same' ) %>%
+        layer_conv_3d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
+                      activation = 'relu', padding = 'same' ) %>%
+        layer_conv_3d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
+                      activation = 'relu', padding = 'same' )
+      if( style == 19 )
+        {
+        vggModel %>%
+          layer_conv_3d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
+                        activation = 'relu', padding = 'same' )
+        }
+      }
+    vggModel %>% layer_max_pooling_3d( pool_size = poolSize, strides = strides )
+    }
+  return( vggModel )
+}
