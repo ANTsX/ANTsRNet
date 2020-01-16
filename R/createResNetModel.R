@@ -221,7 +221,7 @@ createResNetModel2D <- function( inputImageSize,
         }
       outputs <- residualBlock2D( outputs, numberOfFiltersIn = nFiltersIn,
         numberOfFiltersOut = nFiltersOut, strides = strides,
-        projectShortcut = projectShortcut, squeezeAndExcite = squeezeAndExite )
+        projectShortcut = projectShortcut, squeezeAndExcite = squeezeAndExcite )
       }
     }
   outputs <- outputs %>% layer_global_average_pooling_2d()
@@ -483,7 +483,7 @@ createResNetModel3D <- function( inputImageSize,
         }
       outputs <- residualBlock3D( outputs, numberOfFiltersIn = nFiltersIn,
         numberOfFiltersOut = nFiltersOut, strides = strides,
-        projectShortcut = projectShortcut, squeezeAndExcite = squeezeAndExite )
+        projectShortcut = projectShortcut, squeezeAndExcite = squeezeAndExcite )
       }
     }
   outputs <- outputs %>% layer_global_average_pooling_3d()
