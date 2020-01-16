@@ -121,7 +121,7 @@ SpatialTransformerLayer2D <- R6::R6Class( "SpatialTransformerLayer2D",
       regularGrid <- K$concatenate( list( coords[[1]], coords[[2]], ones ), axis = 0L )
       regularGrid <- K$flatten( regularGrid )
 
-      regularGrids <- K$tile( regularGrid, K$stack( list( batchSize ) ) )
+      regularGrids <- K$tile( regularGrid, -1L )
       regularGrids <- K$reshape( regularGrids,
         reticulate::tuple( batchSize, 3L, as.integer( prod( resampledSize ) ) ) )
 
@@ -343,7 +343,7 @@ SpatialTransformerLayer3D <- R6::R6Class( "SpatialTransformerLayer3D",
       regularGrid <- K$concatenate( list( coords[[1]], coords[[2]], coords[[3]], ones ), 0L )
       regularGrid <- K$flatten( regularGrid )
 
-      regularGrids <- K$tile( regularGrid, K$stack( list( batchSize ) ) )
+      regularGrids <- K$tile( regularGrid, -1L )
       regularGrids <- K$reshape( regularGrids,
        reticulate::tuple( batchSize, 4L, as.integer( prod( resampledSize ) ) ) )
 
