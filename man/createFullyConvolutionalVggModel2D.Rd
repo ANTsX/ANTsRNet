@@ -8,7 +8,7 @@ layers.}
 createFullyConvolutionalVggModel2D(inputImageSize, layers = c(1, 2, 3, 4,
   4), lowestResolution = 64, convolutionKernelSize = c(3, 3),
   poolSize = c(2, 2), strides = c(2, 2), dropoutRate = 0,
-  style = 19, mode = "classification")
+  style = 19, activation = "relu")
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
@@ -31,6 +31,8 @@ during the encoding path}
 \item{dropoutRate}{float between 0 and 1 to use between dense layers.}
 
 \item{style}{\verb{'16'} or \verb{'19'} for VGG16 or VGG19, respectively.}
+
+\item{activation}{activation function for convolutional layer.}
 }
 \value{
 a VGG keras model

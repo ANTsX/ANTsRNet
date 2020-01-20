@@ -377,6 +377,7 @@ createVggModel3D <- function( inputImageSize,
 #' @param strides 2-d vector describing the stride length in each direction.
 #' @param dropoutRate float between 0 and 1 to use between dense layers.
 #' @param style \verb{'16'} or \verb{'19'} for VGG16 or VGG19, respectively.
+#' @param activation activation function for convolutional layer.
 #'
 #' @return a VGG keras model
 #' @author Tustison NJ
@@ -390,7 +391,7 @@ createFullyConvolutionalVggModel2D <- function( inputImageSize,
                                strides = c( 2, 2 ),
                                dropoutRate = 0.0,
                                style = 19,
-                               mode = 'classification'
+                               activation = 'relu'
                              )
 {
 
@@ -409,29 +410,29 @@ createFullyConvolutionalVggModel2D <- function( inputImageSize,
       {
       vggModel %>%
         layer_conv_2d( input_shape = inputImageSize, filters = numberOfFilters,
-                      kernel_size = convolutionKernelSize, activation = 'relu',
+                      kernel_size = convolutionKernelSize, activation = activation,
                       padding = 'same' ) %>%
         layer_conv_2d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
-                      activation = 'relu', padding = 'same' )
+                      activation = activation, padding = 'same' )
       } else if( i == 2 ) {
       vggModel %>%
         layer_conv_2d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
-                      activation = 'relu', padding = 'same' ) %>%
+                      activation = activation, padding = 'same' ) %>%
         layer_conv_2d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
-                      activation = 'relu', padding = 'same' )
+                      activation = activation, padding = 'same' )
       } else {
       vggModel %>%
         layer_conv_2d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
-                      activation = 'relu', padding = 'same' ) %>%
+                      activation = activation, padding = 'same' ) %>%
         layer_conv_2d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
-                      activation = 'relu', padding = 'same' ) %>%
+                      activation = activation, padding = 'same' ) %>%
         layer_conv_2d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
-                      activation = 'relu', padding = 'same' )
+                      activation = activation, padding = 'same' )
       if( style == 19 )
         {
         vggModel %>%
           layer_conv_2d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
-                        activation = 'relu', padding = 'same' )
+                        activation = activation, padding = 'same' )
         }
       }
     vggModel %>% layer_max_pooling_2d( pool_size = poolSize, strides = strides )
@@ -471,6 +472,7 @@ createFullyConvolutionalVggModel2D <- function( inputImageSize,
 #' @param strides 3-d vector describing the stride length in each direction.
 #' @param dropoutRate float between 0 and 1 to use between dense layers.
 #' @param style \verb{'16'} or \verb{'19'} for VGG16 or VGG19, respectively.
+#' @param activation activation function for convolutional layer.
 #'
 #' @return a VGG keras model
 #' @author Tustison NJ
@@ -484,7 +486,7 @@ createFullyConvolutionalVggModel3D <- function( inputImageSize,
                                strides = c( 2, 2, 2 ),
                                dropoutRate = 0.0,
                                style = 19,
-                               mode = 'classification'
+                               activation = 'relu'
                              )
 {
 
@@ -503,29 +505,29 @@ createFullyConvolutionalVggModel3D <- function( inputImageSize,
       {
       vggModel %>%
         layer_conv_3d( input_shape = inputImageSize, filters = numberOfFilters,
-                      kernel_size = convolutionKernelSize, activation = 'relu',
+                      kernel_size = convolutionKernelSize, activation = activation,
                       padding = 'same' ) %>%
         layer_conv_3d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
-                      activation = 'relu', padding = 'same' )
+                      activation = activation, padding = 'same' )
       } else if( i == 2 ) {
       vggModel %>%
         layer_conv_3d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
-                      activation = 'relu', padding = 'same' ) %>%
+                      activation = activation, padding = 'same' ) %>%
         layer_conv_3d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
-                      activation = 'relu', padding = 'same' )
+                      activation = activation, padding = 'same' )
       } else {
       vggModel %>%
         layer_conv_3d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
-                      activation = 'relu', padding = 'same' ) %>%
+                      activation = activation, padding = 'same' ) %>%
         layer_conv_3d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
-                      activation = 'relu', padding = 'same' ) %>%
+                      activation = activation, padding = 'same' ) %>%
         layer_conv_3d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
-                      activation = 'relu', padding = 'same' )
+                      activation = activation, padding = 'same' )
       if( style == 19 )
         {
         vggModel %>%
           layer_conv_3d( filters = numberOfFilters, kernel_size = convolutionKernelSize,
-                        activation = 'relu', padding = 'same' )
+                        activation = activation, padding = 'same' )
         }
       }
     vggModel %>% layer_max_pooling_3d( pool_size = poolSize, strides = strides )
