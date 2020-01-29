@@ -7,7 +7,9 @@
 mixture_density_network_softmax(logits, temperature = 1)
 }
 \arguments{
-\item{logits}{input}
+\item{logits}{input of logits/mixture weights to adjust}
+
+\item{temperature}{the temperature for to adjust the distribution (default 1.0)}
 }
 \value{
 softmax loss value

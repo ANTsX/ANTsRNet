@@ -7,10 +7,10 @@
 getPretrainedNetwork(fileId, targetFileName)
 }
 \arguments{
-\item{targetFileName}{optional target filename}
-
-\item{fileid}{one of the permitted file ids or pass "show" to list all
+\item{fileId}{one of the permitted file ids or pass "show" to list all
 valid possibilities. Note that most require internet access to download.}
+
+\item{targetFileName}{optional target filename}
 }
 \value{
 filename string

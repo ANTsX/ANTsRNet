@@ -2,12 +2,23 @@
 % Please edit documentation in R/ssdUtilities.R
 \name{layer_l2_normalization_2d}
 \alias{layer_l2_normalization_2d}
-\title{Normalization layer (2-D)}
+\alias{layer_l2_normalization_3d}
+\title{Normalization layer (2-D and 3-D)}
 \usage{
 layer_l2_normalization_2d(object, scale = 20, name = NULL, trainable = TRUE)
+
+layer_l2_normalization_3d(object, scale = 20, name = NULL, trainable = TRUE)
 }
 \arguments{
+\item{object}{Object to compose layer with. This is either a
+\link[keras:keras_model_sequential]{keras::keras_model_sequential} to add the layer to,
+or another Layer which this layer will call.}
+
 \item{scale}{box scale}
+
+\item{name}{The name of the layer}
+
+\item{trainable}{Whether the layer weights will be updated during training.}
 }
 \value{
 a keras layer tensor

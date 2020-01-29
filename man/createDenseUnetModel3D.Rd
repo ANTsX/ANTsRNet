@@ -14,7 +14,7 @@ createDenseUnetModel3D(
   depth = 7,
   dropoutRate = 0,
   weightDecay = 1e-04,
-  mode = "classification"
+  mode = c("classification", "regression")
 )
 }
 \arguments{
@@ -25,6 +25,8 @@ the number of channels (e.g., red, green, and blue).}
 \item{numberOfOutputs}{Meaning depends on the \code{mode}.  For
 'classification' this is the number of segmentation labels.  For 'regression'
 this is the number of outputs.}
+
+\item{numberOfLayersPerDenseBlock}{number of dense blocks per layer.}
 
 \item{growthRate}{number of filters to add for each dense block layer
 (default = 48).}
@@ -41,7 +43,10 @@ N is an integer (default = 7).}
 
 \item{weightDecay}{weight decay (default = 1e-4).}
 
-\item{numberOfLayersPerDenseBlocks}{number of dense blocks per layer.}
+\item{mode}{A switch to determine the activation function to use.
+If \code{classification}, then \code{sigmoid} or \code{softmax}
+depending on the \code{numberOfOutputs}, and if
+\code{mode = "regression"} then function is \code{linear}}
 }
 \value{
 an DenseUnet keras model

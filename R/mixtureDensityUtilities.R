@@ -149,16 +149,20 @@ MixtureDensityNetworkLayer <- R6::R6Class( "MixtureDensityNetworkLayer",
 #'
 #' Wraps a custom mixture density layer.
 #'
+#' @param object Object to compose layer with. This is either a
+#' [keras::keras_model_sequential] to add the layer to,
+#' or another Layer which this layer will call.
 #' @param outputDimension output dimension
 #' @param numberOfMixtures number of Gaussians used to model the function
-#'
+#' @param trainable Whether the layer weights will be updated during training.
 #' @return a keras layer tensor
 #' @export
-layer_mixture_density <- function( objects,
+layer_mixture_density <- function( object,
   outputDimension, numberOfMixtures, trainable = TRUE ) {
-create_layer( MixtureDensityNetworkLayer, objects,
+create_layer( MixtureDensityNetworkLayer, object,
     list( outputDimension = outputDimension,
-      numberOfMixtures = numberOfMixtures, trainable = TRUE )
+      numberOfMixtures = numberOfMixtures,
+      trainable = trainable )
     )
 }
 
@@ -411,7 +415,8 @@ splitMixtureParameters <- function(
 #'
 #'         https://github.com/cpmpercussion/keras-mdn-layer/
 #'
-#' @param logits input
+#' @param logits input of logits/mixture weights to adjust
+#' @param temperature the temperature for to adjust the distribution (default 1.0)
 #' @return softmax loss value
 #' @author Tustison NJ
 #' @examples

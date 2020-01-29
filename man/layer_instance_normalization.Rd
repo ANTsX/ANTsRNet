@@ -20,6 +20,10 @@ layer_instance_normalization(
 )
 }
 \arguments{
+\item{object}{Object to compose layer with. This is either a
+\link[keras:keras_model_sequential]{keras::keras_model_sequential} to add the layer to,
+or another Layer which this layer will call.}
+
 \item{axis}{Integer specifying which axis should be normalized, typically
 the feature axis.  For example, after a Conv2D layer with
 \code{channels_first}, set axis = 1.  Setting \code{axis=-1L} will
@@ -44,6 +48,8 @@ error if \code{axis = 0}.}
 \item{betaConstraint}{Optional constraint for the beta weight.}
 
 \item{gammaConstraint}{Optional constraint for the gamma weight.}
+
+\item{trainable}{Whether the layer weights will be updated during training.}
 }
 \value{
 a keras layer tensor

@@ -184,6 +184,9 @@ InstanceNormalizationLayer <- R6::R6Class( "InstanceNormalizationLayer",
 #'
 #' Creates an instance normalization layer
 #'
+#' @param object Object to compose layer with. This is either a
+#' [keras::keras_model_sequential] to add the layer to,
+#' or another Layer which this layer will call.
 #' @param axis Integer specifying which axis should be normalized, typically
 #'               the feature axis.  For example, after a Conv2D layer with
 #'               `channels_first`, set axis = 1.  Setting `axis=-1L` will
@@ -199,7 +202,7 @@ InstanceNormalizationLayer <- R6::R6Class( "InstanceNormalizationLayer",
 #' @param gammaRegularizer Regularizer for the gamma weight.
 #' @param betaConstraint Optional constraint for the beta weight.
 #' @param gammaConstraint Optional constraint for the gamma weight.
-#'
+#' @param trainable Whether the layer weights will be updated during training.
 #' @return a keras layer tensor
 #' @author Tustison NJ
 #' @import keras

@@ -2,23 +2,38 @@
 % Please edit documentation in R/resampleTensorUtilities.R
 \name{layer_resample_tensor_2d}
 \alias{layer_resample_tensor_2d}
-\title{Resampling a spatial tensor (2-D).}
+\alias{layer_resample_tensor_3d}
+\title{Resampling a spatial tensor (2-D and 3-D).}
 \usage{
 layer_resample_tensor_2d(
   object,
   shape,
-  interpolationType = "nearestNeighbor",
+  interpolationType = c("nearestNeighbor", "linear", "cubic"),
+  name = NULL,
+  trainable = FALSE
+)
+
+layer_resample_tensor_3d(
+  object,
+  shape,
+  interpolationType = c("nearestNeighbor", "linear", "cubic"),
   name = NULL,
   trainable = FALSE
 )
 }
 \arguments{
+\item{object}{Object to compose layer with. This is either a
+\link[keras:keras_model_sequential]{keras::keras_model_sequential} to add the layer to,
+or another Layer which this layer will call.}
+
 \item{shape}{vector or list of length 2 specifying the shape of the output tensor.}
 
 \item{interpolationType}{type of interpolation for resampling.  Can be
 \code{nearestNeighbor}, \code{linear}, or \code{cubic}.}
 
-\item{inputTensor}{tensor to be resampled.}
+\item{name}{The name of the layer}
+
+\item{trainable}{Whether the layer weights will be updated during training.}
 }
 \value{
 a keras layer tensor

@@ -93,9 +93,9 @@ ScaleLayer <- R6::R6Class( "ScaleLayer",
   )
 )
 
-layer_scale <- function( objects,
+layer_scale <- function( object,
   axis = -1, momentum = 0.9 ) {
-create_layer( ScaleLayer, objects,
+create_layer( ScaleLayer, object,
     list( axis = axis, momentum = momentum )
     )
 }

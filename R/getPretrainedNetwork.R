@@ -2,7 +2,7 @@
 #'
 #' Downloads pretrained network/weights.
 #'
-#' @param fileid one of the permitted file ids or pass "show" to list all
+#' @param fileId one of the permitted file ids or pass "show" to list all
 #'   valid possibilities. Note that most require internet access to download.
 #' @param targetFileName optional target filename
 #' @return filename string

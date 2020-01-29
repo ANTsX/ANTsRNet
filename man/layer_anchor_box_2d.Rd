@@ -2,7 +2,8 @@
 % Please edit documentation in R/ssdUtilities.R
 \name{layer_anchor_box_2d}
 \alias{layer_anchor_box_2d}
-\title{Anchor box layer (2-D)}
+\alias{layer_anchor_box_3d}
+\title{Anchor box layer (2-D and 3-D)}
 \usage{
 layer_anchor_box_2d(
   object,
@@ -14,17 +15,37 @@ layer_anchor_box_2d(
   name = NULL,
   trainable = TRUE
 )
+
+layer_anchor_box_3d(
+  object,
+  imageSize,
+  scale,
+  nextScale,
+  aspectRatios,
+  variances,
+  name = NULL,
+  trainable = TRUE
+)
 }
 \arguments{
-\item{imageSize}{size of the image}
+\item{object}{Object to compose layer with. This is either a
+\link[keras:keras_model_sequential]{keras::keras_model_sequential} to add the layer to,
+or another Layer which this layer will call.}
 
-\item{scale}{box scale}
+\item{imageSize}{size of the image, passed to \code{\link{create_layer}}}
 
-\item{nextScale}{box scale}
+\item{scale}{box scale, passed to \code{\link{create_layer}}}
 
-\item{aspectRatios}{list of ratios used for the boxes}
+\item{nextScale}{box scale, passed to \code{\link{create_layer}}}
 
-\item{variances}{list}
+\item{aspectRatios}{list of ratios used for the boxes,
+passed to \code{\link{create_layer}}}
+
+\item{variances}{list of variances, passed to \code{\link{create_layer}}}
+
+\item{name}{The name of the layer}
+
+\item{trainable}{logical indicating if it is trainable or not}
 }
 \value{
 a keras layer tensor
