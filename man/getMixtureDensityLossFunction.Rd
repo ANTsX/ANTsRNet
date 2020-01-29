@@ -18,7 +18,8 @@ a function providing the mean square error accuracy
 Ported from:
 }
 \details{
-https://github.com/cpmpercussion/keras-mdn-layer/
+\preformatted{    https://github.com/cpmpercussion/keras-mdn-layer/
+}
 }
 \examples{
 

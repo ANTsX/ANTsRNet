@@ -4,10 +4,18 @@
 \alias{createDenseUnetModel3D}
 \title{3-D implementation of the dense U-net deep learning architecture.}
 \usage{
-createDenseUnetModel3D(inputImageSize, numberOfOutputs = 1,
-  numberOfLayersPerDenseBlock = c(3, 4, 12, 8), growthRate = 48,
-  initialNumberOfFilters = 96, reductionRate = 0, depth = 7,
-  dropoutRate = 0, weightDecay = 1e-04, mode = "classification")
+createDenseUnetModel3D(
+  inputImageSize,
+  numberOfOutputs = 1,
+  numberOfLayersPerDenseBlock = c(3, 4, 12, 8),
+  growthRate = 48,
+  initialNumberOfFilters = 96,
+  reductionRate = 0,
+  depth = 7,
+  dropoutRate = 0,
+  weightDecay = 1e-04,
+  mode = "classification"
+)
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
@@ -46,13 +54,11 @@ image segmentation
 X. Li, H. Chen, X. Qi, Q. Dou, C.-W. Fu, P.-A. Heng. H-DenseUNet: Hybrid
 Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes
 
-available here:
+available here:\preformatted{    https://arxiv.org/pdf/1709.07330.pdf
+}
 
-https://arxiv.org/pdf/1709.07330.pdf
-
-with the author's implementation available at:
-
-https://github.com/xmengli999/H-DenseUNet
+with the author's implementation available at:\preformatted{    https://github.com/xmengli999/H-DenseUNet
+}
 }
 \examples{
 

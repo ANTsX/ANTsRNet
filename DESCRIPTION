@@ -34,6 +34,6 @@ Remotes:
     rstudio/reticulate
 SystemRequirements: Keras >= 2.0 (https://keras.io)
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.1
 VignetteBuilder: knitr
 Encoding: UTF-8

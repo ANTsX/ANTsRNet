@@ -4,8 +4,7 @@
 \alias{layer_l2_normalization_2d}
 \title{Normalization layer (2-D)}
 \usage{
-layer_l2_normalization_2d(object, scale = 20, name = NULL,
-  trainable = TRUE)
+layer_l2_normalization_2d(object, scale = 20, name = NULL, trainable = TRUE)
 }
 \arguments{
 \item{scale}{box scale}

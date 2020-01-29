@@ -4,8 +4,12 @@
 \alias{layer_mixture_density}
 \title{Mixture density layer}
 \usage{
-layer_mixture_density(objects, outputDimension, numberOfMixtures,
-  trainable = TRUE)
+layer_mixture_density(
+  objects,
+  outputDimension,
+  numberOfMixtures,
+  trainable = TRUE
+)
 }
 \arguments{
 \item{outputDimension}{output dimension}

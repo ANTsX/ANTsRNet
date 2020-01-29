@@ -4,8 +4,16 @@
 \alias{uvaSeg}
 \title{Unsupervised variational autoencoder segmentation}
 \usage{
-uvaSeg(image, model, k, mask, returnProbabilities = FALSE,
-  batchSize = 1028, standardize = TRUE, verbose = FALSE)
+uvaSeg(
+  image,
+  model,
+  k,
+  mask,
+  returnProbabilities = FALSE,
+  batchSize = 1028,
+  standardize = TRUE,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{image}{input image}

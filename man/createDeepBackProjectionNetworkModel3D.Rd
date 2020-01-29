@@ -4,11 +4,17 @@
 \alias{createDeepBackProjectionNetworkModel3D}
 \title{3-D implementation of the deep back-projection network.}
 \usage{
-createDeepBackProjectionNetworkModel3D(inputImageSize,
-  numberOfOutputs = 1, numberOfBaseFilters = 64,
-  numberOfFeatureFilters = 256, numberOfBackProjectionStages = 7,
-  convolutionKernelSize = c(12, 12, 12), strides = c(8, 8, 8),
-  lastConvolution = c(3, 3, 3), numberOfLossFunctions = 1)
+createDeepBackProjectionNetworkModel3D(
+  inputImageSize,
+  numberOfOutputs = 1,
+  numberOfBaseFilters = 64,
+  numberOfFeatureFilters = 256,
+  numberOfBackProjectionStages = 7,
+  convolutionKernelSize = c(12, 12, 12),
+  strides = c(8, 8, 8),
+  lastConvolution = c(3, 3, 3),
+  numberOfLossFunctions = 1
+)
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
@@ -49,21 +55,19 @@ Creates a keras model of the deep back-project network for image super
 resolution.  More information is provided at the authors' website:
 }
 \details{
-\url{https://www.toyota-ti.ac.jp/Lab/Denshi/iim/members/muhammad.haris/projects/DBPN.html}
+\preformatted{    \url{https://www.toyota-ti.ac.jp/Lab/Denshi/iim/members/muhammad.haris/projects/DBPN.html}
+}
 
-with the paper available here:
-
-\url{https://arxiv.org/abs/1803.02735}
+with the paper available here:\preformatted{    \url{https://arxiv.org/abs/1803.02735}
+}
 
 This particular implementation was influenced by the following keras (python)
-implementation:
+implementation:\preformatted{    \url{https://github.com/rajatkb/DBPN-Keras}
+}
 
-\url{https://github.com/rajatkb/DBPN-Keras}
-
-with help from the original author's Caffe and Pytorch implementations:
-
-\url{https://github.com/alterzero/DBPN-caffe}
-\url{https://github.com/alterzero/DBPN-Pytorch}
+with help from the original author's Caffe and Pytorch implementations:\preformatted{    \url{https://github.com/alterzero/DBPN-caffe}
+    \url{https://github.com/alterzero/DBPN-Pytorch}
+}
 }
 \examples{
 #

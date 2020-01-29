@@ -22,11 +22,11 @@ Creates a keras model implementation of the u-net architecture
 described here:
 }
 \details{
-\url{https://onlinelibrary.wiley.com/doi/pdf/10.1002/hbm.24811}
+\preformatted{\url{https://onlinelibrary.wiley.com/doi/pdf/10.1002/hbm.24811}
+}
 
-with the implementation available here:
-
-\url{https://github.com/mgoubran/HippMapp3r}
+with the implementation available here:\preformatted{\url{https://github.com/mgoubran/HippMapp3r}
+}
 }
 \examples{
 \dontrun{

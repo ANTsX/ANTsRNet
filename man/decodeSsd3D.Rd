@@ -4,8 +4,12 @@
 \alias{decodeSsd3D}
 \title{Decoding function for 3-D Y_train}
 \usage{
-decodeSsd3D(yPredicted, imageSize, confidenceThreshold = 0.5,
-  overlapThreshold = 0.45)
+decodeSsd3D(
+  yPredicted,
+  imageSize,
+  confidenceThreshold = 0.5,
+  overlapThreshold = 0.45
+)
 }
 \arguments{
 \item{yPredicted}{The predicted output produced by the SSD model expected to
@@ -40,11 +44,10 @@ boxes, (centerx, centery, width, height), for subsequent usage.
 }
 \details{
 This particular implementation was heavily influenced by the following
-python and R implementations:
-
-\url{https://github.com/pierluigiferrari/ssd_keras}
-\url{https://github.com/rykov8/ssd_keras}
-\url{https://github.com/gsimchoni/ssdkeras}
+python and R implementations:\preformatted{    \url{https://github.com/pierluigiferrari/ssd_keras}
+    \url{https://github.com/rykov8/ssd_keras}
+    \url{https://github.com/gsimchoni/ssdkeras}
+}
 }
 \author{
 Tustison NJ

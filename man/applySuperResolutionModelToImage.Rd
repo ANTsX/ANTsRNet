@@ -4,8 +4,14 @@
 \alias{applySuperResolutionModelToImage}
 \title{Apply a pretrained model for super resolution.}
 \usage{
-applySuperResolutionModelToImage(image, model, targetRange = c(-127.5,
-  127.5), batchSize = 32, regressionOrder = NA, verbose = FALSE)
+applySuperResolutionModelToImage(
+  image,
+  model,
+  targetRange = c(-127.5, 127.5),
+  batchSize = 32,
+  regressionOrder = NA,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{image}{input image.}

@@ -4,9 +4,13 @@
 \alias{layer_resample_tensor_2d}
 \title{Resampling a spatial tensor (2-D).}
 \usage{
-layer_resample_tensor_2d(object, shape,
-  interpolationType = "nearestNeighbor", name = NULL,
-  trainable = FALSE)
+layer_resample_tensor_2d(
+  object,
+  shape,
+  interpolationType = "nearestNeighbor",
+  name = NULL,
+  trainable = FALSE
+)
 }
 \arguments{
 \item{shape}{vector or list of length 2 specifying the shape of the output tensor.}

@@ -4,9 +4,15 @@
 \alias{applySuperResolutionModelPatch}
 \title{applySuperResolutionModelPatch}
 \usage{
-applySuperResolutionModelPatch(image, model, targetRange,
-  lowResolutionPatchSize = 128, strideLength = 16, batch_size = 32,
-  verbose = FALSE)
+applySuperResolutionModelPatch(
+  image,
+  model,
+  targetRange,
+  lowResolutionPatchSize = 128,
+  strideLength = 16,
+  batch_size = 32,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{image}{input image}

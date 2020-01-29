@@ -4,8 +4,14 @@
 \alias{applyDeepBackProjectionModel}
 \title{Apply a pretrained deep back projection model for super resolution.}
 \usage{
-applyDeepBackProjectionModel(image, model, targetRange = c(-127.5,
-  127.5), batchSize = 32, regressionOrder = NA, verbose = FALSE)
+applyDeepBackProjectionModel(
+  image,
+  model,
+  targetRange = c(-127.5, 127.5),
+  batchSize = 32,
+  regressionOrder = NA,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{image}{input image.}

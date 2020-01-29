@@ -4,8 +4,13 @@
 \alias{sampleFromOutput}
 \title{Sample from a distribution}
 \usage{
-sampleFromOutput(parameters, outputDimension, numberOfMixtures,
-  temperature = 1, sigmaTemperature = 1)
+sampleFromOutput(
+  parameters,
+  outputDimension,
+  numberOfMixtures,
+  temperature = 1,
+  sigmaTemperature = 1
+)
 }
 \arguments{
 \item{distribution}{input distribution from which to sample.}
@@ -17,7 +22,8 @@ a single sample
 Ported from:
 }
 \details{
-https://github.com/cpmpercussion/keras-mdn-layer/
+\preformatted{    https://github.com/cpmpercussion/keras-mdn-layer/
+}
 }
 \examples{
 

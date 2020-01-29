@@ -4,11 +4,20 @@
 \alias{layer_instance_normalization}
 \title{Instance normalization layer}
 \usage{
-layer_instance_normalization(object, axis = NULL, epsilon = 0.001,
-  center = TRUE, scale = TRUE, betaInitializer = "zeros",
-  gammaInitializer = "ones", betaRegularizer = NULL,
-  gammaRegularizer = NULL, betaConstraint = NULL,
-  gammaConstraint = NULL, trainable = TRUE)
+layer_instance_normalization(
+  object,
+  axis = NULL,
+  epsilon = 0.001,
+  center = TRUE,
+  scale = TRUE,
+  betaInitializer = "zeros",
+  gammaInitializer = "ones",
+  betaRegularizer = NULL,
+  gammaRegularizer = NULL,
+  betaConstraint = NULL,
+  gammaConstraint = NULL,
+  trainable = TRUE
+)
 }
 \arguments{
 \item{axis}{Integer specifying which axis should be normalized, typically

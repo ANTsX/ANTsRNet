@@ -4,8 +4,12 @@
 \alias{regressionMatchImage}
 \title{Image intensity normalization using linear regression.}
 \usage{
-regressionMatchImage(sourceImage, referenceImage, polyOrder = 1,
-  truncate = TRUE)
+regressionMatchImage(
+  sourceImage,
+  referenceImage,
+  polyOrder = 1,
+  truncate = TRUE
+)
 }
 \arguments{
 \item{sourceImage}{image whose intensities we will match to the

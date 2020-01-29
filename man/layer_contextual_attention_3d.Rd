@@ -4,9 +4,15 @@
 \alias{layer_contextual_attention_3d}
 \title{Contextual attention layer (3-D)}
 \usage{
-layer_contextual_attention_3d(object, kernelSize = 3L, stride = 1L,
-  dilationRate = 1L, fusionKernelSize = 0L, name = NULL,
-  trainable = FALSE)
+layer_contextual_attention_3d(
+  object,
+  kernelSize = 3L,
+  stride = 1L,
+  dilationRate = 1L,
+  fusionKernelSize = 0L,
+  name = NULL,
+  trainable = FALSE
+)
 }
 \arguments{
 \item{kernelSize}{integer specifying convolution size}
@@ -27,7 +33,6 @@ Contextual attention layer for generative image inpainting described in
 Jiahui Yu, et al., Generative Image Inpainting with Contextual Attention,
 CVPR 2018.
 
-available here:
-
-\code{https://arxiv.org/abs/1801.07892}
+available here:\preformatted{    \code{https://arxiv.org/abs/1801.07892}
+}
 }

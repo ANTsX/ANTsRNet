@@ -4,9 +4,12 @@
 \alias{createConvolutionalAutoencoderModel2D}
 \title{Function for creating a 2-D symmetric convolutional autoencoder model.}
 \usage{
-createConvolutionalAutoencoderModel2D(inputImageSize,
+createConvolutionalAutoencoderModel2D(
+  inputImageSize,
   numberOfFiltersPerLayer = c(32, 64, 128, 10),
-  convolutionKernelSize = c(5, 5), deconvolutionKernelSize = c(5, 5))
+  convolutionKernelSize = c(5, 5),
+  deconvolutionKernelSize = c(5, 5)
+)
 }
 \arguments{
 \item{inputImageSize}{vector definining spatial dimensions + channels}

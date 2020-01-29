@@ -5,9 +5,11 @@
 \alias{createSimpleClassificationWithSpatialTransformerNetworkModel2D}
 \title{2-D implementation of the spatial transformer network.}
 \usage{
-
-  createSimpleClassificationWithSpatialTransformerNetworkModel2D(inputImageSize,
-  resampledSize = c(30, 30), numberOfClassificationLabels = 10)
+createSimpleClassificationWithSpatialTransformerNetworkModel2D(
+  inputImageSize,
+  resampledSize = c(30, 30),
+  numberOfClassificationLabels = 10
+)
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
@@ -26,11 +28,11 @@ a keras model
 Creates a keras model of the spatial transformer network:
 }
 \details{
-\url{https://arxiv.org/abs/1506.02025}
+\preformatted{    \url{https://arxiv.org/abs/1506.02025}
+}
 
-based on the following python Keras model:
-
-\url{https://github.com/oarriaga/STN.keras/blob/master/src/models/STN.py}
+based on the following python Keras model:\preformatted{    \url{https://github.com/oarriaga/STN.keras/blob/master/src/models/STN.py}
+}
 }
 \examples{
 \dontrun{

@@ -4,12 +4,18 @@
 \alias{createSsdModel2D}
 \title{2-D implementation of the SSD deep learning architecture.}
 \usage{
-createSsdModel2D(inputImageSize, numberOfClassificationLabels,
-  l2Regularization = 5e-04, minScale = 0.1, maxScale = 0.9,
-  aspectRatiosPerLayer = list(c("1:1", "2:1", "1:2"), c("1:1", "2:1",
-  "1:2", "3:1", "1:3"), c("1:1", "2:1", "1:2", "3:1", "1:3"), c("1:1",
-  "2:1", "1:2", "3:1", "1:3"), c("1:1", "2:1", "1:2"), c("1:1", "2:1",
-  "1:2")), variances = rep(1, 4), style = 300)
+createSsdModel2D(
+  inputImageSize,
+  numberOfClassificationLabels,
+  l2Regularization = 5e-04,
+  minScale = 0.1,
+  maxScale = 0.9,
+  aspectRatiosPerLayer = list(c("1:1", "2:1", "1:2"), c("1:1", "2:1", "1:2", "3:1",
+    "1:3"), c("1:1", "2:1", "1:2", "3:1", "1:3"), c("1:1", "2:1", "1:2", "3:1", "1:3"),
+    c("1:1", "2:1", "1:2"), c("1:1", "2:1", "1:2")),
+  variances = rep(1, 4),
+  style = 300
+)
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
@@ -53,16 +59,14 @@ object detection based on the paper
 W. Liu, D. Anguelov, D. Erhan, C. Szegedy, S. Reed, C-Y. Fu, A. Berg.
 SSD: Single Shot MultiBox Detector.
 
-available here:
-
-https://arxiv.org/abs/1512.02325
+available here:\preformatted{    https://arxiv.org/abs/1512.02325
+}
 
 This particular implementation was influenced by the following python
-and R implementations:
-
-https://github.com/pierluigiferrari/ssd_keras
-https://github.com/rykov8/ssd_keras
-https://github.com/gsimchoni/ssdkeras
+and R implementations:\preformatted{    https://github.com/pierluigiferrari/ssd_keras     
+    https://github.com/rykov8/ssd_keras
+    https://github.com/gsimchoni/ssdkeras
+}
 }
 \author{
 Tustison NJ

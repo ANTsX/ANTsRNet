@@ -4,8 +4,11 @@
 \alias{resampleTensorLike}
 \title{Resamples a tensor.}
 \usage{
-resampleTensorLike(inputTensor, referenceTensor,
-  interpolationType = "nearestNeighbor")
+resampleTensorLike(
+  inputTensor,
+  referenceTensor,
+  interpolationType = "nearestNeighbor"
+)
 }
 \arguments{
 \item{inputTensor}{tensor to be resampled.}

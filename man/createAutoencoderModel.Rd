@@ -4,8 +4,11 @@
 \alias{createAutoencoderModel}
 \title{Function for creating a symmetric autoencoder model.}
 \usage{
-createAutoencoderModel(numberOfUnitsPerLayer, activation = "relu",
-  initializer = "glorot_uniform")
+createAutoencoderModel(
+  numberOfUnitsPerLayer,
+  activation = "relu",
+  initializer = "glorot_uniform"
+)
 }
 \arguments{
 \item{activation}{activation type for the dense layers}

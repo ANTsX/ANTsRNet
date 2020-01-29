@@ -4,8 +4,12 @@
 \alias{reconstructImageFromPatches}
 \title{Reconstruct image from a list of patches.}
 \usage{
-reconstructImageFromPatches(patches, domainImage, strideLength = 1,
-  domainImageIsMask = FALSE)
+reconstructImageFromPatches(
+  patches,
+  domainImage,
+  strideLength = 1,
+  domainImageIsMask = FALSE
+)
 }
 \arguments{
 \item{patches}{List or array of patches defining an image.  Patches are assumed

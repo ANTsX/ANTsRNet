@@ -16,7 +16,8 @@ softmax loss value
 Ported from:
 }
 \details{
-https://github.com/cpmpercussion/keras-mdn-layer/
+\preformatted{    https://github.com/cpmpercussion/keras-mdn-layer/
+}
 }
 \examples{
 

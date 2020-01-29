@@ -4,12 +4,23 @@
 \alias{randomImageTransformAugmentation}
 \title{Apply random transforms to a predictor / outcome training image set}
 \usage{
-randomImageTransformAugmentation(imageDomain, predictorImageList,
-  outcomeImageList, n = 8, typeOfTransform = "Affine",
-  interpolator = c("linear", "nearestNeighbor"), sdAffine = 1,
-  nControlPoints = 100, spatialSmoothing = 3, composeToField = FALSE,
-  numberOfCompositions = 4, deformationBasis, directoryName,
-  imageDomainY, normalization = "none")
+randomImageTransformAugmentation(
+  imageDomain,
+  predictorImageList,
+  outcomeImageList,
+  n = 8,
+  typeOfTransform = "Affine",
+  interpolator = c("linear", "nearestNeighbor"),
+  sdAffine = 1,
+  nControlPoints = 100,
+  spatialSmoothing = 3,
+  composeToField = FALSE,
+  numberOfCompositions = 4,
+  deformationBasis,
+  directoryName,
+  imageDomainY,
+  normalization = "none"
+)
 }
 \arguments{
 \item{imageDomain}{defines default spatial domain for images. NOTE: if the

@@ -4,11 +4,19 @@
 \alias{createUnetModel3D}
 \title{3-D image segmentation implementation of the U-net deep learning architecture.}
 \usage{
-createUnetModel3D(inputImageSize, numberOfOutputs = 2,
-  numberOfLayers = 4, numberOfFiltersAtBaseLayer = 32,
-  convolutionKernelSize = c(3, 3, 3), deconvolutionKernelSize = c(2, 2,
-  2), poolSize = c(2, 2, 2), strides = c(2, 2, 2), dropoutRate = 0,
-  weightDecay = 0, mode = "classification")
+createUnetModel3D(
+  inputImageSize,
+  numberOfOutputs = 2,
+  numberOfLayers = 4,
+  numberOfFiltersAtBaseLayer = 32,
+  convolutionKernelSize = c(3, 3, 3),
+  deconvolutionKernelSize = c(2, 2, 2),
+  poolSize = c(2, 2, 2),
+  strides = c(2, 2, 2),
+  dropoutRate = 0,
+  weightDecay = 0,
+  mode = "classification"
+)
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
@@ -51,16 +59,15 @@ segmentation and regression.  More information is provided at the authors'
 website:
 }
 \details{
-\url{https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/}
+\preformatted{    \url{https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/}
+}
 
-with the paper available here:
-
-\url{https://arxiv.org/abs/1505.04597}
+with the paper available here:\preformatted{    \url{https://arxiv.org/abs/1505.04597}
+}
 
 This particular implementation was influenced by the following python
-implementation:
-
-\url{https://github.com/joelthelion/ultrasound-nerve-segmentation}
+implementation:\preformatted{    \url{https://github.com/joelthelion/ultrasound-nerve-segmentation}
+}
 }
 \examples{
 # Simple examples, must run successfully and quickly. These will be tested.

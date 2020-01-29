@@ -5,9 +5,12 @@
 \alias{createDenoisingAutoEncoderSuperResolutionModel2D}
 \title{2-D implementation of the denoising autoencoder image super resolution architecture.}
 \usage{
-createDenoisingAutoEncoderSuperResolutionModel2D(inputImageSize,
+createDenoisingAutoEncoderSuperResolutionModel2D(
+  inputImageSize,
   convolutionKernelSizes = list(c(3, 3), c(5, 5)),
-  numberOfEncodingLayers = 2, numberOfFilters = 64)
+  numberOfEncodingLayers = 2,
+  numberOfFilters = 64
+)
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The

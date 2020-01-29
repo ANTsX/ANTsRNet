@@ -4,10 +4,17 @@
 \alias{createDenseNetModel3D}
 \title{3-D implementation of the DenseNet deep learning architecture.}
 \usage{
-createDenseNetModel3D(inputImageSize,
-  numberOfClassificationLabels = 1000, numberOfFilters = 16,
-  depth = 7, numberOfDenseBlocks = 1, growthRate = 12,
-  dropoutRate = 0.2, weightDecay = 1e-04, mode = "classification")
+createDenseNetModel3D(
+  inputImageSize,
+  numberOfClassificationLabels = 1000,
+  numberOfFilters = 16,
+  depth = 7,
+  numberOfDenseBlocks = 1,
+  growthRate = 12,
+  dropoutRate = 0.2,
+  weightDecay = 1e-04,
+  mode = "classification"
+)
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
@@ -45,14 +52,12 @@ recognition based on the paper
 G. Huang, Z. Liu, K. Weinberger, and L. van der Maaten. Densely Connected
 Convolutional Networks Networks
 
-available here:
-
-https://arxiv.org/abs/1608.06993
+available here:\preformatted{    https://arxiv.org/abs/1608.06993
+}
 
 This particular implementation was influenced by the following python
-implementation:
-
-https://github.com/tdeboissiere/DeepLearningImplementations/blob/master/DenseNet/densenet.py
+implementation:\preformatted{    https://github.com/tdeboissiere/DeepLearningImplementations/blob/master/DenseNet/densenet.py
+}
 }
 \examples{
 

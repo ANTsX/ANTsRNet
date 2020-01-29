@@ -4,8 +4,16 @@
 \alias{layer_anchor_box_3d}
 \title{Anchor box layer (3-D)}
 \usage{
-layer_anchor_box_3d(object, imageSize, scale, nextScale, aspectRatios,
-  variances, name = NULL, trainable = TRUE)
+layer_anchor_box_3d(
+  object,
+  imageSize,
+  scale,
+  nextScale,
+  aspectRatios,
+  variances,
+  name = NULL,
+  trainable = TRUE
+)
 }
 \arguments{
 \item{imageSize}{size of the image}

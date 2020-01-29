@@ -4,10 +4,19 @@
 \alias{randomImageTransformParametersAugmentation}
 \title{Generate transform parameters and transformed images}
 \usage{
-randomImageTransformParametersAugmentation(imageDomain, predictorImageList,
-  n = 8, typeOfTransform = "Affine", interpolator = "linear",
-  spatialSmoothing = 3, numberOfCompositions = 4, deformationBasis,
-  txParamMeans, txParamSDs, center = FALSE)
+randomImageTransformParametersAugmentation(
+  imageDomain,
+  predictorImageList,
+  n = 8,
+  typeOfTransform = "Affine",
+  interpolator = "linear",
+  spatialSmoothing = 3,
+  numberOfCompositions = 4,
+  deformationBasis,
+  txParamMeans,
+  txParamSDs,
+  center = FALSE
+)
 }
 \arguments{
 \item{imageDomain}{defines the spatial domain for all images.  NOTE: if the

@@ -4,11 +4,17 @@
 \alias{createResUnetModel3D}
 \title{3-D implementation of the Resnet + U-net deep learning architecture.}
 \usage{
-createResUnetModel3D(inputImageSize, numberOfOutputs = 1,
-  numberOfFiltersAtBaseLayer = 32, bottleNeckBlockDepthSchedule = c(3,
-  4), convolutionKernelSize = c(3, 3, 3),
-  deconvolutionKernelSize = c(2, 2, 2), dropoutRate = 0,
-  weightDecay = 1e-04, mode = "classification")
+createResUnetModel3D(
+  inputImageSize,
+  numberOfOutputs = 1,
+  numberOfFiltersAtBaseLayer = 32,
+  bottleNeckBlockDepthSchedule = c(3, 4),
+  convolutionKernelSize = c(3, 3, 3),
+  deconvolutionKernelSize = c(2, 2, 2),
+  dropoutRate = 0,
+  weightDecay = 1e-04,
+  mode = "classification"
+)
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
@@ -47,12 +53,12 @@ Creates a keras model of the U-net + ResNet deep learning architecture for
 image segmentation and regression with the paper available here:
 }
 \details{
-\url{https://arxiv.org/abs/1608.04117}
+\preformatted{    \url{https://arxiv.org/abs/1608.04117}
+}
 
 This particular implementation was ported from the following python
-implementation:
-
-\url{https://github.com/veugene/fcn_maker/}
+implementation:\preformatted{    \url{https://github.com/veugene/fcn_maker/}
+}
 }
 \examples{
 

@@ -4,8 +4,14 @@
 \alias{applySuperResolutionModel}
 \title{applySuperResolutionModel}
 \usage{
-applySuperResolutionModel(image, model, targetRange, batch_size = 32,
-  linmatchOrder, verbose = FALSE)
+applySuperResolutionModel(
+  image,
+  model,
+  targetRange,
+  batch_size = 32,
+  linmatchOrder,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{image}{input image}

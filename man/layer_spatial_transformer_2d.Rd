@@ -4,8 +4,13 @@
 \alias{layer_spatial_transformer_2d}
 \title{spatial transformer layer (2-D)}
 \usage{
-layer_spatial_transformer_2d(objects, resampledSize,
-  transformType = "affine", interpolatorType = "linear", name = NULL)
+layer_spatial_transformer_2d(
+  objects,
+  resampledSize,
+  transformType = "affine",
+  interpolatorType = "linear",
+  name = NULL
+)
 }
 \arguments{
 \item{resampledSize}{size of the output in voxels}
