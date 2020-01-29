@@ -47,6 +47,7 @@ ScaleLayer <- R6::R6Class( "ScaleLayer",
       {
       K <- keras::backend()
 
+      input_shape = as.integer(input_shape)
       self$inputShape <- input_shape
 
       index <- self$axis
@@ -92,7 +93,8 @@ ScaleLayer <- R6::R6Class( "ScaleLayer",
 )
 
 layer_scale <- function( object,
-  axis = -1, momentum = 0.9 ) {
+  axis = -1L, momentum = 0.9 ) {
+  axis = as.integer(axis)
 create_layer( ScaleLayer, object,
     list( axis = axis, momentum = momentum )
     )

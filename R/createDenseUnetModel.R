@@ -129,10 +129,10 @@ createDenseUnetModel2D <- function( inputImageSize,
   mode = match.arg(mode)
   K <- keras::backend()
 
-  concatenationAxis <- 1
+  concatenationAxis <- 1L
   if( K$image_data_format() == 'channels_last' )
   {
-    concatenationAxis <- -1
+    concatenationAxis <- -1L
   }
 
   convolutionFactory2D <- function( model, numberOfFilters,
