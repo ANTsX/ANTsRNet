@@ -66,7 +66,7 @@ with the author's implementation available at:\preformatted{    https://github.c
 }
 }
 \examples{
-
+\dontrun{
 library( ANTsR )
 library( ANTsRNet )
 library( keras )
@@ -140,7 +140,7 @@ model \%>\% compile( loss = loss_dice,
 
 # save_model_hdf5( model, filepath = 'unetModel.h5' )
 # save_model_weights_hdf5( unetModel, filepath = 'unetModelWeights.h5' ) )
-
+}
 }
 \author{
 Tustison NJ

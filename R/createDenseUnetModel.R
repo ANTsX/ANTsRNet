@@ -37,7 +37,6 @@
 #' @return an DenseUnet keras model
 #' @author Tustison NJ
 #' @examples
-#'
 #' library( ANTsR )
 #' library( ANTsRNet )
 #' library( keras )
@@ -111,7 +110,6 @@
 #'
 #' # save_model_hdf5( model, filepath = 'unetModel.h5' )
 #' # save_model_weights_hdf5( unetModel, filepath = 'unetModelWeights.h5' ) )
-#'
 #' @import keras
 #' @export
 createDenseUnetModel2D <- function( inputImageSize,
@@ -414,6 +412,7 @@ createDenseUnetModel3D <- function( inputImageSize,
 )
 {
   mode = match.arg(mode)
+  inputImageSize = as.integer(inputImageSize)
   K <- keras::backend()
 
   concatenationAxis <- 1

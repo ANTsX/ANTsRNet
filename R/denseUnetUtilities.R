@@ -25,7 +25,8 @@
 NULL
 
 #' @export
-ScaleLayer <- R6::R6Class( "ScaleLayer",
+ScaleLayer <- R6::R6Class(
+  "ScaleLayer",
 
   inherit = KerasLayer,
 
@@ -38,48 +39,56 @@ ScaleLayer <- R6::R6Class( "ScaleLayer",
     momentum = 0.9,
 
     initialize = function( axis = -1L, momentum = 0.9 )
-      {
+    {
       self$axis <- axis
       self$momentum <- momentum
-      },
+    },
 
     build = function( input_shape )
-      {
-      K <- keras::backend()
+    {
+      # K <- keras::backend()
 
-      input_shape = as.integer(input_shape)
+      # print("Input shape is ")
+      # print(input_shape)
+      # input_shape = as.integer(input_shape)
       self$inputShape <- input_shape
 
       index <- self$axis
       if( self$axis == -1 )
-        {
+      {
         index <- length( self$inputShape )
-        }
+      }
       output_shape <- reticulate::tuple( input_shape[[index]] )
-
+      # output_shape =  input_shape[[index]]
+      # print(class(output_shape))
+      # print("output shape is ")
+      # print(output_shape)
+      # print(self$add_weight)
       self$gamma <- self$add_weight(
         name = "gamma",
         shape = output_shape,
         initializer = initializer_ones(),
+        # initializer = "one",
         trainable = TRUE )
       self$beta <- self$add_weight(
         name = "beta",
         shape = output_shape,
         initializer = initializer_zeros(),
+        # initializer = "zero",
         trainable = TRUE )
-      },
+    },
 
     call = function( inputs, mask = NULL )
-      {
+    {
       K <- keras::backend()
 
-      broadcastShape <- as.list( rep( 1, length( self$inputShape ) ) )
+      broadcastShape <- as.list( rep( 1L, length( self$inputShape ) ) )
 
       index <- self$axis
       if( self$axis == -1 )
-        {
+      {
         index <- length( self$inputShape )
-        }
+      }
       broadcastShape[[index]] <- self$inputShape[[index]]
       broadcastShape <- K$cast( broadcastShape, dtype = "int32" )
 
@@ -87,15 +96,17 @@ ScaleLayer <- R6::R6Class( "ScaleLayer",
         K$reshape( self$beta, broadcastShape )
 
       return( output )
-      }
+    }
 
   )
 )
 
-layer_scale <- function( object,
-  axis = -1L, momentum = 0.9 ) {
+layer_scale <- function(
+  object,
+  axis = -1L, momentum = 0.9, name = NULL, trainable = TRUE ) {
   axis = as.integer(axis)
-create_layer( ScaleLayer, object,
-    list( axis = axis, momentum = momentum )
-    )
+  create_layer( ScaleLayer, object,
+                list( axis = axis, momentum = momentum,
+                      name = name, trainable = trainable)
+  )
 }
