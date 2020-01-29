@@ -264,7 +264,7 @@ getMixtureDensitySamplingFunction <- function( outputDimension, numberOfMixtures
       c( -1L, ( 2L * dimension ) + numberOfMixtures ),
       name = 'reshape_ypred' )
 
-    splitTensors <- tf$split( y_pred,
+    splitTensors <- tensorflow::tf$split( y_pred,
       num_or_size_splits = c( dimension, dimension, numberOfMixtures ),
       axis = 1L, name = "mdn_coef_split" )
 
@@ -335,7 +335,7 @@ getMixtureDensityMseAccuracyFunction <- function( outputDimension, numberOfMixtu
     y_true <- tensorflow::tf$reshape( y_true,
       c( -1L, outputDimension ), name = 'reshape_ytrue' )
 
-    splitTensors <- tf$split( y_pred,
+    splitTensors <- tensorflow::tf$split( y_pred,
       num_or_size_splits = c( dimension, dimension, numberOfMixtures ),
       axis = 1L, name = "mdn_coef_split" )
 

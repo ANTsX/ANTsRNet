@@ -13,8 +13,10 @@ License: Apache License (>=2.0)
 LazyLoad: yes
 StagedInstall: no
 Depends:
-    R (>= 3.2), ANTsRCore, ANTsR
+    R (>= 3.2)
 Imports:
+    ANTsRCore,
+    ANTsR,
     knitr,
     keras,
     reticulate (>= 1.6.0.9002),
@@ -25,7 +27,8 @@ Imports:
     methods,
     mvtnorm,
     R6,
-    Rcpp
+    Rcpp,
+    stats
 Suggests:
     ggplot2,
     rmarkdown,

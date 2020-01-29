@@ -5,3 +5,5 @@ _config\.yml$
 _pkgdown.yml
 docs
 ^ANTsRNet\.Rproj$
+^\.github$
+^index\.html$
