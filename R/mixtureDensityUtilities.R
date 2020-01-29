@@ -479,7 +479,12 @@ sampleFromCategoricalDistribution <- function( distribution )
 #'
 #'         https://github.com/cpmpercussion/keras-mdn-layer/
 #'
-#' @param distribution input distribution from which to sample.
+#' @inheritParams splitMixtureParameters
+#' @param temperature the temperature for to adjust the distribution
+#' (default 1.0), passed to \code{\link{mixture_density_network_softmax}}
+#' @param sigmaTemperature multipler to \code{sigma} from the
+#' output of \code{\link{sampleFromCategoricalDistribution}}
+
 #' @return a single sample
 #' @author Tustison NJ
 #' @examples
