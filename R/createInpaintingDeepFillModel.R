@@ -31,7 +31,7 @@
 #'
 #' }
 #'
-#' @name inpaintingDeepFillModel
+#' @name InpaintingDeepFillModel
 NULL
 
 #' @export

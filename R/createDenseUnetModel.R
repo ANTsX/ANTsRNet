@@ -20,7 +20,7 @@
 #' @param numberOfOutputs Meaning depends on the \code{mode}.  For
 #' 'classification' this is the number of segmentation labels.  For 'regression'
 #' this is the number of outputs.
-#' @param numberOfLayersPerDenseBlocks number of dense blocks per layer.
+#' @param numberOfLayersPerDenseBlock number of dense blocks per layer.
 #' @param growthRate number of filters to add for each dense block layer
 #' (default = 48).
 #' @param initialNumberOfFilters number of filters at the beginning
@@ -30,6 +30,10 @@
 #' N is an integer (default = 7).
 #' @param dropoutRate drop out layer rate (default = 0.2).
 #' @param weightDecay weight decay (default = 1e-4).
+#' @param mode A switch to determine the activation function to use.
+#' If \code{classification}, then \code{sigmoid} or \code{softmax}
+#' depending on the \code{numberOfOutputs}, and if
+#' \code{mode = "regression"} then function is \code{linear}
 #' @return an DenseUnet keras model
 #' @author Tustison NJ
 #' @examples
@@ -119,9 +123,10 @@ createDenseUnetModel2D <- function( inputImageSize,
                                     depth = 7,
                                     dropoutRate = 0.0,
                                     weightDecay = 1e-4,
-                                    mode = 'classification'
+                                    mode = c("classification", "regression")
                                   )
 {
+  mode = match.arg(mode)
   K <- keras::backend()
 
   concatenationAxis <- 1
@@ -299,19 +304,20 @@ createDenseUnetModel2D <- function( inputImageSize,
     }
 
   convActivation <- ''
+  mode = match.arg(mode)
   if( mode == 'classification' )
+  {
+    if ( numberOfOutputs == 2 )
     {
-    if( numberOfOutputs == 2 )
-      {
       convActivation <- 'sigmoid'
-      } else {
-      convActivation <- 'softmax'
-      }
-    } else if( mode == 'regression' ) {
-    convActivation <- 'linear'
     } else {
-    stop( 'Error: unrecognized mode.' )
+      convActivation <- 'softmax'
     }
+  } else if( mode == 'regression' ) {
+    convActivation <- 'linear'
+  } else {
+    stop( 'Error: unrecognized mode.' )
+  }
   outputs <- outputs %>%
     layer_conv_2d( filters = numberOfOutputs,
       kernel_size = c( 1, 1 ), activation = convActivation,

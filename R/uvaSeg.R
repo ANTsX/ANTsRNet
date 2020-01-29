@@ -305,7 +305,7 @@ uvaSegTrain <- function( patches,
 #' uvaSegmentation = uvaSeg(tarImg, uvaSegModel, k = 3, getMask( tarImg ) )
 #' }
 #' @export uvaSeg
-#' @importFrom Rcpp cppFunction
+#' @importFrom Rcpp cppFunction sourceCpp
 #' @importFrom utils download.file
 #' @importFrom ANTsRCore antsGetDirection antsGetOrigin resampleImage labelStats
 uvaSeg <- function(

@@ -6,7 +6,7 @@
 #'
 #' \url{https://github.com/XifengGuo/DEC-keras}
 #'
-#' @param numberOfUnitsLayer vector defining the number of units
+#' @param numberOfUnitsPerLayer vector defining the number of units
 #' in the encoding branch
 #' @param activation activation type for the dense layers
 #' @param initializer initializer type for the dense layers

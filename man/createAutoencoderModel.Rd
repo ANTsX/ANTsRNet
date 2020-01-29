@@ -11,12 +11,12 @@ createAutoencoderModel(
 )
 }
 \arguments{
+\item{numberOfUnitsPerLayer}{vector defining the number of units
+in the encoding branch}
+
 \item{activation}{activation type for the dense layers}
 
 \item{initializer}{initializer type for the dense layers}
-
-\item{numberOfUnitsLayer}{vector defining the number of units
-in the encoding branch}
 }
 \value{
 two models:  the encoder and auto-encoder
