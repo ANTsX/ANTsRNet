@@ -6,7 +6,7 @@
 \usage{
 createDenseUnetModel3D(
   inputImageSize,
-  numberOfOutputs = 1,
+  numberOfOutputs = 1L,
   numberOfLayersPerDenseBlock = c(3, 4, 12, 8),
   growthRate = 48,
   initialNumberOfFilters = 96,

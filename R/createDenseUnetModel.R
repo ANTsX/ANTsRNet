@@ -77,7 +77,7 @@
 #'
 #' # Create the model
 #'
-#' model <- createDenseUnetModel2D( c( dim( domainImage ), 1 ),
+#' model <- createDenseUnetModel2D( c( dim( domainImage ), 1L ),
 #'   numberOfOutputs = numberOfLabels )
 #'
 #' metric_multilabel_dice_coefficient <-
@@ -115,7 +115,7 @@
 #' @import keras
 #' @export
 createDenseUnetModel2D <- function( inputImageSize,
-                                    numberOfOutputs = 1,
+                                    numberOfOutputs = 1L,
                                     numberOfLayersPerDenseBlock = c( 6, 12, 36, 24 ),
                                     growthRate = 48,
                                     initialNumberOfFilters = 96,
@@ -135,7 +135,8 @@ createDenseUnetModel2D <- function( inputImageSize,
     concatenationAxis <- -1
   }
 
-  convolutionFactory2D <- function( model, numberOfFilters, kernelSize = c( 3, 3 ),
+  convolutionFactory2D <- function( model, numberOfFilters,
+                                    kernelSize = c( 3L, 3L ),
                                     dropoutRate = 0.0, weightDecay = 1e-4 )
   {
     # Bottleneck layer
@@ -143,8 +144,8 @@ createDenseUnetModel2D <- function( inputImageSize,
     model <- model %>% layer_batch_normalization( axis = concatenationAxis )
     model <- model %>% layer_scale( axis = concatenationAxis )
     model <- model %>% layer_activation( activation = 'relu' )
-    model <- model %>% layer_conv_2d( filters = numberOfFilters * 4,
-                                      kernel_size = c( 1, 1 ), use_bias = FALSE )
+    model <- model %>% layer_conv_2d( filters = as.integer(numberOfFilters * 4),
+                                      kernel_size = c( 1L, 1L ), use_bias = FALSE )
 
     if( dropoutRate > 0.0 )
     {
@@ -157,8 +158,8 @@ createDenseUnetModel2D <- function( inputImageSize,
                                                   epsilon = 1.1e-5 )
     model <- model %>% layer_scale( axis = concatenationAxis )
     model <- model %>% layer_activation( activation = 'relu' )
-    model <- model %>% layer_zero_padding_2d( padding = c( 1, 1 ) )
-    model <- model %>% layer_conv_2d( filters = numberOfFilters,
+    model <- model %>% layer_zero_padding_2d( padding = c( 1L, 1L ) )
+    model <- model %>% layer_conv_2d( filters = as.integer(numberOfFilters),
                                       kernel_size = kernelSize, use_bias = FALSE )
 
     if( dropoutRate > 0.0 )
@@ -179,15 +180,15 @@ createDenseUnetModel2D <- function( inputImageSize,
     model <- model %>% layer_activation( activation = 'relu' )
     model <- model %>% layer_conv_2d( filters =
                                         as.integer( numberOfFilters * compressionRate ),
-                                      kernel_size = c( 1, 1 ), use_bias = FALSE )
+                                      kernel_size = c( 1L, 1L ), use_bias = FALSE )
 
     if( dropoutRate > 0.0 )
     {
       model <- model %>% layer_dropout( rate = dropoutRate )
     }
 
-    model <- model %>% layer_average_pooling_2d( pool_size = c( 2, 2 ),
-                                                 strides = c( 2, 2 ) )
+    model <- model %>% layer_average_pooling_2d( pool_size = c( 2L, 2L ),
+                                                 strides = c( 2L, 2L ) )
     return( model )
   }
 
@@ -198,7 +199,7 @@ createDenseUnetModel2D <- function( inputImageSize,
     for( i in seq_len( depth ) )
     {
       model <- convolutionFactory2D( model, numberOfFilters = growthRate,
-                                     kernelSize = c( 3, 3 ), dropoutRate = dropoutRate,
+                                     kernelSize = c( 3L, 3L ), dropoutRate = dropoutRate,
                                      weightDecay = weightDecay )
       denseBlockLayers[[i+1]] <- model
       model <- layer_concatenate( denseBlockLayers, axis = concatenationAxis )
@@ -223,9 +224,11 @@ createDenseUnetModel2D <- function( inputImageSize,
 
   # Initial convolution
 
-  outputs <- inputs %>% layer_zero_padding_2d( padding = c( 3, 3 ) )
+  concatenationAxis = as.integer(concatenationAxis)
+  outputs <- inputs %>% layer_zero_padding_2d( padding = c( 3L, 3L ) )
   outputs <- outputs %>% layer_conv_2d( filters = initialNumberOfFilters,
-                                        kernel_size = c( 7, 7 ), strides = c( 2, 2 ), use_bias = FALSE )
+                                        kernel_size = c( 7L, 7L ),
+                                        strides = c( 2L, 2L ), use_bias = FALSE )
   outputs <- outputs %>% layer_batch_normalization( epsilon = 1.1e-5,
                                                     axis = concatenationAxis )
   outputs <- outputs %>% layer_scale( axis = concatenationAxis )
@@ -234,9 +237,9 @@ createDenseUnetModel2D <- function( inputImageSize,
   boxLayers[[boxCount]] <- outputs
   boxCount <- boxCount + 1
 
-  outputs <- outputs %>% layer_zero_padding_2d( padding = c( 1, 1 ) )
-  outputs <- outputs %>% layer_max_pooling_2d( pool_size = c( 3, 3 ),
-                                               strides = c( 2, 2 ) )
+  outputs <- outputs %>% layer_zero_padding_2d( padding = c( 1L, 1L ) )
+  outputs <- outputs %>% layer_max_pooling_2d( pool_size = c( 3L, 3L ),
+                                               strides = c( 2L, 2L ) )
 
   # Add dense blocks
 
@@ -262,29 +265,34 @@ createDenseUnetModel2D <- function( inputImageSize,
     nFilters <- as.integer( denseBlockLayer$numberOfFilters * ( 1 - reductionRate ) )
   }
 
-  denseBlockLayer <- createDenseBlocks2D( outputs, numberOfFilters = nFilters,
-                                          depth = numberOfLayersPerDenseBlock[numberOfDenseBlocks],
-                                          growthRate = growthRate, dropoutRate = dropoutRate,
-                                          weightDecay = weightDecay )
+  denseBlockLayer <- createDenseBlocks2D(
+    outputs, numberOfFilters = nFilters,
+    depth = numberOfLayersPerDenseBlock[numberOfDenseBlocks],
+    growthRate = growthRate, dropoutRate = dropoutRate,
+    weightDecay = weightDecay )
   outputs <- denseBlockLayer$model
   nFilters <- denseBlockLayer$numberOfFilters
 
-  outputs <- outputs %>% layer_batch_normalization( epsilon = 1.1e-5,
-                                                    axis = concatenationAxis )
+  outputs <- outputs %>% layer_batch_normalization(
+    epsilon = 1.1e-5,
+    axis = concatenationAxis )
   outputs <- outputs %>% layer_scale( axis = concatenationAxis )
   outputs <- outputs %>% layer_activation( activation = "relu" )
 
   boxLayers[[boxCount]] <- outputs
   boxCount <- boxCount - 1
 
-  localNumberOfFilters <- tail( unlist( K$int_shape( boxLayers[[boxCount+1]] ) ), 1 )
-  localLayer <- boxLayers[[boxCount]] %>% layer_conv_2d( filters = localNumberOfFilters,
-                                                         kernel_size = c( 1, 1 ), padding = 'same', kernel_initializer = 'normal' )
+  localNumberOfFilters <- tail( unlist(
+    K$int_shape( boxLayers[[boxCount+1]] ) ), 1 )
+  localLayer <- boxLayers[[boxCount]] %>% layer_conv_2d(
+    filters = localNumberOfFilters,
+    kernel_size = c( 1L, 1L ), padding = 'same',
+    kernel_initializer = 'normal' )
   boxCount <- boxCount - 1
 
   for( i in seq_len( numberOfDenseBlocks - 1 ) )
   {
-    upsamplingLayer <- outputs %>% layer_upsampling_2d( size = c( 2, 2 ) )
+    upsamplingLayer <- outputs %>% layer_upsampling_2d( size = c( 2L, 2L ) )
     outputs <- layer_add( list( localLayer, upsamplingLayer ) )
 
     localLayer <- boxLayers[[boxCount]]
@@ -292,7 +300,7 @@ createDenseUnetModel2D <- function( inputImageSize,
 
     localNumberOfFilters <- tail( unlist( K$int_shape( boxLayers[[boxCount+1]] ) ), 1 )
     outputs <- outputs %>% layer_conv_2d( filters = localNumberOfFilters,
-                                          kernel_size = c( 3, 3 ), padding = 'same', kernel_initializer = 'normal' )
+                                          kernel_size = c( 3L, 3L ), padding = 'same', kernel_initializer = 'normal' )
 
     if( i == numberOfDenseBlocks - 1 )
     {
@@ -318,9 +326,11 @@ createDenseUnetModel2D <- function( inputImageSize,
   } else {
     stop( 'Error: unrecognized mode.' )
   }
+  numberOfOutputs = as.integer(numberOfOutputs)
   outputs <- outputs %>%
     layer_conv_2d( filters = numberOfOutputs,
-                   kernel_size = c( 1, 1 ), activation = convActivation,
+                   kernel_size = c( 1L, 1L ),
+                   activation = convActivation,
                    kernel_initializer = 'normal' )
 
   denseUnetModel <- keras_model( inputs = inputs, outputs = outputs )
@@ -392,7 +402,7 @@ createDenseUnetModel2D <- function( inputImageSize,
 #' @import keras
 #' @export
 createDenseUnetModel3D <- function( inputImageSize,
-                                    numberOfOutputs = 1,
+                                    numberOfOutputs = 1L,
                                     numberOfLayersPerDenseBlock = c( 3, 4, 12, 8 ),
                                     growthRate = 48,
                                     initialNumberOfFilters = 96,
@@ -412,16 +422,17 @@ createDenseUnetModel3D <- function( inputImageSize,
     concatenationAxis <- -1
   }
 
-  convolutionFactory3D <- function( model, numberOfFilters, kernelSize = c( 3, 3, 3 ),
+  convolutionFactory3D <- function( model, numberOfFilters, kernelSize = c( 3L, 3L, 3L ),
                                     dropoutRate = 0.0, weightDecay = 1e-4 )
   {
     # Bottleneck layer
+    concatenationAxis = as.integer(concatenationAxis)
 
     model <- model %>% layer_batch_normalization( axis = concatenationAxis )
     model <- model %>% layer_scale( axis = concatenationAxis )
     model <- model %>% layer_activation( activation = 'relu' )
-    model <- model %>% layer_conv_3d( filters = numberOfFilters * 4,
-                                      kernel_size = c( 1, 1, 1 ), use_bias = FALSE )
+    model <- model %>% layer_conv_3d( filters = as.integer(numberOfFilters * 4),
+                                      kernel_size = c( 1L, 1L, 1L ), use_bias = FALSE )
 
     if( dropoutRate > 0.0 )
     {
@@ -434,9 +445,10 @@ createDenseUnetModel3D <- function( inputImageSize,
                                                   epsilon = 1.1e-5 )
     model <- model %>% layer_scale( axis = concatenationAxis )
     model <- model %>% layer_activation( activation = 'relu' )
-    model <- model %>% layer_zero_padding_3d( padding = c( 1, 1, 1 ) )
+    model <- model %>% layer_zero_padding_3d( padding = c( 1L, 1L, 1L ) )
     model <- model %>% layer_conv_3d( filters = numberOfFilters,
-                                      kernel_size = kernelSize, use_bias = FALSE )
+                                      kernel_size = kernelSize,
+                                      use_bias = FALSE )
 
     if( dropoutRate > 0.0 )
     {
@@ -456,15 +468,15 @@ createDenseUnetModel3D <- function( inputImageSize,
     model <- model %>% layer_activation( activation = 'relu' )
     model <- model %>% layer_conv_3d( filters =
                                         as.integer( numberOfFilters * compressionRate ),
-                                      kernel_size = c( 1, 1, 1 ), use_bias = FALSE )
+                                      kernel_size = c( 1L, 1L, 1L ), use_bias = FALSE )
 
     if( dropoutRate > 0.0 )
     {
       model <- model %>% layer_dropout( rate = dropoutRate )
     }
 
-    model <- model %>% layer_average_pooling_3d( pool_size = c( 2, 2, 2 ),
-                                                 strides = c( 2, 2, 2 ) )
+    model <- model %>% layer_average_pooling_3d( pool_size = c( 2L, 2L, 2L ),
+                                                 strides = c( 2L, 2L, 2L ) )
     return( model )
   }
 
@@ -475,7 +487,7 @@ createDenseUnetModel3D <- function( inputImageSize,
     for( i in seq_len( depth ) )
     {
       model <- convolutionFactory3D( model, numberOfFilters = growthRate,
-                                     kernelSize = c( 3, 3, 3 ), dropoutRate = dropoutRate,
+                                     kernelSize = c( 3L, 3L, 3L ), dropoutRate = dropoutRate,
                                      weightDecay = weightDecay )
       denseBlockLayers[[i+1]] <- model
       model <- layer_concatenate( denseBlockLayers, axis = concatenationAxis )
@@ -500,9 +512,10 @@ createDenseUnetModel3D <- function( inputImageSize,
 
   # Initial convolution
 
-  outputs <- inputs %>% layer_zero_padding_3d( padding = c( 3, 3, 3 ) )
+  outputs <- inputs %>% layer_zero_padding_3d( padding = c( 3L, 3L, 3L ) )
   outputs <- outputs %>% layer_conv_3d( filters = initialNumberOfFilters,
-                                        kernel_size = c( 7, 7, 7 ), strides = c( 2, 2, 2 ), use_bias = FALSE )
+                                        kernel_size = c( 7L, 7L, 7L ),
+                                        strides = c( 2L, 2L, 2L ), use_bias = FALSE )
   outputs <- outputs %>% layer_batch_normalization( epsilon = 1.1e-5,
                                                     axis = concatenationAxis )
   outputs <- outputs %>% layer_scale( axis = concatenationAxis )
@@ -511,9 +524,9 @@ createDenseUnetModel3D <- function( inputImageSize,
   boxLayers[[boxCount]] <- outputs
   boxCount <- boxCount + 1
 
-  outputs <- outputs %>% layer_zero_padding_3d( padding = c( 1, 1, 1 ) )
-  outputs <- outputs %>% layer_max_pooling_3d( pool_size = c( 3, 3, 3 ),
-                                               strides = c( 2, 2, 2 ) )
+  outputs <- outputs %>% layer_zero_padding_3d( padding = c( 1L, 1L, 1L ) )
+  outputs <- outputs %>% layer_max_pooling_3d( pool_size = c( 3L, 3L, 3L ),
+                                               strides = c( 2L, 2L, 2L ) )
 
   # Add dense blocks
 
@@ -556,12 +569,14 @@ createDenseUnetModel3D <- function( inputImageSize,
 
   localNumberOfFilters <- tail( unlist( K$int_shape( boxLayers[[boxCount+1]] ) ), 1 )
   localLayer <- boxLayers[[boxCount]] %>% layer_conv_3d( filters = localNumberOfFilters,
-                                                         kernel_size = c( 1, 1, 1 ), padding = 'same', kernel_initializer = 'normal' )
+                                                         kernel_size = c( 1L, 1L, 1L ),
+                                                         padding = 'same',
+                                                         kernel_initializer = 'normal' )
   boxCount <- boxCount - 1
 
   for( i in seq_len( numberOfDenseBlocks - 1 ) )
   {
-    upsamplingLayer <- outputs %>% layer_upsampling_3d( size = c( 2, 2, 2 ) )
+    upsamplingLayer <- outputs %>% layer_upsampling_3d( size = c( 2L, 2L, 2L ) )
     outputs <- layer_add( list( localLayer, upsamplingLayer ) )
 
     localLayer <- boxLayers[[boxCount]]
@@ -569,7 +584,8 @@ createDenseUnetModel3D <- function( inputImageSize,
 
     localNumberOfFilters <- tail( unlist( K$int_shape( boxLayers[[boxCount+1]] ) ), 1 )
     outputs <- outputs %>% layer_conv_3d( filters = localNumberOfFilters,
-                                          kernel_size = c( 3, 3, 3 ), padding = 'same', kernel_initializer = 'normal' )
+                                          kernel_size = c( 3L, 3L, 3L ), padding = 'same',
+                                          kernel_initializer = 'normal' )
 
     if( i == numberOfDenseBlocks )
     {
@@ -596,7 +612,7 @@ createDenseUnetModel3D <- function( inputImageSize,
   }
   outputs <- outputs %>%
     layer_conv_3d( filters = numberOfOutputs,
-                   kernel_size = c( 1, 1, 1 ), activation = convActivation,
+                   kernel_size = c( 1L, 1L, 1L ), activation = convActivation,
                    kernel_initializer = 'normal' )
 
   denseUnetModel <- keras_model( inputs = inputs, outputs = outputs )

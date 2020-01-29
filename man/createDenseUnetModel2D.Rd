@@ -6,7 +6,7 @@
 \usage{
 createDenseUnetModel2D(
   inputImageSize,
-  numberOfOutputs = 1,
+  numberOfOutputs = 1L,
   numberOfLayersPerDenseBlock = c(6, 12, 36, 24),
   growthRate = 48,
   initialNumberOfFilters = 96,
@@ -106,7 +106,7 @@ X_train <- ( X_train - mean( X_train ) ) / sd( X_train )
 
 # Create the model
 
-model <- createDenseUnetModel2D( c( dim( domainImage ), 1 ),
+model <- createDenseUnetModel2D( c( dim( domainImage ), 1L ),
   numberOfOutputs = numberOfLabels )
 
 metric_multilabel_dice_coefficient <-
