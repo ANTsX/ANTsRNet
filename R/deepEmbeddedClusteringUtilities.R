@@ -3,8 +3,6 @@
 #'
 #' @docType class
 #'
-#' @section Usage:
-#' \preformatted{outputs <- layer_clustering( numberOfClusters )}
 #'
 #' @section Arguments:
 #' \describe{
@@ -110,7 +108,6 @@ layer_clustering <- function( object,
 #'
 #' @docType class
 #'
-#' @section Usage:
 #'
 #' @section Arguments:
 #' \describe{

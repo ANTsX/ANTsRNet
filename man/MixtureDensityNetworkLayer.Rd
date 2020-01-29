@@ -10,15 +10,10 @@
 \description{
 Mixture density network layer
 }
-\section{Usage}{
-
-\preformatted{outputs <- layer_mixture_density( inputs, resampledSize )}
-}
-
 \section{Arguments}{
 
 \describe{
-\item{outputDimensino}{}
+\item{outputDimension}{}
 \item{numberOfMixtures}{}
 }
 }

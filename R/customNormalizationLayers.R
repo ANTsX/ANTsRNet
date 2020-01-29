@@ -10,9 +10,6 @@
 #'
 #' @docType class
 #'
-#' @section Usage:
-#' \preformatted{inputs %>% layer_instance_normalization()
-#'              }
 #'
 #' @section Arguments:
 #' \describe{

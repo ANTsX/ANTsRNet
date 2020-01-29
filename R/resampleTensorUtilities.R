@@ -188,11 +188,6 @@ resampleTensorLike <- function( inputTensor, referenceTensor, interpolationType 
 #'
 #' @docType class
 #'
-#' @section Usage:
-#' \preformatted{resampledTensor <- inputs %>% layer_resample_tensor_2d( shape,
-#'      interpolationType = 'nearestNeighbor' )
-#'
-#' }
 #'
 #' @section Arguments:
 #' \describe{
@@ -337,11 +332,6 @@ layer_resample_tensor_3d <- function(
 #'
 #' @docType class
 #'
-#' @section Usage:
-#' \preformatted{resampledTensor <- inputs %>% layer_resample_tensor_3d( shape,
-#'      interpolationType = 'nearestNeighbor' )
-#'
-#' }
 #'
 #' @section Arguments:
 #' \describe{

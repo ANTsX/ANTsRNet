@@ -15,10 +15,6 @@ and ported from the (TensorFlow) implementation:
 
 https://github.com/JiahuiYu/generative_inpainting
 }
-\section{Usage}{
-
-}
-
 \section{Arguments}{
 
 \describe{

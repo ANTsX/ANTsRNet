@@ -11,7 +11,6 @@
 #'
 #' @docType class
 #'
-#' @section Usage:
 #'
 #' @section Arguments:
 #' \describe{
@@ -954,7 +953,7 @@ layer_contextual_attention_3d <- function(
 #' @docType class
 #'
 #' @section Usage:
-#' \preformatted{layer <- ContextualAttentionLayer2D$new( scale )
+#' \preformatted{layer <- ContextualAttentionLayer3D$new( scale )
 #'
 #' layer$call( x, mask = NULL )
 #' layer$build( input_shape )

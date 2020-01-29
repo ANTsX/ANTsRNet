@@ -11,14 +11,6 @@ a resampled version of the input tensor
 Creates a lambda layer which interpolates/resizes an input tensor based
 on the specified shape
 }
-\section{Usage}{
-
-\preformatted{resampledTensor <- inputs %>% layer_resample_tensor_2d( shape,
-     interpolationType = 'nearestNeighbor' )
-
-}
-}
-
 \section{Arguments}{
 
 \describe{

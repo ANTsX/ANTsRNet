@@ -2,8 +2,6 @@
 #'
 #' @docType class
 #'
-#' @section Usage:
-#' \preformatted{outputs <- layer_spatial_transformer_2d( inputs, resampledSize )}
 #'
 #' @section Arguments:
 #' \describe{
@@ -238,8 +236,6 @@ layer_spatial_transformer_3d <- function(
 #'
 #' @docType class
 #'
-#' @section Usage:
-#' \preformatted{outputs <- layer_spatial_transformer_3d( inputs, resampledSize )}
 #'
 #' @section Arguments:
 #' \describe{

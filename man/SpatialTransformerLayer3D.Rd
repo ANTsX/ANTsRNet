@@ -10,11 +10,6 @@ resampled batch images.
 \description{
 Spatial transfomer layer (3-D)
 }
-\section{Usage}{
-
-\preformatted{outputs <- layer_spatial_transformer_3d( inputs, resampledSize )}
-}
-
 \section{Arguments}{
 
 \describe{

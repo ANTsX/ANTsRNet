@@ -10,11 +10,6 @@ clustering layer
 \description{
 Clustering layer for Deep Embedded Clustering
 }
-\section{Usage}{
-
-\preformatted{outputs <- layer_clustering( numberOfClusters )}
-}
-
 \section{Arguments}{
 
 \describe{

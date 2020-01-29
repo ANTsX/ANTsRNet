@@ -15,10 +15,6 @@ and ported from the Keras (python) implementation:
 
 https://github.com/eriklindernoren/Keras-GAN/blob/master/wgan_gp/wgan_gp.py
 }
-\section{Usage}{
-
-}
-
 \section{Arguments}{
 
 \describe{

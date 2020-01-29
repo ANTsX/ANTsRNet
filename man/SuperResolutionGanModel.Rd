@@ -14,10 +14,6 @@ and ported from the Keras (python) implementation:
 
 https://github.com/eriklindernoren/Keras-GAN/blob/master/srgan/srgan.py
 }
-\section{Usage}{
-
-}
-
 \section{Arguments}{
 
 \describe{

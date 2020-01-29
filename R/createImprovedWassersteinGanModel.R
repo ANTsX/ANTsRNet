@@ -11,7 +11,6 @@
 #'
 #' @docType class
 #'
-#' @section Usage:
 #'
 #' @section Arguments:
 #' \describe{

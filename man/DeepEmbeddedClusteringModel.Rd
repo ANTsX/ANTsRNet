@@ -7,10 +7,6 @@
 \description{
 Deep embedded clustering (DEC) model class
 }
-\section{Usage}{
-
-}
-
 \section{Arguments}{
 
 \describe{

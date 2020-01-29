@@ -19,7 +19,7 @@ available here:\preformatted{    \code{https://arxiv.org/abs/1801.07892}
 }
 \section{Usage}{
 
-\preformatted{layer <- ContextualAttentionLayer2D$new( scale )
+\preformatted{layer <- ContextualAttentionLayer3D$new( scale )
 
 layer$call( x, mask = NULL )
 layer$build( input_shape )
