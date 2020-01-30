@@ -25,8 +25,7 @@
 #' @author Avants BB
 #' @examples
 #'
-#' \donttest
-#' {
+#' \donttest{
 #'
 #' library(ANTsR)
 #' img <- ri( 1 ) %>% resampleImage( c(4,4) ) %>% iMath( "Normalize" )
