@@ -26,6 +26,7 @@
 #' Default = 0.0.
 #' @param mode 'classification' or 'regression'.  Default = 'classification'.
 #' @return an AlexNet keras model
+#' @param batch_size batch size to pass to first layer
 #' @author Tustison NJ
 #' @examples
 #'
@@ -74,7 +75,8 @@ createAlexNetModel2D <- function( inputImageSize,
                                   numberOfClassificationLabels = 1000,
                                   numberOfDenseUnits = 4096,
                                   dropoutRate = 0.0,
-                                  mode = c("classification", "regression")
+                                  mode = c("classification", "regression"),
+                                  batch_size = NULL
                                 )
 {
 
@@ -145,7 +147,8 @@ createAlexNetModel2D <- function( inputImageSize,
 
   # Conv1
   outputs <- inputs %>% layer_conv_2d( filters = 96,
-    kernel_size = c( 11, 11 ), strides = c( 4, 4 ), activation = 'relu' )
+    kernel_size = c( 11, 11 ), strides = c( 4, 4 ), activation = 'relu',
+    batch_size = batch_size)
 
   # Conv2
   outputs <- outputs %>% layer_max_pooling_2d( pool_size = c( 3, 3 ),
@@ -265,6 +268,7 @@ createAlexNetModel2D <- function( inputImageSize,
 #' @param numberOfDenseUnits number of dense units.
 #' @param dropoutRate optional regularization parameter between \verb{[0, 1]}.
 #' Default = 0.0.
+#' @param batch_size batch size to pass to first layer
 #' @param mode 'classification' or 'regression'.  Default = 'classification'.
 #' @return an AlexNet keras model
 #' @author Tustison NJ
@@ -315,7 +319,8 @@ createAlexNetModel3D <- function( inputImageSize,
                                   numberOfClassificationLabels = 1000,
                                   numberOfDenseUnits = 4096,
                                   dropoutRate = 0.0,
-                                  mode = 'classification'
+                                  mode = 'classification',
+                                  batch_size = NULL
                                 )
 {
 
@@ -387,7 +392,8 @@ createAlexNetModel3D <- function( inputImageSize,
 
   # Conv1
   outputs <- inputs %>% layer_conv_3d( filters = 96,
-    kernel_size = c( 11, 11, 11 ), strides = c( 4, 4, 4 ), activation = 'relu' )
+    kernel_size = c( 11, 11, 11 ), strides = c( 4, 4, 4 ),
+    activation = 'relu', batch_size = batch_size)
 
   # Conv2
   outputs <- outputs %>% layer_max_pooling_3d( pool_size = c( 3, 3, 3 ),

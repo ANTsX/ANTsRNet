@@ -9,7 +9,8 @@ createAlexNetModel3D(
   numberOfClassificationLabels = 1000,
   numberOfDenseUnits = 4096,
   dropoutRate = 0,
-  mode = "classification"
+  mode = "classification",
+  batch_size = NULL
 )
 }
 \arguments{
@@ -26,6 +27,8 @@ the number of channels (e.g., red, green, and blue).  The batch size
 Default = 0.0.}
 
 \item{mode}{'classification' or 'regression'.  Default = 'classification'.}
+
+\item{batch_size}{batch size to pass to first layer}
 }
 \value{
 an AlexNet keras model
