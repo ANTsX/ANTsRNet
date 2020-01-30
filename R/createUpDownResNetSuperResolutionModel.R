@@ -20,8 +20,14 @@
 #' @return a keras model for EDSR image super resolution
 #' @author Tustison NJ, Avants BB
 #' @examples
-#' \dontrun{
-#' }
+#' createEnhancedDeepSuperResolutionModel2D(c( 28, 28, 1 ))
+#' createEnhancedDeepSuperResolutionModel2D(c( 28, 28, 1 ),
+#' doBatchNormalization = TRUE,
+#' interpolation = "conv", scale = 4)
+#' createEnhancedDeepSuperResolutionModel2D(c( 28, 28, 1 ),
+#' doBatchNormalization = TRUE,
+#' numberOfLossFunctions = 2,
+#' interpolation = "conv", scale = 8)
 #' @import keras
 #' @export
 createEnhancedDeepSuperResolutionModel2D <- function(
@@ -33,72 +39,79 @@ createEnhancedDeepSuperResolutionModel2D <- function(
   numberOfLossFunctions = 1,
   numberOfOutputChannels = 1,
   doBatchNormalization = FALSE,
-  interpolation = 'bilinear' )
-{
+  interpolation = c("bilinear", "nearest", "conv")
+) {
 
-  residualBlock2D <- function( model, numberOfFilters, convolutionKernelSize,
-			     doBatchNormalization = FALSE )
-    {
+  interpolation = match.arg(interpolation)
+  residualBlock2D <- function(
+    model, numberOfFilters, convolutionKernelSize,
+    doBatchNormalization = FALSE ) {
     block <- model %>% layer_conv_2d( filters = numberOfFilters,
-      kernel_size = convolutionKernelSize, activation = 'relu',
-      padding = 'same' )
+                                      kernel_size = convolutionKernelSize, activation = 'relu',
+                                      padding = 'same' )
     block <- block %>% layer_conv_2d( filters = numberOfFilters,
-      kernel_size = convolutionKernelSize, activation = 'linear',
-      padding = 'same' )
+                                      kernel_size = convolutionKernelSize, activation = 'linear',
+                                      padding = 'same' )
     if ( doBatchNormalization ) block <- block %>% layer_batch_normalization()
     block <- layer_add( list( model, block ) )
 
     return( block )
-    }
+  }
 
-  upscaleBlock2D <- function( model,
-    numberOfFilters, nChannels,
+  upscaleBlock2D <- function(
+    model,
+    numberOfFilters,
+    # nChannels,
     convolutionKernelSize, scale = 2,
     interpolation = "bilinear" )
-    {
+  {
     block <- model %>% layer_upsampling_2d( size = c( scale, scale ) )
     return( block )
-    }
+  }
 
-  upscaleBlock2DConv <- function( model,
+  upscaleBlock2DConv <- function(
+    model,
     numberOfFilters, scale = 2 ) {
     kernelSize = c( 4, 4 )
     strides =  c( 2, 2 )
     block <- model %>% layer_conv_2d_transpose( filters = numberOfFilters,
-      kernel_size = kernelSize, strides = strides, activation = 'relu',
-      kernel_initializer = 'glorot_uniform', padding = 'same' )
+                                                kernel_size = kernelSize, strides = strides, activation = 'relu',
+                                                kernel_initializer = 'glorot_uniform', padding = 'same' )
     if ( scale == 4 )
-        block <- block %>% layer_conv_2d_transpose( filters = numberOfFilters,
-          kernel_size = kernelSize, strides = strides, activation = 'relu',
-          kernel_initializer = 'glorot_uniform', padding = 'same' )
+      block <- block %>% layer_conv_2d_transpose( filters = numberOfFilters,
+                                                  kernel_size = kernelSize, strides = strides, activation = 'relu',
+                                                  kernel_initializer = 'glorot_uniform', padding = 'same' )
     if ( scale == 8 )
-        block <- block %>% layer_conv_2d_transpose( filters = numberOfFilters,
-          kernel_size = kernelSize, strides = strides, activation = 'relu',
-          kernel_initializer = 'glorot_uniform', padding = 'same' )
+      block <- block %>% layer_conv_2d_transpose( filters = numberOfFilters,
+                                                  kernel_size = kernelSize, strides = strides, activation = 'relu',
+                                                  kernel_initializer = 'glorot_uniform', padding = 'same' )
     return( block )
   }
 
   inputs <- layer_input( shape = inputImageSize )
-  outputsX = residualBlocks = layer_conv_2d( inputs,
+  outputsX = residualBlocks = layer_conv_2d(
+    inputs,
     filters = numberOfFilters,
     kernel_size = convolutionKernelSize,
     padding = 'same' )
 
-  for( i in 1:numberOfResidualBlocks )
-    {
+  for( i in 1:numberOfResidualBlocks ){
     residualBlocks <- residualBlock2D(
       residualBlocks, numberOfFilters,
       convolutionKernelSize, doBatchNormalization = doBatchNormalization )
-    }
+  }
   residualBlocks = layer_conv_2d( residualBlocks,
-      filters = numberOfFilters,
-      kernel_size = convolutionKernelSize,
-      padding = 'same' )
+                                  filters = numberOfFilters,
+                                  kernel_size = convolutionKernelSize,
+                                  padding = 'same' )
   outputsX = layer_add( list( outputsX, residualBlocks ) )
 
   if ( interpolation != 'conv' )
-    outputs <- upscaleBlock2D( outputsX, numberOfFilters,
-          convolutionKernelSize, scale = scale, interpolation = interpolation )
+    outputs <- upscaleBlock2D( model = outputsX,
+                               # nChannels
+                               numberOfFilters = numberOfFilters,
+                               convolutionKernelSize = convolutionKernelSize,
+                               scale = scale, interpolation = interpolation )
   if ( interpolation == 'conv' )
     outputs <- upscaleBlock2DConv( outputsX, numberOfFilters, scale = scale )
 
@@ -112,13 +125,13 @@ createEnhancedDeepSuperResolutionModel2D <- function(
     srModel <- keras_model(
       inputs = inputs,
       outputs = outputs )
-    } else {
-      olist = list()
-      for ( k in 1:numberOfLossFunctions ) olist[[ k ]] = outputs
-      srModel <- keras_model(
-        inputs = inputs,
-        outputs = olist )
-    }
+  } else {
+    olist = list()
+    for ( k in 1:numberOfLossFunctions ) olist[[ k ]] = outputs
+    srModel <- keras_model(
+      inputs = inputs,
+      outputs = olist )
+  }
 
 
   return( srModel )

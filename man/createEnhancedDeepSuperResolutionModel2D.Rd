@@ -13,7 +13,7 @@ createEnhancedDeepSuperResolutionModel2D(
   numberOfLossFunctions = 1,
   numberOfOutputChannels = 1,
   doBatchNormalization = FALSE,
-  interpolation = "bilinear"
+  interpolation = c("bilinear", "nearest", "conv")
 )
 }
 \arguments{
@@ -47,8 +47,14 @@ Creates a keras model of the expanded image super resolution deep learning
 framework based on EDSR.
 }
 \examples{
-\dontrun{
-}
+createEnhancedDeepSuperResolutionModel2D(c( 28, 28, 1 ))
+createEnhancedDeepSuperResolutionModel2D(c( 28, 28, 1 ),
+doBatchNormalization = TRUE,
+interpolation = "conv", scale = 4)
+createEnhancedDeepSuperResolutionModel2D(c( 28, 28, 1 ),
+doBatchNormalization = TRUE,
+numberOfLossFunctions = 2,
+interpolation = "conv", scale = 8)
 }
 \author{
 Tustison NJ, Avants BB

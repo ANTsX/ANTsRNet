@@ -26,9 +26,7 @@
 #' @author Tustison NJ
 #'
 #' @examples
-#' \dontrun{
-#'
-#' }
+#' InpaintingDeepFillModel$new(c( 28, 28, 1 ))
 #'
 #' @name InpaintingDeepFillModel
 NULL

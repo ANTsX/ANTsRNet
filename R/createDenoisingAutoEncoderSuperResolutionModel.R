@@ -14,8 +14,7 @@
 #' @return a keras model for image super resolution
 #' @author Tustison NJ
 #' @examples
-#' \dontrun{
-#' }
+#' createDenoisingAutoEncoderSuperResolutionModel2D(c( 28, 28, 1 ))
 #' @import keras
 #' @export
 createDenoisingAutoEncoderSuperResolutionModel2D <- function( inputImageSize,
@@ -82,8 +81,7 @@ createDenoisingAutoEncoderSuperResolutionModel2D <- function( inputImageSize,
 #' @return a keras model for image super resolution
 #' @author Tustison NJ
 #' @examples
-#' \dontrun{
-#' }
+#' createDenoisingAutoEncoderSuperResolutionModel3D(c( 28, 28, 28, 1 ))
 #' @import keras
 #' @export
 createDenoisingAutoEncoderSuperResolutionModel3D <- function( inputImageSize,

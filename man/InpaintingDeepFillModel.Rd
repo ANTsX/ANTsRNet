@@ -31,9 +31,7 @@ generator and discriminator.}
 }
 
 \examples{
-\dontrun{
-
-}
+InpaintingDeepFillModel$new(c( 28, 28, 1 ))
 
 }
 \author{
