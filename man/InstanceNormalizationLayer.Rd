@@ -47,6 +47,12 @@ error if \code{axis = 0}.}
 \code{$compute_output_shape} computes the output shape.
 }
 
+\examples{
+InstanceNormalizationLayer$new()
+InstanceNormalizationLayer$new(axis = 2L)
+testthat::expect_error(InstanceNormalizationLayer$new(axis = 1L))
+
+}
 \author{
 Tustison NJ
 }

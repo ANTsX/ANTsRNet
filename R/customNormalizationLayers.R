@@ -40,6 +40,10 @@
 #' @author Tustison NJ
 #'
 #' @return an instance normalization layer
+#' @examples
+#' InstanceNormalizationLayer$new()
+#' InstanceNormalizationLayer$new(axis = 2L)
+#' testthat::expect_error(InstanceNormalizationLayer$new(axis = 1L))
 #'
 #' @name InstanceNormalizationLayer
 NULL

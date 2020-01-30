@@ -63,6 +63,12 @@
 #' model <- createGoogLeNetModel2D( inputImageSize = c( resampledImageSize, 1 ),
 #'   numberOfClassificationLabels = numberOfLabels )
 #'
+#' model2 <- createGoogLeNetModel2D( inputImageSize = c( resampledImageSize, 1 ),
+#'   numberOfClassificationLabels = 2 )
+#'
+#' model_reg <- createGoogLeNetModel2D( inputImageSize = c( resampledImageSize, 1 ),
+#'   mode = "regression" )
+#'
 #' model %>% compile( loss = 'categorical_crossentropy',
 #'   optimizer = optimizer_adam( lr = 0.0001 ),
 #'   metrics = c( 'categorical_crossentropy', 'accuracy' ) )
@@ -101,9 +107,10 @@ createGoogLeNetModel2D <- function(
       channelAxis <- 3
     }
 
-    model <- model %>% layer_conv_2d( numberOfFilters,
-                                      kernel_size = kernelSize, padding = padding, strides = strides,
-                                      use_bias = TRUE )
+    model <- model %>% layer_conv_2d(
+      numberOfFilters,
+      kernel_size = kernelSize, padding = padding, strides = strides,
+      use_bias = TRUE )
     model <- model %>% layer_batch_normalization( axis = channelAxis,
                                                   scale = FALSE )
     model <- model %>% layer_activation( activation = 'relu' )
@@ -137,62 +144,86 @@ createGoogLeNetModel2D <- function(
 
   # mixed 0, 1, 2: 35x35x256
   branchLayers <- list()
-  branchLayers[[1]] <- convolutionAndBatchNormalization2D( outputs, numberOfFilters = 64,
-                                                           kernelSize = c( 1, 1 ) )
-  branchLayers[[2]] <- convolutionAndBatchNormalization2D( outputs, numberOfFilters = 48,
-                                                           kernelSize = c( 1, 1 ) )
-  branchLayers[[2]] <- convolutionAndBatchNormalization2D( branchLayers[[2]],
-                                                           numberOfFilters = 64, kernelSize = c( 5, 5 ) )
-  branchLayers[[3]] <- convolutionAndBatchNormalization2D( outputs, numberOfFilters = 64,
-                                                           kernelSize = c( 1, 1 ) )
-  branchLayers[[3]] <- convolutionAndBatchNormalization2D( branchLayers[[3]],
-                                                           numberOfFilters = 96, kernelSize = c( 3, 3 ) )
-  branchLayers[[3]] <- convolutionAndBatchNormalization2D( branchLayers[[3]],
-                                                           numberOfFilters = 96, kernelSize = c( 3, 3 ) )
-  branchLayers[[4]] <- outputs %>% layer_average_pooling_2d( pool_size = c( 3, 3 ),
-                                                             strides = c( 1, 1 ), padding = 'same' )
-  branchLayers[[4]] <- convolutionAndBatchNormalization2D( branchLayers[[4]],
-                                                           numberOfFilters = 32, kernelSize = c( 1, 1 ) )
+  branchLayers[[1]] <- convolutionAndBatchNormalization2D(
+    outputs, numberOfFilters = 64,
+    kernelSize = c( 1, 1 ) )
+  branchLayers[[2]] <- convolutionAndBatchNormalization2D(
+    outputs, numberOfFilters = 48,
+    kernelSize = c( 1, 1 ) )
+  branchLayers[[2]] <- convolutionAndBatchNormalization2D(
+    branchLayers[[2]],
+    numberOfFilters = 64, kernelSize = c( 5, 5 ) )
+  branchLayers[[3]] <- convolutionAndBatchNormalization2D(
+    outputs, numberOfFilters = 64,
+    kernelSize = c( 1, 1 ) )
+  branchLayers[[3]] <- convolutionAndBatchNormalization2D(
+    branchLayers[[3]],
+    numberOfFilters = 96, kernelSize = c( 3, 3 ) )
+  branchLayers[[3]] <- convolutionAndBatchNormalization2D(
+    branchLayers[[3]],
+    numberOfFilters = 96, kernelSize = c( 3, 3 ) )
+  branchLayers[[4]] <- outputs %>% layer_average_pooling_2d(
+    pool_size = c( 3, 3 ),
+    strides = c( 1, 1 ), padding = 'same' )
+  branchLayers[[4]] <- convolutionAndBatchNormalization2D(
+    branchLayers[[4]],
+    numberOfFilters = 32, kernelSize = c( 1, 1 ) )
   outputs <- layer_concatenate( branchLayers, axis = channelAxis )
 
   # mixed 1: 35x35x256
   branchLayers <- list()
-  branchLayers[[1]] <- convolutionAndBatchNormalization2D( outputs, numberOfFilters = 64,
-                                                           kernelSize = c( 1, 1 ) )
-  branchLayers[[2]] <- convolutionAndBatchNormalization2D( outputs, numberOfFilters = 48,
-                                                           kernelSize = c( 1, 1 ) )
-  branchLayers[[2]] <- convolutionAndBatchNormalization2D( branchLayers[[2]],
-                                                           numberOfFilters = 64, kernelSize = c( 5, 5 ) )
-  branchLayers[[3]] <- convolutionAndBatchNormalization2D( outputs, numberOfFilters = 64,
-                                                           kernelSize = c( 1, 1 ) )
-  branchLayers[[3]] <- convolutionAndBatchNormalization2D( branchLayers[[3]],
-                                                           numberOfFilters = 96, kernelSize = c( 3, 3 ) )
-  branchLayers[[3]] <- convolutionAndBatchNormalization2D( branchLayers[[3]],
-                                                           numberOfFilters = 96, kernelSize = c( 3, 3 ) )
-  branchLayers[[4]] <- outputs %>% layer_average_pooling_2d( pool_size = c( 3, 3 ),
-                                                             strides = c( 1, 1 ), padding = 'same' )
-  branchLayers[[4]] <- convolutionAndBatchNormalization2D( branchLayers[[4]],
-                                                           numberOfFilters = 32, kernelSize = c( 1, 1 ) )
+  branchLayers[[1]] <- convolutionAndBatchNormalization2D(
+    outputs, numberOfFilters = 64,
+    kernelSize = c( 1, 1 ) )
+  branchLayers[[2]] <- convolutionAndBatchNormalization2D(
+    outputs, numberOfFilters = 48,
+    kernelSize = c( 1, 1 ) )
+  branchLayers[[2]] <- convolutionAndBatchNormalization2D(
+    branchLayers[[2]],
+    numberOfFilters = 64, kernelSize = c( 5, 5 ) )
+  branchLayers[[3]] <- convolutionAndBatchNormalization2D(
+    outputs, numberOfFilters = 64,
+    kernelSize = c( 1, 1 ) )
+  branchLayers[[3]] <- convolutionAndBatchNormalization2D(
+    branchLayers[[3]],
+    numberOfFilters = 96, kernelSize = c( 3, 3 ) )
+  branchLayers[[3]] <- convolutionAndBatchNormalization2D(
+    branchLayers[[3]],
+    numberOfFilters = 96, kernelSize = c( 3, 3 ) )
+  branchLayers[[4]] <- outputs %>% layer_average_pooling_2d(
+    pool_size = c( 3, 3 ),
+    strides = c( 1, 1 ), padding = 'same' )
+  branchLayers[[4]] <- convolutionAndBatchNormalization2D(
+    branchLayers[[4]],
+    numberOfFilters = 32, kernelSize = c( 1, 1 ) )
   outputs <- layer_concatenate( branchLayers, axis = channelAxis )
 
   # mixed 2: 35x35x256
   branchLayers <- list()
-  branchLayers[[1]] <- convolutionAndBatchNormalization2D( outputs, numberOfFilters = 64,
-                                                           kernelSize = c( 1, 1 ) )
-  branchLayers[[2]] <- convolutionAndBatchNormalization2D( outputs, numberOfFilters = 48,
-                                                           kernelSize = c( 1, 1 ) )
-  branchLayers[[2]] <- convolutionAndBatchNormalization2D( branchLayers[[2]],
-                                                           numberOfFilters = 64, kernelSize = c( 5, 5 ) )
-  branchLayers[[3]] <- convolutionAndBatchNormalization2D( outputs, numberOfFilters = 64,
-                                                           kernelSize = c( 1, 1 ) )
-  branchLayers[[3]] <- convolutionAndBatchNormalization2D( branchLayers[[3]],
-                                                           numberOfFilters = 96, kernelSize = c( 3, 3 ) )
-  branchLayers[[3]] <- convolutionAndBatchNormalization2D( branchLayers[[3]],
-                                                           numberOfFilters = 96, kernelSize = c( 3, 3 ) )
-  branchLayers[[4]] <- outputs %>% layer_average_pooling_2d( pool_size = c( 3, 3 ),
-                                                             strides = c( 1, 1 ), padding = 'same' )
-  branchLayers[[4]] <- convolutionAndBatchNormalization2D( branchLayers[[4]],
-                                                           numberOfFilters = 32, kernelSize = c( 1, 1 ) )
+  branchLayers[[1]] <- convolutionAndBatchNormalization2D(
+    outputs, numberOfFilters = 64,
+    kernelSize = c( 1, 1 ) )
+  branchLayers[[2]] <- convolutionAndBatchNormalization2D(
+    outputs, numberOfFilters = 48,
+    kernelSize = c( 1, 1 ) )
+  branchLayers[[2]] <- convolutionAndBatchNormalization2D(
+    branchLayers[[2]],
+    numberOfFilters = 64, kernelSize = c( 5, 5 ) )
+  branchLayers[[3]] <- convolutionAndBatchNormalization2D(
+    outputs, numberOfFilters = 64,
+    kernelSize = c( 1, 1 ) )
+  branchLayers[[3]] <- convolutionAndBatchNormalization2D(
+    branchLayers[[3]],
+    numberOfFilters = 96, kernelSize = c( 3, 3 ) )
+  branchLayers[[3]] <- convolutionAndBatchNormalization2D(
+    branchLayers[[3]],
+    numberOfFilters = 96, kernelSize = c( 3, 3 ) )
+  branchLayers[[4]] <- outputs %>% layer_average_pooling_2d(
+    pool_size = c( 3, 3 ),
+    strides = c( 1, 1 ), padding = 'same' )
+  branchLayers[[4]] <- convolutionAndBatchNormalization2D(
+    branchLayers[[4]],
+    numberOfFilters = 32, kernelSize = c( 1, 1 ) )
   outputs <- layer_concatenate( branchLayers, axis = channelAxis )
 
   # mixed 3: 17x17x768

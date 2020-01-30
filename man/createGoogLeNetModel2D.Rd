@@ -7,7 +7,7 @@
 createGoogLeNetModel2D(
   inputImageSize,
   numberOfClassificationLabels = 1000,
-  mode = "classification"
+  mode = c("classification", "regression")
 )
 }
 \arguments{
@@ -76,6 +76,12 @@ inputImageSize <- c( dim( X_trainSmall )[2:3], 1 )
 
 model <- createGoogLeNetModel2D( inputImageSize = c( resampledImageSize, 1 ),
   numberOfClassificationLabels = numberOfLabels )
+
+model2 <- createGoogLeNetModel2D( inputImageSize = c( resampledImageSize, 1 ),
+  numberOfClassificationLabels = 2 )
+
+model_reg <- createGoogLeNetModel2D( inputImageSize = c( resampledImageSize, 1 ),
+  mode = "regression" )
 
 model \%>\% compile( loss = 'categorical_crossentropy',
   optimizer = optimizer_adam( lr = 0.0001 ),
