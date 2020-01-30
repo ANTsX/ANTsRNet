@@ -42,7 +42,7 @@ followed by k-means clustering to produce a segmentation and probabilities.
 \dontrun{
 
 library(ANTsR)
-img <- ri( 1 ) \%>\% resampleImage( 4 ) \%>\% iMath( "Normalize" )
+img <- ri( 1 ) \%>\% resampleImage( c(4,4) ) \%>\% iMath( "Normalize" )
 mask = randomMask( getMask( img ), 50 )
 r = c( 3, 3 )
 patch = getNeighborhoodInMask( img, mask, r, boundary.condition = "NA" )
