@@ -37,8 +37,7 @@ framework based on the following python implementation:
 }
 }
 \examples{
-\dontrun{ 
-}
+createExpandedSuperResolutionModel2D(c( 100, 100, 1 ))
 }
 \author{
 Tustison NJ

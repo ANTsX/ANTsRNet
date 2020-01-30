@@ -38,8 +38,7 @@ framework based on the following python implementation:
 }
 }
 \examples{
-\dontrun{ 
-}
+createExpandedSuperResolutionModel3D(c( 100, 100, 100, 1 ))
 }
 \author{
 Tustison NJ
