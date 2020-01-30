@@ -696,6 +696,7 @@ ContextualAttentionLayer2D <- R6::R6Class( "ContextualAttentionLayer2D",
                                                self$stride = stride
                                                self$dilationRate = dilationRate
                                                self$fusionKernelSize = fusionKernelSize
+                                               self
                                              },
 
                                              compute_output_shape = function( input_shape )
@@ -911,6 +912,12 @@ ContextualAttentionLayer2D <- R6::R6Class( "ContextualAttentionLayer2D",
 #' @param trainable Whether the layer weights will be updated during training.
 #'
 #' @return a keras layer tensor
+#' @examples
+#' layer_contextual_attention_2d()
+#' layer_contextual_attention_3d()
+#' keras_model_sequential() %>% layer_contextual_attention_2d(fusionKernelSize = 2)
+#' keras_model_sequential() %>%
+#' layer_contextual_attention_3d()
 #' @export
 layer_contextual_attention_2d <- function(
   object,
@@ -919,7 +926,8 @@ layer_contextual_attention_2d <- function(
   name = NULL, trainable = FALSE ) {
   create_layer( ContextualAttentionLayer2D, object,
                 list( kernelSize = kernelSize, stride = stride,
-                      dilationRate = dilationRate, fusionKernelSize = fusionKernelSize,
+                      dilationRate = dilationRate,
+                      fusionKernelSize = fusionKernelSize,
                       name = name, trainable = trainable )
   )
 }
@@ -1006,6 +1014,7 @@ ContextualAttentionLayer3D <- R6::R6Class(
       self$stride = stride
       self$dilationRate = dilationRate
       self$fusionKernelSize = fusionKernelSize
+      self
     },
 
     compute_output_shape = function( input_shape )

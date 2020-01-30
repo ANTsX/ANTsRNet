@@ -55,3 +55,10 @@ CVPR 2018.
 available here:\preformatted{    \code{https://arxiv.org/abs/1801.07892}
 }
 }
+\examples{
+layer_contextual_attention_2d()
+layer_contextual_attention_3d()
+keras_model_sequential() \%>\% layer_contextual_attention_2d(fusionKernelSize = 2)
+keras_model_sequential() \%>\%
+layer_contextual_attention_3d()
+}
