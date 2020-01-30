@@ -26,6 +26,7 @@
 #' @author Tustison NJ
 #' @examples
 #' createImageSuperResolutionModel2D(c( 100, 100, 1 ))
+#' gc()
 #' @import keras
 #' @export
 createImageSuperResolutionModel2D <- function( inputImageSize,

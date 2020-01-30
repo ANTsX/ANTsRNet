@@ -76,6 +76,7 @@ model \%>\% compile( loss = 'categorical_crossentropy',
   optimizer = optimizer_adam( lr = 0.0001 ),
   metrics = c( 'categorical_crossentropy', 'accuracy' ) )
 gc()
+rm(mnistData); gc()
 # Comment out the rest due to travis build constraints
 
 # track <- model \%>\% fit( X_trainSmall, Y_trainSmall, verbose = 1,

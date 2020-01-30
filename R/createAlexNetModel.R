@@ -57,6 +57,7 @@
 #'   optimizer = optimizer_adam( lr = 0.0001 ),
 #'   metrics = c( 'categorical_crossentropy', 'accuracy' ) )
 #' gc()
+#' rm(mnistData); gc()
 #' # Comment out the rest due to travis build constraints
 #'
 #' # track <- model %>% fit( X_trainSmall, Y_trainSmall, verbose = 1,
@@ -288,7 +289,7 @@ createAlexNetModel2D <- function( inputImageSize,
 #' Y_testSmall <- to_categorical( mnistData$test$y[1:10], numberOfLabels )
 #'
 #' # We add a dimension of 1 to specify the channel size
-#'
+#' rm(mnistData); gc()
 #' inputImageSize <- c( dim( X_trainSmall )[2:3], 1 )
 #'
 #' model <- createAlexNetModel2D( inputImageSize = inputImageSize,
@@ -297,6 +298,7 @@ createAlexNetModel2D <- function( inputImageSize,
 #' model %>% compile( loss = 'categorical_crossentropy',
 #'   optimizer = optimizer_adam( lr = 0.0001 ),
 #'   metrics = c( 'categorical_crossentropy', 'accuracy' ) )
+#' gc()
 #'
 #' track <- model %>% fit( X_trainSmall, Y_trainSmall, verbose = 1,
 #'   epochs = 2, batch_size = 20, shuffle = TRUE, validation_split = 0.25 )
@@ -305,7 +307,7 @@ createAlexNetModel2D <- function( inputImageSize,
 #'
 #' testingMetrics <- model %>% evaluate( X_testSmall, Y_testSmall )
 #' predictedData <- model %>% predict( X_testSmall, verbose = 1 )
-#'
+#' rm(model); gc()
 #' }
 #' @import keras
 #' @export

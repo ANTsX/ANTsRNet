@@ -35,6 +35,7 @@ a keras model for image super resolution
 }
 \examples{
 createDenoisingAutoEncoderSuperResolutionModel3D(c( 28, 28, 28, 1 ))
+gc()
 }
 \author{
 Tustison NJ

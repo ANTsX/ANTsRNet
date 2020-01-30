@@ -82,6 +82,7 @@ createDenoisingAutoEncoderSuperResolutionModel2D <- function( inputImageSize,
 #' @author Tustison NJ
 #' @examples
 #' createDenoisingAutoEncoderSuperResolutionModel3D(c( 28, 28, 28, 1 ))
+#' gc()
 #' @import keras
 #' @export
 createDenoisingAutoEncoderSuperResolutionModel3D <- function( inputImageSize,
