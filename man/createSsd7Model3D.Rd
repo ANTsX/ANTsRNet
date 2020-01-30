@@ -62,8 +62,7 @@ and R implementations:\preformatted{    \url{https://github.com/pierluigiferrari
 }
 }
 \examples{
-\dontrun{
-createSsd7Model2D(c(256, 256, 3), 2)
+\donttest{
 createSsd7Model3D(c(256, 256, 100, 3), 2)
 }
 }

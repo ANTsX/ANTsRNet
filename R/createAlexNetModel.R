@@ -32,6 +32,20 @@
 #' library( ANTsRNet )
 #' library( keras )
 #'
+#' model <- createAlexNetModel2D( inputImageSize = c(256L, 256L, 3L),
+#'   numberOfClassificationLabels = 1000, mode = "regression" )
+#' model <- createAlexNetModel3D( inputImageSize = c(256L, 256L, 20L, 3L),
+#'   numberOfClassificationLabels = 1000, mode = "regression" )
+#'
+#' model <- createAlexNetModel2D( inputImageSize = c(256L, 256L, 3L),
+#'   numberOfClassificationLabels = 2)
+#' model <- createAlexNetModel2D( inputImageSize = c(256L, 256L, 3L),
+#'   numberOfClassificationLabels = 3)
+#' model <- createAlexNetModel3D( inputImageSize = c(256L, 256L, 20L, 3L),
+#'   numberOfClassificationLabels = 2)
+#' model <- createAlexNetModel3D( inputImageSize = c(256L, 256L, 20L, 3L),
+#'   numberOfClassificationLabels = 3)
+#'
 #' mnistData <- dataset_mnist()
 #' numberOfLabels <- 10
 #'
@@ -72,10 +86,11 @@ createAlexNetModel2D <- function( inputImageSize,
                                   numberOfClassificationLabels = 1000,
                                   numberOfDenseUnits = 4096,
                                   dropoutRate = 0.0,
-                                  mode = 'classification'
+                                  mode = c("classification", "regression")
                                 )
 {
 
+  mode = match.arg(mode)
   splitTensor2D <- function( axis = 4, ratioSplit = 1, idSplit = 1 )
     {
     f <- function( X )
