@@ -32,19 +32,6 @@
 #' library( ANTsRNet )
 #' library( keras )
 #'
-#' model <- createAlexNetModel2D( inputImageSize = c(256L, 256L, 3L),
-#'   numberOfClassificationLabels = 1000, mode = "regression" )
-#' model <- createAlexNetModel3D( inputImageSize = c(256L, 256L, 20L, 3L),
-#'   numberOfClassificationLabels = 1000, mode = "regression" )
-#'
-#' model <- createAlexNetModel2D( inputImageSize = c(256L, 256L, 3L),
-#'   numberOfClassificationLabels = 2)
-#' model <- createAlexNetModel2D( inputImageSize = c(256L, 256L, 3L),
-#'   numberOfClassificationLabels = 3)
-#' model <- createAlexNetModel3D( inputImageSize = c(256L, 256L, 20L, 3L),
-#'   numberOfClassificationLabels = 2)
-#' model <- createAlexNetModel3D( inputImageSize = c(256L, 256L, 20L, 3L),
-#'   numberOfClassificationLabels = 3)
 #'
 #' mnistData <- dataset_mnist()
 #' numberOfLabels <- 10
@@ -69,7 +56,7 @@
 #' model %>% compile( loss = 'categorical_crossentropy',
 #'   optimizer = optimizer_adam( lr = 0.0001 ),
 #'   metrics = c( 'categorical_crossentropy', 'accuracy' ) )
-#'
+#' gc()
 #' # Comment out the rest due to travis build constraints
 #'
 #' # track <- model %>% fit( X_trainSmall, Y_trainSmall, verbose = 1,
@@ -79,7 +66,7 @@
 #'
 #' # testingMetrics <- model %>% evaluate( X_testSmall, Y_testSmall )
 #' # predictedData <- model %>% predict( X_testSmall, verbose = 1 )
-#'
+#' rm(model); gc()
 #' @import keras
 #' @export
 createAlexNetModel2D <- function( inputImageSize,
