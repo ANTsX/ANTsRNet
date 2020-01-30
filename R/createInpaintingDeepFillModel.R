@@ -915,9 +915,10 @@ ContextualAttentionLayer2D <- R6::R6Class( "ContextualAttentionLayer2D",
 #' @examples
 #' layer_contextual_attention_2d()
 #' layer_contextual_attention_3d()
-#' keras_model_sequential() %>% layer_contextual_attention_2d(fusionKernelSize = 2)
-#' keras_model_sequential() %>%
-#' layer_contextual_attention_3d()
+#' keras::keras_model_sequential() %>%
+#'     layer_contextual_attention_2d(fusionKernelSize = 2)
+#' keras::keras_model_sequential() %>%
+#'     layer_contextual_attention_3d()
 #' @export
 layer_contextual_attention_2d <- function(
   object,
