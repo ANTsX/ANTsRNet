@@ -7,3 +7,4 @@ docs
 ^ANTsRNet\.Rproj$
 ^\.github$
 ^index\.html$
+^requirements\.txt$

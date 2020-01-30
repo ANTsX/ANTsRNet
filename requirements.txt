@@ -1,0 +1,10 @@
+keras
+h5py 
+pyyaml 
+requests
+Pillow 
+scipy
+tensorflow=2.0.0
+setuptools 
+wheel
+theano
