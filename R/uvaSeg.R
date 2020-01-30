@@ -302,7 +302,7 @@ uvaSegTrain <- function( patches,
 #' mask = randomMask( getMask( img ), 50 )
 #' patch = getNeighborhoodInMask( img, mask, c(3,3), boundary.condition = "NA" )
 #' uvaSegModel = uvaSegTrain( patch, k = 6 )
-#' tarImg = ri( 3 ) %>% %>% resampleImage( c(4,4) )
+#' tarImg = ri( 3 ) %>% resampleImage( c(4,4) )
 #' uvaSegmentation = uvaSeg(tarImg, uvaSegModel, k = 3, getMask( tarImg ) )
 #' }
 #' @export uvaSeg
