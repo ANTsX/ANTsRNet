@@ -5,7 +5,7 @@ Version: 1.1
 Date: 2020-01-29
 Authors@R: c(
     person(c("Nicholas", "J"), "Tustison", role = c("aut", "cre"), email = "ntustison@gmail.com", comment = c(ORCID = "0000-0001-9418-5103")),
-    person(c("Brian", "B"), "Avants", role = c("aut"), email = "stnava@gmail.com", comment = c(ORCID = "0000-0002-4212-3362"))
+    person(c("Brian", "B"), "Avants", role = c("aut"), email = "stnava@gmail.com", comment = c(ORCID = "0000-0002-4212-3362")),
     person("John", "Muschelli", role = "ctb", 
     comment = c(ORCID = "0000-0001-6469-1750"))
     )
