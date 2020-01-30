@@ -40,8 +40,8 @@ framework based on the following python implementation:
 }
 }
 \examples{
-\dontrun{
-}
+inputImageSize = c(256, 256, 30, 1)
+createResNetSuperResolutionModel3D(inputImageSize)
 }
 \author{
 Tustison NJ

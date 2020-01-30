@@ -19,8 +19,7 @@
 #' @return a keras model for ResNet image super resolution
 #' @author Tustison NJ
 #' @examples
-#' \dontrun{
-#' }
+#' createResNetSuperResolutionModel2D(c(256, 256, 3))
 #' @import keras
 #' @export
 createResNetSuperResolutionModel2D <- function( inputImageSize,
@@ -121,8 +120,8 @@ createResNetSuperResolutionModel2D <- function( inputImageSize,
 #' @return a keras model for ResNet image super resolution
 #' @author Tustison NJ
 #' @examples
-#' \dontrun{
-#' }
+#' inputImageSize = c(256, 256, 30, 1)
+#' createResNetSuperResolutionModel3D(inputImageSize)
 #' @import keras
 #' @export
 createResNetSuperResolutionModel3D <- function( inputImageSize,
@@ -164,7 +163,7 @@ createResNetSuperResolutionModel3D <- function( inputImageSize,
       kernel_size = convolutionKernelSize, activation = 'relu',
       padding = 'same' )
 
-    residualBlocks <- residualBlock3D( outputs )
+    residualBlocks <- residualBlock3D( outputs, numberOfFilters, convolutionKernelSize )
     for( i in seq_len( numberOfResidualBlocks ) )
       {
       residualBlocks <- residualBlock3D( residualBlocks, numberOfFilters,

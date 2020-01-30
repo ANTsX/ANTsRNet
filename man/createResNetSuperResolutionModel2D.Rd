@@ -40,8 +40,7 @@ framework based on the following python implementation:
 }
 }
 \examples{
-\dontrun{
-}
+createResNetSuperResolutionModel2D(c(256, 256, 3))
 }
 \author{
 Tustison NJ

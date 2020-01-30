@@ -26,7 +26,7 @@
 #' @author Tustison NJ
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'
 #' library( keras )
 #' library( ANTsRNet )
@@ -34,7 +34,11 @@
 #' keras::backend()$clear_session()
 #'
 #' ganModel <- SuperResolutionGanModel$new(
-#'    lowResolutionImageSize = lowResolutionImageSize )
+#'    lowResolutionImageSize = c( 112, 112, 3 ) )
+#' testthat::expect_error({
+#'  ganModel <- SuperResolutionGanModel$new(
+#'    lowResolutionImageSize = c( 64, 65, 3 ) )
+#'  })
 #' }
 #'
 #' @name SuperResolutionGanModel

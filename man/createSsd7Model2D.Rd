@@ -56,7 +56,7 @@ available here:\preformatted{    \url{https://arxiv.org/abs/1512.02325}
 }
 
 This particular implementation was influenced by the following python
-and R implementations:\preformatted{    \url{https://github.com/pierluigiferrari/ssd_keras}     
+and R implementations:\preformatted{    \url{https://github.com/pierluigiferrari/ssd_keras}
     \url{https://github.com/gsimchoni/ssdkeras}
 }
 }

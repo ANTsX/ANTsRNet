@@ -31,7 +31,7 @@ generator and discriminator.}
 }
 
 \examples{
-\dontrun{
+\donttest{
 
 library( keras )
 library( ANTsRNet )
@@ -39,7 +39,11 @@ library( ANTsRNet )
 keras::backend()$clear_session()
 
 ganModel <- SuperResolutionGanModel$new(
-   lowResolutionImageSize = lowResolutionImageSize )
+   lowResolutionImageSize = c( 112, 112, 3 ) )
+testthat::expect_error({
+ ganModel <- SuperResolutionGanModel$new(
+   lowResolutionImageSize = c( 64, 65, 3 ) )
+ })
 }
 
 }
