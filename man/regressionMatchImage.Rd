@@ -29,6 +29,7 @@ Image intensity normalization by regressing the image
 intensities of the reference image with the source image.
 }
 \examples{
+library(ANTsRCore)
 sourceImage <- antsImageRead( getANTsRData( "r16" ) )
 referenceImage <- antsImageRead( getANTsRData( "r64" ) )
 matchedImage <- regressionMatchImage( sourceImage, referenceImage )

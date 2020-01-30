@@ -12,6 +12,7 @@
 #' @author Avants BB
 #'
 #' @examples
+#' library(ANTsRCore)
 #' sourceImage <- antsImageRead( getANTsRData( "r16" ) )
 #' referenceImage <- antsImageRead( getANTsRData( "r64" ) )
 #' matchedImage <- regressionMatchImage( sourceImage, referenceImage )

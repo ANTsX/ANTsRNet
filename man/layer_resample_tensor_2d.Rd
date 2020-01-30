@@ -8,7 +8,8 @@
 layer_resample_tensor_2d(
   object,
   shape,
-  interpolationType = c("nearestNeighbor", "linear", "cubic"),
+  interpolationType = c("nearestNeighbor", "linear", "cubic", "bicubic", "nearest",
+    "bilinear"),
   name = NULL,
   trainable = FALSE
 )
@@ -16,7 +17,8 @@ layer_resample_tensor_2d(
 layer_resample_tensor_3d(
   object,
   shape,
-  interpolationType = c("nearestNeighbor", "linear", "cubic"),
+  interpolationType = c("nearestNeighbor", "linear", "cubic", "bicubic", "bilinear",
+    "nearest"),
   name = NULL,
   trainable = FALSE
 )
