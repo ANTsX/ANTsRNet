@@ -4,12 +4,16 @@
 \alias{createSsd7Model3D}
 \title{3-D implementation of the SSD 7 deep learning architecture.}
 \usage{
-createSsd7Model3D(inputImageSize, numberOfClassificationLabels,
-  minScale = 0.08, maxScale = 0.96,
-  aspectRatiosPerLayer = list(c("1:1:1", "2:1:1", "1:2:1", "1:1:2"),
-  c("1:1:1", "2:1:1", "1:2:1", "1:1:2"), c("1:1:1", "2:1:1", "1:2:1",
-  "1:1:2"), c("1:1:1", "2:1:1", "1:2:1", "1:1:2")), variances = rep(1,
-  6))
+createSsd7Model3D(
+  inputImageSize,
+  numberOfClassificationLabels,
+  minScale = 0.08,
+  maxScale = 0.96,
+  aspectRatiosPerLayer = list(c("1:1:1", "2:1:1", "1:2:1", "1:1:2"), c("1:1:1", "2:1:1",
+    "1:2:1", "1:1:2"), c("1:1:1", "2:1:1", "1:2:1", "1:1:2"), c("1:1:1", "2:1:1", "1:2:1",
+    "1:1:2")),
+  variances = rep(1, 6)
+)
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
@@ -49,15 +53,19 @@ object detection based on the paper
 W. Liu, D. Anguelov, D. Erhan, C. Szegedy, S. Reed, C-Y. Fu, A. Berg.
 SSD: Single Shot MultiBox Detector.
 
-available here:
-
-\url{https://arxiv.org/abs/1512.02325}
+available here:\preformatted{    \url{https://arxiv.org/abs/1512.02325}
+}
 
 This particular implementation was influenced by the following python
-and R implementations:
-
-\url{https://github.com/pierluigiferrari/ssd_keras}
-\url{https://github.com/gsimchoni/ssdkeras}
+and R implementations:\preformatted{    \url{https://github.com/pierluigiferrari/ssd_keras}
+    \url{https://github.com/gsimchoni/ssdkeras}
+}
+}
+\examples{
+\dontrun{
+createSsd7Model2D(c(256, 256, 3), 2)
+createSsd7Model3D(c(256, 256, 100, 3), 2)
+}
 }
 \author{
 Tustison NJ

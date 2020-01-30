@@ -4,10 +4,18 @@
 \alias{createDenseUnetModel2D}
 \title{2-D implementation of the dense U-net deep learning architecture.}
 \usage{
-createDenseUnetModel2D(inputImageSize, numberOfOutputs = 1,
-  numberOfLayersPerDenseBlock = c(6, 12, 36, 24), growthRate = 48,
-  initialNumberOfFilters = 96, reductionRate = 0, depth = 7,
-  dropoutRate = 0, weightDecay = 1e-04, mode = "classification")
+createDenseUnetModel2D(
+  inputImageSize,
+  numberOfOutputs = 1L,
+  numberOfLayersPerDenseBlock = c(6, 12, 36, 24),
+  growthRate = 48,
+  initialNumberOfFilters = 96,
+  reductionRate = 0,
+  depth = 7,
+  dropoutRate = 0,
+  weightDecay = 1e-04,
+  mode = c("classification", "regression")
+)
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
@@ -17,6 +25,8 @@ the number of channels (e.g., red, green, and blue).}
 \item{numberOfOutputs}{Meaning depends on the \code{mode}.  For
 'classification' this is the number of segmentation labels.  For 'regression'
 this is the number of outputs.}
+
+\item{numberOfLayersPerDenseBlock}{number of dense blocks per layer.}
 
 \item{growthRate}{number of filters to add for each dense block layer
 (default = 48).}
@@ -33,7 +43,10 @@ N is an integer (default = 7).}
 
 \item{weightDecay}{weight decay (default = 1e-4).}
 
-\item{numberOfLayersPerDenseBlocks}{number of dense blocks per layer.}
+\item{mode}{A switch to determine the activation function to use.
+If \code{classification}, then \code{sigmoid} or \code{softmax}
+depending on the \code{numberOfOutputs}, and if
+\code{mode = "regression"} then function is \code{linear}}
 }
 \value{
 an DenseUnet keras model
@@ -46,16 +59,13 @@ image segmentation
 X. Li, H. Chen, X. Qi, Q. Dou, C.-W. Fu, P.-A. Heng. H-DenseUNet: Hybrid
 Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes
 
-available here:
+available here:\preformatted{    https://arxiv.org/pdf/1709.07330.pdf
+}
 
-https://arxiv.org/pdf/1709.07330.pdf
-
-with the author's implementation available at:
-
-https://github.com/xmengli999/H-DenseUNet
+with the author's implementation available at:\preformatted{    https://github.com/xmengli999/H-DenseUNet
+}
 }
 \examples{
-
 library( ANTsR )
 library( ANTsRNet )
 library( keras )
@@ -79,7 +89,7 @@ segmentations <- list()
 
 for( i in seq_len( trainingBatchSize ) )
   {
-  cat( "Processing image", imageIDs[i], "\\n" )
+  cat( "Processing image", imageIDs[i], "\n" )
   image <- antsImageRead( getANTsRData( imageIDs[i] ) )
   mask <- getMask( image )
   segmentation <- atropos( image, mask, initialization )$segmentation
@@ -95,7 +105,7 @@ X_train <- ( X_train - mean( X_train ) ) / sd( X_train )
 
 # Create the model
 
-model <- createDenseUnetModel2D( c( dim( domainImage ), 1 ),
+model <- createDenseUnetModel2D( c( dim( domainImage ), 1L ),
   numberOfOutputs = numberOfLabels )
 
 metric_multilabel_dice_coefficient <-
@@ -129,7 +139,6 @@ model \%>\% compile( loss = loss_dice,
 
 # save_model_hdf5( model, filepath = 'unetModel.h5' )
 # save_model_weights_hdf5( unetModel, filepath = 'unetModelWeights.h5' ) )
-
 }
 \author{
 Tustison NJ

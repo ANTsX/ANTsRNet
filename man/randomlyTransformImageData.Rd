@@ -4,11 +4,19 @@
 \alias{randomlyTransformImageData}
 \title{Randomly transform image data (optional: with corresponding segmentations).}
 \usage{
-randomlyTransformImageData(referenceImage, inputImageList,
-  segmentationImageList = NA, numberOfSimulations = 10,
-  transformType = "affine", inputImageInterpolator = "linear",
-  segmentationImageInterpolator = "nearestNeighbor", sdAffine = 1,
-  numberOfControlPoints = 100, spatialSmoothing = 3, sdNoise = 1)
+randomlyTransformImageData(
+  referenceImage,
+  inputImageList,
+  segmentationImageList = NA,
+  numberOfSimulations = 10,
+  transformType = "affine",
+  inputImageInterpolator = "linear",
+  segmentationImageInterpolator = "nearestNeighbor",
+  sdAffine = 1,
+  numberOfControlPoints = 100,
+  spatialSmoothing = 3,
+  sdNoise = 1
+)
 }
 \arguments{
 \item{referenceImage}{defines the spatial domain for all output images.  If
@@ -30,14 +38,14 @@ input image list (optional).}
 
 \item{transformType}{one of the following options
 \code{c( "translation", "rigid", "scaleShear", "affine"," deformation" ,
-  "affineAndDeformation" )}.  Default = "affine".}
+  "affineAndDeformation" )}.  Default = \"affine\".}
 
 \item{inputImageInterpolator}{one of the following options
-\code{ c( "linear", "gaussian", "bspline" )}.  Default = "linear".}
+\code{ c( "linear", "gaussian", "bspline" )}.  Default = \"linear\".}
 
 \item{segmentationImageInterpolator}{one of the following options
 \code{ c( "nearestNeighbor", "genericLabel" )}.  Default =
-"nearestNeighbor".}
+\"nearestNeighbor\".}
 
 \item{sdAffine}{parameter dictating deviation amount from identity for
 random linear transformations.  Default = 1.0.}

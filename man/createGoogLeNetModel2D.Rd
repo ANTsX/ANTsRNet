@@ -4,8 +4,11 @@
 \alias{createGoogLeNetModel2D}
 \title{2-D implementation of the GoogLeNet deep learning architecture.}
 \usage{
-createGoogLeNetModel2D(inputImageSize,
-  numberOfClassificationLabels = 1000, mode = "classification")
+createGoogLeNetModel2D(
+  inputImageSize,
+  numberOfClassificationLabels = 1000,
+  mode = c("classification", "regression")
+)
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
@@ -30,15 +33,13 @@ A. Rabinovich, Going Deeper with Convolutions
 C. Szegedy, V. Vanhoucke, S. Ioffe, J. Shlens, and Z. Wojna. Rethinking the Inception
 Architecture for Computer Vision
 
-available here:
-
-https://arxiv.org/abs/1409.4842
-https://arxiv.org/abs/1512.00567
+available here:\preformatted{    https://arxiv.org/abs/1409.4842
+    https://arxiv.org/abs/1512.00567
+}
 
 This particular implementation was influenced by the following python
-implementation:
-
-https://github.com/fchollet/deep-learning-models/blob/master/inception_v3.py
+implementation:\preformatted{    https://github.com/fchollet/deep-learning-models/blob/master/inception_v3.py
+}
 }
 \examples{
 
@@ -75,6 +76,12 @@ inputImageSize <- c( dim( X_trainSmall )[2:3], 1 )
 
 model <- createGoogLeNetModel2D( inputImageSize = c( resampledImageSize, 1 ),
   numberOfClassificationLabels = numberOfLabels )
+
+model2 <- createGoogLeNetModel2D( inputImageSize = c( resampledImageSize, 1 ),
+  numberOfClassificationLabels = 2 )
+
+model_reg <- createGoogLeNetModel2D( inputImageSize = c( resampledImageSize, 1 ),
+  mode = "regression" )
 
 model \%>\% compile( loss = 'categorical_crossentropy',
   optimizer = optimizer_adam( lr = 0.0001 ),

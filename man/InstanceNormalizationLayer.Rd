@@ -17,12 +17,6 @@ with the implementation ported from the following python implementation
 
 \url{https://github.com/keras-team/keras-contrib/blob/master/keras_contrib/layers/normalization/instancenormalization.py}
 }
-\section{Usage}{
-
-\preformatted{inputs %>% layer_instance_normalization()
-             }
-}
-
 \section{Arguments}{
 
 \describe{
@@ -53,6 +47,12 @@ error if \code{axis = 0}.}
 \code{$compute_output_shape} computes the output shape.
 }
 
+\examples{
+InstanceNormalizationLayer$new()
+InstanceNormalizationLayer$new(axis = 2L)
+testthat::expect_error(InstanceNormalizationLayer$new(axis = 1L))
+
+}
 \author{
 Tustison NJ
 }

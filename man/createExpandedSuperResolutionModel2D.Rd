@@ -4,9 +4,11 @@
 \alias{createExpandedSuperResolutionModel2D}
 \title{2-D implementation of the expanded image super resolution architecture.}
 \usage{
-createExpandedSuperResolutionModel2D(inputImageSize,
-  convolutionKernelSizes = list(c(9, 9), c(1, 1), c(3, 3), c(5, 5), c(5,
-  5)), numberOfFilters = c(64, 32, 32, 32))
+createExpandedSuperResolutionModel2D(
+  inputImageSize,
+  convolutionKernelSizes = list(c(9, 9), c(1, 1), c(3, 3), c(5, 5), c(5, 5)),
+  numberOfFilters = c(64, 32, 32, 32)
+)
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
@@ -31,7 +33,8 @@ Creates a keras model of the expanded image super resolution deep learning
 framework based on the following python implementation:
 }
 \details{
-\url{https://github.com/titu1994/Image-Super-Resolution}
+\preformatted{    \url{https://github.com/titu1994/Image-Super-Resolution}
+}
 }
 \examples{
 \dontrun{ 

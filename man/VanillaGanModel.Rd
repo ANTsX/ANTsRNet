@@ -14,10 +14,6 @@ and ported from the Keras (python) implementation:
 
 https://github.com/eriklindernoren/Keras-GAN/blob/master/gan/gan.py
 }
-\section{Usage}{
-
-}
-
 \section{Arguments}{
 
 \describe{

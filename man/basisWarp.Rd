@@ -4,8 +4,12 @@
 \alias{basisWarp}
 \title{Generate a deformable map from basis}
 \usage{
-basisWarp(deformationBasis, betaParameters, numberOfCompositions = 2,
-  spatialSmoothing = 0)
+basisWarp(
+  deformationBasis,
+  betaParameters,
+  numberOfCompositions = 2,
+  spatialSmoothing = 0
+)
 }
 \arguments{
 \item{deformationBasis}{list containing deformationBasis set}

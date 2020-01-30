@@ -4,3 +4,10 @@
 _config\.yml$
 _pkgdown.yml
 docs
+^ANTsRNet\.Rproj$
+^\.github$
+^index\.html$
+^requirements\.txt$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

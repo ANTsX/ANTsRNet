@@ -19,7 +19,8 @@ Creates a keras model implementation of the u-net architecture
 avaialable here:
 }
 \details{
-\url{https://github.com/neuronets/nobrainer/}
+\preformatted{    \url{https://github.com/neuronets/nobrainer/}
+}
 }
 \examples{
 

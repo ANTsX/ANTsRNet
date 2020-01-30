@@ -4,9 +4,13 @@
 \alias{createResNetSuperResolutionModel2D}
 \title{2-D implementation of the ResNet image super resolution architecture.}
 \usage{
-createResNetSuperResolutionModel2D(inputImageSize,
-  convolutionKernelSize = c(3, 3), numberOfFilters = 64,
-  numberOfResidualBlocks = 5, numberOfResNetBlocks = 1)
+createResNetSuperResolutionModel2D(
+  inputImageSize,
+  convolutionKernelSize = c(3, 3),
+  numberOfFilters = 64,
+  numberOfResidualBlocks = 5,
+  numberOfResNetBlocks = 1
+)
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
@@ -32,11 +36,11 @@ Creates a keras model of the expanded image super resolution deep learning
 framework based on the following python implementation:
 }
 \details{
-\url{https://github.com/titu1994/Image-Super-Resolution}
+\preformatted{    \url{https://github.com/titu1994/Image-Super-Resolution}
+}
 }
 \examples{
-\dontrun{
-}
+createResNetSuperResolutionModel2D(c(256, 256, 3))
 }
 \author{
 Tustison NJ

@@ -4,9 +4,13 @@
 \alias{createAlexNetModel3D}
 \title{3-D implementation of the AlexNet deep learning architecture.}
 \usage{
-createAlexNetModel3D(inputImageSize, numberOfClassificationLabels = 1000,
-  numberOfDenseUnits = 4096, dropoutRate = 0,
-  mode = "classification")
+createAlexNetModel3D(
+  inputImageSize,
+  numberOfClassificationLabels = 1000,
+  numberOfDenseUnits = 4096,
+  dropoutRate = 0,
+  mode = "classification"
+)
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
@@ -34,15 +38,13 @@ recognition based on the paper
 A. Krizhevsky, and I. Sutskever, and G. Hinton. ImageNet Classification
 with Deep Convolutional Neural Networks.
 
-available here:
-
-http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf
+available here:\preformatted{    http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf
+}
 
 This particular implementation was influenced by the following python
-implementation:
-
-https://github.com/duggalrahul/AlexNet-Experiments-Keras/
-https://github.com/lunardog/convnets-keras/
+implementation:\preformatted{    https://github.com/duggalrahul/AlexNet-Experiments-Keras/
+    https://github.com/lunardog/convnets-keras/
+}
 }
 \examples{
 

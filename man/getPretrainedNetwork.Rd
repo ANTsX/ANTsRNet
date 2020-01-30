@@ -4,19 +4,30 @@
 \alias{getPretrainedNetwork}
 \title{getPretrainedNetwork}
 \usage{
-getPretrainedNetwork(fileId, targetFileName)
+getPretrainedNetwork(
+  fileId = c("show", "dbpn4x", "mriSuperResolution", "brainExtraction",
+    "brainSegmentation", "brainSegmentationPatchBased", "brainAgeGender", "denoising",
+    "wholeTumorSegmentationT2Flair", "protonLungMri", "ctHumanLung", "functionalLungMri",
+    "hippMapp3rInitial", "hippMapp3rRefine"),
+  targetFileName
+)
 }
 \arguments{
-\item{targetFileName}{optional target filename}
-
-\item{fileid}{one of the permitted file ids or pass "show" to list all
+\item{fileId}{one of the permitted file ids or pass "show" to list all
 valid possibilities. Note that most require internet access to download.}
+
+\item{targetFileName}{optional target filename}
 }
 \value{
 filename string
 }
 \description{
 Downloads pretrained network/weights.
+}
+\note{
+See \url{https://figshare.com/authors/Nick_Tustison/441144}
+or \url{https://figshare.com/authors/Brian_Avants/418551}
+for some more descriptions
 }
 \examples{
 \dontrun{

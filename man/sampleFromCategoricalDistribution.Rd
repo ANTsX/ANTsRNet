@@ -17,7 +17,8 @@ a single sample
 Ported from:
 }
 \details{
-https://github.com/cpmpercussion/keras-mdn-layer/
+\preformatted{    https://github.com/cpmpercussion/keras-mdn-layer/
+}
 }
 \examples{
 

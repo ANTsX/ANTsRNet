@@ -4,9 +4,15 @@
 \alias{applySuperResolutionModelPatch}
 \title{applySuperResolutionModelPatch}
 \usage{
-applySuperResolutionModelPatch(image, model, targetRange,
-  lowResolutionPatchSize = 128, strideLength = 16, batch_size = 32,
-  verbose = FALSE)
+applySuperResolutionModelPatch(
+  image,
+  model,
+  targetRange,
+  lowResolutionPatchSize = 128,
+  strideLength = 16,
+  batch_size = 32,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{image}{input image}
@@ -40,7 +46,15 @@ range is taken over all channels.
 }
 \examples{
 \dontrun{
-simg <- applySuperResolutionModelPatch( ri( 1 ), getPretrainedNetwork( "dbpn4x" ) )
+library(ANTsRCore)
+orig_img = antsImageRead( getANTsRData( "r16" ) )
+# input needs to be 48x48
+model = getPretrainedNetwork( "dbpn4x" )
+simg <- applySuperResolutionModelPatch(img,
+ model = model, lowResolutionPatchSize = 8, strideLength = 2)
+plot(orig_img)
+plot(img)
+plot(simg)
 }
 }
 \author{

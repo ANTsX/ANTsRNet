@@ -4,9 +4,16 @@
 \alias{extractImagePatchCoordinates}
 \title{Extract 2-D or 3-D image patch coordinates.}
 \usage{
-extractImagePatchCoordinates(image, patchSize,
-  maxNumberOfPatches = "all", strideLength = 1, maskImage = NULL,
-  physicalCoordinates = TRUE, cornerCoordinates = TRUE, randomSeed)
+extractImagePatchCoordinates(
+  image,
+  patchSize,
+  maxNumberOfPatches = "all",
+  strideLength = 1,
+  maskImage = NULL,
+  physicalCoordinates = TRUE,
+  cornerCoordinates = TRUE,
+  randomSeed
+)
 }
 \arguments{
 \item{image}{Input ANTs image with one or more components.}

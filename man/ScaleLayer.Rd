@@ -10,11 +10,6 @@
 \description{
 Custom scale layer
 }
-\section{Usage}{
-
-\preformatted{outputs <- layer_scale( inputs, resampledSize )}
-}
-
 \section{Arguments}{
 
 \describe{

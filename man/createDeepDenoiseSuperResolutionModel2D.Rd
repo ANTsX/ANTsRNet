@@ -4,9 +4,14 @@
 \alias{createDeepDenoiseSuperResolutionModel2D}
 \title{2-D implementation of the deep denoise image super resolution architecture.}
 \usage{
-createDeepDenoiseSuperResolutionModel2D(inputImageSize, layers = 2,
-  lowestResolution = 64, convolutionKernelSize = c(3, 3),
-  poolSize = c(2, 2), strides = c(2, 2))
+createDeepDenoiseSuperResolutionModel2D(
+  inputImageSize,
+  layers = 2,
+  lowestResolution = 64,
+  convolutionKernelSize = c(3, 3),
+  poolSize = c(2, 2),
+  strides = c(2, 2)
+)
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
@@ -34,10 +39,12 @@ Creates a keras model of the expanded image super resolution deep learning
 framework based on the following python implementation:
 }
 \details{
-\url{https://github.com/titu1994/Image-Super-Resolution}
+\preformatted{    \url{https://github.com/titu1994/Image-Super-Resolution}
+}
 }
 \examples{
-\dontrun{
+\donttest{
+createDeepDenoiseSuperResolutionModel2D(c(256L, 256L, 3L))
 }
 }
 \author{

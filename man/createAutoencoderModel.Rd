@@ -4,16 +4,19 @@
 \alias{createAutoencoderModel}
 \title{Function for creating a symmetric autoencoder model.}
 \usage{
-createAutoencoderModel(numberOfUnitsPerLayer, activation = "relu",
-  initializer = "glorot_uniform")
+createAutoencoderModel(
+  numberOfUnitsPerLayer,
+  activation = "relu",
+  initializer = "glorot_uniform"
+)
 }
 \arguments{
+\item{numberOfUnitsPerLayer}{vector defining the number of units
+in the encoding branch}
+
 \item{activation}{activation type for the dense layers}
 
 \item{initializer}{initializer type for the dense layers}
-
-\item{numberOfUnitsLayer}{vector defining the number of units
-in the encoding branch}
 }
 \value{
 two models:  the encoder and auto-encoder

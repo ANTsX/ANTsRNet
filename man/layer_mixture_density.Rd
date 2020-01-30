@@ -4,13 +4,23 @@
 \alias{layer_mixture_density}
 \title{Mixture density layer}
 \usage{
-layer_mixture_density(objects, outputDimension, numberOfMixtures,
-  trainable = TRUE)
+layer_mixture_density(
+  object,
+  outputDimension,
+  numberOfMixtures,
+  trainable = TRUE
+)
 }
 \arguments{
+\item{object}{Object to compose layer with. This is either a
+\link[keras:keras_model_sequential]{keras::keras_model_sequential} to add the layer to,
+or another Layer which this layer will call.}
+
 \item{outputDimension}{output dimension}
 
 \item{numberOfMixtures}{number of Gaussians used to model the function}
+
+\item{trainable}{Whether the layer weights will be updated during training.}
 }
 \value{
 a keras layer tensor

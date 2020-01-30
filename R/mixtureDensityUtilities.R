@@ -2,12 +2,10 @@
 #'
 #' @docType class
 #'
-#' @section Usage:
-#' \preformatted{outputs <- layer_mixture_density( inputs, resampledSize )}
 #'
 #' @section Arguments:
 #' \describe{
-#'  \item{outputDimensino}{}
+#'  \item{outputDimension}{}
 #'  \item{numberOfMixtures}{}
 #' }
 #'
@@ -149,16 +147,20 @@ MixtureDensityNetworkLayer <- R6::R6Class( "MixtureDensityNetworkLayer",
 #'
 #' Wraps a custom mixture density layer.
 #'
+#' @param object Object to compose layer with. This is either a
+#' [keras::keras_model_sequential] to add the layer to,
+#' or another Layer which this layer will call.
 #' @param outputDimension output dimension
 #' @param numberOfMixtures number of Gaussians used to model the function
-#'
+#' @param trainable Whether the layer weights will be updated during training.
 #' @return a keras layer tensor
 #' @export
-layer_mixture_density <- function( objects,
+layer_mixture_density <- function( object,
   outputDimension, numberOfMixtures, trainable = TRUE ) {
-create_layer( MixtureDensityNetworkLayer, objects,
+create_layer( MixtureDensityNetworkLayer, object,
     list( outputDimension = outputDimension,
-      numberOfMixtures = numberOfMixtures, trainable = TRUE )
+      numberOfMixtures = numberOfMixtures,
+      trainable = trainable )
     )
 }
 
@@ -264,7 +266,7 @@ getMixtureDensitySamplingFunction <- function( outputDimension, numberOfMixtures
       c( -1L, ( 2L * dimension ) + numberOfMixtures ),
       name = 'reshape_ypred' )
 
-    splitTensors <- tf$split( y_pred,
+    splitTensors <- tensorflow::tf$split( y_pred,
       num_or_size_splits = c( dimension, dimension, numberOfMixtures ),
       axis = 1L, name = "mdn_coef_split" )
 
@@ -335,7 +337,7 @@ getMixtureDensityMseAccuracyFunction <- function( outputDimension, numberOfMixtu
     y_true <- tensorflow::tf$reshape( y_true,
       c( -1L, outputDimension ), name = 'reshape_ytrue' )
 
-    splitTensors <- tf$split( y_pred,
+    splitTensors <- tensorflow::tf$split( y_pred,
       num_or_size_splits = c( dimension, dimension, numberOfMixtures ),
       axis = 1L, name = "mdn_coef_split" )
 
@@ -411,7 +413,8 @@ splitMixtureParameters <- function(
 #'
 #'         https://github.com/cpmpercussion/keras-mdn-layer/
 #'
-#' @param logits input
+#' @param logits input of logits/mixture weights to adjust
+#' @param temperature the temperature for to adjust the distribution (default 1.0)
 #' @return softmax loss value
 #' @author Tustison NJ
 #' @examples
@@ -474,7 +477,12 @@ sampleFromCategoricalDistribution <- function( distribution )
 #'
 #'         https://github.com/cpmpercussion/keras-mdn-layer/
 #'
-#' @param distribution input distribution from which to sample.
+#' @inheritParams splitMixtureParameters
+#' @param temperature the temperature for to adjust the distribution
+#' (default 1.0), passed to \code{\link{mixture_density_network_softmax}}
+#' @param sigmaTemperature multipler to \code{sigma} from the
+#' output of \code{\link{sampleFromCategoricalDistribution}}
+
 #' @return a single sample
 #' @author Tustison NJ
 #' @examples

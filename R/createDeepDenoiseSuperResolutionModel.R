@@ -20,7 +20,8 @@
 #' @return a keras model for image super resolution
 #' @author Tustison NJ
 #' @examples
-#' \dontrun{
+#' \donttest{
+#' createDeepDenoiseSuperResolutionModel2D(c(256L, 256L, 3L))
 #' }
 #' @import keras
 #' @export
@@ -86,6 +87,7 @@ createDeepDenoiseSuperResolutionModel2D <- function( inputImageSize,
         kernel_size = convolutionKernelSize, activation = 'relu',
         padding = 'same' )
 
+    stop("Need to fix layer add")
     outputs <- outputs %>%
       layer_add( list( encodingConvolutionLayers[[layers - i + 1]], conv ))
     outputs <- outputs %>% layer_upsampling_2d()
@@ -126,7 +128,8 @@ createDeepDenoiseSuperResolutionModel2D <- function( inputImageSize,
 #' @return a keras model for image super resolution
 #' @author Tustison NJ
 #' @examples
-#' \dontrun{
+#' \donttest{
+#' createDeepDenoiseSuperResolutionModel3D(c(256L, 256L, 45L, 1L))
 #' }
 #' @import keras
 #' @export
@@ -192,6 +195,7 @@ createDeepDenoiseSuperResolutionModel3D <- function( inputImageSize,
         kernel_size = convolutionKernelSize, activation = 'relu',
         padding = 'same' )
 
+    stop("Need to fix layer add")
     outputs <- outputs %>%
       layer_add( list( encodingConvolutionLayers[[layers - i + 1]], conv ))
     outputs <- outputs %>% layer_upsampling_3d()

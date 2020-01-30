@@ -4,8 +4,14 @@
 \alias{encodeSsd3D}
 \title{Encoding function for 3-D Y_train}
 \usage{
-encodeSsd3D(groundTruthLabels, anchorBoxes, imageSize, variances = rep(1,
-  6), foregroundThreshold = 0.5, backgroundThreshold = 0.2)
+encodeSsd3D(
+  groundTruthLabels,
+  anchorBoxes,
+  imageSize,
+  variances = rep(1, 6),
+  foregroundThreshold = 0.5,
+  backgroundThreshold = 0.2
+)
 }
 \arguments{
 \item{groundTruthLabels}{A list of length \code{batchSize} that contains one
@@ -61,11 +67,10 @@ is higher that the specified negative threshold.
 }
 \details{
 This particular implementation was heavily influenced by the following
-python and R implementations:
-
-\url{https://github.com/pierluigiferrari/ssd_keras}
-\url{https://github.com/rykov8/ssd_keras}
-\url{https://github.com/gsimchoni/ssdkeras}
+python and R implementations:\preformatted{    \url{https://github.com/pierluigiferrari/ssd_keras}
+    \url{https://github.com/rykov8/ssd_keras}
+    \url{https://github.com/gsimchoni/ssdkeras}
+}
 }
 \author{
 Tustison NJ

@@ -2,13 +2,34 @@
 % Please edit documentation in R/createInpaintingDeepFillModel.R
 \name{layer_contextual_attention_2d}
 \alias{layer_contextual_attention_2d}
-\title{Contextual attention layer (2-D)}
+\alias{layer_contextual_attention_3d}
+\title{Contextual attention layer (2-D and 3-D)}
 \usage{
-layer_contextual_attention_2d(object, kernelSize = 3L, stride = 1L,
-  dilationRate = 1L, fusionKernelSize = 0L, name = NULL,
-  trainable = FALSE)
+layer_contextual_attention_2d(
+  object,
+  kernelSize = 3L,
+  stride = 1L,
+  dilationRate = 1L,
+  fusionKernelSize = 0L,
+  name = NULL,
+  trainable = FALSE
+)
+
+layer_contextual_attention_3d(
+  object,
+  kernelSize = 3L,
+  stride = 1L,
+  dilationRate = 1L,
+  fusionKernelSize = 0L,
+  name = NULL,
+  trainable = FALSE
+)
 }
 \arguments{
+\item{object}{Object to compose layer with. This is either a
+\link[keras:keras_model_sequential]{keras::keras_model_sequential} to add the layer to,
+or another Layer which this layer will call.}
+
 \item{kernelSize}{integer specifying convolution size}
 
 \item{stride}{integer for specifyingstride length for sampling the tensor}
@@ -16,6 +37,10 @@ layer_contextual_attention_2d(object, kernelSize = 3L, stride = 1L,
 \item{dilationRate}{ingeger specifying dilation}
 
 \item{fusionKernelSize}{Enhance saliency of large patches}
+
+\item{name}{The name of the layer}
+
+\item{trainable}{Whether the layer weights will be updated during training.}
 }
 \value{
 a keras layer tensor
@@ -27,7 +52,14 @@ Contextual attention layer for generative image inpainting described in
 Jiahui Yu, et al., Generative Image Inpainting with Contextual Attention,
 CVPR 2018.
 
-available here:
-
-\code{https://arxiv.org/abs/1801.07892}
+available here:\preformatted{    \code{https://arxiv.org/abs/1801.07892}
+}
+}
+\examples{
+layer_contextual_attention_2d()
+layer_contextual_attention_3d()
+keras::keras_model_sequential() \%>\%
+    layer_contextual_attention_2d(fusionKernelSize = 2)
+keras::keras_model_sequential() \%>\%
+    layer_contextual_attention_3d()
 }

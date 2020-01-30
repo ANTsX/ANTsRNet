@@ -4,7 +4,12 @@
 \alias{resampleTensor}
 \title{Resamples a spatial tensor.}
 \usage{
-resampleTensor(inputTensor, shape, interpolationType = "nearestNeighbor")
+resampleTensor(
+  inputTensor,
+  shape,
+  interpolationType = c("nearestNeighbor", "linear", "cubic", "bicubic", "bilinear",
+    "nearest")
+)
 }
 \arguments{
 \item{inputTensor}{tensor to be resampled.}

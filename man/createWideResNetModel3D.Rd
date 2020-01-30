@@ -4,10 +4,17 @@
 \alias{createWideResNetModel3D}
 \title{3-D implementation of the Wide ResNet deep learning architecture.}
 \usage{
-createWideResNetModel3D(inputImageSize,
-  numberOfClassificationLabels = 1000, depth = 2, width = 1,
-  residualBlockSchedule = c(16, 32, 64), poolSize = c(8, 8, 8),
-  dropoutRate = 0, weightDecay = 5e-04, mode = "classification")
+createWideResNetModel3D(
+  inputImageSize,
+  numberOfClassificationLabels = 1000,
+  depth = 2,
+  width = 1,
+  residualBlockSchedule = c(16, 32, 64),
+  poolSize = c(8, 8, 8),
+  dropoutRate = 0,
+  weightDecay = 5e-04,
+  mode = "classification"
+)
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
@@ -43,12 +50,12 @@ Creates a keras model of the Wide ResNet deep learning architecture for image
 classification/regression.  The paper is available here:
 }
 \details{
-https://arxiv.org/abs/1512.03385
+\preformatted{    https://arxiv.org/abs/1512.03385
+}
 
 This particular implementation was influenced by the following python
-implementation:
-
-https://github.com/titu1994/Wide-Residual-Networks
+implementation:\preformatted{    https://github.com/titu1994/Wide-Residual-Networks
+}
 }
 \examples{
 

@@ -4,8 +4,12 @@
 \alias{regressionMatchImage}
 \title{Image intensity normalization using linear regression.}
 \usage{
-regressionMatchImage(sourceImage, referenceImage, polyOrder = 1,
-  truncate = TRUE)
+regressionMatchImage(
+  sourceImage,
+  referenceImage,
+  polyOrder = 1,
+  truncate = TRUE
+)
 }
 \arguments{
 \item{sourceImage}{image whose intensities we will match to the
@@ -25,6 +29,7 @@ Image intensity normalization by regressing the image
 intensities of the reference image with the source image.
 }
 \examples{
+library(ANTsRCore)
 sourceImage <- antsImageRead( getANTsRData( "r16" ) )
 referenceImage <- antsImageRead( getANTsRData( "r64" ) )
 matchedImage <- regressionMatchImage( sourceImage, referenceImage )

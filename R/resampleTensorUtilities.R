@@ -34,8 +34,15 @@
 #'
 #' @import keras
 #' @export
-resampleTensor <- function( inputTensor, shape, interpolationType = 'nearestNeighbor' )
-  {
+resampleTensor <- function(
+  inputTensor, shape,
+  interpolationType =
+    c("nearestNeighbor", "linear",
+      "cubic",
+      "bicubic",
+      "bilinear",
+      "nearest"))
+{
   K <- keras::backend()
 
   newSize <- as.integer( shape )
@@ -48,35 +55,31 @@ resampleTensor <- function( inputTensor, shape, interpolationType = 'nearestNeig
 
   dimensionality <- NULL
   if( length( shape ) == 2 )
-    {
+  {
     dimensionality <- 2
-    } else if( length( shape == 3 ) ) {
+  } else if ( length( shape ) == 3  ) {
     dimensionality <- 3
-    } else {
+  } else {
     stop( "\'shape\' should be of length 2 for images or 3 for volumes." )
-    }
+  }
 
   oldSize <- inputShape[2:( dimensionality + 1 )]
 
   if( all( newSize == oldSize ) )
-    {
+  {
     return( inputTensor )
-    }
+  }
 
   resampledTensor <- NULL
-  if( dimensionality == 2 )
-    {
-    if( interpolationType == 'nearestNeighbor' )
-      {
-      resampledTensor <- tensorflow::tf$image$resize_nearest_neighbor( inputTensor, size = newSize, align_corners = TRUE )
-      } else if( interpolationType == 'linear' ) {
-      resampledTensor <- tensorflow::tf$image$resize_bilinear( inputTensor, size = newSize, align_corners = TRUE )
-      } else if( interpolationType == 'cubic' ) {
-      resampledTensor <- tensorflow::tf$image$resize_bicubic( inputTensor, size = newSize, align_corners = TRUE )
-      } else {
-      stop( "Interpolation type not recognized." )
-      }
-    } else {
+  interpolationType = match.arg(interpolationType)
+  func = tf_resizing_function(interpolationType = interpolationType)
+
+
+  if ( dimensionality == 2 ){
+    resampledTensor <- func(
+      inputTensor,
+      size = newSize)
+  } else {
     # Do yz
     squeezeTensor_yz <-
       tensorflow::tf$reshape( inputTensor, c( -1L, oldSize[2], oldSize[3], channelSize ) )
@@ -84,20 +87,10 @@ resampleTensor <- function( inputTensor, shape, interpolationType = 'nearestNeig
     newShape_yz <- c( newSize[2], newSize[3] )
 
     resampledTensor_yz <- NULL
-    if( interpolationType == 'nearestNeighbor' )
-      {
-      resampledTensor_yz <-
-        tensorflow::tf$image$resize_nearest_neighbor( squeezeTensor_yz, size = newShape_yz, align_corners = TRUE )
-      } else if( interpolationType == 'linear' ) {
-      resampledTensor_yz <-
-        tensorflow::tf$image$resize_bilinear( squeezeTensor_yz, size = newShape_yz, align_corners = TRUE )
-      } else if( interpolationType == 'cubic' ) {
-      resampledTensor_yz <-
-        tensorflow::tf$image$resize_bicubic( squeezeTensor_yz, size = newShape_yz, align_corners = TRUE )
-      } else {
-      stop( "Interpolation type not recognized." )
-      }
 
+    resampledTensor_yz <- func(
+      squeezeTensor_yz,
+      size = newShape_yz)
     newShape_yz <- c( batchSize, oldSize[1], newSize[2], newSize[3], channelSize )
     resumeTensor_yz <- tensorflow::tf$reshape( resampledTensor_yz, newShape_yz )
 
@@ -106,33 +99,19 @@ resampleTensor <- function( inputTensor, shape, interpolationType = 'nearestNeig
     reorientedTensor <- tensorflow::tf$transpose( resumeTensor_yz, c( 0L, 3L, 2L, 1L, 4L ) )
 
     squeezeTensor_x <- tensorflow::tf$reshape( reorientedTensor,
-      c( -1L, newSize[2], oldSize[1], channelSize ) )
+                                               c( -1L, newSize[2], oldSize[1], channelSize ) )
 
     newShape_x <- c( newSize[2], newSize[1] )
 
-    resampledTensor_x <- NULL
-    if( interpolationType == 'nearestNeighbor' )
-      {
-      resampledTensor_x <-
-        tensorflow::tf$image$resize_nearest_neighbor( squeezeTensor_x, size = newShape_x, align_corners = TRUE )
-      } else if( interpolationType == 'linear' ) {
-      resampledTensor_x <-
-        tensorflow::tf$image$resize_bilinear( squeezeTensor_x, size = newShape_x, align_corners = TRUE )
-      } else if( interpolationType == 'cubic' ) {
-      resampledTensor_x <-
-        tensorflow::tf$image$resize_bicubic( squeezeTensor_x, size = newShape_x, align_corners = TRUE )
-      } else {
-      stop( "Interpolation type not recognized." )
-      }
-
+    resampledTensor_x <- func(squeezeTensor_x, size = newShape_x)
     newShape_x <- c( batchSize, newSize[3], newSize[2], newSize[1], channelSize )
     resumeTensor_x <- tensorflow::tf$reshape( resampledTensor_x, newShape_x )
 
     resampledTensor <- tensorflow::tf$transpose( resumeTensor_x, c( 0L, 3L, 2L, 1L, 4L ) )
-    }
+  }
 
   return( resampledTensor )
-  }
+}
 
 #' Resamples a tensor.
 #'
@@ -160,7 +139,7 @@ resampleTensor <- function( inputTensor, shape, interpolationType = 'nearestNeig
 #' @import keras
 #' @export
 resampleTensorLike <- function( inputTensor, referenceTensor, interpolationType = 'nearestNeighbor' )
-  {
+{
   K <- keras::backend()
 
   referenceShape <- K$int_shape( referenceTensor )
@@ -168,18 +147,18 @@ resampleTensorLike <- function( inputTensor, referenceTensor, interpolationType 
   referenceShape <- unlist( referenceShape )
 
   if( length( referenceShape ) == 4 )
-    {
+  {
     referenceShape <- referenceShape[2:3]
-    } else if( length( referenceShape ) == 5 ) {
+  } else if( length( referenceShape ) == 5 ) {
     referenceShape <- referenceShape[2:4]
-    } else {
+  } else {
     stop( "Reference tensor must be of rank 4 or 5 (for 2-D images or 3-D volumes)." )
-    }
+  }
 
   resampledTensor <- resampleTensor( inputTensor, referenceShape, interpolationType )
 
   return( resampledTensor )
-  }
+}
 
 #' Creates a resample tensor lambda layer (2-D)
 #'
@@ -188,11 +167,6 @@ resampleTensorLike <- function( inputTensor, referenceTensor, interpolationType 
 #'
 #' @docType class
 #'
-#' @section Usage:
-#' \preformatted{resampledTensor <- inputs %>% layer_resample_tensor_2d( shape,
-#'      interpolationType = 'nearestNeighbor' )
-#'
-#' }
 #'
 #' @section Arguments:
 #' \describe{
@@ -219,7 +193,8 @@ resampleTensorLike <- function( inputTensor, referenceTensor, interpolationType 
 NULL
 
 #' @export
-ResampleTensorLayer2D <- R6::R6Class( "ResampleTensorLayer2D",
+ResampleTensorLayer2D <- R6::R6Class(
+  "ResampleTensorLayer2D",
 
   inherit = KerasLayer,
 
@@ -229,35 +204,36 @@ ResampleTensorLayer2D <- R6::R6Class( "ResampleTensorLayer2D",
 
     interpolationType = 'nearestNeighbor',
 
-    initialize = function( shape, interpolationType = 'nearestNeighbor' )
-      {
+    initialize = function( shape, interpolationType =
+                             c("nearestNeighbor", "linear",
+                               "cubic",
+                               "bicubic",
+                               "bilinear",
+                               "nearest") )
+    {
       if( length( shape ) != 2 )
-        {
+      {
         stop( "shape must be of length 2 specifying the width and height
                of the resampled tensor." )
-        }
+      }
       self$shape <- shape
 
-      allowedTypes <- c( 'nearestNeighbor', 'linear', 'cubic' )
-      if( ! interpolationType %in% allowedTypes )
-        {
-        stop( "interpolationType not one of the allowed types." )
-        }
+      interpolationType = match.arg(interpolationType)
       self$interpolationType <- interpolationType
-      },
+    },
 
     compute_output_shape = function( input_shape )
-      {
+    {
       if( length( input_shape ) != 4 )
-        {
-        stop( "Input tensor must be of rank 4." )
-        }
-      return( reticulate::tuple( input_shape[[1]], self$shape[1],
-          self$shape[2], input_shape[[4]] ) )
-      },
-
-   call = function( x, mask = NULL )
       {
+        stop( "Input tensor must be of rank 4." )
+      }
+      return( reticulate::tuple( input_shape[[1]], self$shape[1],
+                                 self$shape[2], input_shape[[4]] ) )
+    },
+
+    call = function( x, mask = NULL )
+    {
       K <- keras::backend()
 
       dimensionality <- 2
@@ -269,44 +245,67 @@ ResampleTensorLayer2D <- R6::R6Class( "ResampleTensorLayer2D",
       oldSize <- inputShape[2:( dimensionality + 1 )]
 
       if( all( newSize == oldSize ) )
-        {
+      {
         return( x + 0 )
-        }
+      }
 
       resampledTensor <- NULL
-      if( self$interpolationType == 'nearestNeighbor' )
-        {
-        resampledTensor <- tensorflow::tf$image$resize_nearest_neighbor( x, size = newSize, align_corners = TRUE )
-        } else if( self$interpolationType == 'linear' ) {
-        resampledTensor <- tensorflow::tf$image$resize_bilinear( x, size = newSize, align_corners = TRUE )
-        } else if( self$interpolationType == 'cubic' ) {
-        resampledTensor <- tensorflow::tf$image$resize_bicubic( x, size = newSize, align_corners = TRUE )
-        }
+      func = tf_resizing_function(self$interpolationType)
+      resampledTensor <- func(x, size = newSize)
       return( resampledTensor )
-      }
+    }
   )
 )
 
-#' Resampling a spatial tensor (2-D).
+#' Resampling a spatial tensor (2-D and 3-D).
 #'
 #' Resamples a spatial tensor based on the specified shape and interpolation type.
 #'
-#' @param inputTensor tensor to be resampled.
+#' @param object Object to compose layer with. This is either a
+#' [keras::keras_model_sequential] to add the layer to,
+#' or another Layer which this layer will call.
 #' @param shape vector or list of length 2 specifying the shape of the output tensor.
 #' @param interpolationType type of interpolation for resampling.  Can be
 #' \code{nearestNeighbor}, \code{linear}, or \code{cubic}.
+#' @param name The name of the layer
+#' @param trainable Whether the layer weights will be updated during training.
 #'
 #' @return a keras layer tensor
 #' @author Tustison NJ
 #' @import keras
 #' @export
-layer_resample_tensor_2d <- function( object, shape,
-    interpolationType = 'nearestNeighbor', name = NULL,
-    trainable = FALSE ) {
-create_layer( ResampleTensorLayer2D, object,
-    list( shape = shape, interpolationType = interpolationType,
-        name = name, trainable = trainable ) )
+#' @rdname layer_resample_tensor_2d
+layer_resample_tensor_2d <- function(
+  object, shape,
+  interpolationType = c('nearestNeighbor', 'linear', 'cubic',
+                        "bicubic",
+                        'nearest', 'bilinear'),
+  name = NULL,
+  trainable = FALSE ) {
+  interpolationType = match.arg(interpolationType)
+  create_layer( ResampleTensorLayer2D, object,
+                list( shape = shape, interpolationType = interpolationType,
+                      name = name, trainable = trainable ) )
 }
+
+
+#' @export
+#' @rdname layer_resample_tensor_2d
+layer_resample_tensor_3d <- function(
+  object, shape,
+  interpolationType = c("nearestNeighbor", "linear",
+                        "cubic",
+                        "bicubic",
+                        "bilinear",
+                        "nearest"),
+  name = NULL,
+  trainable = FALSE ) {
+  interpolationType = match.arg(interpolationType)
+  create_layer( ResampleTensorLayer3D, object,
+                list( shape = shape, interpolationType = interpolationType,
+                      name = name, trainable = trainable ) )
+}
+
 
 #' Creates a resample tensor lambda layer (3-D)
 #'
@@ -315,11 +314,6 @@ create_layer( ResampleTensorLayer2D, object,
 #'
 #' @docType class
 #'
-#' @section Usage:
-#' \preformatted{resampledTensor <- inputs %>% layer_resample_tensor_3d( shape,
-#'      interpolationType = 'nearestNeighbor' )
-#'
-#' }
 #'
 #' @section Arguments:
 #' \describe{
@@ -346,7 +340,8 @@ create_layer( ResampleTensorLayer2D, object,
 NULL
 
 #' @export
-ResampleTensorLayer3D <- R6::R6Class( "ResampleTensorLayer3D",
+ResampleTensorLayer3D <- R6::R6Class(
+  "ResampleTensorLayer3D",
 
   inherit = KerasLayer,
 
@@ -356,35 +351,37 @@ ResampleTensorLayer3D <- R6::R6Class( "ResampleTensorLayer3D",
 
     interpolationType = 'nearestNeighbor',
 
-    initialize = function( shape, interpolationType = 'nearestNeighbor' )
-      {
+    initialize = function( shape, interpolationType =
+                             c("nearestNeighbor", "linear",
+                               "cubic",
+                               "bicubic",
+                               "bilinear",
+                               "nearest"))
+    {
+
       if( length( shape ) != 3 )
-        {
+      {
         stop( "shape must be of length 3 specifying the width, height and
                depth of the resampled tensor." )
-        }
+      }
       self$shape <- shape
 
-      allowedTypes <- c( 'nearestNeighbor', 'linear', 'cubic' )
-      if( ! interpolationType %in% allowedTypes )
-        {
-        stop( "interpolationType not one of the allowed types." )
-        }
+      interpolationType = match.arg(interpolationType)
       self$interpolationType <- interpolationType
-      },
+    },
 
     compute_output_shape = function( input_shape )
-      {
+    {
       if( length( input_shape ) != 5 )
-        {
-        stop( "Input tensor must be of rank 5." )
-        }
-      return( reticulate::tuple( input_shape[[1]], self$shape[1],
-          self$shape[2], self$shape[3], input_shape[[5]] ) )
-      },
-
-   call = function( x, mask = NULL )
       {
+        stop( "Input tensor must be of rank 5." )
+      }
+      return( reticulate::tuple( input_shape[[1]], self$shape[1],
+                                 self$shape[2], self$shape[3], input_shape[[5]] ) )
+    },
+
+    call = function( x, mask = NULL )
+    {
       K <- keras::backend()
 
       dimensionality <- 3
@@ -398,9 +395,9 @@ ResampleTensorLayer3D <- R6::R6Class( "ResampleTensorLayer3D",
       channelSize <- tail( inputShape, 1 )
 
       if( all( newSize == oldSize ) )
-        {
+      {
         return( x + 0 )
-        }
+      }
 
       resampledTensor <- NULL
       # Do yz
@@ -410,17 +407,9 @@ ResampleTensorLayer3D <- R6::R6Class( "ResampleTensorLayer3D",
       newShape_yz <- c( newSize[2], newSize[3] )
 
       resampledTensor_yz <- NULL
-      if( self$interpolationType == 'nearestNeighbor' )
-        {
-        resampledTensor_yz <-
-          tensorflow::tf$image$resize_nearest_neighbor( squeezeTensor_yz, size = newShape_yz, align_corners = TRUE )
-        } else if( self$interpolationType == 'linear' ) {
-        resampledTensor_yz <-
-          tensorflow::tf$image$resize_bilinear( squeezeTensor_yz, size = newShape_yz, align_corners = TRUE )
-        } else if( self$interpolationType == 'cubic' ) {
-        resampledTensor_yz <-
-          tensorflow::tf$image$resize_bicubic( squeezeTensor_yz, size = newShape_yz, align_corners = TRUE )
-        }
+      func = tf_resizing_function(self$interpolationType)
+      resampledTensor_yz <- func(squeezeTensor_yz, size = newShape_yz)
+
 
       newShape_yz <- c( -1L, oldSize[1], newSize[2], newSize[3], channelSize )
       resumeTensor_yz <- tensorflow::tf$reshape( resampledTensor_yz, newShape_yz )
@@ -430,22 +419,13 @@ ResampleTensorLayer3D <- R6::R6Class( "ResampleTensorLayer3D",
       reorientedTensor <- tensorflow::tf$transpose( resumeTensor_yz, c( 0L, 3L, 2L, 1L, 4L ) )
 
       squeezeTensor_x <- tensorflow::tf$reshape( reorientedTensor,
-        c( -1L, newSize[2], oldSize[1], channelSize ) )
+                                                 c( -1L, newSize[2], oldSize[1], channelSize ) )
 
       newShape_x <- c( newSize[2], newSize[1] )
 
       resampledTensor_x <- NULL
-      if( self$interpolationType == 'nearestNeighbor' )
-        {
-        resampledTensor_x <-
-          tensorflow::tf$image$resize_nearest_neighbor( squeezeTensor_x, size = newShape_x, align_corners = TRUE )
-        } else if( self$interpolationType == 'linear' ) {
-        resampledTensor_x <-
-          tensorflow::tf$image$resize_bilinear( squeezeTensor_x, size = newShape_x, align_corners = TRUE )
-        } else if( self$interpolationType == 'cubic' ) {
-        resampledTensor_x <-
-          tensorflow::tf$image$resize_bicubic( squeezeTensor_x, size = newShape_x, align_corners = TRUE )
-        }
+      func = tf_resizing_function(self$interpolationType)
+      resampledTensor_x <- func(squeezeTensor_x, size = newShape_x)
 
       newShape_x <- c( -1L, newSize[3], newSize[2], newSize[1], channelSize )
       resumeTensor_x <- tensorflow::tf$reshape( resampledTensor_x, newShape_x )
@@ -453,26 +433,40 @@ ResampleTensorLayer3D <- R6::R6Class( "ResampleTensorLayer3D",
       resampledTensor <- tensorflow::tf$transpose( resumeTensor_x, c( 0L, 3L, 2L, 1L, 4L ) )
 
       return( resampledTensor )
-      }
+    }
   )
 )
 
-#' Resampling a spatial tensor (3-D).
-#'
-#' Resamples a spatial tensor based on the specified shape and interpolation type.
-#'
-#' @param inputTensor tensor to be resampled.
-#' @param shape vector or list of length 3 specifying the shape of the output tensor.
-#' @param interpolationType type of interpolation for resampling.  Can be
-#' \code{nearestNeighbor}, \code{linear}, or \code{cubic}.
-#'
-#' @return a keras layer tensor
-#' @export
-layer_resample_tensor_3d <- function( object, shape,
-    interpolationType = 'nearestNeighbor', name = NULL,
-    trainable = FALSE ) {
-create_layer( ResampleTensorLayer3D, object,
-    list( shape = shape, interpolationType = interpolationType,
-        name = name, trainable = trainable ) )
-}
+tf_resizing_function = function(interpolationType) {
 
+  tf_img = tensorflow::tf$image
+  n_image = names(tf_img)
+  if (interpolationType == "linear") {
+    interpolationType = "bilinear"
+  }
+  if (interpolationType == "nearestNeighbor") {
+    interpolationType = "nearest"
+  }
+  if (interpolationType == "cubic") {
+    interpolationType = "bicubic"
+  }
+  if ("resize" %in% n_image) {
+    func = function(...) {
+      tf_img$resize(..., method = interpolationType)
+    }
+  } else {
+    run_func = switch(
+      interpolationType,
+      nearest = tf_img$resize_nearest_neighbor,
+      bilinear = tf_img$resize_bilinear,
+      bicubic = tf_img$resize_bicubic
+    )
+    func = function(...) {
+      run_func(..., align_corners = TRUE)
+    }
+  }
+  if (is.null(func)) {
+    stop("Function not found in tf, you may need updated tensorflow")
+  }
+  return(func)
+}

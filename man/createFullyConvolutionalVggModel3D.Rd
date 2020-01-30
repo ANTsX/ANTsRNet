@@ -5,10 +5,17 @@
 \title{3-D implementation of the VGG deep learning architecture without classification
 layers.}
 \usage{
-createFullyConvolutionalVggModel3D(inputImageSize, layers = c(1, 2, 3, 4,
-  4), lowestResolution = 64, convolutionKernelSize = c(3, 3, 3),
-  poolSize = c(2, 2, 2), strides = c(2, 2, 2), dropoutRate = 0,
-  style = 19, activation = "relu")
+createFullyConvolutionalVggModel3D(
+  inputImageSize,
+  layers = c(1, 2, 3, 4, 4),
+  lowestResolution = 64,
+  convolutionKernelSize = c(3, 3, 3),
+  poolSize = c(2, 2, 2),
+  strides = c(2, 2, 2),
+  dropoutRate = 0,
+  style = 19,
+  activation = "relu"
+)
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
@@ -45,14 +52,12 @@ recognition based on the paper
 K. Simonyan and A. Zisserman, Very Deep Convolutional Networks for
 Large-Scale Image Recognition
 
-available here:
-
-\url{https://arxiv.org/abs/1409.1556}
+available here:\preformatted{    \url{https://arxiv.org/abs/1409.1556}
+}
 
 This particular implementation was influenced by the following python
-implementation:
-
-\url{https://gist.github.com/baraldilorenzo/8d096f48a1be4a2d660d}
+implementation:\preformatted{    \url{https://gist.github.com/baraldilorenzo/8d096f48a1be4a2d660d}
+}
 }
 \author{
 Tustison NJ

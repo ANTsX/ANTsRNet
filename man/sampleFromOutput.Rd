@@ -4,11 +4,26 @@
 \alias{sampleFromOutput}
 \title{Sample from a distribution}
 \usage{
-sampleFromOutput(parameters, outputDimension, numberOfMixtures,
-  temperature = 1, sigmaTemperature = 1)
+sampleFromOutput(
+  parameters,
+  outputDimension,
+  numberOfMixtures,
+  temperature = 1,
+  sigmaTemperature = 1
+)
 }
 \arguments{
-\item{distribution}{input distribution from which to sample.}
+\item{parameters}{vector parameter to split}
+
+\item{outputDimension}{output dimension}
+
+\item{numberOfMixtures}{number of mixture components}
+
+\item{temperature}{the temperature for to adjust the distribution
+(default 1.0), passed to \code{\link{mixture_density_network_softmax}}}
+
+\item{sigmaTemperature}{multipler to \code{sigma} from the
+output of \code{\link{sampleFromCategoricalDistribution}}}
 }
 \value{
 a single sample
@@ -17,7 +32,8 @@ a single sample
 Ported from:
 }
 \details{
-https://github.com/cpmpercussion/keras-mdn-layer/
+\preformatted{    https://github.com/cpmpercussion/keras-mdn-layer/
+}
 }
 \examples{
 

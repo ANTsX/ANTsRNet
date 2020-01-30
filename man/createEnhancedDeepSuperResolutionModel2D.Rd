@@ -4,11 +4,17 @@
 \alias{createEnhancedDeepSuperResolutionModel2D}
 \title{2-D implementation of the EDSR super resolution architecture.}
 \usage{
-createEnhancedDeepSuperResolutionModel2D(inputImageSize,
-  convolutionKernelSize = c(3, 3), numberOfFilters = 256,
-  numberOfResidualBlocks = 32, scale = 2, numberOfLossFunctions = 1,
-  numberOfOutputChannels = 1, doBatchNormalization = FALSE,
-  interpolation = "bilinear")
+createEnhancedDeepSuperResolutionModel2D(
+  inputImageSize,
+  convolutionKernelSize = c(3, 3),
+  numberOfFilters = 256,
+  numberOfResidualBlocks = 32,
+  scale = 2,
+  numberOfLossFunctions = 1,
+  numberOfOutputChannels = 1,
+  doBatchNormalization = FALSE,
+  interpolation = "bilinear"
+)
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The

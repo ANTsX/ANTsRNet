@@ -21,6 +21,12 @@ the \code{fromImg} matched to the \code{toImg}
 \description{
 regression between two image intensity spaces
 }
+\examples{
+library(ANTsRCore)
+sourceImage <- antsImageRead( getANTsRData( "r16" ) )
+referenceImage <- antsImageRead( getANTsRData( "r64" ) )
+matchedImage <- linMatchIntensity( sourceImage, referenceImage )
+}
 \author{
 Avants BB
 }

@@ -6,11 +6,17 @@
 \title{2-D implementation of the ResNet deep learning architecture with a
 preceding spatial transformer network layer.}
 \usage{
-createResNetWithSpatialTransformerNetworkModel2D(inputImageSize,
-  numberOfClassificationLabels = 1000, layers = 1:4,
-  residualBlockSchedule = c(3, 4, 6, 3), lowestResolution = 64,
-  cardinality = 1, numberOfSpatialTransformerUnits = 50,
-  resampledSize = c(64, 64), mode = "classification")
+createResNetWithSpatialTransformerNetworkModel2D(
+  inputImageSize,
+  numberOfClassificationLabels = 1000,
+  layers = 1:4,
+  residualBlockSchedule = c(3, 4, 6, 3),
+  lowestResolution = 64,
+  cardinality = 1,
+  numberOfSpatialTransformerUnits = 50,
+  resampledSize = c(64, 64),
+  mode = "classification"
+)
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
@@ -46,7 +52,8 @@ classification with a spatial transformer network (STN) layer.  The paper
 is available here:
 }
 \details{
-https://arxiv.org/abs/1512.03385
+\preformatted{    https://arxiv.org/abs/1512.03385
+}
 }
 \examples{
 

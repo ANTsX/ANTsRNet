@@ -4,10 +4,17 @@
 \alias{createResNetModel3D}
 \title{3-D implementation of the ResNet deep learning architecture.}
 \usage{
-createResNetModel3D(inputImageSize, inputScalarsSize = 0,
-  numberOfClassificationLabels = 1000, layers = 1:4,
-  residualBlockSchedule = c(3, 4, 6, 3), lowestResolution = 64,
-  cardinality = 1, squeezeAndExcite = FALSE, mode = "classification")
+createResNetModel3D(
+  inputImageSize,
+  inputScalarsSize = 0,
+  numberOfClassificationLabels = 1000,
+  layers = 1:4,
+  residualBlockSchedule = c(3, 4, 6, 3),
+  lowestResolution = 64,
+  cardinality = 1,
+  squeezeAndExcite = FALSE,
+  mode = "classification"
+)
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
@@ -44,12 +51,12 @@ Creates a keras model of the ResNet deep learning architecture for image
 classification.  The paper is available here:
 }
 \details{
-https://arxiv.org/abs/1512.03385
+\preformatted{    https://arxiv.org/abs/1512.03385
+}
 
 This particular implementation was influenced by the following python
-implementation:
-
-https://gist.github.com/mjdietzx/0cb95922aac14d446a6530f87b3a04ce
+implementation:\preformatted{    https://gist.github.com/mjdietzx/0cb95922aac14d446a6530f87b3a04ce
+}
 }
 \examples{
 

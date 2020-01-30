@@ -4,9 +4,15 @@
 \alias{extractImagePatches}
 \title{Extract 2-D or 3-D image patches.}
 \usage{
-extractImagePatches(image, patchSize, maxNumberOfPatches = "all",
-  strideLength = 1, maskImage = NULL, randomSeed,
-  returnAsArray = FALSE)
+extractImagePatches(
+  image,
+  patchSize,
+  maxNumberOfPatches = "all",
+  strideLength = 1,
+  maskImage = NULL,
+  randomSeed,
+  returnAsArray = FALSE
+)
 }
 \arguments{
 \item{image}{Input ANTs image with one or more components.}

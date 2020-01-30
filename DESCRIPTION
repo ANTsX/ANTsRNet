@@ -1,22 +1,26 @@
 Package: ANTsRNet
 Type: Package
-Title: Neural networks for medical image processing
-Version: 1.0
-Date: 2018-04-25
+Title: Neural Networks for Medical Image Processing
+Version: 1.1
+Date: 2020-01-29
 Authors@R: c(
     person(c("Nicholas", "J"), "Tustison", role = c("aut", "cre"), email = "ntustison@gmail.com", comment = c(ORCID = "0000-0001-9418-5103")),
-    person(c("Brian", "B"), "Avants", role = c("aut"), email = "stnava@gmail.com", comment = c(ORCID = "0000-0002-4212-3362"))
+    person(c("Brian", "B"), "Avants", role = c("aut"), email = "stnava@gmail.com", comment = c(ORCID = "0000-0002-4212-3362")),
+    person("John", "Muschelli", role = "ctb", 
+    comment = c(ORCID = "0000-0001-6469-1750"))
     )
 Maintainer: Nicholas J. Tustison <ntustison@gmail.com>
-Description: Deep learning tools for medical image processing.
+Description: Deep learning tools for medical image processing, interfacing
+    with the 'ANTsR' package and Advanced Normalization Tools ('ANTs'). 
 License: Apache License (>=2.0)
 LazyLoad: yes
-StagedInstall: no
 Depends:
-    R (>= 3.2), ANTsRCore, ANTsR
+    R (>= 3.2)
 Imports:
+    ANTsRCore,
+    ANTsR,
     knitr,
-    keras,
+    keras (>= 2.2.5.0),
     reticulate (>= 1.6.0.9002),
     tensorflow (>= 1.5),
     tfruns (>= 1.0),
@@ -25,15 +29,18 @@ Imports:
     methods,
     mvtnorm,
     R6,
-    Rcpp
+    Rcpp,
+    stats
 Suggests:
     ggplot2,
     rmarkdown,
-    testthat
+    testthat (>= 2.1.0),
+    kirby21.t1
+StagedInstall: no
 Remotes:
     rstudio/reticulate
 SystemRequirements: Keras >= 2.0 (https://keras.io)
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.1
 VignetteBuilder: knitr
 Encoding: UTF-8
