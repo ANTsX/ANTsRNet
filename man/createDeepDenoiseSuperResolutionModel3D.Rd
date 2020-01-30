@@ -43,7 +43,8 @@ framework based on the following python implementation:
 }
 }
 \examples{
-\dontrun{
+\donttest{
+createDeepDenoiseSuperResolutionModel3D(c(256L, 256L, 45L, 1L))
 }
 }
 \author{
