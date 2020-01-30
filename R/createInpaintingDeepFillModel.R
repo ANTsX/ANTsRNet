@@ -386,8 +386,8 @@ InpaintingDeepFillModel <- R6::R6Class(
     wassersteinLoss = function( X, Y )
     {
       K <- keras::backend()
-      dLoss <- K$tf$reduce_mean( Y - X )
-      gLoss <- -K$tf$reduce_mean( Y )
+      dLoss <- K$tf$math$reduce_mean( Y - X )
+      gLoss <- -K$tf$math$reduce_mean( Y )
       return( gLoss, dLoss )
     },
 
@@ -401,7 +401,7 @@ InpaintingDeepFillModel <- R6::R6Class(
       }
       slopes <- K$tf$sqrt( K$tf$reduce_sum( K$tf$square( gradients ) * mask,
                                             axis = 1:( self$dimensionality + 1 ) ) )
-      return( K$tf$reduce_mean( K$tf$square( slopes - norm ) ) )
+      return( K$tf$math$reduce_mean( K$tf$square( slopes - norm ) ) )
     },
 
     train = function( X_train, numberOfEpochs = 200, maskRegionSize = NA,
@@ -745,8 +745,8 @@ ContextualAttentionLayer2D <- R6::R6Class(
       backgroundKernelSize <- as.integer( 2 * self$dilationRate )
       stridexRate <- as.integer( self$stride * self$dilationRate )
 
-      backgroundPatches <- self$tf$extract_image_patches( backgroundTensor,
-                                                          ksizes = c( 1, backgroundKernelSize, backgroundKernelSize, 1 ),
+      backgroundPatches <- self$tf$image$extract_patches( backgroundTensor,
+                                                          sizes = c( 1, backgroundKernelSize, backgroundKernelSize, 1 ),
                                                           strides = c( 1, stridexRate, stridexRate, 1 ),
                                                           rates = c( 1, 1, 1, 1 ), padding = 'SAME' )
       backgroundPatches <- self$tf$reshape( backgroundPatches,
@@ -780,9 +780,9 @@ ContextualAttentionLayer2D <- R6::R6Class(
 
       # Create resampled background patches
 
-      resampledBackgroundPatches <- self$tf$extract_image_patches(
+      resampledBackgroundPatches <- self$tf$image$extract_patches(
         resampledBackgroundTensor,
-        ksizes = c( 1, self$kernelSize, self$kernelSize, 1 ),
+        sizes = c( 1, self$kernelSize, self$kernelSize, 1 ),
         strides = c( 1, self$stride, self$stride, 1 ),
         rates = c( 1, 1, 1, 1 ), padding = 'SAME' )
       resampledBackgroundPatches <- self$tf$reshape( resampledBackgroundPatches,
@@ -800,8 +800,8 @@ ContextualAttentionLayer2D <- R6::R6Class(
         mask = self$tf$zeros( maskShape )
       }
 
-      maskPatches <- self$tf$extract_image_patches( mask,
-                                                    ksizes = c( 1, self$kernelSize, self$kernelSize, 1 ),
+      maskPatches <- self$tf$image$extract_patches( mask,
+                                                    sizes = c( 1, self$kernelSize, self$kernelSize, 1 ),
                                                     strides = c( 1, self$stride, self$stride, 1 ),
                                                     rates = c( 1, 1, 1, 1 ), padding = 'SAME' )
       maskPatches <- self$tf$reshape( maskPatches,
@@ -809,8 +809,8 @@ ContextualAttentionLayer2D <- R6::R6Class(
       maskPatches <- self$tf$transpose( maskPatches, c( 0L, 2L, 3L, 4L, 1L ) )
 
       maskPatches <- maskPatches[1,,,,]
-      maskData <- self$tf$cast( self$tf$equal( self$tf$reduce_mean( maskPatches,
-                                                                    axis = c( 0L, 1L, 2L ), keep_dims = TRUE ), 0.0 ), self$tf$float32 )
+      maskData <- self$tf$cast( self$tf$equal( self$tf$math$reduce_mean( maskPatches,
+                                                                    axis = c( 0L, 1L, 2L ), keepdims = TRUE ), 0.0 ), self$tf$float32 )
 
       # Split into groups
 
@@ -1129,8 +1129,8 @@ ContextualAttentionLayer3D <- R6::R6Class(
       maskPatches <- self$tf$transpose( maskPatches, c( 0L, 2L, 3L, 4L, 5L, 1L ) )
 
       maskPatches <- maskPatches[1,,,,,]
-      maskData <- self$tf$cast( self$tf$equal( self$tf$reduce_mean( maskPatches,
-                                                                    axis = c( 0L, 1L, 2L, 3L ), keep_dims = TRUE ), 0.0 ), self$tf$float32 )
+      maskData <- self$tf$cast( self$tf$equal( self$tf$math$reduce_mean( maskPatches,
+                                                                    axis = c( 0L, 1L, 2L, 3L ), keepdims = TRUE ), 0.0 ), self$tf$float32 )
 
       # Split into groups
 
