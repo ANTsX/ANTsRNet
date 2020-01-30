@@ -24,7 +24,7 @@
 #' \dontrun{
 #' image <- applyDeepBackProjectionModel( ri( 1 ), getPretrainedNetwork( "dbpn4x" ) )
 #' }
-#' @export applyDeepBackProjectionModel
+# @export applyDeepBackProjectionModel
 applyDeepBackProjectionModel <- function( image, model,
   targetRange = c( -127.5, 127.5 ), batchSize = 32, regressionOrder = NA,
   verbose = FALSE )

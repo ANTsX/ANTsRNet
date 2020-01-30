@@ -8,7 +8,11 @@
 #' @param truncate boolean which turns on/off the clipping of intensity.
 #' @return the \code{fromImg} matched to the \code{toImg}
 #' @author Avants BB
-#'
+#' @examples
+#' library(ANTsRCore)
+#' sourceImage <- antsImageRead( getANTsRData( "r16" ) )
+#' referenceImage <- antsImageRead( getANTsRData( "r64" ) )
+#' matchedImage <- linMatchIntensity( sourceImage, referenceImage )
 #' @export
 linMatchIntensity <- function( fromImg, toImg, polyOrder = 1, truncate = TRUE ) {
   tovec = as.numeric( toImg )
@@ -45,8 +49,17 @@ linMatchIntensity <- function( fromImg, toImg, polyOrder = 1, truncate = TRUE ) 
 #' @return image upscaled to resolution provided by network
 #' @author Avants BB
 #' @examples
-#' \dontrun{
-#' simg <- applySuperResolutionModel( ri( 1 ), getPretrainedNetwork( "dbpn4x" ) )
+#' \donttest{
+#' library(ANTsRCore)
+#' orig_img = antsImageRead( getANTsRData( "r16" ) )
+#' # input needs to be 48x48
+#' img = resampleImage(orig_img,
+#' resampleParams = rep(256/48, 2))
+#' model = getPretrainedNetwork( "dbpn4x" )
+#' simg <- applySuperResolutionModel(img,  model = model)
+#' plot(orig_img)
+#' plot(img)
+#' plot(simg)
 #' }
 #' @importFrom ANTsRCore antsCopyImageInfo antsSetSpacing
 #' @importFrom ANTsRCore splitChannels antsAverageImages
@@ -192,7 +205,15 @@ applySuperResolutionModel <- function(
 #' @author Avants BB
 #' @examples
 #' \dontrun{
-#' simg <- applySuperResolutionModelPatch( ri( 1 ), getPretrainedNetwork( "dbpn4x" ) )
+#' library(ANTsRCore)
+#' orig_img = antsImageRead( getANTsRData( "r16" ) )
+#' # input needs to be 48x48
+#' model = getPretrainedNetwork( "dbpn4x" )
+#' simg <- applySuperResolutionModelPatch(img,
+#'  model = model, lowResolutionPatchSize = 8, strideLength = 2)
+#' plot(orig_img)
+#' plot(img)
+#' plot(simg)
 #' }
 #' @importFrom stats cov var lm runif sd
 #' @export applySuperResolutionModelPatch

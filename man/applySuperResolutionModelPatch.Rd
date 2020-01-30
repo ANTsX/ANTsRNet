@@ -46,7 +46,15 @@ range is taken over all channels.
 }
 \examples{
 \dontrun{
-simg <- applySuperResolutionModelPatch( ri( 1 ), getPretrainedNetwork( "dbpn4x" ) )
+library(ANTsRCore)
+orig_img = antsImageRead( getANTsRData( "r16" ) )
+# input needs to be 48x48
+model = getPretrainedNetwork( "dbpn4x" )
+simg <- applySuperResolutionModelPatch(img,
+ model = model, lowResolutionPatchSize = 8, strideLength = 2)
+plot(orig_img)
+plot(img)
+plot(simg)
 }
 }
 \author{

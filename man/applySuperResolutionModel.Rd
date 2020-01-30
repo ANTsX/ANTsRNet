@@ -42,8 +42,17 @@ intensity range (min to max) of the output will match the input where the
 range is taken over all channels.
 }
 \examples{
-\dontrun{
-simg <- applySuperResolutionModel( ri( 1 ), getPretrainedNetwork( "dbpn4x" ) )
+\donttest{
+library(ANTsRCore)
+orig_img = antsImageRead( getANTsRData( "r16" ) )
+# input needs to be 48x48
+img = resampleImage(orig_img,
+resampleParams = rep(256/48, 2))
+model = getPretrainedNetwork( "dbpn4x" )
+simg <- applySuperResolutionModel(img,  model = model)
+plot(orig_img)
+plot(img)
+plot(simg)
 }
 }
 \author{
