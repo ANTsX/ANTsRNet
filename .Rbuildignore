@@ -8,3 +8,6 @@ docs
 ^\.github$
 ^index\.html$
 ^requirements\.txt$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
