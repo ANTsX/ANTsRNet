@@ -49,7 +49,7 @@ before_script:
   - export CI_PYTHON_VERSION=${TRAVIS_PYTHON_VERSION}
   - export PATH=/opt/python/${TRAVIS_PYTHON_VERSION}/bin:$PATH
   - ls ~/virtualenv/python${TRAVIS_PYTHON_VERSION}/bin || exit 0 ;
-  - source ~/virtualenv/python${TRAVIS_PYTHON_VERSION}/bin/activate || exit 0; 
+  - source ~/virtualenv/python${TRAVIS_PYTHON_VERSION}/bin/activate || exit 0;
   - python --version
   - python3 --version
   - pip --version
@@ -62,5 +62,5 @@ deploy:
   script: Rscript -e 'pkgdown::deploy_site_github()'
   skip_cleanup: true
 
-after_success:
+before_deploy:
     - Rscript -e 'covr::codecov(type = "all", commentDonttest = FALSE)'
