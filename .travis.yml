@@ -28,7 +28,7 @@ before_install:
   - tlmgr install index
   - export PACKAGE_NAME=ANTsRNet
   - wget -O travis_helpers.sh http://bit.ly/travis_helpers
-  - source travis_helpers.sh
+  - cat travis_helpers.sh; source travis_helpers.sh
   - rm travis_helpers.sh
   - v8_install ;
   - Rscript -e 'install.packages("rsvd")'
