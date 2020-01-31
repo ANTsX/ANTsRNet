@@ -50,6 +50,8 @@ before_script:
   - export PATH=/opt/python/${TRAVIS_PYTHON_VERSION}/bin:$PATH
   - ls ~/virtualenv/python${TRAVIS_PYTHON_VERSION}/bin || exit 0 ;
   - source ~/virtualenv/python${TRAVIS_PYTHON_VERSION}/bin/activate || exit 0; 
+  - python --version
+  - python3 --version
   - pip --version
   - install_python_requirements ;
   # - R -e 'tensorflow::install_tensorflow(version = "2.0.0")'
