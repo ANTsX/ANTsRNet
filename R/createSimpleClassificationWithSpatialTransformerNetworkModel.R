@@ -18,7 +18,6 @@
 #' @return a keras model
 #' @author Tustison NJ
 #' @examples
-#' \dontrun{
 #'
 #' library( ANTsRNet )
 #' library( keras )
@@ -40,10 +39,10 @@
 #'
 #' inputImageSize <- c( dim( X_trainSmall )[2:3], 1 )
 #'
+#' \dontrun{
 #' model <- createSimpleClassificationWithSpatialTransformerNetworkModel2D(
 #'   inputImageSize = inputImageSize,
 #'   resampledSize = c( 30, 30 ), numberOfClassificationLabels = numberOfLabels )
-#'
 #' }
 #' @import keras
 #' @export

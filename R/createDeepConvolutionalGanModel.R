@@ -26,7 +26,6 @@
 #' @author Tustison NJ
 #'
 #' @examples
-#' \dontrun{
 #'
 #' library( keras )
 #' library( ANTsRNet )
@@ -51,8 +50,8 @@
 #' ganModel <- DeepConvolutionalGanModel$new(
 #'    inputImageSize = inputImageSize,
 #'    latentDimension = 100 )
-#'
-#' ganModel$train( x, numberOfEpochs = 100 )
+#' \donttest{
+#' ganModel$train( x, numberOfEpochs = 2 )
 #' }
 #'
 #' @name DeepConvolutionalGanModel

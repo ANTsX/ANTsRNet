@@ -28,3 +28,15 @@ a keras layer tensor
 \description{
 Wraps a custom mixture density layer.
 }
+\examples{
+\dontrun{
+model <- keras_model_sequential()
+input_shape = c(20, 20, 1)
+model = model \%>\%
+  layer_conv_2d(filters = 32, kernel_size = c(3,3), activation = 'relu',
+                input_shape = input_shape)
+model \%>\%
+  layer_mixture_density(outputDimension = c(18, 18),
+  numberOfMixtures = 3)
+ }
+}

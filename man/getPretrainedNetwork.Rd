@@ -9,7 +9,8 @@ getPretrainedNetwork(
     "brainSegmentation", "brainSegmentationPatchBased", "brainAgeGender", "denoising",
     "wholeTumorSegmentationT2Flair", "protonLungMri", "ctHumanLung", "functionalLungMri",
     "hippMapp3rInitial", "hippMapp3rRefine"),
-  targetFileName
+  targetFileName,
+  overwrite = FALSE
 )
 }
 \arguments{
@@ -17,6 +18,8 @@ getPretrainedNetwork(
 valid possibilities. Note that most require internet access to download.}
 
 \item{targetFileName}{optional target filename}
+
+\item{overwrite}{shoudl the file be overwritten}
 }
 \value{
 filename string

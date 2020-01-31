@@ -5,6 +5,7 @@
 #' @param fileId one of the permitted file ids or pass "show" to list all
 #'   valid possibilities. Note that most require internet access to download.
 #' @param targetFileName optional target filename
+#' @param overwrite shoudl the file be overwritten
 #' @return filename string
 #' @author Avants BB
 #' @note See \url{https://figshare.com/authors/Nick_Tustison/441144}
@@ -30,7 +31,8 @@ getPretrainedNetwork <- function(
              "functionalLungMri",
              "hippMapp3rInitial",
              "hippMapp3rRefine"),
-  targetFileName )
+  targetFileName,
+  overwrite = FALSE)
 {
 
 
@@ -59,12 +61,12 @@ getPretrainedNetwork <- function(
 
   if( missing( targetFileName ) )
   {
-    targetFileName <- tempfile( fileext = ".h5" )
+    targetFileName <- file.path(tempdir(), paste0(fileId, ".h5"))
   }
 
-  if( ! file.exists( targetFileName ) )
+  if( ! file.exists( targetFileName ) || overwrite)
   {
-    download.file( url, targetFileName  )
+    download.file( url, targetFileName, overwrite = overwrite )
   }
   return( targetFileName )
 }

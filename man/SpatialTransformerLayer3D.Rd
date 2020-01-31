@@ -28,6 +28,12 @@ element are the weights.}
 \code{$compute_output_shape} computes the output shape.
 }
 
+\examples{
+model = SpatialTransformerLayer3D$new(c(30L, 30L, 30L))
+model$compute_output_shape(input_shape = c(25, 25, 25))
+
+
+}
 \author{
 Tustison NJ
 }
