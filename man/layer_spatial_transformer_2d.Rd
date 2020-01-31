@@ -32,11 +32,24 @@ or another Layer which this layer will call.}
 
 \item{interpolatorType}{interpolation used for the sampling}
 
-\item{name}{The name of the layer#'}
+\item{name}{The name of the layer}
 }
 \value{
 a keras layer tensor
 }
 \description{
 Wraps a custom spatial transformer layer
+}
+\examples{
+\dontrun{
+model <- keras_model_sequential()
+input_shape = c(20, 20, 1)
+model = model \%>\%
+  layer_conv_2d(filters = 32, kernel_size = c(3,3), activation = 'relu',
+                input_shape = input_shape)
+model  \%>\%
+  layer_spatial_transformer_2d(resampledSize = c(50, 50))
+model  \%>\%
+  layer_spatial_transformer_2d(resampledSize = c(50, 50, 1))
+}
 }

@@ -5,7 +5,7 @@
 \alias{MixtureDensityNetworkLayer}
 \title{Mixture density network layer}
 \value{
-.
+A Keras Layer
 }
 \description{
 Mixture density network layer
@@ -41,6 +41,11 @@ here:
 https://github.com/keras-team/keras/blob/master/keras/layers/core.py#L796-L937
 }
 
+\examples{
+MixtureDensityNetworkLayer$new(outputDimension = c(50, 48),
+ numberOfMixtures = 3)
+
+}
 \author{
 Tustison NJ
 }

@@ -35,7 +35,6 @@ based on the following python Keras model:\preformatted{    \url{https://github.
 }
 }
 \examples{
-\dontrun{
 
 library( ANTsRNet )
 library( keras )
@@ -57,10 +56,10 @@ Y_testSmall <- to_categorical( mnistData$test$y[1:10], numberOfLabels )
 
 inputImageSize <- c( dim( X_trainSmall )[2:3], 1 )
 
+\dontrun{
 model <- createSimpleClassificationWithSpatialTransformerNetworkModel2D(
   inputImageSize = inputImageSize,
   resampledSize = c( 30, 30 ), numberOfClassificationLabels = numberOfLabels )
-
 }
 }
 \author{

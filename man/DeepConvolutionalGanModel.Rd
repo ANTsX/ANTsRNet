@@ -31,7 +31,6 @@ generator and discriminator.}
 }
 
 \examples{
-\dontrun{
 
 library( keras )
 library( ANTsRNet )
@@ -56,8 +55,8 @@ numberOfClusters <- length( unique( mnist$train$y ) )
 ganModel <- DeepConvolutionalGanModel$new(
    inputImageSize = inputImageSize,
    latentDimension = 100 )
-
-ganModel$train( x, numberOfEpochs = 100 )
+\donttest{
+ganModel$train( x, numberOfEpochs = 2 )
 }
 
 }

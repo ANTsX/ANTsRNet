@@ -27,7 +27,6 @@
 #' @author Tustison NJ
 #'
 #' @examples
-#' \dontrun{
 #'
 #' library( keras )
 #' library( ANTsRNet )
@@ -53,9 +52,11 @@
 #'    inputImageSize = inputImageSize,
 #'    latentDimension = 100 )
 #'
-#' ganModel$train( x, numberOfEpochs = 100 )
+#' \dontrun{
+#' ganModel$train( x, numberOfEpochs = 2 )
 #' }
-#'
+#' tryCatch({tensorflow::tf$compat$v1$enable_eager_execution()},
+#' silent = TRUE, error = function(e) {})
 #' @name ImprovedWassersteinGanModel
 NULL
 
@@ -166,6 +167,10 @@ ImprovedWassersteinGanModel <- R6::R6Class( "ImprovedWassersteinGanModel",
     gradientPenaltyLoss = function( y_true, y_pred, averagedSamples )
       {
       K <- keras::backend()
+      # to fix  RuntimeError: Evaluation error: RuntimeError: tf.gradients
+      # is not supported when eager execution is enabled. Use tf.GradientTape
+      # instead.
+      tensorflow::tf$compat$v1$disable_eager_execution()
       gradients <- K$gradients( y_pred, averagedSamples )[1]
       gradientsSquared <- K$square( gradients )
       gradientsSquaredSum <- K$sum( gradientsSquared,

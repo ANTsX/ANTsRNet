@@ -32,7 +32,11 @@
 #'
 #' @author Tustison NJ
 #'
-#' @return .
+#' @return A Keras Layer
+#'
+#' @examples
+#' MixtureDensityNetworkLayer$new(outputDimension = c(50, 48),
+#'  numberOfMixtures = 3)
 #'
 #' @name MixtureDensityNetworkLayer
 NULL
@@ -155,6 +159,17 @@ MixtureDensityNetworkLayer <- R6::R6Class( "MixtureDensityNetworkLayer",
 #' @param trainable Whether the layer weights will be updated during training.
 #' @return a keras layer tensor
 #' @export
+#' @examples
+#' \dontrun{
+#' model <- keras_model_sequential()
+#' input_shape = c(20, 20, 1)
+#' model = model %>%
+#'   layer_conv_2d(filters = 32, kernel_size = c(3,3), activation = 'relu',
+#'                 input_shape = input_shape)
+#' model %>%
+#'   layer_mixture_density(outputDimension = c(18, 18),
+#'   numberOfMixtures = 3)
+#'  }
 layer_mixture_density <- function( object,
   outputDimension, numberOfMixtures, trainable = TRUE ) {
 create_layer( MixtureDensityNetworkLayer, object,
