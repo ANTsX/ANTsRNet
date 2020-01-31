@@ -77,14 +77,14 @@ createAlexNetModel2D <- function( inputImageSize,
                                   dropoutRate = 0.0,
                                   mode = c("classification", "regression"),
                                   batch_size = NULL
-                                )
+)
 {
 
   mode = match.arg(mode)
   splitTensor2D <- function( axis = 4, ratioSplit = 1, idSplit = 1 )
-    {
+  {
     f <- function( X )
-      {
+    {
       K <- keras::backend()
 
       Xdims <- K$int_shape( X )
@@ -92,28 +92,28 @@ createAlexNetModel2D <- function( inputImageSize,
       axisSplit <- ( ( idSplit - 1 ) * div + 1 ):( idSplit * div )
 
       if( axis == 1 )
-        {
+      {
         output <- X[axisSplit,,,]
-        } else if( axis == 2 ) {
+      } else if( axis == 2 ) {
         output <- X[, axisSplit,,]
-        } else if( axis == 3 ) {
+      } else if( axis == 3 ) {
         output <- X[,, axisSplit,]
-        } else if( axis == 4 ) {
+      } else if( axis == 4 ) {
         output <- X[,,, axisSplit]
-        } else {
+      } else {
         stop( "Wrong axis specification." )
-        }
-      return( output )
       }
+      return( output )
+    }
 
     return( layer_lambda( f = f ) )
-    }
+  }
 
   crossChannelNormalization2D <- function(
     alpha = 1e-4, k = 2, beta = 0.75, n = 5L )
-    {
+  {
     normalizeTensor2D <- function( X )
-      {
+    {
       K <- keras::backend()
 
       X2 <- K$square( X )
@@ -131,63 +131,63 @@ createAlexNetModel2D <- function( inputImageSize,
 
       scale <- k
       for( i in 1:n )
-        {
+      {
         scale <- scale + alpha *
           extraChannels[,,, i:( i + numberOfChannels - 1 )]
-        }
+      }
       scale <- K$pow( scale, beta )
 
       return( X / scale )
-      }
+    }
 
     return( layer_lambda( f = normalizeTensor2D ) )
-    }
+  }
 
   inputs <- layer_input( shape = inputImageSize )
 
   # Conv1
   outputs <- inputs %>% layer_conv_2d( filters = 96,
-    kernel_size = c( 11, 11 ), strides = c( 4, 4 ), activation = 'relu',
-    batch_size = batch_size)
+                                       kernel_size = c( 11, 11 ), strides = c( 4, 4 ), activation = 'relu',
+                                       batch_size = batch_size)
 
   # Conv2
   outputs <- outputs %>% layer_max_pooling_2d( pool_size = c( 3, 3 ),
-    strides = c( 2, 2 ) )
+                                               strides = c( 2, 2 ) )
   normalizationLayer <- crossChannelNormalization2D()
   outputs <- outputs %>% normalizationLayer
 
   outputs <- outputs %>% layer_zero_padding_2d( padding = c( 2, 2 ) )
 
   convolutionLayer <- outputs %>% layer_conv_2d( filters = 128,
-    kernel_size = c( 5, 5 ), padding = 'same' )
+                                                 kernel_size = c( 5, 5 ), padding = 'same' )
   lambdaLayersConv2 <- list( convolutionLayer )
   for( i in 1:2 )
-    {
+  {
     splitLayer <- splitTensor2D( axis = 4, ratioSplit = 2, idSplit = i )
     lambdaLayersConv2[[i+1]] <- outputs %>% splitLayer
-    }
+  }
   outputs <- layer_concatenate( lambdaLayersConv2 )
 
   # Conv3
   outputs <- outputs %>% layer_max_pooling_2d( pool_size = c( 3, 3 ),
-    strides = c( 2, 2 ) )
+                                               strides = c( 2, 2 ) )
   normalizationLayer <- crossChannelNormalization2D()
   outputs <- outputs %>% normalizationLayer
 
   outputs <- outputs %>% layer_zero_padding_2d( padding = c( 2, 2 ) )
   outputs <- outputs %>% layer_conv_2d( filters = 384,
-    kernel_size = c( 3, 3 ), padding = 'same' )
+                                        kernel_size = c( 3, 3 ), padding = 'same' )
 
   # Conv4
   outputs <- outputs %>% layer_zero_padding_2d( padding = c( 2, 2 ) )
   convolutionLayer <- outputs %>% layer_conv_2d( filters = 192,
-    kernel_size = c( 3, 3 ), padding = 'same' )
+                                                 kernel_size = c( 3, 3 ), padding = 'same' )
   lambdaLayersConv4 <- list( convolutionLayer )
   for( i in 1:2 )
-    {
+  {
     splitLayer <- splitTensor2D( axis = 4, ratioSplit = 2, idSplit = i )
     lambdaLayersConv4[[i+1]] <- outputs %>% splitLayer
-    }
+  }
   outputs <- layer_concatenate( lambdaLayersConv4 )
 
   # Conv5
@@ -196,13 +196,13 @@ createAlexNetModel2D <- function( inputImageSize,
   outputs <- outputs %>% normalizationLayer
 
   convolutionLayer <- outputs %>% layer_conv_2d( filters = 128,
-    kernel_size = c( 3, 3 ), padding = 'same' )
+                                                 kernel_size = c( 3, 3 ), padding = 'same' )
   lambdaLayersConv5 <- list( convolutionLayer )
   for( i in 1:2 )
-    {
+  {
     splitLayer <- splitTensor2D( axis = 4, ratioSplit = 2, idSplit = i )
     lambdaLayersConv5[[i+1]] <- outputs %>% splitLayer
-    }
+  }
   outputs <- layer_concatenate( lambdaLayersConv5 )
 
   outputs <- outputs %>%
@@ -210,29 +210,29 @@ createAlexNetModel2D <- function( inputImageSize,
   outputs <- outputs %>% layer_flatten()
   outputs <- outputs %>% layer_dense( units = numberOfDenseUnits, activation = 'relu' )
   if( dropoutRate > 0.0 )
-    {
+  {
     outputs <- outputs %>% layer_dropout( rate = dropoutRate )
-    }
+  }
   outputs <- outputs %>% layer_dense( units = numberOfDenseUnits, activation = 'relu' )
   if( dropoutRate > 0.0 )
-    {
+  {
     outputs <- outputs %>% layer_dropout( rate = dropoutRate )
-    }
+  }
 
   layerActivation <- ''
   if( mode == 'classification' )
-    {
+  {
     if( numberOfClassificationLabels == 2 )
-      {
+    {
       layerActivation <- 'sigmoid'
-      } else {
-      layerActivation <- 'softmax'
-      }
-    } else if( mode == 'regression' ) {
-    layerActivation <- 'linear'
     } else {
-    stop( 'Error: unrecognized mode.' )
+      layerActivation <- 'softmax'
     }
+  } else if( mode == 'regression' ) {
+    layerActivation <- 'linear'
+  } else {
+    stop( 'Error: unrecognized mode.' )
+  }
 
   outputs <- outputs %>%
     layer_dense( units = numberOfClassificationLabels, activation = layerActivation )
@@ -315,19 +315,20 @@ createAlexNetModel2D <- function( inputImageSize,
 #' }
 #' @import keras
 #' @export
-createAlexNetModel3D <- function( inputImageSize,
-                                  numberOfClassificationLabels = 1000,
-                                  numberOfDenseUnits = 4096,
-                                  dropoutRate = 0.0,
-                                  mode = 'classification',
-                                  batch_size = NULL
-                                )
+createAlexNetModel3D <- function(
+  inputImageSize,
+  numberOfClassificationLabels = 1000,
+  numberOfDenseUnits = 4096,
+  dropoutRate = 0.0,
+  mode = 'classification',
+  batch_size = NULL
+)
 {
 
   splitTensor3D <- function( axis = 5, ratioSplit = 1, idSplit = 1 )
-    {
+  {
     f <- function( X )
-      {
+    {
       K <- keras::backend()
 
       Xdims <- K$int_shape( X )
@@ -335,30 +336,30 @@ createAlexNetModel3D <- function( inputImageSize,
       axisSplit <- ( ( idSplit - 1 ) * div + 1 ):( idSplit * div )
 
       if( axis == 1 )
-        {
+      {
         output <- X[axisSplit,,,,]
-        } else if( axis == 2 ) {
+      } else if( axis == 2 ) {
         output <- X[, axisSplit,,,]
-        } else if( axis == 3 ) {
+      } else if( axis == 3 ) {
         output <- X[,, axisSplit,,]
-        } else if( axis == 4 ) {
+      } else if( axis == 4 ) {
         output <- X[,,, axisSplit,]
-        } else if( axis == 5 ) {
+      } else if( axis == 5 ) {
         output <- X[,,,, axisSplit]
-        } else {
+      } else {
         stop( "Wrong axis specification." )
-        }
-      return( output )
       }
+      return( output )
+    }
 
     return( layer_lambda( f = f ) )
-    }
+  }
 
   crossChannelNormalization3D <- function(
     alpha = 1e-4, k = 2, beta = 0.75, n = 5L )
-    {
+  {
     normalizeTensor3D <- function( X )
-      {
+    {
       K <- keras::backend()
 
       X2 <- K$square( X )
@@ -376,63 +377,63 @@ createAlexNetModel3D <- function( inputImageSize,
 
       scale <- k
       for( i in 1:n )
-        {
+      {
         scale <- scale + alpha *
           extraChannels[,,,, i:( i + numberOfChannels - 1 )]
-        }
+      }
       scale <- K$pow( scale, beta )
 
       return( X / scale )
-      }
+    }
 
     return( layer_lambda( f = normalizeTensor3D ) )
-    }
+  }
 
   inputs <- layer_input( shape = inputImageSize )
 
   # Conv1
   outputs <- inputs %>% layer_conv_3d( filters = 96,
-    kernel_size = c( 11, 11, 11 ), strides = c( 4, 4, 4 ),
-    activation = 'relu', batch_size = batch_size)
+                                       kernel_size = c( 11, 11, 11 ), strides = c( 4, 4, 4 ),
+                                       activation = 'relu', batch_size = batch_size)
 
   # Conv2
   outputs <- outputs %>% layer_max_pooling_3d( pool_size = c( 3, 3, 3 ),
-    strides = c( 2, 2, 2 ) )
+                                               strides = c( 2, 2, 2 ) )
   normalizationLayer <- crossChannelNormalization3D()
   outputs <- outputs %>% normalizationLayer
 
   outputs <- outputs %>% layer_zero_padding_3d( padding = c( 2, 2, 2 ) )
 
   convolutionLayer <- outputs %>% layer_conv_3d( filters = 128,
-    kernel_size = c( 5, 5, 5 ), padding = 'same' )
+                                                 kernel_size = c( 5, 5, 5 ), padding = 'same' )
   lambdaLayersConv2 <- list( convolutionLayer )
   for( i in 1:2 )
-    {
+  {
     splitLayer <- splitTensor3D( axis = 5, ratioSplit = 2, idSplit = i )
     lambdaLayersConv2[[i+1]] <- outputs %>% splitLayer
-    }
+  }
   outputs <- layer_concatenate( lambdaLayersConv2 )
 
   # Conv3
   outputs <- outputs %>% layer_max_pooling_3d( pool_size = c( 3, 3, 3 ),
-    strides = c( 2, 2, 2 ) )
+                                               strides = c( 2, 2, 2 ) )
   normalizationLayer <- crossChannelNormalization3D()
   outputs <- outputs %>% normalizationLayer
 
   outputs <- outputs %>% layer_zero_padding_3d( padding = c( 2, 2, 2 ) )
   outputs <- outputs %>% layer_conv_3d( filters = 384,
-    kernel_size = c( 3, 3, 3 ), padding = 'same' )
+                                        kernel_size = c( 3, 3, 3 ), padding = 'same' )
 
   # Conv4
   outputs <- outputs %>% layer_zero_padding_3d( padding = c( 2, 2, 2 ) )
   convolutionLayer <- outputs %>% layer_conv_3d( filters = 192,
-    kernel_size = c( 3, 3, 3 ), padding = 'same' )
+                                                 kernel_size = c( 3, 3, 3 ), padding = 'same' )
   lambdaLayersConv4 <- list( convolutionLayer )
   for( i in 1:2 )
-    {
+  {
     splitLayer <- splitTensor3D( axis = 5, ratioSplit = 2, idSplit = i )
     lambdaLayersConv4[[i+1]] <- outputs %>% splitLayer
-    }
+  }
   outputs <- layer_concatenate( lambdaLayersConv4 )
 
   # Conv5
@@ -441,45 +442,45 @@ createAlexNetModel3D <- function( inputImageSize,
   outputs <- outputs %>% normalizationLayer
 
   convolutionLayer <- outputs %>% layer_conv_3d( filters = 128,
-    kernel_size = c( 3, 3, 3 ), padding = 'same' )
+                                                 kernel_size = c( 3, 3, 3 ), padding = 'same' )
   lambdaLayersConv5 <- list( convolutionLayer )
   for( i in 1:2 )
-    {
+  {
     splitLayer <- splitTensor3D( axis = 5, ratioSplit = 2, idSplit = i )
     lambdaLayersConv5[[i+1]] <- outputs %>% splitLayer
-    }
+  }
   outputs <- layer_concatenate( lambdaLayersConv5 )
 
   outputs <- outputs %>% layer_max_pooling_3d( pool_size = c( 3, 3, 3 ),
-    strides = c( 2, 2, 2 ) )
+                                               strides = c( 2, 2, 2 ) )
   outputs <- outputs %>% layer_flatten()
   outputs <- outputs %>% layer_dense( units = numberOfDenseUnits,
-    activation = 'relu' )
+                                      activation = 'relu' )
   if( dropoutRate > 0.0 )
-    {
+  {
     outputs <- outputs %>% layer_dropout( rate = dropoutRate )
-    }
+  }
   outputs <- outputs %>% layer_dense( units = numberOfDenseUnits,
-    activation = 'relu' )
+                                      activation = 'relu' )
   if( dropoutRate > 0.0 )
-    {
+  {
     outputs <- outputs %>% layer_dropout( rate = dropoutRate )
-    }
+  }
 
   layerActivation <- ''
   if( mode == 'classification' )
-    {
+  {
     if( numberOfClassificationLabels == 2 )
-      {
+    {
       layerActivation <- 'sigmoid'
-      } else {
-      layerActivation <- 'softmax'
-      }
-    } else if( mode == 'regression' ) {
-    layerActivation <- 'linear'
     } else {
-    stop( 'Error: unrecognized mode.' )
+      layerActivation <- 'softmax'
     }
+  } else if( mode == 'regression' ) {
+    layerActivation <- 'linear'
+  } else {
+    stop( 'Error: unrecognized mode.' )
+  }
 
   outputs <- outputs %>%
     layer_dense( units = numberOfClassificationLabels, activation = layerActivation )
