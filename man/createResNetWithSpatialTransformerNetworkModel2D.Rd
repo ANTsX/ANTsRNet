@@ -57,7 +57,7 @@ is available here:
 }
 \examples{
 
-
+\dontrun{
 library( ANTsRNet )
 library( keras )
 
@@ -96,6 +96,7 @@ model \%>\% compile( loss = 'categorical_crossentropy',
 # testingMetrics <- model \%>\% evaluate( X_testSmall, Y_testSmall )
 # predictedData <- model \%>\% predict( X_testSmall, verbose = 1 )
 rm(model); gc()
+}
 }
 \author{
 Tustison NJ
