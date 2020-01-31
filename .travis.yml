@@ -44,8 +44,8 @@ before_script:
   # - pip2.7 install -q --upgrade --ignore-installed --user travis virtualenv
   # - pip2.7 install -q --user setuptools wheel
   # - pip2.7 install -q --upgrade --ignore-installed --user travis keras h5py pyyaml requests Pillow scipy theano tensorflow
-  - virtualenv_activate=`setup_python 3.6 false`;
-  - source ${virtualenv_activate} || exit 0;  
+  - setup_python 3.6 false;
+  - source ~/virtualenv/python3.6/bin/activate || exit 0; 
   - install_python_requirements ;
   - R -e 'tensorflow::install_tensorflow(version = "2.0.0")'
 
