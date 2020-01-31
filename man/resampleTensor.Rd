@@ -47,7 +47,10 @@ inputTensor <- K$ones( c( 2L, 10L, 10L, 10L, 3L ) )
 outputTensor <- resampleTensor( inputTensor, c( 12, 13, 14 ), 'nearestNeighbor' )
 outputTensor <- resampleTensor( inputTensor, c( 12, 13, 14 ), 'linear' )
 outputTensor <- resampleTensor( inputTensor, c( 12, 13, 14 ), 'cubic' )
-
+rm(K)
+rm(outputTensor)
+rm(intputTensor)
+gc()
 }
 \author{
 Tustison NJ

@@ -53,7 +53,7 @@ before_script:
   - python --version
   - python3 --version
   - pip --version
-  - install_python_requirements ;
+  - install_python_requirements -q ;
   # - R -e 'tensorflow::install_tensorflow(version = "2.0.0")'
 
 before_cache: Rscript -e 'remotes::install_cran("pkgdown")'

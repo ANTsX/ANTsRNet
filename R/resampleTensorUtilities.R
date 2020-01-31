@@ -31,7 +31,10 @@
 #' outputTensor <- resampleTensor( inputTensor, c( 12, 13, 14 ), 'nearestNeighbor' )
 #' outputTensor <- resampleTensor( inputTensor, c( 12, 13, 14 ), 'linear' )
 #' outputTensor <- resampleTensor( inputTensor, c( 12, 13, 14 ), 'cubic' )
-#'
+#' rm(K)
+#' rm(outputTensor)
+#' rm(intputTensor)
+#' gc()
 #' @import keras
 #' @export
 resampleTensor <- function(

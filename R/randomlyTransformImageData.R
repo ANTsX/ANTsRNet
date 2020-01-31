@@ -47,7 +47,10 @@
 #' data <- randomlyTransformImageData( image1,
 #'   list( list( image1 ), list( image2 ) ),
 #'   list( segmentation1, segmentation2 ) )
-#'
+#' rm(segmentation1); gc()
+#' rm(segmentation2); gc()
+#' rm(image1); gc()
+#' rm(image2); gc()
 #' @export randomlyTransformImageData
 randomlyTransformImageData <- function( referenceImage,
   inputImageList, segmentationImageList = NA, numberOfSimulations = 10,

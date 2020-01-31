@@ -37,7 +37,7 @@ model \%>\% compile( loss = loss_dice,
   optimizer = optimizer_adam( lr = 0.0001 ),
   metrics = c( metric_multilabel_dice_coefficient,
     metric_categorical_crossentropy ) )
-
+rm(model); gc()
 }
 \author{
 Tustison NJ
