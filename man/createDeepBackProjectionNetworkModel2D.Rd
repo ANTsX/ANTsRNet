@@ -70,8 +70,8 @@ with help from the original author's Caffe and Pytorch implementations:\preforma
 }
 }
 \examples{
-createDeepBackProjectionNetworkModel2D(c(25, 25, 1))
-createDeepBackProjectionNetworkModel3D(c(25, 25, 25, 1))
+model = createDeepBackProjectionNetworkModel2D(c(25, 25, 1))
+rm(model); gc()
 }
 \author{
 Tustison NJ

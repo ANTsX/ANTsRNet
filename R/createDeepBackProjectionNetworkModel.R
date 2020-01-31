@@ -44,8 +44,8 @@
 #' @return a keras model defining the deep back-projection network.
 #' @author Tustison NJ
 #' @examples
-#' createDeepBackProjectionNetworkModel2D(c(25, 25, 1))
-#' createDeepBackProjectionNetworkModel3D(c(25, 25, 25, 1))
+#' model = createDeepBackProjectionNetworkModel2D(c(25, 25, 1))
+#' rm(model); gc()
 #' @import keras
 #' @export
 createDeepBackProjectionNetworkModel2D <-
@@ -261,10 +261,8 @@ createDeepBackProjectionNetworkModel2D <-
 #' @return a keras model defining the deep back-projection network.
 #' @author Tustison NJ
 #' @examples
-#' #
-#' \dontrun{
-#'
-#' }
+#' model = createDeepBackProjectionNetworkModel3D(c(25, 25, 25, 1))
+#' rm(model); gc()
 #' @import keras
 #' @export
 createDeepBackProjectionNetworkModel3D <-

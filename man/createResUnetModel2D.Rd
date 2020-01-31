@@ -103,6 +103,7 @@ X_train <- ( X_train - mean( X_train ) ) / sd( X_train )
 
 model <- createResUnetModel2D( c( dim( domainImage ), 1 ),
   numberOfOutputs = numberOfLabels )
+rm(domainImage); gc()
 
 metric_multilabel_dice_coefficient <-
   custom_metric( "multilabel_dice_coefficient",
@@ -130,11 +131,13 @@ model \%>\% compile( loss = loss_dice,
 #                callback_reduce_lr_on_plateau( monitor = "val_loss", factor = 0.1 )
 #              ),
 #              validation_split = 0.2 )
-
+rm(X_train); gc()
+rm(Y_train); gc()
 # Save the model and/or save the model weights
 
 # save_model_hdf5( model, filepath = 'resUnetModel.h5' )
 # save_model_weights_hdf5( unetModel, filepath = 'resUnetModelWeights.h5' ) )
+rm(model); gc()
 
 }
 \author{

@@ -47,17 +47,17 @@ Creates a keras model of the expanded image super resolution deep learning
 framework based on EDSR.
 }
 \examples{
-createEnhancedDeepSuperResolutionModel2D(c( 28, 28, 1 ))
-gc()
-createEnhancedDeepSuperResolutionModel2D(c( 28, 28, 1 ),
+model = createEnhancedDeepSuperResolutionModel2D(c( 28, 28, 1 ))
+rm(model); gc()
+model = createEnhancedDeepSuperResolutionModel2D(c( 28, 28, 1 ),
 doBatchNormalization = TRUE,
 interpolation = "conv", scale = 4)
-gc()
-createEnhancedDeepSuperResolutionModel2D(c( 28, 28, 1 ),
+rm(model); gc()
+model = createEnhancedDeepSuperResolutionModel2D(c( 28, 28, 1 ),
 doBatchNormalization = TRUE,
 numberOfLossFunctions = 2,
 interpolation = "conv", scale = 8)
-gc()
+rm(model); gc()
 }
 \author{
 Tustison NJ, Avants BB

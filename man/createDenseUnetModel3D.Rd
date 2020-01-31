@@ -87,6 +87,7 @@ model \%>\% compile( loss = loss_dice,
     metric_categorical_crossentropy ) )
 
 print( model )
+rm(model); gc()
 
 }
 \author{
