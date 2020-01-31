@@ -43,4 +43,6 @@ SystemRequirements: Keras >= 2.0 (https://keras.io)
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.0.1
 VignetteBuilder: knitr
+BugReports: https://github.com/ANTsX/ANTsRNet/issues
+URL: https://github.com/ANTsX/ANTsRNet
 Encoding: UTF-8

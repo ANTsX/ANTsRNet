@@ -4,7 +4,7 @@ language: r
 dist: xenial
 services:
   - xvfb
-  
+
 sudo: false
 warnings_are_errors: false # setting this false b/c of rcpp attribute error
 
@@ -44,6 +44,12 @@ before_script:
   # - pip2.7 install -q --upgrade --ignore-installed --user travis virtualenv
   # - pip2.7 install -q --user setuptools wheel
   # - pip2.7 install -q --upgrade --ignore-installed --user travis keras h5py pyyaml requests Pillow scipy theano tensorflow
-  - setup_python 3.6 false ;  
-  - install_python_requirements ;   
+  - setup_python 3.6 false ;
+  - install_python_requirements ;
   - R -e 'tensorflow::install_tensorflow(version = "2.0.0")'
+
+before_cache: Rscript -e 'remotes::install_cran("pkgdown")'
+deploy:
+  provider: script
+  script: Rscript -e 'pkgdown::deploy_site_github()'
+  skip_cleanup: true
