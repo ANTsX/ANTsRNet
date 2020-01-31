@@ -26,7 +26,6 @@
 #' @author Tustison NJ
 #'
 #' @examples
-#' \dontrun{
 #'
 #' library( keras )
 #' library( ANTsRNet )
@@ -35,7 +34,6 @@
 #'
 #' ganModel <- CycleGanModel$new(
 #'    inputImageSize = inputImageSize )
-#' }
 #'
 #' @name CycleGanModel
 NULL

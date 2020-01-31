@@ -70,10 +70,8 @@ with help from the original author's Caffe and Pytorch implementations:\preforma
 }
 }
 \examples{
-#
-\dontrun{
-
-}
+createDeepBackProjectionNetworkModel2D(c(25, 25, 1))
+createDeepBackProjectionNetworkModel3D(c(25, 25, 25, 1))
 }
 \author{
 Tustison NJ

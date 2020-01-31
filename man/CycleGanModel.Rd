@@ -31,7 +31,6 @@ generator and discriminator.}
 }
 
 \examples{
-\dontrun{
 
 library( keras )
 library( ANTsRNet )
@@ -40,7 +39,6 @@ keras::backend()$clear_session()
 
 ganModel <- CycleGanModel$new(
    inputImageSize = inputImageSize )
-}
 
 }
 \author{
