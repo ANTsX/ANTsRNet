@@ -26,7 +26,7 @@
 #' @author Tustison NJ
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #'
 #' library( keras )
 #' library( ANTsRNet )

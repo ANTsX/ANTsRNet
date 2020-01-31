@@ -39,7 +39,7 @@ followed by k-means clustering to produce a segmentation and probabilities.
 }
 \examples{
 
-\donttest{
+\dontrun{
 
 library(ANTsR)
 img <- ri( 1 ) \%>\% resampleImage( c(4,4) ) \%>\% iMath( "Normalize" )

@@ -11,3 +11,5 @@ docs
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
+^codecov\.yml$
+^appveyor\.yml$

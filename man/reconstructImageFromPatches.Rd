@@ -39,7 +39,10 @@ image <- antsImageRead( getANTsRData( "r16" ) )
 patchSet <- extractImagePatches( image, c( 64, 64 ), "all", c( 8, 8 ) )
 imageReconstructed <-
   reconstructImageFromPatches( patchSet, image, c( 8, 8 ) )
-
+testthat::expect_equal(as.array(image), as.array(imageReconstructed))
+rm(image); gc()
+rm(patchSet); gc()
+rm(imageReconstructed); gc()
 }
 \author{
 Tustison NJ

@@ -42,7 +42,7 @@
 #' @import keras
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' createSsd7Model2D(c(256, 256, 3), 2)
 #' }
 createSsd7Model2D <- function( inputImageSize,
@@ -254,7 +254,7 @@ createSsd7Model2D <- function( inputImageSize,
 #' @import keras
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' createSsd7Model3D(c(256, 256, 100, 3), 2)
 #' }
 createSsd7Model3D <- function( inputImageSize,

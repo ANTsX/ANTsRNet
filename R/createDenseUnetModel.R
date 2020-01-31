@@ -110,6 +110,7 @@
 #'
 #' # save_model_hdf5( model, filepath = 'unetModel.h5' )
 #' # save_model_weights_hdf5( unetModel, filepath = 'unetModelWeights.h5' ) )
+#' rm(model); gc()
 #' @import keras
 #' @export
 createDenseUnetModel2D <- function( inputImageSize,
@@ -396,6 +397,7 @@ createDenseUnetModel2D <- function( inputImageSize,
 #'     metric_categorical_crossentropy ) )
 #'
 #' print( model )
+#' rm(model); gc()
 #'
 #' @import keras
 #' @export

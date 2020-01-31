@@ -31,7 +31,10 @@ generator and discriminator.}
 }
 
 \examples{
-InpaintingDeepFillModel$new(c( 28, 28, 1 ))
+x = InpaintingDeepFillModel$new(c( 28, 28, 1 ))
+\dontrun{
+x$buildNetwork()
+}
 
 }
 \author{

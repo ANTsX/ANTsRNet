@@ -67,7 +67,7 @@
 #'
 #' # testingMetrics <- model %>% evaluate( X_testSmall, Y_testSmall )
 #' # predictedData <- model %>% predict( X_testSmall, verbose = 1 )
-#'
+#' rm(model); gc()
 #' @import keras
 #' @export
 createWideResNetModel2D <- function( inputImageSize,

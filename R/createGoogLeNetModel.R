@@ -63,11 +63,6 @@
 #' model <- createGoogLeNetModel2D( inputImageSize = c( resampledImageSize, 1 ),
 #'   numberOfClassificationLabels = numberOfLabels )
 #'
-#' model2 <- createGoogLeNetModel2D( inputImageSize = c( resampledImageSize, 1 ),
-#'   numberOfClassificationLabels = 2 )
-#'
-#' model_reg <- createGoogLeNetModel2D( inputImageSize = c( resampledImageSize, 1 ),
-#'   mode = "regression" )
 #'
 #' model %>% compile( loss = 'categorical_crossentropy',
 #'   optimizer = optimizer_adam( lr = 0.0001 ),
@@ -82,7 +77,14 @@
 #'
 #' # testingMetrics <- model %>% evaluate( X_testSmall, Y_testSmall )
 #' # predictedData <- model %>% predict( X_testSmall, verbose = 1 )
+#' rm(model); gc()
+#' model <- createGoogLeNetModel2D( inputImageSize = c( resampledImageSize, 1 ),
+#'   numberOfClassificationLabels = 2 )
+#' rm(model); gc()
 #'
+#' model <- createGoogLeNetModel2D( inputImageSize = c( resampledImageSize, 1 ),
+#'   mode = "regression" )
+#' rm(model); gc()
 #' @import keras
 #' @export
 createGoogLeNetModel2D <- function(

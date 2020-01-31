@@ -49,6 +49,11 @@ layer$compute_output_shape( input_shape )
 \code{$compute_output_shape} computes the output shape.
 }
 
+\examples{
+x = ContextualAttentionLayer2D$new()
+x$build()
+
+}
 \author{
 Tustison NJ
 }

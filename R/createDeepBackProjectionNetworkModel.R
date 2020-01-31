@@ -44,177 +44,176 @@
 #' @return a keras model defining the deep back-projection network.
 #' @author Tustison NJ
 #' @examples
-#' #
-#' \dontrun{
-#'
-#' }
+#' model = createDeepBackProjectionNetworkModel2D(c(25, 25, 1))
+#' rm(model); gc()
 #' @import keras
 #' @export
 createDeepBackProjectionNetworkModel2D <-
-                    function( inputImageSize,
-                               numberOfOutputs = 1,
-                               numberOfBaseFilters = 64,
-                               numberOfFeatureFilters = 256,
-                               numberOfBackProjectionStages = 7,
-                               convolutionKernelSize = c( 12, 12 ),
-                               strides = c( 8, 8 ),
-                               lastConvolution = c( 3, 3 ),
-                               numberOfLossFunctions = 1
-                             )
-{
+  function(
+    inputImageSize,
+    numberOfOutputs = 1,
+    numberOfBaseFilters = 64,
+    numberOfFeatureFilters = 256,
+    numberOfBackProjectionStages = 7,
+    convolutionKernelSize = c( 12, 12 ),
+    strides = c( 8, 8 ),
+    lastConvolution = c( 3, 3 ),
+    numberOfLossFunctions = 1
+  )
+  {
 
-  upBlock2D <- function( L, numberOfFilters = 64, kernelSize = c( 12, 12 ),
-    strides = c( 8, 8 ), includeDenseConvolutionLayer = TRUE )
+    upBlock2D <- function( L, numberOfFilters = 64, kernelSize = c( 12, 12 ),
+                           strides = c( 8, 8 ), includeDenseConvolutionLayer = TRUE )
     {
-    if( includeDenseConvolutionLayer )
+      if( includeDenseConvolutionLayer )
       {
-      L <- L %>% layer_conv_2d( filters = numberOfFilters, use_bias = TRUE,
-        kernel_size = c( 1, 1 ), strides = c( 1, 1 ), padding = 'same' )
-      L <- L %>% layer_activation_parametric_relu(
-        alpha_initializer = 'zero', shared_axes = c( 1, 2 ) )
+        L <- L %>% layer_conv_2d( filters = numberOfFilters, use_bias = TRUE,
+                                  kernel_size = c( 1, 1 ), strides = c( 1, 1 ), padding = 'same' )
+        L <- L %>% layer_activation_parametric_relu(
+          alpha_initializer = 'zero', shared_axes = c( 1, 2 ) )
       }
 
-    # Scale up
-    H0 <- L %>% layer_conv_2d_transpose( filters = numberOfFilters,
-      kernel_size = kernelSize, strides = strides,
-      kernel_initializer = 'glorot_uniform', padding = 'same' )
-    H0 <- H0 %>% layer_activation_parametric_relu(
-      alpha_initializer = 'zero', shared_axes = c( 1, 2 ) )
+      # Scale up
+      H0 <- L %>% layer_conv_2d_transpose( filters = numberOfFilters,
+                                           kernel_size = kernelSize, strides = strides,
+                                           kernel_initializer = 'glorot_uniform', padding = 'same' )
+      H0 <- H0 %>% layer_activation_parametric_relu(
+        alpha_initializer = 'zero', shared_axes = c( 1, 2 ) )
 
-    # Scale down
-    L0 <- H0 %>% layer_conv_2d( filters = numberOfFilters,
-      kernel_size = kernelSize, strides = strides,
-      kernel_initializer = 'glorot_uniform', padding = 'same' )
-    L0 <- L0 %>% layer_activation_parametric_relu(
-      alpha_initializer = 'zero', shared_axes = c( 1, 2 ) )
+      # Scale down
+      L0 <- H0 %>% layer_conv_2d( filters = numberOfFilters,
+                                  kernel_size = kernelSize, strides = strides,
+                                  kernel_initializer = 'glorot_uniform', padding = 'same' )
+      L0 <- L0 %>% layer_activation_parametric_relu(
+        alpha_initializer = 'zero', shared_axes = c( 1, 2 ) )
 
-    # Residual
-    E <- layer_subtract( list( L0, L ) )
+      # Residual
+      E <- layer_subtract( list( L0, L ) )
 
-    # Scale residual up
-    H1 <- E %>% layer_conv_2d_transpose( filters = numberOfFilters,
-      kernel_size = kernelSize, strides = strides,
-      kernel_initializer = 'glorot_uniform', padding = 'same' )
-    H1 <- H1 %>% layer_activation_parametric_relu(
-      alpha_initializer = 'zero', shared_axes = c( 1, 2 ) )
+      # Scale residual up
+      H1 <- E %>% layer_conv_2d_transpose( filters = numberOfFilters,
+                                           kernel_size = kernelSize, strides = strides,
+                                           kernel_initializer = 'glorot_uniform', padding = 'same' )
+      H1 <- H1 %>% layer_activation_parametric_relu(
+        alpha_initializer = 'zero', shared_axes = c( 1, 2 ) )
 
-    # Output feature map
-    upBlock <- layer_add( list( H0, H1 ) )
+      # Output feature map
+      upBlock <- layer_add( list( H0, H1 ) )
 
-    return( upBlock )
+      return( upBlock )
     }
 
-  downBlock2D <- function( H, numberOfFilters = 64, kernelSize = c( 12, 12 ),
-    strides = c( 8, 8 ), includeDenseConvolutionLayer = TRUE )
+    downBlock2D <- function( H, numberOfFilters = 64, kernelSize = c( 12, 12 ),
+                             strides = c( 8, 8 ), includeDenseConvolutionLayer = TRUE )
     {
-    if( includeDenseConvolutionLayer )
+      if( includeDenseConvolutionLayer )
       {
-      H <- H %>% layer_conv_2d( filters = numberOfFilters, use_bias = TRUE,
-        kernel_size = c( 1, 1 ), strides = c( 1, 1 ), padding = 'same' )
-      H <- H %>% layer_activation_parametric_relu(
-        alpha_initializer = 'zero', shared_axes = c( 1, 2 ) )
+        H <- H %>% layer_conv_2d( filters = numberOfFilters, use_bias = TRUE,
+                                  kernel_size = c( 1, 1 ), strides = c( 1, 1 ), padding = 'same' )
+        H <- H %>% layer_activation_parametric_relu(
+          alpha_initializer = 'zero', shared_axes = c( 1, 2 ) )
       }
 
-    # Scale down
-    L0 <- H %>% layer_conv_2d( filters = numberOfFilters,
-      kernel_size = kernelSize, strides = strides,
-      kernel_initializer = 'glorot_uniform', padding = 'same' )
-    L0 <- L0 %>% layer_activation_parametric_relu(
-      alpha_initializer = 'zero', shared_axes = c( 1, 2 ) )
+      # Scale down
+      L0 <- H %>% layer_conv_2d( filters = numberOfFilters,
+                                 kernel_size = kernelSize, strides = strides,
+                                 kernel_initializer = 'glorot_uniform', padding = 'same' )
+      L0 <- L0 %>% layer_activation_parametric_relu(
+        alpha_initializer = 'zero', shared_axes = c( 1, 2 ) )
 
-    # Scale up
-    H0 <- L0 %>% layer_conv_2d_transpose( filters = numberOfFilters,
-      kernel_size = kernelSize, strides = strides,
-      kernel_initializer = 'glorot_uniform', padding = 'same' )
-    H0 <- H0 %>% layer_activation_parametric_relu(
-      alpha_initializer = 'zero', shared_axes = c( 1, 2 ) )
+      # Scale up
+      H0 <- L0 %>% layer_conv_2d_transpose( filters = numberOfFilters,
+                                            kernel_size = kernelSize, strides = strides,
+                                            kernel_initializer = 'glorot_uniform', padding = 'same' )
+      H0 <- H0 %>% layer_activation_parametric_relu(
+        alpha_initializer = 'zero', shared_axes = c( 1, 2 ) )
 
-    # Residual
-    E <- layer_subtract( list( H0, H ) )
+      # Residual
+      E <- layer_subtract( list( H0, H ) )
 
-    # Scale residual down
-    L1 <- E %>% layer_conv_2d( filters = numberOfFilters,
-      kernel_size = kernelSize, strides = strides,
-      kernel_initializer = 'glorot_uniform', padding = 'same' )
-    L1 <- L1 %>% layer_activation_parametric_relu(
-      alpha_initializer = 'zero', shared_axes = c( 1, 2 ) )
+      # Scale residual down
+      L1 <- E %>% layer_conv_2d( filters = numberOfFilters,
+                                 kernel_size = kernelSize, strides = strides,
+                                 kernel_initializer = 'glorot_uniform', padding = 'same' )
+      L1 <- L1 %>% layer_activation_parametric_relu(
+        alpha_initializer = 'zero', shared_axes = c( 1, 2 ) )
 
-    # Output feature map
-    downBlock <- layer_add( list( L0, L1 ) )
+      # Output feature map
+      downBlock <- layer_add( list( L0, L1 ) )
 
-    return( downBlock )
+      return( downBlock )
     }
 
-  inputs <- layer_input( shape = inputImageSize )
+    inputs <- layer_input( shape = inputImageSize )
 
-  # Initial feature extraction
-  model <- inputs %>% layer_conv_2d( filters = numberOfFeatureFilters,
-    kernel_size = c( 3, 3 ), strides = c( 1, 1 ), padding = 'same',
-    kernel_initializer = "glorot_uniform" )
-  model <- model %>% layer_activation_parametric_relu( alpha_initializer = 'zero',
-    shared_axes = c( 1, 2 ) )
+    # Initial feature extraction
+    model <- inputs %>% layer_conv_2d( filters = numberOfFeatureFilters,
+                                       kernel_size = c( 3, 3 ), strides = c( 1, 1 ), padding = 'same',
+                                       kernel_initializer = "glorot_uniform" )
+    model <- model %>% layer_activation_parametric_relu( alpha_initializer = 'zero',
+                                                         shared_axes = c( 1, 2 ) )
 
-  # Feature smashing
-  model <- model %>% layer_conv_2d( filters = numberOfBaseFilters,
-    kernel_size = c( 1, 1 ), strides = c( 1, 1 ), padding = 'same',
-    kernel_initializer = "glorot_uniform" )
-  model <- model %>% layer_activation_parametric_relu( alpha_initializer = 'zero',
-    shared_axes = c( 1, 2 ) )
+    # Feature smashing
+    model <- model %>% layer_conv_2d( filters = numberOfBaseFilters,
+                                      kernel_size = c( 1, 1 ), strides = c( 1, 1 ), padding = 'same',
+                                      kernel_initializer = "glorot_uniform" )
+    model <- model %>% layer_activation_parametric_relu( alpha_initializer = 'zero',
+                                                         shared_axes = c( 1, 2 ) )
 
-  # Back projection
-  upProjectionBlocks <- list()
-  downProjectionBlocks <- list()
+    # Back projection
+    upProjectionBlocks <- list()
+    downProjectionBlocks <- list()
 
-  model <- upBlock2D( model, numberOfFilters = numberOfBaseFilters,
-    kernelSize = convolutionKernelSize, strides = strides )
-  upProjectionBlocks[[1]] <- model
+    model <- upBlock2D( model, numberOfFilters = numberOfBaseFilters,
+                        kernelSize = convolutionKernelSize, strides = strides )
+    upProjectionBlocks[[1]] <- model
 
-  for( i in seq_len( numberOfBackProjectionStages ) )
+    for( i in seq_len( numberOfBackProjectionStages ) )
     {
-    if( i == 1 )
+      if( i == 1 )
       {
-      model <- downBlock2D( model, numberOfFilters = numberOfBaseFilters,
-        kernelSize = convolutionKernelSize, strides = strides )
-      downProjectionBlocks[[i]] <- model
+        model <- downBlock2D( model, numberOfFilters = numberOfBaseFilters,
+                              kernelSize = convolutionKernelSize, strides = strides )
+        downProjectionBlocks[[i]] <- model
 
-      model <- upBlock2D( model, numberOfFilters = numberOfBaseFilters,
-        kernelSize = convolutionKernelSize, strides = strides )
-      upProjectionBlocks[[i+1]] <- model
-      model <- layer_concatenate( upProjectionBlocks )
+        model <- upBlock2D( model, numberOfFilters = numberOfBaseFilters,
+                            kernelSize = convolutionKernelSize, strides = strides )
+        upProjectionBlocks[[i+1]] <- model
+        model <- layer_concatenate( upProjectionBlocks )
       } else {
-      model <- downBlock2D( model, numberOfFilters = numberOfBaseFilters,
-        kernelSize = convolutionKernelSize, strides = strides,
-        includeDenseConvolutionLayer = TRUE )
-      downProjectionBlocks[[i]] <- model
-      model <- layer_concatenate( downProjectionBlocks )
+        model <- downBlock2D( model, numberOfFilters = numberOfBaseFilters,
+                              kernelSize = convolutionKernelSize, strides = strides,
+                              includeDenseConvolutionLayer = TRUE )
+        downProjectionBlocks[[i]] <- model
+        model <- layer_concatenate( downProjectionBlocks )
 
-      model <- upBlock2D( model, numberOfFilters = numberOfBaseFilters,
-        kernelSize = convolutionKernelSize, strides = strides,
-        includeDenseConvolutionLayer = TRUE )
-      upProjectionBlocks[[i+1]] <- model
-      model <- layer_concatenate( upProjectionBlocks )
+        model <- upBlock2D( model, numberOfFilters = numberOfBaseFilters,
+                            kernelSize = convolutionKernelSize, strides = strides,
+                            includeDenseConvolutionLayer = TRUE )
+        upProjectionBlocks[[i+1]] <- model
+        model <- layer_concatenate( upProjectionBlocks )
       }
     }
 
-  # Final convolution layer
-  outputs <- model %>% layer_conv_2d( filters = numberOfOutputs,
-    kernel_size = lastConvolution, strides = c( 1, 1 ), padding = 'same',
-    kernel_initializer = "glorot_uniform" )
+    # Final convolution layer
+    outputs <- model %>% layer_conv_2d( filters = numberOfOutputs,
+                                        kernel_size = lastConvolution, strides = c( 1, 1 ), padding = 'same',
+                                        kernel_initializer = "glorot_uniform" )
 
-  if( numberOfLossFunctions == 1 )
+    if( numberOfLossFunctions == 1 )
     {
-    deepBackProjectionNetworkModel <- keras_model( inputs = inputs, outputs = outputs )
+      deepBackProjectionNetworkModel <- keras_model( inputs = inputs, outputs = outputs )
     } else {
-    outputList = list()
-    for( k in seq_len( numberOfLossFunctions ) )
+      outputList = list()
+      for( k in seq_len( numberOfLossFunctions ) )
       {
-      outputList[[k]] = outputs
+        outputList[[k]] = outputs
       }
-    deepBackProjectionNetworkModel <- keras_model( inputs = inputs, outputs = outputList )
+      deepBackProjectionNetworkModel <- keras_model( inputs = inputs, outputs = outputList )
     }
 
-  return( deepBackProjectionNetworkModel )
-}
+    return( deepBackProjectionNetworkModel )
+  }
 
 #' 3-D implementation of the deep back-projection network.
 #'
@@ -262,174 +261,172 @@ createDeepBackProjectionNetworkModel2D <-
 #' @return a keras model defining the deep back-projection network.
 #' @author Tustison NJ
 #' @examples
-#' #
-#' \dontrun{
-#'
-#' }
+#' model = createDeepBackProjectionNetworkModel3D(c(25, 25, 25, 1))
+#' rm(model); gc()
 #' @import keras
 #' @export
 createDeepBackProjectionNetworkModel3D <-
-                    function( inputImageSize,
-                               numberOfOutputs = 1,
-                               numberOfBaseFilters = 64,
-                               numberOfFeatureFilters = 256,
-                               numberOfBackProjectionStages = 7,
-                               convolutionKernelSize = c( 12, 12, 12 ),
-                               strides = c( 8, 8, 8 ),
-                               lastConvolution = c( 3, 3, 3 ),
-                               numberOfLossFunctions = 1
-                             )
-{
+  function( inputImageSize,
+            numberOfOutputs = 1,
+            numberOfBaseFilters = 64,
+            numberOfFeatureFilters = 256,
+            numberOfBackProjectionStages = 7,
+            convolutionKernelSize = c( 12, 12, 12 ),
+            strides = c( 8, 8, 8 ),
+            lastConvolution = c( 3, 3, 3 ),
+            numberOfLossFunctions = 1
+  )
+  {
 
-  upBlock3D <- function( L, numberOfFilters = 64, kernelSize = c( 12, 12, 12 ),
-    strides = c( 8, 8, 8 ), includeDenseConvolutionLayer = TRUE )
+    upBlock3D <- function( L, numberOfFilters = 64, kernelSize = c( 12, 12, 12 ),
+                           strides = c( 8, 8, 8 ), includeDenseConvolutionLayer = TRUE )
     {
-    if( includeDenseConvolutionLayer )
+      if( includeDenseConvolutionLayer )
       {
-      L <- L %>% layer_conv_3d( filters = numberOfFilters, use_bias = TRUE,
-        kernel_size = c( 1, 1, 1 ), strides = c( 1, 1, 1 ), padding = 'same' )
-      L <- L %>% layer_activation_parametric_relu(
-        alpha_initializer = 'zero', shared_axes = c( 1, 2, 3 ) )
+        L <- L %>% layer_conv_3d( filters = numberOfFilters, use_bias = TRUE,
+                                  kernel_size = c( 1, 1, 1 ), strides = c( 1, 1, 1 ), padding = 'same' )
+        L <- L %>% layer_activation_parametric_relu(
+          alpha_initializer = 'zero', shared_axes = c( 1, 2, 3 ) )
       }
 
-    # Scale up
-    H0 <- L %>% layer_conv_3d_transpose( filters = numberOfFilters,
-      kernel_size = kernelSize, strides = strides,
-      kernel_initializer = 'glorot_uniform', padding = 'same' )
-    H0 <- H0 %>% layer_activation_parametric_relu(
-      alpha_initializer = 'zero', shared_axes = c( 1, 2, 3 ) )
+      # Scale up
+      H0 <- L %>% layer_conv_3d_transpose( filters = numberOfFilters,
+                                           kernel_size = kernelSize, strides = strides,
+                                           kernel_initializer = 'glorot_uniform', padding = 'same' )
+      H0 <- H0 %>% layer_activation_parametric_relu(
+        alpha_initializer = 'zero', shared_axes = c( 1, 2, 3 ) )
 
-    # Scale down
-    L0 <- H0 %>% layer_conv_3d( filters = numberOfFilters,
-      kernel_size = kernelSize, strides = strides,
-      kernel_initializer = 'glorot_uniform', padding = 'same' )
-    L0 <- L0 %>% layer_activation_parametric_relu(
-      alpha_initializer = 'zero', shared_axes = c( 1, 2, 3 ) )
+      # Scale down
+      L0 <- H0 %>% layer_conv_3d( filters = numberOfFilters,
+                                  kernel_size = kernelSize, strides = strides,
+                                  kernel_initializer = 'glorot_uniform', padding = 'same' )
+      L0 <- L0 %>% layer_activation_parametric_relu(
+        alpha_initializer = 'zero', shared_axes = c( 1, 2, 3 ) )
 
-    # Residual
-    E <- layer_subtract( list( L0, L ) )
+      # Residual
+      E <- layer_subtract( list( L0, L ) )
 
-    # Scale residual up
-    H1 <- E %>% layer_conv_3d_transpose( filters = numberOfFilters,
-      kernel_size = kernelSize, strides = strides,
-      kernel_initializer = 'glorot_uniform', padding = 'same' )
-    H1 <- H1 %>% layer_activation_parametric_relu(
-      alpha_initializer = 'zero', shared_axes = c( 1, 2, 3 ) )
+      # Scale residual up
+      H1 <- E %>% layer_conv_3d_transpose( filters = numberOfFilters,
+                                           kernel_size = kernelSize, strides = strides,
+                                           kernel_initializer = 'glorot_uniform', padding = 'same' )
+      H1 <- H1 %>% layer_activation_parametric_relu(
+        alpha_initializer = 'zero', shared_axes = c( 1, 2, 3 ) )
 
-    # Output feature map
-    upBlock <- layer_add( list( H0, H1 ) )
+      # Output feature map
+      upBlock <- layer_add( list( H0, H1 ) )
 
-    return( upBlock )
+      return( upBlock )
     }
 
-  downBlock3D <- function( H, numberOfFilters = 64, kernelSize = c( 12, 12, 12 ),
-    strides = c( 8, 8, 8 ), includeDenseConvolutionLayer = TRUE )
+    downBlock3D <- function( H, numberOfFilters = 64, kernelSize = c( 12, 12, 12 ),
+                             strides = c( 8, 8, 8 ), includeDenseConvolutionLayer = TRUE )
     {
-    if( includeDenseConvolutionLayer )
+      if( includeDenseConvolutionLayer )
       {
-      H <- H %>% layer_conv_3d( filters = numberOfFilters, use_bias = TRUE,
-        kernel_size = c( 1, 1, 1 ), strides = c( 1, 1, 1 ), padding = 'same' )
-      H <- H %>% layer_activation_parametric_relu(
-        alpha_initializer = 'zero', shared_axes = c( 1, 2, 3 ) )
+        H <- H %>% layer_conv_3d( filters = numberOfFilters, use_bias = TRUE,
+                                  kernel_size = c( 1, 1, 1 ), strides = c( 1, 1, 1 ), padding = 'same' )
+        H <- H %>% layer_activation_parametric_relu(
+          alpha_initializer = 'zero', shared_axes = c( 1, 2, 3 ) )
       }
 
-    # Scale down
-    L0 <- H %>% layer_conv_3d( filters = numberOfFilters,
-      kernel_size = kernelSize, strides = strides,
-      kernel_initializer = 'glorot_uniform', padding = 'same' )
-    L0 <- L0 %>% layer_activation_parametric_relu(
-      alpha_initializer = 'zero', shared_axes = c( 1, 2, 3 ) )
+      # Scale down
+      L0 <- H %>% layer_conv_3d( filters = numberOfFilters,
+                                 kernel_size = kernelSize, strides = strides,
+                                 kernel_initializer = 'glorot_uniform', padding = 'same' )
+      L0 <- L0 %>% layer_activation_parametric_relu(
+        alpha_initializer = 'zero', shared_axes = c( 1, 2, 3 ) )
 
-    # Scale up
-    H0 <- L0 %>% layer_conv_3d_transpose( filters = numberOfFilters,
-      kernel_size = kernelSize, strides = strides,
-      kernel_initializer = 'glorot_uniform', padding = 'same' )
-    H0 <- H0 %>% layer_activation_parametric_relu(
-      alpha_initializer = 'zero', shared_axes = c( 1, 2, 3 ) )
+      # Scale up
+      H0 <- L0 %>% layer_conv_3d_transpose( filters = numberOfFilters,
+                                            kernel_size = kernelSize, strides = strides,
+                                            kernel_initializer = 'glorot_uniform', padding = 'same' )
+      H0 <- H0 %>% layer_activation_parametric_relu(
+        alpha_initializer = 'zero', shared_axes = c( 1, 2, 3 ) )
 
-    # Residual
-    E <- layer_subtract( list( H0, H ) )
+      # Residual
+      E <- layer_subtract( list( H0, H ) )
 
-    # Scale residual down
-    L1 <- E %>% layer_conv_3d( filters = numberOfFilters,
-      kernel_size = kernelSize, strides = strides,
-      kernel_initializer = 'glorot_uniform', padding = 'same' )
-    L1 <- L1 %>% layer_activation_parametric_relu(
-      alpha_initializer = 'zero', shared_axes = c( 1, 2, 3 ) )
+      # Scale residual down
+      L1 <- E %>% layer_conv_3d( filters = numberOfFilters,
+                                 kernel_size = kernelSize, strides = strides,
+                                 kernel_initializer = 'glorot_uniform', padding = 'same' )
+      L1 <- L1 %>% layer_activation_parametric_relu(
+        alpha_initializer = 'zero', shared_axes = c( 1, 2, 3 ) )
 
-    # Output feature map
-    downBlock <- layer_add( list( L0, L1 ) )
+      # Output feature map
+      downBlock <- layer_add( list( L0, L1 ) )
 
-    return( downBlock )
+      return( downBlock )
     }
 
-  inputs <- layer_input( shape = inputImageSize )
+    inputs <- layer_input( shape = inputImageSize )
 
-  # Initial feature extraction
-  model <- inputs %>% layer_conv_3d( filters = numberOfFeatureFilters,
-    kernel_size = c( 3, 3, 3 ), strides = c( 1, 1, 1 ), padding = 'same',
-    kernel_initializer = "glorot_uniform" )
-  model <- model %>% layer_activation_parametric_relu( alpha_initializer = 'zero',
-    shared_axes = c( 1, 2, 3 ) )
+    # Initial feature extraction
+    model <- inputs %>% layer_conv_3d( filters = numberOfFeatureFilters,
+                                       kernel_size = c( 3, 3, 3 ), strides = c( 1, 1, 1 ), padding = 'same',
+                                       kernel_initializer = "glorot_uniform" )
+    model <- model %>% layer_activation_parametric_relu( alpha_initializer = 'zero',
+                                                         shared_axes = c( 1, 2, 3 ) )
 
-  # Feature smashing
-  model <- model %>% layer_conv_3d( filters = numberOfBaseFilters,
-    kernel_size = c( 1, 1, 1 ), strides = c( 1, 1, 1 ), padding = 'same',
-    kernel_initializer = "glorot_uniform" )
-  model <- model %>% layer_activation_parametric_relu( alpha_initializer = 'zero',
-    shared_axes = c( 1, 2, 3 ) )
+    # Feature smashing
+    model <- model %>% layer_conv_3d( filters = numberOfBaseFilters,
+                                      kernel_size = c( 1, 1, 1 ), strides = c( 1, 1, 1 ), padding = 'same',
+                                      kernel_initializer = "glorot_uniform" )
+    model <- model %>% layer_activation_parametric_relu( alpha_initializer = 'zero',
+                                                         shared_axes = c( 1, 2, 3 ) )
 
-  # Back projection
-  upProjectionBlocks <- list()
-  downProjectionBlocks <- list()
+    # Back projection
+    upProjectionBlocks <- list()
+    downProjectionBlocks <- list()
 
-  model <- upBlock3D( model, numberOfFilters = numberOfBaseFilters,
-    kernelSize = convolutionKernelSize, strides = strides )
-  upProjectionBlocks[[1]] <- model
+    model <- upBlock3D( model, numberOfFilters = numberOfBaseFilters,
+                        kernelSize = convolutionKernelSize, strides = strides )
+    upProjectionBlocks[[1]] <- model
 
-  for( i in seq_len( numberOfBackProjectionStages ) )
+    for( i in seq_len( numberOfBackProjectionStages ) )
     {
-    if( i == 1 )
+      if( i == 1 )
       {
-      model <- downBlock3D( model, numberOfFilters = numberOfBaseFilters,
-        kernelSize = convolutionKernelSize, strides = strides )
-      downProjectionBlocks[[i]] <- model
+        model <- downBlock3D( model, numberOfFilters = numberOfBaseFilters,
+                              kernelSize = convolutionKernelSize, strides = strides )
+        downProjectionBlocks[[i]] <- model
 
-      model <- upBlock3D( model, numberOfFilters = numberOfBaseFilters,
-        kernelSize = convolutionKernelSize, strides = strides )
-      upProjectionBlocks[[i+1]] <- model
-      model <- layer_concatenate( upProjectionBlocks )
+        model <- upBlock3D( model, numberOfFilters = numberOfBaseFilters,
+                            kernelSize = convolutionKernelSize, strides = strides )
+        upProjectionBlocks[[i+1]] <- model
+        model <- layer_concatenate( upProjectionBlocks )
       } else {
-      model <- downBlock3D( model, numberOfFilters = numberOfBaseFilters,
-        kernelSize = convolutionKernelSize, strides = strides,
-        includeDenseConvolutionLayer = TRUE )
-      downProjectionBlocks[[i]] <- model
-      model <- layer_concatenate( downProjectionBlocks )
+        model <- downBlock3D( model, numberOfFilters = numberOfBaseFilters,
+                              kernelSize = convolutionKernelSize, strides = strides,
+                              includeDenseConvolutionLayer = TRUE )
+        downProjectionBlocks[[i]] <- model
+        model <- layer_concatenate( downProjectionBlocks )
 
-      model <- upBlock3D( model, numberOfFilters = numberOfBaseFilters,
-        kernelSize = convolutionKernelSize, strides = strides,
-        includeDenseConvolutionLayer = TRUE )
-      upProjectionBlocks[[i+1]] <- model
-      model <- layer_concatenate( upProjectionBlocks )
+        model <- upBlock3D( model, numberOfFilters = numberOfBaseFilters,
+                            kernelSize = convolutionKernelSize, strides = strides,
+                            includeDenseConvolutionLayer = TRUE )
+        upProjectionBlocks[[i+1]] <- model
+        model <- layer_concatenate( upProjectionBlocks )
       }
     }
 
-  # Final convolution layer
-  outputs <- model %>% layer_conv_3d( filters = numberOfOutputs,
-    kernel_size = lastConvolution, strides = c( 1, 1, 1 ), padding = 'same',
-    kernel_initializer = "glorot_uniform" )
+    # Final convolution layer
+    outputs <- model %>% layer_conv_3d( filters = numberOfOutputs,
+                                        kernel_size = lastConvolution, strides = c( 1, 1, 1 ), padding = 'same',
+                                        kernel_initializer = "glorot_uniform" )
 
-  if( numberOfLossFunctions == 1 )
+    if( numberOfLossFunctions == 1 )
     {
-    deepBackProjectionNetworkModel <- keras_model( inputs = inputs, outputs = outputs )
+      deepBackProjectionNetworkModel <- keras_model( inputs = inputs, outputs = outputs )
     } else {
-    outputList = list()
-    for( k in seq_len( numberOfLossFunctions ) )
+      outputList = list()
+      for( k in seq_len( numberOfLossFunctions ) )
       {
-      outputList[[k]] = outputs
+        outputList[[k]] = outputs
       }
-    deepBackProjectionNetworkModel <- keras_model( inputs = inputs, outputs = outputList )
+      deepBackProjectionNetworkModel <- keras_model( inputs = inputs, outputs = outputList )
     }
 
-  return( deepBackProjectionNetworkModel )
-}
+    return( deepBackProjectionNetworkModel )
+  }

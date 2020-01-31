@@ -25,7 +25,7 @@
 #' @author Avants BB
 #' @examples
 #'
-#' \donttest{
+#' \dontrun{
 #'
 #' library(ANTsR)
 #' img <- ri( 1 ) %>% resampleImage( c(4,4) ) %>% iMath( "Normalize" )
@@ -295,7 +295,7 @@ uvaSegTrain <- function( patches,
 #' @return segmentation and probability images are output
 #' @author Avants BB
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' library(ANTsR)
 #' img <- ri( 1 )  %>% resampleImage( c(4,4) )  %>% iMath( "Normalize" )
 #' mask = randomMask( getMask( img ), 50 )

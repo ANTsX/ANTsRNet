@@ -4,7 +4,7 @@ language: r
 dist: xenial
 services:
   - xvfb
-  
+
 sudo: false
 warnings_are_errors: false # setting this false b/c of rcpp attribute error
 
@@ -28,7 +28,7 @@ before_install:
   - tlmgr install index
   - export PACKAGE_NAME=ANTsRNet
   - wget -O travis_helpers.sh http://bit.ly/travis_helpers
-  - source travis_helpers.sh
+  - cat travis_helpers.sh; source travis_helpers.sh
   - rm travis_helpers.sh
   - v8_install ;
   - Rscript -e 'install.packages("rsvd")'
@@ -44,6 +44,23 @@ before_script:
   # - pip2.7 install -q --upgrade --ignore-installed --user travis virtualenv
   # - pip2.7 install -q --user setuptools wheel
   # - pip2.7 install -q --upgrade --ignore-installed --user travis keras h5py pyyaml requests Pillow scipy theano tensorflow
-  - setup_python 3.6 false ;  
-  - install_python_requirements ;   
-  - R -e 'tensorflow::install_tensorflow(version = "2.0.0")'
+  - export TRAVIS_PYTHON_VERSION=3.6
+  - setup_python ${TRAVIS_PYTHON_VERSION} false;
+  - export CI_PYTHON_VERSION=${TRAVIS_PYTHON_VERSION}
+  - export PATH=/opt/python/${TRAVIS_PYTHON_VERSION}/bin:$PATH
+  - ls ~/virtualenv/python${TRAVIS_PYTHON_VERSION}/bin || exit 0 ;
+  - source ~/virtualenv/python${TRAVIS_PYTHON_VERSION}/bin/activate || exit 0;
+  - python --version
+  - python3 --version
+  - pip --version
+  - install_python_requirements -q ;
+  # - R -e 'tensorflow::install_tensorflow(version = "2.0.0")'
+
+before_cache: Rscript -e 'remotes::install_cran("pkgdown")'
+deploy:
+  provider: script
+  script: Rscript -e 'pkgdown::deploy_site_github()'
+  skip_cleanup: true
+
+before_deploy:
+    - Rscript -e 'covr::codecov(type = "all", commentDonttest = FALSE)'
