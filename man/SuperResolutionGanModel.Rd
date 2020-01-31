@@ -31,7 +31,7 @@ generator and discriminator.}
 }
 
 \examples{
-\donttest{
+\dontrun{
 
 library( keras )
 library( ANTsRNet )

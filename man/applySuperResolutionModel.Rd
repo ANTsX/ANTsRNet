@@ -42,7 +42,7 @@ intensity range (min to max) of the output will match the input where the
 range is taken over all channels.
 }
 \examples{
-\donttest{
+\dontrun{
 library(ANTsRCore)
 orig_img = antsImageRead( getANTsRData( "r16" ) )
 # input needs to be 48x48

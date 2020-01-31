@@ -32,7 +32,7 @@ generator and discriminator.}
 
 \examples{
 x = InpaintingDeepFillModel$new(c( 28, 28, 1 ))
-\donttest{
+\dontrun{
 x$buildNetwork()
 }
 

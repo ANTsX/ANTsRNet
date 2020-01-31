@@ -20,7 +20,7 @@
 #' @return a keras model for image super resolution
 #' @author Tustison NJ
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' createDeepDenoiseSuperResolutionModel2D(c(256L, 256L, 3L))
 #' }
 #' @import keras
@@ -128,7 +128,7 @@ createDeepDenoiseSuperResolutionModel2D <- function( inputImageSize,
 #' @return a keras model for image super resolution
 #' @author Tustison NJ
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' createDeepDenoiseSuperResolutionModel3D(c(256L, 256L, 45L, 1L))
 #' }
 #' @import keras

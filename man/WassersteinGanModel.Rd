@@ -55,7 +55,7 @@ ganModel <- WassersteinGanModel$new(
    inputImageSize = inputImageSize,
    latentDimension = 100 )
 \donttest{
-ganModel$train( x, numberOfEpochs = 100 )
+ganModel$train( x, numberOfEpochs = 5 )
 }
 
 }

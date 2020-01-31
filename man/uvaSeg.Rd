@@ -40,7 +40,7 @@ Trains a variational autoencoding with a convolutional network. This is
 followed by k-means clustering to produce a segmentation and probabilities.
 }
 \examples{
-\donttest{
+\dontrun{
 library(ANTsR)
 img <- ri( 1 )  \%>\% resampleImage( c(4,4) )  \%>\% iMath( "Normalize" )
 mask = randomMask( getMask( img ), 50 )
