@@ -9,7 +9,8 @@ createAlexNetModel3D(
   numberOfClassificationLabels = 1000,
   numberOfDenseUnits = 4096,
   dropoutRate = 0,
-  mode = "classification"
+  mode = "classification",
+  batch_size = NULL
 )
 }
 \arguments{
@@ -26,6 +27,8 @@ the number of channels (e.g., red, green, and blue).  The batch size
 Default = 0.0.}
 
 \item{mode}{'classification' or 'regression'.  Default = 'classification'.}
+
+\item{batch_size}{batch size to pass to first layer}
 }
 \value{
 an AlexNet keras model
@@ -67,7 +70,7 @@ X_testSmall <- array( data = X_testSmall, dim = c( dim( X_testSmall ), 1 ) )
 Y_testSmall <- to_categorical( mnistData$test$y[1:10], numberOfLabels )
 
 # We add a dimension of 1 to specify the channel size
-
+rm(mnistData); gc()
 inputImageSize <- c( dim( X_trainSmall )[2:3], 1 )
 
 model <- createAlexNetModel2D( inputImageSize = inputImageSize,
@@ -76,6 +79,7 @@ model <- createAlexNetModel2D( inputImageSize = inputImageSize,
 model \%>\% compile( loss = 'categorical_crossentropy',
   optimizer = optimizer_adam( lr = 0.0001 ),
   metrics = c( 'categorical_crossentropy', 'accuracy' ) )
+gc()
 
 track <- model \%>\% fit( X_trainSmall, Y_trainSmall, verbose = 1,
   epochs = 2, batch_size = 20, shuffle = TRUE, validation_split = 0.25 )
@@ -84,7 +88,7 @@ track <- model \%>\% fit( X_trainSmall, Y_trainSmall, verbose = 1,
 
 testingMetrics <- model \%>\% evaluate( X_testSmall, Y_testSmall )
 predictedData <- model \%>\% predict( X_testSmall, verbose = 1 )
-
+rm(model); gc()
 }
 }
 \author{

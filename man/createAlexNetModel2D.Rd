@@ -9,7 +9,8 @@ createAlexNetModel2D(
   numberOfClassificationLabels = 1000,
   numberOfDenseUnits = 4096,
   dropoutRate = 0,
-  mode = "classification"
+  mode = c("classification", "regression"),
+  batch_size = NULL
 )
 }
 \arguments{
@@ -26,6 +27,8 @@ the number of channels (e.g., red, green, and blue).  The batch size
 Default = 0.0.}
 
 \item{mode}{'classification' or 'regression'.  Default = 'classification'.}
+
+\item{batch_size}{batch size to pass to first layer}
 }
 \value{
 an AlexNet keras model
@@ -51,6 +54,7 @@ implementation:\preformatted{    https://github.com/duggalrahul/AlexNet-Experime
 library( ANTsRNet )
 library( keras )
 
+
 mnistData <- dataset_mnist()
 numberOfLabels <- 10
 
@@ -74,7 +78,8 @@ model <- createAlexNetModel2D( inputImageSize = inputImageSize,
 model \%>\% compile( loss = 'categorical_crossentropy',
   optimizer = optimizer_adam( lr = 0.0001 ),
   metrics = c( 'categorical_crossentropy', 'accuracy' ) )
-
+gc()
+rm(mnistData); gc()
 # Comment out the rest due to travis build constraints
 
 # track <- model \%>\% fit( X_trainSmall, Y_trainSmall, verbose = 1,
@@ -84,7 +89,7 @@ model \%>\% compile( loss = 'categorical_crossentropy',
 
 # testingMetrics <- model \%>\% evaluate( X_testSmall, Y_testSmall )
 # predictedData <- model \%>\% predict( X_testSmall, verbose = 1 )
-
+rm(model); gc()
 }
 \author{
 Tustison NJ

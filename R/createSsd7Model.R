@@ -41,6 +41,10 @@
 #' @author Tustison NJ
 #' @import keras
 #' @export
+#' @examples
+#' \donttest{
+#' createSsd7Model2D(c(256, 256, 3), 2)
+#' }
 createSsd7Model2D <- function( inputImageSize,
                               numberOfClassificationLabels,
                               minScale = 0.08,
@@ -250,8 +254,7 @@ createSsd7Model2D <- function( inputImageSize,
 #' @import keras
 #' @export
 #' @examples
-#' \dontrun{
-#' createSsd7Model2D(c(256, 256, 3), 2)
+#' \donttest{
 #' createSsd7Model3D(c(256, 256, 100, 3), 2)
 #' }
 createSsd7Model3D <- function( inputImageSize,

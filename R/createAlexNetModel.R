@@ -26,11 +26,13 @@
 #' Default = 0.0.
 #' @param mode 'classification' or 'regression'.  Default = 'classification'.
 #' @return an AlexNet keras model
+#' @param batch_size batch size to pass to first layer
 #' @author Tustison NJ
 #' @examples
 #'
 #' library( ANTsRNet )
 #' library( keras )
+#'
 #'
 #' mnistData <- dataset_mnist()
 #' numberOfLabels <- 10
@@ -55,7 +57,8 @@
 #' model %>% compile( loss = 'categorical_crossentropy',
 #'   optimizer = optimizer_adam( lr = 0.0001 ),
 #'   metrics = c( 'categorical_crossentropy', 'accuracy' ) )
-#'
+#' gc()
+#' rm(mnistData); gc()
 #' # Comment out the rest due to travis build constraints
 #'
 #' # track <- model %>% fit( X_trainSmall, Y_trainSmall, verbose = 1,
@@ -65,17 +68,19 @@
 #'
 #' # testingMetrics <- model %>% evaluate( X_testSmall, Y_testSmall )
 #' # predictedData <- model %>% predict( X_testSmall, verbose = 1 )
-#'
+#' rm(model); gc()
 #' @import keras
 #' @export
 createAlexNetModel2D <- function( inputImageSize,
                                   numberOfClassificationLabels = 1000,
                                   numberOfDenseUnits = 4096,
                                   dropoutRate = 0.0,
-                                  mode = 'classification'
+                                  mode = c("classification", "regression"),
+                                  batch_size = NULL
                                 )
 {
 
+  mode = match.arg(mode)
   splitTensor2D <- function( axis = 4, ratioSplit = 1, idSplit = 1 )
     {
     f <- function( X )
@@ -142,7 +147,8 @@ createAlexNetModel2D <- function( inputImageSize,
 
   # Conv1
   outputs <- inputs %>% layer_conv_2d( filters = 96,
-    kernel_size = c( 11, 11 ), strides = c( 4, 4 ), activation = 'relu' )
+    kernel_size = c( 11, 11 ), strides = c( 4, 4 ), activation = 'relu',
+    batch_size = batch_size)
 
   # Conv2
   outputs <- outputs %>% layer_max_pooling_2d( pool_size = c( 3, 3 ),
@@ -262,6 +268,7 @@ createAlexNetModel2D <- function( inputImageSize,
 #' @param numberOfDenseUnits number of dense units.
 #' @param dropoutRate optional regularization parameter between \verb{[0, 1]}.
 #' Default = 0.0.
+#' @param batch_size batch size to pass to first layer
 #' @param mode 'classification' or 'regression'.  Default = 'classification'.
 #' @return an AlexNet keras model
 #' @author Tustison NJ
@@ -286,7 +293,7 @@ createAlexNetModel2D <- function( inputImageSize,
 #' Y_testSmall <- to_categorical( mnistData$test$y[1:10], numberOfLabels )
 #'
 #' # We add a dimension of 1 to specify the channel size
-#'
+#' rm(mnistData); gc()
 #' inputImageSize <- c( dim( X_trainSmall )[2:3], 1 )
 #'
 #' model <- createAlexNetModel2D( inputImageSize = inputImageSize,
@@ -295,6 +302,7 @@ createAlexNetModel2D <- function( inputImageSize,
 #' model %>% compile( loss = 'categorical_crossentropy',
 #'   optimizer = optimizer_adam( lr = 0.0001 ),
 #'   metrics = c( 'categorical_crossentropy', 'accuracy' ) )
+#' gc()
 #'
 #' track <- model %>% fit( X_trainSmall, Y_trainSmall, verbose = 1,
 #'   epochs = 2, batch_size = 20, shuffle = TRUE, validation_split = 0.25 )
@@ -303,7 +311,7 @@ createAlexNetModel2D <- function( inputImageSize,
 #'
 #' testingMetrics <- model %>% evaluate( X_testSmall, Y_testSmall )
 #' predictedData <- model %>% predict( X_testSmall, verbose = 1 )
-#'
+#' rm(model); gc()
 #' }
 #' @import keras
 #' @export
@@ -311,7 +319,8 @@ createAlexNetModel3D <- function( inputImageSize,
                                   numberOfClassificationLabels = 1000,
                                   numberOfDenseUnits = 4096,
                                   dropoutRate = 0.0,
-                                  mode = 'classification'
+                                  mode = 'classification',
+                                  batch_size = NULL
                                 )
 {
 
@@ -383,7 +392,8 @@ createAlexNetModel3D <- function( inputImageSize,
 
   # Conv1
   outputs <- inputs %>% layer_conv_3d( filters = 96,
-    kernel_size = c( 11, 11, 11 ), strides = c( 4, 4, 4 ), activation = 'relu' )
+    kernel_size = c( 11, 11, 11 ), strides = c( 4, 4, 4 ),
+    activation = 'relu', batch_size = batch_size)
 
   # Conv2
   outputs <- outputs %>% layer_max_pooling_3d( pool_size = c( 3, 3, 3 ),

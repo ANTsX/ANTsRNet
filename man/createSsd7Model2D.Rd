@@ -60,6 +60,11 @@ and R implementations:\preformatted{    \url{https://github.com/pierluigiferrari
     \url{https://github.com/gsimchoni/ssdkeras}
 }
 }
+\examples{
+\donttest{
+createSsd7Model2D(c(256, 256, 3), 2)
+}
+}
 \author{
 Tustison NJ
 }

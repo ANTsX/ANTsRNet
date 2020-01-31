@@ -34,8 +34,7 @@ a keras model for image super resolution
 2-D implementation of the denoising autoencoder image super resolution architecture.
 }
 \examples{
-\dontrun{
-}
+createDenoisingAutoEncoderSuperResolutionModel2D(c( 28, 28, 1 ))
 }
 \author{
 Tustison NJ

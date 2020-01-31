@@ -41,8 +41,8 @@ implementation:\preformatted{    \url{https://github.com/titu1994/Image-Super-Re
 }
 }
 \examples{
-\dontrun{ 
-}
+createImageSuperResolutionModel2D(c( 100, 100, 1 ))
+gc()
 }
 \author{
 Tustison NJ
