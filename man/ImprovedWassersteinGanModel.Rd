@@ -32,7 +32,6 @@ generator and critic.}
 }
 
 \examples{
-\dontrun{
 
 library( keras )
 library( ANTsRNet )
@@ -58,9 +57,11 @@ ganModel <- ImprovedWassersteinGanModel$new(
    inputImageSize = inputImageSize,
    latentDimension = 100 )
 
-ganModel$train( x, numberOfEpochs = 100 )
+\dontrun{
+ganModel$train( x, numberOfEpochs = 2 )
 }
-
+tryCatch({tensorflow::tf$compat$v1$enable_eager_execution()},
+silent = TRUE, error = function(e) {})
 }
 \author{
 Tustison NJ
