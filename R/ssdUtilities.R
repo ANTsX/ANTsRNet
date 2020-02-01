@@ -606,51 +606,51 @@ NULL
 #' @export
 L2NormalizationLayer2D <- R6::R6Class( "L2NormalizationLayer2D",
 
-                                       inherit = KerasLayer,
+inherit = KerasLayer,
 
-                                       public = list(
+public = list(
 
-                                         scale = NULL,
+  scale = NULL,
 
-                                         channelAxis = NULL,
+  channelAxis = NULL,
 
-                                         gamma = NULL,
+  gamma = NULL,
 
-                                         initialize = function( scale = 20 )
-                                         {
-                                           K <- keras::backend()
+  initialize = function( scale = 20 )
+  {
+    K <- keras::backend()
 
-                                           if( K$image_data_format() == "channels_last" )
-                                           {
-                                             self$channelAxis <- 4
-                                           } else {
-                                             self$channelAxis <- 2
-                                           }
-                                           self$scale <- scale
-                                         },
+    if( K$image_data_format() == "channels_last" )
+    {
+      self$channelAxis <- 4
+    } else {
+      self$channelAxis <- 2
+    }
+    self$scale <- scale
+  },
 
-                                         build = function( input_shape )
-                                         {
-                                           self$gamma <- self$add_weight(
-                                             name = paste0( 'gamma_', self$name ),
-                                             shape = list( input_shape[[self$channelAxis]] ),
-                                             initializer = initializer_constant( value = self$scale ),
-                                             trainable = TRUE )
-                                         },
+  build = function( input_shape )
+  {
+    self$gamma <- self$add_weight(
+      name = paste0( 'gamma_', self$name ),
+      shape = list( input_shape[[self$channelAxis]] ),
+      initializer = initializer_constant( value = self$scale ),
+      trainable = TRUE )
+  },
 
-                                         call = function( x, mask = NULL )
-                                         {
-                                           K <- keras::backend()
-                                           output <- K$l2_normalize( x, self$channelAxis )
-                                           output <- output * self$gamma
-                                           return( output )
-                                         },
+  call = function( x, mask = NULL )
+  {
+    K <- keras::backend()
+    output <- K$l2_normalize( x, self$channelAxis )
+    output <- output * self$gamma
+    return( output )
+  },
 
-                                         compute_output_shape = function( input_shape )
-                                         {
-                                           return( reticulate::tuple( input_shape ) )
-                                         }
-                                       )
+  compute_output_shape = function( input_shape )
+  {
+    return( reticulate::tuple( input_shape ) )
+  }
+)
 )
 
 #' Normalization layer (2-D and 3-D)
@@ -732,170 +732,170 @@ NULL
 #' @export
 AnchorBoxLayer2D <- R6::R6Class( "AnchorBoxLayer2D",
 
-                                 inherit = KerasLayer,
+inherit = KerasLayer,
 
-                                 public = list(
+public = list(
 
-                                   imageSize = NULL,
+  imageSize = NULL,
 
-                                   scale = NULL,
+  scale = NULL,
 
-                                   nextScale = NULL,
+  nextScale = NULL,
 
-                                   aspectRatios = NULL,
+  aspectRatios = NULL,
 
-                                   variances = NULL,
+  variances = NULL,
 
-                                   imageSizeAxes = NULL,
+  imageSizeAxes = NULL,
 
-                                   channelAxis = NULL,
+  channelAxis = NULL,
 
-                                   numberOfBoxes = NULL,
+  numberOfBoxes = NULL,
 
-                                   anchorBoxesArray = NULL,
+  anchorBoxesArray = NULL,
 
-                                   initialize = function( imageSize, scale, nextScale,
-                                                          aspectRatios = c( '1:1', '2:1', '1:2' ), variances = 1.0 )
-                                   {
-                                     K <- keras::backend()
+  initialize = function( imageSize, scale, nextScale,
+                         aspectRatios = c( '1:1', '2:1', '1:2' ), variances = 1.0 )
+  {
+    K <- keras::backend()
 
-                                     if( K$image_data_format() == "channels_last" )
-                                     {
-                                       self$imageSizeAxes[1] <- 2
-                                       self$imageSizeAxes[2] <- 3
-                                       self$channelAxis <- 4
-                                     } else {
-                                       self$imageSizeAxes[1] <- 3
-                                       self$imageSizeAxes[2] <- 4
-                                       self$channelAxis <- 2
-                                     }
-                                     self$scale <- scale
-                                     self$nextScale <- nextScale
+    if( K$image_data_format() == "channels_last" )
+    {
+      self$imageSizeAxes[1] <- 2
+      self$imageSizeAxes[2] <- 3
+      self$channelAxis <- 4
+    } else {
+      self$imageSizeAxes[1] <- 3
+      self$imageSizeAxes[2] <- 4
+      self$channelAxis <- 2
+    }
+    self$scale <- scale
+    self$nextScale <- nextScale
 
-                                     self$imageSize <- imageSize
+    self$imageSize <- imageSize
 
-                                     if( is.null( aspectRatios ) )
-                                     {
-                                       self$aspectRatios <- c( '1:1' )
-                                     } else {
-                                       self$aspectRatios <- aspectRatios
-                                     }
+    if( is.null( aspectRatios ) )
+    {
+      self$aspectRatios <- c( '1:1' )
+    } else {
+      self$aspectRatios <- aspectRatios
+    }
 
-                                     if( length( variances ) == 1 )
-                                     {
-                                       self$variances <- rep( variances, 4 )
-                                     } else if( length( variances ) == 4 ) {
-                                       self$variances <- variances
-                                     } else {
-                                       stop( "Error: Length of variances must be 1 or 4." )
-                                     }
-                                   },
+    if( length( variances ) == 1 )
+    {
+      self$variances <- rep( variances, 4 )
+    } else if( length( variances ) == 4 ) {
+      self$variances <- variances
+    } else {
+      stop( "Error: Length of variances must be 1 or 4." )
+    }
+  },
 
-                                   call = function( x, mask = NULL )
-                                   {
-                                     K <- keras::backend()
+  call = function( x, mask = NULL )
+  {
+    K <- keras::backend()
 
-                                     np <- reticulate::import( "numpy" )
+    np <- reticulate::import( "numpy" )
 
-                                     input_shape <- K$int_shape( x )
-                                     layerSize <- c()
-                                     layerSize[1] <- input_shape[[self$imageSizeAxes[1]]]
-                                     layerSize[2] <- input_shape[[self$imageSizeAxes[2]]]
+    input_shape <- K$int_shape( x )
+    layerSize <- c()
+    layerSize[1] <- input_shape[[self$imageSizeAxes[1]]]
+    layerSize[2] <- input_shape[[self$imageSizeAxes[2]]]
 
-                                     minImageSize <- min( self$imageSize )
+    minImageSize <- min( self$imageSize )
 
-                                     widths <- c()
-                                     heights <- c()
-                                     count <- 1L
+    widths <- c()
+    heights <- c()
+    count <- 1L
 
-                                     for( i in 1:length( self$aspectRatios ) )
-                                     {
-                                       aspectRatioValues <- as.numeric(
-                                         unlist( strsplit( self$aspectRatios[i], ':' ) ) )
-                                       if( length( aspectRatioValues ) == 1 )
-                                       {
-                                         aspectRatioValues <- rep( aspectRatioValues[1], 2 )
-                                       } else if( length( aspectRatioValues ) != 2 ) {
-                                         stop( "Incorrect aspect ratio specification." )
-                                       }
-                                       aspectRatio <- max( aspectRatioValues ) / min( aspectRatioValues )
-                                       if( aspectRatio == 1 )
-                                       {
-                                         size <- self$scale * minImageSize
-                                         widths[count] <- size
-                                         heights[count] <- size
-                                         count <- count + 1L
+    for( i in 1:length( self$aspectRatios ) )
+    {
+      aspectRatioValues <- as.numeric(
+        unlist( strsplit( self$aspectRatios[i], ':' ) ) )
+      if( length( aspectRatioValues ) == 1 )
+      {
+        aspectRatioValues <- rep( aspectRatioValues[1], 2 )
+      } else if( length( aspectRatioValues ) != 2 ) {
+        stop( "Incorrect aspect ratio specification." )
+      }
+      aspectRatio <- max( aspectRatioValues ) / min( aspectRatioValues )
+      if( aspectRatio == 1 )
+      {
+        size <- self$scale * minImageSize
+        widths[count] <- size
+        heights[count] <- size
+        count <- count + 1L
 
-                                         size <- sqrt( self$scale * self$nextScale ) * minImageSize
-                                         widths[count] <- size
-                                         heights[count] <- size
-                                         count <- count + 1L
-                                       } else {
-                                         scaleFactor <- self$scale * minImageSize * sqrt( aspectRatio ) /
-                                           max( aspectRatioValues )
-                                         widths[count] <- scaleFactor * aspectRatioValues[1]
-                                         heights[count] <- scaleFactor * aspectRatioValues[2]
-                                         count <- count + 1L
-                                       }
-                                     }
-                                     self$numberOfBoxes <- count - 1L
+        size <- sqrt( self$scale * self$nextScale ) * minImageSize
+        widths[count] <- size
+        heights[count] <- size
+        count <- count + 1L
+      } else {
+        scaleFactor <- self$scale * minImageSize * sqrt( aspectRatio ) /
+          max( aspectRatioValues )
+        widths[count] <- scaleFactor * aspectRatioValues[1]
+        heights[count] <- scaleFactor * aspectRatioValues[2]
+        count <- count + 1L
+      }
+    }
+    self$numberOfBoxes <- count - 1L
 
-                                     boxDimensions <- list()
-                                     boxDimensions[[1]] <- widths
-                                     boxDimensions[[2]] <- heights
+    boxDimensions <- list()
+    boxDimensions[[1]] <- widths
+    boxDimensions[[2]] <- heights
 
-                                     cellSize <- self$imageSize / layerSize
-                                     centers <- list()
-                                     for( i in 1:length( cellSize ) )
-                                     {
-                                       centers[[i]] <- seq( 0.5 * cellSize[i],
-                                                            self$imageSize[i] - 0.5 * cellSize[i], length.out = layerSize[i] )
-                                     }
+    cellSize <- self$imageSize / layerSize
+    centers <- list()
+    for( i in 1:length( cellSize ) )
+    {
+      centers[[i]] <- seq( 0.5 * cellSize[i],
+                           self$imageSize[i] - 0.5 * cellSize[i], length.out = layerSize[i] )
+    }
 
-                                     boxesTensor <- np$zeros( reticulate::tuple(
-                                       layerSize[1], layerSize[2], self$numberOfBoxes, 4L ) )
+    boxesTensor <- np$zeros( reticulate::tuple(
+      layerSize[1], layerSize[2], self$numberOfBoxes, 4L ) )
 
-                                     grid <- np$meshgrid( centers[[1]], centers[[2]] )
-                                     for( i in 1:length( grid ) )
-                                     {
-                                       boxesTensor[,,, i] <- np$tile( np$expand_dims( grid[[i]], axis = -1L ),
-                                                                      reticulate::tuple( 1L, 1L, self$numberOfBoxes ) )
-                                       boxesTensor[,,, i + length( grid )] <- array( rep( boxDimensions[[i]],
-                                                                                          each = layerSize[1] * layerSize[2] ),
-                                                                                     dim = c( layerSize[1], layerSize[2], self$numberOfBoxes ) )
-                                     }
+    grid <- np$meshgrid( centers[[1]], centers[[2]] )
+    for( i in 1:length( grid ) )
+    {
+      boxesTensor[,,, i] <- np$tile( np$expand_dims( grid[[i]], axis = -1L ),
+                                     reticulate::tuple( 1L, 1L, self$numberOfBoxes ) )
+      boxesTensor[,,, i + length( grid )] <- array( rep( boxDimensions[[i]],
+                                                         each = layerSize[1] * layerSize[2] ),
+                                                    dim = c( layerSize[1], layerSize[2], self$numberOfBoxes ) )
+    }
 
-                                     self$anchorBoxesArray <- reticulate::array_reshape( boxesTensor,
-                                                                                         dim = c( layerSize[1] * layerSize[2] * self$numberOfBoxes, 4 ) )
+    self$anchorBoxesArray <- reticulate::array_reshape( boxesTensor,
+                                                        dim = c( layerSize[1] * layerSize[2] * self$numberOfBoxes, 4 ) )
 
-                                     # Convert to (xmin, xmax, ymin, ymax)
-                                     self$anchorBoxesArray <- convertCoordinates( self$anchorBoxesArray,
-                                                                                  type = 'centroids2minmax' )
+    # Convert to (xmin, xmax, ymin, ymax)
+    self$anchorBoxesArray <- convertCoordinates( self$anchorBoxesArray,
+                                                 type = 'centroids2minmax' )
 
-                                     variancesTensor <- np$zeros_like( boxesTensor )
-                                     variancesTensor <- variancesTensor + self$variances
+    variancesTensor <- np$zeros_like( boxesTensor )
+    variancesTensor <- variancesTensor + self$variances
 
-                                     anchorBoxesTensor = np$concatenate(
-                                       reticulate::tuple( boxesTensor, variancesTensor ), axis = -1L )
-                                     anchorBoxesTensor <- np$expand_dims( anchorBoxesTensor, axis = 0L )
+    anchorBoxesTensor = np$concatenate(
+      reticulate::tuple( boxesTensor, variancesTensor ), axis = -1L )
+    anchorBoxesTensor <- np$expand_dims( anchorBoxesTensor, axis = 0L )
 
-                                     anchorBoxesTensor <- K$constant( anchorBoxesTensor, dtype = 'float32' )
-                                     anchorBoxesTensor <- K$tile( anchorBoxesTensor,
-                                                                  c( K$shape( x )[1], 1L, 1L, 1L, 1L ) )
+    anchorBoxesTensor <- K$constant( anchorBoxesTensor, dtype = 'float32' )
+    anchorBoxesTensor <- K$tile( anchorBoxesTensor,
+                                 c( K$shape( x )[1], 1L, 1L, 1L, 1L ) )
 
-                                     return( anchorBoxesTensor )
-                                   },
+    return( anchorBoxesTensor )
+  },
 
-                                   compute_output_shape = function( input_shape )
-                                   {
-                                     layerSize <- c()
-                                     layerSize[1] <- input_shape[[self$imageSizeAxes[1]]]
-                                     layerSize[2] <- input_shape[[self$imageSizeAxes[2]]]
+  compute_output_shape = function( input_shape )
+  {
+    layerSize <- c()
+    layerSize[1] <- input_shape[[self$imageSizeAxes[1]]]
+    layerSize[2] <- input_shape[[self$imageSizeAxes[2]]]
 
-                                     return( reticulate::tuple( input_shape[[1]], layerSize[1],
-                                                                layerSize[2], self$numberOfBoxes, 8L ) )
-                                   }
-                                 )
+    return( reticulate::tuple( input_shape[[1]], layerSize[1],
+                               layerSize[2], self$numberOfBoxes, 8L ) )
+  }
+)
 )
 
 #' Anchor box layer (2-D and 3-D)
@@ -1294,52 +1294,52 @@ NULL
 #' @export
 L2NormalizationLayer3D <- R6::R6Class( "L2NormalizationLayer3D",
 
-                                       inherit = KerasLayer,
+inherit = KerasLayer,
 
-                                       public = list(
+public = list(
 
-                                         scale = NULL,
+  scale = NULL,
 
-                                         channelAxis = NULL,
+  channelAxis = NULL,
 
-                                         gamma = NULL,
+  gamma = NULL,
 
-                                         initialize = function( scale = 20 )
-                                         {
-                                           K <- keras::backend()
+  initialize = function( scale = 20 )
+  {
+    K <- keras::backend()
 
-                                           if( K$image_data_format() == "channels_last" )
-                                           {
-                                             self$channelAxis <- 5
-                                           } else {
-                                             self$channelAxis <- 2
-                                           }
-                                           self$scale <- scale
-                                         },
+    if( K$image_data_format() == "channels_last" )
+    {
+      self$channelAxis <- 5
+    } else {
+      self$channelAxis <- 2
+    }
+    self$scale <- scale
+  },
 
-                                         build = function( input_shape )
-                                         {
-                                           self$gamma <- self$add_weight(
-                                             name = paste0( 'gamma_', self$name ),
-                                             shape = list( input_shape[[self$channelAxis]] ),
-                                             initializer = initializer_constant( value = self$scale ),
-                                             trainable = TRUE )
-                                         },
+  build = function( input_shape )
+  {
+    self$gamma <- self$add_weight(
+      name = paste0( 'gamma_', self$name ),
+      shape = list( input_shape[[self$channelAxis]] ),
+      initializer = initializer_constant( value = self$scale ),
+      trainable = TRUE )
+  },
 
-                                         call = function( x, mask = NULL )
-                                         {
-                                           K <- keras::backend()
+  call = function( x, mask = NULL )
+  {
+    K <- keras::backend()
 
-                                           output <- K$l2_normalize( x, self$channelAxis )
-                                           output <- output * self$gamma
-                                           return( output )
-                                         },
+    output <- K$l2_normalize( x, self$channelAxis )
+    output <- output * self$gamma
+    return( output )
+  },
 
-                                         compute_output_shape = function( input_shape )
-                                         {
-                                           return( reticulate::tuple( input_shape ) )
-                                         }
-                                       )
+  compute_output_shape = function( input_shape )
+  {
+    return( reticulate::tuple( input_shape ) )
+  }
+)
 )
 
 
@@ -1394,181 +1394,181 @@ NULL
 #' @export
 AnchorBoxLayer3D <- R6::R6Class( "AnchorBoxLayer3D",
 
-                                 inherit = KerasLayer,
+inherit = KerasLayer,
 
-                                 public = list(
+public = list(
 
-                                   imageSize = NULL,
+  imageSize = NULL,
 
-                                   scale = NULL,
+  scale = NULL,
 
-                                   nextScale = NULL,
+  nextScale = NULL,
 
-                                   aspectRatios = NULL,
+  aspectRatios = NULL,
 
-                                   variances = NULL,
+  variances = NULL,
 
-                                   imageSizeAxes = NULL,
+  imageSizeAxes = NULL,
 
-                                   channelAxis = NULL,
+  channelAxis = NULL,
 
-                                   numberOfBoxes = NULL,
+  numberOfBoxes = NULL,
 
-                                   anchorBoxesArray = NULL,
+  anchorBoxesArray = NULL,
 
-                                   initialize = function( imageSize, scale, nextScale,
-                                                          aspectRatios = c( '1:1:1', '2:1:1', '1:2:1', '1:1:2' ), variances = 1.0 )
-                                   {
+  initialize = function( imageSize, scale, nextScale,
+                         aspectRatios = c( '1:1:1', '2:1:1', '1:2:1', '1:1:2' ), variances = 1.0 )
+  {
 
-                                     K <- keras::backend()
+    K <- keras::backend()
 
-                                     if( K$image_data_format() == "channels_last" )
-                                     {
-                                       self$imageSizeAxes[1] <- 2
-                                       self$imageSizeAxes[2] <- 3
-                                       self$imageSizeAxes[3] <- 4
-                                       self$channelAxis <- 5
-                                     } else {
-                                       self$imageSizeAxes[1] <- 3
-                                       self$imageSizeAxes[2] <- 4
-                                       self$imageSizeAxes[3] <- 5
-                                       self$channelAxis <- 2
-                                     }
-                                     self$scale <- scale
-                                     self$nextScale <- nextScale
+    if( K$image_data_format() == "channels_last" )
+    {
+      self$imageSizeAxes[1] <- 2
+      self$imageSizeAxes[2] <- 3
+      self$imageSizeAxes[3] <- 4
+      self$channelAxis <- 5
+    } else {
+      self$imageSizeAxes[1] <- 3
+      self$imageSizeAxes[2] <- 4
+      self$imageSizeAxes[3] <- 5
+      self$channelAxis <- 2
+    }
+    self$scale <- scale
+    self$nextScale <- nextScale
 
-                                     self$imageSize <- imageSize
+    self$imageSize <- imageSize
 
-                                     if( is.null( aspectRatios ) )
-                                     {
-                                       self$aspectRatios <- c( '1:1:1' )
-                                     } else {
-                                       self$aspectRatios <- aspectRatios
-                                     }
+    if( is.null( aspectRatios ) )
+    {
+      self$aspectRatios <- c( '1:1:1' )
+    } else {
+      self$aspectRatios <- aspectRatios
+    }
 
-                                     if( length( variances ) == 1 )
-                                     {
-                                       self$variances <- rep( variances, 6 )
-                                     } else if( length( variances ) == 6 ) {
-                                       self$variances <- variances
-                                     } else {
-                                       stop( "Error: Length of variances must be 1 or 6." )
-                                     }
-                                   },
+    if( length( variances ) == 1 )
+    {
+      self$variances <- rep( variances, 6 )
+    } else if( length( variances ) == 6 ) {
+      self$variances <- variances
+    } else {
+      stop( "Error: Length of variances must be 1 or 6." )
+    }
+  },
 
-                                   call = function( x, mask = NULL )
-                                   {
-                                     K <- keras::backend()
+  call = function( x, mask = NULL )
+  {
+    K <- keras::backend()
 
-                                     np <- reticulate::import( "numpy" )
+    np <- reticulate::import( "numpy" )
 
-                                     input_shape <- K$int_shape( x )
-                                     layerSize <- c()
-                                     layerSize[1] <- input_shape[[self$imageSizeAxes[1]]]
-                                     layerSize[2] <- input_shape[[self$imageSizeAxes[2]]]
-                                     layerSize[3] <- input_shape[[self$imageSizeAxes[3]]]
+    input_shape <- K$int_shape( x )
+    layerSize <- c()
+    layerSize[1] <- input_shape[[self$imageSizeAxes[1]]]
+    layerSize[2] <- input_shape[[self$imageSizeAxes[2]]]
+    layerSize[3] <- input_shape[[self$imageSizeAxes[3]]]
 
-                                     minImageSize <- min( self$imageSize )
+    minImageSize <- min( self$imageSize )
 
-                                     widths <- c()
-                                     heights <- c()
-                                     depths <- c()
-                                     count <- 1L
+    widths <- c()
+    heights <- c()
+    depths <- c()
+    count <- 1L
 
-                                     for( i in 1:length( self$aspectRatios ) )
-                                     {
-                                       aspectRatioValues <- as.numeric(
-                                         unlist( strsplit( self$aspectRatios[i], ':' ) ) )
-                                       if( length( aspectRatioValues ) == 1 )
-                                       {
-                                         aspectRatioValues <- rep( aspectRatioValues[1], 3 )
-                                       } else if( length( aspectRatioValues ) != 3 ) {
-                                         stop( "Incorrect aspect ratio specification." )
-                                       }
-                                       aspectRatio <- max( aspectRatioValues ) / min( aspectRatioValues )
-                                       if( aspectRatio == 1 )
-                                       {
-                                         size <- self$scale * minImageSize
-                                         widths[count] <- size
-                                         heights[count] <- size
-                                         depths[count] <- size
-                                         count <- count + 1L
+    for( i in 1:length( self$aspectRatios ) )
+    {
+      aspectRatioValues <- as.numeric(
+        unlist( strsplit( self$aspectRatios[i], ':' ) ) )
+      if( length( aspectRatioValues ) == 1 )
+      {
+        aspectRatioValues <- rep( aspectRatioValues[1], 3 )
+      } else if( length( aspectRatioValues ) != 3 ) {
+        stop( "Incorrect aspect ratio specification." )
+      }
+      aspectRatio <- max( aspectRatioValues ) / min( aspectRatioValues )
+      if( aspectRatio == 1 )
+      {
+        size <- self$scale * minImageSize
+        widths[count] <- size
+        heights[count] <- size
+        depths[count] <- size
+        count <- count + 1L
 
-                                         size <- sqrt( self$scale * self$nextScale ) * minImageSize
-                                         widths[count] <- size
-                                         heights[count] <- size
-                                         depths[count] <- size
-                                         count <- count + 1L
-                                       } else {
-                                         scaleFactor <- self$scale * minImageSize * sqrt( aspectRatio ) /
-                                           max( aspectRatioValues )
-                                         widths[count] <- scaleFactor * aspectRatioValues[1]
-                                         heights[count] <- scaleFactor * aspectRatioValues[2]
-                                         depths[count] <- scaleFactor * aspectRatioValues[3]
-                                         count <- count + 1L
-                                       }
-                                     }
-                                     self$numberOfBoxes <- count - 1L
+        size <- sqrt( self$scale * self$nextScale ) * minImageSize
+        widths[count] <- size
+        heights[count] <- size
+        depths[count] <- size
+        count <- count + 1L
+      } else {
+        scaleFactor <- self$scale * minImageSize * sqrt( aspectRatio ) /
+          max( aspectRatioValues )
+        widths[count] <- scaleFactor * aspectRatioValues[1]
+        heights[count] <- scaleFactor * aspectRatioValues[2]
+        depths[count] <- scaleFactor * aspectRatioValues[3]
+        count <- count + 1L
+      }
+    }
+    self$numberOfBoxes <- count - 1L
 
-                                     boxDimensions <- list()
-                                     boxDimensions[[1]] <- widths
-                                     boxDimensions[[2]] <- heights
-                                     boxDimensions[[3]] <- depths
+    boxDimensions <- list()
+    boxDimensions[[1]] <- widths
+    boxDimensions[[2]] <- heights
+    boxDimensions[[3]] <- depths
 
-                                     cellSize <- self$imageSize / layerSize
-                                     centers <- list()
-                                     for( i in 1:length( cellSize ) )
-                                     {
-                                       centers[[i]] <- seq( 0.5 * cellSize[i],
-                                                            self$imageSize[i] - 0.5 * cellSize[i], length.out = layerSize[i] )
-                                     }
+    cellSize <- self$imageSize / layerSize
+    centers <- list()
+    for( i in 1:length( cellSize ) )
+    {
+      centers[[i]] <- seq( 0.5 * cellSize[i],
+                           self$imageSize[i] - 0.5 * cellSize[i], length.out = layerSize[i] )
+    }
 
-                                     boxesTensor <- np$zeros( reticulate::tuple(
-                                       layerSize[1], layerSize[2], layerSize[3], self$numberOfBoxes, 6L ) )
+    boxesTensor <- np$zeros( reticulate::tuple(
+      layerSize[1], layerSize[2], layerSize[3], self$numberOfBoxes, 6L ) )
 
-                                     grid <- np$meshgrid( centers[[1]], centers[[2]], centers[[3]] )
-                                     for( i in 1:length( grid ) )
-                                     {
-                                       boxesTensor[,,,, i] <- np$tile( np$expand_dims( grid[[i]], axis = -1L ),
-                                                                       reticulate::tuple( 1L, 1L, 1L, 1L, self$numberOfBoxes ) )
-                                       boxesTensor[,,,, i + length( grid )] <- array( rep( boxDimensions[[i]],
-                                                                                           each = layerSize[1] * layerSize[2] * layerSize[3] ),
-                                                                                      dim = c( layerSize[1], layerSize[2], layerSize[3],
-                                                                                               self$numberOfBoxes ) )
-                                     }
+    grid <- np$meshgrid( centers[[1]], centers[[2]], centers[[3]] )
+    for( i in 1:length( grid ) )
+    {
+      boxesTensor[,,,, i] <- np$tile( np$expand_dims( grid[[i]], axis = -1L ),
+                                      reticulate::tuple( 1L, 1L, 1L, 1L, self$numberOfBoxes ) )
+      boxesTensor[,,,, i + length( grid )] <- array( rep( boxDimensions[[i]],
+                                                          each = layerSize[1] * layerSize[2] * layerSize[3] ),
+                                                     dim = c( layerSize[1], layerSize[2], layerSize[3],
+                                                              self$numberOfBoxes ) )
+    }
 
-                                     self$anchorBoxesArray <- reticulate::array_reshape( boxesTensor,
-                                                                                         dim = c( layerSize[1] * layerSize[2] * layerSize[2] *
-                                                                                                    self$numberOfBoxes, 6 ) )
+    self$anchorBoxesArray <- reticulate::array_reshape( boxesTensor,
+                                                        dim = c( layerSize[1] * layerSize[2] * layerSize[3] *
+                                                                   self$numberOfBoxes, 6 ) )
 
-                                     # Convert to (xmin, xmax, ymin, ymax, zmin, zmax)
-                                     self$anchorBoxesArray <- convertCoordinates( self$anchorBoxesArray,
-                                                                                  type = 'centroids2minmax' )
+    # Convert to (xmin, xmax, ymin, ymax, zmin, zmax)
+    self$anchorBoxesArray <- convertCoordinates( self$anchorBoxesArray,
+                                                 type = 'centroids2minmax' )
 
-                                     variancesTensor <- np$zeros_like( boxesTensor )
-                                     variancesTensor <- variancesTensor + self$variances
+    variancesTensor <- np$zeros_like( boxesTensor )
+    variancesTensor <- variancesTensor + self$variances
 
-                                     anchorBoxesTensor = np$concatenate(
-                                       reticulate::tuple( boxesTensor, variancesTensor ), axis = -1L )
-                                     anchorBoxesTensor <- np$expand_dims( anchorBoxesTensor, axis = 0L )
+    anchorBoxesTensor = np$concatenate(
+      reticulate::tuple( boxesTensor, variancesTensor ), axis = -1L )
+    anchorBoxesTensor <- np$expand_dims( anchorBoxesTensor, axis = 0L )
 
-                                     anchorBoxesTensor <- K$constant( anchorBoxesTensor, dtype = 'float32' )
-                                     anchorBoxesTensor <- K$tile( anchorBoxesTensor,
-                                                                  c( K$shape( x )[1], 1L, 1L, 1L, 1L, 1L ) )
+    anchorBoxesTensor <- K$constant( anchorBoxesTensor, dtype = 'float32' )
+    anchorBoxesTensor <- K$tile( anchorBoxesTensor,
+                                 c( K$shape( x )[1], 1L, 1L, 1L, 1L, 1L ) )
 
-                                     return( anchorBoxesTensor )
-                                   },
+    return( anchorBoxesTensor )
+  },
 
-                                   compute_output_shape = function( input_shape )
-                                   {
-                                     layerSize <- c()
-                                     layerSize[1] <- input_shape[[self$imageSizeAxes[1]]]
-                                     layerSize[2] <- input_shape[[self$imageSizeAxes[2]]]
-                                     layerSize[3] <- input_shape[[self$imageSizeAxes[3]]]
+  compute_output_shape = function( input_shape )
+  {
+    layerSize <- c()
+    layerSize[1] <- input_shape[[self$imageSizeAxes[1]]]
+    layerSize[2] <- input_shape[[self$imageSizeAxes[2]]]
+    layerSize[3] <- input_shape[[self$imageSizeAxes[3]]]
 
-                                     return( reticulate::tuple( input_shape[[1]], layerSize[1],
-                                                                layerSize[2], layerSize[3], self$numberOfBoxes, 12L ) )
-                                   }
-                                 )
+    return( reticulate::tuple( input_shape[[1]], layerSize[1],
+                               layerSize[2], layerSize[3], self$numberOfBoxes, 12L ) )
+  }
+)
 )
 
