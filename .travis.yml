@@ -56,11 +56,11 @@ before_script:
   - install_python_requirements -q ;
   # - R -e 'tensorflow::install_tensorflow(version = "2.0.0")'
 
-before_cache: Rscript -e 'remotes::install_cran("pkgdown")'
-deploy:
-  provider: script
-  script: Rscript -e 'pkgdown::deploy_site_github()'
-  skip_cleanup: true
+# before_cache: Rscript -e 'remotes::install_cran("pkgdown")'
+# deploy:
+#   provider: script
+#   script: Rscript -e 'pkgdown::deploy_site_github()'
+#   skip_cleanup: true
 
 before_deploy:
     - Rscript -e 'covr::codecov(type = "all", commentDonttest = FALSE)'
