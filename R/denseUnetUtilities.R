@@ -59,11 +59,6 @@ ScaleLayer <- R6::R6Class(
         index <- length( self$inputShape )
       }
       output_shape <- reticulate::tuple( input_shape[[index]] )
-      # output_shape =  input_shape[[index]]
-      # print(class(output_shape))
-      # print("output shape is ")
-      # print(output_shape)
-      # print(self$add_weight)
       self$gamma <- self$add_weight(
         name = "gamma",
         shape = output_shape,
