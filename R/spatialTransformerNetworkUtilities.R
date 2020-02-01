@@ -380,10 +380,10 @@ SpatialTransformerLayer3D <- R6::R6Class(
       {
         newOutputShape <- reticulate::tuple( -1L, as.integer( resampledSize[1] ),
           as.integer( resampledSize[2] ), as.integer( resampledSize[3] ), numberOfChannels )
-        } else {
+      } else {
         newOutputShape <- reticulate::tuple( batchSize, as.integer( resampledSize[1] ),
           as.integer( resampledSize[2] ), as.integer( resampledSize[3] ), numberOfChannels )
-        }
+      }
       interpolatedImage <- K$reshape( interpolatedImage, shape = newOutputShape )
 
       return( interpolatedImage )

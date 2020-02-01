@@ -22,10 +22,10 @@ with the implementation ported from the following python implementation
 \describe{
 \item{axis}{Integer specifying which axis should be normalized, typically
 the feature axis.  For example, after a Conv2D layer with
-\code{channels_first}, set axis = 1.  Setting \code{axis=-1L} will
-normalize all values in each instance of the batch.  Axis 0
+\code{channels_first}, set axis = 2.  Setting \code{axis=-1L} will
+normalize all values in each instance of the batch.  Axis 1
 is the batch dimension for tensorflow backend so we throw an
-error if \code{axis = 0}.}
+error if \code{axis = 1}.}
 \item{epsilon}{Small float added to the variance to avoid dividing by 0.}
 \item{center}{If TRUE, add \code{beta} offset to normalized tensor.}
 \item{scale}{If TRUE, multiply by \code{gamma}.}
