@@ -23,6 +23,11 @@
 #'
 #' @return clustering layer
 #'
+#' @examples
+#' model = ClusteringLayer$new(numberOfClusters = 2)
+#' \dontrun{
+#' model$build(c(20, 20))
+#' }
 #' @name ClusteringLayer
 NULL
 
@@ -61,7 +66,9 @@ ClusteringLayer <- R6::R6Class( "ClusteringLayer",
 
       self$clusters <- self$add_weight(
         shape = list( self$numberOfClusters, input_shape[[2]] ),
-        initializer = initializer_glorot_uniform(), name = 'clusters' )
+        initializer = keras::initializer_glorot_uniform(),
+        # initializer = 'glorot_uniform',
+        name = 'clusters' )
 
       if( ! is.null( self$initialClusterWeights ) )
         {
@@ -69,6 +76,7 @@ ClusteringLayer <- R6::R6Class( "ClusteringLayer",
         self$initialClusterWeights <- NULL
         }
       self$built <- TRUE
+      self
       },
 
     call = function( inputs, mask = NULL )

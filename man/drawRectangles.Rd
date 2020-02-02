@@ -30,6 +30,19 @@ each element is the caption rendered with each box.}
 \description{
 Renders boxes on objects within rasterized images.
 }
+\examples{
+jpg = ANTsRCore::getANTsRData("r16")
+if (requireNamespace("jpeg", quietly = TRUE)) {
+image = jpeg::readJPEG(jpg)
+vec2d = c(1, 10, 1, 10)
+drawRectangles(image, vec2d)
+vec2d = rbind(
+c(1, 10, 1, 10),
+c(20, 40, 30, 40)
+)
+drawRectangles(image, vec2d)
+}
+}
 \author{
 Tustison NJ
 }

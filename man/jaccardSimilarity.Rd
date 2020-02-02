@@ -22,6 +22,14 @@ the Jaccard simliarity
 Function for determinining the Jaccard or iou (intersection over union)
 similarity measure between two sets of boxes.
 }
+\examples{
+vec2d = c(1, 10, 1, 10)
+vec2d_2 = c(1, 8, 1, 5)
+jaccardSimilarity(vec2d, vec2d_2)
+vec3d = c(1, 10, 1, 10, 1, 10)
+vec3d_2 = c(1, 8, 1, 5, 1, 10)
+jaccardSimilarity(vec3d, vec3d_2)
+}
 \author{
 Tustison NJ
 }

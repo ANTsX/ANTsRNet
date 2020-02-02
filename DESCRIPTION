@@ -36,7 +36,8 @@ Suggests:
     rmarkdown,
     testthat (>= 2.1.0),
     kirby21.t1,
-    covr
+    covr,
+    jpeg
 StagedInstall: no
 Remotes:
     rstudio/reticulate

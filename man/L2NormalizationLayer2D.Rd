@@ -49,6 +49,12 @@ layer$compute_output_shape( input_shape )
 \code{$compute_output_shape} computes the output shape.
 }
 
+\examples{
+x = L2NormalizationLayer2D$new()
+\dontrun{
+x$build(input_shape = c(20, 20, 20, 3))
+}
+}
 \author{
 Tustison NJ
 }
