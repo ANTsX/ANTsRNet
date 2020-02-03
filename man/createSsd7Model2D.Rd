@@ -61,9 +61,9 @@ and R implementations:\preformatted{    \url{https://github.com/pierluigiferrari
 }
 }
 \examples{
-\dontrun{
-createSsd7Model2D(c(256, 256, 3), 2)
-}
+tensorflow::tf$compat$v1$disable_eager_execution()
+createSsd7Model2D(c(250, 250, 3), 2)
+createSsd7Model3D(c(250, 250, 250, 3), 2)
 }
 \author{
 Tustison NJ
