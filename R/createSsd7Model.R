@@ -42,7 +42,7 @@
 #' @import keras
 #' @export
 #' @examples
-#' # tensorflow::tf$compat$v1$disable_eager_execution()
+#' tensorflow::tf$compat$v1$disable_eager_execution()
 #' createSsd7Model2D(c(250, 250, 3), 2)
 #' createSsd7Model3D(c(250, 250, 250, 3), 2)
 createSsd7Model2D <- function( inputImageSize,
