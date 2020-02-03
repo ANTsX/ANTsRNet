@@ -31,7 +31,6 @@
 #' library( ANTsRNet )
 #'
 #' keras::backend()$clear_session()
-#'
 #' ganModel <- CycleGanModel$new(
 #'    inputImageSize = c( 128, 128, 3 ) )
 #'
