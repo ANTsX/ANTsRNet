@@ -169,7 +169,7 @@ convertCoordinates <- function(
 #' vec3d = c(1, 10, 1, 10, 1, 10)
 #' vec3d_2 = c(1, 8, 1, 5, 1, 10)
 #' jaccardSimilarity(vec3d, vec3d_2)
-
+#' @export
 jaccardSimilarity <- function( boxes1, boxes2 )
 {
   np <- reticulate::import( "numpy" )
