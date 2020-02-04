@@ -19,11 +19,19 @@
 #'
 #' @author Tustison NJ
 #'
-#' @return .
-#'
-#' @name ScaleLayer
-NULL
-
+#' @return
+#' @examples
+#' library(keras)
+#' inputImageSize = c( 256L, 256L, 1L )
+#' inputs <- keras::layer_input( shape = inputImageSize )
+#' outputs <- inputs %>% layer_zero_padding_2d( padding = c( 3L, 3L ) )
+#' layer_scale = ANTsRNet:::layer_scale
+#' outputs %>%
+#'   layer_scale(axis = -1L)
+#' lay = ScaleLayer$new()
+#' \dontrun{
+#' lay$build(input_shape = inputImageSize)
+#' }
 #' @export
 ScaleLayer <- R6::R6Class(
   "ScaleLayer",
