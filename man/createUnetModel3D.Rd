@@ -48,7 +48,7 @@ during the decoding.}
 \item{weightDecay}{weighting parameter for L2 regularization of the
 kernel weights of the convolution layers.  Default = 0.0.}
 
-\item{mode}{'classification' or 'regression'.  Default = 'classification'.}
+\item{mode}{'classification' or 'regression' or 'sigmoid'.  Default = 'classification'.}
 }
 \value{
 a u-net keras model
