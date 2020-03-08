@@ -5,7 +5,7 @@
 \alias{ScaleLayer}
 \title{Custom scale layer}
 \value{
-
+A keras layer
 }
 \description{
 Custom scale layer
@@ -18,6 +18,8 @@ Custom scale layer
 \item{axis}{integer specifying which axis to normalize.}
 \item{momentum}{momentum value used for computation of the exponential
 average of the mean and standard deviation.}
+\item{input_shape}{Dimensionality of the input (integer) not
+including the samples axis.}
 }
 }
 
@@ -36,7 +38,7 @@ inputImageSize = c( 256L, 256L, 1L )
 inputs <- keras::layer_input( shape = inputImageSize )
 outputs <- inputs \%>\% layer_zero_padding_2d( padding = c( 3L, 3L ) )
 layer_scale = ANTsRNet:::layer_scale
-outputs \%>\%
+outputs = outputs \%>\%
   layer_scale(axis = -1L)
 lay = ScaleLayer$new()
 \dontrun{
@@ -76,6 +78,15 @@ Tustison NJ
 \if{html}{\out{<div class="r">}}\preformatted{ScaleLayer$new(axis = -1L, momentum = 0.9)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{axis}}{Integer, the axis that should be normalized (typically the features axis).}
+
+\item{\code{momentum}}{Momentum for the moving mean and the moving variance.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-build"></a>}}
@@ -89,7 +100,7 @@ Tustison NJ
 \if{html}{\out{<a id="method-call"></a>}}
 \subsection{Method \code{call()}}{
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ScaleLayer$call(inputs, mask = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{ScaleLayer$call(input, mask = NULL)}\if{html}{\out{</div>}}
 }
 
 }

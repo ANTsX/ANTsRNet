@@ -49,7 +49,7 @@ Creates a 2-D attention augmented convolutional layer as described in the paper
 
 with the implementation ported from the following python implementation
 
-\url{https://github.com/titu1994/keras-attention-augmented-convs/blob/master/}
+\url{https://github.com/titu1994/keras-attention-augmented-convs}
 }
 \author{
 Tustison NJ

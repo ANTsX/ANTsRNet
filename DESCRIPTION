@@ -2,14 +2,14 @@ Package: ANTsRNet
 Type: Package
 Title: Neural Networks for Medical Image Processing
 Version: 1.1
-Date: 2020-01-29
+Date: 2020-03-08
 Authors@R: c(
     person(c("Nicholas", "J"), "Tustison", role = c("aut", "cre"), email = "ntustison@gmail.com", comment = c(ORCID = "0000-0001-9418-5103")),
     person(c("Brian", "B"), "Avants", role = c("aut"), email = "stnava@gmail.com", comment = c(ORCID = "0000-0002-4212-3362")),
     person("John", "Muschelli", role = "ctb", 
     comment = c(ORCID = "0000-0001-6469-1750"))
     )
-Maintainer: Nicholas J. Tustison <ntustison@gmail.com>
+Maintainer: Nicholas J Tustison <ntustison@gmail.com>
 Description: Deep learning tools for medical image processing, interfacing
     with the 'ANTsR' package and Advanced Normalization Tools ('ANTs'). 
 License: Apache License (>=2.0)

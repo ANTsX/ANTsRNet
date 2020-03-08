@@ -3,11 +3,14 @@
 #' @docType class
 #'
 #'
+#'
 #' @section Arguments:
 #' \describe{
 #'  \item{axis}{integer specifying which axis to normalize.}
 #'  \item{momentum}{momentum value used for computation of the exponential
 #'                  average of the mean and standard deviation.}
+#'  \item{input_shape}{Dimensionality of the input (integer) not
+#'  including the samples axis.}
 #' }
 #'
 #' @section Details:
@@ -19,14 +22,14 @@
 #'
 #' @author Tustison NJ
 #'
-#' @return
+#' @return A keras layer
 #' @examples
 #' library(keras)
 #' inputImageSize = c( 256L, 256L, 1L )
 #' inputs <- keras::layer_input( shape = inputImageSize )
 #' outputs <- inputs %>% layer_zero_padding_2d( padding = c( 3L, 3L ) )
 #' layer_scale = ANTsRNet:::layer_scale
-#' outputs %>%
+#' outputs = outputs %>%
 #'   layer_scale(axis = -1L)
 #' lay = ScaleLayer$new()
 #' \dontrun{
@@ -45,7 +48,8 @@ ScaleLayer <- R6::R6Class(
     axis = -1L,
 
     momentum = 0.9,
-
+    #' @param axis Integer, the axis that should be normalized (typically the features axis).
+    #' @param momentum Momentum for the moving mean and the moving variance.
     initialize = function( axis = -1L, momentum = 0.9 )
     {
       self$axis <- axis
@@ -81,7 +85,7 @@ ScaleLayer <- R6::R6Class(
         trainable = TRUE )
     },
 
-    call = function( inputs, mask = NULL )
+    call = function( input, mask = NULL )
     {
       K <- keras::backend()
 
@@ -95,7 +99,7 @@ ScaleLayer <- R6::R6Class(
       broadcastShape[[index]] <- self$inputShape[[index]]
       broadcastShape <- K$cast( broadcastShape, dtype = "int32" )
 
-      output <- K$reshape( self$gamma, broadcastShape ) * inputs +
+      output <- K$reshape( self$gamma, broadcastShape ) * input +
         K$reshape( self$beta, broadcastShape )
 
       return( output )
