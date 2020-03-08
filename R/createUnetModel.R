@@ -34,7 +34,7 @@
 #' @param dropoutRate float between 0 and 1 to use between dense layers.
 #' @param weightDecay weighting parameter for L2 regularization of the
 #' kernel weights of the convolution layers.  Default = 0.0.
-#' @param mode 'classification' or 'regression'.  Default = 'classification'.
+#' @param mode 'classification' or 'regression' or 'sigmoid'.  Default = 'classification'.
 #'
 #' @return a u-net keras model
 #' @author Tustison NJ
@@ -203,9 +203,9 @@ createUnetModel2D <- function( inputImageSize,
     }
 
   convActivation <- ''
-  if( mode == 'classification' )
+  if( mode == 'classification' | mode == 'sigmoid' )
     {
-    if( numberOfOutputs == 2 )
+    if( numberOfOutputs == 2 | mode == 'sigmoid'  )
       {
       convActivation <- 'sigmoid'
       } else {
@@ -262,7 +262,7 @@ createUnetModel2D <- function( inputImageSize,
 #' @param dropoutRate float between 0 and 1 to use between dense layers.
 #' @param weightDecay weighting parameter for L2 regularization of the
 #' kernel weights of the convolution layers.  Default = 0.0.
-#' @param mode 'classification' or 'regression'.  Default = 'classification'.
+#' @param mode 'classification' or 'regression' or 'sigmoid'.  Default = 'classification'.
 #'
 #' @return a u-net keras model
 #' @author Tustison NJ
@@ -379,12 +379,20 @@ createUnetModel3D <- function( inputImageSize,
     }
 
   convActivation <- ''
-  if( numberOfOutputs == 2 )
+  if( mode == 'classification' | mode == 'sigmoid' )
     {
-    convActivation <- 'sigmoid'
+    if( numberOfOutputs == 2 | mode == 'sigmoid'  )
+      {
+      convActivation <- 'sigmoid'
+      } else {
+      convActivation <- 'softmax'
+      }
+    } else if( mode == 'regression' ) {
+    convActivation <- 'linear'
     } else {
-    convActivation <- 'softmax'
+    stop( 'Error: unrecognized mode.' )
     }
+
   outputs <- outputs %>%
     layer_conv_3d( filters = numberOfOutputs,
       kernel_size = c( 1, 1, 1 ), activation = convActivation,
@@ -394,4 +402,3 @@ createUnetModel3D <- function( inputImageSize,
 
   return( unetModel )
 }
-
