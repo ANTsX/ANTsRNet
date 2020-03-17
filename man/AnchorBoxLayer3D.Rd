@@ -53,6 +53,11 @@ Defaults to 1.0.}
 \code{$compute_output_shape} computes the output shape.
 }
 
+\examples{
+x = AnchorBoxLayer3D$new(imageSize = c(20, 20, 20),
+scale = 2, nextScale = 2)
+x$build()
+}
 \author{
 Tustison NJ
 }

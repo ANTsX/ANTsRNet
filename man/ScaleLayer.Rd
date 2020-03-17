@@ -5,9 +5,11 @@
 \alias{ScaleLayer}
 \title{Custom scale layer}
 \value{
-.
+A keras layer
 }
 \description{
+Custom scale layer
+
 Custom scale layer
 }
 \section{Arguments}{
@@ -16,6 +18,8 @@ Custom scale layer
 \item{axis}{integer specifying which axis to normalize.}
 \item{momentum}{momentum value used for computation of the exponential
 average of the mean and standard deviation.}
+\item{input_shape}{Dimensionality of the input (integer) not
+including the samples axis.}
 }
 }
 
@@ -28,6 +32,92 @@ average of the mean and standard deviation.}
 \code{$compute_output_shape} computes the output shape.
 }
 
+\examples{
+library(keras)
+inputImageSize = c( 256L, 256L, 1L )
+inputs <- keras::layer_input( shape = inputImageSize )
+outputs <- inputs \%>\% layer_zero_padding_2d( padding = c( 3L, 3L ) )
+layer_scale = ANTsRNet:::layer_scale
+outputs = outputs \%>\%
+  layer_scale(axis = -1L)
+lay = ScaleLayer$new()
+\dontrun{
+lay$build(input_shape = inputImageSize)
+}
+}
 \author{
 Tustison NJ
+}
+\section{Super class}{
+\code{\link[keras:KerasLayer]{keras::KerasLayer}} -> \code{ScaleLayer}
+}
+\section{Methods}{
+\subsection{Public methods}{
+\itemize{
+\item \href{#method-new}{\code{ScaleLayer$new()}}
+\item \href{#method-build}{\code{ScaleLayer$build()}}
+\item \href{#method-call}{\code{ScaleLayer$call()}}
+\item \href{#method-clone}{\code{ScaleLayer$clone()}}
+}
+}
+\if{html}{
+\out{<details open ><summary>Inherited methods</summary>}
+\itemize{
+\item \out{<span class="pkg-link" data-pkg="keras" data-topic="KerasLayer" data-id=".set_wrapper">}\href{../../keras/html/KerasLayer.html#method-.set_wrapper}{\code{keras::KerasLayer$.set_wrapper()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="keras" data-topic="KerasLayer" data-id="add_loss">}\href{../../keras/html/KerasLayer.html#method-add_loss}{\code{keras::KerasLayer$add_loss()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="keras" data-topic="KerasLayer" data-id="add_weight">}\href{../../keras/html/KerasLayer.html#method-add_weight}{\code{keras::KerasLayer$add_weight()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="keras" data-topic="KerasLayer" data-id="compute_output_shape">}\href{../../keras/html/KerasLayer.html#method-compute_output_shape}{\code{keras::KerasLayer$compute_output_shape()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="keras" data-topic="KerasLayer" data-id="python_layer">}\href{../../keras/html/KerasLayer.html#method-python_layer}{\code{keras::KerasLayer$python_layer()}}\out{</span>}
+}
+\out{</details>}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-new"></a>}}
+\subsection{Method \code{new()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ScaleLayer$new(axis = -1L, momentum = 0.9)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{axis}}{Integer, the axis that should be normalized (typically the features axis).}
+
+\item{\code{momentum}}{Momentum for the moving mean and the moving variance.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-build"></a>}}
+\subsection{Method \code{build()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ScaleLayer$build(input_shape)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-call"></a>}}
+\subsection{Method \code{call()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ScaleLayer$call(input, mask = NULL)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-clone"></a>}}
+\subsection{Method \code{clone()}}{
+The objects of this class are cloneable with this method.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ScaleLayer$clone(deep = FALSE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{deep}}{Whether to make a deep clone.}
+}
+\if{html}{\out{</div>}}
+}
+}
 }

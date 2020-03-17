@@ -16,7 +16,8 @@
 #' sourceImage <- antsImageRead( getANTsRData( "r16" ) )
 #' referenceImage <- antsImageRead( getANTsRData( "r64" ) )
 #' matchedImage <- regressionMatchImage( sourceImage, referenceImage )
-#'
+#' bad_source = sourceImage[1:200, 1:200]
+#' testthat::expect_error(regressionMatchImage( bad_source, referenceImage ))
 #' @export
 regressionMatchImage <- function( sourceImage, referenceImage,
   polyOrder = 1, truncate = TRUE )

@@ -12,8 +12,25 @@
 #' @return a vector or 2-D array with the converted coordinates
 #' @author Tustison NJ
 #' @export
-convertCoordinates <- function( boxes, type = 'minmax2centroids' )
+#' @examples
+#' vec2d = c(1, 10, 1, 10)
+#' convertCoordinates(vec2d)
+#' convertCoordinates(vec2d, type = "centroids2minmax")
+#' convertCoordinates(rbind( vec2d, vec2d, vec2d))
+#' convertCoordinates(rbind( vec2d, vec2d, vec2d), "centroids2minmax")
+#'
+#' vec3d = c(1, 10, 1, 10, 1, 10)
+#' convertCoordinates(vec3d)
+#' convertCoordinates(vec3d, type = "centroids2minmax")
+#' convertCoordinates(rbind( vec3d, vec3d, vec3d))
+#' convertCoordinates(rbind( vec3d, vec3d, vec3d), type = "centroids2minmax")
+#'
+convertCoordinates <- function(
+  boxes,
+  type = c("minmax2centroids", "centroids2minmax" )
+)
 {
+  type = match.arg(type)
   convertedBoxes <- boxes
 
   if( is.array( boxes ) )
@@ -145,7 +162,14 @@ convertCoordinates <- function( boxes, type = 'minmax2centroids' )
 #'
 #' @return the Jaccard simliarity
 #' @author Tustison NJ
-
+#' @examples
+#' vec2d = c(1, 10, 1, 10)
+#' vec2d_2 = c(1, 8, 1, 5)
+#' jaccardSimilarity(vec2d, vec2d_2)
+#' vec3d = c(1, 10, 1, 10, 1, 10)
+#' vec3d_2 = c(1, 8, 1, 5, 1, 10)
+#' jaccardSimilarity(vec3d, vec3d_2)
+#' @export
 jaccardSimilarity <- function( boxes1, boxes2 )
 {
   np <- reticulate::import( "numpy" )
@@ -208,6 +232,18 @@ jaccardSimilarity <- function( boxes1, boxes2 )
 #' @author Tustison NJ
 #' @importFrom graphics rasterImage rect plot.new text
 #' @export
+#' @examples
+#' jpg = ANTsRCore::getANTsRData("r16")
+#' if (requireNamespace("jpeg", quietly = TRUE)) {
+#' image = jpeg::readJPEG(jpg)
+#' vec2d = c(1, 10, 1, 10)
+#' drawRectangles(image, vec2d)
+#' vec2d = rbind(
+#' c(1, 10, 1, 10),
+#' c(20, 40, 30, 40)
+#' )
+#' drawRectangles(image, vec2d)
+#' }
 drawRectangles <- function( image, boxes, boxColors = "red",
                             confidenceValues = NULL, captions = NULL )
 {
@@ -549,7 +585,7 @@ decodeSsd2D <- function( yPredicted, imageSize, confidenceThreshold = 0.5,
     }
     if( is.null( boxes ) )
     {
-      yDecoded[[i]] <- matrix(, nrow = 0, ncol = 6 )
+      yDecoded[[i]] <- matrix(nrow = 0, ncol = 6 )
     } else {
       yDecoded[[i]] <- boxes
     }
@@ -599,7 +635,11 @@ decodeSsd2D <- function( yPredicted, imageSize, confidenceThreshold = 0.5,
 #' @author Tustison NJ
 #'
 #' @return output tensor with the same shape as the input.
-#'
+#' @examples
+#' x = L2NormalizationLayer2D$new()
+#' \dontrun{
+#' x$build(input_shape = c(20, 20, 20, 3))
+#' }
 #' @name L2NormalizationLayer2D
 NULL
 
@@ -726,6 +766,10 @@ layer_l2_normalization_3d <- function( object, scale = 20, name = NULL,
 #' In the last dimension, the first 4 values correspond to the
 #' 2-D coordinates of the bounding boxes and the other 4 are the variances.
 #'
+#' @examples
+#' x = AnchorBoxLayer2D$new(imageSize = c(20, 20),
+#' scale = 2, nextScale = 2)
+#' x$build()
 #' @name AnchorBoxLayer2D
 NULL
 
@@ -1288,6 +1332,11 @@ decodeSsd3D <- function( yPredicted, imageSize, confidenceThreshold = 0.5,
 #'
 #' @return output tensor with the same shape as the input.
 #'
+#' @examples
+#' x = L2NormalizationLayer3D$new()
+#' \dontrun{
+#' x$build(input_shape = c(20, 20, 20, 20, 4))
+#' }
 #' @name L2NormalizationLayer3D
 NULL
 
@@ -1388,6 +1437,10 @@ public = list(
 #' In the last dimension, the first 6 values correspond to the
 #' 3-D coordinates of the bounding boxes and the other 6 are the variances.
 #'
+#' @examples
+#' x = AnchorBoxLayer3D$new(imageSize = c(20, 20, 20),
+#' scale = 2, nextScale = 2)
+#' x$build()
 #' @name AnchorBoxLayer3D
 NULL
 

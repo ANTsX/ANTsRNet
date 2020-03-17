@@ -23,6 +23,8 @@
 #' @examples
 #' resampledSize = c(30L, 30L)
 #' model = SpatialTransformerLayer2D$new(resampledSize)
+#' model$initialize(resampledSize)
+#' testthat::expect_error(model$initialize(5))
 #' model$compute_output_shape(input_shape = c(25, 25))
 #' @name SpatialTransformerLayer2D
 NULL

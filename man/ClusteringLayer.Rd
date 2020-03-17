@@ -29,6 +29,12 @@ Clustering layer for Deep Embedded Clustering
 \code{$compute_output_shape} computes the output shape.
 }
 
+\examples{
+model = ClusteringLayer$new(numberOfClusters = 2)
+\dontrun{
+model$build(c(20, 20))
+}
+}
 \author{
 Tustison NJ
 }

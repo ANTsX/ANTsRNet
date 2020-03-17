@@ -4,7 +4,7 @@
 \alias{convertCoordinates}
 \title{Convert coordinates to/from min/max representation from/to centroids/width}
 \usage{
-convertCoordinates(boxes, type = "minmax2centroids")
+convertCoordinates(boxes, type = c("minmax2centroids", "centroids2minmax"))
 }
 \arguments{
 \item{boxes}{A vector or 2-D array where each row corresponds to a single box
@@ -20,6 +20,20 @@ a vector or 2-D array with the converted coordinates
 \description{
 Function for converting box coordinates to/from min/max representation
 from/to centroids/width
+}
+\examples{
+vec2d = c(1, 10, 1, 10)
+convertCoordinates(vec2d)
+convertCoordinates(vec2d, type = "centroids2minmax")
+convertCoordinates(rbind( vec2d, vec2d, vec2d))
+convertCoordinates(rbind( vec2d, vec2d, vec2d), "centroids2minmax")
+
+vec3d = c(1, 10, 1, 10, 1, 10)
+convertCoordinates(vec3d)
+convertCoordinates(vec3d, type = "centroids2minmax")
+convertCoordinates(rbind( vec3d, vec3d, vec3d))
+convertCoordinates(rbind( vec3d, vec3d, vec3d), type = "centroids2minmax")
+
 }
 \author{
 Tustison NJ

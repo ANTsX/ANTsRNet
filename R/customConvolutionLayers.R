@@ -6,7 +6,7 @@
 #'
 #' with the implementation ported from the following python implementation
 #'
-#'   \url{https://github.com/titu1994/keras-attention-augmented-convs/blob/master/}
+#'   \url{https://github.com/titu1994/keras-attention-augmented-convs}
 #'
 #' @param inputLayer input keras layer.
 #' @param numberOfOutputFilters number of output filters.
