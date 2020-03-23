@@ -33,7 +33,7 @@ AttentionLayer <- R6::R6Class( "AttentionLayer",
     {
       self$numberOfChannels <- as.integer( numberOfChannels )
 
-      self$numberOfFiltersFG <- as.integer( floor( self$channels / 8 ) )
+      self$numberOfFiltersFG <- as.integer( floor( self$numberOfChannels / 8 ) )
       self$numberOfFiltersH <- as.integer( self$numberOfChannels )
     },
 
@@ -43,7 +43,7 @@ AttentionLayer <- R6::R6Class( "AttentionLayer",
       kernelShapeH <- c( 1L, 1L, self$channels, self$numberOfFiltersH )
 
       self$gamma <- self$add_weight( shape = c( 1 ),
-                                     initializer = 'zeros',
+                                     initializer = initializer_zeros(),
                                      name = "gamma",
                                      trainable = TRUE )
       self$kernelF <- self$add_weight( shape = kernelShapeFG,
