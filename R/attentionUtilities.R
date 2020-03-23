@@ -39,7 +39,7 @@ AttentionLayer2D <- R6::R6Class( "AttentionLayer2D",
 
     build = function( inputShape )
     {
-      kernelShapeFg <- c( 1L, 1L, self$channels, self$numberOfFiltersFG )
+      kernelShapeFG <- c( 1L, 1L, self$channels, self$numberOfFiltersFG )
       kernelShapeH <- c( 1L, 1L, self$channels, self$numberOfFiltersH )
 
       self$gamma <- self$add_weight( shape = c( 1 ),
@@ -177,7 +177,7 @@ AttentionLayer3D <- R6::R6Class( "AttentionLayer3D",
 
     build = function( inputShape )
     {
-      kernelShapeFg <- c( 1L, 1L, self$channels, self$numberOfFiltersFG )
+      kernelShapeFG <- c( 1L, 1L, self$channels, self$numberOfFiltersFG )
       kernelShapeH <- c( 1L, 1L, self$channels, self$numberOfFiltersH )
 
       self$gamma <- self$add_weight( shape = c( 1 ),
