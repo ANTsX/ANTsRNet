@@ -12,7 +12,7 @@ createResUnetModel3D(
   convolutionKernelSize = c(3, 3, 3),
   deconvolutionKernelSize = c(2, 2, 2),
   dropoutRate = 0,
-  weightDecay = 1e-04,
+  weightDecay = 0.0001,
   mode = "classification"
 )
 }

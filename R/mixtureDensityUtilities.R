@@ -66,9 +66,9 @@ MixtureDensityNetworkLayer <- R6::R6Class( "MixtureDensityNetworkLayer",
       self$numberOfMixtures <- as.integer( numberOfMixtures )
       },
 
-    build = function( input_shape )
+    build = function( inputShape )
       {
-      inputDimension <- input_shape[-1]
+      inputDimension <- inputShape[-1]
 
       units1 <- self$outputDimension * self$numberOfMixtures
 
@@ -137,9 +137,9 @@ MixtureDensityNetworkLayer <- R6::R6Class( "MixtureDensityNetworkLayer",
       return( output )
       },
 
-    compute_output_shape = function( input_shape )
+    compute_output_shape = function( inputShape )
       {
-      return( list( unlist( input_shape[[1]] ),
+      return( list( unlist( inputShape[[1]] ),
         as.integer( 2L * self$outputDimension * self$numberOfMixtures +
           self$numberOfMixtures ) ) )
       }
@@ -162,10 +162,10 @@ MixtureDensityNetworkLayer <- R6::R6Class( "MixtureDensityNetworkLayer",
 #' @examples
 #' \dontrun{
 #' model <- keras_model_sequential()
-#' input_shape = c(20, 20, 1)
+#' inputShape = c(20, 20, 1)
 #' model = model %>%
 #'   layer_conv_2d(filters = 32, kernel_size = c(3,3), activation = 'relu',
-#'                 input_shape = input_shape)
+#'                 input_shape = inputShape)
 #' model %>%
 #'   layer_mixture_density(outputDimension = c(18, 18),
 #'   numberOfMixtures = 3)
