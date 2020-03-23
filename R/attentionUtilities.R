@@ -25,6 +25,8 @@ AttentionLayer2D <- R6::R6Class( "AttentionLayer2D",
 
   inherit = KerasLayer,
 
+  lock_objects = FALSE,
+
   public = list(
 
     numberOfChannels = NA,
@@ -39,8 +41,8 @@ AttentionLayer2D <- R6::R6Class( "AttentionLayer2D",
 
     build = function( inputShape )
     {
-      kernelShapeFG <- c( 1L, 1L, self$channels, self$numberOfFiltersFG )
-      kernelShapeH <- c( 1L, 1L, self$channels, self$numberOfFiltersH )
+      kernelShapeFG <- c( 1L, 1L, self$numberOfChannels, self$numberOfFiltersFG )
+      kernelShapeH <- c( 1L, 1L, self$numberOfChannels, self$numberOfFiltersH )
 
       self$gamma <- self$add_weight( shape = c( 1 ),
                                      initializer = initializer_zeros(),
@@ -126,8 +128,14 @@ AttentionLayer2D <- R6::R6Class( "AttentionLayer2D",
 #' @return a keras layer tensor
 #' @export
 #' @examples
-#' \dontrun{
-#'  }
+#'
+#' library( keras )
+#' library( ANTsRNet )
+#'
+#' inputShape <- c( 100, 100, 3 )
+#' input <- layer_input( shape = inputShape )
+#' outputs <- input %>% layer_attention_2d( numberOfChannels=3 )
+#'
 layer_attention_2d <- function( object, numberOfChannels,
   trainable = TRUE ) {
 create_layer( AttentionLayer2D, object,
@@ -163,6 +171,8 @@ AttentionLayer3D <- R6::R6Class( "AttentionLayer3D",
 
   inherit = KerasLayer,
 
+  lock_objects = FALSE,
+
   public = list(
 
     numberOfChannels = NA,
@@ -177,8 +187,8 @@ AttentionLayer3D <- R6::R6Class( "AttentionLayer3D",
 
     build = function( inputShape )
     {
-      kernelShapeFG <- c( 1L, 1L, self$channels, self$numberOfFiltersFG )
-      kernelShapeH <- c( 1L, 1L, self$channels, self$numberOfFiltersH )
+      kernelShapeFG <- c( 1L, 1L, 1L, self$numberOfChannels, self$numberOfFiltersFG )
+      kernelShapeH <- c( 1L, 1L, 1L, self$numberOfChannels, self$numberOfFiltersH )
 
       self$gamma <- self$add_weight( shape = c( 1 ),
                                      initializer = initializer_zeros(),
@@ -225,9 +235,9 @@ AttentionLayer3D <- R6::R6Class( "AttentionLayer3D",
       h <- K$conv3d( input, kernel = self$kernelH, strides = c( 1, 1, 1 ), padding = 'same' )
       h <- K$bias_add( h, self$biasH )
 
-      fFlat <- flatten3D( f )
-      gFlat <- flatten3D( g )
-      hFlat <- flatten3D( h )
+      fFlat <- flatten( f )
+      gFlat <- flatten( g )
+      hFlat <- flatten( h )
 
       s <- tensorflow::tf$matmul( gFlat, fFlat, transpose_b = TRUE )
       beta <- K$softmax( s, axis = -1L )
@@ -264,8 +274,14 @@ AttentionLayer3D <- R6::R6Class( "AttentionLayer3D",
 #' @return a keras layer tensor
 #' @export
 #' @examples
-#' \dontrun{
-#'  }
+#'
+#' library( keras )
+#' library( ANTsRNet )
+#'
+#' inputShape <- c( 100, 100, 100, 3 )
+#' input <- layer_input( shape = inputShape )
+#' outputs <- input %>% layer_attention_3d( numberOfChannels=3 )
+#'
 layer_attention_3d <- function( object, numberOfChannels,
   trainable = TRUE ) {
 create_layer( AttentionLayer3D, object,
