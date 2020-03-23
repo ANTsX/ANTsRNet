@@ -1,3 +1,183 @@
+#' Attention layer (2-D or 3-D )
+#'
+#' @docType class
+#'
+#' @section Arguments:
+#' \describe{
+#'  \item{numberOfChannels}{number of channels.}
+#' }
+#'
+#' @section Details:
+#'   \code{$initialize} instantiates a new class.
+#'
+#'   \code{$call} main body.
+#'
+#'   \code{$compute_output_shape} computes the output shape.
+#'
+#' @author Tustison NJ
+#'
+#' @return output of tensor shape.
+#' @name AttentionLayer
+NULL
+
+#' @export
+AttentionLayer <- R6::R6Class( "AttentionLayer",
+
+  inherit = KerasLayer,
+
+  public = list(
+
+    numberOfChannels = NA,
+
+    initialize = function( numberOfChannels )
+    {
+      self$numberOfChannels <- as.integer( numberOfChannels )
+
+      self$numberOfFiltersFG <- as.integer( floor( self$channels / 8 ) )
+      self$numberOfFiltersH <- as.integer( self$numberOfChannels )
+    },
+
+    build = function( inputShape )
+    {
+      kernelShapeFg <- c( 1L, 1L, self$channels, self$numberOfFiltersFG )
+      kernelShapeH <- c( 1L, 1L, self$channels, self$numberOfFiltersH )
+
+      self$gamma <- self$add_weight( shape = c( 1 ),
+                                     initializer = 'zeros',
+                                     name = "gamma",
+                                     trainable = TRUE )
+      self$kernelF <- self$add_weight( shape = kernelShapeFG,
+                                       initializer = initializer_glorot_uniform(),
+                                       name = 'kernelF' )
+      self$kernelG <- self$add_weight( shape = kernelShapeFG,
+                                       initializer = initializer_glorot_uniform(),
+                                       name = 'kernelG' )
+      self$kernelH <- self$add_weight( shape = kernelShapeH,
+                                       initializer = initializer_glorot_uniform(),
+                                       name = 'kernelH' )
+      self$biasF <- self$add_weight( shape = c( self$numberOfFiltersFG ),
+                                     initializer = initializer_zeros(),
+                                     name = "biasF" )
+      self$biasG <- self$add_weight( shape = c( self$numberOfFiltersFG ),
+                                     initializer = initializer_zeros(),
+                                     name = "biasG" )
+      self$biasH <- self$add_weight( shape = c( self$numberOfFiltersH ),
+                                     initializer = initializer_zeros(),
+                                     name = "biasH" )
+    },
+
+    call = function( input, mask = NULL )
+    {
+      flatten2D = function( x )
+        {
+        K <- keras::backend()
+        inputShape <- K$shape( x )
+        outputShape <- c( inputShape[1], inputShape[2] * inputShape[3], inputShape[4] )
+        xFlat <- K$reshape( x, shape = outputShape )
+        return( xFlat )
+        }
+      flatten3D = function( x )
+        {
+        K <- keras::backend()
+        inputShape <- K$shape( x )
+        outputShape <- c( inputShape[1], inputShape[2] * inputShape[3] * inputShape[4], inputShape[5] )
+        xFlat <- K$reshape( x, shape = outputShape )
+        return( xFlat )
+        }
+
+      K <- keras::backend()
+      self$inputShape <- K$shape( input )
+
+      self$dimensionality <- NA
+      if( length( input ) == 4 )
+        {
+        self$dimensionality <- 2
+        } else if( length( input ) == 5 ) {
+        self$dimensionality <- 3
+        } else {
+        stop( "Error:  wrong dimensionality of input tensor." )
+        }
+
+      if( self$dimensionality == 2 )
+        {
+        f <- K$conv2d( input, kernel = self$kernelF, strides = c( 1, 1 ), padding = 'same' )
+        f <- K$bias_add( f, self$biasF )
+        g <- K$conv2d( input, kernel = self$kernelG, strides = c( 1, 1 ), padding = 'same' )
+        g <- K$bias_add( g, self$biasG )
+        h <- K$conv2d( input, kernel = self$kernelH, strides = c( 1, 1 ), padding = 'same' )
+        h <- K$bias_add( h, self$biasH )
+
+        fFlat <- flatten2D( f )
+        gFlat <- flatten2D( g )
+        hFlat <- flatten2D( h )
+
+        s <- tensorflow::tf$matmul( gFlat, fFlat, transpose_b = TRUE )
+        beta <- K$softmax( s, axis = -1L )
+
+        o <- K$batch_dot( beta, hFlat )
+        o <- K$reshape( o, shape = K$shape( input ) )
+
+        x <- self$gamma * o + input
+        return( x )
+        } else {
+        f <- K$conv3d( input, kernel = self$kernelF, strides = c( 1, 1, 1 ), padding = 'same' )
+        f <- K$bias_add( f, self$biasF )
+        g <- K$conv3d( input, kernel = self$kernelG, strides = c( 1, 1, 1 ), padding = 'same' )
+        g <- K$bias_add( g, self$biasG )
+        h <- K$conv3d( input, kernel = self$kernelH, strides = c( 1, 1, 1 ), padding = 'same' )
+        h <- K$bias_add( h, self$biasH )
+
+        fFlat <- flatten3D( f )
+        gFlat <- flatten3D( g )
+        hFlat <- flatten3D( h )
+
+        s <- tensorflow::tf$matmul( gFlat, fFlat, transpose_b = TRUE )
+        beta <- K$softmax( s, axis = -1L )
+
+        o <- K$batch_dot( beta, hFlat )
+        o <- K$reshape( o, shape = K$shape( input ) )
+
+        x <- self$gamma * o + input
+        return( x )
+       }
+    },
+
+    compute_output_shape = function( inputShape )
+    {
+      return( inputShape )
+    }
+  )
+)
+
+#' Attention layer
+#'
+#' Wraps the AttentionLayer taken from the following python implementation
+#'
+#' \url{https://stackoverflow.com/questions/50819931/self-attention-gan-in-keras}
+#'
+#' based on the following paper:
+#'
+#' \url{https://arxiv.org/abs/1805.08318}
+#'
+#' @param object Object to compose layer with. This is either a
+#' [keras::keras_model_sequential] to add the layer to
+#' or another Layer which this layer will call.
+#' @param numberOfChannels numberOfChannels
+#' @param trainable Whether the layer weights will be updated during training.
+#' @return a keras layer tensor
+#' @export
+#' @examples
+#' \dontrun{
+#'  }
+layer_attention <- function( object, numberOfChannels,
+  trainable = TRUE ) {
+create_layer( AttentionLayer, object,
+    list( numberOfChannels = numberOfChannels,
+      trainable = trainable )
+    )
+}
+
+
 #' Attention augmentation layer (2-D)
 #'
 #' @docType class
@@ -301,7 +481,7 @@ AttentionAugmentationLayer2D <- R6::R6Class(
 layer_attention_augmentation_2d <- function( object,
   depthOfQueries, depthOfValues, numberOfHeads, isRelative,
   trainable = TRUE ) {
-create_layer( MixtureDensityNetworkLayer, object,
+create_layer( AttentionAugmentationLayer2D, object,
     list( depthOfQueries = depthOfQueries, depthOfValues = depthOfValues,
       numberOfHeads = numberOfHeads, isRelative = isRelative,
       trainable = trainable )
