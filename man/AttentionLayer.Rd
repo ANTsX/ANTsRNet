@@ -3,14 +3,23 @@
 \docType{class}
 \name{AttentionLayer}
 \alias{AttentionLayer}
-\title{Attention layer (2-D or 3-D )}
+\title{Attention layer (2-D)}
 \value{
+output of tensor shape.
+
 output of tensor shape.
 }
 \description{
-Attention layer (2-D or 3-D )
+Attention layer (2-D)
+
+Attention layer (3-D)
 }
 \section{Arguments}{
+
+\describe{
+\item{numberOfChannels}{number of channels.}
+}
+
 
 \describe{
 \item{numberOfChannels}{number of channels.}
@@ -24,8 +33,17 @@ Attention layer (2-D or 3-D )
 \code{$call} main body.
 
 \code{$compute_output_shape} computes the output shape.
+
+
+\code{$initialize} instantiates a new class.
+
+\code{$call} main body.
+
+\code{$compute_output_shape} computes the output shape.
 }
 
 \author{
+Tustison NJ
+
 Tustison NJ
 }
