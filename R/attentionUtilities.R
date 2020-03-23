@@ -130,7 +130,7 @@ AttentionLayer2D <- R6::R6Class( "AttentionLayer2D",
 #'  }
 layer_attention_2d <- function( object, numberOfChannels,
   trainable = TRUE ) {
-create_layer( AttentionLayer, object,
+create_layer( AttentionLayer2D, object,
     list( numberOfChannels = numberOfChannels,
       trainable = trainable )
     )
@@ -268,7 +268,7 @@ AttentionLayer3D <- R6::R6Class( "AttentionLayer3D",
 #'  }
 layer_attention_3d <- function( object, numberOfChannels,
   trainable = TRUE ) {
-create_layer( AttentionLayer, object,
+create_layer( AttentionLayer3D, object,
     list( numberOfChannels = numberOfChannels,
       trainable = trainable )
     )
