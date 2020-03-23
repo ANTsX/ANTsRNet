@@ -2,8 +2,6 @@
 #'
 #' @docType class
 #'
-#'
-#'
 #' @section Arguments:
 #' \describe{
 #'  \item{axis}{integer specifying which axis to normalize.}
@@ -35,6 +33,9 @@
 #' \dontrun{
 #' lay$build(input_shape = inputImageSize)
 #' }
+#' @name ScaleLayer
+NULL
+
 #' @export
 ScaleLayer <- R6::R6Class(
   "ScaleLayer",
@@ -48,8 +49,7 @@ ScaleLayer <- R6::R6Class(
     axis = -1L,
 
     momentum = 0.9,
-    #' @param axis Integer, the axis that should be normalized (typically the features axis).
-    #' @param momentum Momentum for the moving mean and the moving variance.
+
     initialize = function( axis = -1L, momentum = 0.9 )
     {
       self$axis <- axis
@@ -58,18 +58,13 @@ ScaleLayer <- R6::R6Class(
 
     build = function( input_shape )
     {
-      # K <- keras::backend()
-
-      # print("Input shape is ")
-      # print(input_shape)
-      # input_shape = as.integer(input_shape)
       self$inputShape <- input_shape
 
       index <- self$axis
       if( self$axis == -1 )
-      {
+        {
         index <- length( self$inputShape )
-      }
+        }
       output_shape <- reticulate::tuple( input_shape[[index]] )
       self$gamma <- self$add_weight(
         name = "gamma",
