@@ -129,6 +129,7 @@ AttentionLayer2D <- R6::R6Class( "AttentionLayer2D",
 #' @export
 #' @examples
 #'
+#' \dontrun{
 #' library( keras )
 #' library( ANTsRNet )
 #'
@@ -136,7 +137,7 @@ AttentionLayer2D <- R6::R6Class( "AttentionLayer2D",
 #' inputShape <- c( 100, 100, numberOfChannels )
 #' input <- layer_input( shape = inputShape )
 #' outputs <- input %>% layer_attention_2d( numberOfChannels )
-#'
+#'}
 layer_attention_2d <- function( object, numberOfChannels,
   trainable = TRUE ) {
 create_layer( AttentionLayer2D, object,
@@ -275,15 +276,15 @@ AttentionLayer3D <- R6::R6Class( "AttentionLayer3D",
 #' @return a keras layer tensor
 #' @export
 #' @examples
-#'
+#' \dontrun{
 #' library( keras )
 #' library( ANTsRNet )
 #'
 #' numberOfChannels <- 3
-#' inputShape <- c( 100, 100, numberOfChannels )
+#' inputShape <- c( 100, 100, 100, numberOfChannels )
 #' input <- layer_input( shape = inputShape )
-#' outputs <- input %>% layer_attention_2d( numberOfChannels )
-#'
+#' outputs <- input %>% layer_attention_3d( numberOfChannels )
+#' }
 layer_attention_3d <- function( object, numberOfChannels,
   trainable = TRUE ) {
 create_layer( AttentionLayer3D, object,
