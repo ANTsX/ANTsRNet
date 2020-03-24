@@ -33,9 +33,13 @@ based on the following paper:
 library( keras )
 library( ANTsRNet )
 
-numberOfChannels <- 3
-inputShape <- c( 100, 100, 100, numberOfChannels )
+inputShape <- c( 100, 100, 100, 3 )
 input <- layer_input( shape = inputShape )
-outputs <- input \%>\% layer_attention_3d( numberOfChannels )
+
+numberOfFilters <- 64
+outputs <- input \%>\% layer_conv_3d( filters = numberOfFilters, kernel_size = 2 )
+outputs <- outputs \%>\% layer_attention_3d( numberOfFilters )
+
+model <- keras_model( inputs = input, outputs = outputs )
 }
 }
