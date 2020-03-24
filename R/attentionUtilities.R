@@ -616,10 +616,10 @@ create_layer( AttentionAugmentationLayer2D, object,
 #' @param numberOfOutputFilters number of output filters.
 #' @param kernelSize convolution kernel size.
 #' @param strides convolution strides.
-#' @param depth Defines the number of filters for the queries or \code{k}.
+#' @param depthOfQueries Defines the number of filters for the queries or \code{k}.
 #'   Either absolute or, if \code{< 1.0}, number of \code{k} filters =
 #'   \code{depthOfQueries * numberOfOutputFilters}.
-#' @param vDepth Defines the number of filters for the values or \code{v}.
+#' @param depthOfValues Defines the number of filters for the values or \code{v}.
 #'   Either absolute or, if \code{< 1.0}, number of \code{v} filters =
 #'   \code{depthOfValues * numberOfOutputFilters}.
 #' @param numberOfAttentionHeads number of attention heads.  Note that
@@ -661,8 +661,8 @@ layer_attention_augmented_convolution_block_2d <- function( inputLayer,
 
   localNumberOfFilters <- numberOfOutputFilters - depthOfQueries
   convolutionLayer <- inputLayer %>% layer_conv_2d( localNumberOfFilters,
-    kernel_size, strides = strides, padding = 'same', use_bias = TRUE,
-    kernel_initializer = 'he_normal' )
+    kernel_size = kernelSize, strides = strides, padding = 'same',
+    use_bias = TRUE, kernel_initializer = 'he_normal' )
 
   # Augmented attention block
 

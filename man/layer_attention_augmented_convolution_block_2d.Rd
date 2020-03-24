@@ -24,19 +24,19 @@ layer_attention_augmented_convolution_block_2d(
 
 \item{strides}{convolution strides.}
 
+\item{depthOfQueries}{Defines the number of filters for the queries or \code{k}.
+Either absolute or, if \code{< 1.0}, number of \code{k} filters =
+\code{depthOfQueries * numberOfOutputFilters}.}
+
+\item{depthOfValues}{Defines the number of filters for the values or \code{v}.
+Either absolute or, if \code{< 1.0}, number of \code{v} filters =
+\code{depthOfValues * numberOfOutputFilters}.}
+
 \item{numberOfAttentionHeads}{number of attention heads.  Note that
 \code{as.integer(kDepth/numberOfAttentionHeads)>0} (default = 8).}
 
 \item{useRelativeEncodings}{boolean for whether to use relative encodings
 (default = TRUE).}
-
-\item{depth}{Defines the number of filters for the queries or \code{k}.
-Either absolute or, if \code{< 1.0}, number of \code{k} filters =
-\code{depthOfQueries * numberOfOutputFilters}.}
-
-\item{vDepth}{Defines the number of filters for the values or \code{v}.
-Either absolute or, if \code{< 1.0}, number of \code{v} filters =
-\code{depthOfValues * numberOfOutputFilters}.}
 }
 \value{
 a keras tensor

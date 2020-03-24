@@ -29,6 +29,13 @@ based on the following paper:
 \url{https://arxiv.org/abs/1805.08318}
 }
 \examples{
-\dontrun{
- }
+
+library( keras )
+library( ANTsRNet )
+
+numberOfChannels <- 3
+inputShape <- c( 100, 100, numberOfChannels )
+input <- layer_input( shape = inputShape )
+outputs <- input \%>\% layer_attention_2d( numberOfChannels )
+
 }
