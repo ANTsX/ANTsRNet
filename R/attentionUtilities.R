@@ -37,10 +37,14 @@ AttentionLayer2D <- R6::R6Class( "AttentionLayer2D",
     {
       self$numberOfChannels <- as.integer( numberOfChannels )
 
+      self$doGoogleBrainVersion <- doGoogleBrainVersion
+
       self$numberOfFiltersFG <- as.integer( floor( self$numberOfChannels / 8 ) )
       self$numberOfFiltersH <- as.integer( self$numberOfChannels )
-
-      self$doGoogleBrainVersion <- doGoogleBrainVersion
+      if( self$doGoogleBrainVersion )
+        {
+        self$numberOfFiltersH <- as.integer( floor( self$numberOfChannels / 2 ) )
+        }
     },
 
     build = function( inputShape )
@@ -231,10 +235,14 @@ AttentionLayer3D <- R6::R6Class( "AttentionLayer3D",
     {
       self$numberOfChannels <- as.integer( numberOfChannels )
 
+      self$doGoogleBrainVersion <- doGoogleBrainVersion
+
       self$numberOfFiltersFG <- as.integer( floor( self$numberOfChannels / 8 ) )
       self$numberOfFiltersH <- as.integer( self$numberOfChannels )
-
-      self$doGoogleBrainVersion <- doGoogleBrainVersion
+      if( self$doGoogleBrainVersion )
+        {
+        self$numberOfFiltersH <- as.integer( floor( self$numberOfChannels / 2 ) )
+        }
     },
 
     build = function( inputShape )
