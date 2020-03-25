@@ -4,7 +4,12 @@
 \alias{layer_attention_3d}
 \title{Attention layer (3-D)}
 \usage{
-layer_attention_3d(object, numberOfChannels, trainable = TRUE)
+layer_attention_3d(
+  object,
+  numberOfChannels,
+  doGoogleBrainVersion = FALSE,
+  trainable = TRUE
+)
 }
 \arguments{
 \item{object}{Object to compose layer with. This is either a
@@ -12,6 +17,8 @@ layer_attention_3d(object, numberOfChannels, trainable = TRUE)
 or another Layer which this layer will call.}
 
 \item{numberOfChannels}{numberOfChannels}
+
+\item{doGoogleBrainVersion}{boolean.  Variant described at second url.}
 
 \item{trainable}{Whether the layer weights will be updated during training.}
 }
@@ -23,6 +30,7 @@ Wraps the AttentionLayer3D taken from the following python implementation
 }
 \details{
 \url{https://stackoverflow.com/questions/50819931/self-attention-gan-in-keras}
+\url{https://github.com/taki0112/Self-Attention-GAN-Tensorflow}
 
 based on the following paper:
 

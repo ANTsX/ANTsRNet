@@ -17,7 +17,7 @@
 #' @author Tustison NJ
 #'
 #' @return output of tensor shape.
-#' @name AttentionLayer
+#' @name AttentionLayer2D
 NULL
 
 #' @export
@@ -31,12 +31,16 @@ AttentionLayer2D <- R6::R6Class( "AttentionLayer2D",
 
     numberOfChannels = NA,
 
-    initialize = function( numberOfChannels )
+    doGoogleBrainVersion = TRUE,
+
+    initialize = function( numberOfChannels, doGoogleBrainVersion = TRUE )
     {
       self$numberOfChannels <- as.integer( numberOfChannels )
 
       self$numberOfFiltersFG <- as.integer( floor( self$numberOfChannels / 8 ) )
       self$numberOfFiltersH <- as.integer( self$numberOfChannels )
+
+      self$doGoogleBrainVersion <- doGoogleBrainVersion
     },
 
     build = function( inputShape )
@@ -44,10 +48,6 @@ AttentionLayer2D <- R6::R6Class( "AttentionLayer2D",
       kernelShapeFG <- c( 1L, 1L, self$numberOfChannels, self$numberOfFiltersFG )
       kernelShapeH <- c( 1L, 1L, self$numberOfChannels, self$numberOfFiltersH )
 
-      self$gamma <- self$add_weight( shape = c( 1 ),
-                                     initializer = initializer_zeros(),
-                                     name = "gamma",
-                                     trainable = TRUE )
       self$kernelF <- self$add_weight( shape = kernelShapeFG,
                                        initializer = initializer_glorot_uniform(),
                                        name = 'kernelF' )
@@ -66,6 +66,21 @@ AttentionLayer2D <- R6::R6Class( "AttentionLayer2D",
       self$biasH <- self$add_weight( shape = c( self$numberOfFiltersH ),
                                      initializer = initializer_zeros(),
                                      name = "biasH" )
+      self$gamma <- self$add_weight( shape = c( 1 ),
+                                     initializer = initializer_zeros(),
+                                     name = "gamma",
+                                     trainable = TRUE )
+
+      if( self$doGoogleBrainVersion )
+        {
+        kernelShapeO <- c( 1L, 1L, as.integer( floor( self$numberOfChannels / 2 ) ), self$numberOfChannels )
+        self$kernelO <- self$add_weight( shape = kernelShapeO,
+                                         initializer = initializer_glorot_uniform(),
+                                         name = 'kernelO' )
+        self$biasO <- self$add_weight( shape = c( self$numberOfChannels ),
+                                       initializer = initializer_zeros(),
+                                       name = "biasO" )
+        }
     },
 
     call = function( input, mask = NULL )
@@ -84,10 +99,22 @@ AttentionLayer2D <- R6::R6Class( "AttentionLayer2D",
 
       f <- K$conv2d( input, kernel = self$kernelF, strides = c( 1, 1 ), padding = 'same' )
       f <- K$bias_add( f, self$biasF )
+      if( self$doGoogleBrainVersion )
+        {
+        f <- K$relu( f )
+        f <- K$pool2d( f )
+        }
+
       g <- K$conv2d( input, kernel = self$kernelG, strides = c( 1, 1 ), padding = 'same' )
       g <- K$bias_add( g, self$biasG )
+
       h <- K$conv2d( input, kernel = self$kernelH, strides = c( 1, 1 ), padding = 'same' )
       h <- K$bias_add( h, self$biasH )
+      if( self$doGoogleBrainVersion )
+        {
+        h <- K$relu( h )
+        h <- K$pool2d( h )
+        }
 
       fFlat <- flatten( f )
       gFlat <- flatten( g )
@@ -95,9 +122,21 @@ AttentionLayer2D <- R6::R6Class( "AttentionLayer2D",
 
       s <- tensorflow::tf$matmul( gFlat, fFlat, transpose_b = TRUE )
       beta <- K$softmax( s, axis = -1L )
+      o <- tensorflow::tf$matmul( beta, hFlat )
 
-      o <- K$batch_dot( beta, hFlat )
-      o <- K$reshape( o, shape = K$shape( input ) )
+      if( self$doGoogleBrainVersion )
+        {
+        outputShape <- K$get_shape( input )
+        outputChannelSize <- as.integer( floor( self$numberOfChannels / 2L ) )
+        outputShape <- c( outputShape[0], outputShape[1], outputShape[2], outputChannelSize )
+
+        o <- K$reshape( o, shape = outputShape )
+        o <- K$conv2D( o, self$kernelO, strides = c( 1, 1 ), padding = 'same' )
+        o <- K$bias_add( o, self$biasO )
+        o <- K$relu( o )
+        } else {
+        o <- K$reshape( o, shape = K$shape( input ) )
+        }
 
       x <- self$gamma * o + input
       return( x )
@@ -115,6 +154,7 @@ AttentionLayer2D <- R6::R6Class( "AttentionLayer2D",
 #' Wraps the AttentionLayer2D taken from the following python implementation
 #'
 #' \url{https://stackoverflow.com/questions/50819931/self-attention-gan-in-keras}
+#' \url{https://github.com/taki0112/Self-Attention-GAN-Tensorflow}
 #'
 #' based on the following paper:
 #'
@@ -124,6 +164,7 @@ AttentionLayer2D <- R6::R6Class( "AttentionLayer2D",
 #' [keras::keras_model_sequential] to add the layer to
 #' or another Layer which this layer will call.
 #' @param numberOfChannels numberOfChannels
+#' @param doGoogleBrainVersion boolean.  Variant described at second url.
 #' @param trainable Whether the layer weights will be updated during training.
 #' @return a keras layer tensor
 #' @export
@@ -143,9 +184,10 @@ AttentionLayer2D <- R6::R6Class( "AttentionLayer2D",
 #' model <- keras_model( inputs = input, outputs = outputs )
 #'}
 layer_attention_2d <- function( object, numberOfChannels,
-  trainable = TRUE ) {
+  doGoogleBrainVersion = FALSE, trainable = TRUE ) {
 create_layer( AttentionLayer2D, object,
     list( numberOfChannels = numberOfChannels,
+      doGoogleBrainVersion = doGoogleBrainVersion,
       trainable = trainable )
     )
 }
@@ -169,7 +211,7 @@ create_layer( AttentionLayer2D, object,
 #' @author Tustison NJ
 #'
 #' @return output of tensor shape.
-#' @name AttentionLayer
+#' @name AttentionLayer3D
 NULL
 
 #' @export
@@ -183,12 +225,16 @@ AttentionLayer3D <- R6::R6Class( "AttentionLayer3D",
 
     numberOfChannels = NA,
 
-    initialize = function( numberOfChannels )
+    doGoogleBrainVersion = TRUE,
+
+    initialize = function( numberOfChannels, doGoogleBrainVersion = TRUE )
     {
       self$numberOfChannels <- as.integer( numberOfChannels )
 
       self$numberOfFiltersFG <- as.integer( floor( self$numberOfChannels / 8 ) )
       self$numberOfFiltersH <- as.integer( self$numberOfChannels )
+
+      self$doGoogleBrainVersion <- doGoogleBrainVersion
     },
 
     build = function( inputShape )
@@ -196,10 +242,6 @@ AttentionLayer3D <- R6::R6Class( "AttentionLayer3D",
       kernelShapeFG <- c( 1L, 1L, 1L, self$numberOfChannels, self$numberOfFiltersFG )
       kernelShapeH <- c( 1L, 1L, 1L, self$numberOfChannels, self$numberOfFiltersH )
 
-      self$gamma <- self$add_weight( shape = c( 1 ),
-                                     initializer = initializer_zeros(),
-                                     name = "gamma",
-                                     trainable = TRUE )
       self$kernelF <- self$add_weight( shape = kernelShapeFG,
                                        initializer = initializer_glorot_uniform(),
                                        name = 'kernelF' )
@@ -218,6 +260,21 @@ AttentionLayer3D <- R6::R6Class( "AttentionLayer3D",
       self$biasH <- self$add_weight( shape = c( self$numberOfFiltersH ),
                                      initializer = initializer_zeros(),
                                      name = "biasH" )
+      self$gamma <- self$add_weight( shape = c( 1 ),
+                                     initializer = initializer_zeros(),
+                                     name = "gamma",
+                                     trainable = TRUE )
+
+      if( self$doGoogleBrainVersion )
+        {
+        kernelShapeO <- c( 1L, 1L, 1L, as.integer( floor( self$numberOfChannels / 2 ) ), self$numberOfChannels )
+        self$kernelO <- self$add_weight( shape = kernelShapeO,
+                                         initializer = initializer_glorot_uniform(),
+                                         name = 'kernelO' )
+        self$biasO <- self$add_weight( shape = c( self$numberOfChannels ),
+                                       initializer = initializer_zeros(),
+                                       name = "biasO" )
+        }
     },
 
     call = function( input, mask = NULL )
@@ -236,10 +293,22 @@ AttentionLayer3D <- R6::R6Class( "AttentionLayer3D",
 
       f <- K$conv3d( input, kernel = self$kernelF, strides = c( 1, 1, 1 ), padding = 'same' )
       f <- K$bias_add( f, self$biasF )
+      if( self$doGoogleBrainVersion )
+        {
+        f <- K$relu( f )
+        f <- K$pool3d( f )
+        }
+
       g <- K$conv3d( input, kernel = self$kernelG, strides = c( 1, 1, 1 ), padding = 'same' )
       g <- K$bias_add( g, self$biasG )
+
       h <- K$conv3d( input, kernel = self$kernelH, strides = c( 1, 1, 1 ), padding = 'same' )
       h <- K$bias_add( h, self$biasH )
+      if( self$doGoogleBrainVersion )
+        {
+        h <- K$relu( h )
+        h <- K$pool3d( h )
+        }
 
       fFlat <- flatten( f )
       gFlat <- flatten( g )
@@ -247,9 +316,21 @@ AttentionLayer3D <- R6::R6Class( "AttentionLayer3D",
 
       s <- tensorflow::tf$matmul( gFlat, fFlat, transpose_b = TRUE )
       beta <- K$softmax( s, axis = -1L )
+      o <- tensorflow::tf$matmul( beta, hFlat )
 
-      o <- K$batch_dot( beta, hFlat )
-      o <- K$reshape( o, shape = K$shape( input ) )
+      if( self$doGoogleBrainVersion )
+        {
+        outputShape <- K$get_shape( input )
+        outputChannelSize <- as.integer( floor( self$numberOfChannels / 2L ) )
+        outputShape <- c( outputShape[0], outputShape[1], outputShape[2], outputShape[3], outputChannelSize )
+
+        o <- K$reshape( o, shape = outputShape )
+        o <- K$conv2D( o, self$kernelO, strides = c( 1, 1, 1 ), padding = 'same' )
+        o <- K$bias_add( o, self$biasO )
+        o <- K$relu( o )
+        } else {
+        o <- K$reshape( o, shape = K$shape( input ) )
+        }
 
       x <- self$gamma * o + input
       return( x )
@@ -267,6 +348,7 @@ AttentionLayer3D <- R6::R6Class( "AttentionLayer3D",
 #' Wraps the AttentionLayer3D taken from the following python implementation
 #'
 #' \url{https://stackoverflow.com/questions/50819931/self-attention-gan-in-keras}
+#' \url{https://github.com/taki0112/Self-Attention-GAN-Tensorflow}
 #'
 #' based on the following paper:
 #'
@@ -276,6 +358,7 @@ AttentionLayer3D <- R6::R6Class( "AttentionLayer3D",
 #' [keras::keras_model_sequential] to add the layer to
 #' or another Layer which this layer will call.
 #' @param numberOfChannels numberOfChannels
+#' @param doGoogleBrainVersion boolean.  Variant described at second url.
 #' @param trainable Whether the layer weights will be updated during training.
 #' @return a keras layer tensor
 #' @export
@@ -294,9 +377,10 @@ AttentionLayer3D <- R6::R6Class( "AttentionLayer3D",
 #' model <- keras_model( inputs = input, outputs = outputs )
 #'}
 layer_attention_3d <- function( object, numberOfChannels,
-  trainable = TRUE ) {
+  doGoogleBrainVersion = FALSE, trainable = TRUE ) {
 create_layer( AttentionLayer3D, object,
     list( numberOfChannels = numberOfChannels,
+      doGoogleBrainVersion = doGoogleBrainVersion,
       trainable = trainable )
     )
 }
