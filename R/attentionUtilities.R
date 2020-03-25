@@ -106,7 +106,9 @@ AttentionLayer2D <- R6::R6Class( "AttentionLayer2D",
       if( self$doGoogleBrainVersion )
         {
         f <- K$relu( f )
-        f <- K$pool2d( f, pool_size = tuple( 2, 2 ), strides = tuple( 2, 2 ), padding = 'same' )
+        # f <- K$pool2d( f, pool_size = tuple( 2, 2 ), strides = tuple( 2, 2 ), padding = 'same' )
+        fshape <- unlist( K$int_shape( f ) )
+        f <- K$pool2d( f, pool_size = tuple( fshape[1], fshape[2] ), strides = tuple( 1, 1 ), padding = 'same' )
         }
 
       g <- K$conv2d( input, kernel = self$kernelG, strides = c( 1, 1 ), padding = 'same' )
@@ -117,7 +119,9 @@ AttentionLayer2D <- R6::R6Class( "AttentionLayer2D",
       if( self$doGoogleBrainVersion )
         {
         h <- K$relu( h )
-        h <- K$pool2d( h, pool_size = tuple( 2, 2 ), strides = tuple( 2, 2 ), padding = 'same' )
+        # h <- K$pool2d( h, pool_size = tuple( 2, 2 ), strides = tuple( 2, 2 ), padding = 'same' )
+        hshape <- unlist( K$int_shape( h ) )
+        h <- K$pool2d( h, pool_size = tuple( hshape[1], hshape[2] ), strides = tuple( 1, 1 ), padding = 'same' )
         }
 
       fFlat <- flatten( f )
@@ -304,7 +308,9 @@ AttentionLayer3D <- R6::R6Class( "AttentionLayer3D",
       if( self$doGoogleBrainVersion )
         {
         f <- K$relu( f )
-        f <- K$pool3d( f, pool_size = tuple( 2, 2, 2 ), strides = tuple( 2, 2, 2 ), padding = 'same' )
+        # f <- K$pool3d( f, pool_size = tuple( 2, 2, 2 ), strides = tuple( 2, 2, 2 ), padding = 'same' )
+        fshape <- unlist( K$int_shape( f ) )
+        f <- K$pool3d( f, pool_size = tuple( fshape[1], fshape[2], fshape[3] ), strides = tuple( 1, 1, 1 ), padding = 'same' )
         }
 
       g <- K$conv3d( input, kernel = self$kernelG, strides = c( 1, 1, 1 ), padding = 'same' )
@@ -315,7 +321,9 @@ AttentionLayer3D <- R6::R6Class( "AttentionLayer3D",
       if( self$doGoogleBrainVersion )
         {
         h <- K$relu( h )
-        h <- K$pool3d( h, pool_size = tuple( 2, 2, 2 ), strides = tuple( 2, 2, 2 ), padding = 'same' )
+        # h <- K$pool3d( h, pool_size = tuple( 2, 2, 2 ), strides = tuple( 2, 2, 2 ), padding = 'same' )
+        hshape <- unlist( K$int_shape( h ) )
+        h <- K$pool3d( h, pool_size = tuple( hshape[1], hshape[2], hshape[3] ), strides = tuple( 1, 1, 1 ), padding = 'same' )
         }
 
       fFlat <- flatten( f )
