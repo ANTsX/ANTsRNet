@@ -7,7 +7,7 @@
 layer_attention_3d(
   object,
   numberOfChannels,
-  doGoogleBrainVersion = FALSE,
+  doGoogleBrainVersion = TRUE,
   trainable = TRUE
 )
 }

@@ -102,7 +102,7 @@ AttentionLayer2D <- R6::R6Class( "AttentionLayer2D",
       if( self$doGoogleBrainVersion )
         {
         f <- K$relu( f )
-        f <- K$pool2d( f )
+        f <- K$pool2d( f, pool_size = tuple( 2, 2 ), strides = tuple( 2, 2 ), padding = 'same' )
         }
 
       g <- K$conv2d( input, kernel = self$kernelG, strides = c( 1, 1 ), padding = 'same' )
@@ -113,7 +113,7 @@ AttentionLayer2D <- R6::R6Class( "AttentionLayer2D",
       if( self$doGoogleBrainVersion )
         {
         h <- K$relu( h )
-        h <- K$pool2d( h )
+        h <- K$pool2d( h, pool_size = tuple( 2, 2 ), strides = tuple( 2, 2 ), padding = 'same' )
         }
 
       fFlat <- flatten( f )
@@ -126,12 +126,12 @@ AttentionLayer2D <- R6::R6Class( "AttentionLayer2D",
 
       if( self$doGoogleBrainVersion )
         {
-        outputShape <- K$get_shape( input )
+        outputShape <- K$shape( input )
         outputChannelSize <- as.integer( floor( self$numberOfChannels / 2L ) )
-        outputShape <- c( outputShape[0], outputShape[1], outputShape[2], outputChannelSize )
+        outputShape <- c( outputShape[1], outputShape[2], outputShape[3], outputChannelSize )
 
         o <- K$reshape( o, shape = outputShape )
-        o <- K$conv2D( o, self$kernelO, strides = c( 1, 1 ), padding = 'same' )
+        o <- K$conv2d( o, self$kernelO, strides = c( 1, 1 ), padding = 'same' )
         o <- K$bias_add( o, self$biasO )
         o <- K$relu( o )
         } else {
@@ -184,7 +184,7 @@ AttentionLayer2D <- R6::R6Class( "AttentionLayer2D",
 #' model <- keras_model( inputs = input, outputs = outputs )
 #'}
 layer_attention_2d <- function( object, numberOfChannels,
-  doGoogleBrainVersion = FALSE, trainable = TRUE ) {
+  doGoogleBrainVersion = TRUE, trainable = TRUE ) {
 create_layer( AttentionLayer2D, object,
     list( numberOfChannels = numberOfChannels,
       doGoogleBrainVersion = doGoogleBrainVersion,
@@ -296,7 +296,7 @@ AttentionLayer3D <- R6::R6Class( "AttentionLayer3D",
       if( self$doGoogleBrainVersion )
         {
         f <- K$relu( f )
-        f <- K$pool3d( f )
+        f <- K$pool3d( f, pool_size = tuple( 2, 2, 2 ), strides = tuple( 2, 2, 2 ), padding = 'same' )
         }
 
       g <- K$conv3d( input, kernel = self$kernelG, strides = c( 1, 1, 1 ), padding = 'same' )
@@ -307,7 +307,7 @@ AttentionLayer3D <- R6::R6Class( "AttentionLayer3D",
       if( self$doGoogleBrainVersion )
         {
         h <- K$relu( h )
-        h <- K$pool3d( h )
+        h <- K$pool3d( h, pool_size = tuple( 2, 2, 2 ), strides = tuple( 2, 2, 2 ), padding = 'same' )
         }
 
       fFlat <- flatten( f )
@@ -320,12 +320,12 @@ AttentionLayer3D <- R6::R6Class( "AttentionLayer3D",
 
       if( self$doGoogleBrainVersion )
         {
-        outputShape <- K$get_shape( input )
+        outputShape <- K$shape( input )
         outputChannelSize <- as.integer( floor( self$numberOfChannels / 2L ) )
-        outputShape <- c( outputShape[0], outputShape[1], outputShape[2], outputShape[3], outputChannelSize )
+        outputShape <- c( outputShape[1], outputShape[2], outputShape[3], outputShape[3], outputChannelSize )
 
         o <- K$reshape( o, shape = outputShape )
-        o <- K$conv2D( o, self$kernelO, strides = c( 1, 1, 1 ), padding = 'same' )
+        o <- K$conv3d( o, self$kernelO, strides = c( 1, 1, 1 ), padding = 'same' )
         o <- K$bias_add( o, self$biasO )
         o <- K$relu( o )
         } else {
@@ -377,7 +377,7 @@ AttentionLayer3D <- R6::R6Class( "AttentionLayer3D",
 #' model <- keras_model( inputs = input, outputs = outputs )
 #'}
 layer_attention_3d <- function( object, numberOfChannels,
-  doGoogleBrainVersion = FALSE, trainable = TRUE ) {
+  doGoogleBrainVersion = TRUE, trainable = TRUE ) {
 create_layer( AttentionLayer3D, object,
     list( numberOfChannels = numberOfChannels,
       doGoogleBrainVersion = doGoogleBrainVersion,
