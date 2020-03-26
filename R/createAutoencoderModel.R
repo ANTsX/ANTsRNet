@@ -27,16 +27,16 @@ createAutoencoderModel <- function( numberOfUnitsPerLayer,
                                     activation = 'relu',
                                     initializer = 'glorot_uniform' )
 {
-  numberOfEncodingLayers <- length( numberOfUnitsPerLayer ) - 1
+  numberOfEncodingLayers <- as.integer( length( numberOfUnitsPerLayer ) - 1 )
 
-  inputs <- layer_input( shape = numberOfUnitsPerLayer[1] )
+  inputs <- layer_input( shape = c( as.integer( numberOfUnitsPerLayer[1] ) ) )
 
   encoder <- inputs
 
   for( i in seq_len( numberOfEncodingLayers - 1 ) )
     {
     encoder <- encoder %>%
-      layer_dense( units = numberOfUnitsPerLayer[i+1],
+      layer_dense( numberOfUnitsPerLayer[i+1],
          activation = activation, kernel_initializer = initializer )
     }
 
@@ -48,7 +48,7 @@ createAutoencoderModel <- function( numberOfUnitsPerLayer,
   for( i in seq( from = numberOfEncodingLayers, to = 2, by = -1 ) )
     {
     autoencoder <- autoencoder %>%
-      layer_dense( units = numberOfUnitsPerLayer[i],
+      layer_dense( numberOfUnitsPerLayer[i],
          activation = activation, kernel_initializer = initializer )
     }
 

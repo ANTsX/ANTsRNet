@@ -40,7 +40,7 @@ ClusteringLayer <- R6::R6Class( "ClusteringLayer",
 
   public = list(
 
-    numberOfClusters = 10,
+    numberOfClusters = 10L,
 
     initialClusterWeights = NULL,
 
@@ -51,7 +51,7 @@ ClusteringLayer <- R6::R6Class( "ClusteringLayer",
     initialize = function( numberOfClusters,
       initialClusterWeights = NULL, alpha = 1.0, name = '' )
       {
-      self$numberOfClusters <- numberOfClusters
+      self$numberOfClusters <- as.integer( numberOfClusters )
       self$initialClusterWeights <- initialClusterWeights
       self$alpha <- alpha
       self$name <- name
@@ -75,8 +75,8 @@ ClusteringLayer <- R6::R6Class( "ClusteringLayer",
         self$set_weights( self$initialClusterWeights )
         self$initialClusterWeights <- NULL
         }
+
       self$built <- TRUE
-      self
       },
 
     call = function( inputs, mask = NULL )
@@ -90,7 +90,6 @@ ClusteringLayer <- R6::R6Class( "ClusteringLayer",
         K$expand_dims( inputs, axis = 1L ) - self$clusters ), axis = 2L ) / self$alpha ) )
       q <- q^( ( self$alpha + 1.0 ) / 2.0 )
       q <- K$transpose( K$transpose( q ) / K$sum( q, axis = 1L ) )
-
       return( q )
       },
 
@@ -219,12 +218,13 @@ DeepEmbeddedClusteringModel <- R6::R6Class( "DeepEmbeddedClusteringModel",
       numberOfClusters, alpha = 1.0, initializer = 'glorot_uniform',
       convolutional = FALSE, inputImageSize = NULL )
       {
-      self$numberOfUnitsPerLayer <- numberOfUnitsPerLayer
-      self$numberOfClusters <- numberOfClusters
+
+      self$numberOfUnitsPerLayer <- as.integer( numberOfUnitsPerLayer )
+      self$numberOfClusters <- as.integer( numberOfClusters )
       self$alpha <- alpha
       self$initializer <- initializer
       self$convolutional <- convolutional
-      self$inputImageSize <- inputImageSize
+      self$inputImageSize <- as.integer( inputImageSize )
 
       if( self$convolutional == TRUE )
         {
