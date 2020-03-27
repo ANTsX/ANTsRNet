@@ -114,8 +114,9 @@ layer_clustering <- function( object,
 #' Deep embedded clustering (DEC) model class
 #'
 #' @docType class
-#'
-#'
+#'  
+#' \url{https://github.com/XifengGuo/DEC-keras}
+#' 
 #' @section Arguments:
 #' \describe{
 #'  \item{numberOfUnitsPerLayer}{array describing the auteoencoder.}
@@ -256,7 +257,12 @@ DeepEmbeddedClusteringModel <- R6::R6Class( "DeepEmbeddedClusteringModel",
       clusteringLayer <- self$encoder$output %>%
         layer_clustering( self$numberOfClusters, name = "clustering" )
 
-      self$model <- keras_model( inputs = self$encoder$input, outputs = clusteringLayer )
+      if( self$convolutional == TRUE )
+        {
+        self$model <- keras_model( inputs = self$encoder$input, outputs = list( clusteringLayer, self$autoencoder$output ) )
+        } else {
+        self$model <- keras_model( inputs = self$encoder$input, outputs = clusteringLayer )
+        }
       },
 
     pretrain = function( x, optimizer = 'adam', epochs = 200L, batchSize = 256L )
@@ -315,7 +321,12 @@ DeepEmbeddedClusteringModel <- R6::R6Class( "DeepEmbeddedClusteringModel",
         {
         if( i %% updateInterval == 1 )
           {
-          q <- self$model$predict( x, verbose = 0 )
+          if( self$convolutional == TRUE )
+            {
+            q <- self$model$predict( x, verbose = 0 )[[1]]
+            } else {
+            q <- self$model$predict( x, verbose = 0 )
+            }
           p <- self$targetDistribution( q )
 
           # Met stopping criterion
@@ -324,8 +335,8 @@ DeepEmbeddedClusteringModel <- R6::R6Class( "DeepEmbeddedClusteringModel",
           deltaLabel <- sum( currentPrediction != previousPrediction ) / length( currentPrediction )
           previousPrediction <- currentPrediction
 
-          cat( "Iteration ", i, ": (out of ", maxNumberOfIterations,
-            "): loss = ", loss, ", deltaLabel = ", deltaLabel, "\n", sep = '' )
+          cat( "Iteration", i, ": ( out of", maxNumberOfIterations,
+            "): loss = [", unlist( loss ), "], deltaLabel =", deltaLabel, "\n", sep = ' ' )
 
           if( i > 1 && deltaLabel < tolerance )
             {
@@ -339,9 +350,11 @@ DeepEmbeddedClusteringModel <- R6::R6Class( "DeepEmbeddedClusteringModel",
           {
           if( length( self$inputImageSize ) == 3 )  # 2-D
             {
-            loss <- self$model$train_on_batch( x = x[batchIndices,,,, drop = FALSE], y = p[batchIndices,] )
+            loss <- self$model$train_on_batch( x = x[batchIndices,,,, drop = FALSE], 
+                                               y = list( p[batchIndices,], x[batchIndices,,,, drop = FALSE] ) )
             } else {
-            loss <- self$model$train_on_batch( x = x[batchIndices,,,,, drop = FALSE], y = p[batchIndices,] )
+            loss <- self$model$train_on_batch( x = x[batchIndices,,,,, drop = FALSE], 
+                                               y = list( p[batchIndices,], x[batchIndices,,,,, drop = FALSE] ) )
             }
           } else {
           loss <- self$model$train_on_batch( x = x[batchIndices,], y = p[batchIndices,] )
