@@ -98,8 +98,20 @@ reference:
 - title: Deep embedded clustering (DEC)
   desc: ~
   contents:
+  - '`AttentionLayer2D`'
+  - '`AttentionLayer3D`'
+  - '`layer_attention_2d`'
+  - '`layer_attention_3d`'
+  - '`EfficientAttentionLayer2D`'
+  - '`EfficientAttentionLayer3D`'
+  - '`layer_efficient_attention_2d`'
+  - '`layer_efficient_attention_3d`'
+- title: Deep embedded clustering (DEC)
+  desc: ~
+  contents:
   - '`DeepEmbeddedClusteringModel`'
   - '`ClusteringLayer`'
+  - '`layer_clustering`'
   - '`createAutoencoderModel`'
   - '`createConvolutionalAutoencoderModel2D`'
   - '`createConvolutionalAutoencoderModel3D`'
