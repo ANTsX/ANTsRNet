@@ -34,7 +34,7 @@ AttentionLayer2D <- R6::R6Class( "AttentionLayer2D",
     doGoogleBrainVersion = TRUE,
 
     initialize = function( numberOfChannels, doGoogleBrainVersion = TRUE )
-    {
+      {
       self$numberOfChannels <- as.integer( numberOfChannels )
 
       self$doGoogleBrainVersion <- doGoogleBrainVersion
@@ -45,10 +45,10 @@ AttentionLayer2D <- R6::R6Class( "AttentionLayer2D",
         {
         self$numberOfFiltersH <- as.integer( floor( self$numberOfChannels / 2 ) )
         }
-    },
+      },
 
     build = function( inputShape )
-    {
+      {
       kernelShapeFG <- c( 1L, 1L, self$numberOfChannels, self$numberOfFiltersFG )
       kernelShapeH <- c( 1L, 1L, self$numberOfChannels, self$numberOfFiltersH )
 
@@ -85,10 +85,10 @@ AttentionLayer2D <- R6::R6Class( "AttentionLayer2D",
                                        initializer = initializer_zeros(),
                                        name = "biasO" )
         }
-    },
+      },
 
     call = function( input, mask = NULL )
-    {
+      {
       flatten = function( x )
         {
         K <- keras::backend()
@@ -106,9 +106,9 @@ AttentionLayer2D <- R6::R6Class( "AttentionLayer2D",
       if( self$doGoogleBrainVersion )
         {
         f <- K$relu( f )
-        # f <- K$pool2d( f, pool_size = tuple( 2, 2 ), strides = tuple( 2, 2 ), padding = 'same' )
-        fshape <- unlist( K$int_shape( f ) )
-        f <- K$pool2d( f, pool_size = tuple( fshape[1], fshape[2] ), strides = tuple( 1, 1 ), padding = 'same' )
+        f <- K$pool2d( f, pool_size = tuple( 2, 2 ), strides = tuple( 2, 2 ), padding = 'same' )
+        # fshape <- unlist( K$int_shape( f ) )
+        # f <- K$pool2d( f, pool_size = tuple( fshape[1], fshape[2] ), strides = tuple( 1, 1 ), padding = 'same' )
         }
 
       g <- K$conv2d( input, kernel = self$kernelG, strides = c( 1, 1 ), padding = 'same' )
@@ -119,9 +119,9 @@ AttentionLayer2D <- R6::R6Class( "AttentionLayer2D",
       if( self$doGoogleBrainVersion )
         {
         h <- K$relu( h )
-        # h <- K$pool2d( h, pool_size = tuple( 2, 2 ), strides = tuple( 2, 2 ), padding = 'same' )
-        hshape <- unlist( K$int_shape( h ) )
-        h <- K$pool2d( h, pool_size = tuple( hshape[1], hshape[2] ), strides = tuple( 1, 1 ), padding = 'same' )
+        h <- K$pool2d( h, pool_size = tuple( 2, 2 ), strides = tuple( 2, 2 ), padding = 'same' )
+        # hshape <- unlist( K$int_shape( h ) )
+        # h <- K$pool2d( h, pool_size = tuple( hshape[1], hshape[2] ), strides = tuple( 1, 1 ), padding = 'same' )
         }
 
       fFlat <- flatten( f )
@@ -148,12 +148,12 @@ AttentionLayer2D <- R6::R6Class( "AttentionLayer2D",
 
       x <- self$gamma * o + input
       return( x )
-    },
+      },
 
     compute_output_shape = function( inputShape )
-    {
+      {
       return( inputShape )
-    }
+      }
   )
 )
 
@@ -236,7 +236,7 @@ AttentionLayer3D <- R6::R6Class( "AttentionLayer3D",
     doGoogleBrainVersion = TRUE,
 
     initialize = function( numberOfChannels, doGoogleBrainVersion = TRUE )
-    {
+      {
       self$numberOfChannels <- as.integer( numberOfChannels )
 
       self$doGoogleBrainVersion <- doGoogleBrainVersion
@@ -247,10 +247,10 @@ AttentionLayer3D <- R6::R6Class( "AttentionLayer3D",
         {
         self$numberOfFiltersH <- as.integer( floor( self$numberOfChannels / 2 ) )
         }
-    },
+      },
 
     build = function( inputShape )
-    {
+      {
       kernelShapeFG <- c( 1L, 1L, 1L, self$numberOfChannels, self$numberOfFiltersFG )
       kernelShapeH <- c( 1L, 1L, 1L, self$numberOfChannels, self$numberOfFiltersH )
 
@@ -287,10 +287,10 @@ AttentionLayer3D <- R6::R6Class( "AttentionLayer3D",
                                        initializer = initializer_zeros(),
                                        name = "biasO" )
         }
-    },
+      },
 
     call = function( input, mask = NULL )
-    {
+      {
       flatten = function( x )
         {
         K <- keras::backend()
@@ -308,9 +308,9 @@ AttentionLayer3D <- R6::R6Class( "AttentionLayer3D",
       if( self$doGoogleBrainVersion )
         {
         f <- K$relu( f )
-        # f <- K$pool3d( f, pool_size = tuple( 2, 2, 2 ), strides = tuple( 2, 2, 2 ), padding = 'same' )
-        fshape <- unlist( K$int_shape( f ) )
-        f <- K$pool3d( f, pool_size = tuple( fshape[1], fshape[2], fshape[3] ), strides = tuple( 1, 1, 1 ), padding = 'same' )
+        f <- K$pool3d( f, pool_size = tuple( 2, 2, 2 ), strides = tuple( 2, 2, 2 ), padding = 'same' )
+        # fshape <- unlist( K$int_shape( f ) )
+        # f <- K$pool3d( f, pool_size = tuple( fshape[1], fshape[2], fshape[3] ), strides = tuple( 1, 1, 1 ), padding = 'same' )
         }
 
       g <- K$conv3d( input, kernel = self$kernelG, strides = c( 1, 1, 1 ), padding = 'same' )
@@ -321,9 +321,9 @@ AttentionLayer3D <- R6::R6Class( "AttentionLayer3D",
       if( self$doGoogleBrainVersion )
         {
         h <- K$relu( h )
-        # h <- K$pool3d( h, pool_size = tuple( 2, 2, 2 ), strides = tuple( 2, 2, 2 ), padding = 'same' )
-        hshape <- unlist( K$int_shape( h ) )
-        h <- K$pool3d( h, pool_size = tuple( hshape[1], hshape[2], hshape[3] ), strides = tuple( 1, 1, 1 ), padding = 'same' )
+        h <- K$pool3d( h, pool_size = tuple( 2, 2, 2 ), strides = tuple( 2, 2, 2 ), padding = 'same' )
+        # hshape <- unlist( K$int_shape( h ) )
+        # h <- K$pool3d( h, pool_size = tuple( hshape[1], hshape[2], hshape[3] ), strides = tuple( 1, 1, 1 ), padding = 'same' )
         }
 
       fFlat <- flatten( f )
@@ -350,12 +350,12 @@ AttentionLayer3D <- R6::R6Class( "AttentionLayer3D",
 
       x <- self$gamma * o + input
       return( x )
-    },
+      },
 
     compute_output_shape = function( inputShape )
-    {
+      {
       return( inputShape )
-    }
+      }
   )
 )
 
@@ -398,6 +398,442 @@ create_layer( AttentionLayer3D, object,
     list( numberOfChannels = numberOfChannels,
       doGoogleBrainVersion = doGoogleBrainVersion,
       trainable = trainable )
+    )
+}
+
+#' Efficient attention layer (2-D)
+#'
+#' @docType class
+#'
+#' @section Arguments:
+#' \describe{
+#'  \item{numberOfFiltersFG}{number of filters for F and G layers.}
+#'  \item{numberOfFiltersH}{number of filters for H. If = NA, only
+#'        use filter F for efficiency.}
+#'  \item{poolSize}{pool_size in max pool layer.}
+#'  \item{doUpsample}{upsample final layers before concatenation or adding.}
+#'  \item{doConcatenateFinalLayers}{concatenate final layer with input.
+#'        Alternatively, add.}
+#' }
+#'
+#' @section Details:
+#'   \code{$initialize} instantiates a new class.
+#'
+#'   \code{$call} main body.
+#'
+#'   \code{$compute_output_shape} computes the output shape.
+#'
+#' @author BB Avants, NJ Tustison
+#'
+#' @return output of tensor shape.
+#' @name EfficientAttentionLayer2D
+NULL
+
+#' @export
+EfficientAttentionLayer2D <- R6::R6Class( "EfficientAttentionLayer2D",
+
+  inherit = KerasLayer,
+
+  lock_objects = FALSE,
+
+  public = list(
+
+    numberOfFiltersFG = 4L,
+
+    numberOfFiltersH = 8L,
+
+    poolSize = 2L,
+
+    doUpsample = TRUE,
+
+    doConcatenateFinalLayers = FALSE,
+
+    initialize = function( numberOfFiltersFG = 4L, numberOfFiltersH = 8L, poolSize = 2L,
+      doUpsample = TRUE, doConcatenateFinalLayers = FALSE )
+      {
+      self$numberOfFiltersFG <- as.integer( numberOfFiltersFG )
+      self$numberOfFiltersH <- as.integer( numberOfFiltersH )
+      self$poolSize <- as.integer( poolSize )
+      self$doUpsample <- doUpsample
+      self$doConcatenateFinalLayers <- doConcatenateFinalLayers
+      },
+
+    build = function( inputShape )
+      {
+      kernelShapeFG <- c( 1L, 1L, inputShape[4], self$numberOfFiltersFG )
+      kernelShapeH <- c( 1L, 1L, inputShape[4], self$numberOfFiltersH )
+
+      self$kernelF <- self$add_weight( shape = kernelShapeFG,
+                                       initializer = initializer_glorot_uniform(),
+                                       name = 'kernelF' )
+      self$biasF <- self$add_weight( shape = c( self$numberOfFiltersFG ),
+                                     initializer = initializer_zeros(),
+                                     name = "biasF" )
+
+      if( ! is.na( self$numberOfFiltersH ) )
+        {
+        self$kernelG <- self$add_weight( shape = kernelShapeFG,
+                                         initializer = initializer_glorot_uniform(),
+                                         name = 'kernelG' )
+        self$biasG <- self$add_weight( shape = c( self$numberOfFiltersFG ),
+                                       initializer = initializer_zeros(),
+                                       name = "biasG" )
+        self$kernelH <- self$add_weight( shape = kernelShapeH,
+                                         initializer = initializer_glorot_uniform(),
+                                         name = 'kernelH' )
+        self$biasH <- self$add_weight( shape = c( self$numberOfFiltersH ),
+                                       initializer = initializer_zeros(),
+                                       name = "biasH" )
+        }
+
+      kernelShapeO <- c( 1L, 1L, inputShape[4], inputShape[4] )
+      self$kernelO <- self$add_weight( shape = kernelShapeO,
+                                       initializer = initializer_glorot_uniform(),
+                                       name = 'kernelO' )
+      self$biasO <- self$add_weight( shape = c( inputShape[4] ),
+                                     initializer = initializer_zeros(),
+                                     name = "biasO" )
+      },
+
+    call = function( input, mask = NULL )
+      {
+      flatten = function( x )
+        {
+        K <- keras::backend()
+        inputShape <- K$shape( x )
+        outputShape <- c( inputShape[1], inputShape[2] * inputShape[3], inputShape[4] )
+        xFlat <- K$reshape( x, shape = outputShape )
+        return( xFlat )
+        }
+
+      K <- keras::backend()
+      self$inputShape <- K$shape( input )
+
+      f <- K$conv2d( input, kernel = self$kernelF, strides = c( 1, 1 ), padding = 'same' )
+      f <- K$bias_add( f, self$biasF )
+      f <- K$relu( f )
+      f <- K$pool2d( f, pool_size = tuple( self$poolSize, self$poolSize ), padding = 'same' )
+      fFlat <- flatten( f )
+
+      if( ! is.na( self$numberOfFiltersH ) )
+        {
+        g <- K$conv2d( input, kernel = self$kernelG, strides = c( 1, 1 ), padding = 'same' )
+        g <- K$bias_add( g, self$biasG )
+        g <- K$relu( g )
+        g <- K$pool2d( g, pool_size = tuple( self$poolSize, self$poolSize ), padding = 'same' )
+        gFlat <- flatten( g )
+
+        h <- K$conv2d( input, kernel = self$kernelH, strides = c( 1, 1 ), padding = 'same' )
+        h <- K$bias_add( h, self$biasH )
+        h <- K$relu( h )
+        h <- K$pool2d( h, pool_size = tuple( self$poolSize, self$poolSize ), padding = 'same' )
+        hFlat <- flatten( h )
+
+        s <- tensorflow::tf$matmul( gFlat, fFlat, transpose_b = TRUE )
+        beta <- K$softmax( s, axis = -1L )
+        o <- tensorflow::tf$matmul( beta, hFlat )
+        } else {
+        s <- tensorflow::tf$matmul( fFlat, fFlat, transpose_b = TRUE )
+        beta <- K$softmax( s, axis = -1L )
+        o <- tensorflow::tf$matmul( beta, fFlat )
+        }
+
+      if( self$doUpsample == TRUE )
+        {
+        outputShape <- list( self$inputShape[1],
+          as.integer( floor( input$shape[1] / self$poolSize ) ),
+          as.integer( floor( input$shape[2] / self$poolSize ) ),
+          self$inputShape[4] )
+
+        o <- K$reshape( o, shape = K$stack( outputShape ) )
+
+        o <- K$resize_images( o, height_factor = self$poolSize,
+          width_factor = self$poolSize, data_format = "channels_last" )
+        o <- K$conv2d( o, self$kernelO, strides = c( 1, 1 ), padding = 'same' )
+        o <- K$bias_add( o, self$biasO )
+        o <- K$relu( o )
+        }
+
+     if( self$doConcatenateFinalLayers == TRUE )
+       {
+       x <- K$concatenate( list( input, o ) )
+       } else {
+       x <- input * 0.5 + o * 0.5
+       }
+      return( x )
+      },
+
+    compute_output_shape = function( inputShape )
+      {
+      return( inputShape )
+      }
+  )
+)
+
+#' Efficient attention layer (2-D)
+#'
+#' Wraps the EfficientAttentionLayer2D modified from the following python implementation
+#'
+#' \url{https://github.com/taki0112/Self-Attention-GAN-Tensorflow}
+#'
+#' based on the following paper:
+#'
+#' \url{https://arxiv.org/abs/1805.08318}
+#'
+#' @param object Object to compose layer with. This is either a
+#' [keras::keras_model_sequential] to add the layer to
+#' or another Layer which this layer will call.
+#' @param numberOfFiltersFG number of filters for F and G layers.
+#' @param numberOfFiltersH number of filters for H. If \code{= NA}, only
+#' use filter \code{F} for efficiency.
+#' @param poolSize pool size in max pool layer.  Default = 2L.
+#' @param doUpsample upsample final layers before concatenating or
+#' adding.  Default = TRUE.
+#' @param doConcatenateFinalLayers concatenate final layer with input.
+#' Alternatively, add.  Default = FALSE
+#' @return a keras layer tensor
+#' @export
+#' @examples
+#'
+#' \dontrun{
+#' library( keras )
+#' library( ANTsRNet )
+#'
+#' inputShape <- c( 100, 100, 3 )
+#' input <- layer_input( shape = inputShape )
+#'
+#' numberOfFiltersFG <- 64L
+#' outputs <- input %>% layer_efficient_attention_2d( numberOfFiltersFG )
+#'
+#' model <- keras_model( inputs = input, outputs = outputs )
+#'}
+layer_efficient_attention_2d <- function( object, numberOfFiltersFG = 4L,
+  numberOfFiltersH = 8L, poolSize = 2L, doUpsample = TRUE,
+  doConcatenateFinalLayers = FALSE, trainable = TRUE ) {
+create_layer( EfficientAttentionLayer2D, object,
+    list( numberOfFiltersFG = numberOfFiltersFG, numberOfFiltersH = numberOfFiltersH,
+          poolSize = poolSize, doUpsample = doUpsample,
+          doConcatenateFinalLayers = doConcatenateFinalLayers,
+          trainable = trainable )
+    )
+}
+
+#' Efficient attention layer (3-D)
+#'
+#' @docType class
+#'
+#' @section Arguments:
+#' \describe{
+#'  \item{numberOfFiltersFG}{number of filters for F and G layers.}
+#'  \item{numberOfFiltersH}{number of filters for H. If = NA, only
+#'        use filter F for efficiency.}
+#'  \item{poolSize}{pool_size in max pool layer.}
+#'  \item{doUpsample}{upsample final layers before concatenation or adding.}
+#'  \item{doConcatenateFinalLayers}{concatenate final layer with input.
+#'        Alternatively, add.}
+#' }
+#'
+#' @section Details:
+#'   \code{$initialize} instantiates a new class.
+#'
+#'   \code{$call} main body.
+#'
+#'   \code{$compute_output_shape} computes the output shape.
+#'
+#' @author BB Avants, NJ Tustison
+#'
+#' @return output of tensor shape.
+#' @name EfficientAttentionLayer3D
+NULL
+
+#' @export
+EfficientAttentionLayer3D <- R6::R6Class( "EfficientAttentionLayer3D",
+
+  inherit = KerasLayer,
+
+  lock_objects = FALSE,
+
+  public = list(
+
+    numberOfFiltersFG = 4L,
+
+    numberOfFiltersH = 8L,
+
+    poolSize = 2L,
+
+    doUpsample = TRUE,
+
+    doConcatenateFinalLayers = FALSE,
+
+    initialize = function( numberOfFiltersFG = 4L, numberOfFiltersH = 8L, poolSize = 2L,
+      doUpsample = TRUE, doConcatenateFinalLayers = FALSE )
+      {
+      self$numberOfFiltersFG <- as.integer( numberOfFiltersFG )
+      self$numberOfFiltersH <- as.integer( numberOfFiltersH )
+      self$poolSize <- as.integer( poolSize )
+      self$doUpsample <- doUpsample
+      self$doConcatenateFinalLayers <- doConcatenateFinalLayers
+      },
+
+    build = function( inputShape )
+      {
+      kernelShapeFG <- c( 1L, 1L, 1L, inputShape[5], self$numberOfFiltersFG )
+      kernelShapeH <- c( 1L, 1L, 1L, inputShape[5], self$numberOfFiltersH )
+
+      self$kernelF <- self$add_weight( shape = kernelShapeFG,
+                                       initializer = initializer_glorot_uniform(),
+                                       name = 'kernelF' )
+      self$biasF <- self$add_weight( shape = c( self$numberOfFiltersFG ),
+                                     initializer = initializer_zeros(),
+                                     name = "biasF" )
+
+      if( ! is.na( self$numberOfFiltersH ) )
+        {
+        self$kernelG <- self$add_weight( shape = kernelShapeFG,
+                                         initializer = initializer_glorot_uniform(),
+                                         name = 'kernelG' )
+        self$biasG <- self$add_weight( shape = c( self$numberOfFiltersFG ),
+                                       initializer = initializer_zeros(),
+                                       name = "biasG" )
+        self$kernelH <- self$add_weight( shape = kernelShapeH,
+                                         initializer = initializer_glorot_uniform(),
+                                         name = 'kernelH' )
+        self$biasH <- self$add_weight( shape = c( self$numberOfFiltersH ),
+                                       initializer = initializer_zeros(),
+                                       name = "biasH" )
+        }
+
+      kernelShapeO <- c( 1L, 1L, 1L, inputShape[5], inputShape[5] )
+      self$kernelO <- self$add_weight( shape = kernelShapeO,
+                                       initializer = initializer_glorot_uniform(),
+                                       name = 'kernelO' )
+      self$biasO <- self$add_weight( shape = c( inputShape[5] ),
+                                     initializer = initializer_zeros(),
+                                     name = "biasO" )
+      },
+
+    call = function( input, mask = NULL )
+      {
+      flatten = function( x )
+        {
+        K <- keras::backend()
+        inputShape <- K$shape( x )
+        outputShape <- c( inputShape[1], inputShape[2] * inputShape[3] * inputShape[4], inputShape[5] )
+        xFlat <- K$reshape( x, shape = outputShape )
+        return( xFlat )
+        }
+
+      K <- keras::backend()
+      self$inputShape <- K$shape( input )
+
+      f <- K$conv3d( input, kernel = self$kernelF, strides = c( 1, 1, 1 ), padding = 'same' )
+      f <- K$bias_add( f, self$biasF )
+      f <- K$relu( f )
+      f <- K$pool3d( f, pool_size = tuple( self$poolSize, self$poolSize, self$poolSize ), padding = 'same' )
+      fFlat <- flatten( f )
+
+      if( ! is.na( self$numberOfFiltersH ) )
+        {
+        g <- K$conv3d( input, kernel = self$kernelG, strides = c( 1, 1, 1 ), padding = 'same' )
+        g <- K$bias_add( g, self$biasG )
+        g <- K$relu( g )
+        g <- K$pool3d( g, pool_size = tuple( self$poolSize, self$poolSize, self$poolSize ), padding = 'same' )
+        gFlat <- flatten( g )
+
+        h <- K$conv3d( input, kernel = self$kernelH, strides = c( 1, 1, 1 ), padding = 'same' )
+        h <- K$bias_add( h, self$biasH )
+        h <- K$relu( h )
+        h <- K$pool3d( h, pool_size = tuple( self$poolSize, self$poolSize, self$poolSize ), padding = 'same' )
+        hFlat <- flatten( h )
+
+        s <- tensorflow::tf$matmul( gFlat, fFlat, transpose_b = TRUE )
+        beta <- K$softmax( s, axis = -1L )
+        o <- tensorflow::tf$matmul( beta, hFlat )
+        } else {
+        s <- tensorflow::tf$matmul( fFlat, fFlat, transpose_b = TRUE )
+        beta <- K$softmax( s, axis = -1L )
+        o <- tensorflow::tf$matmul( beta, fFlat )
+        }
+
+      if( self$doUpsample == TRUE )
+        {
+        outputShape <- list( self$inputShape[1],
+          as.integer( floor( input$shape[1] / self$poolSize ) ),
+          as.integer( floor( input$shape[2] / self$poolSize ) ),
+          as.integer( floor( input$shape[3] / self$poolSize ) ),
+          self$inputShape[5] )
+
+        o <- K$reshape( o, shape = K$stack( outputShape ) )
+
+        o <- K$resize_volumes( o, depth_factor = self$poolSize,
+          height_factor = self$poolSize, width_factor = self$poolSize,
+          data_format = "channels_last" )
+        o <- K$conv3d( o, self$kernelO, strides = c( 1, 1, 1 ), padding = 'same' )
+        o <- K$bias_add( o, self$biasO )
+        o <- K$relu( o )
+        }
+
+     if( self$doConcatenateFinalLayers == TRUE )
+       {
+       x <- K$concatenate( list( input, o ) )
+       } else {
+       x <- input * 0.5 + o * 0.5
+       }
+      return( x )
+      },
+
+    compute_output_shape = function( inputShape )
+      {
+      return( inputShape )
+      }
+  )
+)
+
+#' Efficient attention layer (3-D)
+#'
+#' Wraps the EfficientAttentionLayer3D modified from the following python implementation
+#'
+#' \url{https://github.com/taki0112/Self-Attention-GAN-Tensorflow}
+#'
+#' based on the following paper:
+#'
+#' \url{https://arxiv.org/abs/1805.08318}
+#'
+#' @param object Object to compose layer with. This is either a
+#' [keras::keras_model_sequential] to add the layer to
+#' or another Layer which this layer will call.
+#' @param numberOfFiltersFG number of filters for F and G layers.
+#' @param numberOfFiltersH number of filters for H. If \code{= NA}, only
+#' use filter \code{F} for efficiency.
+#' @param poolSize pool size in max pool layer.  Default = 2L.
+#' @param doUpsample upsample final layers before concatenating or
+#' adding.  Default = TRUE.
+#' @param doConcatenateFinalLayers concatenate final layer with input.
+#' Alternatively, add.  Default = FALSE
+#' @return a keras layer tensor
+#' @export
+#' @examples
+#'
+#' \dontrun{
+#' library( keras )
+#' library( ANTsRNet )
+#'
+#' inputShape <- c( 100, 100, 100, 3 )
+#' input <- layer_input( shape = inputShape )
+#'
+#' numberOfFiltersFG <- 64L
+#' outputs <- input %>% layer_efficient_attention_3d( numberOfFiltersFG )
+#'
+#' model <- keras_model( inputs = input, outputs = outputs )
+#'}
+layer_efficient_attention_3d <- function( object, numberOfFiltersFG = 4L,
+  numberOfFiltersH = 8L, poolSize = 2L, doUpsample = TRUE,
+  doConcatenateFinalLayers = FALSE, trainable = TRUE ) {
+create_layer( EfficientAttentionLayer3D, object,
+    list( numberOfFiltersFG = numberOfFiltersFG, numberOfFiltersH = numberOfFiltersH,
+          poolSize = poolSize, doUpsample = doUpsample,
+          doConcatenateFinalLayers = doConcatenateFinalLayers,
+          trainable = trainable )
     )
 }
 

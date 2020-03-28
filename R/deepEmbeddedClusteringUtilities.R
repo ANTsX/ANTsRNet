@@ -114,9 +114,7 @@ layer_clustering <- function( object,
 #' Deep embedded clustering (DEC) model class
 #'
 #' @docType class
-#'  
-#' \url{https://github.com/XifengGuo/DEC-keras}
-#' 
+#'
 #' @section Arguments:
 #' \describe{
 #'  \item{numberOfUnitsPerLayer}{array describing the auteoencoder.}
@@ -350,10 +348,10 @@ DeepEmbeddedClusteringModel <- R6::R6Class( "DeepEmbeddedClusteringModel",
           {
           if( length( self$inputImageSize ) == 3 )  # 2-D
             {
-            loss <- self$model$train_on_batch( x = x[batchIndices,,,, drop = FALSE], 
+            loss <- self$model$train_on_batch( x = x[batchIndices,,,, drop = FALSE],
                                                y = list( p[batchIndices,], x[batchIndices,,,, drop = FALSE] ) )
             } else {
-            loss <- self$model$train_on_batch( x = x[batchIndices,,,,, drop = FALSE], 
+            loss <- self$model$train_on_batch( x = x[batchIndices,,,,, drop = FALSE],
                                                y = list( p[batchIndices,], x[batchIndices,,,,, drop = FALSE] ) )
             }
           } else {
