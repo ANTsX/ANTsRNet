@@ -95,7 +95,7 @@ reference:
   - '`SuperResolutionGanModel`'
   - '`InstanceNormalizationLayer`'
   - '`layer_instance_normalization`'
-- title: Deep embedded clustering (DEC)
+- title: Attention
   desc: ~
   contents:
   - '`AttentionLayer2D`'
