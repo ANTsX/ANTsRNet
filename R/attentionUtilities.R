@@ -191,6 +191,7 @@ AttentionLayer2D <- R6::R6Class( "AttentionLayer2D",
 #'
 #' model <- keras_model( inputs = input, outputs = outputs )
 #'}
+#' @export
 layer_attention_2d <- function( object, numberOfChannels,
   doGoogleBrainVersion = TRUE, trainable = TRUE ) {
 create_layer( AttentionLayer2D, object,
@@ -607,6 +608,8 @@ EfficientAttentionLayer2D <- R6::R6Class( "EfficientAttentionLayer2D",
 #'
 #' model <- keras_model( inputs = input, outputs = outputs )
 #'}
+#'
+#' @export
 layer_efficient_attention_2d <- function( object, numberOfFiltersFG = 4L,
   numberOfFiltersH = 8L, poolSize = 2L, doUpsample = TRUE,
   doConcatenateFinalLayers = FALSE, trainable = TRUE ) {
@@ -826,6 +829,8 @@ EfficientAttentionLayer3D <- R6::R6Class( "EfficientAttentionLayer3D",
 #'
 #' model <- keras_model( inputs = input, outputs = outputs )
 #'}
+#'
+#' @export
 layer_efficient_attention_3d <- function( object, numberOfFiltersFG = 4L,
   numberOfFiltersH = 8L, poolSize = 2L, doUpsample = TRUE,
   doConcatenateFinalLayers = FALSE, trainable = TRUE ) {
