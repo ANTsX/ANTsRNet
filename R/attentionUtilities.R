@@ -412,7 +412,6 @@ create_layer( AttentionLayer3D, object,
 #'  \item{numberOfFiltersH}{number of filters for H. If = NA, only
 #'        use filter F for efficiency.}
 #'  \item{poolSize}{pool_size in max pool layer.}
-#'  \item{doUpsample}{upsample final layers before concatenation or adding.}
 #'  \item{doConcatenateFinalLayers}{concatenate final layer with input.
 #'        Alternatively, add.}
 #' }
@@ -443,26 +442,25 @@ EfficientAttentionLayer2D <- R6::R6Class( "EfficientAttentionLayer2D",
 
     numberOfFiltersH = 8L,
 
-    poolSize = 2L,
+    kernelSize = 1L,
 
-    doUpsample = TRUE,
+    poolSize = 2L,
 
     doConcatenateFinalLayers = FALSE,
 
-    initialize = function( numberOfFiltersFG = 4L, numberOfFiltersH = 8L, poolSize = 2L,
-      doUpsample = TRUE, doConcatenateFinalLayers = FALSE )
+    initialize = function( numberOfFiltersFG = 4L, numberOfFiltersH = 8L, kernelSize = 1L,
+      poolSize = 2L, doConcatenateFinalLayers = FALSE )
       {
       self$numberOfFiltersFG <- as.integer( numberOfFiltersFG )
       self$numberOfFiltersH <- as.integer( numberOfFiltersH )
+      self$kernelSize <- as.integer( kernelSize )
       self$poolSize <- as.integer( poolSize )
-      self$doUpsample <- doUpsample
       self$doConcatenateFinalLayers <- doConcatenateFinalLayers
       },
 
     build = function( inputShape )
       {
-      kernelShapeFG <- c( 1L, 1L, inputShape[4], self$numberOfFiltersFG )
-      kernelShapeH <- c( 1L, 1L, inputShape[4], self$numberOfFiltersH )
+      kernelShapeFG <- c( self$kernelSize, self$kernelSize, inputShape[4], self$numberOfFiltersFG )
 
       self$kernelF <- self$add_weight( shape = kernelShapeFG,
                                        initializer = initializer_glorot_uniform(),
@@ -473,6 +471,8 @@ EfficientAttentionLayer2D <- R6::R6Class( "EfficientAttentionLayer2D",
 
       if( ! is.na( self$numberOfFiltersH ) )
         {
+        kernelShapeH <- c( self$kernelSize, self$kernelSize, inputShape[4], self$numberOfFiltersH )
+
         self$kernelG <- self$add_weight( shape = kernelShapeFG,
                                          initializer = initializer_glorot_uniform(),
                                          name = 'kernelG' )
@@ -487,7 +487,7 @@ EfficientAttentionLayer2D <- R6::R6Class( "EfficientAttentionLayer2D",
                                        name = "biasH" )
         }
 
-      kernelShapeO <- c( 1L, 1L, inputShape[4], inputShape[4] )
+      kernelShapeO <- c( 1L, 1L, self$numberOfFiltersFG, inputShape[4] )
       self$kernelO <- self$add_weight( shape = kernelShapeO,
                                        initializer = initializer_glorot_uniform(),
                                        name = 'kernelO' )
@@ -516,6 +516,8 @@ EfficientAttentionLayer2D <- R6::R6Class( "EfficientAttentionLayer2D",
       f <- K$pool2d( f, pool_size = tuple( self$poolSize, self$poolSize ), padding = 'same' )
       fFlat <- flatten( f )
 
+      C <- as.integer( f$shape[2] * self$poolSize )
+
       if( ! is.na( self$numberOfFiltersH ) )
         {
         g <- K$conv2d( input, kernel = self$kernelG, strides = c( 1, 1 ), padding = 'same' )
@@ -530,30 +532,32 @@ EfficientAttentionLayer2D <- R6::R6Class( "EfficientAttentionLayer2D",
         h <- K$pool2d( h, pool_size = tuple( self$poolSize, self$poolSize ), padding = 'same' )
         hFlat <- flatten( h )
 
+        C <- as.integer( h$shape[2] * self$poolSize )
+
         s <- tensorflow::tf$matmul( gFlat, fFlat, transpose_b = TRUE )
-        beta <- K$softmax( s, axis = -1L )
+        beta <- tensorflow::tf$nn$softmax( s )
         o <- tensorflow::tf$matmul( beta, hFlat )
         } else {
         s <- tensorflow::tf$matmul( fFlat, fFlat, transpose_b = TRUE )
-        beta <- K$softmax( s, axis = -1L )
+        beta <- tensorflow::tf$nn$softmax( s )
         o <- tensorflow::tf$matmul( beta, fFlat )
         }
 
-      if( self$doUpsample == TRUE )
+      if( self$poolSize > 1L )
         {
         outputShape <- list( self$inputShape[1],
           as.integer( floor( input$shape[1] / self$poolSize ) ),
           as.integer( floor( input$shape[2] / self$poolSize ) ),
-          self$inputShape[4] )
+          C )
 
         o <- K$reshape( o, shape = K$stack( outputShape ) )
 
         o <- K$resize_images( o, height_factor = self$poolSize,
           width_factor = self$poolSize, data_format = "channels_last" )
-        o <- K$conv2d( o, self$kernelO, strides = c( 1, 1 ), padding = 'same' )
-        o <- K$bias_add( o, self$biasO )
-        o <- K$relu( o )
         }
+      o <- K$conv2d( o, self$kernelO, strides = c( 1, 1 ), padding = 'same' )
+      o <- K$bias_add( o, self$biasO )
+      o <- K$relu( o )
 
      if( self$doConcatenateFinalLayers == TRUE )
        {
@@ -587,9 +591,8 @@ EfficientAttentionLayer2D <- R6::R6Class( "EfficientAttentionLayer2D",
 #' @param numberOfFiltersFG number of filters for F and G layers.
 #' @param numberOfFiltersH number of filters for H. If \code{= NA}, only
 #' use filter \code{F} for efficiency.
-#' @param poolSize pool size in max pool layer.  Default = 2L.
-#' @param doUpsample upsample final layers before concatenating or
-#' adding.  Default = TRUE.
+#' @param kernelSize kernel size in convolution layer.
+#' @param poolSize pool size in max pool layer.  
 #' @param doConcatenateFinalLayers concatenate final layer with input.
 #' Alternatively, add.  Default = FALSE
 #' @return a keras layer tensor
@@ -611,11 +614,11 @@ EfficientAttentionLayer2D <- R6::R6Class( "EfficientAttentionLayer2D",
 #'
 #' @export
 layer_efficient_attention_2d <- function( object, numberOfFiltersFG = 4L,
-  numberOfFiltersH = 8L, poolSize = 2L, doUpsample = TRUE,
+  numberOfFiltersH = 8L, kernelSize = 1L, poolSize = 2L,
   doConcatenateFinalLayers = FALSE, trainable = TRUE ) {
 create_layer( EfficientAttentionLayer2D, object,
     list( numberOfFiltersFG = numberOfFiltersFG, numberOfFiltersH = numberOfFiltersH,
-          poolSize = poolSize, doUpsample = doUpsample,
+          kernelSize = kernelSize, poolSize = poolSize,
           doConcatenateFinalLayers = doConcatenateFinalLayers,
           trainable = trainable )
     )
@@ -631,7 +634,6 @@ create_layer( EfficientAttentionLayer2D, object,
 #'  \item{numberOfFiltersH}{number of filters for H. If = NA, only
 #'        use filter F for efficiency.}
 #'  \item{poolSize}{pool_size in max pool layer.}
-#'  \item{doUpsample}{upsample final layers before concatenation or adding.}
 #'  \item{doConcatenateFinalLayers}{concatenate final layer with input.
 #'        Alternatively, add.}
 #' }
@@ -662,26 +664,25 @@ EfficientAttentionLayer3D <- R6::R6Class( "EfficientAttentionLayer3D",
 
     numberOfFiltersH = 8L,
 
-    poolSize = 2L,
+    kernelSize = 1L,
 
-    doUpsample = TRUE,
+    poolSize = 2L,
 
     doConcatenateFinalLayers = FALSE,
 
-    initialize = function( numberOfFiltersFG = 4L, numberOfFiltersH = 8L, poolSize = 2L,
-      doUpsample = TRUE, doConcatenateFinalLayers = FALSE )
+    initialize = function( numberOfFiltersFG = 4L, numberOfFiltersH = 8L, 
+      kernelSize = 1L, poolSize = 2L, doConcatenateFinalLayers = FALSE )
       {
       self$numberOfFiltersFG <- as.integer( numberOfFiltersFG )
       self$numberOfFiltersH <- as.integer( numberOfFiltersH )
       self$poolSize <- as.integer( poolSize )
-      self$doUpsample <- doUpsample
+      self$kernelSize <- as.integer( kernelSize )
       self$doConcatenateFinalLayers <- doConcatenateFinalLayers
       },
 
     build = function( inputShape )
       {
-      kernelShapeFG <- c( 1L, 1L, 1L, inputShape[5], self$numberOfFiltersFG )
-      kernelShapeH <- c( 1L, 1L, 1L, inputShape[5], self$numberOfFiltersH )
+      kernelShapeFG <- c( self$kernelSize, self$kernelSize, self$kernelSize, inputShape[5], self$numberOfFiltersFG )
 
       self$kernelF <- self$add_weight( shape = kernelShapeFG,
                                        initializer = initializer_glorot_uniform(),
@@ -692,6 +693,8 @@ EfficientAttentionLayer3D <- R6::R6Class( "EfficientAttentionLayer3D",
 
       if( ! is.na( self$numberOfFiltersH ) )
         {
+        kernelShapeH <- c( self$kernelSize, self$kernelSize, self$kernelSize, inputShape[5], self$numberOfFiltersH )
+
         self$kernelG <- self$add_weight( shape = kernelShapeFG,
                                          initializer = initializer_glorot_uniform(),
                                          name = 'kernelG' )
@@ -706,7 +709,7 @@ EfficientAttentionLayer3D <- R6::R6Class( "EfficientAttentionLayer3D",
                                        name = "biasH" )
         }
 
-      kernelShapeO <- c( 1L, 1L, 1L, inputShape[5], inputShape[5] )
+      kernelShapeO <- c( 1L, 1L, 1L, self$numberOfFiltersFG, inputShape[5] )
       self$kernelO <- self$add_weight( shape = kernelShapeO,
                                        initializer = initializer_glorot_uniform(),
                                        name = 'kernelO' )
@@ -735,6 +738,8 @@ EfficientAttentionLayer3D <- R6::R6Class( "EfficientAttentionLayer3D",
       f <- K$pool3d( f, pool_size = tuple( self$poolSize, self$poolSize, self$poolSize ), padding = 'same' )
       fFlat <- flatten( f )
 
+      C <- as.integer( f$shape[2] * self$poolSize )
+
       if( ! is.na( self$numberOfFiltersH ) )
         {
         g <- K$conv3d( input, kernel = self$kernelG, strides = c( 1, 1, 1 ), padding = 'same' )
@@ -749,16 +754,18 @@ EfficientAttentionLayer3D <- R6::R6Class( "EfficientAttentionLayer3D",
         h <- K$pool3d( h, pool_size = tuple( self$poolSize, self$poolSize, self$poolSize ), padding = 'same' )
         hFlat <- flatten( h )
 
+        C <- as.integer( h$shape[2] * self$poolSize )
+
         s <- tensorflow::tf$matmul( gFlat, fFlat, transpose_b = TRUE )
-        beta <- K$softmax( s, axis = -1L )
+        beta <- tensorflow::tf$nn$softmax( s )
         o <- tensorflow::tf$matmul( beta, hFlat )
         } else {
         s <- tensorflow::tf$matmul( fFlat, fFlat, transpose_b = TRUE )
-        beta <- K$softmax( s, axis = -1L )
+        beta <- tensorflow::tf$nn$softmax( s )
         o <- tensorflow::tf$matmul( beta, fFlat )
         }
 
-      if( self$doUpsample == TRUE )
+      if( self$poolSize > 1L )
         {
         outputShape <- list( self$inputShape[1],
           as.integer( floor( input$shape[1] / self$poolSize ) ),
@@ -771,10 +778,10 @@ EfficientAttentionLayer3D <- R6::R6Class( "EfficientAttentionLayer3D",
         o <- K$resize_volumes( o, depth_factor = self$poolSize,
           height_factor = self$poolSize, width_factor = self$poolSize,
           data_format = "channels_last" )
-        o <- K$conv3d( o, self$kernelO, strides = c( 1, 1, 1 ), padding = 'same' )
-        o <- K$bias_add( o, self$biasO )
-        o <- K$relu( o )
-        }
+        }  
+      o <- K$conv3d( o, self$kernelO, strides = c( 1, 1, 1 ), padding = 'same' )
+      o <- K$bias_add( o, self$biasO )
+      o <- K$relu( o )
 
      if( self$doConcatenateFinalLayers == TRUE )
        {
@@ -808,9 +815,8 @@ EfficientAttentionLayer3D <- R6::R6Class( "EfficientAttentionLayer3D",
 #' @param numberOfFiltersFG number of filters for F and G layers.
 #' @param numberOfFiltersH number of filters for H. If \code{= NA}, only
 #' use filter \code{F} for efficiency.
-#' @param poolSize pool size in max pool layer.  Default = 2L.
-#' @param doUpsample upsample final layers before concatenating or
-#' adding.  Default = TRUE.
+#' @param kernelSize kernel size in convolution layer.
+#' @param poolSize pool size in max pool layer.
 #' @param doConcatenateFinalLayers concatenate final layer with input.
 #' Alternatively, add.  Default = FALSE
 #' @return a keras layer tensor
@@ -832,11 +838,11 @@ EfficientAttentionLayer3D <- R6::R6Class( "EfficientAttentionLayer3D",
 #'
 #' @export
 layer_efficient_attention_3d <- function( object, numberOfFiltersFG = 4L,
-  numberOfFiltersH = 8L, poolSize = 2L, doUpsample = TRUE,
+  numberOfFiltersH = 8L, kernelSize = 1L, poolSize = 2L,
   doConcatenateFinalLayers = FALSE, trainable = TRUE ) {
 create_layer( EfficientAttentionLayer3D, object,
     list( numberOfFiltersFG = numberOfFiltersFG, numberOfFiltersH = numberOfFiltersH,
-          poolSize = poolSize, doUpsample = doUpsample,
+          kernelSize = kernelSize, poolSize = poolSize,
           doConcatenateFinalLayers = doConcatenateFinalLayers,
           trainable = trainable )
     )
