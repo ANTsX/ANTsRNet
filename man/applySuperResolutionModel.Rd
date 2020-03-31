@@ -10,6 +10,7 @@ applySuperResolutionModel(
   targetRange,
   batch_size = 32,
   linmatchOrder,
+  mask,
   verbose = FALSE
 )
 }
@@ -25,6 +26,8 @@ This range should match the mapping used in the training of the network.}
 \item{batch_size}{for prediction call}
 
 \item{linmatchOrder}{if not missing, then apply \code{linMatchIntensity} with given fit parameter}
+
+\item{mask}{restrict intensity rescaling parameters within the mask}
 
 \item{verbose}{If \code{TRUE}, show status messages}
 }

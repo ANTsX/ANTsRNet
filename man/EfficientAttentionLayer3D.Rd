@@ -17,7 +17,6 @@ Efficient attention layer (3-D)
 \item{numberOfFiltersH}{number of filters for H. If = NA, only
 use filter F for efficiency.}
 \item{poolSize}{pool_size in max pool layer.}
-\item{doUpsample}{upsample final layers before concatenation or adding.}
 \item{doConcatenateFinalLayers}{concatenate final layer with input.
 Alternatively, add.}
 }

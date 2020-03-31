@@ -12,7 +12,7 @@ createWideResNetModel3D(
   residualBlockSchedule = c(16, 32, 64),
   poolSize = c(8, 8, 8),
   dropoutRate = 0,
-  weightDecay = 0.0005,
+  weightDecay = 5e-04,
   mode = "classification"
 )
 }

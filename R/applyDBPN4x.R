@@ -45,6 +45,7 @@ linMatchIntensity <- function( fromImg, toImg, polyOrder = 1, truncate = TRUE ) 
 #' This range should match the mapping used in the training of the network.
 #' @param batch_size for prediction call
 #' @param linmatchOrder if not missing, then apply \code{linMatchIntensity} with given fit parameter
+#' @param mask restrict intensity rescaling parameters within the mask
 #' @param verbose If \code{TRUE}, show status messages
 #' @return image upscaled to resolution provided by network
 #' @author Avants BB
@@ -72,6 +73,7 @@ applySuperResolutionModel <- function(
   targetRange,
   batch_size = 32,
   linmatchOrder,
+  mask,
   verbose = FALSE )
 {
   if ( ! missing( targetRange ) )
@@ -111,10 +113,17 @@ applySuperResolutionModel <- function(
       dim( image ), maxNumberOfPatches = 1,
       strideLength = dim( image ), returnAsArray = TRUE )
     X_test = array( X_test, dim = c( 1,  dim( image ), image@components ) )
-    if ( ! missing( targetRange ) ) {
+    if ( ! missing( targetRange ) & missing( mask )  ) {
       X_test = X_test - min( X_test )
       X_test = X_test / max( X_test ) * ( targetRange[2] - targetRange[1] ) + targetRange[1]
-    }
+      }
+    if ( ! missing( targetRange ) & ! missing( mask )  ) {
+      selector = mask >= 0.5
+      minval = min( image[ selector ] )
+      X_test = X_test - minval
+      maxval = max( image[ selector ] - minval )
+      X_test = X_test / maxval * ( targetRange[2] - targetRange[1] ) + targetRange[1]
+      }
     #################################################
     if ( verbose ) print( "##### prediction" )
     t1 = Sys.time()
