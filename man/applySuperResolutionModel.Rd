@@ -47,10 +47,10 @@ range is taken over all channels.
 \examples{
 \donttest{
 library(ANTsRCore)
+library(keras)
 orig_img = antsImageRead( getANTsRData( "r16" ) )
 # input needs to be 48x48
-img = resampleImage(orig_img,
-resampleParams = rep(256/48, 2))
+img = resampleImage(orig_img, resampleParams = rep(256/48, 2))
 model = getPretrainedNetwork( "dbpn4x" )
 simg <- applySuperResolutionModel(img,  model = model)
 plot(orig_img)

@@ -6,6 +6,7 @@
 #' @param toImg defines the reference intensity function.
 #' @param polyOrder of polynomial fit.  default is none or just linear fit.
 #' @param truncate boolean which turns on/off the clipping of intensity.
+#' @param mask mask the matching region
 #' @return the \code{fromImg} matched to the \code{toImg}
 #' @author Avants BB
 #' @examples
@@ -14,11 +15,21 @@
 #' referenceImage <- antsImageRead( getANTsRData( "r64" ) )
 #' matchedImage <- linMatchIntensity( sourceImage, referenceImage )
 #' @export
-linMatchIntensity <- function( fromImg, toImg, polyOrder = 1, truncate = TRUE ) {
-  tovec = as.numeric( toImg )
-  fromvec = as.numeric( fromImg )
-  mdl = lm( tovec  ~  stats::poly( fromvec, polyOrder ) )
-  pp = predict( mdl )
+linMatchIntensity <- function( fromImg, toImg, polyOrder = 1, truncate = TRUE, mask ) {
+  if ( missing( mask ) ) {
+    tovec = as.numeric( toImg )
+    fromvec = as.numeric( fromImg )
+    mdl = lm( tovec  ~  stats::poly( fromvec, polyOrder ) )
+    pp = predict( mdl )
+  } else {
+    tovec = as.numeric( toImg[ mask >= 0.5 ] )
+    fromvec = as.numeric( fromImg[ mask >= 0.5 ] )
+    mydf = data.frame( tovec = tovec, stats::poly( fromvec, polyOrder ) )
+    mdl = lm( tovec  ~  . , data=mydf)
+    fromvec = as.numeric( fromImg )
+    mydfnew = data.frame( stats::poly( fromvec, polyOrder ) )
+    pp = predict( mdl, newdata=mydfnew )
+  }
   if ( truncate ) {
     pp[ pp < min( toImg ) ] = min( toImg )
     pp[ pp > max( toImg ) ] = max( toImg )
@@ -52,10 +63,10 @@ linMatchIntensity <- function( fromImg, toImg, polyOrder = 1, truncate = TRUE ) 
 #' @examples
 #' \donttest{
 #' library(ANTsRCore)
+#' library(keras)
 #' orig_img = antsImageRead( getANTsRData( "r16" ) )
 #' # input needs to be 48x48
-#' img = resampleImage(orig_img,
-#' resampleParams = rep(256/48, 2))
+#' img = resampleImage(orig_img, resampleParams = rep(256/48, 2))
 #' model = getPretrainedNetwork( "dbpn4x" )
 #' simg <- applySuperResolutionModel(img,  model = model)
 #' plot(orig_img)
@@ -109,9 +120,8 @@ applySuperResolutionModel <- function(
     }
     ###############
     X_test <- extractImagePatches(
-      image,
-      dim( image ), maxNumberOfPatches = 1,
-      strideLength = dim( image ), returnAsArray = TRUE )
+        image,
+        dim( image ), maxNumberOfPatches = 1, returnAsArray = TRUE )
     X_test = array( X_test, dim = c( 1,  dim( image ), image@components ) )
     if ( ! missing( targetRange ) & missing( mask )  ) {
       X_test = X_test - min( X_test )
@@ -128,10 +138,11 @@ applySuperResolutionModel <- function(
     if ( verbose ) print( "##### prediction" )
     t1 = Sys.time()
     pred = predict( model, X_test, batch_size = batch_size )
+    expansionFactor = ( dim( pred ) / dim( X_test ) )[-1][1:image@dimension]
     if ( verbose ) print( paste( "     - Predict in:", Sys.time()-t1 ) )
     # below is a fast simple linear regression model to map patch intensities
     if ( verbose ) print( "4. reconstruct intensity" )
-    if ( ! missing( targetRange ) ) {
+    if ( ! missing( targetRange ) & missing( mask )  ) {
       temp = range( image )
       pred = pred - min( pred )
       pred = pred / max( pred ) * ( temp[2] - temp[1] ) + temp[1]
@@ -162,17 +173,30 @@ applySuperResolutionModel <- function(
     }
 
 
-    expansionFactor = ( dim( pred ) / dim( X_test ) )[-1][1:image@dimension]
     if ( verbose )
       print( paste( "expansionFactor: ", paste( expansionFactor, collapse= 'x' ) ) )
 
     if ( tail(dim(pred),1) == 1 ) {
       ivec = sliceArrayChannel( pred, 1 )
       predImg = makeImage( dim( image ) * expansionFactor, ivec )
+      if ( ! missing( targetRange ) & ! missing( mask )  ) {
+        selector = mask >= 0.5
+        selectorBig = resampleImageToTarget( mask, predImg,  interpType = "nearestNeighbor" ) >= 0.5
+        temp = range( image[ selector ] )
+        minval = min( predImg[ selectorBig ] )
+        predImg = predImg - minval
+        maxval = max( predImg[ selectorBig ] )
+        predImg = predImg / maxval * ( temp[2] - temp[1] ) + temp[1]
+        }
       if ( ! missing( linmatchOrder ) ) {
         bilin = resampleImageToTarget( image, predImg )
-        predImg = linMatchIntensity( predImg, bilin, polyOrder = linmatchOrder  )
-      }
+        if ( missing( mask ) )
+          predImg = linMatchIntensity( predImg, bilin, polyOrder = linmatchOrder  )
+        if ( ! missing( mask ) ) {
+          bigMask = resampleImageToTarget( mask, predImg,  interpType = "nearestNeighbor" )
+          predImg = linMatchIntensity( predImg, bilin, polyOrder = linmatchOrder, mask = bigMask  )
+          }
+        }
     }
     if ( tail(dim(pred),1) > 1 ) {
       mcList = list()
@@ -209,20 +233,26 @@ applySuperResolutionModel <- function(
 #' @param lowResolutionPatchSize size of patches to upsample
 #' @param strideLength voxel/pixel steps between patches
 #' @param batch_size for prediction call
+#' @param mask restrict intensity rescaling parameters within the mask
 #' @param verbose If \code{TRUE}, show status messages
 #' @return image upscaled to resolution provided by network
 #' @author Avants BB
 #' @examples
 #' \dontrun{
 #' library(ANTsRCore)
+#' library( keras )
 #' orig_img = antsImageRead( getANTsRData( "r16" ) )
 #' # input needs to be 48x48
-#' model = getPretrainedNetwork( "dbpn4x" )
-#' simg <- applySuperResolutionModelPatch(img,
+#' model = createDeepBackProjectionNetworkModel2D( list(NULL,NULL, 1) )
+#' img = resampleImage(orig_img, resampleParams = rep(256/48, 2))
+#' simg <- applySuperResolutionModelPatch( img,
 #'  model = model, lowResolutionPatchSize = 8, strideLength = 2)
-#' plot(orig_img)
-#' plot(img)
-#' plot(simg)
+#' simgm <- applySuperResolutionModelPatch( img, mask = getMask( img ),
+#'  model = model, lowResolutionPatchSize = 8, strideLength = 2)
+#' plot( orig_img )
+#' plot( img )
+#' plot( simg )
+#' plot( simgm )
 #' }
 #' @importFrom stats cov var lm runif sd
 #' @export applySuperResolutionModelPatch
@@ -233,6 +263,7 @@ applySuperResolutionModelPatch <- function(
   lowResolutionPatchSize = 128,
   strideLength = 16,
   batch_size = 32,
+  mask,
   verbose = FALSE )
 {
   if ( ! missing( targetRange ) )
@@ -291,7 +322,7 @@ applySuperResolutionModelPatch <- function(
     numberOfPatches = nrow( X_test )
     X_test = array( X_test,
                     dim = c( numberOfPatches,  lowResolutionPatchSize, channelSize ) )
-    if ( ! missing( targetRange ) ) {
+    if ( ! missing( targetRange ) & missing( mask ) ) {
       xvec = as.numeric( sliceArray( X_test, 1 ) )
       tempMat = matrix( nrow = numberOfPatches, ncol = length( xvec ) )
       for( j in 1:numberOfPatches )
@@ -306,6 +337,13 @@ applySuperResolutionModelPatch <- function(
       rm( tempMat )
       gc()
     }
+    if ( ! missing( targetRange ) & ! missing( mask ) ) {
+      selector = mask >= 0.5
+      minval = min( image[ selector ] )
+      X_test = X_test - minval
+      maxval = max( image[ selector ] - minval )
+      X_test = X_test / maxval * ( targetRange[2] - targetRange[1] ) + targetRange[1]
+      }
     #################################################
     if ( verbose ) print( "##### prediction" )
     t1 = Sys.time()
@@ -355,5 +393,19 @@ applySuperResolutionModelPatch <- function(
     predImg = reconstructImageFromPatches( plist,
                                            bigImg,   strideLength = bigStrides )
     antsSetSpacing( predImg, antsGetSpacing( image ) / expansionFactor )
+
+    if ( ! missing( targetRange ) & ! missing( mask )  ) {
+      selector = mask >= 0.5
+      if ( predImg@components == 1 )
+        selectorBig = resampleImageToTarget( mask, predImg,  interpType = "nearestNeighbor" ) >= 0.5
+      if ( predImg@components > 1 )
+          selectorBig = resampleImageToTarget( mask, splitChannels(predImg)[[1]],  interpType = "nearestNeighbor" ) >= 0.5
+      temp = range( image[ selector ] )
+      minval = min( predImg[ selectorBig ] )
+      predImg = predImg - minval
+      maxval = max( predImg[ selectorBig ] )
+      predImg = predImg / maxval * ( temp[2] - temp[1] ) + temp[1]
+      }
+
     return( predImg )
 }
