@@ -4,7 +4,7 @@
 \alias{linMatchIntensity}
 \title{linMatchIntensity}
 \usage{
-linMatchIntensity(fromImg, toImg, polyOrder = 1, truncate = TRUE)
+linMatchIntensity(fromImg, toImg, polyOrder = 1, truncate = TRUE, mask)
 }
 \arguments{
 \item{fromImg}{image whose intensity function we will match to the \code{toImg}}
@@ -14,6 +14,8 @@ linMatchIntensity(fromImg, toImg, polyOrder = 1, truncate = TRUE)
 \item{polyOrder}{of polynomial fit.  default is none or just linear fit.}
 
 \item{truncate}{boolean which turns on/off the clipping of intensity.}
+
+\item{mask}{mask the matching region}
 }
 \value{
 the \code{fromImg} matched to the \code{toImg}

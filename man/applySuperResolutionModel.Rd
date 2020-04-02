@@ -10,6 +10,7 @@ applySuperResolutionModel(
   targetRange,
   batch_size = 32,
   linmatchOrder,
+  mask,
   verbose = FALSE
 )
 }
@@ -25,6 +26,8 @@ This range should match the mapping used in the training of the network.}
 \item{batch_size}{for prediction call}
 
 \item{linmatchOrder}{if not missing, then apply \code{linMatchIntensity} with given fit parameter}
+
+\item{mask}{restrict intensity rescaling parameters within the mask}
 
 \item{verbose}{If \code{TRUE}, show status messages}
 }
@@ -44,10 +47,10 @@ range is taken over all channels.
 \examples{
 \donttest{
 library(ANTsRCore)
+library(keras)
 orig_img = antsImageRead( getANTsRData( "r16" ) )
 # input needs to be 48x48
-img = resampleImage(orig_img,
-resampleParams = rep(256/48, 2))
+img = resampleImage(orig_img, resampleParams = rep(256/48, 2))
 model = getPretrainedNetwork( "dbpn4x" )
 simg <- applySuperResolutionModel(img,  model = model)
 plot(orig_img)
