@@ -6,6 +6,7 @@
 #' @param sourceImage image whose intensities we will match to the
 #'                    \code{referenceImage} intensities.
 #' @param referenceImage defines the reference intensity function.
+#' @param maskImage
 #' @param polyOrder of polynomial fit.  Default is 1 (linear fit).
 #' @param truncate boolean which turns on/off the clipping of intensities.
 #' @return the \code{sourceImage} matched to the \code{referenceImage}.
@@ -20,15 +21,23 @@
 #' testthat::expect_error(regressionMatchImage( bad_source, referenceImage ))
 #' @export
 regressionMatchImage <- function( sourceImage, referenceImage,
-  polyOrder = 1, truncate = TRUE )
+  maskImage = NULL, polyOrder = 1, truncate = TRUE )
   {
   if( any( dim( sourceImage ) != dim( referenceImage ) ) )
     {
     stop( "Images do not have the same dimension." )
     }
 
-  sourceIntensities <- as.numeric( sourceImage )
-  referenceIntensities <- as.numeric( referenceImage )
+  sourceIntensities <- c()
+  referenceIntensities <- c()
+  if( ! is.null( maskImage ) )
+    {
+    sourceIntensities <- as.numeric( sourceImage[maskImage >= 0.5] )
+    referenceIntensities <- as.numeric( referenceImage[maskImage >= 0.5] )
+    } else {
+    sourceIntensities <- as.numeric( sourceImage )
+    referenceIntensities <- as.numeric( referenceImage )
+    }
 
   model <- lm( referenceIntensities ~
     stats::poly( sourceIntensities, polyOrder ) )

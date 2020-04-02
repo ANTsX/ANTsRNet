@@ -7,6 +7,7 @@
 regressionMatchImage(
   sourceImage,
   referenceImage,
+  maskImage = NULL,
   polyOrder = 1,
   truncate = TRUE
 )

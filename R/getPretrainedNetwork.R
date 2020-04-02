@@ -17,20 +17,20 @@
 #' }
 #' @export getPretrainedNetwork
 getPretrainedNetwork <- function(
-  fileId = c("show",
-             "dbpn4x",
-             "mriSuperResolution",
-             "brainExtraction",
-             "brainSegmentation",
-             "brainSegmentationPatchBased",
-             "brainAgeGender",
-             "denoising",
-             "wholeTumorSegmentationT2Flair",
-             "protonLungMri",
-             "ctHumanLung",
-             "functionalLungMri",
-             "hippMapp3rInitial",
-             "hippMapp3rRefine"),
+  fileId = c( "show",
+              "brainAgeGender",
+              "brainExtraction",
+              "brainSegmentation",
+              "brainSegmentationPatchBased",
+              "ctHumanLung",
+              "dbpn4x",
+              "denoising",
+              "functionalLungMri",
+              "hippMapp3rInitial",
+              "hippMapp3rRefine",,
+              "mriSuperResolution",
+              "protonLungMri",
+              "wholeTumorSegmentationT2Flair" ),
   targetFileName,
   overwrite = FALSE)
 {
@@ -40,31 +40,32 @@ getPretrainedNetwork <- function(
   {
     return( fileId )
   }
-  fileId = match.arg(fileId)
+  fileId = match.arg( fileId )
 
   url <- switch(
     fileId,
-    dbpn4x = "https://ndownloader.figshare.com/files/13347617",
-    mriSuperResolution = "https://ndownloader.figshare.com/files/19430123",
+    brainAgeGender = "https://ndownloader.figshare.com/files/22179948",
+    # brainAgeGender = "https://ndownloader.figshare.com/files/14394350",
     brainExtraction = "https://ndownloader.figshare.com/files/13729661",
     brainSegmentation = "https://ndownloader.figshare.com/files/13900010",
-    brainSegmentationPatchBased = "https://ndownloader.figshare.com/files/14249717",
-    brainAgeGender = "https://ndownloader.figshare.com/files/14394350",
-    denoising = "https://ndownloader.figshare.com/files/14235296",
-    wholeTumorSegmentationT2Flair = "https://ndownloader.figshare.com/files/14087045",
-    protonLungMri = "https://ndownloader.figshare.com/files/13606799",
+    brainSegmentationPatchBased = "https://ndownloader.figshare.com/files/142497 17",
     ctHumanLung = "https://ndownloader.figshare.com/files/20005217",
+    dbpn4x = "https://ndownloader.figshare.com/files/13347617",
+    denoising = "https://ndownloader.figshare.com/files/14235296",
     functionalLungMri = "https://ndownloader.figshare.com/files/13824167",
     hippMapp3rInitial = "https://ndownloader.figshare.com/files/18068408",
-    hippMapp3rRefine = "https://ndownloader.figshare.com/files/18068411"
+    hippMapp3rRefine = "https://ndownloader.figshare.com/files/18068411",
+    mriSuperResolution = "https://ndownloader.figshare.com/files/19430123",
+    protonLungMri = "https://ndownloader.figshare.com/files/13606799",
+    wholeTumorSegmentationT2Flair = "https://ndownloader.figshare.com/files/14087045",
   )
 
   if( missing( targetFileName ) )
   {
-    targetFileName <- file.path(tempdir(), paste0(fileId, ".h5"))
+    targetFileName <- file.path( tempdir(), paste0( fileId, ".h5" ) )
   }
 
-  if( ! file.exists( targetFileName ) || overwrite)
+  if( ! file.exists( targetFileName ) || overwrite )
   {
     download.file( url, targetFileName, overwrite = overwrite )
   }

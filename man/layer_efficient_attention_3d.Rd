@@ -8,8 +8,8 @@ layer_efficient_attention_3d(
   object,
   numberOfFiltersFG = 4L,
   numberOfFiltersH = 8L,
+  kernelSize = 1L,
   poolSize = 2L,
-  doUpsample = TRUE,
   doConcatenateFinalLayers = FALSE,
   trainable = TRUE
 )
@@ -24,10 +24,9 @@ or another Layer which this layer will call.}
 \item{numberOfFiltersH}{number of filters for H. If \code{= NA}, only
 use filter \code{F} for efficiency.}
 
-\item{poolSize}{pool size in max pool layer.  Default = 2L.}
+\item{kernelSize}{kernel size in convolution layer.}
 
-\item{doUpsample}{upsample final layers before concatenating or
-adding.  Default = TRUE.}
+\item{poolSize}{pool size in max pool layer.}
 
 \item{doConcatenateFinalLayers}{concatenate final layer with input.
 Alternatively, add.  Default = FALSE}
@@ -59,4 +58,5 @@ outputs <- input \%>\% layer_efficient_attention_3d( numberOfFiltersFG )
 
 model <- keras_model( inputs = input, outputs = outputs )
 }
+
 }
