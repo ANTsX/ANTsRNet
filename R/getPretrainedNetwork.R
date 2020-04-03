@@ -27,7 +27,7 @@ getPretrainedNetwork <- function(
               "denoising",
               "functionalLungMri",
               "hippMapp3rInitial",
-              "hippMapp3rRefine",,
+              "hippMapp3rRefine",
               "mriSuperResolution",
               "protonLungMri",
               "wholeTumorSegmentationT2Flair" ),
@@ -57,7 +57,7 @@ getPretrainedNetwork <- function(
     hippMapp3rRefine = "https://ndownloader.figshare.com/files/18068411",
     mriSuperResolution = "https://ndownloader.figshare.com/files/19430123",
     protonLungMri = "https://ndownloader.figshare.com/files/13606799",
-    wholeTumorSegmentationT2Flair = "https://ndownloader.figshare.com/files/14087045",
+    wholeTumorSegmentationT2Flair = "https://ndownloader.figshare.com/files/14087045"
   )
 
   if( missing( targetFileName ) )

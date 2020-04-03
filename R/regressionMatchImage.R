@@ -6,7 +6,7 @@
 #' @param sourceImage image whose intensities we will match to the
 #'                    \code{referenceImage} intensities.
 #' @param referenceImage defines the reference intensity function.
-#' @param maskImage
+#' @param maskImage Defines voxels for regression modeling.
 #' @param polyOrder of polynomial fit.  Default is 1 (linear fit).
 #' @param truncate boolean which turns on/off the clipping of intensities.
 #' @return the \code{sourceImage} matched to the \code{referenceImage}.
@@ -32,8 +32,8 @@ regressionMatchImage <- function( sourceImage, referenceImage,
   referenceIntensities <- c()
   if( ! is.null( maskImage ) )
     {
-    sourceIntensities <- as.numeric( sourceImage[maskImage >= 0.5] )
-    referenceIntensities <- as.numeric( referenceImage[maskImage >= 0.5] )
+    sourceIntensities <- as.numeric( sourceImage[maskImage != 0] )
+    referenceIntensities <- as.numeric( referenceImage[maskImage != 0] )
     } else {
     sourceIntensities <- as.numeric( sourceImage )
     referenceIntensities <- as.numeric( referenceImage )
