@@ -244,8 +244,8 @@ implementation:</p><pre>    \url{https://github.com/veugene/fcn_maker/}
 <span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'>createResUnetModel2D</span>( <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span>( <span class='no'>domainImage</span> ), <span class='fl'>1</span> ),
   <span class='kw'>numberOfOutputs</span> <span class='kw'>=</span> <span class='no'>numberOfLabels</span> )
 <span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>domainImage</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2482417 132.6    4424845 236.4         NA   4424845  236.4
-#&gt; Vcells 7616769  58.2   34708685 264.9      16384 150672126 1149.6</div><div class='input'>
+#&gt; Ncells 2482418 132.6    4448662 237.6         NA   4448662  237.6
+#&gt; Vcells 7616806  58.2   34709284 264.9      16384 150665598 1149.5</div><div class='input'>
 <span class='no'>metric_multilabel_dice_coefficient</span> <span class='kw'>&lt;-</span>
   <span class='fu'><a href='https://rdrr.io/pkg/keras/man/metric_binary_accuracy.html'>custom_metric</a></span>( <span class='st'>"multilabel_dice_coefficient"</span>,
     <span class='no'>multilabel_dice_coefficient</span> )
@@ -273,16 +273,16 @@ implementation:</p><pre>    \url{https://github.com/veugene/fcn_maker/}
 <span class='co'>#              ),</span>
 <span class='co'>#              validation_split = 0.2 )</span>
 <span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>X_train</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2481401 132.6    4424845 236.4         NA   4424845  236.4
-#&gt; Vcells 7221722  55.1   27766948 211.9      16384 150672126 1149.6</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>Y_train</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2480229 132.5    4424845 236.4         NA   4424845  236.4
-#&gt; Vcells 6040143  46.1   22213559 169.5      16384 150672126 1149.6</div><div class='input'><span class='co'># Save the model and/or save the model weights</span>
+#&gt; Ncells 2481705 132.6    4448662 237.6         NA   4448662  237.6
+#&gt; Vcells 7222264  55.2   27767428 211.9      16384 150665598 1149.5</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>Y_train</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
+#&gt; Ncells 2480533 132.5    4448662 237.6         NA   4448662  237.6
+#&gt; Vcells 6040685  46.1   22213943 169.5      16384 150665598 1149.5</div><div class='input'><span class='co'># Save the model and/or save the model weights</span>
 
 <span class='co'># save_model_hdf5( model, filepath = 'resUnetModel.h5' )</span>
 <span class='co'># save_model_weights_hdf5( unetModel, filepath = 'resUnetModelWeights.h5' ) )</span>
 <span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>model</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2480179 132.5    4424845 236.4         NA   4424845  236.4
-#&gt; Vcells 6040154  46.1   22213559 169.5      16384 150672126 1149.6</div><div class='input'>
+#&gt; Ncells 2480483 132.5    4448662 237.6         NA   4448662  237.6
+#&gt; Vcells 6040696  46.1   22213943 169.5      16384 150665598 1149.5</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
