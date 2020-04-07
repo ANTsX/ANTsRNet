@@ -154,4 +154,8 @@ reference:
   - '`resampleTensorLike`'
   - '`ResampleTensorLayer2D`'
   - '`ResampleTensorLayer3D`'
+- title: Applications
+  desc: ~
+  contents:
+  - '`brainExtraction`'
 

@@ -117,7 +117,7 @@
     <p>regression between two image intensity spaces</p>
     </div>
 
-    <pre class="usage"><span class='fu'>linMatchIntensity</span>(<span class='no'>fromImg</span>, <span class='no'>toImg</span>, <span class='kw'>polyOrder</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>truncate</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>linMatchIntensity</span>(<span class='no'>fromImg</span>, <span class='no'>toImg</span>, <span class='kw'>polyOrder</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>truncate</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>mask</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -137,6 +137,10 @@
     <tr>
       <th>truncate</th>
       <td><p>boolean which turns on/off the clipping of intensity.</p></td>
+    </tr>
+    <tr>
+      <th>mask</th>
+      <td><p>mask the matching region</p></td>
     </tr>
     </table>
 

@@ -7,7 +7,7 @@
 getPretrainedNetwork(
   fileId = c("show", "brainAgeGender", "brainExtraction", "brainSegmentation",
     "brainSegmentationPatchBased", "ctHumanLung", "dbpn4x", "denoising",
-    "functionalLungMri", "hippMapp3rInitial", "hippMapp3rRefine", , "mriSuperResolution",
+    "functionalLungMri", "hippMapp3rInitial", "hippMapp3rRefine", "mriSuperResolution",
     "protonLungMri", "wholeTumorSegmentationT2Flair"),
   targetFileName,
   overwrite = FALSE

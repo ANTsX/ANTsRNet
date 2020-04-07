@@ -122,6 +122,7 @@ intensities of the reference image with the source image.</p>
     <pre class="usage"><span class='fu'>regressionMatchImage</span>(
   <span class='no'>sourceImage</span>,
   <span class='no'>referenceImage</span>,
+  <span class='kw'>maskImage</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>polyOrder</span> <span class='kw'>=</span> <span class='fl'>1</span>,
   <span class='kw'>truncate</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
 )</pre>
@@ -137,6 +138,10 @@ intensities of the reference image with the source image.</p>
     <tr>
       <th>referenceImage</th>
       <td><p>defines the reference intensity function.</p></td>
+    </tr>
+    <tr>
+      <th>maskImage</th>
+      <td><p>Defines voxels for regression modeling.</p></td>
     </tr>
     <tr>
       <th>polyOrder</th>

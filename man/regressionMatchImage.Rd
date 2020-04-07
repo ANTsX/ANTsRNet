@@ -18,6 +18,8 @@ regressionMatchImage(
 
 \item{referenceImage}{defines the reference intensity function.}
 
+\item{maskImage}{Defines voxels for regression modeling.}
+
 \item{polyOrder}{of polynomial fit.  Default is 1 (linear fit).}
 
 \item{truncate}{boolean which turns on/off the clipping of intensities.}

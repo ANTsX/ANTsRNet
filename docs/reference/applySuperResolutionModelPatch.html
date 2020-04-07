@@ -124,6 +124,7 @@
   <span class='kw'>lowResolutionPatchSize</span> <span class='kw'>=</span> <span class='fl'>128</span>,
   <span class='kw'>strideLength</span> <span class='kw'>=</span> <span class='fl'>16</span>,
   <span class='kw'>batch_size</span> <span class='kw'>=</span> <span class='fl'>32</span>,
+  <span class='no'>mask</span>,
   <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
 )</pre>
 
@@ -157,6 +158,10 @@ This range should match the mapping used in the training of the network.</p></td
       <td><p>for prediction call</p></td>
     </tr>
     <tr>
+      <th>mask</th>
+      <td><p>restrict intensity rescaling parameters within the mask</p></td>
+    </tr>
+    <tr>
       <th>verbose</th>
       <td><p>If <code>TRUE</code>, show status messages</p></td>
     </tr>
@@ -176,14 +181,19 @@ range is taken over all channels.</p>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>ANTsRCore</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>keras</span> )
 <span class='no'>orig_img</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/antsImageRead.html'>antsImageRead</a></span>( <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/getANTsRData.html'>getANTsRData</a></span>( <span class='st'>"r16"</span> ) )
 <span class='co'># input needs to be 48x48</span>
-<span class='no'>model</span> <span class='kw'>=</span> <span class='fu'><a href='getPretrainedNetwork.html'>getPretrainedNetwork</a></span>( <span class='st'>"dbpn4x"</span> )
-<span class='no'>simg</span> <span class='kw'>&lt;-</span> <span class='fu'>applySuperResolutionModelPatch</span>(<span class='no'>img</span>,
+<span class='no'>model</span> <span class='kw'>=</span> <span class='fu'><a href='createDeepBackProjectionNetworkModel2D.html'>createDeepBackProjectionNetworkModel2D</a></span>( <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>NULL</span>,<span class='kw'>NULL</span>, <span class='fl'>1</span>) )
+<span class='no'>img</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/resampleImage.html'>resampleImage</a></span>(<span class='no'>orig_img</span>, <span class='kw'>resampleParams</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>256</span>/<span class='fl'>48</span>, <span class='fl'>2</span>))
+<span class='no'>simg</span> <span class='kw'>&lt;-</span> <span class='fu'>applySuperResolutionModelPatch</span>( <span class='no'>img</span>,
  <span class='kw'>model</span> <span class='kw'>=</span> <span class='no'>model</span>, <span class='kw'>lowResolutionPatchSize</span> <span class='kw'>=</span> <span class='fl'>8</span>, <span class='kw'>strideLength</span> <span class='kw'>=</span> <span class='fl'>2</span>)
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>orig_img</span>)
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>img</span>)
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>simg</span>)
+<span class='no'>simgm</span> <span class='kw'>&lt;-</span> <span class='fu'>applySuperResolutionModelPatch</span>( <span class='no'>img</span>, <span class='kw'>mask</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/getMask.html'>getMask</a></span>( <span class='no'>img</span> ),
+ <span class='kw'>model</span> <span class='kw'>=</span> <span class='no'>model</span>, <span class='kw'>lowResolutionPatchSize</span> <span class='kw'>=</span> <span class='fl'>8</span>, <span class='kw'>strideLength</span> <span class='kw'>=</span> <span class='fl'>2</span>)
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>( <span class='no'>orig_img</span> )
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>( <span class='no'>img</span> )
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>( <span class='no'>simg</span> )
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>( <span class='no'>simgm</span> )
 }</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
