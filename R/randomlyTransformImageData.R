@@ -19,23 +19,31 @@
 #' @param transformType one of the following options
 #' \code{c( "translation", "rigid", "scaleShear", "affine"," deformation" ,
 #'   "affineAndDeformation" )}.  Default = \"affine\".
+#' @param sdAffine parameter dictating deviation amount from identity for
+#' random linear transformations.  Default = 1.0.
+#' @param deformationTransformType one of the following options
+#' \code{c( "bspline", "exponential" )} if deformation is specified in the
+#' \code{transformType}.  Default = \"bspline\".
+#' @param numberOfRandomPoints  number of displacement points.
+#' Default = 1000.
+#' @param sdNoise standard deviation of the displacement field
+#' noise (in mm).  Default = 10.0.
+#' @param numberOfFittingLevels (bspline deformation only) number of fitting levels.
+#' Default = 4.
+#' @param meshSize (bspline deformation only) scalar or n-D vector determining fitting
+#' resolution.  Default = 1.
+#' @param sdSmoothing (exponential deformation only) standard deviation of the
+#' Gaussian smoothing in mm.  Default = 4.0.
 #' @param inputImageInterpolator one of the following options
 #' \code{ c( "linear", "gaussian", "bspline" )}.  Default = \"linear\".
 #' @param segmentationImageInterpolator one of the following options
 #' \code{ c( "nearestNeighbor", "genericLabel" )}.  Default =
 #' \"nearestNeighbor\".
-#' @param sdAffine parameter dictating deviation amount from identity for
-#' random linear transformations.  Default = 1.0.
-#' @param numberOfControlPoints number of control points for simulated
-#' deformations. Default = 100.
-#' @param spatialSmoothing amount of spatial smoothing for simulated
-#' deformations.  Default = 3.0.
-#' @param sdNoise randomization parameter for simulated deformations.
 #' Default = 1.0.
 #' @return list (if no directory set) or boolean for success, failure
 #' @author Avants BB, Tustison NJ
 #' @importFrom ANTsRCore getAntsrTransformFixedParameters iMath resampleImageToTarget applyAntsrTransform antsImagePhysicalSpaceConsistency antsrTransformFromDisplacementField makeImage smoothImage setAntsrTransformFixedParameters getAntsrTransformParameters setAntsrTransformParameters readAntsrTransform createAntsrTransform randomMask mergeChannels
-#' @importFrom ANTsR composeTransformsToField
+#' @importFrom ANTsR composeTransformsToField simulateDisplacementField
 #' @importFrom stats rnorm
 #' @examples
 #'
@@ -53,11 +61,19 @@
 #' rm(image2); gc()
 #' @export randomlyTransformImageData
 randomlyTransformImageData <- function( referenceImage,
-  inputImageList, segmentationImageList = NA, numberOfSimulations = 10,
-  transformType = 'affine', inputImageInterpolator = 'linear',
-  segmentationImageInterpolator = 'nearestNeighbor',
-  sdAffine = 1.0, numberOfControlPoints = 100,
-  spatialSmoothing = 3.0, sdNoise = 1.0 )
+  inputImageList, 
+  segmentationImageList = NULL, 
+  numberOfSimulations = 10,
+  transformType = 'affine', 
+  sdAffine = 1.0,
+  deformationTransformType = c( "bspline", "exponential" ),
+  numberOfRandomPoints = 1000,
+  sdNoise = 10.0,
+  numberOfFittingLevels = 4,
+  meshSize = 1,
+  sdSmoothing = 4.0,
+  inputImageInterpolator = 'linear',
+  segmentationImageInterpolator = 'nearestNeighbor' )
 {
 
   polarDecomposition <- function( X )
@@ -112,41 +128,17 @@ randomlyTransformImageData <- function( referenceImage,
     return( transform )
     }
 
-  createRandomDisplacementFieldTransform <- function( image,
-    numberOfControlPoints = 100, spatialSmoothing = 3.0,
-    sdNoise = 1.0, dilationRadius = 5, numberOfCompositions = 10,
-    gradientStep = 0.1 )
+  createRandomDisplacementFieldTransform <- function( domainImage,
+    fieldType = c( "bspline", "exponential" ), numberOfRandomPoints = 1000,
+    sdNoise = 10.0, numberOfFittingLevels = 4, meshSize = 1, sdSmoothing = 4.0 )
     {
-    maskImage <- image * 0.0 + 1.0
-
-    spacing <- antsGetSpacing( image )
-    N <- prod( dim( image ) )
-
-    displacementFieldComponents <- list()
-    for( d in 1:image@dimension )
-      {
-      randomMaskForTransform <-
-        randomMask( maskImage, numberOfControlPoints )
-      voxelValues <- rnorm( numberOfControlPoints, sd = sdNoise * spacing[d] )
-      minimumValue <- min( voxelValues )
-      randomImage <- makeImage( randomMaskForTransform, ( voxelValues - minimumValue ) )
-      fieldComponent <- iMath( randomImage, "GD", dilationRadius ) %>%
-        smoothImage( spatialSmoothing ) * gradientStep
-
-      displacementFieldComponents[[d]] <- fieldComponent - sum( fieldComponent ) / N
-      }
-    displacementField <- mergeChannels( displacementFieldComponents )
+    displacementField <- simulateDisplacementField( domainImage, 
+      fieldType = fieldType, numberOfRandomPoints = numberOfRandomPoints,
+      sdNoise = sdNoise, enforceStationaryBoundary = TRUE, 
+      numberOfFittingLevels = numberOfFittingLevels, meshSize = meshSize,
+      sdSmoothing = sdSmoothing )
     displacementFieldTransform <- antsrTransformFromDisplacementField( displacementField )
-
-    transforms <- list()
-    for ( i in 1:numberOfCompositions )
-      {
-      transforms[[i]] <- displacementFieldTransform
-      }
-
-    composedTransformField <- antsrTransformFromDisplacementField(
-      composeTransformsToField( image, transforms ) )
-    return( composedTransformField )
+    return( displacementFieldTransform )
     }
 
   admissibleTransforms <- c( "translation", "rigid", "scaleShear", "affine",
@@ -168,6 +160,7 @@ randomlyTransformImageData <- function( referenceImage,
 
   simulatedImageList <- list()
   simulatedSegmentationImageList <- list()
+  simulatedTransforms <- list()
   for( i in seq_len( numberOfSimulations ) )
     {
     singleSubjectImageList <- inputImageList[[randomIndices[i]]]
@@ -179,7 +172,7 @@ randomlyTransformImageData <- function( referenceImage,
 
     if( !antsImagePhysicalSpaceConsistency( referenceImage, singleSubjectImageList[[1]] ) )
       {
-      for( j in 1:length( singleSubjectImageList ) )
+      for( j in seq_len( length( singleSubjectImageList ) ) )
         {
         singleSubjectImageList[[j]] <- resampleImageToTarget(
           singleSubjectImageList[[j]], referenceImage,
@@ -197,13 +190,15 @@ randomlyTransformImageData <- function( referenceImage,
     if( transformType == 'deformation' )
       {
       deformableTransform <- createRandomDisplacementFieldTransform(
-        referenceImage, numberOfControlPoints, spatialSmoothing, sdNoise )
+        referenceImage, deformationTransformType, numberOfRandomPoints, 
+        sdNoise, numberOfFittingLevels, meshSize, sdSmoothing )
       transforms <- list( deformableTransform )
       }
     if( transformType == 'affineAndDeformation' )
       {
       deformableTransform <- createRandomDisplacementFieldTransform(
-        referenceImage, numberOfControlPoints, spatialSmoothing, sdNoise )
+        referenceImage, deformationTransformType, numberOfRandomPoints, 
+        sdNoise, numberOfFittingLevels, meshSize, sdSmoothing )
       linearTransform <- createRandomLinearTransform( referenceImage,
         fixedParameters, 'affine', sdAffine )
       transforms <- list( deformableTransform, linearTransform )
@@ -215,32 +210,34 @@ randomlyTransformImageData <- function( referenceImage,
       transforms <- list( linearTransform )
       }
 
-    antsrTransform <- composeAntsrTransforms( transforms )
+    simulatedTransforms[[i]] <- composeAntsrTransforms( transforms )
 
     singleSubjectSimulatedImageList <- list()
-    for( j in 1:length( singleSubjectImageList ) )
+    for( j in seq_len( length( singleSubjectImageList ) ) )
       {
       singleSubjectSimulatedImageList[[j]] <- applyAntsrTransform(
-        antsrTransform, singleSubjectImageList[[j]], referenceImage,
+        simulatedTransforms[[i]], singleSubjectImageList[[j]], referenceImage,
         interpolation = inputImageInterpolator )
       }
     simulatedImageList[[i]] <- singleSubjectSimulatedImageList
 
     if( ! is.null( singleSubjectSegmentationImage ) )
       {
-      simulatedSegmentationImageList[[i]] <- applyAntsrTransform( transforms,
-        singleSubjectSegmentationImage, referenceImage,
+      simulatedSegmentationImageList[[i]] <- applyAntsrTransform( 
+        simulatedTransforms[[i]], singleSubjectSegmentationImage, referenceImage,
           interpolation = segmentationImageInterpolator )
       }
     }
 
   if( is.null( segmentationImageList[[1]] ) )
     {
-    return( list( simulatedImageList = simulatedImageList ) )
+    return( list( simulatedImages = simulatedImageList,
+                  simulatedTransforms = simulatedTransforms ) )
     }
   else
     {
-    return( list( simulatedImageList = simulatedImageList,
-      simulatedSegmentationImageList = simulatedSegmentationImageList ) )
+    return( list( simulatedImages = simulatedImageList,
+      simulatedSegmentationImages = simulatedSegmentationImageList,
+      simulatedTransforms = simulatedTransforms ) )
     }
 }
