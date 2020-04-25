@@ -9,6 +9,7 @@
 #' shape (or dimension) of that tensor is the image dimensions followed by
 #' the number of channels (e.g., red, green, and blue).
 #' @param numberOfFiltersPerLayer number of filters for the convolutional layers
+#' @param numberOfBins number of bins for final softmax output.
 #' @param dropoutRate dropout rate before final convolution layer. 
 #'
 #' @return a SCFN keras model
@@ -23,7 +24,8 @@
 #' @export
 createSimpleFullyConvolutionalNeuralNetworkModel3D <- function( 
   inputImageSize, 
-  numberOfFiltersPerLayer = c( 32, 64, 128, 256, 256, 64, 40 ),
+  numberOfFiltersPerLayer = c( 32, 64, 128, 256, 256, 64 ),
+  numberOfBins = 40,
   dropoutRate = 0.5 )
 {
   numberOfLayers <- length( numberOfFiltersPerLayer )
@@ -31,9 +33,9 @@ createSimpleFullyConvolutionalNeuralNetworkModel3D <- function(
   input <- layer_input( shape = inputImageSize )
 
   output <- input
-  for( i in seq_len( numberOfLayers - 1 ) ) 
+  for( i in seq_len( numberOfLayers ) ) 
     {
-    if(  i < numberOfLayers - 1 ) 
+    if( i < numberOfLayers ) 
       {
       output <- output %>% layer_conv_3d( numberOfFiltersPerLayer[i], 
         kernel_size = c( 3L, 3L, 3L ), padding = "valid" )  
@@ -55,11 +57,9 @@ createSimpleFullyConvolutionalNeuralNetworkModel3D <- function(
     output <- output %>% layer_dropout( rate = dropoutRate )  
     }
 
-  output <- output %>% layer_conv_3d( numberOfFiltersPerLayer[numberOfLayers], 
-    kernel_size = c( 1L, 1L, 1L ), padding = "same" )  
-  output <- output %>%
-    layer_dense( units = 1, activation = 'linear' )
-
+  output <- output %>% layer_conv_3d( numberOfBins, 
+    kernel_size = c( 1L, 1L, 1L ), padding = "same", activation = "softmax" )  
+ 
   model <- keras_model( inputs = input, outputs = output )
 
   return( model )

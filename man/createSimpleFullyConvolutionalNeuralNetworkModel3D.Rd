@@ -6,7 +6,8 @@
 \usage{
 createSimpleFullyConvolutionalNeuralNetworkModel3D(
   inputImageSize,
-  numberOfFiltersPerLayer = c(32, 64, 128, 256, 256, 64, 40),
+  numberOfFiltersPerLayer = c(32, 64, 128, 256, 256, 64),
+  numberOfBins = 40,
   dropoutRate = 0.5
 )
 }
@@ -16,6 +17,8 @@ shape (or dimension) of that tensor is the image dimensions followed by
 the number of channels (e.g., red, green, and blue).}
 
 \item{numberOfFiltersPerLayer}{number of filters for the convolutional layers}
+
+\item{numberOfBins}{number of bins for final softmax output.}
 
 \item{dropoutRate}{dropout rate before final convolution layer.}
 }
