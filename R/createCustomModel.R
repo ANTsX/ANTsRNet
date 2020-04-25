@@ -9,8 +9,7 @@
 #' shape (or dimension) of that tensor is the image dimensions followed by
 #' the number of channels (e.g., red, green, and blue).
 #' @param numberOfFiltersPerLayer number of filters for the convolutional layers
-#'
-#' @param doDropout
+#' @param dropoutRate dropout rate before final convolution layer. 
 #'
 #' @return a SCFN keras model
 #' @author Tustison NJ
@@ -25,7 +24,7 @@
 createSimpleFullyConvolutionalNeuralNetworkModel3D <- function( 
   inputImageSize, 
   numberOfFiltersPerLayer = c( 32, 64, 128, 256, 256, 64, 40 ),
-  doDropout = TRUE )
+  dropoutRate = 0.5 )
 {
   numberOfLayers <- length( numberOfFiltersPerLayer )
 
@@ -41,20 +40,19 @@ createSimpleFullyConvolutionalNeuralNetworkModel3D <- function(
       output <- output %>% layer_batch_normalization()
       output <- output %>% layer_max_pooling_3d( pool_size = c( 2L, 2L, 2L ), 
         strides = c( 2L, 2L, 2L ) )                    
-      output <- output %>% layer_activation_relu()  
       } else {
       output <- output %>% layer_conv_3d( numberOfFiltersPerLayer[i], 
-        kernel_size = c( 3L, 3L, 3L ), padding = "valid" )  
+        kernel_size = c( 1L, 1L, 1L ), padding = "same" )  
       output <- output %>% layer_batch_normalization()
-      output <- output %>% layer_activation_relu()  
       }
+    output <- output %>% layer_activation_relu()  
     }
 
   output <- output %>% layer_average_pooling_3d( pool_size = c( 5L, 6L, 5L ) )
    
-  if( doDropout == TRUE )
+  if( dropout > 0.0 )
     {
-    output <- output %>% layer_dropout( rate = 0.5 )  
+    output <- output %>% layer_dropout( rate = dropoutRate )  
     }
 
   output <- output %>% layer_conv_3d( numberOfFiltersPerLayer[numberOfLayers], 

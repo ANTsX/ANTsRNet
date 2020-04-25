@@ -7,7 +7,7 @@
 createSimpleFullyConvolutionalNeuralNetworkModel3D(
   inputImageSize,
   numberOfFiltersPerLayer = c(32, 64, 128, 256, 256, 64, 40),
-  doDropout = TRUE
+  dropoutRate = 0.5
 )
 }
 \arguments{
@@ -17,7 +17,7 @@ the number of channels (e.g., red, green, and blue).}
 
 \item{numberOfFiltersPerLayer}{number of filters for the convolutional layers}
 
-\item{doDropout}{}
+\item{dropoutRate}{dropout rate before final convolution layer.}
 }
 \value{
 a SCFN keras model
