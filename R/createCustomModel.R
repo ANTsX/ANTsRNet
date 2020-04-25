@@ -50,7 +50,7 @@ createSimpleFullyConvolutionalNeuralNetworkModel3D <- function(
 
   output <- output %>% layer_average_pooling_3d( pool_size = c( 5L, 6L, 5L ) )
    
-  if( dropout > 0.0 )
+  if( dropoutRate > 0.0 )
     {
     output <- output %>% layer_dropout( rate = dropoutRate )  
     }
