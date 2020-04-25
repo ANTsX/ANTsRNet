@@ -17,6 +17,7 @@ reference:
   - '`createResNetWithSpatialTransformerNetworkModel3D`'
   - '`createSimpleClassificationWithSpatialTransformerNetworkModel2D`'
   - '`createSimpleClassificationWithSpatialTransformerNetworkModel3D`'
+  - '`createSimpleFullyConvolutionalNeuralNetworkModel3D`'
 - title: Object localization models
   desc: ~
   contents:

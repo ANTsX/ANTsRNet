@@ -182,20 +182,20 @@ convolution.</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>model</span> <span class='kw'>=</span> <span class='fu'>createEnhancedDeepSuperResolutionModel2D</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>28</span>, <span class='fl'>28</span>, <span class='fl'>1</span> ))
-<span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>model</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2470726  132    4448662 237.6         NA   4448662  237.6
-#&gt; Vcells 6019764   46   20536157 156.7      16384 150665598 1149.5</div><div class='input'><span class='no'>model</span> <span class='kw'>=</span> <span class='fu'>createEnhancedDeepSuperResolutionModel2D</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>28</span>, <span class='fl'>28</span>, <span class='fl'>1</span> ),
+<span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>model</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
+#&gt; Ncells 2497970 133.5    4109804 219.5         NA   4109804 219.5
+#&gt; Vcells 6062352  46.3   25679504 196.0      16384 130716683 997.3</div><div class='input'><span class='no'>model</span> <span class='kw'>=</span> <span class='fu'>createEnhancedDeepSuperResolutionModel2D</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>28</span>, <span class='fl'>28</span>, <span class='fl'>1</span> ),
 <span class='kw'>doBatchNormalization</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
 <span class='kw'>interpolation</span> <span class='kw'>=</span> <span class='st'>"conv"</span>, <span class='kw'>scale</span> <span class='kw'>=</span> <span class='fl'>4</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>model</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2471499  132    4448662 237.6         NA   4448662  237.6
-#&gt; Vcells 6021064   46   20536157 156.7      16384 150665598 1149.5</div><div class='input'><span class='no'>model</span> <span class='kw'>=</span> <span class='fu'>createEnhancedDeepSuperResolutionModel2D</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>28</span>, <span class='fl'>28</span>, <span class='fl'>1</span> ),
+<span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>model</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
+#&gt; Ncells 2497435 133.4    4109804 219.5         NA   4109804 219.5
+#&gt; Vcells 6061472  46.3   25679504 196.0      16384 130716683 997.3</div><div class='input'><span class='no'>model</span> <span class='kw'>=</span> <span class='fu'>createEnhancedDeepSuperResolutionModel2D</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>28</span>, <span class='fl'>28</span>, <span class='fl'>1</span> ),
 <span class='kw'>doBatchNormalization</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
 <span class='kw'>numberOfLossFunctions</span> <span class='kw'>=</span> <span class='fl'>2</span>,
 <span class='kw'>interpolation</span> <span class='kw'>=</span> <span class='st'>"conv"</span>, <span class='kw'>scale</span> <span class='kw'>=</span> <span class='fl'>8</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>model</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2471261  132    4448662 237.6         NA   4448662  237.6
-#&gt; Vcells 6020679   46   20536157 156.7      16384 150665598 1149.5</div></pre>
+<span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>model</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
+#&gt; Ncells 2501247 133.6    4109804 219.5         NA   4109804 219.5
+#&gt; Vcells 6067837  46.3   25679504 196.0      16384 130716683 997.3</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -211,7 +211,7 @@ convolution.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

@@ -122,15 +122,18 @@ images.  The reference image domain defines the space in which this happens.</p>
     <pre class="usage"><span class='fu'>randomlyTransformImageData</span>(
   <span class='no'>referenceImage</span>,
   <span class='no'>inputImageList</span>,
-  <span class='kw'>segmentationImageList</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>segmentationImageList</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>numberOfSimulations</span> <span class='kw'>=</span> <span class='fl'>10</span>,
   <span class='kw'>transformType</span> <span class='kw'>=</span> <span class='st'>"affine"</span>,
-  <span class='kw'>inputImageInterpolator</span> <span class='kw'>=</span> <span class='st'>"linear"</span>,
-  <span class='kw'>segmentationImageInterpolator</span> <span class='kw'>=</span> <span class='st'>"nearestNeighbor"</span>,
   <span class='kw'>sdAffine</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>numberOfControlPoints</span> <span class='kw'>=</span> <span class='fl'>100</span>,
-  <span class='kw'>spatialSmoothing</span> <span class='kw'>=</span> <span class='fl'>3</span>,
-  <span class='kw'>sdNoise</span> <span class='kw'>=</span> <span class='fl'>1</span>
+  <span class='kw'>deformationTransformType</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"bspline"</span>, <span class='st'>"exponential"</span>),
+  <span class='kw'>numberOfRandomPoints</span> <span class='kw'>=</span> <span class='fl'>1000</span>,
+  <span class='kw'>sdNoise</span> <span class='kw'>=</span> <span class='fl'>10</span>,
+  <span class='kw'>numberOfFittingLevels</span> <span class='kw'>=</span> <span class='fl'>4</span>,
+  <span class='kw'>meshSize</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>sdSmoothing</span> <span class='kw'>=</span> <span class='fl'>4</span>,
+  <span class='kw'>inputImageInterpolator</span> <span class='kw'>=</span> <span class='st'>"linear"</span>,
+  <span class='kw'>segmentationImageInterpolator</span> <span class='kw'>=</span> <span class='st'>"nearestNeighbor"</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -168,6 +171,42 @@ input image list (optional).</p></td>
   "affineAndDeformation" )</a></code>.  Default = \"affine\".</p></td>
     </tr>
     <tr>
+      <th>sdAffine</th>
+      <td><p>parameter dictating deviation amount from identity for
+random linear transformations.  Default = 1.0.</p></td>
+    </tr>
+    <tr>
+      <th>deformationTransformType</th>
+      <td><p>one of the following options
+<code><a href='https://rdrr.io/r/base/c.html'>c( "bspline", "exponential" )</a></code> if deformation is specified in the
+<code>transformType</code>.  Default = \"bspline\".</p></td>
+    </tr>
+    <tr>
+      <th>numberOfRandomPoints</th>
+      <td><p>number of displacement points.
+Default = 1000.</p></td>
+    </tr>
+    <tr>
+      <th>sdNoise</th>
+      <td><p>standard deviation of the displacement field
+noise (in mm).  Default = 10.0.</p></td>
+    </tr>
+    <tr>
+      <th>numberOfFittingLevels</th>
+      <td><p>(bspline deformation only) number of fitting levels.
+Default = 4.</p></td>
+    </tr>
+    <tr>
+      <th>meshSize</th>
+      <td><p>(bspline deformation only) scalar or n-D vector determining fitting
+resolution.  Default = 1.</p></td>
+    </tr>
+    <tr>
+      <th>sdSmoothing</th>
+      <td><p>(exponential deformation only) standard deviation of the
+Gaussian smoothing in mm.  Default = 4.0.</p></td>
+    </tr>
+    <tr>
       <th>inputImageInterpolator</th>
       <td><p>one of the following options
 <code><a href='https://rdrr.io/r/base/c.html'> c( "linear", "gaussian", "bspline" )</a></code>.  Default = \"linear\".</p></td>
@@ -176,26 +215,7 @@ input image list (optional).</p></td>
       <th>segmentationImageInterpolator</th>
       <td><p>one of the following options
 <code><a href='https://rdrr.io/r/base/c.html'> c( "nearestNeighbor", "genericLabel" )</a></code>.  Default =
-\"nearestNeighbor\".</p></td>
-    </tr>
-    <tr>
-      <th>sdAffine</th>
-      <td><p>parameter dictating deviation amount from identity for
-random linear transformations.  Default = 1.0.</p></td>
-    </tr>
-    <tr>
-      <th>numberOfControlPoints</th>
-      <td><p>number of control points for simulated
-deformations. Default = 100.</p></td>
-    </tr>
-    <tr>
-      <th>spatialSmoothing</th>
-      <td><p>amount of spatial smoothing for simulated
-deformations.  Default = 3.0.</p></td>
-    </tr>
-    <tr>
-      <th>sdNoise</th>
-      <td><p>randomization parameter for simulated deformations.
+\"nearestNeighbor\".
 Default = 1.0.</p></td>
     </tr>
     </table>
@@ -214,15 +234,15 @@ Default = 1.0.</p></td>
 <span class='no'>data</span> <span class='kw'>&lt;-</span> <span class='fu'>randomlyTransformImageData</span>( <span class='no'>image1</span>,
   <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>( <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>( <span class='no'>image1</span> ), <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>( <span class='no'>image2</span> ) ),
   <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>( <span class='no'>segmentation1</span>, <span class='no'>segmentation2</span> ) )
-<span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>segmentation1</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2528170 135.1    4448662 237.6         NA   4448662  237.6
-#&gt; Vcells 8529487  65.1   29921603 228.3      16384 150665598 1149.5</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>segmentation2</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2527921 135.1    4448662 237.6         NA   4448662  237.6
-#&gt; Vcells 8529108  65.1   29921603 228.3      16384 150665598 1149.5</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>image1</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2527912 135.1    4448662 237.6         NA   4448662  237.6
-#&gt; Vcells 8529129  65.1   29921603 228.3      16384 150665598 1149.5</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>image2</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2527902 135.1    4448662 237.6         NA   4448662  237.6
-#&gt; Vcells 8529134  65.1   29921603 228.3      16384 150665598 1149.5</div></pre>
+<span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>segmentation1</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
+#&gt; Ncells 2558204 136.7    4109804 219.5         NA   4109804 219.5
+#&gt; Vcells 8573528  65.5   29965340 228.7      16384 130716683 997.3</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>segmentation2</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
+#&gt; Ncells 2558003 136.7    4109804 219.5         NA   4109804 219.5
+#&gt; Vcells 8573229  65.5   29965340 228.7      16384 130716683 997.3</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>image1</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
+#&gt; Ncells 2557994 136.7    4109804 219.5         NA   4109804 219.5
+#&gt; Vcells 8573250  65.5   29965340 228.7      16384 130716683 997.3</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>image2</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
+#&gt; Ncells 2557984 136.7    4109804 219.5         NA   4109804 219.5
+#&gt; Vcells 8573255  65.5   29965340 228.7      16384 130716683 997.3</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -238,7 +258,7 @@ Default = 1.0.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

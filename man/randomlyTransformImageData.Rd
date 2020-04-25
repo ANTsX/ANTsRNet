@@ -7,15 +7,18 @@
 randomlyTransformImageData(
   referenceImage,
   inputImageList,
-  segmentationImageList = NA,
+  segmentationImageList = NULL,
   numberOfSimulations = 10,
   transformType = "affine",
-  inputImageInterpolator = "linear",
-  segmentationImageInterpolator = "nearestNeighbor",
   sdAffine = 1,
-  numberOfControlPoints = 100,
-  spatialSmoothing = 3,
-  sdNoise = 1
+  deformationTransformType = c("bspline", "exponential"),
+  numberOfRandomPoints = 1000,
+  sdNoise = 10,
+  numberOfFittingLevels = 4,
+  meshSize = 1,
+  sdSmoothing = 4,
+  inputImageInterpolator = "linear",
+  segmentationImageInterpolator = "nearestNeighbor"
 )
 }
 \arguments{
@@ -40,23 +43,34 @@ input image list (optional).}
 \code{c( "translation", "rigid", "scaleShear", "affine"," deformation" ,
   "affineAndDeformation" )}.  Default = \"affine\".}
 
+\item{sdAffine}{parameter dictating deviation amount from identity for
+random linear transformations.  Default = 1.0.}
+
+\item{deformationTransformType}{one of the following options
+\code{c( "bspline", "exponential" )} if deformation is specified in the
+\code{transformType}.  Default = \"bspline\".}
+
+\item{numberOfRandomPoints}{number of displacement points.
+Default = 1000.}
+
+\item{sdNoise}{standard deviation of the displacement field
+noise (in mm).  Default = 10.0.}
+
+\item{numberOfFittingLevels}{(bspline deformation only) number of fitting levels.
+Default = 4.}
+
+\item{meshSize}{(bspline deformation only) scalar or n-D vector determining fitting
+resolution.  Default = 1.}
+
+\item{sdSmoothing}{(exponential deformation only) standard deviation of the
+Gaussian smoothing in mm.  Default = 4.0.}
+
 \item{inputImageInterpolator}{one of the following options
 \code{ c( "linear", "gaussian", "bspline" )}.  Default = \"linear\".}
 
 \item{segmentationImageInterpolator}{one of the following options
 \code{ c( "nearestNeighbor", "genericLabel" )}.  Default =
-\"nearestNeighbor\".}
-
-\item{sdAffine}{parameter dictating deviation amount from identity for
-random linear transformations.  Default = 1.0.}
-
-\item{numberOfControlPoints}{number of control points for simulated
-deformations. Default = 100.}
-
-\item{spatialSmoothing}{amount of spatial smoothing for simulated
-deformations.  Default = 3.0.}
-
-\item{sdNoise}{randomization parameter for simulated deformations.
+\"nearestNeighbor\".
 Default = 1.0.}
 }
 \value{

@@ -206,11 +206,11 @@ implementation:</p><pre>    https://github.com/duggalrahul/AlexNet-Experiments-K
 <span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/reexports.html'>compile</a></span>( <span class='kw'>loss</span> <span class='kw'>=</span> <span class='st'>'categorical_crossentropy'</span>,
   <span class='kw'>optimizer</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/optimizer_adam.html'>optimizer_adam</a></span>( <span class='kw'>lr</span> <span class='kw'>=</span> <span class='fl'>0.0001</span> ),
   <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='st'>'categorical_crossentropy'</span>, <span class='st'>'accuracy'</span> ) )
-<span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;            used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells  2410506 128.8    4448662 237.6         NA   4448662  237.6
-#&gt; Vcells 31843483 243.0  122405031 933.9      16384 150665598 1149.5</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>mnistData</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2410433 128.8    4448662 237.6         NA   4448662  237.6
-#&gt; Vcells 4368397  33.4   97924025 747.2      16384 150665598 1149.5</div><div class='input'><span class='co'># Comment out the rest due to travis build constraints</span>
+<span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;            used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
+#&gt; Ncells  2442946 130.5    4109804 219.5         NA   4109804 219.5
+#&gt; Vcells 31894701 243.4  122449411 934.3      16384 130716683 997.3</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>mnistData</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
+#&gt; Ncells 2439939 130.4    4109804 219.5         NA   4109804 219.5
+#&gt; Vcells 4414724  33.7   97959529 747.4      16384 130716683 997.3</div><div class='input'><span class='co'># Comment out the rest due to travis build constraints</span>
 
 <span class='co'># track &lt;- model %&gt;% fit( X_trainSmall, Y_trainSmall, verbose = 1,</span>
 <span class='co'>#   epochs = 1, batch_size = 2, shuffle = TRUE, validation_split = 0.5 )</span>
@@ -219,9 +219,9 @@ implementation:</p><pre>    https://github.com/duggalrahul/AlexNet-Experiments-K
 
 <span class='co'># testingMetrics &lt;- model %&gt;% evaluate( X_testSmall, Y_testSmall )</span>
 <span class='co'># predictedData &lt;- model %&gt;% predict( X_testSmall, verbose = 1 )</span>
-<span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>model</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2410494 128.8    4448662 237.6         NA   4448662  237.6
-#&gt; Vcells 4368464  33.4   78339220 597.7      16384 150665598 1149.5</div></pre>
+<span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>model</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
+#&gt; Ncells 2440000 130.4    4109804 219.5         NA   4109804 219.5
+#&gt; Vcells 4414791  33.7   78367624 597.9      16384 130716683 997.3</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -237,7 +237,7 @@ implementation:</p><pre>    https://github.com/duggalrahul/AlexNet-Experiments-K
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

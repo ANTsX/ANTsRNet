@@ -277,68 +277,68 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
               <span class='kw'>validation_split</span> <span class='kw'>=</span> <span class='fl'>0.2</span> )</div><div class='output co'>#&gt; <span class='error'>Error in py_call_impl(callable, dots$args, dots$keywords): RuntimeError: Evaluation error: ValueError: Dimension must be 4 but is 5 for 'loss/conv2d_259_loss/transpose' (op: 'Transpose') with input shapes: [4,256,256,3], [5].</span>
 #&gt; <span class='error'></span>
 #&gt; <span class='error'>Detailed traceback: </span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow_core/python/keras/backend.py", line 2768, in permute_dimensions</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow_core/python/keras/backend.py", line 2768, in permute_dimensions</span>
 #&gt; <span class='error'>    return array_ops.transpose(x, perm=pattern)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow_core/python/ops/array_ops.py", line 1870, in transpose</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow_core/python/ops/array_ops.py", line 1870, in transpose</span>
 #&gt; <span class='error'>    ret = transpose_fn(a, perm, name=name)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow_core/python/ops/gen_array_ops.py", line 11455, in transpose</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow_core/python/ops/gen_array_ops.py", line 11455, in transpose</span>
 #&gt; <span class='error'>    "Transpose", x=x, perm=perm, name=name)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow_core/python/framework/op_def_library.py", line 793, in _apply_op_helper</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow_core/python/framework/op_def_library.py", line 793, in _apply_op_helper</span>
 #&gt; <span class='error'>    op_def=op_def)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow_core/python/framework/func_graph.py", line 548, in create_op</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow_core/python/framework/func_graph.py", line 548, in create_op</span>
 #&gt; <span class='error'>    compute_device)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow_core/python/framework/ops.py", line 3429, in _create_op_internal</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow_core/python/framework/ops.py", line 3429, in _create_op_internal</span>
 #&gt; <span class='error'>    op_def=op_def)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow_core/python/framework/ops.py", line 1773, in __init__</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow_core/python/framework/ops.py", line 1773, in __init__</span>
 #&gt; <span class='error'>    control_input_ops)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow_core/python/framework/ops.py", line 1613, in _create_c_op</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow_core/python/framework/ops.py", line 1613, in _create_c_op</span>
 #&gt; <span class='error'>    raise ValueError(str(e))</span>
 #&gt; <span class='error'>.</span>
 #&gt; <span class='error'></span>
 #&gt; <span class='error'>Detailed traceback: </span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow_core/python/keras/engine/training.py", line 728, in fit</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow_core/python/keras/engine/training.py", line 728, in fit</span>
 #&gt; <span class='error'>    use_multiprocessing=use_multiprocessing)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow_core/python/keras/engine/training_v2.py", line 324, in fit</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow_core/python/keras/engine/training_v2.py", line 324, in fit</span>
 #&gt; <span class='error'>    total_epochs=epochs)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow_core/python/keras/engine/training_v2.py", line 123, in run_one_epoch</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow_core/python/keras/engine/training_v2.py", line 123, in run_one_epoch</span>
 #&gt; <span class='error'>    batch_outs = execution_function(iterator)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow_core/python/keras/engine/training_v2_utils.py", line 86, in execution_function</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow_core/python/keras/engine/training_v2_utils.py", line 86, in execution_function</span>
 #&gt; <span class='error'>    distributed_function(input_fn))</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow_core/python/eager/def_function.py", line 457, in __call__</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow_core/python/eager/def_function.py", line 457, in __call__</span>
 #&gt; <span class='error'>    result = self._call(*args, **kwds)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow_core/python/eager/def_function.py", line 503, in _call</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow_core/python/eager/def_function.py", line 503, in _call</span>
 #&gt; <span class='error'>    self._initialize(args, kwds, add_initializers_to=initializer_map)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow_core/python/eager/def_function.py", line 408, in _initialize</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow_core/python/eager/def_function.py", line 408, in _initialize</span>
 #&gt; <span class='error'>    *args, **kwds))</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow_core/python/eager/function.py", line 1848, in _get_concrete_function_internal_garbage_collected</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow_core/python/eager/function.py", line 1848, in _get_concrete_function_internal_garbage_collected</span>
 #&gt; <span class='error'>    graph_function, _, _ = self._maybe_define_function(args, kwargs)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow_core/python/eager/function.py", line 2150, in _maybe_define_function</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow_core/python/eager/function.py", line 2150, in _maybe_define_function</span>
 #&gt; <span class='error'>    graph_function = self._create_graph_function(args, kwargs)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow_core/python/eager/function.py", line 2041, in _create_graph_function</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow_core/python/eager/function.py", line 2041, in _create_graph_function</span>
 #&gt; <span class='error'>    capture_by_value=self._capture_by_value),</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow_core/python/framework/func_graph.py", line 915, in func_graph_from_py_func</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow_core/python/framework/func_graph.py", line 915, in func_graph_from_py_func</span>
 #&gt; <span class='error'>    func_outputs = python_func(*func_args, **func_kwargs)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow_core/python/eager/def_function.py", line 358, in wrapped_fn</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow_core/python/eager/def_function.py", line 358, in wrapped_fn</span>
 #&gt; <span class='error'>    return weak_wrapped_fn().__wrapped__(*args, **kwds)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow_core/python/keras/engine/training_v2_utils.py", line 73, in distributed_function</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow_core/python/keras/engine/training_v2_utils.py", line 73, in distributed_function</span>
 #&gt; <span class='error'>    per_replica_function, args=(model, x, y, sample_weights))</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow_core/python/distribute/distribute_lib.py", line 760, in experimental_run_v2</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow_core/python/distribute/distribute_lib.py", line 760, in experimental_run_v2</span>
 #&gt; <span class='error'>    return self._extended.call_for_each_replica(fn, args=args, kwargs=kwargs)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow_core/python/distribute/distribute_lib.py", line 1787, in call_for_each_replica</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow_core/python/distribute/distribute_lib.py", line 1787, in call_for_each_replica</span>
 #&gt; <span class='error'>    return self._call_for_each_replica(fn, args, kwargs)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow_core/python/distribute/distribute_lib.py", line 2132, in _call_for_each_replica</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow_core/python/distribute/distribute_lib.py", line 2132, in _call_for_each_replica</span>
 #&gt; <span class='error'>    return fn(*args, **kwargs)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow_core/python/autograph/impl/api.py", line 292, in wrapper</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow_core/python/autograph/impl/api.py", line 292, in wrapper</span>
 #&gt; <span class='error'>    return func(*args, **kwargs)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow_core/python/keras/engine/training_v2_utils.py", line 264, in train_on_batch</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow_core/python/keras/engine/training_v2_utils.py", line 264, in train_on_batch</span>
 #&gt; <span class='error'>    output_loss_metrics=model._output_loss_metrics)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow_core/python/keras/engine/training_eager.py", line 311, in train_on_batch</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow_core/python/keras/engine/training_eager.py", line 311, in train_on_batch</span>
 #&gt; <span class='error'>    output_loss_metrics=output_loss_metrics))</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow_core/python/keras/engine/training_eager.py", line 252, in _process_single_batch</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow_core/python/keras/engine/training_eager.py", line 252, in _process_single_batch</span>
 #&gt; <span class='error'>    training=training))</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow_core/python/keras/engine/training_eager.py", line 166, in _model_loss</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow_core/python/keras/engine/training_eager.py", line 166, in _model_loss</span>
 #&gt; <span class='error'>    per_sample_losses = loss_fn.call(targets[i], outs[i])</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow_core/python/keras/losses.py", line 221, in call</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow_core/python/keras/losses.py", line 221, in call</span>
 #&gt; <span class='error'>    return self.fn(y_true, y_pred, **self._fn_kwargs)</span>
 #&gt; <span class='error'>  File "/Library/Frameworks/R.framework/Versions/3.6/Resources/library/reticulate/python/rpytools/call.py", line 21, in python_function</span>
 #&gt; <span class='error'>    raise RuntimeError(res[kErrorKey])</span></div><div class='input'><span class='co'># }</span>
@@ -347,9 +347,9 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 
 <span class='co'># save_model_hdf5( model, filepath = 'unetModel.h5' )</span>
 <span class='co'># save_model_weights_hdf5( unetModel, filepath = 'unetModelWeights.h5' ) )</span>
-<span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>model</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2460309 131.4    4448662 237.6         NA   4448662  237.6
-#&gt; Vcells 6006690  45.9   32087745 244.9      16384 150665598 1149.5</div></pre>
+<span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>model</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
+#&gt; Ncells 2491125 133.1    4109804 219.5         NA   4109804 219.5
+#&gt; Vcells 6056752  46.3   32099380 244.9      16384 130716683 997.3</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -365,7 +365,7 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>
