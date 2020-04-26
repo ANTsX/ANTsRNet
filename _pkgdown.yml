@@ -147,6 +147,7 @@ reference:
 - title: Misc
   desc: ~
   contents:
+  - '`preprocessBrainImage`'
   - '`extractImagePatches`'
   - '`reconstructImageFromPatches`'
   - '`getPretrainedNetwork`'
