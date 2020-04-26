@@ -39,18 +39,20 @@ createSimpleFullyConvolutionalNeuralNetworkModel3D <- function(
       {
       output <- output %>% layer_conv_3d( numberOfFiltersPerLayer[i], 
         kernel_size = c( 3L, 3L, 3L ), padding = "valid" )  
-      output <- output %>% layer_batch_normalization()
+      output <- output %>% layer_zero_padding_3d( padding = c( 1L, 1L, 1L ) )
+      output <- output %>% layer_batch_normalization( momentum = 0.1, epsilon = 1e-5 )
       output <- output %>% layer_max_pooling_3d( pool_size = c( 2L, 2L, 2L ), 
         strides = c( 2L, 2L, 2L ) )                    
       } else {
       output <- output %>% layer_conv_3d( numberOfFiltersPerLayer[i], 
         kernel_size = c( 1L, 1L, 1L ), padding = "same" )  
-      output <- output %>% layer_batch_normalization()
+      output <- output %>% layer_batch_normalization( momentum = 0.1, epsilon = 1e-5 )
       }
     output <- output %>% layer_activation_relu()  
     }
 
-  output <- output %>% layer_average_pooling_3d( pool_size = c( 5L, 6L, 5L ) )
+  output <- output %>% layer_average_pooling_3d( pool_size = c( 5L, 6L, 5L ),
+    strides = c( 5L, 6L, 5L ) )
    
   if( dropoutRate > 0.0 )
     {
