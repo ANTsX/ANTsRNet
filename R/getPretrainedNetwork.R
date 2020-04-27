@@ -19,6 +19,7 @@
 getPretrainedNetwork <- function(
   fileId = c( "show",
               "brainAgeGender",
+              "brainAgeFmrib",
               "brainExtraction",
               "brainSegmentation",
               "brainSegmentationPatchBased",
@@ -45,7 +46,7 @@ getPretrainedNetwork <- function(
   url <- switch(
     fileId,
     brainAgeGender = "https://ndownloader.figshare.com/files/22179948",
-    # brainAgeGender = "https://ndownloader.figshare.com/files/14394350",
+    brainAgeFmrib = "https://ndownloader.figshare.com/files/22429077",
     brainExtraction = "https://ndownloader.figshare.com/files/13729661",
     brainSegmentation = "https://ndownloader.figshare.com/files/13900010",
     brainSegmentationPatchBased = "https://ndownloader.figshare.com/files/142497 17",

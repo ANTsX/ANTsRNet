@@ -213,18 +213,18 @@ implementation:</p><pre>    https://github.com/fchollet/deep-learning-models/blo
 
 <span class='co'># testingMetrics &lt;- model %&gt;% evaluate( X_testSmall, Y_testSmall )</span>
 <span class='co'># predictedData &lt;- model %&gt;% predict( X_testSmall, verbose = 1 )</span>
-<span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>model</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;            used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
-#&gt; Ncells  2504999 133.8    4110641 219.6         NA   4110641 219.6
-#&gt; Vcells 33701392 257.2   45197099 344.9      16384 130717590 997.3</div><div class='input'><span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'>createGoogLeNetModel2D</span>( <span class='kw'>inputImageSize</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='no'>resampledImageSize</span>, <span class='fl'>1</span> ),
+<span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>model</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;            used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
+#&gt; Ncells  2505294 133.8    4157124 222.1         NA   4157124  222.1
+#&gt; Vcells 33701886 257.2   45198358 344.9      16384 134824222 1028.7</div><div class='input'><span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'>createGoogLeNetModel2D</span>( <span class='kw'>inputImageSize</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='no'>resampledImageSize</span>, <span class='fl'>1</span> ),
   <span class='kw'>numberOfClassificationLabels</span> <span class='kw'>=</span> <span class='fl'>2</span> )
-<span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>model</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;            used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
-#&gt; Ncells  2504758 133.8    4110641 219.6         NA   4110641 219.6
-#&gt; Vcells 33701002 257.2   54316518 414.5      16384 130717590 997.3</div><div class='input'>
+<span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>model</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;            used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
+#&gt; Ncells  2505068 133.8    4157124 222.1         NA   4157124  222.1
+#&gt; Vcells 33701522 257.2   54318029 414.5      16384 134824222 1028.7</div><div class='input'>
 <span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'>createGoogLeNetModel2D</span>( <span class='kw'>inputImageSize</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='no'>resampledImageSize</span>, <span class='fl'>1</span> ),
   <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"regression"</span> )
-<span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>model</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;            used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
-#&gt; Ncells  2504778 133.8    4110641 219.6         NA   4110641 219.6
-#&gt; Vcells 33701041 257.2   54316518 414.5      16384 130717590 997.3</div></pre>
+<span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>model</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;            used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
+#&gt; Ncells  2505076 133.8    4157124 222.1         NA   4157124  222.1
+#&gt; Vcells 33701542 257.2   54318029 414.5      16384 134824222 1028.7</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

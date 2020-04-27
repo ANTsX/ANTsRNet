@@ -5,10 +5,10 @@
 \title{getPretrainedNetwork}
 \usage{
 getPretrainedNetwork(
-  fileId = c("show", "brainAgeGender", "brainExtraction", "brainSegmentation",
-    "brainSegmentationPatchBased", "ctHumanLung", "dbpn4x", "denoising",
-    "functionalLungMri", "hippMapp3rInitial", "hippMapp3rRefine", "mriSuperResolution",
-    "protonLungMri", "wholeTumorSegmentationT2Flair"),
+  fileId = c("show", "brainAgeGender", "brainAgeFmrib", "brainExtraction",
+    "brainSegmentation", "brainSegmentationPatchBased", "ctHumanLung", "dbpn4x",
+    "denoising", "functionalLungMri", "hippMapp3rInitial", "hippMapp3rRefine",
+    "mriSuperResolution", "protonLungMri", "wholeTumorSegmentationT2Flair"),
   targetFileName,
   overwrite = FALSE
 )

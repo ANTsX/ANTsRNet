@@ -9,10 +9,14 @@ preprocessBrainImage(
   truncateIntensity = c(0.01, 0.99),
   doBrainExtraction = TRUE,
   doBiasCorrection = TRUE,
+  returnBiasField = FALSE,
   doDenoising = TRUE,
+  templateTransformType = NULL,
+  template = "biobank",
   intensityMatchingType = c("regression", "histogram"),
   referenceImage = NULL,
   intensityNormalizationType = c("01", "0mean"),
+  outputDirectory = NULL,
   verbose = TRUE
 )
 }
@@ -27,7 +31,16 @@ If \code{TRUE}, returns mask.  3-D input only.}
 
 \item{doBiasCorrection}{boolean for performing N4 bias field correction.}
 
+\item{returnBiasField}{if TRUE, return bias field as an additional output
+\emph{without} bias correcting the preprocessed image.}
+
 \item{doDenoising}{boolean for performing NLM denoising.}
+
+\item{templateTransformType}{see Details in help for \code{antsRegistration}.
+Typically "Rigid" or "Affine".}
+
+\item{template}{an ANTs image or the default "biobank" in which case the
+ANTs biobank template resampled to \link{192,224,192} is downloaded and used.}
 
 \item{intensityMatchingType}{Either regression- or histogram-based.  Only is
 performed if \code{!is.null(referenceImage)}.}
@@ -38,10 +51,16 @@ performed if \code{!is.null(referenceImage)}.}
 (i.e., "01") or zero-mean, unit variance (i.e., "0mean").  If \code{NULL}
 normalization is not performed.}
 
+\item{outputDirectory}{destination directory for storing the downloaded
+template and model weights.  Since these can be resused, if
+\code{is.null(outputDirectory)}, these data will be downloaded to the
+inst/extdata/ subfolder of the ANTsRNet package.}
+
 \item{verbose}{print progress to the screen.}
 }
 \value{
-preprocessed image and (optionally) the brain mask
+preprocessed image and, optionally, the brain mask, bias field, and
+template transforms.
 }
 \description{
 Various preprocessing steps that have been previously described in
@@ -59,7 +78,7 @@ image <- antsImageRead( getANTsRData( "r16" ) )
 preprocessedImage <- preprocessBrainImage( image, 
   truncateIntensity = c( 0.01, 0.99 ), doBrainExtraction = FALSE,
   doBiasCorrection = TRUE, doDenoising = TRUE, 
-  intensityNormalizationType = "01", verbose = TRUE )
+  intensityNormalizationType = "01", verbose = FALSE )
 
 }
 \author{

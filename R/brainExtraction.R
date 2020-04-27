@@ -14,7 +14,6 @@
 #' @examples
 #' \dontrun{
 #' library( ANTsRNet )
-#' library( ANTsRNet )
 #' library( keras )
 #'
 #' image <- antsImageRead( "t1w_image.nii.gz" )
@@ -82,7 +81,7 @@ brainExtraction <- function( image, outputDirectory = NULL, verbose = FALSE )
     {
     cat( "Brain extraction:  prediction and decoding.\n" )
     }
-  predictedData <- unetModel %>% predict( batchX, verbose = 0 )
+  predictedData <- unetModel %>% predict( batchX, verbose = verbose )
   probabilityImagesArray <- decodeUnet( predictedData, reorientTemplate )
 
   if( verbose == TRUE )

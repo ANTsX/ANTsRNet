@@ -160,6 +160,7 @@ reference:
   desc: ~
   contents:
   - '`brainExtraction`'
+  - '`brainAgeFmrib`'
   - '`noBrainerBrainExtraction`'
   - '`hippMapp3rSegmentation`'
 

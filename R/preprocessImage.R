@@ -11,15 +11,26 @@
 #' @param doBrainExtraction boolean for performing ANTsRNet brain extraction
 #' If \code{TRUE}, returns mask.  3-D input only.
 #' @param doBiasCorrection boolean for performing N4 bias field correction.
+#' @param returnBiasField if TRUE, return bias field as an additional output 
+#' *without* bias correcting the preprocessed image.  
 #' @param doDenoising boolean for performing NLM denoising.
+#' @param templateTransformType see Details in help for \code{antsRegistration}.
+#' Typically "Rigid" or "Affine".
+#' @param template an ANTs image or the default "biobank" in which case the 
+#' ANTs biobank template resampled to [192,224,192] is downloaded and used.
 #' @param intensityMatchingType Either regression- or histogram-based.  Only is
 #' performed if \code{!is.null(referenceImage)}.
 #' @param referenceImage reference image for intensity matching.
 #' @param intensityNormalizationType Either rescale the intensities to [0,1] 
 #' (i.e., "01") or zero-mean, unit variance (i.e., "0mean").  If \code{NULL}
 #' normalization is not performed.
+#' @param outputDirectory destination directory for storing the downloaded
+#' template and model weights.  Since these can be resused, if
+#' \code{is.null(outputDirectory)}, these data will be downloaded to the
+#' inst/extdata/ subfolder of the ANTsRNet package.
 #' @param verbose print progress to the screen.
-#' @return preprocessed image and (optionally) the brain mask
+#' @return preprocessed image and, optionally, the brain mask, bias field, and
+#' template transforms.
 #' @author Tustison NJ, Avants BB
 #' @examples
 #'
@@ -29,15 +40,23 @@
 #' preprocessedImage <- preprocessBrainImage( image, 
 #'   truncateIntensity = c( 0.01, 0.99 ), doBrainExtraction = FALSE,
 #'   doBiasCorrection = TRUE, doDenoising = TRUE, 
-#'   intensityNormalizationType = "01", verbose = TRUE )
+#'   intensityNormalizationType = "01", verbose = FALSE )
 #'
 #' @import keras
 #' @export
 preprocessBrainImage <- function( image, truncateIntensity = c( 0.01, 0.99 ), 
-  doBrainExtraction = TRUE, doBiasCorrection = TRUE, doDenoising = TRUE, 
+  doBrainExtraction = TRUE, doBiasCorrection = TRUE, returnBiasField = FALSE, 
+  doDenoising = TRUE, templateTransformType = NULL, template = "biobank",
   intensityMatchingType = c( "regression", "histogram" ), referenceImage = NULL, 
-  intensityNormalizationType = c( "01", "0mean" ), verbose = TRUE )
+  intensityNormalizationType = c( "01", "0mean" ), outputDirectory = NULL, 
+  verbose = TRUE )
   {
+
+  if( is.null( outputDirectory ) )
+    {
+    outputDirectory <- system.file( "extdata", package = "ANTsRNet" )
+    }
+
   preprocessedImage <- antsImageClone( image )
 
   # Truncate intensity
@@ -60,22 +79,30 @@ preprocessBrainImage <- function( image, truncateIntensity = c( 0.01, 0.99 ),
       {
       message( "Preprocessing:  brain extraction.\n" )
       }
-    probabilityMask <- brainExtraction( preprocessedImage, verbose = verbose )
+    probabilityMask <- brainExtraction( preprocessedImage, outputDirectory = outputDirectory, verbose = verbose )
     mask <- thresholdImage( probabilityMask, 0.5, 1, 1, 0 )
     }
 
   # Do bias correction
+  biasField <- NULL
   if( doBiasCorrection == TRUE )
     {
     if( verbose == TRUE )
       {
       message( "Preprocessing:  bias correction.\n" )
       }
+    n4Output <- NULL  
     if( is.null( mask ) )
       {
-      preprocessedImage <- n4BiasFieldCorrection( preprocessedImage, shrinkFactor = 4, verbose = verbose )
+      n4Output <- n4BiasFieldCorrection( preprocessedImage, shrinkFactor = 4, returnBiasField = returnBiasField, verbose = verbose )
       } else {
-      preprocessedImage <- n4BiasFieldCorrection( preprocessedImage, mask, shrinkFactor = 4, verbose = verbose )
+      n4Output <- n4BiasFieldCorrection( preprocessedImage, mask, shrinkFactor = 4, returnBiasField = returnBiasField, verbose = verbose )
+      }
+    if( returnBiasField == TRUE ) 
+      {
+      biasField <- n4Output
+      } else {
+      preprocessedImage <- n4Output    
       }
     }
 
@@ -92,6 +119,55 @@ preprocessBrainImage <- function( image, truncateIntensity = c( 0.01, 0.99 ),
       } else {
       preprocessedImage <- denoiseImage( preprocessedImage, mask, shrinkFactor = 1, verbose = verbose )
       }
+    }
+
+  # Template normalization
+  transforms <- NULL
+  if( ! is.null( templateTransformType ) ) 
+    {
+    templateImage <- NULL    
+    if( template == "biobank" )    
+      {
+      templateFileName <- paste0( outputDirectory, "/biobank_resampled.nii.gz" )
+      if( ! file.exists( templateFileName ) )
+        {
+        if( verbose == TRUE )
+          {
+          cat( "Template normalization:  downloading biobank template.\n" )
+          }
+        templateUrl <- "https://ndownloader.figshare.com/files/22429242"
+        download.file( templateUrl, templateFileName, quiet = !verbose )
+        }
+      templateImage <- antsImageRead( templateFileName )
+      } else {
+      templateImage <- template    
+      }
+    if( is.null( mask ) )  
+      {
+      registration <- antsRegistration( fixed = templateImage, moving = preprocessedImage,
+        typeofTransform = templateTransformType, verbose = verbose )
+      preprocessedImage <- registration$warpedmovout
+      transforms <- list( fwdtransforms = registration$fwdtransforms,
+                          invtransforms = registration$invtransforms )
+      } else {
+      templateProbabilityMask <- brainExtraction( templateImage, outputDirectory = outputDirectory, verbose = verbose )
+      templateMask <- thresholdImage( templateProbabilityMask, 0.5, 1, 1, 0 )
+      templateBrainImage <- templateMask * templateImage
+
+      preprocessedBrainImage <- preprocessedImage * mask
+        
+      registration <- antsRegistration( fixed = templateBrainImage, moving = preprocessedBrainImage,
+        typeofTransform = templateTransformType, verbose = verbose )
+      transforms <- list( fwdtransforms = registration$fwdtransforms,
+                          invtransforms = registration$invtransforms )
+
+      preprocessedImage <- antsApplyTransforms( fixed = templateImage, moving = preprocessedImage,
+        transformlist = registration$fwdtransforms, interpolator = "linear", 
+        verbose = verbose )
+      mask <- antsApplyTransforms( fixed = templateImage, moving = mask,
+        transformlist = registration$fwdtransforms, interpolator = "genericLabel", 
+        verbose = verbose )                    
+      }                    
     }
 
   # Image matching
@@ -128,11 +204,18 @@ preprocessBrainImage <- function( image, truncateIntensity = c( 0.01, 0.99 ),
       }
     }
 
-  if( is.null( mask ) )
+  returnList <- list( preprocessedImage = preprocessedImage )
+  if( ! is.null( mask ) )
     {
-    return( preprocessedImage )
-    } else {
-    return( list( preprocessedImage = preprocessedImage,
-                  brainMask = mask ) )
+    returnList[["brainMask"]] <- mask
     }
+  if( ! is.null( biasField ) )
+    {
+    returnList[["biasField"]] <- biasField
+    }
+  if( ! is.null( transforms ) )
+    {
+    returnList[["templateTransforms"]] <- transforms
+    }
+  return( returnList )  
   }

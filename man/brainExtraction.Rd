@@ -26,7 +26,6 @@ training data.
 \examples{
 \dontrun{
 library( ANTsRNet )
-library( ANTsRNet )
 library( keras )
 
 image <- antsImageRead( "t1w_image.nii.gz" )
