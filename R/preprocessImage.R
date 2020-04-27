@@ -10,14 +10,14 @@
 #' for intensity truncation.
 #' @param doBrainExtraction boolean for performing ANTsRNet brain extraction
 #' If \code{TRUE}, returns mask.  3-D input only.
-#' @param doBiasCorrection boolean for performing N4 bias field correction.
-#' @param returnBiasField if TRUE, return bias field as an additional output 
-#' *without* bias correcting the preprocessed image.  
-#' @param doDenoising boolean for performing NLM denoising.
 #' @param templateTransformType see Details in help for \code{antsRegistration}.
 #' Typically "Rigid" or "Affine".
 #' @param template an ANTs image or the default "biobank" in which case the 
 #' ANTs biobank template resampled to [192,224,192] is downloaded and used.
+#' @param doBiasCorrection boolean for performing N4 bias field correction.
+#' @param returnBiasField if TRUE, return bias field as an additional output 
+#' *without* bias correcting the preprocessed image.  
+#' @param doDenoising boolean for performing NLM denoising.
 #' @param intensityMatchingType Either regression- or histogram-based.  Only is
 #' performed if \code{!is.null(referenceImage)}.
 #' @param referenceImage reference image for intensity matching.
@@ -46,8 +46,8 @@
 #' @import keras
 #' @export
 preprocessBrainImage <- function( image, truncateIntensity = c( 0.01, 0.99 ), 
-  doBrainExtraction = TRUE, doBiasCorrection = TRUE, returnBiasField = FALSE, 
-  doDenoising = TRUE, templateTransformType = NULL, template = "biobank",
+  doBrainExtraction = TRUE, templateTransformType = NULL, template = "biobank",
+  doBiasCorrection = TRUE, returnBiasField = FALSE, doDenoising = TRUE, 
   intensityMatchingType = c( "regression", "histogram" ), referenceImage = NULL, 
   intensityNormalizationType = c( "01", "0mean" ), outputDirectory = NULL, 
   verbose = TRUE )
@@ -82,44 +82,6 @@ preprocessBrainImage <- function( image, truncateIntensity = c( 0.01, 0.99 ),
       }
     probabilityMask <- brainExtraction( preprocessedImage, outputDirectory = outputDirectory, verbose = verbose )
     mask <- thresholdImage( probabilityMask, 0.5, 1, 1, 0 )
-    }
-
-  # Do bias correction
-  biasField <- NULL
-  if( doBiasCorrection == TRUE )
-    {
-    if( verbose == TRUE )
-      {
-      message( "Preprocessing:  bias correction.\n" )
-      }
-    n4Output <- NULL  
-    if( is.null( mask ) )
-      {
-      n4Output <- n4BiasFieldCorrection( preprocessedImage, shrinkFactor = 4, returnBiasField = returnBiasField, verbose = verbose )
-      } else {
-      n4Output <- n4BiasFieldCorrection( preprocessedImage, mask, shrinkFactor = 4, returnBiasField = returnBiasField, verbose = verbose )
-      }
-    if( returnBiasField == TRUE ) 
-      {
-      biasField <- n4Output
-      } else {
-      preprocessedImage <- n4Output    
-      }
-    }
-
-  # Denoising
-  if( doDenoising == TRUE )
-    {
-    if( verbose == TRUE )
-      {
-      message( "Preprocessing:  denoising.\n" )
-      }
-    if( is.null( mask ) )
-      {
-      preprocessedImage <- denoiseImage( preprocessedImage, shrinkFactor = 1, verbose = verbose )
-      } else {
-      preprocessedImage <- denoiseImage( preprocessedImage, mask, shrinkFactor = 1, verbose = verbose )
-      }
     }
 
   # Template normalization
@@ -169,6 +131,44 @@ preprocessBrainImage <- function( image, truncateIntensity = c( 0.01, 0.99 ),
         transformlist = registration$fwdtransforms, interpolator = "genericLabel", 
         verbose = verbose )                    
       }                    
+    }
+
+  # Do bias correction
+  biasField <- NULL
+  if( doBiasCorrection == TRUE )
+    {
+    if( verbose == TRUE )
+      {
+      message( "Preprocessing:  bias correction.\n" )
+      }
+    n4Output <- NULL  
+    if( is.null( mask ) )
+      {
+      n4Output <- n4BiasFieldCorrection( preprocessedImage, shrinkFactor = 4, returnBiasField = returnBiasField, verbose = verbose )
+      } else {
+      n4Output <- n4BiasFieldCorrection( preprocessedImage, mask, shrinkFactor = 4, returnBiasField = returnBiasField, verbose = verbose )
+      }
+    if( returnBiasField == TRUE ) 
+      {
+      biasField <- n4Output
+      } else {
+      preprocessedImage <- n4Output    
+      }
+    }
+
+  # Denoising
+  if( doDenoising == TRUE )
+    {
+    if( verbose == TRUE )
+      {
+      message( "Preprocessing:  denoising.\n" )
+      }
+    if( is.null( mask ) )
+      {
+      preprocessedImage <- denoiseImage( preprocessedImage, shrinkFactor = 1, verbose = verbose )
+      } else {
+      preprocessedImage <- denoiseImage( preprocessedImage, mask, shrinkFactor = 1, verbose = verbose )
+      }
     }
 
   # Image matching
