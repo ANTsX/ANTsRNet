@@ -34,6 +34,7 @@
 #' @author Tustison NJ, Avants BB
 #' @examples
 #'
+#' library( ANTsR )
 #' library( ANTsRNet )
 #'
 #' image <- antsImageRead( getANTsRData( "r16" ) )

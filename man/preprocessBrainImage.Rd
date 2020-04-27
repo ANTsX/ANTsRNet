@@ -72,6 +72,7 @@ various papers including the cortical thickness pipeline:
 }
 \examples{
 
+library( ANTsR )
 library( ANTsRNet )
 
 image <- antsImageRead( getANTsRData( "r16" ) )
