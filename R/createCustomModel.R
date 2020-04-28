@@ -45,7 +45,7 @@ createSimpleFullyConvolutionalNeuralNetworkModel3D <- function(
         strides = c( 2L, 2L, 2L ) )                    
       } else {
       output <- output %>% layer_conv_3d( numberOfFiltersPerLayer[i], 
-        kernel_size = c( 1L, 1L, 1L ), padding = "same" )  
+        kernel_size = c( 1L, 1L, 1L ), padding = "valid" )  
       output <- output %>% layer_batch_normalization( momentum = 0.1, epsilon = 1e-5 )
       }
     output <- output %>% layer_activation_relu()  
@@ -60,7 +60,7 @@ createSimpleFullyConvolutionalNeuralNetworkModel3D <- function(
     }
 
   output <- output %>% layer_conv_3d( numberOfBins, 
-    kernel_size = c( 1L, 1L, 1L ), padding = "same", activation = "softmax" )  
+    kernel_size = c( 1L, 1L, 1L ), padding = "valid", activation = "softmax" )  
  
   model <- keras_model( inputs = input, outputs = output )
 
