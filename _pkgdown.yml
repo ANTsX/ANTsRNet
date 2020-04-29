@@ -135,6 +135,15 @@ reference:
   - '`pearson_correlation_coefficient`'
   - '`categorical_focal_gain`'
   - '`categorical_focal_loss`'
+- title: Custom activations
+  desc: ~
+  contents:
+  - '`layer_activation_log_softmax`'
+  - '`LayerLogSoftmax`'
+  - '`peak_signal_to_noise_ratio`'
+  - '`pearson_correlation_coefficient`'
+  - '`categorical_focal_gain`'
+  - '`categorical_focal_loss`'
 - title: Data augmentation
   desc: ~
   contents:
