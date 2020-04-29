@@ -18,7 +18,7 @@
 #' @param returnBiasField if TRUE, return bias field as an additional output 
 #' *without* bias correcting the preprocessed image.  
 #' @param doDenoising boolean for performing NLM denoising.
-#' @param intensityMatchingType Either regression- or histogram-based.  Only is
+#' @param intensityMatchingType Either "regression" or "histogram".  Only is
 #' performed if \code{!is.null(referenceImage)}.
 #' @param referenceImage reference image for intensity matching.
 #' @param intensityNormalizationType Either rescale the intensities to [0,1] 
@@ -48,8 +48,8 @@
 preprocessBrainImage <- function( image, truncateIntensity = c( 0.01, 0.99 ), 
   doBrainExtraction = TRUE, templateTransformType = NULL, template = "biobank",
   doBiasCorrection = TRUE, returnBiasField = FALSE, doDenoising = TRUE, 
-  intensityMatchingType = c( "regression", "histogram" ), referenceImage = NULL, 
-  intensityNormalizationType = c( "01", "0mean" ), outputDirectory = NULL, 
+  intensityMatchingType = NULL, referenceImage = NULL, 
+  intensityNormalizationType = NULL, outputDirectory = NULL, 
   verbose = TRUE )
   {
 

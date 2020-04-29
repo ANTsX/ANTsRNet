@@ -13,9 +13,9 @@ preprocessBrainImage(
   doBiasCorrection = TRUE,
   returnBiasField = FALSE,
   doDenoising = TRUE,
-  intensityMatchingType = c("regression", "histogram"),
+  intensityMatchingType = NULL,
   referenceImage = NULL,
-  intensityNormalizationType = c("01", "0mean"),
+  intensityNormalizationType = NULL,
   outputDirectory = NULL,
   verbose = TRUE
 )
@@ -42,7 +42,7 @@ ANTs biobank template resampled to \link{192,224,192} is downloaded and used.}
 
 \item{doDenoising}{boolean for performing NLM denoising.}
 
-\item{intensityMatchingType}{Either regression- or histogram-based.  Only is
+\item{intensityMatchingType}{Either "regression" or "histogram".  Only is
 performed if \code{!is.null(referenceImage)}.}
 
 \item{referenceImage}{reference image for intensity matching.}
