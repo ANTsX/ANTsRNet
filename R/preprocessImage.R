@@ -89,7 +89,7 @@ preprocessBrainImage <- function( image, truncateIntensity = c( 0.01, 0.99 ),
   if( ! is.null( templateTransformType ) ) 
     {
     templateImage <- NULL    
-    if( is.string( template ) && template == "biobank" )    
+    if( is.character( template ) && template == "biobank" )    
       {
       templateFileName <- paste0( outputDirectory, "/biobank_resampled.nii.gz" )
       if( ! file.exists( templateFileName ) )
