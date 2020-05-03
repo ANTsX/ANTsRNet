@@ -12,12 +12,13 @@
 #' If \code{TRUE}, returns mask.  3-D input only.
 #' @param templateTransformType see Details in help for \code{antsRegistration}.
 #' Typically "Rigid" or "Affine".
-#' @param template an ANTs image or the default "biobank" in which case the 
-#' ANTs biobank template resampled to [192,224,192] is downloaded and used.
+#' @param template an ANTs image (not skull-stripped) or the default "biobank" 
+#' in which case the ANTs biobank template resampled to [192,224,192] is 
+#' downloaded and used.
 #' @param doBiasCorrection boolean for performing N4 bias field correction.
 #' @param returnBiasField if TRUE, return bias field as an additional output 
 #' *without* bias correcting the preprocessed image.  
-#' @param doDenoising boolean for performing NLM denoising.
+#' @param doDenoising boolean for performing non-local means denoising.
 #' @param intensityMatchingType Either "regression" or "histogram".  Only is
 #' performed if \code{!is.null(referenceImage)}.
 #' @param referenceImage reference image for intensity matching.
@@ -172,7 +173,7 @@ preprocessBrainImage <- function( image, truncateIntensity = c( 0.01, 0.99 ),
     }
 
   # Image matching
-  if( ! is.null( referenceImage ) )
+  if( ! is.null( referenceImage ) && ! is.null( intensityatchingType ) )
     {
     if( verbose == TRUE )
       {

@@ -24,8 +24,8 @@
 #' @param deformationTransformType one of the following options
 #' \code{c( "bspline", "exponential" )} if deformation is specified in the
 #' \code{transformType}.  Default = \"bspline\".
-#' @param numberOfRandomPoints  number of displacement points.
-#' Default = 1000.
+#' @param numberOfRandomPoints  number of displacement points for the deformation
+#' field.  Default = 1000.
 #' @param sdNoise standard deviation of the displacement field
 #' noise (in mm).  Default = 10.0.
 #' @param numberOfFittingLevels (bspline deformation only) number of fitting levels.
@@ -65,7 +65,7 @@ randomlyTransformImageData <- function( referenceImage,
   segmentationImageList = NULL, 
   numberOfSimulations = 10,
   transformType = 'affine', 
-  sdAffine = 1.0,
+  sdAffine = 0.25,
   deformationTransformType = c( "bspline", "exponential" ),
   numberOfRandomPoints = 1000,
   sdNoise = 10.0,
@@ -153,7 +153,6 @@ randomlyTransformImageData <- function( referenceImage,
 
   fixedParameters <- getCenterOfMass( referenceImage  )
   numberOfSubjects <- length( inputImageList )
-  numberOfImagesPerSubject <- length( inputImageList[[1]] )
 
   randomIndices <- sample( numberOfSubjects, size = numberOfSimulations,
     replace = TRUE )

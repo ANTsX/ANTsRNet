@@ -52,14 +52,10 @@ brainAgeFmrib <- function( image, skipPreprocessing = FALSE,
       doBrainExtraction = TRUE, doBiasCorrection = TRUE, 
       returnBiasField = FALSE, doDenoising = FALSE, 
       templateTransformType = "Affine", template = "biobank",
-      intensityNormalizationType = NULL, outputDirectory = outputDirectory, 
+      intensityNormalizationType = "01", outputDirectory = outputDirectory, 
       verbose = verbose )
     preprocessedImage <- preprocessing$preprocessedImage * preprocessing$brainMask
     }  
-  # Note that this is the only intensity normalization I could find in the repo.
-  # The authors don't mention it in the paper or elsewhere.  
-
-  preprocessedImage <- preprocessedImage / mean( preprocessedImage )
 
   # Construct the model and load the weights
 
