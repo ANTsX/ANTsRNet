@@ -34,8 +34,8 @@ encodeUnet <- function( groundTruthSegmentations, segmentationLabels )
   for( i in seq_len( numberOfLabels ) )
     {
     labelY <- groundTruthSegmentations
-    labelY[which( groundTruthSegmentations == segmentationLabels[i] )] <- 1
-    labelY[which( groundTruthSegmentations != segmentationLabels[i] )] <- 0
+    labelY[which( groundTruthSegmentations == segmentationLabels[i] )] <- 1L
+    labelY[which( groundTruthSegmentations != segmentationLabels[i] )] <- 0L
     if( imageDimension == 2 )
       {
       yEncoded[,,,i] <- labelY
