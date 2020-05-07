@@ -61,7 +61,7 @@ linMatchIntensity <- function( fromImg, toImg, polyOrder = 1, truncate = TRUE, m
 #' @return image upscaled to resolution provided by network
 #' @author Avants BB
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' library(ANTsRCore)
 #' library(keras)
 #' orig_img = antsImageRead( getANTsRData( "r16" ) )

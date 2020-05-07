@@ -174,7 +174,7 @@ intensity range (min to max) of the output will match the input where the
 range is taken over all channels.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>ANTsRCore</span>)
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>keras</span>)
 <span class='no'>orig_img</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/antsImageRead.html'>antsImageRead</a></span>( <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/getANTsRData.html'>getANTsRData</a></span>( <span class='st'>"r16"</span> ) )
@@ -182,8 +182,10 @@ range is taken over all channels.</p>
 <span class='no'>img</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/resampleImage.html'>resampleImage</a></span>(<span class='no'>orig_img</span>, <span class='kw'>resampleParams</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>256</span>/<span class='fl'>48</span>, <span class='fl'>2</span>))
 <span class='no'>model</span> <span class='kw'>=</span> <span class='fu'><a href='getPretrainedNetwork.html'>getPretrainedNetwork</a></span>( <span class='st'>"dbpn4x"</span> )
 <span class='no'>simg</span> <span class='kw'>&lt;-</span> <span class='fu'>applySuperResolutionModel</span>(<span class='no'>img</span>,  <span class='kw'>model</span> <span class='kw'>=</span> <span class='no'>model</span>)
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>orig_img</span>)</div><div class='img'><img src='applySuperResolutionModel-1.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; NULL</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>img</span>)</div><div class='img'><img src='applySuperResolutionModel-2.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; NULL</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>simg</span>)</div><div class='img'><img src='applySuperResolutionModel-3.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; NULL</div><div class='input'># }
-</div></pre>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>orig_img</span>)
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>img</span>)
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>simg</span>)
+}</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

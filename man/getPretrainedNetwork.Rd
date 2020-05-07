@@ -6,9 +6,10 @@
 \usage{
 getPretrainedNetwork(
   fileId = c("show", "brainAgeGender", "brainAgeFmrib", "brainExtraction",
-    "brainSegmentation", "brainSegmentationPatchBased", "ctHumanLung", "dbpn4x",
-    "denoising", "functionalLungMri", "hippMapp3rInitial", "hippMapp3rRefine",
-    "mriSuperResolution", "protonLungMri", "wholeTumorSegmentationT2Flair"),
+    "brainExtractionFA", "brainExtractionNoBrainer", "brainSegmentation",
+    "brainSegmentationPatchBased", "ctHumanLung", "dbpn4x", "denoising",
+    "functionalLungMri", "hippMapp3rInitial", "hippMapp3rRefine", "mriSuperResolution",
+    "protonLungMri", "wholeTumorSegmentationT2Flair"),
   targetFileName,
   overwrite = FALSE
 )
