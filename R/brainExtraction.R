@@ -22,7 +22,7 @@
 #' library( keras )
 #'
 #' image <- antsImageRead( "t1w_image.nii.gz" )
-#' probabilityMask <- brainExtraction( image )
+#' probabilityMask <- brainExtraction( image, modality = "t1" )
 #' }
 #' @export
 brainExtraction <- function( image, modality = c( "t1", "fa", "t1nobrainer" ), 

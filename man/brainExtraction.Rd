@@ -41,7 +41,7 @@ library( ANTsRNet )
 library( keras )
 
 image <- antsImageRead( "t1w_image.nii.gz" )
-probabilityMask <- brainExtraction( image )
+probabilityMask <- brainExtraction( image, modality = "t1" )
 }
 }
 \author{
