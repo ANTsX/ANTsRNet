@@ -13,7 +13,7 @@ createWideResNetModel3D(
   poolSize = c(8, 8, 8),
   dropoutRate = 0,
   weightDecay = 0.0005,
-  mode = "classification"
+  mode = c("classification", "regression")
 )
 }
 \arguments{
@@ -40,7 +40,7 @@ per convolutional block. Default = \code{c( 16, 32, 64 )}.}
 \item{weightDecay}{weight for l2 regularizer in convolution layers.
 Default = 0.0005.}
 
-\item{mode}{'classification' or 'regression'.  Default = 'classification'.}
+\item{mode}{'classification' or 'regression'.}
 }
 \value{
 a Wide ResNet keras model

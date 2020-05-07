@@ -26,7 +26,7 @@ the number of channels (e.g., red, green, and blue).  The batch size
 \item{dropoutRate}{optional regularization parameter between \verb{[0, 1]}.
 Default = 0.0.}
 
-\item{mode}{'classification' or 'regression'.  Default = 'classification'.}
+\item{mode}{'classification' or 'regression'.}
 
 \item{batch_size}{batch size to pass to first layer}
 }

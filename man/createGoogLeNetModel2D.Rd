@@ -18,7 +18,7 @@ the number of channels (e.g., red, green, and blue).  The batch size
 
 \item{numberOfClassificationLabels}{Number of segmentation labels.}
 
-\item{mode}{'classification' or 'regression'.  Default = 'classification'.}
+\item{mode}{'classification' or 'regression'.}
 }
 \value{
 a GoogLeNet keras model

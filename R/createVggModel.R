@@ -30,7 +30,7 @@
 #' @param numberOfDenseUnits integer for the number of units in the last layers.
 #' @param dropoutRate float between 0 and 1 to use between dense layers.
 #' @param style \verb{'16'} or \verb{'19'} for VGG16 or VGG19, respectively.
-#' @param mode 'classification' or 'regression'.  Default = 'classification'.
+#' @param mode 'classification' or 'regression'. 
 #'
 #' @return a VGG keras model
 #' @author Tustison NJ
@@ -96,9 +96,10 @@ createVggModel2D <- function( inputImageSize,
                                numberOfDenseUnits = 4096,
                                dropoutRate = 0.0,
                                style = 19,
-                               mode = 'classification'
+                               mode = c( 'classification', 'regression' )
                              )
 {
+  mode <- match.arg( mode )
 
   if( style != 19 && style != 16 )
     {
@@ -156,16 +157,10 @@ createVggModel2D <- function( inputImageSize,
     }
 
   layerActivation <- ''
-  if( mode == 'classification' )
-    {
-    if( numberOfClassificationLabels == 2 )
-      {
-      layerActivation <- 'sigmoid'
-      } else {
-      layerActivation <- 'softmax'
-      }
+  if( mode == 'classification' ) {
+    layerActivation <- 'softmax'  
     } else if( mode == 'regression' ) {
-    layerActivation <- 'linear'
+    layerActivation <- 'linear'  
     } else {
     stop( 'Error: unrecognized mode.' )
     }
@@ -208,7 +203,7 @@ createVggModel2D <- function( inputImageSize,
 #' @param numberOfDenseUnits integer for the number of units in the last layers.
 #' @param dropoutRate float between 0 and 1 to use between dense layers.
 #' @param style \verb{'16'} or \verb{'19'} for VGG16 or VGG19, respectively.
-#' @param mode 'classification' or 'regression'.  Default = 'classification'.
+#' @param mode 'classification' or 'regression'.
 #'
 #' @return a VGG keras model
 #' @author Tustison NJ
@@ -264,9 +259,11 @@ createVggModel3D <- function( inputImageSize,
                                numberOfDenseUnits = 4096,
                                dropoutRate = 0.0,
                                style = 19,
-                               mode = 'classification'
+                               mode = c( 'classification', 'regression' )
                              )
 {
+
+  mode <- match.arg( mode )
 
   if( style != 19 && style != 16 )
     {
@@ -324,16 +321,10 @@ createVggModel3D <- function( inputImageSize,
     }
 
   layerActivation <- ''
-  if( mode == 'classification' )
-    {
-    if( numberOfClassificationLabels == 2 )
-      {
-      layerActivation <- 'sigmoid'
-      } else {
-      layerActivation <- 'softmax'
-      }
+  if( mode == 'classification' ) {
+    layerActivation <- 'softmax'  
     } else if( mode == 'regression' ) {
-    layerActivation <- 'linear'
+    layerActivation <- 'linear'  
     } else {
     stop( 'Error: unrecognized mode.' )
     }

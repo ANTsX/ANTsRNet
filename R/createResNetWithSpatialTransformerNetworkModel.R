@@ -21,7 +21,7 @@
 #' (cardinality != 1 but powers of 2---try '32' )
 #' @param resampledSize output image size of the spatial transformer network.
 #' @param numberOfSpatialTransformerUnits number of units in the dense layer.
-#' @param mode 'classification' or 'regression'.  Default = 'classification'.
+#' @param mode 'classification' or 'regression'.  
 #'
 #' @return an STN + ResNet keras model
 #' @author Tustison NJ
@@ -77,10 +77,9 @@ createResNetWithSpatialTransformerNetworkModel2D <- function( inputImageSize,
                                                               cardinality = 1,
                                                               numberOfSpatialTransformerUnits = 50,
                                                               resampledSize = c( 64, 64 ),
-                                                              mode = 'classification'
+                                                              mode = c( 'classification', 'regression' )
                                                              )
 {
-
   getInitialWeights2D <- function( outputSize )
     {
     np <- reticulate::import( "numpy" )
@@ -175,6 +174,7 @@ createResNetWithSpatialTransformerNetworkModel2D <- function( inputImageSize,
     return( model )
     }
 
+  mode <- match.arg( mode )
 
   # The spatial transformer network part
 
@@ -241,16 +241,10 @@ createResNetWithSpatialTransformerNetworkModel2D <- function( inputImageSize,
   outputs <- outputs %>% layer_global_average_pooling_2d()
 
   layerActivation <- ''
-  if( mode == 'classification' )
-    {
-    if( numberOfClassificationLabels == 2 )
-      {
-      layerActivation <- 'sigmoid'
-      } else {
-      layerActivation <- 'softmax'
-      }
+  if( mode == 'classification' ) {
+    layerActivation <- 'softmax'  
     } else if( mode == 'regression' ) {
-    layerActivation <- 'linear'
+    layerActivation <- 'linear'  
     } else {
     stop( 'Error: unrecognized mode.' )
     }
@@ -341,7 +335,7 @@ createResNetWithSpatialTransformerNetworkModel3D <- function( inputImageSize,
                                                               cardinality = 1,
                                                               resampledSize = c( 64, 64, 64 ),
                                                               numberOfSpatialTransformerUnits = 50,
-                                                              mode = 'classification'
+                                                              mode = c( 'classification', 'regression' )
                                                             )
 {
   getInitialWeights3D <- function( outputSize )
@@ -439,6 +433,8 @@ createResNetWithSpatialTransformerNetworkModel3D <- function( inputImageSize,
     return( model )
     }
 
+  mode <- match.arg( mode )
+
   inputs <- layer_input( shape = inputImageSize )
 
   # The spatial transformer network part
@@ -506,16 +502,10 @@ createResNetWithSpatialTransformerNetworkModel3D <- function( inputImageSize,
   outputs <- outputs %>% layer_global_average_pooling_3d()
 
   layerActivation <- ''
-  if( mode == 'classification' )
-    {
-    if( numberOfClassificationLabels == 2 )
-      {
-      layerActivation <- 'sigmoid'
-      } else {
-      layerActivation <- 'softmax'
-      }
+  if( mode == 'classification' ) {
+    layerActivation <- 'softmax'  
     } else if( mode == 'regression' ) {
-    layerActivation <- 'linear'
+    layerActivation <- 'linear'  
     } else {
     stop( 'Error: unrecognized mode.' )
     }

@@ -78,10 +78,10 @@ decodeUnet <- function( yPredicted, domainImage )
     }
 
   batchProbabilityImages <- list()
-  for( i in 1:batchSize )
+  for( i in seq_len( batchSize ) )
     {
     probabilityImages <- list()
-    for( j in 1:numberOfSegmentationLabels )
+    for( j in seq_len( numberOfSegmentationLabels ) )
       {
       if( imageDimension == 2 )
         {

@@ -79,7 +79,7 @@ createResNetModel2D <- function( inputImageSize,
                                  lowestResolution = 64,
                                  cardinality = 1,
                                  squeezeAndExcite = FALSE,
-                                 mode = 'classification'
+                                 mode = c( 'classification', 'regression' )
                                )
 {
 
@@ -191,6 +191,7 @@ createResNetModel2D <- function( inputImageSize,
 
     return( model )
     }
+  mode <- match.arg( mode )
 
   inputImage <- layer_input( shape = inputImageSize )
 
@@ -227,16 +228,10 @@ createResNetModel2D <- function( inputImageSize,
   outputs <- outputs %>% layer_global_average_pooling_2d()
 
   layerActivation <- ''
-  if( mode == 'classification' )
-    {
-    if( numberOfClassificationLabels == 2 )
-      {
-      layerActivation <- 'sigmoid'
-      } else {
-      layerActivation <- 'softmax'
-      }
+  if( mode == 'classification' ) {
+    layerActivation <- 'softmax'  
     } else if( mode == 'regression' ) {
-    layerActivation <- 'linear'
+    layerActivation <- 'linear'  
     } else {
     stop( 'Error: unrecognized mode.' )
     }
@@ -287,7 +282,7 @@ createResNetModel2D <- function( inputImageSize,
 #' @param cardinality perform  ResNet (cardinality = 1) or ResNeXt
 #' (cardinality != 1 but powers of 2---try '32' )
 #' @param squeezeAndExcite boolean to add the squeeze-and-excite block variant.
-#' @param mode 'classification' or 'regression'.  Default = 'classification'.
+#' @param mode 'classification' or 'regression'. 
 #'
 #' @return an ResNet keras model
 #' @author Tustison NJ
@@ -341,7 +336,7 @@ createResNetModel3D <- function( inputImageSize,
                                  lowestResolution = 64,
                                  cardinality = 1,
                                  squeezeAndExcite = FALSE,
-                                 mode = 'classification'
+                                 mode = c( 'classification', 'regression' )
                                )
 {
 
@@ -454,6 +449,7 @@ createResNetModel3D <- function( inputImageSize,
     return( model )
     }
 
+  mode <- match.arg( mode )
   inputImage <- layer_input( shape = inputImageSize )
 
   nFilters <- lowestResolution
@@ -489,16 +485,10 @@ createResNetModel3D <- function( inputImageSize,
   outputs <- outputs %>% layer_global_average_pooling_3d()
 
   layerActivation <- ''
-  if( mode == 'classification' )
-    {
-    if( numberOfClassificationLabels == 2 )
-      {
-      layerActivation <- 'sigmoid'
-      } else {
-      layerActivation <- 'softmax'
-      }
+  if( mode == 'classification' ) {
+    layerActivation <- 'softmax'  
     } else if( mode == 'regression' ) {
-    layerActivation <- 'linear'
+    layerActivation <- 'linear'  
     } else {
     stop( 'Error: unrecognized mode.' )
     }

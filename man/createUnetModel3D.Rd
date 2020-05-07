@@ -15,7 +15,7 @@ createUnetModel3D(
   strides = c(2, 2, 2),
   dropoutRate = 0,
   weightDecay = 0,
-  mode = "classification"
+  mode = c("classification", "regression", "sigmoid")
 )
 }
 \arguments{
@@ -48,7 +48,7 @@ during the decoding.}
 \item{weightDecay}{weighting parameter for L2 regularization of the
 kernel weights of the convolution layers.  Default = 0.0.}
 
-\item{mode}{'classification' or 'regression' or 'sigmoid'.  Default = 'classification'.}
+\item{mode}{'classification' or 'regression' or 'sigmoid'.}
 }
 \value{
 a u-net keras model

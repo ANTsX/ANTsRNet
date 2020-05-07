@@ -132,7 +132,7 @@ website:</p>
   <span class='kw'>strides</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>2</span>, <span class='fl'>2</span>, <span class='fl'>2</span>),
   <span class='kw'>dropoutRate</span> <span class='kw'>=</span> <span class='fl'>0</span>,
   <span class='kw'>weightDecay</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"classification"</span>
+  <span class='kw'>mode</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"classification"</span>, <span class='st'>"regression"</span>, <span class='st'>"sigmoid"</span>)
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -189,7 +189,7 @@ kernel weights of the convolution layers.  Default = 0.0.</p></td>
     </tr>
     <tr>
       <th>mode</th>
-      <td><p>'classification' or 'regression' or 'sigmoid'.  Default = 'classification'.</p></td>
+      <td><p>'classification' or 'regression' or 'sigmoid'.</p></td>
     </tr>
     </table>
 
@@ -232,7 +232,7 @@ implementation:</p><pre>    \url{https://github.com/joelthelion/ultrasound-nerve
   <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='no'>metric_multilabel_dice_coefficient</span> )
 
 <span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>( <span class='no'>model</span> )</div><div class='output co'>#&gt; Model
-#&gt; Model: "model_41"
+#&gt; Model: "model_40"
 #&gt; ________________________________________________________________________________
 #&gt; Layer (type)              Output Shape      Param #  Connected to               
 #&gt; ================================================================================
@@ -264,10 +264,10 @@ implementation:</p><pre>    \url{https://github.com/joelthelion/ultrasound-nerve
 #&gt; ________________________________________________________________________________
 #&gt; up_sampling3d_12 (UpSampl (None, 16, 16, 16 0        conv3d_transpose_36[0][0]  
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_192 (Concaten (None, 16, 16, 16 0        up_sampling3d_12[0][0]     
+#&gt; concatenate_114 (Concaten (None, 16, 16, 16 0        up_sampling3d_12[0][0]     
 #&gt;                                                      conv3d_212[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_215 (Conv3D)       (None, 16, 16, 16 884864   concatenate_192[0][0]      
+#&gt; conv3d_215 (Conv3D)       (None, 16, 16, 16 884864   concatenate_114[0][0]      
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_216 (Conv3D)       (None, 16, 16, 16 442496   conv3d_215[0][0]           
 #&gt; ________________________________________________________________________________
@@ -275,10 +275,10 @@ implementation:</p><pre>    \url{https://github.com/joelthelion/ultrasound-nerve
 #&gt; ________________________________________________________________________________
 #&gt; up_sampling3d_13 (UpSampl (None, 32, 32, 32 0        conv3d_transpose_37[0][0]  
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_193 (Concaten (None, 32, 32, 32 0        up_sampling3d_13[0][0]     
+#&gt; concatenate_115 (Concaten (None, 32, 32, 32 0        up_sampling3d_13[0][0]     
 #&gt;                                                      conv3d_210[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_217 (Conv3D)       (None, 32, 32, 32 221248   concatenate_193[0][0]      
+#&gt; conv3d_217 (Conv3D)       (None, 32, 32, 32 221248   concatenate_115[0][0]      
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_218 (Conv3D)       (None, 32, 32, 32 110656   conv3d_217[0][0]           
 #&gt; ________________________________________________________________________________
@@ -286,10 +286,10 @@ implementation:</p><pre>    \url{https://github.com/joelthelion/ultrasound-nerve
 #&gt; ________________________________________________________________________________
 #&gt; up_sampling3d_14 (UpSampl (None, 64, 64, 64 0        conv3d_transpose_38[0][0]  
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_194 (Concaten (None, 64, 64, 64 0        up_sampling3d_14[0][0]     
+#&gt; concatenate_116 (Concaten (None, 64, 64, 64 0        up_sampling3d_14[0][0]     
 #&gt;                                                      conv3d_208[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_219 (Conv3D)       (None, 64, 64, 64 55328    concatenate_194[0][0]      
+#&gt; conv3d_219 (Conv3D)       (None, 64, 64, 64 55328    concatenate_116[0][0]      
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_220 (Conv3D)       (None, 64, 64, 64 27680    conv3d_219[0][0]           
 #&gt; ________________________________________________________________________________

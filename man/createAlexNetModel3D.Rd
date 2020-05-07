@@ -9,7 +9,7 @@ createAlexNetModel3D(
   numberOfClassificationLabels = 1000,
   numberOfDenseUnits = 4096,
   dropoutRate = 0,
-  mode = "classification",
+  mode = c("classification", "regression"),
   batch_size = NULL
 )
 }

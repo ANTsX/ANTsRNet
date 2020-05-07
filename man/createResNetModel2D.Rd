@@ -13,7 +13,7 @@ createResNetModel2D(
   lowestResolution = 64,
   cardinality = 1,
   squeezeAndExcite = FALSE,
-  mode = "classification"
+  mode = c("classification", "regression")
 )
 }
 \arguments{

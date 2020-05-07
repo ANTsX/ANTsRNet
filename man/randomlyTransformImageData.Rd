@@ -10,7 +10,7 @@ randomlyTransformImageData(
   segmentationImageList = NULL,
   numberOfSimulations = 10,
   transformType = "affine",
-  sdAffine = 1,
+  sdAffine = 0.25,
   deformationTransformType = c("bspline", "exponential"),
   numberOfRandomPoints = 1000,
   sdNoise = 10,
@@ -50,8 +50,8 @@ random linear transformations.  Default = 1.0.}
 \code{c( "bspline", "exponential" )} if deformation is specified in the
 \code{transformType}.  Default = \"bspline\".}
 
-\item{numberOfRandomPoints}{number of displacement points.
-Default = 1000.}
+\item{numberOfRandomPoints}{number of displacement points for the deformation
+field.  Default = 1000.}
 
 \item{sdNoise}{standard deviation of the displacement field
 noise (in mm).  Default = 10.0.}

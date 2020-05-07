@@ -24,7 +24,7 @@
 #' @param numberOfDenseUnits number of dense units.
 #' @param dropoutRate optional regularization parameter between \verb{[0, 1]}.
 #' Default = 0.0.
-#' @param mode 'classification' or 'regression'.  Default = 'classification'.
+#' @param mode 'classification' or 'regression'.
 #' @return an AlexNet keras model
 #' @param batch_size batch size to pass to first layer
 #' @author Tustison NJ
@@ -75,12 +75,10 @@ createAlexNetModel2D <- function( inputImageSize,
                                   numberOfClassificationLabels = 1000,
                                   numberOfDenseUnits = 4096,
                                   dropoutRate = 0.0,
-                                  mode = c("classification", "regression"),
+                                  mode = c( "classification", "regression" ),
                                   batch_size = NULL
 )
 {
-
-  mode = match.arg(mode)
   splitTensor2D <- function( axis = 4, ratioSplit = 1, idSplit = 1 )
   {
     f <- function( X )
@@ -142,6 +140,8 @@ createAlexNetModel2D <- function( inputImageSize,
 
     return( layer_lambda( f = normalizeTensor2D ) )
   }
+
+  mode <- match.arg( mode )
 
   inputs <- layer_input( shape = inputImageSize )
 
@@ -315,13 +315,12 @@ createAlexNetModel2D <- function( inputImageSize,
 #' }
 #' @import keras
 #' @export
-createAlexNetModel3D <- function(
-  inputImageSize,
-  numberOfClassificationLabels = 1000,
-  numberOfDenseUnits = 4096,
-  dropoutRate = 0.0,
-  mode = 'classification',
-  batch_size = NULL
+createAlexNetModel3D <- function( inputImageSize,
+                                  numberOfClassificationLabels = 1000,
+                                  numberOfDenseUnits = 4096,
+                                  dropoutRate = 0.0,
+                                  mode = c( "classification", "regression" ),
+                                  batch_size = NULL
 )
 {
 
@@ -388,6 +387,8 @@ createAlexNetModel3D <- function(
 
     return( layer_lambda( f = normalizeTensor3D ) )
   }
+
+  mode <- match.arg( mode )
 
   inputs <- layer_input( shape = inputImageSize )
 
@@ -468,19 +469,13 @@ createAlexNetModel3D <- function(
   }
 
   layerActivation <- ''
-  if( mode == 'classification' )
-  {
-    if( numberOfClassificationLabels == 2 )
-    {
-      layerActivation <- 'sigmoid'
+  if( mode == 'classification' ) {
+    layerActivation <- 'softmax'  
+    } else if( mode == 'regression' ) {
+    layerActivation <- 'linear'  
     } else {
-      layerActivation <- 'softmax'
-    }
-  } else if( mode == 'regression' ) {
-    layerActivation <- 'linear'
-  } else {
     stop( 'Error: unrecognized mode.' )
-  }
+    }
 
   outputs <- outputs %>%
     layer_dense( units = numberOfClassificationLabels, activation = layerActivation )

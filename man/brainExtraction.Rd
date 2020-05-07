@@ -4,7 +4,12 @@
 \alias{brainExtraction}
 \title{brainExtraction}
 \usage{
-brainExtraction(image, outputDirectory = NULL, verbose = FALSE)
+brainExtraction(
+  image,
+  modality = "t1",
+  outputDirectory = NULL,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{image}{input 3-D T1-weighted brain image.}

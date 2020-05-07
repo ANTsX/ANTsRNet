@@ -223,336 +223,336 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
     <span class='no'>metric_categorical_crossentropy</span> ) )
 
 <span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>( <span class='no'>model</span> )</div><div class='output co'>#&gt; Model
-#&gt; Model: "model_20"
+#&gt; Model: "model_19"
 #&gt; ________________________________________________________________________________
 #&gt; Layer (type)              Output Shape      Param #  Connected to               
 #&gt; ================================================================================
-#&gt; input_17 (InputLayer)     [(None, 64, 64, 6 0                                   
+#&gt; input_16 (InputLayer)     [(None, 64, 64, 6 0                                   
 #&gt; ________________________________________________________________________________
-#&gt; zero_padding3d (ZeroPaddi (None, 70, 70, 70 0        input_17[0][0]             
+#&gt; zero_padding3d (ZeroPaddi (None, 70, 70, 70 0        input_16[0][0]             
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_43 (Conv3D)        (None, 32, 32, 32 32928    zero_padding3d[0][0]       
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_171 ( (None, 32, 32, 32 384      conv3d_43[0][0]            
+#&gt; batch_normalization_7 (Ba (None, 32, 32, 32 384      conv3d_43[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_164 (RLayer)      (None, 32, 32, 32 192      batch_normalization_171[0][
+#&gt; r_layer_3 (RLayer)        (None, 32, 32, 32 192      batch_normalization_7[0][0]
 #&gt; ________________________________________________________________________________
-#&gt; activation_169 (Activatio (None, 32, 32, 32 0        r_layer_164[0][0]          
+#&gt; activation_5 (Activation) (None, 32, 32, 32 0        r_layer_3[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; zero_padding3d_1 (ZeroPad (None, 34, 34, 34 0        activation_169[0][0]       
+#&gt; zero_padding3d_1 (ZeroPad (None, 34, 34, 34 0        activation_5[0][0]         
 #&gt; ________________________________________________________________________________
 #&gt; max_pooling3d (MaxPooling (None, 16, 16, 16 0        zero_padding3d_1[0][0]     
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_172 ( (None, 16, 16, 16 384      max_pooling3d[0][0]        
+#&gt; batch_normalization_8 (Ba (None, 16, 16, 16 384      max_pooling3d[0][0]        
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_165 (RLayer)      (None, 16, 16, 16 192      batch_normalization_172[0][
+#&gt; r_layer_4 (RLayer)        (None, 16, 16, 16 192      batch_normalization_8[0][0]
 #&gt; ________________________________________________________________________________
-#&gt; activation_170 (Activatio (None, 16, 16, 16 0        r_layer_165[0][0]          
+#&gt; activation_6 (Activation) (None, 16, 16, 16 0        r_layer_4[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_44 (Conv3D)        (None, 16, 16, 16 18432    activation_170[0][0]       
+#&gt; conv3d_44 (Conv3D)        (None, 16, 16, 16 18432    activation_6[0][0]         
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_173 ( (None, 16, 16, 16 768      conv3d_44[0][0]            
+#&gt; batch_normalization_9 (Ba (None, 16, 16, 16 768      conv3d_44[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_166 (RLayer)      (None, 16, 16, 16 384      batch_normalization_173[0][
+#&gt; r_layer_5 (RLayer)        (None, 16, 16, 16 384      batch_normalization_9[0][0]
 #&gt; ________________________________________________________________________________
-#&gt; activation_171 (Activatio (None, 16, 16, 16 0        r_layer_166[0][0]          
+#&gt; activation_7 (Activation) (None, 16, 16, 16 0        r_layer_5[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; zero_padding3d_2 (ZeroPad (None, 18, 18, 18 0        activation_171[0][0]       
+#&gt; zero_padding3d_2 (ZeroPad (None, 18, 18, 18 0        activation_7[0][0]         
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_45 (Conv3D)        (None, 16, 16, 16 248832   zero_padding3d_2[0][0]     
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_114 (Concaten (None, 16, 16, 16 0        max_pooling3d[0][0]        
+#&gt; concatenate_36 (Concatena (None, 16, 16, 16 0        max_pooling3d[0][0]        
 #&gt;                                                      conv3d_45[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_174 ( (None, 16, 16, 16 576      concatenate_114[0][0]      
+#&gt; batch_normalization_10 (B (None, 16, 16, 16 576      concatenate_36[0][0]       
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_167 (RLayer)      (None, 16, 16, 16 288      batch_normalization_174[0][
+#&gt; r_layer_6 (RLayer)        (None, 16, 16, 16 288      batch_normalization_10[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_172 (Activatio (None, 16, 16, 16 0        r_layer_167[0][0]          
+#&gt; activation_8 (Activation) (None, 16, 16, 16 0        r_layer_6[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_46 (Conv3D)        (None, 16, 16, 16 27648    activation_172[0][0]       
+#&gt; conv3d_46 (Conv3D)        (None, 16, 16, 16 27648    activation_8[0][0]         
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_175 ( (None, 16, 16, 16 768      conv3d_46[0][0]            
+#&gt; batch_normalization_11 (B (None, 16, 16, 16 768      conv3d_46[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_168 (RLayer)      (None, 16, 16, 16 384      batch_normalization_175[0][
+#&gt; r_layer_7 (RLayer)        (None, 16, 16, 16 384      batch_normalization_11[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_173 (Activatio (None, 16, 16, 16 0        r_layer_168[0][0]          
+#&gt; activation_9 (Activation) (None, 16, 16, 16 0        r_layer_7[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; zero_padding3d_3 (ZeroPad (None, 18, 18, 18 0        activation_173[0][0]       
+#&gt; zero_padding3d_3 (ZeroPad (None, 18, 18, 18 0        activation_9[0][0]         
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_47 (Conv3D)        (None, 16, 16, 16 248832   zero_padding3d_3[0][0]     
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_115 (Concaten (None, 16, 16, 16 0        max_pooling3d[0][0]        
+#&gt; concatenate_37 (Concatena (None, 16, 16, 16 0        max_pooling3d[0][0]        
 #&gt;                                                      conv3d_45[0][0]            
 #&gt;                                                      conv3d_47[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_176 ( (None, 16, 16, 16 768      concatenate_115[0][0]      
+#&gt; batch_normalization_12 (B (None, 16, 16, 16 768      concatenate_37[0][0]       
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_169 (RLayer)      (None, 16, 16, 16 384      batch_normalization_176[0][
+#&gt; r_layer_8 (RLayer)        (None, 16, 16, 16 384      batch_normalization_12[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_174 (Activatio (None, 16, 16, 16 0        r_layer_169[0][0]          
+#&gt; activation_10 (Activation (None, 16, 16, 16 0        r_layer_8[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_48 (Conv3D)        (None, 16, 16, 16 36864    activation_174[0][0]       
+#&gt; conv3d_48 (Conv3D)        (None, 16, 16, 16 36864    activation_10[0][0]        
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_177 ( (None, 16, 16, 16 768      conv3d_48[0][0]            
+#&gt; batch_normalization_13 (B (None, 16, 16, 16 768      conv3d_48[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_170 (RLayer)      (None, 16, 16, 16 384      batch_normalization_177[0][
+#&gt; r_layer_9 (RLayer)        (None, 16, 16, 16 384      batch_normalization_13[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_175 (Activatio (None, 16, 16, 16 0        r_layer_170[0][0]          
+#&gt; activation_11 (Activation (None, 16, 16, 16 0        r_layer_9[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; zero_padding3d_4 (ZeroPad (None, 18, 18, 18 0        activation_175[0][0]       
+#&gt; zero_padding3d_4 (ZeroPad (None, 18, 18, 18 0        activation_11[0][0]        
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_49 (Conv3D)        (None, 16, 16, 16 248832   zero_padding3d_4[0][0]     
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_116 (Concaten (None, 16, 16, 16 0        max_pooling3d[0][0]        
+#&gt; concatenate_38 (Concatena (None, 16, 16, 16 0        max_pooling3d[0][0]        
 #&gt;                                                      conv3d_45[0][0]            
 #&gt;                                                      conv3d_47[0][0]            
 #&gt;                                                      conv3d_49[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_178 ( (None, 16, 16, 16 960      concatenate_116[0][0]      
+#&gt; batch_normalization_14 (B (None, 16, 16, 16 960      concatenate_38[0][0]       
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_171 (RLayer)      (None, 16, 16, 16 480      batch_normalization_178[0][
+#&gt; r_layer_10 (RLayer)       (None, 16, 16, 16 480      batch_normalization_14[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_176 (Activatio (None, 16, 16, 16 0        r_layer_171[0][0]          
+#&gt; activation_12 (Activation (None, 16, 16, 16 0        r_layer_10[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_50 (Conv3D)        (None, 16, 16, 16 57600    activation_176[0][0]       
+#&gt; conv3d_50 (Conv3D)        (None, 16, 16, 16 57600    activation_12[0][0]        
 #&gt; ________________________________________________________________________________
 #&gt; average_pooling3d (Averag (None, 8, 8, 8, 2 0        conv3d_50[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_179 ( (None, 8, 8, 8, 2 960      average_pooling3d[0][0]    
+#&gt; batch_normalization_15 (B (None, 8, 8, 8, 2 960      average_pooling3d[0][0]    
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_172 (RLayer)      (None, 8, 8, 8, 2 480      batch_normalization_179[0][
+#&gt; r_layer_11 (RLayer)       (None, 8, 8, 8, 2 480      batch_normalization_15[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_177 (Activatio (None, 8, 8, 8, 2 0        r_layer_172[0][0]          
+#&gt; activation_13 (Activation (None, 8, 8, 8, 2 0        r_layer_11[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_51 (Conv3D)        (None, 8, 8, 8, 1 46080    activation_177[0][0]       
+#&gt; conv3d_51 (Conv3D)        (None, 8, 8, 8, 1 46080    activation_13[0][0]        
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_180 ( (None, 8, 8, 8, 1 768      conv3d_51[0][0]            
+#&gt; batch_normalization_16 (B (None, 8, 8, 8, 1 768      conv3d_51[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_173 (RLayer)      (None, 8, 8, 8, 1 384      batch_normalization_180[0][
+#&gt; r_layer_12 (RLayer)       (None, 8, 8, 8, 1 384      batch_normalization_16[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_178 (Activatio (None, 8, 8, 8, 1 0        r_layer_173[0][0]          
+#&gt; activation_14 (Activation (None, 8, 8, 8, 1 0        r_layer_12[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; zero_padding3d_5 (ZeroPad (None, 10, 10, 10 0        activation_178[0][0]       
+#&gt; zero_padding3d_5 (ZeroPad (None, 10, 10, 10 0        activation_14[0][0]        
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_52 (Conv3D)        (None, 8, 8, 8, 4 248832   zero_padding3d_5[0][0]     
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_117 (Concaten (None, 8, 8, 8, 2 0        average_pooling3d[0][0]    
+#&gt; concatenate_39 (Concatena (None, 8, 8, 8, 2 0        average_pooling3d[0][0]    
 #&gt;                                                      conv3d_52[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_181 ( (None, 8, 8, 8, 2 1152     concatenate_117[0][0]      
+#&gt; batch_normalization_17 (B (None, 8, 8, 8, 2 1152     concatenate_39[0][0]       
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_174 (RLayer)      (None, 8, 8, 8, 2 576      batch_normalization_181[0][
+#&gt; r_layer_13 (RLayer)       (None, 8, 8, 8, 2 576      batch_normalization_17[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_179 (Activatio (None, 8, 8, 8, 2 0        r_layer_174[0][0]          
+#&gt; activation_15 (Activation (None, 8, 8, 8, 2 0        r_layer_13[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_53 (Conv3D)        (None, 8, 8, 8, 1 55296    activation_179[0][0]       
+#&gt; conv3d_53 (Conv3D)        (None, 8, 8, 8, 1 55296    activation_15[0][0]        
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_182 ( (None, 8, 8, 8, 1 768      conv3d_53[0][0]            
+#&gt; batch_normalization_18 (B (None, 8, 8, 8, 1 768      conv3d_53[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_175 (RLayer)      (None, 8, 8, 8, 1 384      batch_normalization_182[0][
+#&gt; r_layer_14 (RLayer)       (None, 8, 8, 8, 1 384      batch_normalization_18[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_180 (Activatio (None, 8, 8, 8, 1 0        r_layer_175[0][0]          
+#&gt; activation_16 (Activation (None, 8, 8, 8, 1 0        r_layer_14[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; zero_padding3d_6 (ZeroPad (None, 10, 10, 10 0        activation_180[0][0]       
+#&gt; zero_padding3d_6 (ZeroPad (None, 10, 10, 10 0        activation_16[0][0]        
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_54 (Conv3D)        (None, 8, 8, 8, 4 248832   zero_padding3d_6[0][0]     
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_118 (Concaten (None, 8, 8, 8, 3 0        average_pooling3d[0][0]    
+#&gt; concatenate_40 (Concatena (None, 8, 8, 8, 3 0        average_pooling3d[0][0]    
 #&gt;                                                      conv3d_52[0][0]            
 #&gt;                                                      conv3d_54[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_183 ( (None, 8, 8, 8, 3 1344     concatenate_118[0][0]      
+#&gt; batch_normalization_19 (B (None, 8, 8, 8, 3 1344     concatenate_40[0][0]       
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_176 (RLayer)      (None, 8, 8, 8, 3 672      batch_normalization_183[0][
+#&gt; r_layer_15 (RLayer)       (None, 8, 8, 8, 3 672      batch_normalization_19[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_181 (Activatio (None, 8, 8, 8, 3 0        r_layer_176[0][0]          
+#&gt; activation_17 (Activation (None, 8, 8, 8, 3 0        r_layer_15[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_55 (Conv3D)        (None, 8, 8, 8, 1 64512    activation_181[0][0]       
+#&gt; conv3d_55 (Conv3D)        (None, 8, 8, 8, 1 64512    activation_17[0][0]        
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_184 ( (None, 8, 8, 8, 1 768      conv3d_55[0][0]            
+#&gt; batch_normalization_20 (B (None, 8, 8, 8, 1 768      conv3d_55[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_177 (RLayer)      (None, 8, 8, 8, 1 384      batch_normalization_184[0][
+#&gt; r_layer_16 (RLayer)       (None, 8, 8, 8, 1 384      batch_normalization_20[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_182 (Activatio (None, 8, 8, 8, 1 0        r_layer_177[0][0]          
+#&gt; activation_18 (Activation (None, 8, 8, 8, 1 0        r_layer_16[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; zero_padding3d_7 (ZeroPad (None, 10, 10, 10 0        activation_182[0][0]       
+#&gt; zero_padding3d_7 (ZeroPad (None, 10, 10, 10 0        activation_18[0][0]        
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_56 (Conv3D)        (None, 8, 8, 8, 4 248832   zero_padding3d_7[0][0]     
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_119 (Concaten (None, 8, 8, 8, 3 0        average_pooling3d[0][0]    
+#&gt; concatenate_41 (Concatena (None, 8, 8, 8, 3 0        average_pooling3d[0][0]    
 #&gt;                                                      conv3d_52[0][0]            
 #&gt;                                                      conv3d_54[0][0]            
 #&gt;                                                      conv3d_56[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_185 ( (None, 8, 8, 8, 3 1536     concatenate_119[0][0]      
+#&gt; batch_normalization_21 (B (None, 8, 8, 8, 3 1536     concatenate_41[0][0]       
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_178 (RLayer)      (None, 8, 8, 8, 3 768      batch_normalization_185[0][
+#&gt; r_layer_17 (RLayer)       (None, 8, 8, 8, 3 768      batch_normalization_21[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_183 (Activatio (None, 8, 8, 8, 3 0        r_layer_178[0][0]          
+#&gt; activation_19 (Activation (None, 8, 8, 8, 3 0        r_layer_17[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_57 (Conv3D)        (None, 8, 8, 8, 1 73728    activation_183[0][0]       
+#&gt; conv3d_57 (Conv3D)        (None, 8, 8, 8, 1 73728    activation_19[0][0]        
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_186 ( (None, 8, 8, 8, 1 768      conv3d_57[0][0]            
+#&gt; batch_normalization_22 (B (None, 8, 8, 8, 1 768      conv3d_57[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_179 (RLayer)      (None, 8, 8, 8, 1 384      batch_normalization_186[0][
+#&gt; r_layer_18 (RLayer)       (None, 8, 8, 8, 1 384      batch_normalization_22[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_184 (Activatio (None, 8, 8, 8, 1 0        r_layer_179[0][0]          
+#&gt; activation_20 (Activation (None, 8, 8, 8, 1 0        r_layer_18[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; zero_padding3d_8 (ZeroPad (None, 10, 10, 10 0        activation_184[0][0]       
+#&gt; zero_padding3d_8 (ZeroPad (None, 10, 10, 10 0        activation_20[0][0]        
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_58 (Conv3D)        (None, 8, 8, 8, 4 248832   zero_padding3d_8[0][0]     
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_120 (Concaten (None, 8, 8, 8, 4 0        average_pooling3d[0][0]    
+#&gt; concatenate_42 (Concatena (None, 8, 8, 8, 4 0        average_pooling3d[0][0]    
 #&gt;                                                      conv3d_52[0][0]            
 #&gt;                                                      conv3d_54[0][0]            
 #&gt;                                                      conv3d_56[0][0]            
 #&gt;                                                      conv3d_58[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_187 ( (None, 8, 8, 8, 4 1728     concatenate_120[0][0]      
+#&gt; batch_normalization_23 (B (None, 8, 8, 8, 4 1728     concatenate_42[0][0]       
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_180 (RLayer)      (None, 8, 8, 8, 4 864      batch_normalization_187[0][
+#&gt; r_layer_19 (RLayer)       (None, 8, 8, 8, 4 864      batch_normalization_23[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_185 (Activatio (None, 8, 8, 8, 4 0        r_layer_180[0][0]          
+#&gt; activation_21 (Activation (None, 8, 8, 8, 4 0        r_layer_19[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_59 (Conv3D)        (None, 8, 8, 8, 4 186624   activation_185[0][0]       
+#&gt; conv3d_59 (Conv3D)        (None, 8, 8, 8, 4 186624   activation_21[0][0]        
 #&gt; ________________________________________________________________________________
 #&gt; average_pooling3d_1 (Aver (None, 4, 4, 4, 4 0        conv3d_59[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_188 ( (None, 4, 4, 4, 4 1728     average_pooling3d_1[0][0]  
+#&gt; batch_normalization_24 (B (None, 4, 4, 4, 4 1728     average_pooling3d_1[0][0]  
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_181 (RLayer)      (None, 4, 4, 4, 4 864      batch_normalization_188[0][
+#&gt; r_layer_20 (RLayer)       (None, 4, 4, 4, 4 864      batch_normalization_24[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_186 (Activatio (None, 4, 4, 4, 4 0        r_layer_181[0][0]          
+#&gt; activation_22 (Activation (None, 4, 4, 4, 4 0        r_layer_20[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_60 (Conv3D)        (None, 4, 4, 4, 1 82944    activation_186[0][0]       
+#&gt; conv3d_60 (Conv3D)        (None, 4, 4, 4, 1 82944    activation_22[0][0]        
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_189 ( (None, 4, 4, 4, 1 768      conv3d_60[0][0]            
+#&gt; batch_normalization_25 (B (None, 4, 4, 4, 1 768      conv3d_60[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_182 (RLayer)      (None, 4, 4, 4, 1 384      batch_normalization_189[0][
+#&gt; r_layer_21 (RLayer)       (None, 4, 4, 4, 1 384      batch_normalization_25[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_187 (Activatio (None, 4, 4, 4, 1 0        r_layer_182[0][0]          
+#&gt; activation_23 (Activation (None, 4, 4, 4, 1 0        r_layer_21[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; zero_padding3d_9 (ZeroPad (None, 6, 6, 6, 1 0        activation_187[0][0]       
+#&gt; zero_padding3d_9 (ZeroPad (None, 6, 6, 6, 1 0        activation_23[0][0]        
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_61 (Conv3D)        (None, 4, 4, 4, 4 248832   zero_padding3d_9[0][0]     
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_121 (Concaten (None, 4, 4, 4, 4 0        average_pooling3d_1[0][0]  
+#&gt; concatenate_43 (Concatena (None, 4, 4, 4, 4 0        average_pooling3d_1[0][0]  
 #&gt;                                                      conv3d_61[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_190 ( (None, 4, 4, 4, 4 1920     concatenate_121[0][0]      
+#&gt; batch_normalization_26 (B (None, 4, 4, 4, 4 1920     concatenate_43[0][0]       
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_183 (RLayer)      (None, 4, 4, 4, 4 960      batch_normalization_190[0][
+#&gt; r_layer_22 (RLayer)       (None, 4, 4, 4, 4 960      batch_normalization_26[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_188 (Activatio (None, 4, 4, 4, 4 0        r_layer_183[0][0]          
+#&gt; activation_24 (Activation (None, 4, 4, 4, 4 0        r_layer_22[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_62 (Conv3D)        (None, 4, 4, 4, 1 92160    activation_188[0][0]       
+#&gt; conv3d_62 (Conv3D)        (None, 4, 4, 4, 1 92160    activation_24[0][0]        
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_191 ( (None, 4, 4, 4, 1 768      conv3d_62[0][0]            
+#&gt; batch_normalization_27 (B (None, 4, 4, 4, 1 768      conv3d_62[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_184 (RLayer)      (None, 4, 4, 4, 1 384      batch_normalization_191[0][
+#&gt; r_layer_23 (RLayer)       (None, 4, 4, 4, 1 384      batch_normalization_27[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_189 (Activatio (None, 4, 4, 4, 1 0        r_layer_184[0][0]          
+#&gt; activation_25 (Activation (None, 4, 4, 4, 1 0        r_layer_23[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; zero_padding3d_10 (ZeroPa (None, 6, 6, 6, 1 0        activation_189[0][0]       
+#&gt; zero_padding3d_10 (ZeroPa (None, 6, 6, 6, 1 0        activation_25[0][0]        
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_63 (Conv3D)        (None, 4, 4, 4, 4 248832   zero_padding3d_10[0][0]    
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_122 (Concaten (None, 4, 4, 4, 5 0        average_pooling3d_1[0][0]  
+#&gt; concatenate_44 (Concatena (None, 4, 4, 4, 5 0        average_pooling3d_1[0][0]  
 #&gt;                                                      conv3d_61[0][0]            
 #&gt;                                                      conv3d_63[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_192 ( (None, 4, 4, 4, 5 2112     concatenate_122[0][0]      
+#&gt; batch_normalization_28 (B (None, 4, 4, 4, 5 2112     concatenate_44[0][0]       
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_185 (RLayer)      (None, 4, 4, 4, 5 1056     batch_normalization_192[0][
+#&gt; r_layer_24 (RLayer)       (None, 4, 4, 4, 5 1056     batch_normalization_28[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_190 (Activatio (None, 4, 4, 4, 5 0        r_layer_185[0][0]          
+#&gt; activation_26 (Activation (None, 4, 4, 4, 5 0        r_layer_24[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_64 (Conv3D)        (None, 4, 4, 4, 1 101376   activation_190[0][0]       
+#&gt; conv3d_64 (Conv3D)        (None, 4, 4, 4, 1 101376   activation_26[0][0]        
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_193 ( (None, 4, 4, 4, 1 768      conv3d_64[0][0]            
+#&gt; batch_normalization_29 (B (None, 4, 4, 4, 1 768      conv3d_64[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_186 (RLayer)      (None, 4, 4, 4, 1 384      batch_normalization_193[0][
+#&gt; r_layer_25 (RLayer)       (None, 4, 4, 4, 1 384      batch_normalization_29[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_191 (Activatio (None, 4, 4, 4, 1 0        r_layer_186[0][0]          
+#&gt; activation_27 (Activation (None, 4, 4, 4, 1 0        r_layer_25[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; zero_padding3d_11 (ZeroPa (None, 6, 6, 6, 1 0        activation_191[0][0]       
+#&gt; zero_padding3d_11 (ZeroPa (None, 6, 6, 6, 1 0        activation_27[0][0]        
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_65 (Conv3D)        (None, 4, 4, 4, 4 248832   zero_padding3d_11[0][0]    
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_123 (Concaten (None, 4, 4, 4, 5 0        average_pooling3d_1[0][0]  
+#&gt; concatenate_45 (Concatena (None, 4, 4, 4, 5 0        average_pooling3d_1[0][0]  
 #&gt;                                                      conv3d_61[0][0]            
 #&gt;                                                      conv3d_63[0][0]            
 #&gt;                                                      conv3d_65[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_194 ( (None, 4, 4, 4, 5 2304     concatenate_123[0][0]      
+#&gt; batch_normalization_30 (B (None, 4, 4, 4, 5 2304     concatenate_45[0][0]       
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_187 (RLayer)      (None, 4, 4, 4, 5 1152     batch_normalization_194[0][
+#&gt; r_layer_26 (RLayer)       (None, 4, 4, 4, 5 1152     batch_normalization_30[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_192 (Activatio (None, 4, 4, 4, 5 0        r_layer_187[0][0]          
+#&gt; activation_28 (Activation (None, 4, 4, 4, 5 0        r_layer_26[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_66 (Conv3D)        (None, 4, 4, 4, 1 110592   activation_192[0][0]       
+#&gt; conv3d_66 (Conv3D)        (None, 4, 4, 4, 1 110592   activation_28[0][0]        
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_195 ( (None, 4, 4, 4, 1 768      conv3d_66[0][0]            
+#&gt; batch_normalization_31 (B (None, 4, 4, 4, 1 768      conv3d_66[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_188 (RLayer)      (None, 4, 4, 4, 1 384      batch_normalization_195[0][
+#&gt; r_layer_27 (RLayer)       (None, 4, 4, 4, 1 384      batch_normalization_31[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_193 (Activatio (None, 4, 4, 4, 1 0        r_layer_188[0][0]          
+#&gt; activation_29 (Activation (None, 4, 4, 4, 1 0        r_layer_27[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; zero_padding3d_12 (ZeroPa (None, 6, 6, 6, 1 0        activation_193[0][0]       
+#&gt; zero_padding3d_12 (ZeroPa (None, 6, 6, 6, 1 0        activation_29[0][0]        
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_67 (Conv3D)        (None, 4, 4, 4, 4 248832   zero_padding3d_12[0][0]    
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_124 (Concaten (None, 4, 4, 4, 6 0        average_pooling3d_1[0][0]  
+#&gt; concatenate_46 (Concatena (None, 4, 4, 4, 6 0        average_pooling3d_1[0][0]  
 #&gt;                                                      conv3d_61[0][0]            
 #&gt;                                                      conv3d_63[0][0]            
 #&gt;                                                      conv3d_65[0][0]            
 #&gt;                                                      conv3d_67[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_196 ( (None, 4, 4, 4, 6 2496     concatenate_124[0][0]      
+#&gt; batch_normalization_32 (B (None, 4, 4, 4, 6 2496     concatenate_46[0][0]       
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_189 (RLayer)      (None, 4, 4, 4, 6 1248     batch_normalization_196[0][
+#&gt; r_layer_28 (RLayer)       (None, 4, 4, 4, 6 1248     batch_normalization_32[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_194 (Activatio (None, 4, 4, 4, 6 0        r_layer_189[0][0]          
+#&gt; activation_30 (Activation (None, 4, 4, 4, 6 0        r_layer_28[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_68 (Conv3D)        (None, 4, 4, 4, 1 119808   activation_194[0][0]       
+#&gt; conv3d_68 (Conv3D)        (None, 4, 4, 4, 1 119808   activation_30[0][0]        
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_197 ( (None, 4, 4, 4, 1 768      conv3d_68[0][0]            
+#&gt; batch_normalization_33 (B (None, 4, 4, 4, 1 768      conv3d_68[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_190 (RLayer)      (None, 4, 4, 4, 1 384      batch_normalization_197[0][
+#&gt; r_layer_29 (RLayer)       (None, 4, 4, 4, 1 384      batch_normalization_33[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_195 (Activatio (None, 4, 4, 4, 1 0        r_layer_190[0][0]          
+#&gt; activation_31 (Activation (None, 4, 4, 4, 1 0        r_layer_29[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; zero_padding3d_13 (ZeroPa (None, 6, 6, 6, 1 0        activation_195[0][0]       
+#&gt; zero_padding3d_13 (ZeroPa (None, 6, 6, 6, 1 0        activation_31[0][0]        
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_69 (Conv3D)        (None, 4, 4, 4, 4 248832   zero_padding3d_13[0][0]    
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_125 (Concaten (None, 4, 4, 4, 6 0        average_pooling3d_1[0][0]  
+#&gt; concatenate_47 (Concatena (None, 4, 4, 4, 6 0        average_pooling3d_1[0][0]  
 #&gt;                                                      conv3d_61[0][0]            
 #&gt;                                                      conv3d_63[0][0]            
 #&gt;                                                      conv3d_65[0][0]            
 #&gt;                                                      conv3d_67[0][0]            
 #&gt;                                                      conv3d_69[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_198 ( (None, 4, 4, 4, 6 2688     concatenate_125[0][0]      
+#&gt; batch_normalization_34 (B (None, 4, 4, 4, 6 2688     concatenate_47[0][0]       
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_191 (RLayer)      (None, 4, 4, 4, 6 1344     batch_normalization_198[0][
+#&gt; r_layer_30 (RLayer)       (None, 4, 4, 4, 6 1344     batch_normalization_34[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_196 (Activatio (None, 4, 4, 4, 6 0        r_layer_191[0][0]          
+#&gt; activation_32 (Activation (None, 4, 4, 4, 6 0        r_layer_30[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_70 (Conv3D)        (None, 4, 4, 4, 1 129024   activation_196[0][0]       
+#&gt; conv3d_70 (Conv3D)        (None, 4, 4, 4, 1 129024   activation_32[0][0]        
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_199 ( (None, 4, 4, 4, 1 768      conv3d_70[0][0]            
+#&gt; batch_normalization_35 (B (None, 4, 4, 4, 1 768      conv3d_70[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_192 (RLayer)      (None, 4, 4, 4, 1 384      batch_normalization_199[0][
+#&gt; r_layer_31 (RLayer)       (None, 4, 4, 4, 1 384      batch_normalization_35[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_197 (Activatio (None, 4, 4, 4, 1 0        r_layer_192[0][0]          
+#&gt; activation_33 (Activation (None, 4, 4, 4, 1 0        r_layer_31[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; zero_padding3d_14 (ZeroPa (None, 6, 6, 6, 1 0        activation_197[0][0]       
+#&gt; zero_padding3d_14 (ZeroPa (None, 6, 6, 6, 1 0        activation_33[0][0]        
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_71 (Conv3D)        (None, 4, 4, 4, 4 248832   zero_padding3d_14[0][0]    
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_126 (Concaten (None, 4, 4, 4, 7 0        average_pooling3d_1[0][0]  
+#&gt; concatenate_48 (Concatena (None, 4, 4, 4, 7 0        average_pooling3d_1[0][0]  
 #&gt;                                                      conv3d_61[0][0]            
 #&gt;                                                      conv3d_63[0][0]            
 #&gt;                                                      conv3d_65[0][0]            
@@ -560,25 +560,25 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt;                                                      conv3d_69[0][0]            
 #&gt;                                                      conv3d_71[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_200 ( (None, 4, 4, 4, 7 2880     concatenate_126[0][0]      
+#&gt; batch_normalization_36 (B (None, 4, 4, 4, 7 2880     concatenate_48[0][0]       
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_193 (RLayer)      (None, 4, 4, 4, 7 1440     batch_normalization_200[0][
+#&gt; r_layer_32 (RLayer)       (None, 4, 4, 4, 7 1440     batch_normalization_36[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_198 (Activatio (None, 4, 4, 4, 7 0        r_layer_193[0][0]          
+#&gt; activation_34 (Activation (None, 4, 4, 4, 7 0        r_layer_32[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_72 (Conv3D)        (None, 4, 4, 4, 1 138240   activation_198[0][0]       
+#&gt; conv3d_72 (Conv3D)        (None, 4, 4, 4, 1 138240   activation_34[0][0]        
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_201 ( (None, 4, 4, 4, 1 768      conv3d_72[0][0]            
+#&gt; batch_normalization_37 (B (None, 4, 4, 4, 1 768      conv3d_72[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_194 (RLayer)      (None, 4, 4, 4, 1 384      batch_normalization_201[0][
+#&gt; r_layer_33 (RLayer)       (None, 4, 4, 4, 1 384      batch_normalization_37[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_199 (Activatio (None, 4, 4, 4, 1 0        r_layer_194[0][0]          
+#&gt; activation_35 (Activation (None, 4, 4, 4, 1 0        r_layer_33[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; zero_padding3d_15 (ZeroPa (None, 6, 6, 6, 1 0        activation_199[0][0]       
+#&gt; zero_padding3d_15 (ZeroPa (None, 6, 6, 6, 1 0        activation_35[0][0]        
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_73 (Conv3D)        (None, 4, 4, 4, 4 248832   zero_padding3d_15[0][0]    
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_127 (Concaten (None, 4, 4, 4, 7 0        average_pooling3d_1[0][0]  
+#&gt; concatenate_49 (Concatena (None, 4, 4, 4, 7 0        average_pooling3d_1[0][0]  
 #&gt;                                                      conv3d_61[0][0]            
 #&gt;                                                      conv3d_63[0][0]            
 #&gt;                                                      conv3d_65[0][0]            
@@ -587,25 +587,25 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt;                                                      conv3d_71[0][0]            
 #&gt;                                                      conv3d_73[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_202 ( (None, 4, 4, 4, 7 3072     concatenate_127[0][0]      
+#&gt; batch_normalization_38 (B (None, 4, 4, 4, 7 3072     concatenate_49[0][0]       
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_195 (RLayer)      (None, 4, 4, 4, 7 1536     batch_normalization_202[0][
+#&gt; r_layer_34 (RLayer)       (None, 4, 4, 4, 7 1536     batch_normalization_38[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_200 (Activatio (None, 4, 4, 4, 7 0        r_layer_195[0][0]          
+#&gt; activation_36 (Activation (None, 4, 4, 4, 7 0        r_layer_34[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_74 (Conv3D)        (None, 4, 4, 4, 1 147456   activation_200[0][0]       
+#&gt; conv3d_74 (Conv3D)        (None, 4, 4, 4, 1 147456   activation_36[0][0]        
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_203 ( (None, 4, 4, 4, 1 768      conv3d_74[0][0]            
+#&gt; batch_normalization_39 (B (None, 4, 4, 4, 1 768      conv3d_74[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_196 (RLayer)      (None, 4, 4, 4, 1 384      batch_normalization_203[0][
+#&gt; r_layer_35 (RLayer)       (None, 4, 4, 4, 1 384      batch_normalization_39[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_201 (Activatio (None, 4, 4, 4, 1 0        r_layer_196[0][0]          
+#&gt; activation_37 (Activation (None, 4, 4, 4, 1 0        r_layer_35[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; zero_padding3d_16 (ZeroPa (None, 6, 6, 6, 1 0        activation_201[0][0]       
+#&gt; zero_padding3d_16 (ZeroPa (None, 6, 6, 6, 1 0        activation_37[0][0]        
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_75 (Conv3D)        (None, 4, 4, 4, 4 248832   zero_padding3d_16[0][0]    
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_128 (Concaten (None, 4, 4, 4, 8 0        average_pooling3d_1[0][0]  
+#&gt; concatenate_50 (Concatena (None, 4, 4, 4, 8 0        average_pooling3d_1[0][0]  
 #&gt;                                                      conv3d_61[0][0]            
 #&gt;                                                      conv3d_63[0][0]            
 #&gt;                                                      conv3d_65[0][0]            
@@ -615,25 +615,25 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt;                                                      conv3d_73[0][0]            
 #&gt;                                                      conv3d_75[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_204 ( (None, 4, 4, 4, 8 3264     concatenate_128[0][0]      
+#&gt; batch_normalization_40 (B (None, 4, 4, 4, 8 3264     concatenate_50[0][0]       
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_197 (RLayer)      (None, 4, 4, 4, 8 1632     batch_normalization_204[0][
+#&gt; r_layer_36 (RLayer)       (None, 4, 4, 4, 8 1632     batch_normalization_40[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_202 (Activatio (None, 4, 4, 4, 8 0        r_layer_197[0][0]          
+#&gt; activation_38 (Activation (None, 4, 4, 4, 8 0        r_layer_36[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_76 (Conv3D)        (None, 4, 4, 4, 1 156672   activation_202[0][0]       
+#&gt; conv3d_76 (Conv3D)        (None, 4, 4, 4, 1 156672   activation_38[0][0]        
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_205 ( (None, 4, 4, 4, 1 768      conv3d_76[0][0]            
+#&gt; batch_normalization_41 (B (None, 4, 4, 4, 1 768      conv3d_76[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_198 (RLayer)      (None, 4, 4, 4, 1 384      batch_normalization_205[0][
+#&gt; r_layer_37 (RLayer)       (None, 4, 4, 4, 1 384      batch_normalization_41[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_203 (Activatio (None, 4, 4, 4, 1 0        r_layer_198[0][0]          
+#&gt; activation_39 (Activation (None, 4, 4, 4, 1 0        r_layer_37[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; zero_padding3d_17 (ZeroPa (None, 6, 6, 6, 1 0        activation_203[0][0]       
+#&gt; zero_padding3d_17 (ZeroPa (None, 6, 6, 6, 1 0        activation_39[0][0]        
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_77 (Conv3D)        (None, 4, 4, 4, 4 248832   zero_padding3d_17[0][0]    
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_129 (Concaten (None, 4, 4, 4, 8 0        average_pooling3d_1[0][0]  
+#&gt; concatenate_51 (Concatena (None, 4, 4, 4, 8 0        average_pooling3d_1[0][0]  
 #&gt;                                                      conv3d_61[0][0]            
 #&gt;                                                      conv3d_63[0][0]            
 #&gt;                                                      conv3d_65[0][0]            
@@ -644,25 +644,25 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt;                                                      conv3d_75[0][0]            
 #&gt;                                                      conv3d_77[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_206 ( (None, 4, 4, 4, 8 3456     concatenate_129[0][0]      
+#&gt; batch_normalization_42 (B (None, 4, 4, 4, 8 3456     concatenate_51[0][0]       
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_199 (RLayer)      (None, 4, 4, 4, 8 1728     batch_normalization_206[0][
+#&gt; r_layer_38 (RLayer)       (None, 4, 4, 4, 8 1728     batch_normalization_42[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_204 (Activatio (None, 4, 4, 4, 8 0        r_layer_199[0][0]          
+#&gt; activation_40 (Activation (None, 4, 4, 4, 8 0        r_layer_38[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_78 (Conv3D)        (None, 4, 4, 4, 1 165888   activation_204[0][0]       
+#&gt; conv3d_78 (Conv3D)        (None, 4, 4, 4, 1 165888   activation_40[0][0]        
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_207 ( (None, 4, 4, 4, 1 768      conv3d_78[0][0]            
+#&gt; batch_normalization_43 (B (None, 4, 4, 4, 1 768      conv3d_78[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_200 (RLayer)      (None, 4, 4, 4, 1 384      batch_normalization_207[0][
+#&gt; r_layer_39 (RLayer)       (None, 4, 4, 4, 1 384      batch_normalization_43[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_205 (Activatio (None, 4, 4, 4, 1 0        r_layer_200[0][0]          
+#&gt; activation_41 (Activation (None, 4, 4, 4, 1 0        r_layer_39[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; zero_padding3d_18 (ZeroPa (None, 6, 6, 6, 1 0        activation_205[0][0]       
+#&gt; zero_padding3d_18 (ZeroPa (None, 6, 6, 6, 1 0        activation_41[0][0]        
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_79 (Conv3D)        (None, 4, 4, 4, 4 248832   zero_padding3d_18[0][0]    
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_130 (Concaten (None, 4, 4, 4, 9 0        average_pooling3d_1[0][0]  
+#&gt; concatenate_52 (Concatena (None, 4, 4, 4, 9 0        average_pooling3d_1[0][0]  
 #&gt;                                                      conv3d_61[0][0]            
 #&gt;                                                      conv3d_63[0][0]            
 #&gt;                                                      conv3d_65[0][0]            
@@ -674,25 +674,25 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt;                                                      conv3d_77[0][0]            
 #&gt;                                                      conv3d_79[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_208 ( (None, 4, 4, 4, 9 3648     concatenate_130[0][0]      
+#&gt; batch_normalization_44 (B (None, 4, 4, 4, 9 3648     concatenate_52[0][0]       
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_201 (RLayer)      (None, 4, 4, 4, 9 1824     batch_normalization_208[0][
+#&gt; r_layer_40 (RLayer)       (None, 4, 4, 4, 9 1824     batch_normalization_44[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_206 (Activatio (None, 4, 4, 4, 9 0        r_layer_201[0][0]          
+#&gt; activation_42 (Activation (None, 4, 4, 4, 9 0        r_layer_40[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_80 (Conv3D)        (None, 4, 4, 4, 1 175104   activation_206[0][0]       
+#&gt; conv3d_80 (Conv3D)        (None, 4, 4, 4, 1 175104   activation_42[0][0]        
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_209 ( (None, 4, 4, 4, 1 768      conv3d_80[0][0]            
+#&gt; batch_normalization_45 (B (None, 4, 4, 4, 1 768      conv3d_80[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_202 (RLayer)      (None, 4, 4, 4, 1 384      batch_normalization_209[0][
+#&gt; r_layer_41 (RLayer)       (None, 4, 4, 4, 1 384      batch_normalization_45[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_207 (Activatio (None, 4, 4, 4, 1 0        r_layer_202[0][0]          
+#&gt; activation_43 (Activation (None, 4, 4, 4, 1 0        r_layer_41[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; zero_padding3d_19 (ZeroPa (None, 6, 6, 6, 1 0        activation_207[0][0]       
+#&gt; zero_padding3d_19 (ZeroPa (None, 6, 6, 6, 1 0        activation_43[0][0]        
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_81 (Conv3D)        (None, 4, 4, 4, 4 248832   zero_padding3d_19[0][0]    
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_131 (Concaten (None, 4, 4, 4, 9 0        average_pooling3d_1[0][0]  
+#&gt; concatenate_53 (Concatena (None, 4, 4, 4, 9 0        average_pooling3d_1[0][0]  
 #&gt;                                                      conv3d_61[0][0]            
 #&gt;                                                      conv3d_63[0][0]            
 #&gt;                                                      conv3d_65[0][0]            
@@ -705,25 +705,25 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt;                                                      conv3d_79[0][0]            
 #&gt;                                                      conv3d_81[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_210 ( (None, 4, 4, 4, 9 3840     concatenate_131[0][0]      
+#&gt; batch_normalization_46 (B (None, 4, 4, 4, 9 3840     concatenate_53[0][0]       
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_203 (RLayer)      (None, 4, 4, 4, 9 1920     batch_normalization_210[0][
+#&gt; r_layer_42 (RLayer)       (None, 4, 4, 4, 9 1920     batch_normalization_46[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_208 (Activatio (None, 4, 4, 4, 9 0        r_layer_203[0][0]          
+#&gt; activation_44 (Activation (None, 4, 4, 4, 9 0        r_layer_42[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_82 (Conv3D)        (None, 4, 4, 4, 1 184320   activation_208[0][0]       
+#&gt; conv3d_82 (Conv3D)        (None, 4, 4, 4, 1 184320   activation_44[0][0]        
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_211 ( (None, 4, 4, 4, 1 768      conv3d_82[0][0]            
+#&gt; batch_normalization_47 (B (None, 4, 4, 4, 1 768      conv3d_82[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_204 (RLayer)      (None, 4, 4, 4, 1 384      batch_normalization_211[0][
+#&gt; r_layer_43 (RLayer)       (None, 4, 4, 4, 1 384      batch_normalization_47[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_209 (Activatio (None, 4, 4, 4, 1 0        r_layer_204[0][0]          
+#&gt; activation_45 (Activation (None, 4, 4, 4, 1 0        r_layer_43[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; zero_padding3d_20 (ZeroPa (None, 6, 6, 6, 1 0        activation_209[0][0]       
+#&gt; zero_padding3d_20 (ZeroPa (None, 6, 6, 6, 1 0        activation_45[0][0]        
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_83 (Conv3D)        (None, 4, 4, 4, 4 248832   zero_padding3d_20[0][0]    
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_132 (Concaten (None, 4, 4, 4, 1 0        average_pooling3d_1[0][0]  
+#&gt; concatenate_54 (Concatena (None, 4, 4, 4, 1 0        average_pooling3d_1[0][0]  
 #&gt;                                                      conv3d_61[0][0]            
 #&gt;                                                      conv3d_63[0][0]            
 #&gt;                                                      conv3d_65[0][0]            
@@ -737,150 +737,150 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt;                                                      conv3d_81[0][0]            
 #&gt;                                                      conv3d_83[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_212 ( (None, 4, 4, 4, 1 4032     concatenate_132[0][0]      
+#&gt; batch_normalization_48 (B (None, 4, 4, 4, 1 4032     concatenate_54[0][0]       
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_205 (RLayer)      (None, 4, 4, 4, 1 2016     batch_normalization_212[0][
+#&gt; r_layer_44 (RLayer)       (None, 4, 4, 4, 1 2016     batch_normalization_48[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_210 (Activatio (None, 4, 4, 4, 1 0        r_layer_205[0][0]          
+#&gt; activation_46 (Activation (None, 4, 4, 4, 1 0        r_layer_44[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_84 (Conv3D)        (None, 4, 4, 4, 1 1016064  activation_210[0][0]       
+#&gt; conv3d_84 (Conv3D)        (None, 4, 4, 4, 1 1016064  activation_46[0][0]        
 #&gt; ________________________________________________________________________________
 #&gt; average_pooling3d_2 (Aver (None, 2, 2, 2, 1 0        conv3d_84[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_213 ( (None, 2, 2, 2, 1 4032     average_pooling3d_2[0][0]  
+#&gt; batch_normalization_49 (B (None, 2, 2, 2, 1 4032     average_pooling3d_2[0][0]  
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_206 (RLayer)      (None, 2, 2, 2, 1 2016     batch_normalization_213[0][
+#&gt; r_layer_45 (RLayer)       (None, 2, 2, 2, 1 2016     batch_normalization_49[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_211 (Activatio (None, 2, 2, 2, 1 0        r_layer_206[0][0]          
+#&gt; activation_47 (Activation (None, 2, 2, 2, 1 0        r_layer_45[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_85 (Conv3D)        (None, 2, 2, 2, 1 193536   activation_211[0][0]       
+#&gt; conv3d_85 (Conv3D)        (None, 2, 2, 2, 1 193536   activation_47[0][0]        
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_214 ( (None, 2, 2, 2, 1 768      conv3d_85[0][0]            
+#&gt; batch_normalization_50 (B (None, 2, 2, 2, 1 768      conv3d_85[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_207 (RLayer)      (None, 2, 2, 2, 1 384      batch_normalization_214[0][
+#&gt; r_layer_46 (RLayer)       (None, 2, 2, 2, 1 384      batch_normalization_50[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_212 (Activatio (None, 2, 2, 2, 1 0        r_layer_207[0][0]          
+#&gt; activation_48 (Activation (None, 2, 2, 2, 1 0        r_layer_46[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; zero_padding3d_21 (ZeroPa (None, 4, 4, 4, 1 0        activation_212[0][0]       
+#&gt; zero_padding3d_21 (ZeroPa (None, 4, 4, 4, 1 0        activation_48[0][0]        
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_86 (Conv3D)        (None, 2, 2, 2, 4 248832   zero_padding3d_21[0][0]    
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_133 (Concaten (None, 2, 2, 2, 1 0        average_pooling3d_2[0][0]  
+#&gt; concatenate_55 (Concatena (None, 2, 2, 2, 1 0        average_pooling3d_2[0][0]  
 #&gt;                                                      conv3d_86[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_215 ( (None, 2, 2, 2, 1 4224     concatenate_133[0][0]      
+#&gt; batch_normalization_51 (B (None, 2, 2, 2, 1 4224     concatenate_55[0][0]       
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_208 (RLayer)      (None, 2, 2, 2, 1 2112     batch_normalization_215[0][
+#&gt; r_layer_47 (RLayer)       (None, 2, 2, 2, 1 2112     batch_normalization_51[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_213 (Activatio (None, 2, 2, 2, 1 0        r_layer_208[0][0]          
+#&gt; activation_49 (Activation (None, 2, 2, 2, 1 0        r_layer_47[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_87 (Conv3D)        (None, 2, 2, 2, 1 202752   activation_213[0][0]       
+#&gt; conv3d_87 (Conv3D)        (None, 2, 2, 2, 1 202752   activation_49[0][0]        
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_216 ( (None, 2, 2, 2, 1 768      conv3d_87[0][0]            
+#&gt; batch_normalization_52 (B (None, 2, 2, 2, 1 768      conv3d_87[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_209 (RLayer)      (None, 2, 2, 2, 1 384      batch_normalization_216[0][
+#&gt; r_layer_48 (RLayer)       (None, 2, 2, 2, 1 384      batch_normalization_52[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_214 (Activatio (None, 2, 2, 2, 1 0        r_layer_209[0][0]          
+#&gt; activation_50 (Activation (None, 2, 2, 2, 1 0        r_layer_48[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; zero_padding3d_22 (ZeroPa (None, 4, 4, 4, 1 0        activation_214[0][0]       
+#&gt; zero_padding3d_22 (ZeroPa (None, 4, 4, 4, 1 0        activation_50[0][0]        
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_88 (Conv3D)        (None, 2, 2, 2, 4 248832   zero_padding3d_22[0][0]    
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_134 (Concaten (None, 2, 2, 2, 1 0        average_pooling3d_2[0][0]  
+#&gt; concatenate_56 (Concatena (None, 2, 2, 2, 1 0        average_pooling3d_2[0][0]  
 #&gt;                                                      conv3d_86[0][0]            
 #&gt;                                                      conv3d_88[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_217 ( (None, 2, 2, 2, 1 4416     concatenate_134[0][0]      
+#&gt; batch_normalization_53 (B (None, 2, 2, 2, 1 4416     concatenate_56[0][0]       
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_210 (RLayer)      (None, 2, 2, 2, 1 2208     batch_normalization_217[0][
+#&gt; r_layer_49 (RLayer)       (None, 2, 2, 2, 1 2208     batch_normalization_53[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_215 (Activatio (None, 2, 2, 2, 1 0        r_layer_210[0][0]          
+#&gt; activation_51 (Activation (None, 2, 2, 2, 1 0        r_layer_49[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_89 (Conv3D)        (None, 2, 2, 2, 1 211968   activation_215[0][0]       
+#&gt; conv3d_89 (Conv3D)        (None, 2, 2, 2, 1 211968   activation_51[0][0]        
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_218 ( (None, 2, 2, 2, 1 768      conv3d_89[0][0]            
+#&gt; batch_normalization_54 (B (None, 2, 2, 2, 1 768      conv3d_89[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_211 (RLayer)      (None, 2, 2, 2, 1 384      batch_normalization_218[0][
+#&gt; r_layer_50 (RLayer)       (None, 2, 2, 2, 1 384      batch_normalization_54[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_216 (Activatio (None, 2, 2, 2, 1 0        r_layer_211[0][0]          
+#&gt; activation_52 (Activation (None, 2, 2, 2, 1 0        r_layer_50[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; zero_padding3d_23 (ZeroPa (None, 4, 4, 4, 1 0        activation_216[0][0]       
+#&gt; zero_padding3d_23 (ZeroPa (None, 4, 4, 4, 1 0        activation_52[0][0]        
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_90 (Conv3D)        (None, 2, 2, 2, 4 248832   zero_padding3d_23[0][0]    
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_135 (Concaten (None, 2, 2, 2, 1 0        average_pooling3d_2[0][0]  
+#&gt; concatenate_57 (Concatena (None, 2, 2, 2, 1 0        average_pooling3d_2[0][0]  
 #&gt;                                                      conv3d_86[0][0]            
 #&gt;                                                      conv3d_88[0][0]            
 #&gt;                                                      conv3d_90[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_219 ( (None, 2, 2, 2, 1 4608     concatenate_135[0][0]      
+#&gt; batch_normalization_55 (B (None, 2, 2, 2, 1 4608     concatenate_57[0][0]       
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_212 (RLayer)      (None, 2, 2, 2, 1 2304     batch_normalization_219[0][
+#&gt; r_layer_51 (RLayer)       (None, 2, 2, 2, 1 2304     batch_normalization_55[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_217 (Activatio (None, 2, 2, 2, 1 0        r_layer_212[0][0]          
+#&gt; activation_53 (Activation (None, 2, 2, 2, 1 0        r_layer_51[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_91 (Conv3D)        (None, 2, 2, 2, 1 221184   activation_217[0][0]       
+#&gt; conv3d_91 (Conv3D)        (None, 2, 2, 2, 1 221184   activation_53[0][0]        
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_220 ( (None, 2, 2, 2, 1 768      conv3d_91[0][0]            
+#&gt; batch_normalization_56 (B (None, 2, 2, 2, 1 768      conv3d_91[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_213 (RLayer)      (None, 2, 2, 2, 1 384      batch_normalization_220[0][
+#&gt; r_layer_52 (RLayer)       (None, 2, 2, 2, 1 384      batch_normalization_56[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_218 (Activatio (None, 2, 2, 2, 1 0        r_layer_213[0][0]          
+#&gt; activation_54 (Activation (None, 2, 2, 2, 1 0        r_layer_52[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; zero_padding3d_24 (ZeroPa (None, 4, 4, 4, 1 0        activation_218[0][0]       
+#&gt; zero_padding3d_24 (ZeroPa (None, 4, 4, 4, 1 0        activation_54[0][0]        
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_92 (Conv3D)        (None, 2, 2, 2, 4 248832   zero_padding3d_24[0][0]    
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_136 (Concaten (None, 2, 2, 2, 1 0        average_pooling3d_2[0][0]  
+#&gt; concatenate_58 (Concatena (None, 2, 2, 2, 1 0        average_pooling3d_2[0][0]  
 #&gt;                                                      conv3d_86[0][0]            
 #&gt;                                                      conv3d_88[0][0]            
 #&gt;                                                      conv3d_90[0][0]            
 #&gt;                                                      conv3d_92[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_221 ( (None, 2, 2, 2, 1 4800     concatenate_136[0][0]      
+#&gt; batch_normalization_57 (B (None, 2, 2, 2, 1 4800     concatenate_58[0][0]       
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_214 (RLayer)      (None, 2, 2, 2, 1 2400     batch_normalization_221[0][
+#&gt; r_layer_53 (RLayer)       (None, 2, 2, 2, 1 2400     batch_normalization_57[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_219 (Activatio (None, 2, 2, 2, 1 0        r_layer_214[0][0]          
+#&gt; activation_55 (Activation (None, 2, 2, 2, 1 0        r_layer_53[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_93 (Conv3D)        (None, 2, 2, 2, 1 230400   activation_219[0][0]       
+#&gt; conv3d_93 (Conv3D)        (None, 2, 2, 2, 1 230400   activation_55[0][0]        
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_222 ( (None, 2, 2, 2, 1 768      conv3d_93[0][0]            
+#&gt; batch_normalization_58 (B (None, 2, 2, 2, 1 768      conv3d_93[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_215 (RLayer)      (None, 2, 2, 2, 1 384      batch_normalization_222[0][
+#&gt; r_layer_54 (RLayer)       (None, 2, 2, 2, 1 384      batch_normalization_58[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_220 (Activatio (None, 2, 2, 2, 1 0        r_layer_215[0][0]          
+#&gt; activation_56 (Activation (None, 2, 2, 2, 1 0        r_layer_54[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; zero_padding3d_25 (ZeroPa (None, 4, 4, 4, 1 0        activation_220[0][0]       
+#&gt; zero_padding3d_25 (ZeroPa (None, 4, 4, 4, 1 0        activation_56[0][0]        
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_94 (Conv3D)        (None, 2, 2, 2, 4 248832   zero_padding3d_25[0][0]    
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_137 (Concaten (None, 2, 2, 2, 1 0        average_pooling3d_2[0][0]  
+#&gt; concatenate_59 (Concatena (None, 2, 2, 2, 1 0        average_pooling3d_2[0][0]  
 #&gt;                                                      conv3d_86[0][0]            
 #&gt;                                                      conv3d_88[0][0]            
 #&gt;                                                      conv3d_90[0][0]            
 #&gt;                                                      conv3d_92[0][0]            
 #&gt;                                                      conv3d_94[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_223 ( (None, 2, 2, 2, 1 4992     concatenate_137[0][0]      
+#&gt; batch_normalization_59 (B (None, 2, 2, 2, 1 4992     concatenate_59[0][0]       
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_216 (RLayer)      (None, 2, 2, 2, 1 2496     batch_normalization_223[0][
+#&gt; r_layer_55 (RLayer)       (None, 2, 2, 2, 1 2496     batch_normalization_59[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_221 (Activatio (None, 2, 2, 2, 1 0        r_layer_216[0][0]          
+#&gt; activation_57 (Activation (None, 2, 2, 2, 1 0        r_layer_55[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_95 (Conv3D)        (None, 2, 2, 2, 1 239616   activation_221[0][0]       
+#&gt; conv3d_95 (Conv3D)        (None, 2, 2, 2, 1 239616   activation_57[0][0]        
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_224 ( (None, 2, 2, 2, 1 768      conv3d_95[0][0]            
+#&gt; batch_normalization_60 (B (None, 2, 2, 2, 1 768      conv3d_95[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_217 (RLayer)      (None, 2, 2, 2, 1 384      batch_normalization_224[0][
+#&gt; r_layer_56 (RLayer)       (None, 2, 2, 2, 1 384      batch_normalization_60[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_222 (Activatio (None, 2, 2, 2, 1 0        r_layer_217[0][0]          
+#&gt; activation_58 (Activation (None, 2, 2, 2, 1 0        r_layer_56[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; zero_padding3d_26 (ZeroPa (None, 4, 4, 4, 1 0        activation_222[0][0]       
+#&gt; zero_padding3d_26 (ZeroPa (None, 4, 4, 4, 1 0        activation_58[0][0]        
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_96 (Conv3D)        (None, 2, 2, 2, 4 248832   zero_padding3d_26[0][0]    
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_138 (Concaten (None, 2, 2, 2, 1 0        average_pooling3d_2[0][0]  
+#&gt; concatenate_60 (Concatena (None, 2, 2, 2, 1 0        average_pooling3d_2[0][0]  
 #&gt;                                                      conv3d_86[0][0]            
 #&gt;                                                      conv3d_88[0][0]            
 #&gt;                                                      conv3d_90[0][0]            
@@ -888,25 +888,25 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt;                                                      conv3d_94[0][0]            
 #&gt;                                                      conv3d_96[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_225 ( (None, 2, 2, 2, 1 5184     concatenate_138[0][0]      
+#&gt; batch_normalization_61 (B (None, 2, 2, 2, 1 5184     concatenate_60[0][0]       
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_218 (RLayer)      (None, 2, 2, 2, 1 2592     batch_normalization_225[0][
+#&gt; r_layer_57 (RLayer)       (None, 2, 2, 2, 1 2592     batch_normalization_61[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_223 (Activatio (None, 2, 2, 2, 1 0        r_layer_218[0][0]          
+#&gt; activation_59 (Activation (None, 2, 2, 2, 1 0        r_layer_57[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_97 (Conv3D)        (None, 2, 2, 2, 1 248832   activation_223[0][0]       
+#&gt; conv3d_97 (Conv3D)        (None, 2, 2, 2, 1 248832   activation_59[0][0]        
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_226 ( (None, 2, 2, 2, 1 768      conv3d_97[0][0]            
+#&gt; batch_normalization_62 (B (None, 2, 2, 2, 1 768      conv3d_97[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_219 (RLayer)      (None, 2, 2, 2, 1 384      batch_normalization_226[0][
+#&gt; r_layer_58 (RLayer)       (None, 2, 2, 2, 1 384      batch_normalization_62[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_224 (Activatio (None, 2, 2, 2, 1 0        r_layer_219[0][0]          
+#&gt; activation_60 (Activation (None, 2, 2, 2, 1 0        r_layer_58[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; zero_padding3d_27 (ZeroPa (None, 4, 4, 4, 1 0        activation_224[0][0]       
+#&gt; zero_padding3d_27 (ZeroPa (None, 4, 4, 4, 1 0        activation_60[0][0]        
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_98 (Conv3D)        (None, 2, 2, 2, 4 248832   zero_padding3d_27[0][0]    
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_139 (Concaten (None, 2, 2, 2, 1 0        average_pooling3d_2[0][0]  
+#&gt; concatenate_61 (Concatena (None, 2, 2, 2, 1 0        average_pooling3d_2[0][0]  
 #&gt;                                                      conv3d_86[0][0]            
 #&gt;                                                      conv3d_88[0][0]            
 #&gt;                                                      conv3d_90[0][0]            
@@ -915,25 +915,25 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt;                                                      conv3d_96[0][0]            
 #&gt;                                                      conv3d_98[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_227 ( (None, 2, 2, 2, 1 5376     concatenate_139[0][0]      
+#&gt; batch_normalization_63 (B (None, 2, 2, 2, 1 5376     concatenate_61[0][0]       
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_220 (RLayer)      (None, 2, 2, 2, 1 2688     batch_normalization_227[0][
+#&gt; r_layer_59 (RLayer)       (None, 2, 2, 2, 1 2688     batch_normalization_63[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_225 (Activatio (None, 2, 2, 2, 1 0        r_layer_220[0][0]          
+#&gt; activation_61 (Activation (None, 2, 2, 2, 1 0        r_layer_59[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_99 (Conv3D)        (None, 2, 2, 2, 1 258048   activation_225[0][0]       
+#&gt; conv3d_99 (Conv3D)        (None, 2, 2, 2, 1 258048   activation_61[0][0]        
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_228 ( (None, 2, 2, 2, 1 768      conv3d_99[0][0]            
+#&gt; batch_normalization_64 (B (None, 2, 2, 2, 1 768      conv3d_99[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_221 (RLayer)      (None, 2, 2, 2, 1 384      batch_normalization_228[0][
+#&gt; r_layer_60 (RLayer)       (None, 2, 2, 2, 1 384      batch_normalization_64[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_226 (Activatio (None, 2, 2, 2, 1 0        r_layer_221[0][0]          
+#&gt; activation_62 (Activation (None, 2, 2, 2, 1 0        r_layer_60[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; zero_padding3d_28 (ZeroPa (None, 4, 4, 4, 1 0        activation_226[0][0]       
+#&gt; zero_padding3d_28 (ZeroPa (None, 4, 4, 4, 1 0        activation_62[0][0]        
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_100 (Conv3D)       (None, 2, 2, 2, 4 248832   zero_padding3d_28[0][0]    
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_140 (Concaten (None, 2, 2, 2, 1 0        average_pooling3d_2[0][0]  
+#&gt; concatenate_62 (Concatena (None, 2, 2, 2, 1 0        average_pooling3d_2[0][0]  
 #&gt;                                                      conv3d_86[0][0]            
 #&gt;                                                      conv3d_88[0][0]            
 #&gt;                                                      conv3d_90[0][0]            
@@ -943,48 +943,48 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt;                                                      conv3d_98[0][0]            
 #&gt;                                                      conv3d_100[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_229 ( (None, 2, 2, 2, 1 5568     concatenate_140[0][0]      
+#&gt; batch_normalization_65 (B (None, 2, 2, 2, 1 5568     concatenate_62[0][0]       
 #&gt; ________________________________________________________________________________
-#&gt; r_layer_222 (RLayer)      (None, 2, 2, 2, 1 2784     batch_normalization_229[0][
+#&gt; r_layer_61 (RLayer)       (None, 2, 2, 2, 1 2784     batch_normalization_65[0][0
 #&gt; ________________________________________________________________________________
-#&gt; activation_227 (Activatio (None, 2, 2, 2, 1 0        r_layer_222[0][0]          
+#&gt; activation_63 (Activation (None, 2, 2, 2, 1 0        r_layer_61[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_101 (Conv3D)       (None, 4, 4, 4, 1 1404528  concatenate_132[0][0]      
+#&gt; conv3d_101 (Conv3D)       (None, 4, 4, 4, 1 1404528  concatenate_54[0][0]       
 #&gt; ________________________________________________________________________________
-#&gt; up_sampling3d (UpSampling (None, 4, 4, 4, 1 0        activation_227[0][0]       
+#&gt; up_sampling3d (UpSampling (None, 4, 4, 4, 1 0        activation_63[0][0]        
 #&gt; ________________________________________________________________________________
-#&gt; add_37 (Add)              (None, 4, 4, 4, 1 0        conv3d_101[0][0]           
+#&gt; add_34 (Add)              (None, 4, 4, 4, 1 0        conv3d_101[0][0]           
 #&gt;                                                      up_sampling3d[0][0]        
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_102 (Conv3D)       (None, 4, 4, 4, 4 16236720 add_37[0][0]               
+#&gt; conv3d_102 (Conv3D)       (None, 4, 4, 4, 4 16236720 add_34[0][0]               
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_230 ( (None, 4, 4, 4, 4 1728     conv3d_102[0][0]           
+#&gt; batch_normalization_66 (B (None, 4, 4, 4, 4 1728     conv3d_102[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; activation_228 (Activatio (None, 4, 4, 4, 4 0        batch_normalization_230[0][
+#&gt; activation_64 (Activation (None, 4, 4, 4, 4 0        batch_normalization_66[0][0
 #&gt; ________________________________________________________________________________
-#&gt; up_sampling3d_1 (UpSampli (None, 8, 8, 8, 4 0        activation_228[0][0]       
+#&gt; up_sampling3d_1 (UpSampli (None, 8, 8, 8, 4 0        activation_64[0][0]        
 #&gt; ________________________________________________________________________________
-#&gt; add_38 (Add)              (None, 8, 8, 8, 4 0        concatenate_120[0][0]      
+#&gt; add_35 (Add)              (None, 8, 8, 8, 4 0        concatenate_42[0][0]       
 #&gt;                                                      up_sampling3d_1[0][0]      
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_103 (Conv3D)       (None, 8, 8, 8, 2 2799600  add_38[0][0]               
+#&gt; conv3d_103 (Conv3D)       (None, 8, 8, 8, 2 2799600  add_35[0][0]               
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_231 ( (None, 8, 8, 8, 2 960      conv3d_103[0][0]           
+#&gt; batch_normalization_67 (B (None, 8, 8, 8, 2 960      conv3d_103[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; activation_229 (Activatio (None, 8, 8, 8, 2 0        batch_normalization_231[0][
+#&gt; activation_65 (Activation (None, 8, 8, 8, 2 0        batch_normalization_67[0][0
 #&gt; ________________________________________________________________________________
-#&gt; up_sampling3d_2 (UpSampli (None, 16, 16, 16 0        activation_229[0][0]       
+#&gt; up_sampling3d_2 (UpSampli (None, 16, 16, 16 0        activation_65[0][0]        
 #&gt; ________________________________________________________________________________
-#&gt; add_39 (Add)              (None, 16, 16, 16 0        concatenate_116[0][0]      
+#&gt; add_36 (Add)              (None, 16, 16, 16 0        concatenate_38[0][0]       
 #&gt;                                                      up_sampling3d_2[0][0]      
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_104 (Conv3D)       (None, 16, 16, 16 622176   add_39[0][0]               
+#&gt; conv3d_104 (Conv3D)       (None, 16, 16, 16 622176   add_36[0][0]               
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_232 ( (None, 16, 16, 16 384      conv3d_104[0][0]           
+#&gt; batch_normalization_68 (B (None, 16, 16, 16 384      conv3d_104[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; activation_230 (Activatio (None, 16, 16, 16 0        batch_normalization_232[0][
+#&gt; activation_66 (Activation (None, 16, 16, 16 0        batch_normalization_68[0][0
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_105 (Conv3D)       (None, 16, 16, 16 97       activation_230[0][0]       
+#&gt; conv3d_105 (Conv3D)       (None, 16, 16, 16 97       activation_66[0][0]        
 #&gt; ================================================================================
 #&gt; Total params: 32,977,105
 #&gt; Trainable params: 32,919,985
@@ -992,8 +992,8 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt; ________________________________________________________________________________
 #&gt; 
 #&gt; </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>model</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2501702 133.7    4498814 240.3         NA   4498814  240.3
-#&gt; Vcells 6075168  46.4   25680008 196.0      16384 150495929 1148.2</div><div class='input'>
+#&gt; Ncells 2464288 131.7    4523844 241.6         NA   4523844  241.6
+#&gt; Vcells 4452217  34.0   25680005 196.0      16384 150429465 1147.7</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

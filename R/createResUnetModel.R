@@ -28,7 +28,7 @@
 #' @param dropoutRate float between 0 and 1 to use between dense layers.
 #' @param weightDecay weighting parameter for L2 regularization of the
 #' kernel weights of the convolution layers.  Default = 0.0.
-#' @param mode 'classification' or 'regression'.  Default = 'classification'.
+#' @param mode 'classification' or 'regression'. 
 #'
 #' @return a res/u-net keras model
 #' @author Tustison NJ
@@ -121,7 +121,7 @@ createResUnetModel2D <- function( inputImageSize,
                                   deconvolutionKernelSize = c( 2, 2 ),
                                   dropoutRate = 0.0,
                                   weightDecay = 0.0001,
-                                  mode = 'classification'
+                                  mode = c( 'classification', 'regression' )
                                 )
 {
 
@@ -272,6 +272,7 @@ createResUnetModel2D <- function( inputImageSize,
     return( output )
     }
 
+  mode <- match.arg( mode )
   inputs <- layer_input( shape = inputImageSize )
 
   encodingLayersWithLongSkipConnections <- list()
@@ -397,19 +398,14 @@ createResUnetModel2D <- function( inputImageSize,
   model <- model %>% layer_activation_thresholded_relu( theta = 0 )
 
   convActivation <- ''
-  if( mode == 'classification' )
-    {
-    if( numberOfOutputs == 2 )
-      {
-      convActivation <- 'sigmoid'
-      } else {
-      convActivation <- 'softmax'
-      }
+  if( mode == 'classification' ) {
+    convActivation <- 'softmax'  
     } else if( mode == 'regression' ) {
-    convActivation <- 'linear'
+    convActivation <- 'linear'  
     } else {
     stop( 'Error: unrecognized mode.' )
     }
+
   outputs <- model %>%
     layer_conv_2d( filters = numberOfOutputs,
       kernel_size = c( 1, 1 ), activation = convActivation,
@@ -450,7 +446,7 @@ createResUnetModel2D <- function( inputImageSize,
 #' @param dropoutRate float between 0 and 1 to use between dense layers.
 #' @param weightDecay weighting parameter for L2 regularization of the
 #' kernel weights of the convolution layers.  Default = 0.0.
-#' @param mode 'classification' or 'regression'.  Default = 'classification'.
+#' @param mode 'classification' or 'regression'. 
 #'
 #' @return a res/u-net keras model
 #' @author Tustison NJ
@@ -487,7 +483,7 @@ createResUnetModel3D <- function( inputImageSize,
                                   deconvolutionKernelSize = c( 2, 2, 2 ),
                                   dropoutRate = 0.0,
                                   weightDecay = 0.0001,
-                                  mode = 'classification'
+                                  mode = c( 'classification', 'regression' )
                                 )
 {
 
@@ -637,7 +633,8 @@ createResUnetModel3D <- function( inputImageSize,
 
     return( output )
     }
-
+ 
+  mode <- match.arg( mode )
   inputs <- layer_input( shape = inputImageSize )
 
   encodingLayersWithLongSkipConnections <- list()
@@ -763,19 +760,14 @@ createResUnetModel3D <- function( inputImageSize,
   model <- model %>% layer_activation_thresholded_relu( theta = 0 )
 
   convActivation <- ''
-  if( mode == 'classification' )
-    {
-    if( numberOfOutputs == 2 )
-      {
-      convActivation <- 'sigmoid'
-      } else {
-      convActivation <- 'softmax'
-      }
+  if( mode == 'classification' ) {
+    convActivation <- 'softmax'  
     } else if( mode == 'regression' ) {
-    convActivation <- 'linear'
+    convActivation <- 'linear'  
     } else {
     stop( 'Error: unrecognized mode.' )
     }
+
   outputs <- model %>%
     layer_conv_3d( filters = numberOfOutputs,
       kernel_size = c( 1, 1, 1 ), activation = convActivation,

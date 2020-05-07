@@ -15,7 +15,7 @@ createVggModel3D(
   numberOfDenseUnits = 4096,
   dropoutRate = 0,
   style = 19,
-  mode = "classification"
+  mode = c("classification", "regression")
 )
 }
 \arguments{
@@ -44,7 +44,7 @@ during the encoding path}
 
 \item{style}{\verb{'16'} or \verb{'19'} for VGG16 or VGG19, respectively.}
 
-\item{mode}{'classification' or 'regression'.  Default = 'classification'.}
+\item{mode}{'classification' or 'regression'.}
 }
 \value{
 a VGG keras model

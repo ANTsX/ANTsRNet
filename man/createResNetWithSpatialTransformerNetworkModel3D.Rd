@@ -15,7 +15,7 @@ createResNetWithSpatialTransformerNetworkModel3D(
   cardinality = 1,
   resampledSize = c(64, 64, 64),
   numberOfSpatialTransformerUnits = 50,
-  mode = "classification"
+  mode = c("classification", "regression")
 )
 }
 \arguments{

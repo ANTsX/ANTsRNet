@@ -158,7 +158,7 @@ each element is the caption rendered with each box.</p></td>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>jpg</span> <span class='kw'>=</span> <span class='kw pkg'>ANTsRCore</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/getANTsRData.html'>getANTsRData</a></span>(<span class='st'>"r16"</span>)
 <span class='kw'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span>(<span class='st'>"jpeg"</span>, <span class='kw'>quietly</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)) {
-<span class='no'>image</span> <span class='kw'>=</span> <span class='kw pkg'>jpeg</span><span class='kw ns'>::</span><span class='fu'>readJPEG</span>(<span class='no'>jpg</span>)
+<span class='no'>image</span> <span class='kw'>=</span> <span class='kw pkg'>jpeg</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/jpeg/man/readJPEG.html'>readJPEG</a></span>(<span class='no'>jpg</span>)
 <span class='no'>vec2d</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>10</span>, <span class='fl'>1</span>, <span class='fl'>10</span>)
 <span class='fu'>drawRectangles</span>(<span class='no'>image</span>, <span class='no'>vec2d</span>)
 <span class='no'>vec2d</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>rbind</a></span>(
@@ -166,7 +166,7 @@ each element is the caption rendered with each box.</p></td>
 <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>20</span>, <span class='fl'>40</span>, <span class='fl'>30</span>, <span class='fl'>40</span>)
 )
 <span class='fu'>drawRectangles</span>(<span class='no'>image</span>, <span class='no'>vec2d</span>)
-}</div></pre>
+}</div><div class='img'><img src='drawRectangles-1.png' alt='' width='700' height='433' /></div><div class='img'><img src='drawRectangles-2.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

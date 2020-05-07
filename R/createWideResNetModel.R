@@ -81,6 +81,7 @@ createWideResNetModel2D <- function( inputImageSize,
                                      mode = 'classification'
                                    )
 {
+  mode <- match.arg( mode )
 
   channelAxis <- 1
   if( keras::backend()$image_data_format() == "channels_last" )
@@ -181,16 +182,10 @@ createWideResNetModel2D <- function( inputImageSize,
   outputs <- outputs %>% layer_flatten()
 
   layerActivation <- ''
-  if( mode == 'classification' )
-    {
-    if( numberOfClassificationLabels == 2 )
-      {
-      layerActivation <- 'sigmoid'
-      } else {
-      layerActivation <- 'softmax'
-      }
+  if( mode == 'classification' ) {
+    layerActivation <- 'softmax'  
     } else if( mode == 'regression' ) {
-    layerActivation <- 'linear'
+    layerActivation <- 'linear'  
     } else {
     stop( 'Error: unrecognized mode.' )
     }
@@ -230,7 +225,7 @@ createWideResNetModel2D <- function( inputImageSize,
 #' @param weightDecay weight for l2 regularizer in convolution layers.
 #' Default = 0.0005.
 #' @param poolSize pool size for final average pooling layer.  Default = c( 8, 8, 8 ).
-#' @param mode 'classification' or 'regression'.  Default = 'classification'.
+#' @param mode 'classification' or 'regression'. 
 #'
 #' @return a Wide ResNet keras model
 #' @author Tustison NJ
@@ -286,9 +281,11 @@ createWideResNetModel3D <- function( inputImageSize,
                                      poolSize = c( 8, 8, 8 ),
                                      dropoutRate = 0.0,
                                      weightDecay = 0.0005,
-                                     mode = 'classification'
+                                     mode = c( 'classification', 'regression' )
                                    )
 {
+
+  mode <- match.arg( mode )
 
   channelAxis <- 1
   if( keras::backend()$image_data_format() == "channels_last" )
@@ -389,16 +386,10 @@ createWideResNetModel3D <- function( inputImageSize,
   outputs <- outputs %>% layer_flatten()
 
   layerActivation <- ''
-  if( mode == 'classification' )
-    {
-    if( numberOfClassificationLabels == 2 )
-      {
-      layerActivation <- 'sigmoid'
-      } else {
-      layerActivation <- 'softmax'
-      }
+  if( mode == 'classification' ) {
+    layerActivation <- 'softmax'  
     } else if( mode == 'regression' ) {
-    layerActivation <- 'linear'
+    layerActivation <- 'linear'  
     } else {
     stop( 'Error: unrecognized mode.' )
     }

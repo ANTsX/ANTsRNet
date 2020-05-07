@@ -20,7 +20,7 @@
 #' probabilityMask <- brainExtraction( image )
 #' }
 #' @export
-brainExtraction <- function( image, outputDirectory = NULL, verbose = FALSE )
+brainExtraction <- function( image, modality = "t1", outputDirectory = NULL, verbose = FALSE )
   {
   if( is.null( outputDirectory ) )
     {

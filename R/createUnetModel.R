@@ -34,7 +34,7 @@
 #' @param dropoutRate float between 0 and 1 to use between dense layers.
 #' @param weightDecay weighting parameter for L2 regularization of the
 #' kernel weights of the convolution layers.  Default = 0.0.
-#' @param mode 'classification' or 'regression' or 'sigmoid'.  Default = 'classification'.
+#' @param mode 'classification' or 'regression' or 'sigmoid'. 
 #'
 #' @return a u-net keras model
 #' @author Tustison NJ
@@ -125,9 +125,11 @@ createUnetModel2D <- function( inputImageSize,
                                strides = c( 2, 2 ),
                                dropoutRate = 0.0,
                                weightDecay = 0.0,
-                               mode = 'classification'
+                               mode = c( 'classification', 'regression', 'sigmoid' )
                              )
 {
+
+  mode <- match.arg( mode )
 
   inputs <- layer_input( shape = inputImageSize )
 
@@ -203,19 +205,17 @@ createUnetModel2D <- function( inputImageSize,
     }
 
   convActivation <- ''
-  if( mode == 'classification' | mode == 'sigmoid' )
+  if( mode == 'sigmoid' )
     {
-    if( numberOfOutputs == 2 | mode == 'sigmoid'  )
-      {
-      convActivation <- 'sigmoid'
-      } else {
-      convActivation <- 'softmax'
-      }
+    convActivation <- 'sigmoid'  
+    } else if( mode == 'classification' ) {
+    convActivation <- 'softmax'  
     } else if( mode == 'regression' ) {
-    convActivation <- 'linear'
+    convActivation <- 'linear'  
     } else {
     stop( 'Error: unrecognized mode.' )
     }
+
   outputs <- outputs %>%
     layer_conv_2d( filters = numberOfOutputs,
       kernel_size = c( 1, 1 ), activation = convActivation,
@@ -262,7 +262,7 @@ createUnetModel2D <- function( inputImageSize,
 #' @param dropoutRate float between 0 and 1 to use between dense layers.
 #' @param weightDecay weighting parameter for L2 regularization of the
 #' kernel weights of the convolution layers.  Default = 0.0.
-#' @param mode 'classification' or 'regression' or 'sigmoid'.  Default = 'classification'.
+#' @param mode 'classification' or 'regression' or 'sigmoid'.
 #'
 #' @return a u-net keras model
 #' @author Tustison NJ
@@ -301,9 +301,11 @@ createUnetModel3D <- function( inputImageSize,
                                strides = c( 2, 2, 2 ),
                                dropoutRate = 0.0,
                                weightDecay = 0.0,
-                               mode = 'classification'
+                               mode = c( 'classification', 'regression', 'sigmoid' )
                              )
 {
+
+  mode <- match.arg( mode )
 
   inputs <- layer_input( shape = inputImageSize )
 
@@ -379,16 +381,13 @@ createUnetModel3D <- function( inputImageSize,
     }
 
   convActivation <- ''
-  if( mode == 'classification' | mode == 'sigmoid' )
+  if( mode == 'sigmoid' )
     {
-    if( numberOfOutputs == 2 | mode == 'sigmoid'  )
-      {
-      convActivation <- 'sigmoid'
-      } else {
-      convActivation <- 'softmax'
-      }
+    convActivation <- 'sigmoid'  
+    } else if( mode == 'classification' ) {
+    convActivation <- 'softmax'  
     } else if( mode == 'regression' ) {
-    convActivation <- 'linear'
+    convActivation <- 'linear'  
     } else {
     stop( 'Error: unrecognized mode.' )
     }

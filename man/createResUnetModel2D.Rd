@@ -13,7 +13,7 @@ createResUnetModel2D(
   deconvolutionKernelSize = c(2, 2),
   dropoutRate = 0,
   weightDecay = 0.0001,
-  mode = "classification"
+  mode = c("classification", "regression")
 )
 }
 \arguments{
@@ -43,7 +43,7 @@ during the decoding}
 \item{weightDecay}{weighting parameter for L2 regularization of the
 kernel weights of the convolution layers.  Default = 0.0.}
 
-\item{mode}{'classification' or 'regression'.  Default = 'classification'.}
+\item{mode}{'classification' or 'regression'.}
 }
 \value{
 a res/u-net keras model

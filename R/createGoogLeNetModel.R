@@ -23,7 +23,7 @@
 #' the number of channels (e.g., red, green, and blue).  The batch size
 #' (i.e., number of training images) is not specified a priori.
 #' @param numberOfClassificationLabels Number of segmentation labels.
-#' @param mode 'classification' or 'regression'.  Default = 'classification'.
+#' @param mode 'classification' or 'regression'. 
 #'
 #' @return a GoogLeNet keras model
 #' @author Tustison NJ
@@ -87,12 +87,13 @@
 #' rm(model); gc()
 #' @import keras
 #' @export
-createGoogLeNetModel2D <- function(
-  inputImageSize,
-  numberOfClassificationLabels = 1000,
-  mode = c("classification", "regression")
+createGoogLeNetModel2D <- function( inputImageSize,
+                                    numberOfClassificationLabels = 1000,
+                                    mode = c( "classification", "regression" )
 ){
   K <- keras::backend()
+
+  mode <- match.arg( mode )
 
   convolutionAndBatchNormalization2D <- function(
     model,
@@ -383,20 +384,13 @@ createGoogLeNetModel2D <- function(
 
 
   layerActivation <- ''
-  mode = match.arg(mode)
-  if( mode == 'classification' )
-  {
-    if( numberOfClassificationLabels == 2 )
-    {
-      layerActivation <- 'sigmoid'
+  if( mode == 'classification' ) {
+    layerActivation <- 'softmax'  
+    } else if( mode == 'regression' ) {
+    layerActivation <- 'linear'  
     } else {
-      layerActivation <- 'softmax'
-    }
-  } else if( mode == 'regression' ) {
-    layerActivation <- 'linear'
-  } else {
     stop( 'Error: unrecognized mode.' )
-  }
+    }
 
   outputs <- outputs %>%
     layer_dense( units = numberOfClassificationLabels, activation = layerActivation )

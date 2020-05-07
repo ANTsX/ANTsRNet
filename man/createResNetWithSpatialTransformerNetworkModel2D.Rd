@@ -15,7 +15,7 @@ createResNetWithSpatialTransformerNetworkModel2D(
   cardinality = 1,
   numberOfSpatialTransformerUnits = 50,
   resampledSize = c(64, 64),
-  mode = "classification"
+  mode = c("classification", "regression")
 )
 }
 \arguments{
@@ -41,7 +41,7 @@ repeats.}
 
 \item{resampledSize}{output image size of the spatial transformer network.}
 
-\item{mode}{'classification' or 'regression'.  Default = 'classification'.}
+\item{mode}{'classification' or 'regression'.}
 }
 \value{
 an STN + ResNet keras model

@@ -124,11 +124,11 @@ createDenseUnetModel2D <- function( inputImageSize,
                                     depth = 7,
                                     dropoutRate = 0.0,
                                     weightDecay = 1e-4,
-                                    mode = c("classification", "regression")
+                                    mode = c( "classification", "regression" )
 )
 {
-  mode = match.arg(mode)
-  K <- keras::backend()
+  inputImageSize = as.integer( inputImageSize )
+  mode <- match.arg( mode )
 
   concatenationAxis <- 1L
   if( K$image_data_format() == 'channels_last' )
@@ -314,19 +314,17 @@ createDenseUnetModel2D <- function( inputImageSize,
 
   convActivation <- ''
   mode = match.arg(mode)
-  if( mode == 'classification' )
-  {
-    if ( numberOfOutputs == 2 )
+  if( mode == 'sigmoid' )
     {
-      convActivation <- 'sigmoid'
+    convActivation <- 'sigmoid'  
+    } else if( mode == 'classification' ) {
+    convActivation <- 'softmax'  
+    } else if( mode == 'regression' ) {
+    convActivation <- 'linear'  
     } else {
-      convActivation <- 'softmax'
-    }
-  } else if( mode == 'regression' ) {
-    convActivation <- 'linear'
-  } else {
     stop( 'Error: unrecognized mode.' )
-  }
+    }
+
   numberOfOutputs = as.integer(numberOfOutputs)
   outputs <- outputs %>%
     layer_conv_2d( filters = numberOfOutputs,
@@ -412,11 +410,12 @@ createDenseUnetModel3D <- function( inputImageSize,
                                     depth = 7,
                                     dropoutRate = 0.0,
                                     weightDecay = 1e-4,
-                                    mode = c('classification', 'regression')
+                                    mode = c( 'classification', 'regression' )
 )
 {
-  mode = match.arg(mode)
-  inputImageSize = as.integer(inputImageSize)
+  inputImageSize = as.integer( inputImageSize )
+  mode <- match.arg( mode )
+
   K <- keras::backend()
 
   concatenationAxis <- 1
@@ -600,19 +599,17 @@ createDenseUnetModel3D <- function( inputImageSize,
   }
 
   convActivation <- ''
-  if( mode == 'classification' )
-  {
-    if( numberOfOutputs == 2 )
+  if( mode == 'sigmoid' )
     {
-      convActivation <- 'sigmoid'
+    convActivation <- 'sigmoid'  
+    } else if( mode == 'classification' ) {
+    convActivation <- 'softmax'  
+    } else if( mode == 'regression' ) {
+    convActivation <- 'linear'  
     } else {
-      convActivation <- 'softmax'
-    }
-  } else if( mode == 'regression' ) {
-    convActivation <- 'linear'
-  } else {
     stop( 'Error: unrecognized mode.' )
-  }
+    }
+
   outputs <- outputs %>%
     layer_conv_3d( filters = numberOfOutputs,
                    kernel_size = c( 1L, 1L, 1L ), activation = convActivation,
