@@ -81,7 +81,8 @@ preprocessBrainImage <- function( image, truncateIntensity = c( 0.01, 0.99 ),
       {
       message( "Preprocessing:  brain extraction.\n" )
       }
-    probabilityMask <- brainExtraction( preprocessedImage, outputDirectory = outputDirectory, verbose = verbose )
+    probabilityMask <- brainExtraction( preprocessedImage, modality = "t1", 
+      outputDirectory = outputDirectory, verbose = verbose )
     mask <- thresholdImage( probabilityMask, 0.5, 1, 1, 0 )
     }
 
@@ -114,7 +115,8 @@ preprocessBrainImage <- function( image, truncateIntensity = c( 0.01, 0.99 ),
       transforms <- list( fwdtransforms = registration$fwdtransforms,
                           invtransforms = registration$invtransforms )
       } else {
-      templateProbabilityMask <- brainExtraction( templateImage, outputDirectory = outputDirectory, verbose = verbose )
+      templateProbabilityMask <- brainExtraction( templateImage, modality = "t1", 
+        outputDirectory = outputDirectory, verbose = verbose )
       templateMask <- thresholdImage( templateProbabilityMask, 0.5, 1, 1, 0 )
       templateBrainImage <- templateMask * templateImage
 
