@@ -3,7 +3,7 @@
 #' Various preprocessing steps that have been previously described in 
 #' various papers including the cortical thickness pipeline:
 #'
-#'         \url{https://www.ncbi.nlm.nih.gov/pubmed/24879923}
+#'     \url{https://www.ncbi.nlm.nih.gov/pubmed/24879923}
 #'
 #' @param image input t1-weighted brain MRI
 #' @param truncateIntensity 2-element vector giving the low and high quantiles
