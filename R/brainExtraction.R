@@ -8,7 +8,7 @@
 #'  https://github.com/neuronets/nobrainer-models
 #'
 #' @param image input 3-D T1-weighted brain image.
-#' @param modality image type.  Options include "t1", "fa", "t1nobrainer".
+#' @param modality image type.  Options include "t1", "bold", "fa", "t1nobrainer".
 #' @param outputDirectory destination directory for storing the downloaded
 #' template and model weights.  Since these can be resused, if
 #' \code{is.null(outputDirectory)}, these data will be downloaded to the
@@ -25,9 +25,16 @@
 #' probabilityMask <- brainExtraction( image, modality = "t1" )
 #' }
 #' @export
-brainExtraction <- function( image, modality = c( "t1", "fa", "t1nobrainer" ), 
+brainExtraction <- function( image, 
+  modality = c( "t1", "bold", "fa", "t1nobrainer" ), 
   outputDirectory = NULL, verbose = FALSE )
   {
+
+  if( image@dimension != 3 )
+    {
+    stop( "Image dimension must be 3." )  
+    }
+
   modality <- match.arg( modality )
 
   if( is.null( outputDirectory ) )
@@ -44,9 +51,45 @@ brainExtraction <- function( image, modality = c( "t1", "fa", "t1nobrainer" ),
     #
     ##################### 
 
+    weightsFileName <- ''
+    if( modality == "t1" )
+      {
+      weightsFileName <- paste0( outputDirectory, "/brainExtractionWeights.h5" )
+      if( ! file.exists( weightsFileName ) )
+        {
+        if( verbose == TRUE )
+          {
+          cat( "Brain extraction:  downloading model weights.\n" )
+          }
+        weightsFileName <- getPretrainedNetwork( "brainExtraction", weightsFileName )
+        }
+      } else if( modality == "bold" ) {
+      weightsFileName <- paste0( outputDirectory, "/brainExtractionBoldWeights.h5" )
+      if( ! file.exists( weightsFileName ) )
+        {
+        if( verbose == TRUE )
+          {
+          cat( "Brain extraction:  downloading model weights.\n" )
+          }
+        weightsFileName <- getPretrainedNetwork( "brainExtractionBOLD", weightsFileName )
+        }
+      } else if( modality == "fa" ) {
+      weightsFileName <- paste0( outputDirectory, "/brainExtractionFaWeights.h5" )
+      if( ! file.exists( weightsFileName ) )
+        {
+        if( verbose == TRUE )
+          {
+          cat( "Brain extraction:  downloading model weights.\n" )
+          }
+        weightsFileName <- getPretrainedNetwork( "brainExtractionFA", weightsFileName )
+        }
+      } else {
+      stop( "Unknown modality type." )  
+      }
+
     classes <- c( "background", "brain" )
     numberOfClassificationLabels <- length( classes )
-    imageModalities <- c( "T1" )
+    imageModalities <- c( modality )
     channelSize <- length( imageModalities )
 
     reorientTemplateFileName <- paste0( outputDirectory, "/S_template3_resampled.nii.gz" )
@@ -68,29 +111,6 @@ brainExtraction <- function( image, modality = c( "t1", "fa", "t1nobrainer" ),
       convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
       weightDecay = 1e-5 )
 
-    weightsFileName <- ''
-    if( modality == "t1" )
-      {
-      weightsFileName <- paste0( outputDirectory, "/brainExtractionWeights.h5" )
-      if( ! file.exists( weightsFileName ) )
-        {
-        if( verbose == TRUE )
-          {
-          cat( "Brain extraction:  downloading model weights.\n" )
-          }
-        weightsFileName <- getPretrainedNetwork( "brainExtraction", weightsFileName )
-        }
-      } else if( modality == "fa" ) {
-      weightsFileName <- paste0( outputDirectory, "/brainExtractionFaWeights.h5" )
-      if( ! file.exists( weightsFileName ) )
-        {
-        if( verbose == TRUE )
-          {
-          cat( "Brain extraction:  downloading model weights.\n" )
-          }
-        weightsFileName <- getPretrainedNetwork( "brainExtractionFA", weightsFileName )
-        }
-      }
     unetModel$load_weights( weightsFileName )
 
     if( verbose == TRUE )

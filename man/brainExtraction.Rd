@@ -6,7 +6,7 @@
 \usage{
 brainExtraction(
   image,
-  modality = c("t1", "fa", "t1nobrainer"),
+  modality = c("t1", "bold", "fa", "t1nobrainer"),
   outputDirectory = NULL,
   verbose = FALSE
 )
@@ -14,7 +14,7 @@ brainExtraction(
 \arguments{
 \item{image}{input 3-D T1-weighted brain image.}
 
-\item{modality}{image type.  Options include "t1", "fa", "t1nobrainer".}
+\item{modality}{image type.  Options include "t1", "bold", "fa", "t1nobrainer".}
 
 \item{outputDirectory}{destination directory for storing the downloaded
 template and model weights.  Since these can be resused, if
