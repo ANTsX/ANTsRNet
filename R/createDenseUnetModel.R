@@ -127,6 +127,8 @@ createDenseUnetModel2D <- function( inputImageSize,
                                     mode = c( "classification", "regression" )
 )
 {
+  K <- keras::backend()
+
   inputImageSize = as.integer( inputImageSize )
   mode <- match.arg( mode )
 
@@ -413,10 +415,10 @@ createDenseUnetModel3D <- function( inputImageSize,
                                     mode = c( 'classification', 'regression' )
 )
 {
+  K <- keras::backend()
+
   inputImageSize = as.integer( inputImageSize )
   mode <- match.arg( mode )
-
-  K <- keras::backend()
 
   concatenationAxis <- 1
   if( K$image_data_format() == 'channels_last' )
