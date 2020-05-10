@@ -10,7 +10,7 @@ randomlyTransformImageData(
   segmentationImageList = NULL,
   numberOfSimulations = 10,
   transformType = "affine",
-  sdAffine = 0.25,
+  sdAffine = 0.02,
   deformationTransformType = c("bspline", "exponential"),
   numberOfRandomPoints = 1000,
   sdNoise = 10,

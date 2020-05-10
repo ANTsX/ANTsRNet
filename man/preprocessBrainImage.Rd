@@ -68,7 +68,7 @@ Various preprocessing steps that have been previously described in
 various papers including the cortical thickness pipeline:
 }
 \details{
-\preformatted{    \url{https://www.ncbi.nlm.nih.gov/pubmed/24879923}
+\preformatted{\url{https://www.ncbi.nlm.nih.gov/pubmed/24879923}
 }
 }
 \examples{

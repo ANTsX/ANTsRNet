@@ -162,25 +162,25 @@ paper.</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>createExpandedSuperResolutionModel2D</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>100</span>, <span class='fl'>100</span>, <span class='fl'>1</span> ))</div><div class='output co'>#&gt; Model
-#&gt; Model: "model_23"
+#&gt; Model: "model_24"
 #&gt; ________________________________________________________________________________
 #&gt; Layer (type)              Output Shape      Param #  Connected to               
 #&gt; ================================================================================
-#&gt; input_20 (InputLayer)     [(None, 100, 100, 0                                   
+#&gt; input_21 (InputLayer)     [(None, 100, 100, 0                                   
 #&gt; ________________________________________________________________________________
-#&gt; conv2d_296 (Conv2D)       (None, 100, 100,  5248     input_20[0][0]             
+#&gt; conv2d_461 (Conv2D)       (None, 100, 100,  5248     input_21[0][0]             
 #&gt; ________________________________________________________________________________
-#&gt; conv2d_297 (Conv2D)       (None, 100, 100,  2080     conv2d_296[0][0]           
+#&gt; conv2d_462 (Conv2D)       (None, 100, 100,  2080     conv2d_461[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv2d_298 (Conv2D)       (None, 100, 100,  18464    conv2d_296[0][0]           
+#&gt; conv2d_463 (Conv2D)       (None, 100, 100,  18464    conv2d_461[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv2d_299 (Conv2D)       (None, 100, 100,  51232    conv2d_296[0][0]           
+#&gt; conv2d_464 (Conv2D)       (None, 100, 100,  51232    conv2d_461[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; average (Average)         (None, 100, 100,  0        conv2d_297[0][0]           
-#&gt;                                                      conv2d_298[0][0]           
-#&gt;                                                      conv2d_299[0][0]           
+#&gt; average (Average)         (None, 100, 100,  0        conv2d_462[0][0]           
+#&gt;                                                      conv2d_463[0][0]           
+#&gt;                                                      conv2d_464[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv2d_300 (Conv2D)       (None, 100, 100,  801      average[0][0]              
+#&gt; conv2d_465 (Conv2D)       (None, 100, 100,  801      average[0][0]              
 #&gt; ================================================================================
 #&gt; Total params: 77,825
 #&gt; Trainable params: 77,825
