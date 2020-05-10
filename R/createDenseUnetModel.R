@@ -96,7 +96,7 @@
 #' # Comment out the rest due to travis build constraints
 #'
 #' # Fit the model
-#' \donttest{
+#' \dontrun{
 #' checkpoint_file = tempfile(fileext = ".h5")
 #' track <- model %>% fit( X_train, Y_train,
 #'               epochs = 5, batch_size = 4, verbose = 1, shuffle = TRUE,
