@@ -96,17 +96,17 @@
 #' # Comment out the rest due to travis build constraints
 #'
 #' # Fit the model
-#' \dontrun{
-#' checkpoint_file = tempfile(fileext = ".h5")
-#' track <- model %>% fit( X_train, Y_train,
-#'               epochs = 5, batch_size = 4, verbose = 1, shuffle = TRUE,
-#'               callbacks = list(
-#'                 callback_model_checkpoint( checkpoint_file,
-#'                     monitor = 'val_loss', save_best_only = TRUE ),
-#'                 callback_reduce_lr_on_plateau( monitor = "val_loss", factor = 0.1 )
-#'               ),
-#'               validation_split = 0.2 )
-#' }
+#' 
+#' # checkpoint_file = tempfile(fileext = ".h5")
+#' # track <- model %>% fit( X_train, Y_train,
+#' #              epochs = 5, batch_size = 4, verbose = 1, shuffle = TRUE,
+#' #              callbacks = list(
+#' #                callback_model_checkpoint( checkpoint_file,
+#' #                    monitor = 'val_loss', save_best_only = TRUE ),
+#' #                callback_reduce_lr_on_plateau( monitor = "val_loss", factor = 0.1 )
+#' #              ),
+#' #              validation_split = 0.2 )
+#' 
 #'
 #' # Save the model and/or save the model weights
 #'
