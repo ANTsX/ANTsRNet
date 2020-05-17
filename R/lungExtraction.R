@@ -80,10 +80,8 @@ lungExtraction <- function( image,
       {
       cat( "Lung extraction:  normalizing image to the template.\n" )
       }
-    reorientTemplateOnes <- antsImageClone( reorientTemplate ) ^ 0
-    centerOfMassTemplate <- getCenterOfMass( reorientTemplateOnes )
-    imageOnes <- antsImageClone( image ) ^ 0
-    centerOfMassImage <- getCenterOfMass( imageOnes )
+    centerOfMassTemplate <- getCenterOfMass( reorientTemplate * 0 + 1 )
+    centerOfMassImage <- getCenterOfMass( image  * 0 + 1 )
     xfrm <- createAntsrTransform( type = "Euler3DTransform",
       center = centerOfMassTemplate,
       translation = centerOfMassImage - centerOfMassTemplate )
@@ -155,10 +153,8 @@ lungExtraction <- function( image,
       {
       cat( "Lung extraction:  normalizing image to the template.\n" )
       }
-    reorientTemplateOnes <- antsImageClone( reorientTemplate ) ^ 0
-    centerOfMassTemplate <- getCenterOfMass( reorientTemplateOnes )
-    imageOnes <- antsImageClone( image ) ^ 0
-    centerOfMassImage <- getCenterOfMass( imageOnes )
+    centerOfMassTemplate <- getCenterOfMass( reorientTemplate * 0 + 1 )
+    centerOfMassImage <- getCenterOfMass( image  * 0 + 1 )
     xfrm <- createAntsrTransform( type = "Euler3DTransform",
       center = centerOfMassTemplate,
       translation = centerOfMassImage - centerOfMassTemplate )
