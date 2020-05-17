@@ -1,13 +1,13 @@
-#' brainExtraction
+#' Brain extraction
 #'
-#' Perform T1 or FA brain extraction using U-net and ANTs-based
+#' Perform T1, FA, or bold brain extraction using a U-net architecture
 #' training data.  "NoBrainer" is also possible where 
 #' brain extraction uses U-net and FreeSurfer
 #' training data ported from the
 #'
 #'  https://github.com/neuronets/nobrainer-models
 #'
-#' @param image input 3-D T1-weighted brain image.
+#' @param image input 3-D brain image.
 #' @param modality image type.  Options include "t1", "bold", "fa", "t1nobrainer".
 #' @param outputDirectory destination directory for storing the downloaded
 #' template and model weights.  Since these can be resused, if

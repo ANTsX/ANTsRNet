@@ -2,7 +2,7 @@
 % Please edit documentation in R/brainExtraction.R
 \name{brainExtraction}
 \alias{brainExtraction}
-\title{brainExtraction}
+\title{Brain extraction}
 \usage{
 brainExtraction(
   image,
@@ -12,7 +12,7 @@ brainExtraction(
 )
 }
 \arguments{
-\item{image}{input 3-D T1-weighted brain image.}
+\item{image}{input 3-D brain image.}
 
 \item{modality}{image type.  Options include "t1", "bold", "fa", "t1nobrainer".}
 
@@ -27,7 +27,7 @@ inst/extdata/ subfolder of the ANTsRNet package.}
 brain probability mask (ANTsR image)
 }
 \description{
-Perform T1 or FA brain extraction using U-net and ANTs-based
+Perform T1, FA, or bold brain extraction using a U-net architecture
 training data.  "NoBrainer" is also possible where
 brain extraction uses U-net and FreeSurfer
 training data ported from the

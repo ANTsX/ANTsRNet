@@ -169,6 +169,7 @@ reference:
   desc: ~
   contents:
   - '`brainExtraction`'
+  - '`lungExtraction`'
   - '`brainAgeFmrib`'
   - '`hippMapp3rSegmentation`'
 
