@@ -208,7 +208,7 @@ createSimpleClassificationWithSpatialTransformerNetworkModel3D <- function( inpu
   outputs <- outputs %>% layer_activation( activation = "relu" )
   outputs <- outputs %>% layer_dense( units = numberOfClassificationLabels )
 
-  outputs <- outputs %>% layer_activation_softmax()
+  outputs <- outputs %>% layer_activation_log_softmax()
 
   stnModel <- keras_model( inputs = inputs, outputs = outputs )
 
