@@ -61,7 +61,8 @@ createSimpleFullyConvolutionalNeuralNetworkModel3D <- function(
 
   output <- output %>% layer_conv_3d( numberOfBins, 
     kernel_size = c( 1L, 1L, 1L ), padding = "valid" )  
-  output <- output %>% layer_activation_log_softmax()
+  # output <- output %>% layer_activation_log_softmax()
+  output <- output %>% tensorflow::tf$keras$layers$Lambda( tensorflow::tf$log_softmax_v2 )
  
   model <- keras_model( inputs = input, outputs = output )
 
