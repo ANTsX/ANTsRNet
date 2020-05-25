@@ -42,7 +42,12 @@ LogSoftmaxLayer <- R6::R6Class( "LogSoftmaxLayer",
     call = function( inputs, mask = NULL )
       {
       return( tensorflow::tf$nn$log_softmax( inputs, axis = self$axis ) )
-      }
+      },
+
+    compute_output_shape = function( input_shape ) 
+      {
+      return( input_shape )
+      }  
   )
 )
 
