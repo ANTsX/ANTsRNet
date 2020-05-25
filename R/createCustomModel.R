@@ -61,7 +61,7 @@ createSimpleFullyConvolutionalNeuralNetworkModel3D <- function(
 
   output <- output %>% layer_conv_3d( numberOfBins, 
     kernel_size = c( 1L, 1L, 1L ), padding = "valid", 
-    activation = layer_activation_log_softmax() )  
+    activation = layer_activation_softmax() )  
  
   model <- keras_model( inputs = input, outputs = output )
 
