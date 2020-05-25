@@ -41,7 +41,8 @@ LogSoftmaxLayer <- R6::R6Class( "LogSoftmaxLayer",
 
     call = function( inputs, mask = NULL )
       {
-      return( tensorflow::tf$nn$log_softmax( inputs, axis = self$axis ) )
+      clippedInputs <- tensorflow::tf$keras$backend$clip( inputs, 1.0e-7, 1.0 )  
+      return( tensorflow::tf$nn$log_softmax( clippedInputs, axis = self$axis ) )
       },
 
     compute_output_shape = function( input_shape ) 
