@@ -26,7 +26,8 @@ createSimpleFullyConvolutionalNeuralNetworkModel3D <- function(
   inputImageSize, 
   numberOfFiltersPerLayer = c( 32, 64, 128, 256, 256, 64 ),
   numberOfBins = 40,
-  dropoutRate = 0.5 )
+  dropoutRate = 0.5,
+  doExperimentalVariant = FALSE )
 {
   numberOfLayers <- length( numberOfFiltersPerLayer )
 
@@ -60,9 +61,16 @@ createSimpleFullyConvolutionalNeuralNetworkModel3D <- function(
     }
 
   output <- output %>% layer_conv_3d( numberOfBins, 
-    kernel_size = c( 1L, 1L, 1L ), padding = "valid", 
-    activation = layer_activation_softmax() )  
- 
+    kernel_size = c( 1L, 1L, 1L ), padding = "valid" )  
+
+  if( doExperimentalVariant == TRUE )
+    {
+    output <- output %>%
+      layer_dense( units = 1, activation = 'linear' )
+    } else {
+    output <- output %>% layer_activation_softmax()  
+    }
+
   model <- keras_model( inputs = input, outputs = output )
 
   return( model )
