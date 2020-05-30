@@ -8,7 +8,8 @@ createSimpleFullyConvolutionalNeuralNetworkModel3D(
   inputImageSize,
   numberOfFiltersPerLayer = c(32, 64, 128, 256, 256, 64),
   numberOfBins = 40,
-  dropoutRate = 0.5
+  dropoutRate = 0.5,
+  doExperimentalVariant = FALSE
 )
 }
 \arguments{

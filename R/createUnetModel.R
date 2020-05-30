@@ -35,7 +35,7 @@
 #' @param weightDecay weighting parameter for L2 regularization of the
 #' kernel weights of the convolution layers.  Default = 0.0.
 #' @param addAttentionGating boolean for "attention u-net variant" from 
-#  https://pubmed.ncbi.nlm.nih.gov/30802813/.
+#'  \url{https://pubmed.ncbi.nlm.nih.gov/30802813/}.
 #' @param mode 'classification' or 'regression' or 'sigmoid'. 
 #'
 #' @return a u-net keras model
