@@ -34,6 +34,8 @@
 #' @param dropoutRate float between 0 and 1 to use between dense layers.
 #' @param weightDecay weighting parameter for L2 regularization of the
 #' kernel weights of the convolution layers.  Default = 0.0.
+#' @param addAttentionGating boolean for "attention u-net variant" from 
+#  https://pubmed.ncbi.nlm.nih.gov/30802813/.
 #' @param mode 'classification' or 'regression' or 'sigmoid'. 
 #'
 #' @return a u-net keras model
@@ -125,9 +127,24 @@ createUnetModel2D <- function( inputImageSize,
                                strides = c( 2, 2 ),
                                dropoutRate = 0.0,
                                weightDecay = 0.0,
+                               addAttentionGating = FALSE,
                                mode = c( 'classification', 'regression', 'sigmoid' )
                              )
 {
+
+  attentionGate2D <- function( x, g, interShape ) 
+    {
+    xTheta <- x %>% layer_conv_2d( filters = interShape, kernel_size = c( 1L, 1L ), 
+      strides = c( 1L, 1L ) )
+    gPhi <- g %>% layer_conv_2d( filters = interShape, kernel_size = c( 1L, 1L ), 
+      strides = c( 1L, 1L ) )    
+    f <- layer_add( list( xTheta, gPhi ) ) %>% layer_activation_relu()
+    fPsi <- f %>% layer_conv_2d( filters = 1L, kernel_size = c( 1L, 1L ), 
+      strides = c( 1L, 1L ) )
+    alpha <- fPsi %>% layer_activation( activation = "sigmoid" ) 
+    attention <- layer_multiply( list( x, alpha ) )
+    return( attention )
+    }
 
   mode <- match.arg( mode )
 
@@ -181,10 +198,18 @@ createUnetModel2D <- function( inputImageSize,
         padding = 'same',
         kernel_regularizer = regularizer_l2( weightDecay ) )
     deconv <- deconv %>% layer_upsampling_2d( size = poolSize )
-    outputs <- layer_concatenate( list( deconv,
-      encodingConvolutionLayers[[numberOfLayers - i + 1]] ),
-      axis = 3
-      )
+
+    if( addAttentionGating == TRUE )
+      {
+      outputs <- attentionGate2D( deconv, 
+        encodingConvolutionLayers[[numberOfLayers - i + 1]], 
+        as.integer( numberOfFilters / 4 ) )
+      outputs <- layer_concatenate( list( deconv, outputs ), axis = 3 )
+      } else {
+      outputs <- layer_concatenate( list( deconv,
+        encodingConvolutionLayers[[numberOfLayers - i + 1]] ),
+        axis = 3 )
+      }  
 
     outputs <- outputs %>%
       layer_conv_2d( filters = numberOfFilters,
@@ -262,6 +287,8 @@ createUnetModel2D <- function( inputImageSize,
 #' @param dropoutRate float between 0 and 1 to use between dense layers.
 #' @param weightDecay weighting parameter for L2 regularization of the
 #' kernel weights of the convolution layers.  Default = 0.0.
+#' @param addAttentionGating boolean for "attention u-net variant" from 
+#  https://pubmed.ncbi.nlm.nih.gov/30802813/.
 #' @param mode 'classification' or 'regression' or 'sigmoid'.
 #'
 #' @return a u-net keras model
@@ -301,9 +328,24 @@ createUnetModel3D <- function( inputImageSize,
                                strides = c( 2, 2, 2 ),
                                dropoutRate = 0.0,
                                weightDecay = 0.0,
+                               addAttentionGating = FALSE,
                                mode = c( 'classification', 'regression', 'sigmoid' )
                              )
 {
+
+  attentionGate3D <- function( x, g, interShape ) 
+    {
+    xTheta <- x %>% layer_conv_3d( filters = interShape, kernel_size = c( 1L, 1L, 1L ), 
+      strides = c( 1L, 1L, 1L ) )
+    gPhi <- g %>% layer_conv_3d( filters = interShape, kernel_size = c( 1L, 1L, 1L ), 
+      strides = c( 1L, 1L, 1L ) )    
+    f <- layer_add( list( xTheta, gPhi ) ) %>% layer_activation_relu()
+    fPsi <- f %>% layer_conv_3d( filters = 1L, kernel_size = c( 1L, 1L, 1L ), 
+      strides = c( 1L, 1L, 1L ) )
+    alpha <- fPsi %>% layer_activation( activation = "sigmoid" ) 
+    attention <- layer_multiply( list( x, alpha ) )
+    return( attention )
+    }
 
   mode <- match.arg( mode )
 
@@ -358,9 +400,18 @@ createUnetModel3D <- function( inputImageSize,
         padding = 'same',
         kernel_regularizer = regularizer_l2( weightDecay ) )
     deconv <- deconv %>% layer_upsampling_3d( size = poolSize )
-    outputs <- layer_concatenate( list( deconv,
-      encodingConvolutionLayers[[numberOfLayers - i + 1]] ),
-      axis = 4 )
+
+    if( addAttentionGating == TRUE )
+      {
+      outputs <- attentionGate3D( deconv, 
+        encodingConvolutionLayers[[numberOfLayers - i + 1]], 
+        as.integer( numberOfFilters / 4 ) )
+      outputs <- layer_concatenate( list( deconv, outputs ), axis = 4 )
+      } else {
+      outputs <- layer_concatenate( list( deconv,
+        encodingConvolutionLayers[[numberOfLayers - i + 1]] ),
+        axis = 4 )
+      }  
 
     outputs <- outputs %>%
       layer_conv_3d( filters = numberOfFilters,
