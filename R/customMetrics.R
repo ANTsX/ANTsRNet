@@ -218,10 +218,9 @@ categorical_focal_gain <- function( y_true, y_pred, gamma = 2.0, alpha = 0.25 )
   return( categorical_focal_gain_fixed )
 }
 
-#' Function for categorical focal gain
+#' Function for categorical focal loss
 #'
-#' The negative of the categorical focal loss discussed
-#' in this paper:
+#' The categorical focal loss discussed in this paper:
 #'
 #'   https://arxiv.org/pdf/1708.02002.pdf
 #'
@@ -270,6 +269,49 @@ categorical_focal_loss <- function( y_true, y_pred, gamma = 2.0, alpha = 0.25 )
     }
 
   return( categorical_focal_loss_fixed )
+}
+
+#' Function for weighted categorical cross entropy
+#'
+#' ported from this implementation:
+#'
+#'    https://gist.github.com/wassname/ce364fddfc8a025bfab4348cf5de852d
+#'
+#' @param y_true True labels (Tensor)
+#' @param y_pred Predictions (Tensor of the same shape as \code{y_true})
+#' @param weights weights for each class
+#'
+#' @return function value
+#' @author Tustison NJ
+#'
+#' @examples
+#'
+#' library( ANTsRNet )
+#' library( keras )
+#'
+#' model <- createUnetModel2D( c( 64, 64, 1 ), numberOfOutputs = 2 )
+#'
+#' model %>% compile( loss = weighted_categorical_crossentropy( weights = c( 1, 1 ) ),
+#'  optimizer = optimizer_adam( lr = 0.0001 ),
+#'    metrics = "accuracy" )
+#'
+#' @import keras
+#' @export
+weighted_categorical_crossentropy <- function( y_true, y_pred, weights )
+{
+  K <- keras::backend()
+
+  weightsTensor <- K$variable( weights )
+
+  weighted_categorical_crossentropy_fixed <- function( y_true, y_pred )
+    {
+    y_pred <- y_pred / K$sum( y_pred, axis = -1L, keepdims = TRUE )  
+    y_pred <- K$clip( y_pred, K$epsilon(), 1.0 - K$epsilon() )
+    loss <- y_true * K$log( y_pred ) * weightsTensor
+    loss <- -K$sum( loss, axis = -1L )
+    return( loss )
+    }
+  return( weighted_categorical_crossentropy_fixed )
 }
 
 #' Loss function for the SSD deep learning architecture.
