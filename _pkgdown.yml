@@ -158,6 +158,7 @@ reference:
   contents:
   - '`preprocessBrainImage`'
   - '`extractImagePatches`'
+  - '`cropImageCenter`'
   - '`reconstructImageFromPatches`'
   - '`getPretrainedNetwork`'
   - '`regressionMatchImage`'

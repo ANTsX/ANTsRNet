@@ -2,7 +2,7 @@
 % Please edit documentation in R/customMetrics.R
 \name{categorical_focal_loss}
 \alias{categorical_focal_loss}
-\title{Function for categorical focal gain}
+\title{Function for categorical focal loss}
 \usage{
 categorical_focal_loss(y_true, y_pred, gamma = 2, alpha = 0.25)
 }
@@ -19,8 +19,7 @@ categorical_focal_loss(y_true, y_pred, gamma = 2, alpha = 0.25)
 function value
 }
 \description{
-The negative of the categorical focal loss discussed
-in this paper:
+The categorical focal loss discussed in this paper:
 }
 \details{
 https://arxiv.org/pdf/1708.02002.pdf
