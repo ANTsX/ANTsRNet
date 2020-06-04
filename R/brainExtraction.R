@@ -5,7 +5,7 @@
 #' brain extraction uses U-net and FreeSurfer
 #' training data ported from the
 #'
-#'  https://github.com/neuronets/nobrainer-models
+#'  \url{https://github.com/neuronets/nobrainer-models}
 #'
 #' @param image input 3-D brain image.
 #' @param modality image type.  Options include "t1", "bold", "fa", "t1nobrainer".

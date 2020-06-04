@@ -298,10 +298,11 @@ createHippMapp3rUnetModel3D <- function( inputImageSize,
 }
 
 
-#' Implementation of the Hongwei Li's U-net architecture for WMH segmentation
+#' Implementation of the sysu_media U-net architecture
 #'
 #' Creates a keras model implementation of the u-net architecture
-#' described here:
+#' in the 2017 MICCAI WMH challenge by the sysu_medial team described 
+#' here:
 #'
 #'     \url{https://pubmed.ncbi.nlm.nih.gov/30125711/}
 #'
@@ -310,6 +311,8 @@ createHippMapp3rUnetModel3D <- function( inputImageSize,
 #'     \url{https://github.com/hongweilibran/wmh_ibbmTum}
 #'
 #' @param inputImageSize Used for specifying the input tensor shape.  
+#' This will be \code{c(200, 200, 2)} for t1/flair input and 
+#' \code{c(200, 200, 1)} for flair-only input.
 #'
 #' @return a u-net keras model
 #' @author Tustison NJ
@@ -321,7 +324,7 @@ createHippMapp3rUnetModel3D <- function( inputImageSize,
 #' }
 #' @import keras
 #' @export
-createLiWmhUnetModel2D <- function( inputImageSize )
+createSysuMediaUnetModel2D <- function( inputImageSize )
 {
   getCropShape <- function( targetLayer, referenceLayer )
     {

@@ -51,7 +51,7 @@ reference:
   - '`createDenseUnetModel3D`'
   - '`createNoBrainerUnetModel3D`'
   - '`createHippMapp3rUnetModel3D`'
-  - '`createLiWmhUnetModel2D`'
+  - '`createSysuMediaUnetModel2D`'
 - title: Segmentation-specific helper functions
   desc: ~
   contents:
@@ -175,4 +175,5 @@ reference:
   - '`lungExtraction`'
   - '`brainAgeFmrib`'
   - '`hippMapp3rSegmentation`'
+  - '`sysuMediaWmhSegmentation`'
 

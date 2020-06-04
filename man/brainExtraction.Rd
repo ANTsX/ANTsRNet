@@ -33,7 +33,7 @@ brain extraction uses U-net and FreeSurfer
 training data ported from the
 }
 \details{
-https://github.com/neuronets/nobrainer-models
+\url{https://github.com/neuronets/nobrainer-models}
 }
 \examples{
 \dontrun{
