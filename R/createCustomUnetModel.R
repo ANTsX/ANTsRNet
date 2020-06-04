@@ -296,3 +296,109 @@ createHippMapp3rUnetModel3D <- function( inputImageSize,
 
   return( unetModel )
 }
+
+
+#' Implementation of the Hongwei Li's U-net architecture for WMH segmentation
+#'
+#' Creates a keras model implementation of the u-net architecture
+#' described here:
+#'
+#'     \url{https://pubmed.ncbi.nlm.nih.gov/30125711/}
+#'
+#' with the original implementation available here:
+#'
+#'     \url{https://github.com/hongweilibran/wmh_ibbmTum}
+#'
+#' @param inputImageSize Used for specifying the input tensor shape.  
+#'
+#' @return a u-net keras model
+#' @author Tustison NJ
+#' @examples
+#' \dontrun{
+#'
+#' model <- createLiWmhUnetModel2D( c( 200, 200, 1 ) )
+#'
+#' }
+#' @import keras
+#' @export
+createLiWmhUnetModel2D <- function( inputImageSize )
+{
+  getCropShape <- function( targetLayer, referenceLayer )
+    {
+    cropShape <- list()
+
+    delta <- targetLayer$get_shape()[1] - referenceLayer$get_shape()[1]
+    if( delta %% 2 != 0 )
+      {
+      cropShape[[1]] <- c( as.integer( delta / 2 ), as.integer( delta / 2 ) + 1L )
+      } else {
+      cropShape[[1]] <- c( as.integer( delta / 2 ), as.integer( delta / 2 ) )
+      }
+
+    delta <- targetLayer$get_shape()[2] - referenceLayer$get_shape()[2]
+    if( delta %% 2 != 0 )
+      {
+      cropShape[[2]] <- c( as.integer( delta / 2 ), as.integer( delta / 2 ) + 1L )
+      } else {
+      cropShape[[2]] <- c( as.integer( delta / 2 ), as.integer( delta / 2 ) )
+      }
+
+    return( cropShape )
+    }
+
+  inputs <- layer_input( shape = inputImageSize )
+ 
+  numberOfFilters <- as.integer( c( 64, 96, 128, 256, 512 ) )
+ 
+  # encoding layers
+
+  encodingLayers <- list()
+
+  outputs <- inputs 
+  for( i in seq.int( length( numberOfFilters ) ) )
+    {
+    kernel1 <- 3L
+    kernel2 <- 3L
+    if( i == 1 )  
+      {
+      kernel1 <- 5L
+      kernel2 <- 5L
+      } else if( i == 4 ) {
+      kernel1 <- 3L
+      kernel2 <- 4L
+      }  
+    outputs <- outputs %>% layer_conv_2d( numberOfFilters[i], kernel_size = kernel1, padding = 'same' )
+    outputs <- outputs %>% layer_activation_relu()
+    outputs <- outputs %>% layer_conv_2d( numberOfFilters[i], kernel_size = kernel2, padding = 'same' )
+    outputs <- outputs %>% layer_activation_relu()
+    encodingLayers[[i]] <- outputs
+    if( i < 5 )
+      {
+      outputs <- outputs %>% layer_max_pooling_2d( pool_size = c( 2L, 2L ) )
+      }
+    }
+
+  # decoding layers
+
+  for( i in seq.int( from = length( encodingLayers ) - 1, to = 1, by = -1 ) ) 
+    {
+    upsampleLayer <- outputs %>% layer_upsampling_2d( size = c( 2L, 2L ) )
+    cropShape <- getCropShape( encodingLayers[[i]], upsampleLayer )
+    croppedLayer <- encodingLayers[[i]] %>% layer_cropping_2d( cropping = cropShape )
+    outputs <- layer_concatenate( list( upsampleLayer, croppedLayer ), axis = -1L )
+    outputs <- outputs %>% layer_conv_2d( numberOfFilters[i], kernel_size = 3L, padding = 'same' )
+    outputs <- outputs %>% layer_activation_relu()
+    outputs <- outputs %>% layer_conv_2d( numberOfFilters[i], kernel_size = 3L, padding = 'same' )
+    outputs <- outputs %>% layer_activation_relu()
+    }
+
+  # final
+ 
+  cropShape <- getCropShape( inputs, outputs )   
+  outputs <- outputs %>% layer_zero_padding_2d( padding = cropShape )
+  outputs <- outputs %>% layer_conv_2d( 1L, kernel_size = 1L, activation = 'sigmoid', padding = 'same' )
+
+  unetModel <- keras_model( inputs = inputs, outputs = outputs )
+
+  return( unetModel )
+}

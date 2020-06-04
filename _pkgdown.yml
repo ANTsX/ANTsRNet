@@ -51,6 +51,7 @@ reference:
   - '`createDenseUnetModel3D`'
   - '`createNoBrainerUnetModel3D`'
   - '`createHippMapp3rUnetModel3D`'
+  - '`createLiWmhUnetModel2D`'
 - title: Segmentation-specific helper functions
   desc: ~
   contents:
@@ -135,6 +136,7 @@ reference:
   - '`pearson_correlation_coefficient`'
   - '`categorical_focal_gain`'
   - '`categorical_focal_loss`'
+  - '`weighted_categorical_crossentropy`'
 - title: Custom activations
   desc: ~
   contents:
