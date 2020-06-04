@@ -261,10 +261,6 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL, brainMask = NULL,
   probabilityImage <- applyAntsrTransformToImage( invertAntsrTransform( xfrm ),
       probabilityImageWarped, flair )
 
-
-  testImage <- applyAntsrTransformToImage( invertAntsrTransform( xfrm ),
-      flairPreprocessedWarped, flair )
-
   return( probabilityImage )
 }  
 
