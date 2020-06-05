@@ -32,9 +32,7 @@ If \code{TRUE}, returns mask.  3-D input only.}
 \item{templateTransformType}{see Details in help for \code{antsRegistration}.
 Typically "Rigid" or "Affine".}
 
-\item{template}{an ANTs image (not skull-stripped) or the default "biobank"
-in which case the ANTs biobank template resampled to \link{192,224,192} is
-downloaded and used.}
+\item{template}{an ANTs image (not skull-stripped). Other premade templates}
 
 \item{doBiasCorrection}{boolean for performing N4 bias field correction.}
 

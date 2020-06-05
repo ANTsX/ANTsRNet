@@ -23,7 +23,7 @@ the flair, if specified).}
 \item{brainMask}{input 3-D brain mask image.  If not specified, \code{getMask}
 is used to estimate a mask which is not recommended.}
 
-\item{doPreprocessing}{perform n4 bias correction and normalize to template?}
+\item{doPreprocessing}{perform n4 bias correction?}
 
 \item{useEnsemble}{boolean to check whether to use all 3 sets of weights.}
 
@@ -35,7 +35,7 @@ inst/extdata/ subfolder of the ANTsRNet package.}
 \item{verbose}{print progress.}
 }
 \value{
-WMH segmentation image
+WMH segmentation probability image
 }
 \description{
 Perform WMH segmentation using the winning submission in the MICCAI

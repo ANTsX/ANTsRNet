@@ -8,11 +8,12 @@ getPretrainedNetwork(
   fileId = c("show", "brainAgeGender", "brainAgeFmrib", "brainExtraction",
     "brainExtractionBOLD", "brainExtractionFA", "brainExtractionNoBrainer",
     "brainSegmentation", "brainSegmentationPatchBased", "ctHumanLung", "dbpn4x",
-    "denoising", "functionalLungMri", "hippMapp3rInitial", "hippMapp3rRefine",
-    "mriSuperResolution", "protonLungMri", "wholeTumorSegmentationT2Flair",
-    "sysuMediaWmhFlairOnlyModel0", "sysuMediaWmhFlairOnlyModel1",
-    "sysuMediaWmhFlairOnlyModel2", "sysuMediaWmhFlairT1Model0",
-    "sysuMediaWmhFlairT1Model1",      "sysuMediaWmhFlairT1Model2"),
+    "deepFlash", "denoising", "functionalLungMri", "hippMapp3rInitial",
+    "hippMapp3rRefine", "mriSuperResolution", "protonLungMri",
+    "wholeTumorSegmentationT2Flair", "sysuMediaWmhFlairOnlyModel0",
+    "sysuMediaWmhFlairOnlyModel1", "sysuMediaWmhFlairOnlyModel2",
+    "sysuMediaWmhFlairT1Model0", "sysuMediaWmhFlairT1Model1",     
+    "sysuMediaWmhFlairT1Model2"),
   targetFileName,
   overwrite = FALSE
 )

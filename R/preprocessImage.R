@@ -12,9 +12,8 @@
 #' If \code{TRUE}, returns mask.  3-D input only.
 #' @param templateTransformType see Details in help for \code{antsRegistration}.
 #' Typically "Rigid" or "Affine".
-#' @param template an ANTs image (not skull-stripped) or the default "biobank" 
-#' in which case the ANTs biobank template resampled to [192,224,192] is 
-#' downloaded and used.
+#' @param template an ANTs image (not skull-stripped). Other premade templates
+#  are "biobank" and "croppedMni152".
 #' @param doBiasCorrection boolean for performing N4 bias field correction.
 #' @param returnBiasField if TRUE, return bias field as an additional output 
 #' *without* bias correcting the preprocessed image.  
@@ -91,16 +90,22 @@ preprocessBrainImage <- function( image, truncateIntensity = c( 0.01, 0.99 ),
   if( ! is.null( templateTransformType ) ) 
     {
     templateImage <- NULL    
-    if( is.character( template ) && template == "biobank" )    
+    if( is.character( template ) )
       {
-      templateFileName <- paste0( outputDirectory, "/biobank_resampled.nii.gz" )
+      if( template == "biobank" )
+        {
+        templateFileName <- paste0( outputDirectory, "/biobank_resampled.nii.gz" )
+        templateUrl <- "https://ndownloader.figshare.com/files/22429242"
+        } else if( template == "croppedMni152" ) {
+        templateFileName <- paste0( outputDirectory, "/croppedMNI152.nii.gz" )
+        templateUrl <- "https://ndownloader.figshare.com/files/22933754"
+        }
       if( ! file.exists( templateFileName ) )
         {
         if( verbose == TRUE )
           {
-          cat( "Template normalization:  downloading biobank template.\n" )
+          cat( "Template normalization:  downloading template.\n" )
           }
-        templateUrl <- "https://ndownloader.figshare.com/files/22429242"
         download.file( templateUrl, templateFileName, quiet = !verbose )
         }
       templateImage <- antsImageRead( templateFileName )

@@ -19,14 +19,14 @@
 #' the flair, if specified).
 #' @param brainMask input 3-D brain mask image.  If not specified, \code{getMask}
 #' is used to estimate a mask which is not recommended.
-#' @param doPreprocessing perform n4 bias correction and normalize to template?
+#' @param doPreprocessing perform n4 bias correction?
 #' @param useEnsemble boolean to check whether to use all 3 sets of weights.
 #' @param outputDirectory destination directory for storing the downloaded
 #' template and model weights.  Since these can be resused, if
 #' \code{is.null(outputDirectory)}, these data will be downloaded to the
 #' inst/extdata/ subfolder of the ANTsRNet package.
 #' @param verbose print progress.
-#' @return WMH segmentation image
+#' @return WMH segmentation probability image
 #' @author Tustison NJ
 #' @examples
 #' \dontrun{
@@ -242,7 +242,7 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL, brainMask = NULL,
 
   if( verbose == TRUE )
     {
-    cat( "Prediction." )    
+    cat( "Prediction.\n" )    
     }
   
   prediction <- predict( unetModels[[1]], batchX, verbose = verbose )
