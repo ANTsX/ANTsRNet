@@ -111,7 +111,6 @@ hippMapp3rSegmentation <- function( image, outputDirectory = NULL, verbose = FAL
     interpType = "nearestNeighbor" )
   maskImage[maskImage >= 0.5] <- 1
   maskImage[maskImage < 0.5] <- 0
-  antsImageWrite( maskImage, "/Users/ntustison/Desktop/maskInitialStage.nii.gz" )
 
   #########################################
   #
