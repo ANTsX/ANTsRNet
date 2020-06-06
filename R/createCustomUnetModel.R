@@ -328,9 +328,11 @@ createSysuMediaUnetModel2D <- function( inputImageSize )
 {
   getCropShape <- function( targetLayer, referenceLayer )
     {
+    K <- keras::backend()
+
     cropShape <- list()
 
-    delta <- targetLayer$get_shape()[1] - referenceLayer$get_shape()[1]
+    delta <- K$int_shape( targetLayer )[[2]] - K$int_shape( referenceLayer )[[2]] 
     if( delta %% 2 != 0 )
       {
       cropShape[[1]] <- c( as.integer( delta / 2 ), as.integer( delta / 2 ) + 1L )
@@ -338,7 +340,7 @@ createSysuMediaUnetModel2D <- function( inputImageSize )
       cropShape[[1]] <- c( as.integer( delta / 2 ), as.integer( delta / 2 ) )
       }
 
-    delta <- targetLayer$get_shape()[2] - referenceLayer$get_shape()[2]
+    delta <- K$int_shape( targetLayer )[[3]] - K$int_shape( referenceLayer )[[3]] 
     if( delta %% 2 != 0 )
       {
       cropShape[[2]] <- c( as.integer( delta / 2 ), as.integer( delta / 2 ) + 1L )
