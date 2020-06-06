@@ -175,7 +175,6 @@ deepFlash <- function( t1, doPreprocessing = TRUE,
 
   relabeledImage <- antsImageClone( segmentationImage )
 
-  labels <- c( 0, 5:18 )
   for( i in seq.int( length( labels ) ) ) 
     {
     relabeledImage[( segmentationImage == i )] <- labels[i]
