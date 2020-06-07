@@ -17,7 +17,7 @@ inst/extdata/ subfolder of the ANTsRNet package.}
 \item{verbose}{print progress.}
 }
 \value{
-brain mask (ANTsR image)
+probability hippocampal mask (ANTsR image)
 }
 \description{
 Perform HippMapp3r (hippocampal) segmentation described in

@@ -18,7 +18,7 @@
 #' \code{is.null(outputDirectory)}, these data will be downloaded to the
 #' inst/extdata/ subfolder of the ANTsRNet package.
 #' @param verbose print progress.
-#' @return brain mask (ANTsR image)
+#' @return probability hippocampal mask (ANTsR image)
 #' @author Tustison NJ
 #' @examples
 #' \dontrun{
@@ -105,7 +105,7 @@ hippMapp3rSegmentation <- function( image, outputDirectory = NULL, verbose = FAL
     cat( "    HippMapp3r: prediction.\n" )
     }
   dataInitialStage <- array( data = as.array( imageResampled ), dim = c( 1, dim( imageResampled ), 1 ) )
-  maskArray <- modelInitialStage$predict( dataInitialStage )
+  maskArray <- modelInitialStage$predict( dataInitialStage, verbose = verbose )
   maskImageResampled <- as.antsImage( maskArray[1,,,,1] ) %>% antsCopyImageInfo2( imageResampled )
   maskImage <- resampleImage( maskImageResampled, dim( image ), useVoxels = TRUE,
     interpType = "nearestNeighbor" )
@@ -136,7 +136,6 @@ hippMapp3rSegmentation <- function( image, outputDirectory = NULL, verbose = FAL
   lower <- floor( centroid - 0.5 * shapeRefineStage )
   upper <- lower + shapeRefineStage - 1
 
-  maskTrimmed <- cropIndices( maskImageResampled, lower, upper )
   imageTrimmed <- cropIndices( imageResampled, lower, upper )
 
   if( verbose == TRUE )
@@ -159,15 +158,17 @@ hippMapp3rSegmentation <- function( image, outputDirectory = NULL, verbose = FAL
 
   cat( "    HippMapp3r:  do Monte Carlo iterations (SpatialDropout).\n" )
   numberOfMCIterations <- 30
-  predictionRefineStage <- array( data = 0, dim = c( numberOfMCIterations, shapeRefineStage ) )
+  predictionRefineStage <- array( data = 0, dim = c( shapeRefineStage ) )
   for( i in seq_len( numberOfMCIterations ) )
     {
-    cat( "        Monte Carlo iteration", i, "out of", numberOfMCIterations, "\n" )
-    predictionRefineStage[i,,,] <- modelRefineStage$predict( dataRefineStage )[1,,,,1]
+    if( verbose == TRUE ) 
+      {
+      cat( "        Monte Carlo iteration", i, "out of", numberOfMCIterations, "\n" )
+      }
+    predictionRefineStage <- ( modelRefineStage$predict( dataRefineStage, verbose = verbose )[1,,,,1] +
+                              ( i - 1 ) * predictionRefineStage ) / i
     }
-  predictionRefineStage <- apply( predictionRefineStage, c( 2, 3, 4 ), mean )
 
-  cat( "    HippMapp3r:  Average Monte Carlo results.\n" )
   predictionRefineStageArray <- array( data = 0, dim = dim( imageResampled ) )
   predictionRefineStageArray[lower[1]:upper[1],lower[2]:upper[2],lower[3]:upper[3]] <- predictionRefineStage
   probabilityMaskRefineStageResampled <- as.antsImage( predictionRefineStageArray ) %>% antsCopyImageInfo2( imageResampled )
