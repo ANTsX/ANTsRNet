@@ -7,8 +7,17 @@
 #'
 #'  \url{https://github.com/neuronets/nobrainer-models}
 #'
-#' @param image input 3-D brain image.
-#' @param modality image type.  Options include "t1", "bold", "fa", "t1nobrainer".
+#' @param image input 3-D brain image (or list of images for multi-modal scenarios).
+#' @param modality image type.  Options include:
+#' \enumerate{
+#'   \item "t1"
+#'   \item "t1nobrainer"
+#'   \item "bold"
+#'   \item "fa"
+#'   \item "t1t2infant"
+#'   \item "t1infant"
+#'   \item "t2infant"
+#' }
 #' @param outputDirectory destination directory for storing the downloaded
 #' template and model weights.  Since these can be resused, if
 #' \code{is.null(outputDirectory)}, these data will be downloaded to the
@@ -26,11 +35,23 @@
 #' }
 #' @export
 brainExtraction <- function( image, 
-  modality = c( "t1", "bold", "fa", "t1nobrainer" ), 
+  modality = c( "t1", "t1nobrainer", "bold", "fa", "t1t2infant", "t1infant", "t2infant" ), 
   outputDirectory = NULL, verbose = FALSE )
   {
 
-  if( image@dimension != 3 )
+  classes <- c( "background", "brain" )
+  numberOfClassificationLabels <- length( classes )
+  channelSize <- length( image )
+
+  inputImages <- list()
+  if( channelSize == 1 )  
+    {
+    inputImages[[1]] <- image  
+    } else {
+    inputImages <- image  
+    }
+
+  if( inputImages[[1]]@dimension != 3 )
     {
     stop( "Image dimension must be 3." )  
     }
@@ -52,45 +73,38 @@ brainExtraction <- function( image,
     ##################### 
 
     weightsFileName <- ''
+    weightsFilePrefix <- ''
     if( modality == "t1" )
       {
       weightsFileName <- paste0( outputDirectory, "/brainExtractionWeights.h5" )
-      if( ! file.exists( weightsFileName ) )
-        {
-        if( verbose == TRUE )
-          {
-          cat( "Brain extraction:  downloading model weights.\n" )
-          }
-        weightsFileName <- getPretrainedNetwork( "brainExtraction", weightsFileName )
-        }
+      weightsFilePrefix <- "brainExtraction"
       } else if( modality == "bold" ) {
       weightsFileName <- paste0( outputDirectory, "/brainExtractionBoldWeights.h5" )
-      if( ! file.exists( weightsFileName ) )
-        {
-        if( verbose == TRUE )
-          {
-          cat( "Brain extraction:  downloading model weights.\n" )
-          }
-        weightsFileName <- getPretrainedNetwork( "brainExtractionBOLD", weightsFileName )
-        }
+      weightsFilePrefix <- "brainExtractionBOLD"
       } else if( modality == "fa" ) {
       weightsFileName <- paste0( outputDirectory, "/brainExtractionFaWeights.h5" )
-      if( ! file.exists( weightsFileName ) )
-        {
-        if( verbose == TRUE )
-          {
-          cat( "Brain extraction:  downloading model weights.\n" )
-          }
-        weightsFileName <- getPretrainedNetwork( "brainExtractionFA", weightsFileName )
-        }
+      weightsFilePrefix <- "brainExtractionFA"
+      } else if( modality == "t1t2infant" ) {
+      weightsFileName <- paste0( outputDirectory, "/brainExtractionInfantT1T2Weights.h5" )
+      weightsFilePrefix <- "brainExtractionInfantT1T2"
+      } else if( modality == "t1infant" ) {
+      weightsFileName <- paste0( outputDirectory, "/brainExtractionInfantT1Weights.h5" )
+      weightsFilePrefix <- "brainExtractionInfantT1"
+      } else if( modality == "t2infant" ) {
+      weightsFileName <- paste0( outputDirectory, "/brainExtractionInfantT2Weights.h5" )
+      weightsFilePrefix <- "brainExtractionInfantT2"
       } else {
       stop( "Unknown modality type." )  
       }
 
-    classes <- c( "background", "brain" )
-    numberOfClassificationLabels <- length( classes )
-    imageModalities <- c( modality )
-    channelSize <- length( imageModalities )
+    if( ! file.exists( weightsFileName ) )
+      {
+      if( verbose == TRUE )
+        {
+        cat( "Brain extraction:  downloading model weights.\n" )
+        }
+      weightsFileName <- getPretrainedNetwork( weightsFilePrefix, weightsFileName )
+      }
 
     reorientTemplateFileName <- paste0( outputDirectory, "/S_template3_resampled.nii.gz" )
     if( ! file.exists( reorientTemplateFileName ) )
@@ -117,16 +131,21 @@ brainExtraction <- function( image,
       {
       cat( "Brain extraction:  normalizing image to the template.\n" )
       }
+    
     centerOfMassTemplate <- getCenterOfMass( reorientTemplate )
-    centerOfMassImage <- getCenterOfMass( image )
+    centerOfMassImage <- getCenterOfMass( inputImages[[1]] )
     xfrm <- createAntsrTransform( type = "Euler3DTransform",
       center = centerOfMassTemplate,
       translation = centerOfMassImage - centerOfMassTemplate )
-    warpedImage <- applyAntsrTransformToImage( xfrm, image, reorientTemplate )
 
-    batchX <- array( data = as.array( warpedImage ),
-      dim = c( 1, resampledImageSize, channelSize ) )
-    batchX <- ( batchX - mean( batchX ) ) / sd( batchX )
+    batchX <- array( data = 0, dim = c( 1, resampledImageSize, channelSize ) )
+
+    for( i in seq.int( channelSize ) )
+      {
+      warpedImage <- applyAntsrTransformToImage( xfrm, inputImages[[i]], reorientTemplate )
+      warpedArray <- as.array( warpedImage )
+      batchX[1,,,,i] <- ( warpedArray - mean( warpedArray ) ) / sd( warpedArray )
+      }
 
     if( verbose == TRUE )
       {
@@ -140,7 +159,7 @@ brainExtraction <- function( image,
       cat( "Brain extraction:  renormalize probability mask to native space.\n" )
       }
     probabilityImage <- applyAntsrTransformToImage( invertAntsrTransform( xfrm ),
-      probabilityImagesArray[[1]][[2]], image )
+      probabilityImagesArray[[1]][[2]], inputImages[[1]] )
 
     return( probabilityImage )
     } else {
