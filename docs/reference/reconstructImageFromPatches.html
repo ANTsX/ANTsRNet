@@ -164,12 +164,12 @@ mask used to limit the region of reconstruction from the patches.</p></td>
   <span class='fu'>reconstructImageFromPatches</span>( <span class='no'>patchSet</span>, <span class='no'>image</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>8</span>, <span class='fl'>8</span> ) )
 <span class='kw pkg'>testthat</span><span class='kw ns'>::</span><span class='fu'><a href='https://testthat.r-lib.org/reference/equality-expectations.html'>expect_equal</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/array.html'>as.array</a></span>(<span class='no'>image</span>), <span class='fu'><a href='https://rdrr.io/r/base/array.html'>as.array</a></span>(<span class='no'>imageReconstructed</span>))
 <span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>image</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2549069 136.2    4615281 246.5         NA   4615281  246.5
-#&gt; Vcells 9494530  72.5   28489035 217.4      16384 150389071 1147.4</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>patchSet</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2546957 136.1    4615281 246.5         NA   4615281  246.5
-#&gt; Vcells 6932895  52.9   28489035 217.4      16384 150389071 1147.4</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>imageReconstructed</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2546951 136.1    4615281 246.5         NA   4615281  246.5
-#&gt; Vcells 6932921  52.9   28489035 217.4      16384 150389071 1147.4</div></pre>
+#&gt; Ncells 2549183 136.2    4615678 246.6         NA   4615678  246.6
+#&gt; Vcells 9494745  72.5   28490084 217.4      16384 150388746 1147.4</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>patchSet</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
+#&gt; Ncells 2547071 136.1    4615678 246.6         NA   4615678  246.6
+#&gt; Vcells 6933110  52.9   28490084 217.4      16384 150388746 1147.4</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>imageReconstructed</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
+#&gt; Ncells 2547065 136.1    4615678 246.6         NA   4615678  246.6
+#&gt; Vcells 6933136  52.9   28490084 217.4      16384 150388746 1147.4</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
