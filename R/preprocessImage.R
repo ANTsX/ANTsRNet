@@ -13,7 +13,7 @@
 #' @param templateTransformType see Details in help for \code{antsRegistration}.
 #' Typically "Rigid" or "Affine".
 #' @param template an ANTs image (not skull-stripped). Other premade templates
-#  are "biobank" and "croppedMni152".
+#'  are "biobank" and "croppedMni152".
 #' @param doBiasCorrection boolean for performing N4 bias field correction.
 #' @param returnBiasField if TRUE, return bias field as an additional output 
 #' *without* bias correcting the preprocessed image.  

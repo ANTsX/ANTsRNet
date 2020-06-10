@@ -21,6 +21,8 @@ getPretrainedNetwork <- function(
               "brainAgeGender",
               "brainAgeFmrib",
               "brainExtraction",
+              "brainExtractionT2",
+              "brainExtractionFLAIR",
               "brainExtractionBOLD",
               "brainExtractionFA",
               "brainExtractionNoBrainer",
@@ -61,7 +63,10 @@ getPretrainedNetwork <- function(
     brainAgeGender = "https://ndownloader.figshare.com/files/22179948",
     brainAgeFmrib = "https://ndownloader.figshare.com/files/22429077",
     brainExtraction = "https://ndownloader.figshare.com/files/22944632",
-    # brainExtraction = "https://ndownloader.figshare.com/files/13729661",
+    # brainExtraction = "https://ndownloader.figshare.com/files/13729661",  # old weights
+    brainExtractionT2 = "https://ndownloader.figshare.com/files/23066153",
+    brainExtractionFLAIR = "https://ndownloader.figshare.com/files/23066153",
+    # brainExtractionFLAIR = "https://ndownloader.figshare.com/files/23064758", # these weights dont' work now so simply use T2 for now
     brainExtractionBOLD = "https://ndownloader.figshare.com/files/22761977",
     brainExtractionFA = "https://ndownloader.figshare.com/files/22761926",
     brainExtractionNoBrainer = "https://ndownloader.figshare.com/files/22598039",

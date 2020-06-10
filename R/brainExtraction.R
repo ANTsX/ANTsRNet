@@ -1,7 +1,7 @@
 #' Brain extraction
 #'
 #' Perform T1, FA, or bold brain extraction using a U-net architecture
-#' training data.  "NoBrainer" is also possible where 
+#' training data.  "NoBrainer" is also possible where
 #' brain extraction uses U-net and FreeSurfer
 #' training data ported from the
 #'
@@ -9,14 +9,16 @@
 #'
 #' @param image input 3-D brain image (or list of images for multi-modal scenarios).
 #' @param modality image type.  Options include:
-#' \enumerate{
-#'   \item "t1"
-#'   \item "t1nobrainer"
-#'   \item "bold"
-#'   \item "fa"
-#'   \item "t1t2infant"
-#'   \item "t1infant"
-#'   \item "t2infant"
+#' \itemize{
+#'   \item{"t1": }{T1-weighted MRI---ANTs-trained.}
+#'   \item{"t1nobrainer": }{T1-weighted MRI---FreeSurfer-trained: h/t Satra Ghosh and Jakub Kaczmarzyk.}
+#'   \item{"flair": }{FLAIR MRI.}
+#'   \item{"t2": }{T2-w MRI.}
+#'   \item{"bold": }{3-D BOLD MRI.}
+#'   \item{"fa": }{Fractional anisotropy.}
+#'   \item{"t1t2infant": }{Combined T1-w/T2-w infant MRI h/t Martin Styner.}
+#'   \item{"t1infant": }{T1-w infant MRI h/t Martin Styner.}
+#'   \item{"t2infant": }{T2-w infant MRI h/t Martin Styner.}
 #' }
 #' @param outputDirectory destination directory for storing the downloaded
 #' template and model weights.  Since these can be resused, if
@@ -34,8 +36,8 @@
 #' probabilityMask <- brainExtraction( image, modality = "t1" )
 #' }
 #' @export
-brainExtraction <- function( image, 
-  modality = c( "t1", "t1nobrainer", "bold", "fa", "t1t2infant", "t1infant", "t2infant" ), 
+brainExtraction <- function( image,
+  modality = c( "t1", "t1nobrainer", "t2", "flair", "bold", "fa", "t1t2infant", "t1infant", "t2infant" ),
   outputDirectory = NULL, verbose = FALSE )
   {
 
@@ -44,16 +46,16 @@ brainExtraction <- function( image,
   channelSize <- length( image )
 
   inputImages <- list()
-  if( channelSize == 1 )  
+  if( channelSize == 1 )
     {
-    inputImages[[1]] <- image  
+    inputImages[[1]] <- image
     } else {
-    inputImages <- image  
+    inputImages <- image
     }
 
   if( inputImages[[1]]@dimension != 3 )
     {
-    stop( "Image dimension must be 3." )  
+    stop( "Image dimension must be 3." )
     }
 
   modality <- match.arg( modality )
@@ -70,7 +72,7 @@ brainExtraction <- function( image,
     #
     # ANTs-based
     #
-    ##################### 
+    #####################
 
     weightsFileName <- ''
     weightsFilePrefix <- ''
@@ -78,6 +80,12 @@ brainExtraction <- function( image,
       {
       weightsFileName <- paste0( outputDirectory, "/brainExtractionWeights.h5" )
       weightsFilePrefix <- "brainExtraction"
+      } else if( modality == "t2" ) {
+      weightsFileName <- paste0( outputDirectory, "/brainExtractionT2Weights.h5" )
+      weightsFilePrefix <- "brainExtractionT2"
+      } else if( modality == "flair" ) {
+      weightsFileName <- paste0( outputDirectory, "/brainExtractionFlairWeights.h5" )
+      weightsFilePrefix <- "brainExtractionFLAIR"
       } else if( modality == "bold" ) {
       weightsFileName <- paste0( outputDirectory, "/brainExtractionBoldWeights.h5" )
       weightsFilePrefix <- "brainExtractionBOLD"
@@ -94,7 +102,7 @@ brainExtraction <- function( image,
       weightsFileName <- paste0( outputDirectory, "/brainExtractionInfantT2Weights.h5" )
       weightsFilePrefix <- "brainExtractionInfantT2"
       } else {
-      stop( "Unknown modality type." )  
+      stop( "Unknown modality type." )
       }
 
     if( ! file.exists( weightsFileName ) )
@@ -131,7 +139,7 @@ brainExtraction <- function( image,
       {
       cat( "Brain extraction:  normalizing image to the template.\n" )
       }
-    
+
     centerOfMassTemplate <- getCenterOfMass( reorientTemplate )
     centerOfMassImage <- getCenterOfMass( inputImages[[1]] )
     xfrm <- createAntsrTransform( type = "Euler3DTransform",
@@ -168,7 +176,7 @@ brainExtraction <- function( image,
     #
     # NoBrainer
     #
-    ##################### 
+    #####################
 
     if( verbose == TRUE )
       {

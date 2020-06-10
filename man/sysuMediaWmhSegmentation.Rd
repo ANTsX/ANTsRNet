@@ -7,7 +7,6 @@
 sysuMediaWmhSegmentation(
   flair,
   t1 = NULL,
-  brainMask = NULL,
   doPreprocessing = TRUE,
   useEnsemble = TRUE,
   outputDirectory = NULL,
@@ -19,9 +18,6 @@ sysuMediaWmhSegmentation(
 
 \item{t1}{input 3-D T1-weighted brain image (assumed to be aligned to
 the flair, if specified).}
-
-\item{brainMask}{input 3-D brain mask image.  If not specified, \code{getMask}
-is used to estimate a mask which is not recommended.}
 
 \item{doPreprocessing}{perform n4 bias correction?}
 

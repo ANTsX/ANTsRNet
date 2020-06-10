@@ -6,7 +6,8 @@
 \usage{
 brainExtraction(
   image,
-  modality = c("t1", "t1nobrainer", "bold", "fa", "t1t2infant", "t1infant", "t2infant"),
+  modality = c("t1", "t1nobrainer", "t2", "flair", "bold", "fa", "t1t2infant",
+    "t1infant", "t2infant"),
   outputDirectory = NULL,
   verbose = FALSE
 )
@@ -15,14 +16,16 @@ brainExtraction(
 \item{image}{input 3-D brain image (or list of images for multi-modal scenarios).}
 
 \item{modality}{image type.  Options include:
-\enumerate{
-\item "t1"
-\item "t1nobrainer"
-\item "bold"
-\item "fa"
-\item "t1t2infant"
-\item "t1infant"
-\item "t2infant"
+\itemize{
+\item{"t1": }{T1-weighted MRI---ANTs-trained.}
+\item{"t1nobrainer": }{T1-weighted MRI---FreeSurfer-trained: h/t Satra Ghosh and Jakub Kaczmarzyk.}
+\item{"flair": }{FLAIR MRI.}
+\item{"t2": }{T2-w MRI.}
+\item{"bold": }{3-D BOLD MRI.}
+\item{"fa": }{Fractional anisotropy.}
+\item{"t1t2infant": }{Combined T1-w/T2-w infant MRI h/t Martin Styner.}
+\item{"t1infant": }{T1-w infant MRI h/t Martin Styner.}
+\item{"t2infant": }{T2-w infant MRI h/t Martin Styner.}
 }}
 
 \item{outputDirectory}{destination directory for storing the downloaded
