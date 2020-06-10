@@ -7,9 +7,7 @@
   
 # ANTsRNet
 
-A collection of deep learning architectures ported to the R language and tools for basic medical image processing. Based on `keras` and `tensorflow` with cross-compatibility with our python analog [ANTsPyNet](https://github.com/ntustison/ANTsPyNet/).
-
-Applications available at [ANTsXNet Apps](https://github.com/ANTsXNet).
+A collection of deep learning architectures and applications ported to the R language and tools for basic medical image processing. Based on `keras` and `tensorflow` with cross-compatibility with our python analog [ANTsPyNet](https://github.com/ntustison/ANTsPyNet/).
 
 <!--
 Examples available at [ANTsRNetExamples](https://github.com/ntustison/ANTsRNetExamples).
