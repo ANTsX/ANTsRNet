@@ -4,7 +4,13 @@
 \alias{deepFlash}
 \title{Hippocampal/Enthorhinal segmentation using "Deep Flash"}
 \usage{
-deepFlash(t1, doPreprocessing = TRUE, outputDirectory = NULL, verbose = FALSE)
+deepFlash(
+  t1,
+  doPreprocessing = TRUE,
+  outputDirectory = NULL,
+  verbose = FALSE,
+  debug = FALSE
+)
 }
 \arguments{
 \item{t1}{raw or preprocessed 3-D T1-weighted brain image.}
@@ -17,6 +23,8 @@ template and model weights.  Since these can be resused, if
 inst/extdata/ subfolder of the ANTsRNet package.}
 
 \item{verbose}{print progress.}
+
+\item{debug}{return feature images in the last layer of the u-net model.}
 }
 \value{
 list consisting of the segmentation image and probability images for
@@ -25,10 +33,10 @@ each label.
 \description{
 Perform hippocampal/entorhinal segmentation in T1 images using
 labels from Mike Yassa's lab
-
-\url{https://faculty.sites.uci.edu/myassa/}
 }
 \details{
+\url{https://faculty.sites.uci.edu/myassa/}
+
 The labeling is as follows:
 Label 0 :  background
 Label 5 :  left aLEC

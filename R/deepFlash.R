@@ -2,8 +2,8 @@
 #'
 #' Perform hippocampal/entorhinal segmentation in T1 images using
 #' labels from Mike Yassa's lab
-#'  
-#' \url{https://faculty.sites.uci.edu/myassa/} 
+#'
+#' \url{https://faculty.sites.uci.edu/myassa/}
 #'
 #' The labeling is as follows:
 #'   Label 0 :  background
@@ -38,7 +38,8 @@
 #' \code{is.null(outputDirectory)}, these data will be downloaded to the
 #' inst/extdata/ subfolder of the ANTsRNet package.
 #' @param verbose print progress.
-#' @return list consisting of the segmentation image and probability images for 
+#' @param debug return feature images in the last layer of the u-net model.
+#' @return list consisting of the segmentation image and probability images for
 #' each label.
 #' @author Tustison NJ
 #' @examples
@@ -50,8 +51,8 @@
 #' results <- deepFlash( image )
 #' }
 #' @export
-deepFlash <- function( t1, doPreprocessing = TRUE, 
-  outputDirectory = NULL, verbose = FALSE )
+deepFlash <- function( t1, doPreprocessing = TRUE,
+  outputDirectory = NULL, verbose = FALSE, debug = FALSE )
 {
 
   padOrCropImageToSize <- function( image, size )
@@ -64,13 +65,13 @@ deepFlash <- function( t1, doPreprocessing = TRUE,
       padSize <- abs( min( delta ) )
       image <- iMath( image, "PadImage", padSize )
       }
-    croppedImage <- cropImageCenter( image, size )  
+    croppedImage <- cropImageCenter( image, size )
     return( croppedImage )
     }
 
   if( t1@dimension != 3 )
     {
-    stop( "Input image dimension must be 3." )  
+    stop( "Input image dimension must be 3." )
     }
 
   if( is.null( outputDirectory ) )
@@ -82,12 +83,12 @@ deepFlash <- function( t1, doPreprocessing = TRUE,
   #
   # Preprocess image
   #
-  ################################  
+  ################################
 
   t1Preprocessed <- t1
   if( doPreprocessing == TRUE )
     {
-    t1Preprocessing <- preprocessBrainImage( t1, 
+    t1Preprocessing <- preprocessBrainImage( t1,
         truncateIntensity = c( 0.01, 0.99 ),
         doBrainExtraction = TRUE,
         template = "croppedMni152",
@@ -97,13 +98,13 @@ deepFlash <- function( t1, doPreprocessing = TRUE,
         outputDirectory = outputDirectory,
         verbose = verbose )
     t1Preprocessed <- t1Preprocessing$preprocessedImage * t1Preprocessing$brainMask
-    }    
+    }
 
   ################################
   #
   # Build model and load weights
   #
-  ################################  
+  ################################
 
   templateSize <- c( 160L, 192L, 160L )
   labels <- c( 0, 5:18 )
@@ -134,11 +135,11 @@ deepFlash <- function( t1, doPreprocessing = TRUE,
   #
   # Do prediction and normalize to native space
   #
-  ################################  
+  ################################
 
   if( verbose == TRUE )
     {
-    cat( "Prediction.\n" )    
+    cat( "Prediction.\n" )
     }
 
   croppedImage <- padOrCropImageToSize( t1Preprocessed, templateSize )
@@ -153,20 +154,20 @@ deepFlash <- function( t1, doPreprocessing = TRUE,
   probabilityImages <- list()
   for( i in seq.int( length( probabilityImagesList[[1]] ) ) )
     {
-    if( i > 1 )  
+    if( i > 1 )
       {
       decroppedImage <- decropImage( probabilityImagesList[[1]][[i]], t1Preprocessed * 0 )
       } else {
       decroppedImage <- decropImage( probabilityImagesList[[1]][[i]], t1Preprocessed * 0 + 1 )
       }
-    if( doPreprocessing == TRUE )  
+    if( doPreprocessing == TRUE )
       {
       probabilityImages[[i]] <- antsApplyTransforms( fixed = t1, moving = decroppedImage,
-          transformlist = t1Preprocessing$templateTransforms$invtransforms, 
+          transformlist = t1Preprocessing$templateTransforms$invtransforms,
           whichtoinvert = c( TRUE ), interpolator = "linear", verbose = verbose )
       } else {
-      probabilityImages[[i]] <- decroppedImage  
-      }    
+      probabilityImages[[i]] <- decroppedImage
+      }
     }
 
   imageMatrix <- imageListToMatrix( probabilityImages, t1 * 0 + 1 )
@@ -175,12 +176,39 @@ deepFlash <- function( t1, doPreprocessing = TRUE,
 
   relabeledImage <- antsImageClone( segmentationImage )
 
-  for( i in seq.int( length( labels ) ) ) 
+  for( i in seq.int( length( labels ) ) )
     {
     relabeledImage[( segmentationImage == i )] <- labels[i]
     }
-  
+
   results <- list( segmentationImage = relabeledImage, probabilityImages = probabilityImages )
+
+  # debugging
+
+  if( debug == TRUE )
+    {
+    inputImage <- unetModel$input
+    featureLayer <- unetModel$layers[[length( unetModel$layers ) - 1]]
+    featureFunction <- keras::backend()$`function`( list( inputImage ), list( featureLayer$output ) )
+    featureBatch <- featureFunction( list( batchX[1,,,,,drop = FALSE] ) )
+
+    featureImagesList <- decodeUnet( featureBatch[[1]], croppedImage )
+
+    featureImages <- list()
+    for( i in seq.int( length( featureImagesList[[1]] ) ) )
+      {
+      decroppedImage <- decropImage( featureImagesList[[1]][[i]], t1Preprocessed * 0 )
+      if( doPreprocessing == TRUE )
+        {
+        featureImages[[i]] <- antsApplyTransforms( fixed = t1, moving = decroppedImage,
+            transformlist = t1Preprocessing$templateTransforms$invtransforms,
+            whichtoinvert = c( TRUE ), interpolator = "linear", verbose = verbose )
+        } else {
+        featureImages[[i]] <- decroppedImage
+        }
+      }
+    results[['featureImagesLastLayer']] <- featureImages
+    }
 
   return( results )
 }

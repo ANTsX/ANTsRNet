@@ -172,6 +172,7 @@ reference:
   desc: ~
   contents:
   - '`brainExtraction`'
+  - '`deepAtropos`'
   - '`lungExtraction`'
   - '`brainAgeFmrib`'
   - '`hippMapp3rSegmentation`'
