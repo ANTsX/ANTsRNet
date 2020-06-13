@@ -286,7 +286,6 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
     predictionArray <- aperm( drop( predictionPerDimension ), permutations[[dimensionsToPredict[d]]] )
     predictionImage <- antsCopyImageInfo( flairPreprocessedWarped,
       padOrCropImageToSize( as.antsImage( predictionArray ), dim( flairPreprocessedWarped ) ) )
-    antsImageWrite( predictionImage, paste0( "~/Desktop/pred", d, ".nii.gz" ) )
     predictionImageAverage <- predictionImageAverage + ( predictionImage - predictionImageAverage ) / d
     currentStartSlice <- currentEndSlice + 1
     }
