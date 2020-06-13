@@ -23,6 +23,10 @@
 #' template and model weights.  Since these can be resused, if
 #' \code{is.null(outputDirectory)}, these data will be downloaded to the
 #' inst/extdata/ subfolder of the ANTsRNet package.
+#' @param useAxialSlicesOnly if \code{TRUE}, use original implementation which
+#' was trained on axial slices.  If \code{FALSE}, use ANTsXNet variant
+#' implementation which applies the slice-by-slice models to all 3 dimensions
+#' and averages the results.
 #' @param verbose print progress.
 #' @return WMH segmentation probability image
 #' @author Tustison NJ
@@ -36,8 +40,8 @@
 #' }
 #' @export
 sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
-  doPreprocessing = TRUE, useEnsemble = TRUE, outputDirectory = NULL,
-  verbose = FALSE )
+  doPreprocessing = TRUE, useEnsemble = TRUE, useAxialSlicesOnly = TRUE,
+  outputDirectory = NULL, verbose = FALSE )
 {
 
   padOrCropImageToSize <- function( image, size )
@@ -203,31 +207,47 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
   #
   ################################
 
-  numberOfAxialSlices <- dim( flairPreprocessedWarped )[3]
-
-  if( verbose == TRUE )
+  dimensionsToPredict <- c( 3 )
+  if( useAxialSlicesOnly == FALSE )
     {
-    cat( "Extracting slices." )
-    pb <- txtProgressBar( min = 1, max = numberOfAxialSlices, style = 3 )
+    dimensionsToPredict <- 1:3
     }
 
-  batchX <- array( data = 0, c( numberOfAxialSlices, 200, 200, numberOfChannels ) )
-  for( i in seq.int( numberOfAxialSlices ) )
+  batchX <- array( data = 0,
+    c( sum( dim( flairPreprocessedWarped )[dimensionsToPredict]), 200, 200, numberOfChannels ) )
+
+  sliceCount <- 1
+  for( d in seq.int( length( dimensionsToPredict ) ) )
     {
-    if( verbose )
+    numberOfSlices <- dim( flairPreprocessedWarped )[dimensionsToPredict[d]]
+
+    if( verbose == TRUE )
       {
-      setTxtProgressBar( pb, i )
+      cat( "Extracting slices for dimension", d, "\n" )
+      pb <- txtProgressBar( min = 1, max = numberOfSlices, style = 3 )
       }
 
-    flairSlice <- padOrCropImageToSize( extractSlice( flairPreprocessedWarped, i, 3 ), c( 200, 200 ) )
-    batchX[i,,,1] <- as.array( flairSlice )
-    if( numberOfChannels == 2 )
+    for( i in seq.int( numberOfSlices ) )
       {
-      t1Slice <- padOrCropImageToSize( extractSlice( t1PreprocessedWarped, i, 3 ), c( 200, 200 ) )
-      batchX[i,,,2] <- as.array( t1Slice )
+      if( verbose )
+        {
+        setTxtProgressBar( pb, i )
+        }
+
+      flairSlice <- padOrCropImageToSize( extractSlice( flairPreprocessedWarped, i, dimensionsToPredict[d] ), c( 200, 200 ) )
+      batchX[sliceCount,,,1] <- as.array( flairSlice )
+      if( numberOfChannels == 2 )
+        {
+        t1Slice <- padOrCropImageToSize( extractSlice( t1PreprocessedWarped, i, dimensionsToPredict[d] ), c( 200, 200 ) )
+        batchX[sliceCount,,,2] <- as.array( t1Slice )
+        }
+      sliceCount <- sliceCount + 1
+      }
+    if( verbose == TRUE )
+      {
+      cat( "\n" )
       }
     }
-  cat( "\n" )
 
   ################################
   #
@@ -250,13 +270,31 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
     }
   prediction <- prediction / numberOfModels
 
-  predictionArray <- aperm( drop( prediction ), c( 2, 3, 1 ) )
-  predictionImage <- padOrCropImageToSize( as.antsImage( predictionArray ), dim( flairPreprocessedWarped ) )
-  probabilityImageWarped <- antsCopyImageInfo( flairPreprocessedWarped, predictionImage )
-  probabilityImage <- applyAntsrTransformToImage( invertAntsrTransform( xfrm ),
-      probabilityImageWarped, flair )
+  permutations <- list()
+  permutations[[1]] <- c( 1, 2, 3 )
+  permutations[[2]] <- c( 2, 1, 3 )
+  permutations[[3]] <- c( 2, 3, 1 )
 
-  return( probabilityImage )
+  predictionImageAverage <- antsImageClone( flairPreprocessedWarped ) * 0
+
+  currentStartSlice <- 1
+  for( d in seq.int( length( dimensionsToPredict ) ) )
+    {
+    currentEndSlice <- currentStartSlice - 1 + dim( flairPreprocessedWarped )[dimensionsToPredict[d]]
+    whichBatchSlices <- currentStartSlice:currentEndSlice
+    predictionPerDimension <- prediction[whichBatchSlices,,,]
+    predictionArray <- aperm( drop( predictionPerDimension ), permutations[[dimensionsToPredict[d]]] )
+    predictionImage <- antsCopyImageInfo( flairPreprocessedWarped,
+      padOrCropImageToSize( as.antsImage( predictionArray ), dim( flairPreprocessedWarped ) ) )
+    antsImageWrite( predictionImage, paste0( "~/Desktop/pred", d, ".nii.gz" ) )
+    predictionImageAverage <- predictionImageAverage + ( predictionImage - predictionImageAverage ) / d
+    currentStartSlice <- currentEndSlice + 1
+    }
+
+  probabilityImage <- applyAntsrTransformToImage( invertAntsrTransform( xfrm ),
+      predictionImageAverage, flair )
+
+  return( probabilityImage = probabilityImage )
 }
 
 
