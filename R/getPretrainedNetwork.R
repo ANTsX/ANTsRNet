@@ -35,11 +35,13 @@ getPretrainedNetwork <- function(
               "dbpn4x",
               "deepFlash",
               "denoising",
+              "dktInner",
               "functionalLungMri",
               "hippMapp3rInitial",
               "hippMapp3rRefine",
               "mriSuperResolution",
               "protonLungMri",
+              "sixTissueBrainSegmentation",
               "wholeTumorSegmentationT2Flair" ,
               "sysuMediaWmhFlairOnlyModel0",
               "sysuMediaWmhFlairOnlyModel1",
@@ -79,18 +81,20 @@ getPretrainedNetwork <- function(
     dbpn4x = "https://ndownloader.figshare.com/files/13347617",
     deepFlash = "https://ndownloader.figshare.com/files/22933757",
     denoising = "https://ndownloader.figshare.com/files/14235296",
+    dktInner = "https://ndownloader.figshare.com/files/23241827",
     functionalLungMri = "https://ndownloader.figshare.com/files/13824167",
     hippMapp3rInitial = "https://ndownloader.figshare.com/files/18068408",
     hippMapp3rRefine = "https://ndownloader.figshare.com/files/18068411",
     mriSuperResolution = "https://ndownloader.figshare.com/files/19430123",
     protonLungMri = "https://ndownloader.figshare.com/files/13606799",
-    wholeTumorSegmentationT2Flair = "https://ndownloader.figshare.com/files/14087045",
+    sixTissueBrainSegmentation = "https://ndownloader.figshare.com/files/23241824",
     sysuMediaWmhFlairOnlyModel0 = "https://ndownloader.figshare.com/files/22898441",
     sysuMediaWmhFlairOnlyModel1 = "https://ndownloader.figshare.com/files/22898570",
     sysuMediaWmhFlairOnlyModel2 = "https://ndownloader.figshare.com/files/22898438",
     sysuMediaWmhFlairT1Model0 = "https://ndownloader.figshare.com/files/22898450",
     sysuMediaWmhFlairT1Model1 = "https://ndownloader.figshare.com/files/22898453",
-    sysuMediaWmhFlairT1Model2 = "https://ndownloader.figshare.com/files/22898459"
+    sysuMediaWmhFlairT1Model2 = "https://ndownloader.figshare.com/files/22898459",
+    wholeTumorSegmentationT2Flair = "https://ndownloader.figshare.com/files/14087045"
   )
 
   if( missing( targetFileName ) )

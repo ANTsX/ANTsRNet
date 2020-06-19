@@ -35,13 +35,15 @@ Perform Atropos-style six tissue segmentation using deep learning
 }
 \details{
 The labeling is as follows:
-Label 0 :  background
-Label 1 :  CSF
-Label 2 :  gray matter
-Label 3 :  white matter
-Label 4 :  deep gray matter
-Label 5 :  brain stem
-Label 6 :  cerebellum
+\itemize{
+\item{Label 0:}{background}
+\item{Label 1:}{CSF}
+\item{Label 2:}{gray matter}
+\item{Label 3:}{white matter}
+\item{Label 4:}{deep gray matter}
+\item{Label 5:}{brain stem}
+\item{Label 6:}{cerebellum}
+}
 
 Preprocessing on the training data consisted of:
 \itemize{

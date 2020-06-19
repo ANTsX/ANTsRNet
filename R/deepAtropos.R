@@ -3,13 +3,15 @@
 #' Perform Atropos-style six tissue segmentation using deep learning
 #'
 #' The labeling is as follows:
-#'   Label 0 :  background
-#'   Label 1 :  CSF
-#'   Label 2 :  gray matter
-#'   Label 3 :  white matter
-#'   Label 4 :  deep gray matter
-#'   Label 5 :  brain stem
-#'   Label 6 :  cerebellum
+#' \itemize{
+#'   \item{Label 0:}{background}
+#'   \item{Label 1:}{CSF}
+#'   \item{Label 2:}{gray matter}
+#'   \item{Label 3:}{white matter}
+#'   \item{Label 4:}{deep gray matter}
+#'   \item{Label 5:}{brain stem}
+#'   \item{Label 6:}{cerebellum}
+#' }
 #'
 #' Preprocessing on the training data consisted of:
 #'    * n4 bias correction,
@@ -43,20 +45,6 @@
 deepAtropos <- function( t1, doPreprocessing = TRUE,
   outputDirectory = NULL, verbose = FALSE, debug = FALSE )
 {
-
-  padOrCropImageToSize <- function( image, size )
-    {
-    imageSize <- dim( image )
-    delta <- imageSize - size
-
-    if( any( delta < 0 ) )
-      {
-      padSize <- abs( min( delta ) )
-      image <- iMath( image, "PadImage", padSize )
-      }
-    croppedImage <- cropImageCenter( image, size )
-    return( croppedImage )
-    }
 
   if( t1@dimension != 3 )
     {
@@ -111,7 +99,7 @@ deepAtropos <- function( t1, doPreprocessing = TRUE,
       {
       cat( "DeepAtropos:  downloading model weights.\n" )
       }
-    weightsFileName <- getPretrainedNetwork( "deepAtropos", weightsFileName )
+    weightsFileName <- getPretrainedNetwork( "sixTissueBrainSegmentation", weightsFileName )
     }
   load_model_weights_hdf5( unetModel, filepath = weightsFileName )
 
@@ -131,7 +119,7 @@ deepAtropos <- function( t1, doPreprocessing = TRUE,
     cat( "Prediction.\n" )
     }
 
-  croppedImage <- padOrCropImageToSize( t1Preprocessed, templateSize )
+  croppedImage <- cropIndices( t1Preprocessed, c( 13, 15, 1 ), c( 172, 206, 160 ) )
   imageArray <- as.array( croppedImage )
 
   batchX <- array( data = imageArray, dim = c( 1, templateSize, 1 ) )

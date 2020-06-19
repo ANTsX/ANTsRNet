@@ -38,21 +38,23 @@ labels from Mike Yassa's lab
 \url{https://faculty.sites.uci.edu/myassa/}
 
 The labeling is as follows:
-Label 0 :  background
-Label 5 :  left aLEC
-Label 6 :  right aLEC
-Label 7 :  left pMEC
-Label 8 :  right pMEC
-Label 9 :  left perirhinal
-Label 10:  right perirhinal
-Label 11:  left parahippocampal
-Label 12:  right parahippocampal
-Label 13:  left DG/CA3
-Label 14:  right DG/CA3
-Label 15:  left CA1
-Label 16:  right CA1
-Label 17:  left subiculum
-Label 18:  right subiculum
+\itemize{
+\item{Label 0 :}{background}
+\item{Label 5 :}{left aLEC}
+\item{Label 6 :}{right aLEC}
+\item{Label 7 :}{left pMEC}
+\item{Label 8 :}{right pMEC}
+\item{Label 9 :}{left perirhinal}
+\item{Label 10:}{right perirhinal}
+\item{Label 11:}{left parahippocampal}
+\item{Label 12:}{right parahippocampal}
+\item{Label 13:}{left DG/CA3}
+\item{Label 14:}{right DG/CA3}
+\item{Label 15:}{left CA1}
+\item{Label 16:}{right CA1}
+\item{Label 17:}{left subiculum}
+\item{Label 18:}{right subiculum}
+}
 
 Preprocessing on the training data consisted of:
 \itemize{

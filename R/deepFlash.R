@@ -6,6 +6,7 @@
 #' \url{https://faculty.sites.uci.edu/myassa/}
 #'
 #' The labeling is as follows:
+#' \itemize{
 #'   \item{Label 0 :}{background}
 #'   \item{Label 5 :}{left aLEC}
 #'   \item{Label 6 :}{right aLEC}
@@ -21,6 +22,7 @@
 #'   \item{Label 16:}{right CA1}
 #'   \item{Label 17:}{left subiculum}
 #'   \item{Label 18:}{right subiculum}
+#' }
 #'
 #' Preprocessing on the training data consisted of:
 #'    * n4 bias correction,
