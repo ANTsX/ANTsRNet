@@ -81,7 +81,7 @@ getPretrainedNetwork <- function(
     dbpn4x = "https://ndownloader.figshare.com/files/13347617",
     deepFlash = "https://ndownloader.figshare.com/files/22933757",
     denoising = "https://ndownloader.figshare.com/files/14235296",
-    dktInner = "https://ndownloader.figshare.com/files/23241827",
+    dktInner = "https://ndownloader.figshare.com/files/23266943",
     functionalLungMri = "https://ndownloader.figshare.com/files/13824167",
     hippMapp3rInitial = "https://ndownloader.figshare.com/files/18068408",
     hippMapp3rRefine = "https://ndownloader.figshare.com/files/18068411",
