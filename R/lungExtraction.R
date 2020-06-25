@@ -1,6 +1,6 @@
 #' Lung extraction
 #'
-#' Perform proton (H1) or CT lung extraction using a U-net architecture.  
+#' Perform proton (H1) or CT lung extraction using a U-net architecture.
 #'
 #' @param image input 3-D lung image.
 #' @param modality image type.  Options include "proton" or "ct".
@@ -9,7 +9,7 @@
 #' \code{is.null(outputDirectory)}, these data will be downloaded to the
 #' inst/extdata/ subfolder of the ANTsRNet package.
 #' @param verbose print progress.
-#' @return left/right probability masks (list of ANTsR image)
+#' @return segmentation and probability images
 #' @author Tustison NJ
 #' @examples
 #' \dontrun{
@@ -20,14 +20,14 @@
 #' output <- lungExtraction( image, modality = "proton" )
 #' }
 #' @export
-lungExtraction <- function( image, 
-  modality = c( "proton", "ct" ), 
+lungExtraction <- function( image,
+  modality = c( "proton", "ct" ),
   outputDirectory = NULL, verbose = FALSE )
   {
 
   if( image@dimension != 3 )
     {
-    stop( "Image dimension must be 3." )  
+    stop( "Image dimension must be 3." )
     }
 
   modality <- match.arg( modality )
@@ -106,14 +106,19 @@ lungExtraction <- function( image,
       }
 
     probabilityImages <- list()
-    for( i in seq_len( numberOfClassificationLabels - 1 ) )
+    for( i in seq_len( numberOfClassificationLabels ) )
       {
-      probabilityImageTmp <- probabilityImagesArray[[1]][[i+1]]
+      probabilityImageTmp <- probabilityImagesArray[[1]][[i]]
       probabilityImages[[i]] <- applyAntsrTransformToImage( invertAntsrTransform( xfrm ),
         probabilityImageTmp, image )
       }
-    return( list( leftLung = probabilityImages[[1]],
-                  rightLung = probabilityImages[[2]] ) )
+
+    imageMatrix <- imageListToMatrix( probabilityImages, image * 0 + 1 )
+    segmentationMatrix <- matrix( apply( imageMatrix, 2, which.max ), nrow = 1 ) - 1
+    segmentationImage <- matrixToImages( segmentationMatrix, image * 0 + 1 )[[1]]
+
+    return( list( segmentationImage = segmentationImage,
+                  probabilityImages = probabilityImages ) )
 
     } else if( modality == "ct" ) {
     weightsFileName <- paste0( outputDirectory, "/ctLungSegmentationWeights.h5" )
@@ -146,9 +151,9 @@ lungExtraction <- function( image,
       numberOfOutputs = numberOfClassificationLabels,
       numberOfLayers = 4, numberOfFiltersAtBaseLayer = 8, dropoutRate = 0.0,
       convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
-      weightDecay = 1e-5 )      
+      weightDecay = 1e-5 )
     unetModel$load_weights( weightsFileName )
-  
+
     if( verbose == TRUE )
       {
       cat( "Lung extraction:  normalizing image to the template.\n" )
@@ -179,19 +184,21 @@ lungExtraction <- function( image,
       }
 
     probabilityImages <- list()
-    for( i in seq_len( numberOfClassificationLabels - 1 ) )
+    for( i in seq_len( numberOfClassificationLabels ) )
       {
       probabilityImageTmp <- probabilityImagesArray[[1]][[i+1]]
       probabilityImages[[i]] <- applyAntsrTransformToImage( invertAntsrTransform( xfrm ),
         probabilityImageTmp, image )
       }
+    imageMatrix <- imageListToMatrix( probabilityImages, image * 0 + 1 )
+    segmentationMatrix <- matrix( apply( imageMatrix, 2, which.max ), nrow = 1 ) - 1
+    segmentationImage <- matrixToImages( segmentationMatrix, image * 0 + 1 )[[1]]
 
-    return( list( leftLung = probabilityImages[[1]],
-                  rightLung = probabilityImages[[2]],
-                  trachea = probabilityImages[[3]] ) )
+    return( list( segmentationImage = segmentationImage,
+                  probabilityImages = probabilityImages ) )
 
     } else {
-    stop( "Unknown modality type." )  
+    stop( "Unknown modality type." )
     }
 
   }
