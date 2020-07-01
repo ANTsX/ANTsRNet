@@ -24,7 +24,7 @@ inst/extdata/ subfolder of the ANTsRNet package.}
 \item{verbose}{print progress.}
 }
 \value{
-left/right probability masks (list of ANTsR image)
+segmentation and probability images
 }
 \description{
 Perform proton (H1) or CT lung extraction using a U-net architecture.

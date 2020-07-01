@@ -20,6 +20,7 @@ getPretrainedNetwork <- function(
   fileId = c( "show",
               "brainAgeGender",
               "brainAgeFmrib",
+              "brainAgeDeepBrainNet",
               "brainExtraction",
               "brainExtractionT2",
               "brainExtractionFLAIR",
@@ -64,6 +65,7 @@ getPretrainedNetwork <- function(
     fileId,
     brainAgeGender = "https://ndownloader.figshare.com/files/22179948",
     brainAgeFmrib = "https://ndownloader.figshare.com/files/22429077",
+    brainAgeDeepBrainNet = "https://ndownloader.figshare.com/files/23573402",
     brainExtraction = "https://ndownloader.figshare.com/files/22944632",
     # brainExtraction = "https://ndownloader.figshare.com/files/13729661",  # old weights
     brainExtractionT2 = "https://ndownloader.figshare.com/files/23066153",
