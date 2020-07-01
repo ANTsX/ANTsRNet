@@ -9,6 +9,13 @@
 #'
 #' \url{https://academic.oup.com/brain/article-abstract/doi/10.1093/brain/awaa160/5863667?redirectedFrom=fulltext}
 #'
+#' Preprocessing on the training data consisted of:
+#'    * n4 bias correction,
+#'    * brain extraction, and
+#'    * affine registration to MNI.
+#' The input T1 should undergo the same steps.  If the input T1 is the raw
+#' T1, these steps can be performed by the internal preprocessing, i.e. set
+#' \code{doPreprocessing = TRUE}
 #'
 #' @param image input 3-D T1-weighted brain image.
 #' @param doPreprocessing boolean dictating whether prescribed

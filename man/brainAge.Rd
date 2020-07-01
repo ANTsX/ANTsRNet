@@ -33,6 +33,16 @@ architecture and weights described here:
 and described in the following article:
 
 \url{https://academic.oup.com/brain/article-abstract/doi/10.1093/brain/awaa160/5863667?redirectedFrom=fulltext}
+
+Preprocessing on the training data consisted of:
+\itemize{
+\item n4 bias correction,
+\item brain extraction, and
+\item affine registration to MNI.
+The input T1 should undergo the same steps.  If the input T1 is the raw
+T1, these steps can be performed by the internal preprocessing, i.e. set
+\code{doPreprocessing = TRUE}
+}
 }
 \examples{
 \dontrun{
