@@ -83,23 +83,27 @@ deepAtropos <- function( t1, doPreprocessing = TRUE,
   #
   ################################
 
-  templateSize <- c( 160L, 192L, 160L )
+  patchSize <- c( 112L, 112L, 112L )
+  strideLength <- dim( t1Preprocessed ) - patchSize
+
+  classes <- c( "background", "csf", "gray matter", "white matter",
+    "deep gray matter", "brain stem", "cerebellum" )
   labels <- c( 0:6 )
 
-  unetModel <- createUnetModel3D( c( templateSize, 1 ),
+  unetModel <- createUnetModel3D( c( patchSize, 1 ),
     numberOfOutputs = length( labels ), mode = 'classification',
-    numberOfLayers = 4, numberOfFiltersAtBaseLayer = 8, dropoutRate = 0.0,
+    numberOfLayers = 4, numberOfFiltersAtBaseLayer = 16, dropoutRate = 0.0,
     convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
     weightDecay = 1e-5, addAttentionGating = TRUE )
 
-  weightsFileName <- paste0( outputDirectory, "sixTissueSegmentationWeights.h5" )
+  weightsFileName <- paste0( outputDirectory, "sixTissueOctantSegmentationWeights.h5" )
   if( ! file.exists( weightsFileName ) )
     {
     if( verbose == TRUE )
       {
       cat( "DeepAtropos:  downloading model weights.\n" )
       }
-    weightsFileName <- getPretrainedNetwork( "sixTissueBrainSegmentation", weightsFileName )
+    weightsFileName <- getPretrainedNetwork( "sixTissueOctantBrainSegmentation", weightsFileName )
     }
   load_model_weights_hdf5( unetModel, filepath = weightsFileName )
 
@@ -116,34 +120,28 @@ deepAtropos <- function( t1, doPreprocessing = TRUE,
 
   if( verbose == TRUE )
     {
-    cat( "Prediction.\n" )
+    message( "Prediction.\n" )
     }
 
-  croppedImage <- cropIndices( t1Preprocessed, c( 13, 15, 1 ), c( 172, 206, 160 ) )
-  imageArray <- as.array( croppedImage )
-
-  batchX <- array( data = imageArray, dim = c( 1, templateSize, 1 ) )
-  batchX <- ( batchX - mean( batchX ) ) / sd( batchX )
-
+  t1Preprocessed <- ( t1Preprocessed - mean( t1Preprocessed ) ) / sd( t1Preprocessed )
+  imagePatches <- extractImagePatches( t1Preprocessed, patchSize, maxNumberOfPatches = "all",
+                                       strideLength = strideLength, returnAsArray = TRUE )
+  batchX <- array( data = imagePatches, dim = c( dim( imagePatches ), 1 ) )
   predictedData <- unetModel %>% predict( batchX, verbose = verbose )
-  probabilityImagesList <- decodeUnet( predictedData, croppedImage )
 
   probabilityImages <- list()
-  for( i in seq.int( length( probabilityImagesList[[1]] ) ) )
+  for( i in seq.int( dim( predictedData )[5] ) )
     {
-    if( i > 1 )
-      {
-      decroppedImage <- decropImage( probabilityImagesList[[1]][[i]], t1Preprocessed * 0 )
-      } else {
-      decroppedImage <- decropImage( probabilityImagesList[[1]][[i]], t1Preprocessed * 0 + 1 )
-      }
+    message( "Reconstructing image ", classes[i], "\n" )
+    reconstructedImage <- reconstructImageFromPatches( predictedData[,,,,i],
+        domainImage = t1Preprocessed, strideLength = strideLength )
     if( doPreprocessing == TRUE )
       {
-      probabilityImages[[i]] <- antsApplyTransforms( fixed = t1, moving = decroppedImage,
+      probabilityImages[[i]] <- antsApplyTransforms( fixed = t1, moving = reconstructedImage,
           transformlist = t1Preprocessing$templateTransforms$invtransforms,
           whichtoinvert = c( TRUE ), interpolator = "linear", verbose = verbose )
       } else {
-      probabilityImages[[i]] <- decroppedImage
+      probabilityImages[[i]] <- reconstructedImage
       }
     }
 
