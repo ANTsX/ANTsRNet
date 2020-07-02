@@ -52,7 +52,7 @@ brainAge <- function( image, doPreprocessing = TRUE,
     preprocessing <- preprocessBrainImage( image,
       truncateIntensity = c( 0.01, 0.99 ),
       doBrainExtraction = TRUE, doBiasCorrection = TRUE,
-      returnBiasField = FALSE, doDenoising = FALSE,
+      returnBiasField = FALSE, doDenoising = TRUE,
       templateTransformType = "AffineFast", template = "croppedMni152",
       outputDirectory = outputDirectory, verbose = verbose )
     preprocessedImage <- preprocessing$preprocessedImage * preprocessing$brainMask
@@ -87,13 +87,10 @@ brainAge <- function( image, doPreprocessing = TRUE,
 
   for( i in seq.int( length( whichSlices ) ) )
     {
-
-    # The model requires a three-channel input.  The paper doesn't specify but I'm
-    # guessing that the previous and next slice are included.
-
-    batchX[i,,,1] <- as.array( extractSlice( preprocessedImage, whichSlices[i] - 1, 3 ) )
-    batchX[i,,,2] <- as.array( extractSlice( preprocessedImage, whichSlices[i], 3 ) )
-    batchX[i,,,3] <- as.array( extractSlice( preprocessedImage, whichSlices[i] + 1, 3 ) )
+    slice <- as.array( extractSlice( preprocessedImage, whichSlices[i], 3 ) )
+    batchX[i,,,1] <- slice
+    batchX[i,,,2] <- slice
+    batchX[i,,,3] <- slice
     }
 
   if( verbose == TRUE )
