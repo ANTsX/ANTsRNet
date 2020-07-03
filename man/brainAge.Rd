@@ -4,7 +4,14 @@
 \alias{brainAge}
 \title{BrainAGE}
 \usage{
-brainAge(image, doPreprocessing = TRUE, outputDirectory = NULL, verbose = TRUE)
+brainAge(
+  image,
+  doPreprocessing = TRUE,
+  numberOfSimulations = 0,
+  sdAffine = 0.01,
+  outputDirectory = NULL,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{image}{input 3-D T1-weighted brain image.}
@@ -12,6 +19,12 @@ brainAge(image, doPreprocessing = TRUE, outputDirectory = NULL, verbose = TRUE)
 \item{doPreprocessing}{boolean dictating whether prescribed
 preprocessing is performed (brain extraction, bias correction,
 normalization to template).}
+
+\item{numberOfSimulations}{number of random affine perturbations to
+transform the input.}
+
+\item{sdAffine}{define the standard deviation of the affine transformation
+parameter.}
 
 \item{outputDirectory}{destination directory for storing the downloaded
 template and model weights.  Since these can be resused, if

@@ -21,6 +21,10 @@
 #' @param doPreprocessing boolean dictating whether prescribed
 #' preprocessing is performed (brain extraction, bias correction,
 #' normalization to template).
+#' @param numberOfSimulations number of random affine perturbations to
+#' transform the input. 
+#' @param sdAffine define the standard deviation of the affine transformation
+#' parameter.
 #' @param outputDirectory destination directory for storing the downloaded
 #' template and model weights.  Since these can be resused, if
 #' \code{is.null(outputDirectory)}, these data will be downloaded to the
@@ -38,7 +42,7 @@
 #' }
 #' @export
 brainAge <- function( image, doPreprocessing = TRUE,
-  outputDirectory = NULL, verbose = TRUE )
+  numberOfSimulations = 0, sdAffine = 0.01, outputDirectory = NULL, verbose = TRUE )
   {
   if( is.null( outputDirectory ) )
     {
@@ -85,19 +89,45 @@ brainAge <- function( image, doPreprocessing = TRUE,
 
   batchX <- array( data = 0, dim = c( length( whichSlices ), dim( preprocessedImage )[1:2], 3 ) )
 
-  for( i in seq.int( length( whichSlices ) ) )
+  if( numberOfSimulations > 0 )
     {
-    slice <- as.array( extractSlice( preprocessedImage, whichSlices[i], 3 ) )
-    batchX[i,,,1] <- slice
-    batchX[i,,,2] <- slice
-    batchX[i,,,3] <- slice
+    dataAugmentation <-
+      randomlyTransformImageData( preprocessedImage,
+      list( list( preprocessedImage ) ),
+      numberOfSimulations = numberOfSimulations,
+      transformType = 'affine',
+      sdAffine = sdAffine,
+      inputImageInterpolator = 'linear' )    
     }
 
-  if( verbose == TRUE )
+  brainAgePerSlice <- c()
+  for( i in seq.int( numberOfSimulations + 1 ) )
     {
-    message( "Brain age (DeepBrainNet):  predicting brain age per slice.\n" )
-    }
-  brainAgePerSlice <- model %>% predict( batchX, verbose = verbose )
+    batchImage <- preprocessedImage  
+    if( i > 1 )  
+      {
+      batchImage <- dataAugmentation$simulatedImages[[i-1]][[1]]  
+      }
+    for( j in seq.int( length( whichSlices ) ) )
+      {
+      slice <- as.array( extractSlice( batchImage, whichSlices[j], 3 ) )
+      batchX[j,,,1] <- slice
+      batchX[j,,,2] <- slice
+      batchX[j,,,3] <- slice
+      }
+    if( verbose == TRUE )
+      {
+      message( "Brain age (DeepBrainNet):  predicting brain age per slice (batch = ", i, ").\n" )
+      }
+    
+    if( i == 1 )
+      {
+      brainAgePerSlice <- model %>% predict( batchX, verbose = verbose )
+      } else {
+      prediction <- model %>% predict( batchX, verbose = verbose )  
+      brainAgePerSlice <- brainAgePerSlice + ( prediction - brainAgePerSlice ) / ( i + 1 )
+      }
+    }  
 
   predictedAge <- median( brainAgePerSlice )
 
