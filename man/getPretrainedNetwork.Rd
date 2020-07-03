@@ -12,7 +12,7 @@ getPretrainedNetwork(
     "brainSegmentation", "brainSegmentationPatchBased", "ctHumanLung", "dbpn4x",
     "deepFlash", "denoising", "dktInner", "functionalLungMri", "hippMapp3rInitial",
     "hippMapp3rRefine", "mriSuperResolution", "protonLungMri",     
-    "sixTissueBrainSegmentation", "wholeTumorSegmentationT2Flair",
+    "sixTissueOctantBrainSegmentation", "wholeTumorSegmentationT2Flair",
     "sysuMediaWmhFlairOnlyModel0", "sysuMediaWmhFlairOnlyModel1",
     "sysuMediaWmhFlairOnlyModel2", "sysuMediaWmhFlairT1Model0",
     "sysuMediaWmhFlairT1Model1", "sysuMediaWmhFlairT1Model2"),
