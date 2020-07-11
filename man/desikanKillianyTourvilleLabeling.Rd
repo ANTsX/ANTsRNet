@@ -37,6 +37,8 @@ Perform Atropos-style six tissue segmentation using deep learning
 The labeling is as follows:
 \itemize{
 \item{Label 0:}{background}
+
+Inner labels:
 \item{Label 4:}{left lateral ventricle}
 \item{Label 5:}{left inferior lateral ventricle}
 \item{Label 6:}{left cerebellem exterior}
@@ -75,6 +77,8 @@ The labeling is as follows:
 \item{Label 630:}{cerebellar vermal lobules I-V}
 \item{Label 631:}{cerebellar vermal lobules VI-VII}
 \item{Label 632:}{cerebellar vermal lobules VIII-X}
+
+Outer labels:
 \item{Label 1002:}{left caudal anterior cingulate}
 \item{Label 1003:}{left caudal middle frontal}
 \item{Label 1005:}{left cuneus}

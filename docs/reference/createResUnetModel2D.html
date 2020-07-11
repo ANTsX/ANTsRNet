@@ -244,8 +244,8 @@ implementation:</p><pre>    \url{https://github.com/veugene/fcn_maker/}
 <span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'>createResUnetModel2D</span>( <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span>( <span class='no'>domainImage</span> ), <span class='fl'>1</span> ),
   <span class='kw'>numberOfOutputs</span> <span class='kw'>=</span> <span class='no'>numberOfLabels</span> )
 <span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>domainImage</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2494917 133.3    4624715 247.0         NA   4624715  247.0
-#&gt; Vcells 6002624  45.8   32920776 251.2      65536 150426307 1147.7</div><div class='input'>
+#&gt; Ncells 2492596 133.2    4620718 246.8         NA   4620718  246.8
+#&gt; Vcells 6001132  45.8   32918572 251.2      16384 150386043 1147.4</div><div class='input'>
 <span class='no'>metric_multilabel_dice_coefficient</span> <span class='kw'>&lt;-</span>
   <span class='fu'><a href='https://rdrr.io/pkg/keras/man/metric_binary_accuracy.html'>custom_metric</a></span>( <span class='st'>"multilabel_dice_coefficient"</span>,
     <span class='no'>multilabel_dice_coefficient</span> )
@@ -272,17 +272,17 @@ implementation:</p><pre>    \url{https://github.com/veugene/fcn_maker/}
 <span class='co'>#                callback_reduce_lr_on_plateau( monitor = "val_loss", factor = 0.1 )</span>
 <span class='co'>#              ),</span>
 <span class='co'>#              validation_split = 0.2 )</span>
-<span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>X_train</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2494852 133.3    4624715  247         NA   4624715  247.0
-#&gt; Vcells 5609162  42.8   26336621  201      65536 150426307 1147.7</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>Y_train</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2493698 133.2    4624715 247.0         NA   4624715  247.0
-#&gt; Vcells 4427613  33.8   21069297 160.8      65536 150426307 1147.7</div><div class='input'><span class='co'># Save the model and/or save the model weights</span>
+<span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>X_train</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
+#&gt; Ncells 2492321 133.2    4620718 246.8         NA   4620718  246.8
+#&gt; Vcells 5607320  42.8   26334858 201.0      16384 150386043 1147.4</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>Y_train</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
+#&gt; Ncells 2491149 133.1    4620718 246.8         NA   4620718  246.8
+#&gt; Vcells 4425741  33.8   21067887 160.8      16384 150386043 1147.4</div><div class='input'><span class='co'># Save the model and/or save the model weights</span>
 
 <span class='co'># save_model_hdf5( model, filepath = 'resUnetModel.h5' )</span>
 <span class='co'># save_model_weights_hdf5( unetModel, filepath = 'resUnetModelWeights.h5' ) )</span>
 <span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>model</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2493648 133.2    4624715 247.0         NA   4624715  247.0
-#&gt; Vcells 4427624  33.8   16855438 128.6      65536 150426307 1147.7</div><div class='input'>
+#&gt; Ncells 2491099 133.1    4620718 246.8         NA   4620718  246.8
+#&gt; Vcells 4425752  33.8   16854310 128.6      16384 150386043 1147.4</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

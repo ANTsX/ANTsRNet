@@ -5,6 +5,8 @@
 #' The labeling is as follows:
 #' \itemize{
 #'  \item{Label 0:}{background}
+#'
+#'  Inner labels:
 #'  \item{Label 4:}{left lateral ventricle}
 #'  \item{Label 5:}{left inferior lateral ventricle}
 #'  \item{Label 6:}{left cerebellem exterior}
@@ -43,6 +45,8 @@
 #'  \item{Label 630:}{cerebellar vermal lobules I-V}
 #'  \item{Label 631:}{cerebellar vermal lobules VI-VII}
 #'  \item{Label 632:}{cerebellar vermal lobules VIII-X}
+#'
+#'  Outer labels:
 #'  \item{Label 1002:}{left caudal anterior cingulate}
 #'  \item{Label 1003:}{left caudal middle frontal}
 #'  \item{Label 1005:}{left cuneus}
@@ -172,28 +176,27 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
 
   ################################
   #
-  # Build model and load weights
+  # Build outer model and load weights
   #
   ################################
 
-  templateSize <- c( 160L, 192L, 160L )
-  labels <- c( 0, 4, 6, 7, 10:18, 24, 26, 28, 30, 43, 44:46, 49:54, 58, 60, 91:92, 630:632 )
-  # labels <- c( 0, 1002:1003, 1005:1031, 1034:1035, 2002:2003, 2005:2031, 2034:2035 )
+  templateSize <- c( 96L, 112L, 96L )
+  labels <- c( 0, 1002:1003, 1005:1031, 1034:1035, 2002:2003, 2005:2031, 2034:2035 )
 
   unetModel <- createUnetModel3D( c( templateSize, 1 ),
     numberOfOutputs = length( labels ), mode = 'classification',
-    numberOfLayers = 4, numberOfFiltersAtBaseLayer = 8, dropoutRate = 0.0,
+    numberOfLayers = 4, numberOfFiltersAtBaseLayer = 16, dropoutRate = 0.0,
     convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
     weightDecay = 1e-5, addAttentionGating = TRUE )
 
-  weightsFileName <- paste0( outputDirectory, "dktLabelingInner.h5" )
+  weightsFileName <- paste0( outputDirectory, "dktLabelingOuter.h5" )
   if( ! file.exists( weightsFileName ) )
     {
     if( verbose == TRUE )
       {
       cat( "DesikianKillianyTourville:  downloading model weights.\n" )
       }
-    weightsFileName <- getPretrainedNetwork( "dktInner", weightsFileName )
+    weightsFileName <- getPretrainedNetwork( "dktOuter", weightsFileName )
     }
   load_model_weights_hdf5( unetModel, filepath = weightsFileName )
 
@@ -210,7 +213,83 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
 
   if( verbose == TRUE )
     {
-    cat( "Prediction.\n" )
+    cat( "Outer model prediction.\n" )
+    }
+
+  downsampledImage <- resampleImage( t1Preprocessed, templateSize, useVoxels = TRUE, interpType = 0 )
+  imageArray <- as.array( downsampledImage )
+
+  batchX <- array( data = imageArray, dim = c( 1, templateSize, 1 ) )
+  batchX <- ( batchX - mean( batchX ) ) / sd( batchX )
+
+  predictedData <- unetModel %>% predict( batchX, verbose = verbose )
+  probabilityImagesList <- decodeUnet( predictedData, downsampledImage )
+
+  probabilityImages <- list()
+  for( i in seq.int( length( probabilityImagesList[[1]] ) ) )
+    {
+    resampledImage <- resampleImage( probabilityImagesList[[1]][[i]], dim( t1Preprocessed ), useVoxels = TRUE, interpType = 1 )
+    if( doPreprocessing == TRUE )
+      {
+      probabilityImages[[i]] <- antsApplyTransforms( fixed = t1, moving = resampledImage,
+          transformlist = t1Preprocessing$templateTransforms$invtransforms,
+          whichtoinvert = c( TRUE ), interpolator = "linear", verbose = verbose )
+      } else {
+      probabilityImages[[i]] <- resampledImage
+      }
+    }
+
+  imageMatrix <- imageListToMatrix( probabilityImages, t1 * 0 + 1 )
+  segmentationMatrix <- matrix( apply( imageMatrix, 2, which.max ), nrow = 1 )
+  segmentationImage <- matrixToImages( segmentationMatrix, t1 * 0 + 1 )[[1]]
+
+  dktLabelImage <- antsImageClone( segmentationImage )
+
+  for( i in seq.int( length( labels ) ) )
+    {
+    dktLabelImage[( segmentationImage == i )] <- labels[i]
+    }
+
+  ################################
+  #
+  # Build inner model and load weights
+  #
+  ################################
+
+  templateSize <- c( 160L, 192L, 160L )
+  labels <- c( 0, 4, 6, 7, 10:18, 24, 26, 28, 30, 43, 44:46, 49:54, 58, 60, 91:92, 630:632 )
+
+  unetModel <- createUnetModel3D( c( templateSize, 1 ),
+    numberOfOutputs = length( labels ), mode = 'classification',
+    numberOfLayers = 4, numberOfFiltersAtBaseLayer = 8, dropoutRate = 0.0,
+    convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
+    weightDecay = 1e-5, addAttentionGating = TRUE )
+
+  weightsFileName <- paste0( outputDirectory, "dktLabelingInner.h5" )
+  if( ! file.exists( weightsFileName ) )
+    {
+    if( verbose == TRUE )
+      {
+      cat( "DesikianKillianyTourville:  downloading inner model weights.\n" )
+      }
+    weightsFileName <- getPretrainedNetwork( "dktInner", weightsFileName )
+    }
+  load_model_weights_hdf5( unetModel, filepath = weightsFileName )
+
+  unetModel %>% compile(
+    optimizer = optimizer_adam(),
+    loss = categorical_focal_loss( alpha = 0.25, gamma = 2.0 ),
+    metrics = 'accuracy' )
+
+  ################################
+  #
+  # Do inner model prediction and normalize to native space
+  #
+  ################################
+
+  if( verbose == TRUE )
+    {
+    cat( "Inner model prediction.\n" )
     }
 
   croppedImage <- cropIndices( t1Preprocessed, c( 13, 15, 1 ), c( 172, 206, 160 ) )
@@ -245,15 +324,21 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
   segmentationMatrix <- matrix( apply( imageMatrix, 2, which.max ), nrow = 1 )
   segmentationImage <- matrixToImages( segmentationMatrix, t1 * 0 + 1 )[[1]]
 
-  relabeledImage <- antsImageClone( segmentationImage )
+  ################################
+  #
+  # Incorporate the inner model results into the final label image.
+  # Note that we purposely prioritize the inner label results.
+  #
+  ################################
 
   for( i in seq.int( length( labels ) ) )
     {
-    relabeledImage[( segmentationImage == i )] <- labels[i]
+    if( labels[i] > 0 )
+      {
+      dktLabelImage[( segmentationImage == i )] <- labels[i]
+      }
     }
 
-  results <- list( segmentationImage = relabeledImage, probabilityImages = probabilityImages )
-
-  return( results )
+  return( dktLabelImage )
 }
 
