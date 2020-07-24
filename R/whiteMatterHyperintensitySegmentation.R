@@ -44,20 +44,6 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
   outputDirectory = NULL, verbose = FALSE )
 {
 
-  padOrCropImageToSize <- function( image, size )
-    {
-    imageSize <- dim( image )
-    delta <- imageSize - size
-
-    if( any( delta < 0 ) )
-      {
-      padSize <- abs( min( delta ) )
-      image <- iMath( image, "PadImage", padSize )
-      }
-    croppedImage <- cropImageCenter( image, size )
-    return( croppedImage )
-    }
-
   if( flair@dimension != 3 )
     {
     stop( "Input image dimension must be 3." )

@@ -28,25 +28,10 @@ cropImageCenter <- function( image, cropSize )
     stop( "A cropSize dimension is larger than imageSize." )
     }
 
-  labelImage <- antsImageClone( image ) * 0
   startIndex <- floor( 0.5 * ( imageSize - cropSize ) ) + 1
   endIndex <- startIndex + cropSize - 1
 
-  if( image@dimension == 2 )
-    {
-    labelImage[startIndex[1]:endIndex[1],
-               startIndex[2]:endIndex[2]] <- 1
-    } else if( image@dimension == 3 ) {
-    labelImage[startIndex[1]:endIndex[1],
-               startIndex[2]:endIndex[2],
-               startIndex[3]:endIndex[3]] <- 1
-    } else if( image@dimension == 4 ) {
-    labelImage[startIndex[1]:endIndex[1],
-               startIndex[2]:endIndex[2],
-               startIndex[3]:endIndex[3],
-               startIndex[4]:endIndex[4]] <- 1
-    }
-  croppedImage <- cropImage( image, labelImage, label = 1 )
+  croppedImage <- cropIndices( image, startIndex, endIndex )
 
   return( croppedImage )
 }
@@ -103,7 +88,7 @@ padImageByFactor <- function( image, factor )
 #' Pad or crop image to a specified size
 #'
 #' @param image Input ANTs image
-#' @param size end size of the output image.
+#' @param size size of the output image.
 #'
 #' @return a padded/cropped image
 #' @author Tustison NJ
