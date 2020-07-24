@@ -96,6 +96,8 @@ padImageByFactor <- function( image, factor )
     }
 
   paddedImage <- padOrCropImageToSize( image, paddedSize )
+
+  return( paddedImage )
   }
 
 #' Pad or crop image to a specified size
