@@ -1,10 +1,11 @@
 [![Build Status](https://travis-ci.org/ANTsX/ANTsRNet.png?branch=master)](https://travis-ci.org/ANTsX/ANTsRNet)
 
  <!-- badges: start -->
-[![Build Status](https://travis-ci.com/muschellij2/ANTsRNet.png?branch=master)](https://travis-ci.com/muschellij2/ANTsRNet) 
+[![Build Status](https://travis-ci.com/muschellij2/ANTsRNet.png?branch=master)](https://travis-ci.com/muschellij2/ANTsRNet)
 [![Codecov test coverage](https://codecov.io/gh/muschellij2/ANTsRNet/branch/master/graph/badge.svg)](https://codecov.io/gh/muschellij2/ANTsRNet?branch=master)
-  <!-- badges: end -->
-  
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](code_of_conduct.md)
+<!-- badges: end -->
+
 # ANTsRNet
 
 A collection of deep learning architectures and applications ported to the R language and tools for basic medical image processing. Based on `keras` and `tensorflow` with cross-compatibility with our python analog [ANTsPyNet](https://github.com/ntustison/ANTsPyNet/).
@@ -116,7 +117,7 @@ Documentation page [https://antsx.github.io/ANTsRNet/](https://antsx.github.io/A
 
 ## Publications
 
-* Nicholas J. Tustison, Brian B. Avants, and James C. Gee. Learning image-based spatial transformations via convolutional neural networks: a review,  _Magnetic Resonance Imaging_.  [(pubmed)](https://www.ncbi.nlm.nih.gov/pubmed/31200026) 
+* Nicholas J. Tustison, Brian B. Avants, and James C. Gee. Learning image-based spatial transformations via convolutional neural networks: a review,  _Magnetic Resonance Imaging_.  [(pubmed)](https://www.ncbi.nlm.nih.gov/pubmed/31200026)
 
 * Nicholas J. Tustison, Brian B. Avants, Zixuan Lin, Xue Feng, Nicholas Cullen, Jaime F. Mata, Lucia Flors, James C. Gee, Talissa A. Altes, John P. Mugler III, and Kun Qing.  Convolutional Neural Networks with Template-Based Data Augmentation for Functional Lung Image Quantification, _Academic Radiology_, 26(3):412-423, Mar 2019. [(pubmed)](https://www.ncbi.nlm.nih.gov/pubmed/30195415)
 
