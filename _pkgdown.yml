@@ -161,6 +161,8 @@ reference:
   - '`preprocessBrainImage`'
   - '`extractImagePatches`'
   - '`cropImageCenter`'
+  - '`padOrCropImageToSize`'
+  - '`padImageByFactor`'
   - '`reconstructImageFromPatches`'
   - '`getPretrainedNetwork`'
   - '`regressionMatchImage`'
