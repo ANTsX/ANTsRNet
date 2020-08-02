@@ -9,7 +9,7 @@ padOrCropImageToSize(image, size)
 \arguments{
 \item{image}{Input ANTs image}
 
-\item{size}{end size of the output image.}
+\item{size}{size of the output image.}
 }
 \value{
 a padded/cropped image
