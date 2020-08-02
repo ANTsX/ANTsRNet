@@ -22,8 +22,8 @@ Pad image of size \code{(x, y, z)} to \code{(x', y', z')} where
 \examples{
 
 library( ANTsR )
-
 image <- antsImageRead( getANTsRData( "r16" ) )
+image <- cropImage( image )
 paddedImage <- padImageByFactor( image, 4 )
 
 }

@@ -50,8 +50,8 @@ cropImageCenter <- function( image, cropSize )
 #' @examples
 #'
 #' library( ANTsR )
-#'
 #' image <- antsImageRead( getANTsRData( "r16" ) )
+#' image <- cropImage( image )
 #' paddedImage <- padImageByFactor( image, 4 )
 #'
 #' @export
