@@ -176,34 +176,54 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
 
   ################################
   #
+  # Download spatial priors for outer model
+  #
+  ################################
+
+  priorsFileName <- paste0( outputDirectory, "/priorDktLabels.nii.gz" )
+  priorsUrl <- "https://ndownloader.figshare.com/files/24139802"
+
+  if( ! file.exists( priorsFileName ) )
+    {
+    if( verbose == TRUE )
+      {
+      cat( "Downloading label spatial priors.\n" )
+      }
+    download.file( priorsUrl, priorsFileName, quiet = !verbose )
+    }
+  priorsImageList <- splitNDImageToList( antsImageRead( priorsFileName ) )
+
+  ################################
+  #
   # Build outer model and load weights
   #
   ################################
 
   templateSize <- c( 96L, 112L, 96L )
   labels <- c( 0, 1002:1003, 1005:1031, 1034:1035, 2002:2003, 2005:2031, 2034:2035 )
+  channelSize <- 1 + length( priorsImageList )
 
-  unetModel <- createUnetModel3D( c( templateSize, 1 ),
+  unetModel <- createUnetModel3D( c( templateSize, channelSize ),
     numberOfOutputs = length( labels ), mode = 'classification',
     numberOfLayers = 4, numberOfFiltersAtBaseLayer = 16, dropoutRate = 0.0,
     convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
     weightDecay = 1e-5, addAttentionGating = TRUE )
 
-  weightsFileName <- paste0( outputDirectory, "dktLabelingOuter.h5" )
+  weightsFileName <- paste0( outputDirectory, "/dktLabelingOuterWithSpatialPriors.h5" )
   if( ! file.exists( weightsFileName ) )
     {
     if( verbose == TRUE )
       {
-      cat( "DesikianKillianyTourville:  downloading model weights.\n" )
+      cat( "DesikanKillianyTourville:  downloading model weights.\n" )
       }
-    weightsFileName <- getPretrainedNetwork( "dktOuter", weightsFileName )
+    weightsFileName <- getPretrainedNetwork( "dktOuterWithSpatialPriors", weightsFileName )
     }
   load_model_weights_hdf5( unetModel, filepath = weightsFileName )
 
   unetModel %>% compile(
     optimizer = optimizer_adam(),
-    loss = categorical_focal_loss( alpha = 0.25, gamma = 2.0 ),
-    metrics = 'accuracy' )
+    loss = tensorflow::tf$keras$losses$CategoricalCrossentropy(),
+    metrics = c( 'accuracy', metric_categorical_crossentropy ) )
 
   ################################
   #
@@ -218,9 +238,16 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
 
   downsampledImage <- resampleImage( t1Preprocessed, templateSize, useVoxels = TRUE, interpType = 0 )
   imageArray <- as.array( downsampledImage )
+  imageArray <- ( imageArray - mean( imageArray ) ) / sd( imageArray )
 
-  batchX <- array( data = imageArray, dim = c( 1, templateSize, 1 ) )
-  batchX <- ( batchX - mean( batchX ) ) / sd( batchX )
+  batchX <- array( data = 0, dim = c( 1, templateSize, channelSize ) )
+  batchX[1,,,,1] <- imageArray
+
+  for( i in seq.int( length( priorsImageList ) ) )
+    {
+    priorImageArray <- as.array( resampleImage( priorsImageList[[i]], templateSize, useVoxels = TRUE, interpType = 0 ) )
+    batchX[1,,,,i+1] <- priorImageArray
+    }
 
   predictedData <- unetModel %>% predict( batchX, verbose = verbose )
   probabilityImagesList <- decodeUnet( predictedData, downsampledImage )
@@ -228,7 +255,7 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
   probabilityImages <- list()
   for( i in seq.int( length( probabilityImagesList[[1]] ) ) )
     {
-    resampledImage <- resampleImage( probabilityImagesList[[1]][[i]], dim( t1Preprocessed ), useVoxels = TRUE, interpType = 1 )
+    resampledImage <- resampleImage( probabilityImagesList[[1]][[i]], dim( t1Preprocessed ), useVoxels = TRUE, interpType = 0 )
     if( doPreprocessing == TRUE )
       {
       probabilityImages[[i]] <- antsApplyTransforms( fixed = t1, moving = resampledImage,
@@ -270,7 +297,7 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
     {
     if( verbose == TRUE )
       {
-      cat( "DesikianKillianyTourville:  downloading inner model weights.\n" )
+      cat( "DesikanKillianyTourville:  downloading inner model weights.\n" )
       }
     weightsFileName <- getPretrainedNetwork( "dktInner", weightsFileName )
     }
