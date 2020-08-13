@@ -12,6 +12,7 @@
 #' \itemize{
 #'   \item{"t1": }{T1-weighted MRI---ANTs-trained.}
 #'   \item{"t1nobrainer": }{T1-weighted MRI---FreeSurfer-trained: h/t Satra Ghosh and Jakub Kaczmarzyk.}
+#'   \item{"t1combined": }{Brian's combination of "t1" and "t1nobrainer".}
 #'   \item{"flair": }{FLAIR MRI.}
 #'   \item{"t2": }{T2-w MRI.}
 #'   \item{"bold": }{3-D BOLD MRI.}
@@ -37,7 +38,7 @@
 #' }
 #' @export
 brainExtraction <- function( image,
-  modality = c( "t1", "t1nobrainer", "t2", "flair", "bold", "fa", "t1t2infant", "t1infant", "t2infant" ),
+  modality = c( "t1", "t1nobrainer", "t1combined", "t2", "flair", "bold", "fa", "t1t2infant", "t1infant", "t2infant" ),
   outputDirectory = NULL, verbose = FALSE )
   {
 
@@ -63,6 +64,24 @@ brainExtraction <- function( image,
   if( is.null( outputDirectory ) )
     {
     outputDirectory <- system.file( "extdata", package = "ANTsRNet" )
+    }
+
+  if( modality == "t1combined" )
+    {
+    brainExtraction_t1 <- brainExtraction( image, modality = "t1",
+      outputDirectory = outputDirectory, verbose = verbose )
+    brainMask <- thresholdImage( brainExtraction_t1, 0.5, Inf ) %>% iMath( "GetLargestComponent" )
+
+    # Need to change with voxel resolution
+    magicNumber <- 12
+
+    brainExtraction_t1nobrainer <- brainExtraction( image * iMath( brainMask, "MD", magicNumber ),
+      modality = "t1nobrainer", outputDirectory = outputDirectory, verbose = verbose )
+    brainExtraction_combined <- iMath( brainExtraction_t1nobrainer * brainMask, "GetLargestComponent" ) %>% iMath( "FillHoles" )
+
+    brainExtraction_combined <- brainExtraction_combined + iMath( brainMask, "ME", magicNumber ) + brainMask
+
+    return( brainExtraction_combined )
     }
 
   if( modality != "t1nobrainer" )

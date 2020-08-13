@@ -6,8 +6,8 @@
 \usage{
 brainExtraction(
   image,
-  modality = c("t1", "t1nobrainer", "t2", "flair", "bold", "fa", "t1t2infant",
-    "t1infant", "t2infant"),
+  modality = c("t1", "t1nobrainer", "t1combined", "t2", "flair", "bold", "fa",
+    "t1t2infant", "t1infant", "t2infant"),
   outputDirectory = NULL,
   verbose = FALSE
 )
@@ -19,6 +19,7 @@ brainExtraction(
 \itemize{
 \item{"t1": }{T1-weighted MRI---ANTs-trained.}
 \item{"t1nobrainer": }{T1-weighted MRI---FreeSurfer-trained: h/t Satra Ghosh and Jakub Kaczmarzyk.}
+\item{"t1combined": }{Brian's combination of "t1" and "t1nobrainer".}
 \item{"flair": }{FLAIR MRI.}
 \item{"t2": }{T2-w MRI.}
 \item{"bold": }{3-D BOLD MRI.}
