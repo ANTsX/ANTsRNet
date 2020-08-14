@@ -19,7 +19,8 @@ brainExtraction(
 \itemize{
 \item{"t1": }{T1-weighted MRI---ANTs-trained.}
 \item{"t1nobrainer": }{T1-weighted MRI---FreeSurfer-trained: h/t Satra Ghosh and Jakub Kaczmarzyk.}
-\item{"t1combined": }{Brian's combination of "t1" and "t1nobrainer".}
+\item{"t1combined": }{Brian's combination of "t1" and "t1nobrainer".  One can also specify
+"t1combined\link{X}" where X is the morphological radius.  X = 12 by default.}
 \item{"flair": }{FLAIR MRI.}
 \item{"t2": }{T2-w MRI.}
 \item{"bold": }{3-D BOLD MRI.}

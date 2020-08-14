@@ -12,7 +12,8 @@
 #' \itemize{
 #'   \item{"t1": }{T1-weighted MRI---ANTs-trained.}
 #'   \item{"t1nobrainer": }{T1-weighted MRI---FreeSurfer-trained: h/t Satra Ghosh and Jakub Kaczmarzyk.}
-#'   \item{"t1combined": }{Brian's combination of "t1" and "t1nobrainer".}
+#'   \item{"t1combined": }{Brian's combination of "t1" and "t1nobrainer".  One can also specify
+#'                         "t1combined[X]" where X is the morphological radius.  X = 12 by default.}
 #'   \item{"flair": }{FLAIR MRI.}
 #'   \item{"t2": }{T2-w MRI.}
 #'   \item{"bold": }{3-D BOLD MRI.}
@@ -59,27 +60,30 @@ brainExtraction <- function( image,
     stop( "Image dimension must be 3." )
     }
 
-  modality <- match.arg( modality )
-
   if( is.null( outputDirectory ) )
     {
     outputDirectory <- system.file( "extdata", package = "ANTsRNet" )
     }
 
-  if( modality == "t1combined" )
+  if( substr( modality, 1, 10 ) == "t1combined" )
     {
+
     brainExtraction_t1 <- brainExtraction( image, modality = "t1",
       outputDirectory = outputDirectory, verbose = verbose )
     brainMask <- thresholdImage( brainExtraction_t1, 0.5, Inf ) %>% iMath( "GetLargestComponent" )
 
     # Need to change with voxel resolution
-    magicNumber <- 12
+    morphologicalRadius <- 12
+    if( grepl( '\\[', modality ) && grepl( '\\]', modality ) )
+      {
+      morphologicalRadius <- as.numeric( strsplit( strsplit( modality, "\\[" )[[1]][2], "\\]" )[[1]][1] )
+      }
 
-    brainExtraction_t1nobrainer <- brainExtraction( image * iMath( brainMask, "MD", magicNumber ),
+    brainExtraction_t1nobrainer <- brainExtraction( image * iMath( brainMask, "MD", morphologicalRadius ),
       modality = "t1nobrainer", outputDirectory = outputDirectory, verbose = verbose )
     brainExtraction_combined <- iMath( brainExtraction_t1nobrainer * brainMask, "GetLargestComponent" ) %>% iMath( "FillHoles" )
 
-    brainExtraction_combined <- brainExtraction_combined + iMath( brainMask, "ME", magicNumber ) + brainMask
+    brainExtraction_combined <- brainExtraction_combined + iMath( brainMask, "ME", morphologicalRadius ) + brainMask
 
     return( brainExtraction_combined )
     }
