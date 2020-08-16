@@ -1,6 +1,6 @@
-#' Perform TIDS-based quality assessment of an image.
+#' Perform TID-based quality assessment of an image.
 #'
-#' Use a ResNet architecture to estimate image quality in 2D or 3D using the TIDS
+#' Use a ResNet architecture to estimate image quality in 2D or 3D using the TID
 #' image database described in
 #'
 #'    \url{https://www.sciencedirect.com/science/article/pii/S0923596514001490}
@@ -30,21 +30,21 @@
 #' inst/extdata/ subfolder of the ANTsRNet package.
 #' @param verbose print progress.
 #' @return list of QC results predicting both both human rater's mean and standard
-#' deviation of the MOS ("mean opinion scores").  See the TIDS2013 paper.  Both
+#' deviation of the MOS ("mean opinion scores").  See the TID2013 paper.  Both
 #' aggregate and spatial scores are returned, the latter in the form of an image.
 #' @author Avants BB
 #' @examples
 #' \dontrun{
 #' image <- antsImageRead( getANTsRData( "r16" ) )
 #' mask <- getMask( image )
-#' tids <- tidsQualityAssessment( image, mask = mask, patchSize = 101L,
-#'           strideLength = c( 5, 5 ), paddingSize = c( -2, 4 ) )
-#' plot( image, tids, alpha = 0.5)
-#' cat( "mean MOS = ", tids$MOS, "\n" )
-#' cat( "sd MOS = ", tids$MOS, "\n" )
+#' tid <- tidQualityAssessment( image, mask = mask, patchSize = 101L,
+#'           strideLength = 7L, paddingSize = 0L )
+#' plot( image, tid$MOS, alpha = 0.5)
+#' cat( "mean MOS = ", tid$MOS.mean, "\n" )
+#' cat( "sd MOS = ", tid$MOS.standardDeviationMean, "\n" )
 #' }
 #' @export
-tidsQualityAssessment <- function( image, mask, patchSize = 101L,
+tidQualityAssessment <- function( image, mask, patchSize = 101L,
   strideLength = 7L, paddingSize = 0L, dimensionsToPredict = 1,
   outputDirectory = NULL, verbose = FALSE )
 {
@@ -62,11 +62,11 @@ tidsQualityAssessment <- function( image, mask, patchSize = 101L,
     {
     if( verbose == TRUE )
       {
-      cat( "TIDS QA:  downloading model and weights.\n" )
+      cat( "TID QA:  downloading model and weights.\n" )
       }
     modelAndWeightsFileName <- getPretrainedNetwork( "tidsQualityAssessment", modelAndWeightsFileName )
     }
-  tidsModel <- load_model_hdf5( filepath = modelAndWeightsFileName )
+  tidModel <- load_model_hdf5( filepath = modelAndWeightsFileName )
 
   paddingSizeVector <- paddingSize
   if( length( paddingSize ) == 1 )
@@ -95,7 +95,7 @@ tidsQualityAssessment <- function( image, mask, patchSize = 101L,
         {
         batchX[1,,,k] <- as.array( evaluationImage )
         }
-      predictedData <- predict( tidsModel, batchX, verbose = verbose )
+      predictedData <- predict( tidModel, batchX, verbose = verbose )
 
       return( list( MOS = NA,
                     MOS.standardDeviation = NA,
@@ -128,7 +128,7 @@ tidsQualityAssessment <- function( image, mask, patchSize = 101L,
         batchX[paddedImageSize[dimensionsToPredict[d]],,,3] <-
           extractSlice( evaluationImage, paddedImageSize[dimensionsToPredict[d]], dimensionsToPredict[d] )
 
-        predictedData <- predict( tidsModel, batchX, verbose = verbose )
+        predictedData <- predict( tidModel, batchX, verbose = verbose )
 
         mosMean <- mosMean + predictedData[1, 1]
         mosStandardDeviation <- mosStandardDeviation + predictedData[1, 2]
@@ -221,7 +221,7 @@ tidsQualityAssessment <- function( image, mask, patchSize = 101L,
         }
 
       goodBatchX <- array( batchX[isGoodPatch,,,], dim = c( sum( isGoodPatch ), patchSizeVector, numberOfChannels ) )
-      predictedData <- predict( tidsModel, goodBatchX, verbose = verbose )
+      predictedData <- predict( tidModel, goodBatchX, verbose = verbose )
 
       count <- 1
       for( i in seq.int( length( patches ) ) )
@@ -237,9 +237,11 @@ tidsQualityAssessment <- function( image, mask, patchSize = 101L,
           }
         }
       MOS <- MOS + padOrCropImageToSize(
-        reconstructImageFromPatches( patchesMOS, evaluationImage, strideLength = strideLengthVector ), dim( image ) )
+        reconstructImageFromPatches( patchesMOS, evaluationImage,
+                                     strideLength = strideLengthVector ), dim( image ) )
       MOS.standardDeviation <- MOS.standardDeviation + padOrCropImageToSize(
-        reconstructImageFromPatches( patchesMOS.standardDeviation, evaluationImage, strideLength = strideLengthVector ), dim( image ) )
+        reconstructImageFromPatches( patchesMOS.standardDeviation, evaluationImage,
+                                     strideLength = strideLengthVector ), dim( image ) )
       }
 
     MOS <- MOS / length( dimensionsToPredict )
