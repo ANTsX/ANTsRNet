@@ -1,4 +1,4 @@
-#' Perform TID-based quality assessment of an image.
+#' Perform TID-based assessment of an image.
 #'
 #' Use a ResNet architecture to estimate image quality in 2D or 3D using the TID
 #' image database described in
@@ -44,7 +44,7 @@
 #' cat( "sd MOS = ", tid$MOS.standardDeviationMean, "\n" )
 #' }
 #' @export
-tidQualityAssessment <- function( image, mask, patchSize = 101L,
+tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
   strideLength = 7L, paddingSize = 0L, dimensionsToPredict = 1,
   outputDirectory = NULL, verbose = FALSE )
 {
@@ -76,7 +76,6 @@ tidQualityAssessment <- function( image, mask, patchSize = 101L,
 
   paddedImageSize <- dim( image ) + paddingSizeVector
   paddedImage <- padOrCropImageToSize( image, paddedImageSize )
-  evaluationImage <- paddedImage %>% iMath( "Normalize" ) * 255
 
   numberOfChannels <- 3
 
@@ -88,6 +87,8 @@ tidQualityAssessment <- function( image, mask, patchSize = 101L,
 
   if( patchSize == 'global' )
     {
+    evaluationImage <- paddedImage %>% iMath( "Normalize" ) * 255
+
     if( image@dimension == 2 )
       {
       batchX <- array( dim = c( 1, dim( evaluationImage ), numberOfChannels ) )
@@ -110,23 +111,23 @@ tidQualityAssessment <- function( image, mask, patchSize = 101L,
       for( d in seq.int( length( dimensionsToPredict ) ) )
         {
         batchX <- array( data = 0,
-          c( paddedImageSize[dimensionsToPredict[d]], x[!x %in% dimensionsToPredict[d]], numberOfChannels ) )
+          c( paddedImageSize[dimensionsToPredict[d]], paddedImageSize[!x %in% dimensionsToPredict[d]], numberOfChannels ) )
 
-        batchX[1,,,1] <- extractSlice( evaluationImage, 1, dimensionsToPredict[d] )
-        batchX[1,,,2] <- extractSlice( evaluationImage, 1, dimensionsToPredict[d] )
-        batchX[1,,,3] <- extractSlice( evaluationImage, 2, dimensionsToPredict[d] )
+        batchX[1,,,1] <- as.array( extractSlice( evaluationImage, 1, dimensionsToPredict[d] ) )
+        batchX[1,,,2] <- as.array( extractSlice( evaluationImage, 1, dimensionsToPredict[d] ) )
+        batchX[1,,,3] <- as.array( extractSlice( evaluationImage, 2, dimensionsToPredict[d] ) )
         for( i in seq.int( from = 2, to = paddedImageSize[dimensionsToPredict[d]] - 1 ) )
           {
-          batchX[i,,,1] <- extractSlice( evaluationImage, i - 1, dimensionsToPredict[d] )
-          batchX[i,,,2] <- extractSlice( evaluationImage, i    , dimensionsToPredict[d] )
-          batchX[i,,,3] <- extractSlice( evaluationImage, i + 1, dimensionsToPredict[d] )
+          batchX[i,,,1] <- as.array( extractSlice( evaluationImage, i - 1, dimensionsToPredict[d] ) )
+          batchX[i,,,2] <- as.array( extractSlice( evaluationImage, i    , dimensionsToPredict[d] ) )
+          batchX[i,,,3] <- as.array( extractSlice( evaluationImage, i + 1, dimensionsToPredict[d] ) )
           }
         batchX[paddedImageSize[dimensionsToPredict[d]],,,1] <-
-          extractSlice( evaluationImage, paddedImageSize[dimensionsToPredict[d]] - 1, dimensionsToPredict[d] )
+          as.array( extractSlice( evaluationImage, paddedImageSize[dimensionsToPredict[d]] - 1, dimensionsToPredict[d] ) )
         batchX[paddedImageSize[dimensionsToPredict[d]],,,2] <-
-          extractSlice( evaluationImage, paddedImageSize[dimensionsToPredict[d]], dimensionsToPredict[d] )
+          as.array( extractSlice( evaluationImage, paddedImageSize[dimensionsToPredict[d]], dimensionsToPredict[d] ) )
         batchX[paddedImageSize[dimensionsToPredict[d]],,,3] <-
-          extractSlice( evaluationImage, paddedImageSize[dimensionsToPredict[d]], dimensionsToPredict[d] )
+          as.array( extractSlice( evaluationImage, paddedImageSize[dimensionsToPredict[d]], dimensionsToPredict[d] ) )
 
         predictedData <- predict( tidModel, batchX, verbose = verbose )
 
@@ -147,6 +148,8 @@ tidQualityAssessment <- function( image, mask, patchSize = 101L,
     #
     ###############
 
+    evaluationImage <- paddedImage
+
     if( ! is.prime( patchSize ) )
       {
       stop( "Should pass a prime number for patch size." )
@@ -154,7 +157,10 @@ tidQualityAssessment <- function( image, mask, patchSize = 101L,
     strideLengthVector <- strideLength
     if( length( strideLength ) == 1 )
       {
-      strideLengthVector <- rep( strideLength, image@dimension )
+      if( image@dimension == 2 )
+        {
+        strideLengthVector <- c( strideLength, strideLength )
+        }
       }
 
     patchSizeVector <- c( patchSize, patchSize )
@@ -180,15 +186,29 @@ tidQualityAssessment <- function( image, mask, patchSize = 101L,
         if( dimensionsToPredict[d] == 1 )
           {
           patchSizeVector <- c( patchSize, patchSize, numberOfChannels )
+          if( length( strideLength ) == 1 )
+            {
+            strideLengthVector <- c( strideLength, strideLength, 1 )
+            }
           } else if( dimensionsToPredict[d] == 2 ) {
           patchSizeVector <- c( patchSize, numberOfChannels, patchSize )
+          if( length( strideLength ) == 1 )
+            {
+            strideLengthVector <- c( strideLength, 1, strideLength )
+            }
           } else if( dimensionsToPredict[d] == 3 ) {
           patchSizeVector <- c( numberOfChannels, patchSize, patchSize )
+          if( length( strideLength ) == 1 )
+            {
+            strideLengthVector <- c( 1, strideLength, strideLength )
+            }
+          } else {
+          stop( "dimensionsToPrediction should be 1, 2, and/or 3 for 3-D image." )
           }
         }
 
       patches <- extractImagePatches( evaluationImage, patchSizeVector,
-            strideLength = strideLength, returnAsArray = FALSE )
+            strideLength = strideLengthVector, returnAsArray = FALSE )
 
       patchesMOS <- list()
       patchesMOS.standardDeviation <- list()
@@ -220,7 +240,7 @@ tidQualityAssessment <- function( image, mask, patchSize = 101L,
           }
         }
 
-      goodBatchX <- array( batchX[isGoodPatch,,,], dim = c( sum( isGoodPatch ), patchSizeVector, numberOfChannels ) )
+      goodBatchX <- array( batchX[isGoodPatch,,,], dim = c( sum( isGoodPatch ), c( patchSize, patchSize ), numberOfChannels ) )
       predictedData <- predict( tidModel, goodBatchX, verbose = verbose )
 
       count <- 1
@@ -249,13 +269,13 @@ tidQualityAssessment <- function( image, mask, patchSize = 101L,
 
     if( missing( mask ) )
       {
-      return( list( MOS = reconMOS,
-                    MOS.standardDeviation = reconMOS.standardDeviation,
+      return( list( MOS = MOS,
+                    MOS.standardDeviation = MOS.standardDeviation,
                     MOS.mean = mean( MOS ),
                     MOS.standardDeviationMean = mean( MOS.standardDeviation ) ) )
       } else {
-      return( list( MOS = reconMOS * mask,
-                    MOS.standardDeviation = reconMOS.standardDeviation * mask,
+      return( list( MOS = MOS * mask,
+                    MOS.standardDeviation = MOS.standardDeviation * mask,
                     MOS.mean = mean( MOS[mask >= 0.5] ),
                     MOS.standardDeviationMean = mean( MOS.standardDeviation[mask >= 0.5] ) ) )
       }
