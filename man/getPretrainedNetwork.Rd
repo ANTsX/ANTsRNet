@@ -13,10 +13,10 @@ getPretrainedNetwork(
     "deepFlash", "denoising", "dktInner", "dktOuter", "dktOuterWithSpatialPriors",
     "functionalLungMri", "hippMapp3rInitial", "hippMapp3rRefine",     
     "mriSuperResolution", "protonLungMri", "sixTissueOctantBrainSegmentation",
-    "wholeTumorSegmentationT2Flair", "sysuMediaWmhFlairOnlyModel0",
-    "sysuMediaWmhFlairOnlyModel1", "sysuMediaWmhFlairOnlyModel2",
-    "sysuMediaWmhFlairT1Model0", "sysuMediaWmhFlairT1Model1",
-    "sysuMediaWmhFlairT1Model2"),
+    "sysuMediaWmhFlairOnlyModel0", "sysuMediaWmhFlairOnlyModel1",
+    "sysuMediaWmhFlairOnlyModel2", "sysuMediaWmhFlairT1Model0",
+    "sysuMediaWmhFlairT1Model1", "sysuMediaWmhFlairT1Model2", "tidsQualityAssessment",
+    "wholeTumorSegmentationT2Flair"),
   targetFileName,
   overwrite = FALSE
 )

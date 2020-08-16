@@ -19,14 +19,14 @@
 #' the flair, if specified).
 #' @param doPreprocessing perform n4 bias correction?
 #' @param useEnsemble boolean to check whether to use all 3 sets of weights.
-#' @param outputDirectory destination directory for storing the downloaded
-#' template and model weights.  Since these can be resused, if
-#' \code{is.null(outputDirectory)}, these data will be downloaded to the
-#' inst/extdata/ subfolder of the ANTsRNet package.
 #' @param useAxialSlicesOnly if \code{TRUE}, use original implementation which
 #' was trained on axial slices.  If \code{FALSE}, use ANTsXNet variant
 #' implementation which applies the slice-by-slice models to all 3 dimensions
 #' and averages the results.
+#' @param outputDirectory destination directory for storing the downloaded
+#' template and model weights.  Since these can be resused, if
+#' \code{is.null(outputDirectory)}, these data will be downloaded to the
+#' inst/extdata/ subfolder of the ANTsRNet package.
 #' @param verbose print progress.
 #' @return WMH segmentation probability image
 #' @author Tustison NJ
