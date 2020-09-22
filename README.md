@@ -69,10 +69,13 @@ Documentation page [https://antsx.github.io/ANTsRNet/](https://antsx.github.io/A
 
 * MRI super-resolution
 * Multi-modal brain extraction
-   * T1 (ANTs and FreeSurfer)
-   * T2
-   * FA
-   * BOLD
+    * T1 (ANTs and FreeSurfer)
+    * T2
+    * FA
+    * BOLD
+* Lung extraction
+    * [Proton](https://www.ncbi.nlm.nih.gov/pubmed/30195415)
+    * CT
 * Six-tissue Atropos brain segmentation
 * [Brain age](https://academic.oup.com/brain/article-abstract/143/7/2312/5863667?redirectedFrom=fulltext)
 * [Hippmapp3r hippocampal segmentation](https://pubmed.ncbi.nlm.nih.gov/31609046/)
