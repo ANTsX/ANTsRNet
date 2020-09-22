@@ -77,7 +77,7 @@ Documentation page [https://antsx.github.io/ANTsRNet/](https://antsx.github.io/A
 * [Brain age](https://academic.oup.com/brain/article-abstract/143/7/2312/5863667?redirectedFrom=fulltext)
 * [Hippmapp3r hippocampal segmentation](https://pubmed.ncbi.nlm.nih.gov/31609046/)
 * [White matter hyperintensity segmentation](https://pubmed.ncbi.nlm.nih.gov/30125711/)
-* [Neural style transfer](https://arxiv.org/abs/1508.06576)
+* (WIP) [Neural style transfer](https://arxiv.org/abs/1508.06576)
 * Deep Flash
 * Desikan-Killiany-Tourville cortical labeling
 
