@@ -69,10 +69,13 @@ Documentation page [https://antsx.github.io/ANTsRNet/](https://antsx.github.io/A
 
 * MRI super-resolution
 * Multi-modal brain extraction
-    * T1 (ANTs and FreeSurfer)
+    * T1 
+    * T1 ["no brainer"](https://github.com/neuronets/nobrainer)
+    * FLAIR
     * T2
     * FA
     * BOLD
+    * [T1/T2 infant](https://www.med.unc.edu/psych/research/psychiatry-department-research-programs/early-brain-development-research/)
 * Lung extraction
     * [Proton](https://www.ncbi.nlm.nih.gov/pubmed/30195415)
     * CT
@@ -80,7 +83,7 @@ Documentation page [https://antsx.github.io/ANTsRNet/](https://antsx.github.io/A
 * [Brain age](https://academic.oup.com/brain/article-abstract/143/7/2312/5863667?redirectedFrom=fulltext)
 * [Hippmapp3r hippocampal segmentation](https://pubmed.ncbi.nlm.nih.gov/31609046/)
 * [White matter hyperintensity segmentation](https://pubmed.ncbi.nlm.nih.gov/30125711/)
-* (WIP) [Neural style transfer](https://arxiv.org/abs/1508.06576)
+* [Neural style transfer](https://arxiv.org/abs/1508.06576)
 * Deep Flash
 * Desikan-Killiany-Tourville cortical labeling
 
