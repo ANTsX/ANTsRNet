@@ -25,7 +25,7 @@
 #' which dimension(s) should be used for prediction.  If more than one dimension
 #' is specified, the results are averaged.
 #' @param outputDirectory destination directory for storing the downloaded
-#' template and model weights.  Since these can be resused, if
+#' template and model weights.  Since these can be reused, if
 #' \code{is.null(outputDirectory)}, these data will be downloaded to the
 #' inst/extdata/ subfolder of the ANTsRNet package.
 #' @param whichModel model type e.g. string tidsQualityAssessment, koniqMBCS
@@ -38,7 +38,7 @@
 #' \dontrun{
 #' image <- antsImageRead( getANTsRData( "r16" ) )
 #' mask <- getMask( image )
-#' tid <- tidQualityAssessment( image, mask = mask, patchSize = 101L,
+#' tid <- tidNeuralImageAssessment( image, mask = mask, patchSize = 101L,
 #'           strideLength = 7L, paddingSize = 0L )
 #' plot( image, tid$MOS, alpha = 0.5)
 #' cat( "mean MOS = ", tid$MOS.mean, "\n" )
@@ -46,7 +46,7 @@
 #' }
 #' @export
 tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
-  strideLength = 7L, paddingSize = 0L, dimensionsToPredict = 1,
+  strideLength, paddingSize = 0L, dimensionsToPredict = 1,
   outputDirectory = NULL, whichModel="tidsQualityAssessment", verbose = FALSE )
 {
   is.prime <- function( n )
@@ -85,6 +85,10 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
 
   numberOfChannels <- 3
 
+  if ( missing( strideLength ) ) {
+    strideLength = round( min( patchSize ) / 2 )
+    if ( image@dimension == 3 ) strideLength = c( strideLength, strideLength, 1)
+    }
   ###############
   #
   #  Global
@@ -292,5 +296,3 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
       }
     }
 }
-
-
