@@ -8,7 +8,7 @@ tidNeuralImageAssessment(
   image,
   mask,
   patchSize = 101L,
-  strideLength = 7L,
+  strideLength,
   paddingSize = 0L,
   dimensionsToPredict = 1,
   outputDirectory = NULL,
@@ -34,7 +34,7 @@ which dimension(s) should be used for prediction.  If more than one dimension
 is specified, the results are averaged.}
 
 \item{outputDirectory}{destination directory for storing the downloaded
-template and model weights.  Since these can be resused, if
+template and model weights.  Since these can be reused, if
 \code{is.null(outputDirectory)}, these data will be downloaded to the
 inst/extdata/ subfolder of the ANTsRNet package.}
 
@@ -63,7 +63,7 @@ image size to enable locality. A global estimate can be gained by setting
 \dontrun{
 image <- antsImageRead( getANTsRData( "r16" ) )
 mask <- getMask( image )
-tid <- tidQualityAssessment( image, mask = mask, patchSize = 101L,
+tid <- tidNeuralImageAssessment( image, mask = mask, patchSize = 101L,
           strideLength = 7L, paddingSize = 0L )
 plot( image, tid$MOS, alpha = 0.5)
 cat( "mean MOS = ", tid$MOS.mean, "\n" )
