@@ -12,6 +12,7 @@ tidNeuralImageAssessment(
   paddingSize = 0L,
   dimensionsToPredict = 1,
   outputDirectory = NULL,
+  whichModel = "tidsQualityAssessment",
   verbose = FALSE
 )
 }
@@ -37,6 +38,8 @@ is specified, the results are averaged.}
 template and model weights.  Since these can be resused, if
 \code{is.null(outputDirectory)}, these data will be downloaded to the
 inst/extdata/ subfolder of the ANTsRNet package.}
+
+\item{whichModel}{model type e.g. string tidsQualityAssessment, koniqMBCS}
 
 \item{verbose}{print progress.}
 }

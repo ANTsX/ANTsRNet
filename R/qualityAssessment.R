@@ -28,6 +28,7 @@
 #' template and model weights.  Since these can be resused, if
 #' \code{is.null(outputDirectory)}, these data will be downloaded to the
 #' inst/extdata/ subfolder of the ANTsRNet package.
+#' @param whichModel model type e.g. string tidsQualityAssessment, koniqMBCS
 #' @param verbose print progress.
 #' @return list of QC results predicting both both human rater's mean and standard
 #' deviation of the MOS ("mean opinion scores").  See the TID2013 paper.  Both
@@ -46,25 +47,30 @@
 #' @export
 tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
   strideLength = 7L, paddingSize = 0L, dimensionsToPredict = 1,
-  outputDirectory = NULL, verbose = FALSE )
+  outputDirectory = NULL, whichModel="tidsQualityAssessment", verbose = FALSE )
 {
   is.prime <- function( n )
     {
     return( n == 2L || all( n %% 2L:max( 2, floor( sqrt( n ) ) ) != 0 ) )
     }
-
+  validModels = c("tidsQualityAssessment", "koniqMBCS")
+  if ( ! any( whichModel %in% validModels ) ) 
+    {
+    cat( validModels )
+    stop(" : Please pass valid model : ")
+    }
   if( is.null( outputDirectory ) )
     {
     outputDirectory <- system.file( "extdata", package = "ANTsRNet" )
     }
-  modelAndWeightsFileName <- paste0( outputDirectory, "tidsQualityAssessment.h5" )
+  modelAndWeightsFileName <- paste0( outputDirectory, whichModel, ".h5" )
   if( ! file.exists( modelAndWeightsFileName ) )
     {
     if( verbose == TRUE )
       {
-      cat( "TID QA:  downloading model and weights.\n" )
+      cat( "Neural QA:  downloading model and weights.\n" )
       }
-    modelAndWeightsFileName <- getPretrainedNetwork( "tidsQualityAssessment", modelAndWeightsFileName )
+    modelAndWeightsFileName <- getPretrainedNetwork( whichModel, modelAndWeightsFileName )
     }
   tidModel <- load_model_hdf5( filepath = modelAndWeightsFileName )
 
@@ -87,7 +93,11 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
 
   if( patchSize == 'global' )
     {
-    evaluationImage <- paddedImage %>% iMath( "Normalize" ) * 255
+    if ( whichModel == "tidsQualityAssessment" ) 
+      evaluationImage <- paddedImage %>% iMath( "Normalize" ) * 255
+
+    if ( whichModel == "koniqMBCS" ) 
+      evaluationImage <- ( paddedImage %>% iMath( "Normalize" ) ) * 2.0 - 1.0 
 
     if( image@dimension == 2 )
       {
@@ -224,7 +234,8 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
           patchImage <- patchImage - min( patchImage )
           if( max( patchImage ) > 0 )
             {
-            patchImage <- patchImage / max( patchImage ) * 255
+            if ( whichModel == "tidsQualityAssessment" ) patchImage <- patchImage / max( patchImage ) * 255
+            if ( whichModel == "koniqMBCS" ) patchImage <- patchImage / max( patchImage ) * 2.0 - 1.0
             }
           if( image@dimension == 2 )
             {
