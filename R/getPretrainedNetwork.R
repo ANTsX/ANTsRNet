@@ -92,7 +92,7 @@ getPretrainedNetwork <- function(
     functionalLungMri = "https://ndownloader.figshare.com/files/13824167",
     hippMapp3rInitial = "https://ndownloader.figshare.com/files/18068408",
     hippMapp3rRefine = "https://ndownloader.figshare.com/files/18068411",
-    koniqMBCS = "https://ndownloader.figshare.com/files/24966944",
+    koniqMBCS = "https://ndownloader.figshare.com/files/24967013",
     mriSuperResolution = "https://ndownloader.figshare.com/files/24128618",
     protonLungMri = "https://ndownloader.figshare.com/files/13606799",
     sixTissueOctantBrainSegmentation = "https://ndownloader.figshare.com/files/23776025",

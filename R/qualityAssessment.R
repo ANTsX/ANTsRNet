@@ -111,15 +111,28 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
         batchX[1,,,k] <- as.array( evaluationImage )
         }
       predictedData <- predict( tidModel, batchX, verbose = verbose )
-
-      return( list( MOS = NA,
+      if ( whichModel == "tidsQualityAssessment" ) {
+        return( list( MOS = NA,
                     MOS.standardDeviation = NA,
                     MOS.mean = predictedData[1, 1],
                     MOS.standardDeviationMean = predictedData[1, 2] ) )
+        }
+      if ( whichModel == "koniqMBCS" ) {
+        return( list(
+                    MOS.mean = predictedData[1, 1],
+                    brightness.mean = predictedData[1, 2],
+                    contrast.mean = predictedData[1, 3],
+                    sharpness.mean = predictedData[1, 4] 
+		    ) )
+        }
+
       } else if( image@dimension == 3 ) {
 
       mosMean <- 0
       mosStandardDeviation <- 0
+      brightness = 0
+      contrast = 0
+      sharpness = 0
 
       x <- seq.int( image@dimension )
       for( d in seq.int( length( dimensionsToPredict ) ) )
@@ -147,12 +160,23 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
 
         mosMean <- mosMean + predictedData[1, 1]
         mosStandardDeviation <- mosStandardDeviation + predictedData[1, 2]
-        }
+        if ( whichModel == "koniqMCBS" ) 
+	  {
+	  brightness = mosStandardDeviation	  
+	  contrast = contrast + predictedData[1, 3]
+          sharpness = sharpness + predictedData[1, 4]	  
+          }
+	}
       mosMean <- mosMean / length( dimensionsToPredict )
       mosStandardDeviation <- mosStandardDeviation / length( dimensionsToPredict )
-
-      return( list( MOS.mean = mosMean,
+      brightness = brightness / length( dimensionsToPredict )
+      contrast = contrast/ length( dimensionsToPredict )
+      sharpness = sharpness / length( dimensionsToPredict )
+      if ( whichModel == "tidsQualityAssessment" )
+        return( list( MOS.mean = mosMean,
                     MOS.standardDeviationMean = mosStandardDeviation ) )
+      if ( whichModel == "koniqMBCS" )
+        return( list( MOS.mean = mosMean, brightness.mean=brightness, contrast.mean=contrast, sharpness.mean=sharpness) )
       }
     } else {
 
@@ -188,6 +212,8 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
 
     MOS <- image * 0
     MOS.standardDeviation <- image * 0
+    contrast = image * 0.0
+    sharpness = image * 0.0
 
     for( d in seq.int( length( dimensionsToPredict ) ) )
       {
@@ -226,6 +252,8 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
 
       patchesMOS <- list()
       patchesMOS.standardDeviation <- list()
+      patchesContrast = list()
+      patchesSharpness = list()
       batchX <- array( dim = c( length( patches ), c( patchSize, patchSize ), numberOfChannels ) )
 
       isGoodPatch <- rep( FALSE, length( patches ) )
@@ -265,10 +293,18 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
           {
           patchesMOS[[i]] <- patchImage * 0 + predictedData[count,1]
           patchesMOS.standardDeviation[[i]] <- patchImage * 0 + predictedData[count,2]
-          count <- count + 1
+          if ( whichModel == "koniqMBCS" ) {
+	    patchesContrast[[i]] = patchImage * 0 + predictedData[count,3]
+	    patchesSharpness[[i]] = patchImage * 0 + predictedData[count,4]
+            }
+  	  count <- count + 1
           } else {
           patchesMOS[[i]] <- patchImage * 0
           patchesMOS.standardDeviation[[i]] <- patchImage * 0
+	  if ( whichModel == "koniqMBCS" ) {
+            patchesContrast[[i]] = patchImage * 0
+	    patchesSharpness[[i]] = patchImage * 0
+ 	    }
           }
         }
       MOS <- MOS + padOrCropImageToSize(
@@ -277,22 +313,49 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
       MOS.standardDeviation <- MOS.standardDeviation + padOrCropImageToSize(
         reconstructImageFromPatches( patchesMOS.standardDeviation, evaluationImage,
                                      strideLength = strideLengthVector ), dim( image ) )
+      if ( whichModel == "koniqMBCS" ) {
+        contrast <- contrast + padOrCropImageToSize(
+          reconstructImageFromPatches( patchesContrast, evaluationImage,
+                                     strideLength = strideLengthVector ), dim( image ) )
+        sharpness <- sharpness + padOrCropImageToSize(
+          reconstructImageFromPatches( patchesSharpness, evaluationImage,
+                                     strideLength = strideLengthVector ), dim( image ) )
+        }
+
       }
 
     MOS <- MOS / length( dimensionsToPredict )
     MOS.standardDeviation <- MOS.standardDeviation / length( dimensionsToPredict )
-
+    if ( whichModel == "koniqMBCS" ) {
+      sharpness = sharpness / length( dimensionsToPredict )
+      contrast = contrast / length( dimensionsToPredict )
+    }
     if( missing( mask ) )
       {
-      return( list( MOS = MOS,
+      if ( whichModel == "tidsQualityAssessment" )
+        return( list( MOS = MOS,
                     MOS.standardDeviation = MOS.standardDeviation,
                     MOS.mean = mean( MOS ),
                     MOS.standardDeviationMean = mean( MOS.standardDeviation ) ) )
+
+      if ( whichModel == "koniqMBCS" )
+        return( list( MOS = MOS,
+                    brightness = MOS.standardDeviation, contrast=contrast, sharpness=sharpness,
+                    MOS.mean = mean( MOS ),
+                    brightness.mean = mean( MOS.standardDeviation ), contrast.mean=mean(contrast), sharpness.mean=mean(sharpness) ) )
+
       } else {
-      return( list( MOS = MOS * mask,
+      if ( whichModel == "tidsQualityAssessment" )
+        return( list( MOS = MOS * mask,
                     MOS.standardDeviation = MOS.standardDeviation * mask,
                     MOS.mean = mean( MOS[mask >= 0.5] ),
                     MOS.standardDeviationMean = mean( MOS.standardDeviation[mask >= 0.5] ) ) )
+      if ( whichModel == "koniqMBCS" )
+        return( list( MOS = MOS * mask,
+                    brightness = MOS.standardDeviation * mask, contrast=contrast*mask, sharpness=sharpness*mask,
+                    MOS.mean = mean( MOS[mask >= 0.5] ),
+                    brightness.mean = mean( MOS.standardDeviation[mask >= 0.5] ), contrast.mean=mean(contrast[mask >= 0.5]), sharpness.mean=mean(sharpness[mask >= 0.5]) ) )
+
       }
     }
 }
