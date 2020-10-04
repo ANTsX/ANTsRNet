@@ -15,7 +15,7 @@
 #'
 #' @param image the input image.  Either 2D or 3D.
 #' @param mask optional mask for designating calculation ROI.
-#' @param patchSize integer prime number for patch size; 101 is good. otherwise,
+#' @param patchSize integer (prime) number for patch size; 101 is good. otherwise,
 #' choose \code{"global"} for a single global estimate of quality.
 #' @param strideLength optional value to speed up computation (typically less than
 #' patch size).  Integer or vector of image dimension length.
@@ -191,6 +191,7 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
     if( ! is.prime( patchSize ) )
       {
       message( "Should pass a prime number for patch size." )
+      message("13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97...")
       }
     strideLengthVector <- strideLength
     if( length( strideLength ) == 1 )

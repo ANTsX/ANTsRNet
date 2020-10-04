@@ -21,7 +21,7 @@ tidNeuralImageAssessment(
 
 \item{mask}{optional mask for designating calculation ROI.}
 
-\item{patchSize}{integer prime number for patch size; 101 is good. otherwise,
+\item{patchSize}{integer (prime) number for patch size; 101 is good. otherwise,
 choose \code{"global"} for a single global estimate of quality.}
 
 \item{strideLength}{optional value to speed up computation (typically less than
