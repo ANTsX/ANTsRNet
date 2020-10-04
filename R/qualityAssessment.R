@@ -54,7 +54,7 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
     return( n == 2L || all( n %% 2L:max( 2, floor( sqrt( n ) ) ) != 0 ) )
     }
   validModels = c("tidsQualityAssessment", "koniqMBCS")
-  if ( ! any( whichModel %in% validModels ) ) 
+  if ( ! any( whichModel %in% validModels ) )
     {
     cat( validModels )
     stop(" : Please pass valid model : ")
@@ -85,7 +85,7 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
 
   numberOfChannels <- 3
 
-  if ( missing( strideLength ) ) {
+  if ( missing( strideLength ) & patchSize != "global" ) {
     strideLength = round( min( patchSize ) / 2 )
     if ( image@dimension == 3 ) strideLength = c( strideLength, strideLength, 1)
     }
@@ -97,11 +97,11 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
 
   if( patchSize == 'global' )
     {
-    if ( whichModel == "tidsQualityAssessment" ) 
+    if ( whichModel == "tidsQualityAssessment" )
       evaluationImage <- paddedImage %>% iMath( "Normalize" ) * 255
 
-    if ( whichModel == "koniqMBCS" ) 
-      evaluationImage <- ( paddedImage %>% iMath( "Normalize" ) ) * 2.0 - 1.0 
+    if ( whichModel == "koniqMBCS" )
+      evaluationImage <- ( paddedImage %>% iMath( "Normalize" ) ) * 2.0 - 1.0
 
     if( image@dimension == 2 )
       {
@@ -122,7 +122,7 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
                     MOS.mean = predictedData[1, 1],
                     brightness.mean = predictedData[1, 2],
                     contrast.mean = predictedData[1, 3],
-                    sharpness.mean = predictedData[1, 4] 
+                    sharpness.mean = predictedData[1, 4]
 		    ) )
         }
 
@@ -160,11 +160,11 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
 
         mosMean <- mosMean + predictedData[1, 1]
         mosStandardDeviation <- mosStandardDeviation + predictedData[1, 2]
-        if ( whichModel == "koniqMCBS" ) 
+        if ( whichModel == "koniqMCBS" )
 	  {
-	  brightness = mosStandardDeviation	  
+	  brightness = mosStandardDeviation
 	  contrast = contrast + predictedData[1, 3]
-          sharpness = sharpness + predictedData[1, 4]	  
+          sharpness = sharpness + predictedData[1, 4]
           }
 	}
       mosMean <- mosMean / length( dimensionsToPredict )
@@ -190,7 +190,7 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
 
     if( ! is.prime( patchSize ) )
       {
-      stop( "Should pass a prime number for patch size." )
+      message( "Should pass a prime number for patch size." )
       }
     strideLengthVector <- strideLength
     if( length( strideLength ) == 1 )
