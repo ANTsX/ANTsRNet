@@ -18,7 +18,7 @@
 #' \code{is.null(outputDirectory)}, these data will be downloaded to the
 #' inst/extdata/ subfolder of the ANTsRNet package.
 #' @param verbose print progress.
-#' @return probability hippocampal mask (ANTsR image)
+#' @return labeled hippocampal mask (ANTsR image)
 #' @author Tustison NJ
 #' @examples
 #' \dontrun{
@@ -31,10 +31,10 @@
 #' download.file( url, imageFile )
 #' image <- antsImageRead( imageFile )
 #' imageN4 <- n4BiasFieldCorrection( image, verbose = TRUE )
-#' hippocampalProbabilityMask <- hippMapp3rSegmentation( imageN4, verbose = TRUE )
+#' segmentation <- hippMapp3rSegmentation( imageN4, verbose = TRUE )
 #' }
 #' @export
-hippMapp3rSegmentation <- function( image, outputDirectory = NULL, verbose = FALSE )
+hippMapp3rSegmentation <- function( t1Image, outputDirectory = NULL, verbose = FALSE )
   {
   if( is.null( outputDirectory ) )
     {
@@ -52,6 +52,30 @@ hippMapp3rSegmentation <- function( image, outputDirectory = NULL, verbose = FAL
     cat( "  (warning:  steps are somewhat different in the publication.)\n" )
     cat( "\n" )
     }
+
+  # Normalize to mprage_hippmapp3r space
+  if( verbose == TRUE )
+    {
+    cat( "    HippMapp3r: template normalization.\n" )
+    }
+
+  templateFileName <- paste0( outputDirectory, "/mprage_hippmapp3r.nii.gz" )
+  templateUrl <- "https://ndownloader.figshare.com/files/24984689"
+  if( ! file.exists( templateFileName ) )
+    {
+    if( verbose == TRUE )
+      {
+      cat( "       downloading template.\n" )
+      }
+    download.file( templateUrl, templateFileName, quiet = !verbose )
+    }
+  templateImage <- antsImageRead( templateFileName )
+  registration <- antsRegistration( fixed = templateImage, moving = t1Image,
+    typeofTransform = "antsRegistrationSyNQuick[t]", verbose = verbose )
+  image <- registration$warpedmovout
+  transforms <- list( fwdtransforms = registration$fwdtransforms,
+                      invtransforms = registration$invtransforms )
+
 
   # Threshold at 10th percentile of non-zero voxels in "robust range (fslmaths)"
   if( verbose == TRUE )
@@ -172,7 +196,25 @@ hippMapp3rSegmentation <- function( image, outputDirectory = NULL, verbose = FAL
   predictionRefineStageArray <- array( data = 0, dim = dim( imageResampled ) )
   predictionRefineStageArray[lower[1]:upper[1],lower[2]:upper[2],lower[3]:upper[3]] <- predictionRefineStage
   probabilityMaskRefineStageResampled <- as.antsImage( predictionRefineStageArray ) %>% antsCopyImageInfo2( imageResampled )
-  probabilityMaskRefineStage <- resampleImageToTarget( probabilityMaskRefineStageResampled, image )
 
-  return( probabilityMaskRefineStage )
+  segmentationImageResampled <- labelClusters( 
+    thresholdImage( probabilityMaskRefineStageResampled, 0.0, 0.5, 0, 1 ), minClusterSize = 10 )
+  segmentationImageResampled[segmentationImageResampled > 2] <- 0
+  geom <- labelGeometryMeasures( segmentationImageResampled )
+  if( length( geom$VolumeInMillimeters ) < 2 )
+    {
+    stop( "Error:  left and right hippocampus not found.")  
+    }
+  if( geom$Centroid_x[1] < geom$Centroid_x[2] )  
+    {
+    segmentationImageResampled[segmentationImageResampled == 1] <- 3  
+    segmentationImageResampled[segmentationImageResampled == 2] <- 1  
+    segmentationImageResampled[segmentationImageResampled == 3] <- 2  
+    }
+
+  segmentationImage <- antsApplyTransforms( fixed = t1Image, 
+    moving = segmentationImageResampled, transformlist = transforms$invtransforms, 
+    whichtoinvert = c( TRUE ), interpolator = "genericLabel", verbose = verbose )
+
+  return( segmentationImage )
   }
