@@ -12,7 +12,15 @@
 #'
 #' https://hippmapp3r.readthedocs.io/en/latest/
 #'
+#' Preprocessing consists of:
+#'    * n4 bias correction and
+#'    * brain extraction.
+#' The input T1 should undergo the same steps.  If the input T1 is the raw
+#' T1, these steps can be performed by the internal preprocessing, i.e. set
+#' \code{doPreprocessing = TRUE}
+#'
 #' @param image input 3-D T1-weighted brain image.
+#' @param doPreprocessing perform preprocessing.  See description above.
 #' @param outputDirectory destination directory for storing the downloaded
 #' template and model weights.  Since these can be resused, if
 #' \code{is.null(outputDirectory)}, these data will be downloaded to the
@@ -34,11 +42,37 @@
 #' segmentation <- hippMapp3rSegmentation( imageN4, verbose = TRUE )
 #' }
 #' @export
-hippMapp3rSegmentation <- function( t1Image, outputDirectory = NULL, verbose = FALSE )
+hippMapp3rSegmentation <- function( t1, doPreprocessing = TRUE, 
+  outputDirectory = NULL, verbose = FALSE )
   {
   if( is.null( outputDirectory ) )
     {
     outputDirectory <- system.file( "extdata", package = "ANTsRNet" )
+    }
+
+  #########################################
+  #
+  # Perform preprocessing
+  #
+
+  if( verbose == TRUE )
+    {
+    cat( "*************  Preprocessing  ***************\n" )
+    cat( "\n" )
+    }
+
+  t1Preprocessed <- t1
+  if( doPreprocessing == TRUE )
+    {
+    t1Preprocessing <- preprocessBrainImage( t1,
+        truncateIntensity = NULL,
+        doBrainExtraction = TRUE,
+        template = NULL,
+        doBiasCorrection = TRUE,
+        doDenoising = FALSE,
+        outputDirectory = outputDirectory,
+        verbose = verbose )
+    t1Preprocessed <- t1Preprocessing$preprocessedImage * t1Preprocessing$brainMask
     }
 
   #########################################
@@ -49,7 +83,6 @@ hippMapp3rSegmentation <- function( t1Image, outputDirectory = NULL, verbose = F
   if( verbose == TRUE )
     {
     cat( "*************  Initial stage segmentation  ***************\n" )
-    cat( "  (warning:  steps are somewhat different in the publication.)\n" )
     cat( "\n" )
     }
 
@@ -70,12 +103,11 @@ hippMapp3rSegmentation <- function( t1Image, outputDirectory = NULL, verbose = F
     download.file( templateUrl, templateFileName, quiet = !verbose )
     }
   templateImage <- antsImageRead( templateFileName )
-  registration <- antsRegistration( fixed = templateImage, moving = t1Image,
+  registration <- antsRegistration( fixed = templateImage, moving = t1Preprocessed,
     typeofTransform = "antsRegistrationSyNQuick[t]", verbose = verbose )
   image <- registration$warpedmovout
   transforms <- list( fwdtransforms = registration$fwdtransforms,
                       invtransforms = registration$invtransforms )
-
 
   # Threshold at 10th percentile of non-zero voxels in "robust range (fslmaths)"
   if( verbose == TRUE )
@@ -98,13 +130,14 @@ hippMapp3rSegmentation <- function( t1Image, outputDirectory = NULL, verbose = F
   imageNormalized <- ( image - meanImage ) / sdImage
   imageNormalized <- imageNormalized * thresholdedMask
 
-  # Resample image
+  # Trim and resample image
   if( verbose == TRUE )
     {
-    cat( "    HippMapp3r: resample to (160, 160, 128).\n" )
+    cat( "    HippMapp3r: trim and resample to (160, 160, 128).\n" )
     }
+  imageCropped <- cropImage( imageNormalized, thresholdedMask, 1 )  
   shapeInitialStage <- c( 160, 160, 128 )
-  imageResampled <- resampleImage( imageNormalized, shapeInitialStage,
+  imageResampled <- resampleImage( imageCropped, shapeInitialStage,
     useVoxels = TRUE, interpType = "linear" )
 
   if( verbose == TRUE )
@@ -212,7 +245,7 @@ hippMapp3rSegmentation <- function( t1Image, outputDirectory = NULL, verbose = F
     segmentationImageResampled[segmentationImageResampled == 3] <- 2  
     }
 
-  segmentationImage <- antsApplyTransforms( fixed = t1Image, 
+  segmentationImage <- antsApplyTransforms( fixed = t1, 
     moving = segmentationImageResampled, transformlist = transforms$invtransforms, 
     whichtoinvert = c( TRUE ), interpolator = "genericLabel", verbose = verbose )
 

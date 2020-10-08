@@ -4,10 +4,15 @@
 \alias{hippMapp3rSegmentation}
 \title{hippMapp3rSegmentation}
 \usage{
-hippMapp3rSegmentation(image, outputDirectory = NULL, verbose = FALSE)
+hippMapp3rSegmentation(
+  t1,
+  doPreprocessing = TRUE,
+  outputDirectory = NULL,
+  verbose = FALSE
+)
 }
 \arguments{
-\item{image}{input 3-D T1-weighted brain image.}
+\item{doPreprocessing}{perform preprocessing.  See description above.}
 
 \item{outputDirectory}{destination directory for storing the downloaded
 template and model weights.  Since these can be resused, if
@@ -15,9 +20,11 @@ template and model weights.  Since these can be resused, if
 inst/extdata/ subfolder of the ANTsRNet package.}
 
 \item{verbose}{print progress.}
+
+\item{image}{input 3-D T1-weighted brain image.}
 }
 \value{
-probability hippocampal mask (ANTsR image)
+labeled hippocampal mask (ANTsR image)
 }
 \description{
 Perform HippMapp3r (hippocampal) segmentation described in
@@ -32,6 +39,15 @@ https://github.com/mgoubran/HippMapp3r
 Additional documentation and attribution resources found at
 
 https://hippmapp3r.readthedocs.io/en/latest/
+
+Preprocessing consists of:
+\itemize{
+\item n4 bias correction and
+\item brain extraction.
+The input T1 should undergo the same steps.  If the input T1 is the raw
+T1, these steps can be performed by the internal preprocessing, i.e. set
+\code{doPreprocessing = TRUE}
+}
 }
 \examples{
 \dontrun{
@@ -44,7 +60,7 @@ imageFile <- "head.nii.gz"
 download.file( url, imageFile )
 image <- antsImageRead( imageFile )
 imageN4 <- n4BiasFieldCorrection( image, verbose = TRUE )
-hippocampalProbabilityMask <- hippMapp3rSegmentation( imageN4, verbose = TRUE )
+segmentation <- hippMapp3rSegmentation( imageN4, verbose = TRUE )
 }
 }
 \author{

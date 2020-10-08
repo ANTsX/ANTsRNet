@@ -12,7 +12,7 @@ createDenseNetModel3D(
   numberOfDenseBlocks = 1,
   growthRate = 12,
   dropoutRate = 0.2,
-  weightDecay = 1e-04,
+  weightDecay = 0.0001,
   mode = "classification"
 )
 }
