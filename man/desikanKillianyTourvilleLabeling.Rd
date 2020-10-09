@@ -31,7 +31,7 @@ list consisting of the segmentation image and probability images for
 each label.
 }
 \description{
-Perform Atropos-style six tissue segmentation using deep learning
+Perform DKT labeling using deep learning
 }
 \details{
 The labeling is as follows:
