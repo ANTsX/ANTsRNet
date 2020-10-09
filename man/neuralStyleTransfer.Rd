@@ -98,8 +98,6 @@ in order to possibly modify and experiment with medical images.
 \dontrun{
 library( ANTsRNet )
 
-image <- antsImageRead( "t1.nii.gz" )
-imageSr <- mriSuperResolution( image )
 }
 }
 \author{

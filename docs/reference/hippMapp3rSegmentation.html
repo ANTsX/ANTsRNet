@@ -117,14 +117,19 @@
     <p>Perform HippMapp3r (hippocampal) segmentation described in</p>
     </div>
 
-    <pre class="usage"><span class='fu'>hippMapp3rSegmentation</span>(<span class='no'>image</span>, <span class='kw'>outputDirectory</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>hippMapp3rSegmentation</span>(
+  <span class='no'>t1</span>,
+  <span class='kw'>doPreprocessing</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>outputDirectory</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>image</th>
-      <td><p>input 3-D T1-weighted brain image.</p></td>
+      <th>doPreprocessing</th>
+      <td><p>perform preprocessing.  See description above.</p></td>
     </tr>
     <tr>
       <th>outputDirectory</th>
@@ -137,11 +142,15 @@ inst/extdata/ subfolder of the ANTsRNet package.</p></td>
       <th>verbose</th>
       <td><p>print progress.</p></td>
     </tr>
+    <tr>
+      <th>image</th>
+      <td><p>input 3-D T1-weighted brain image.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>probability hippocampal mask (ANTsR image)</p>
+    <p>labeled hippocampal mask (ANTsR image)</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>https://www.ncbi.nlm.nih.gov/pubmed/31609046</p>
@@ -149,6 +158,14 @@ inst/extdata/ subfolder of the ANTsRNet package.</p></td>
 <p>https://github.com/mgoubran/HippMapp3r</p>
 <p>Additional documentation and attribution resources found at</p>
 <p>https://hippmapp3r.readthedocs.io/en/latest/</p>
+<p>Preprocessing consists of:</p><ul>
+<li><p>n4 bias correction and</p></li>
+<li><p>brain extraction.
+The input T1 should undergo the same steps.  If the input T1 is the raw
+T1, these steps can be performed by the internal preprocessing, i.e. set
+<code>doPreprocessing = TRUE</code></p></li>
+</ul>
+
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
@@ -161,7 +178,7 @@ inst/extdata/ subfolder of the ANTsRNet package.</p></td>
 <span class='fu'><a href='https://rdrr.io/r/utils/download.file.html'>download.file</a></span>( <span class='no'>url</span>, <span class='no'>imageFile</span> )
 <span class='no'>image</span> <span class='kw'>&lt;-</span> <span class='fu'>antsImageRead</span>( <span class='no'>imageFile</span> )
 <span class='no'>imageN4</span> <span class='kw'>&lt;-</span> <span class='fu'>n4BiasFieldCorrection</span>( <span class='no'>image</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span> )
-<span class='no'>hippocampalProbabilityMask</span> <span class='kw'>&lt;-</span> <span class='fu'>hippMapp3rSegmentation</span>( <span class='no'>imageN4</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span> )
+<span class='no'>segmentation</span> <span class='kw'>&lt;-</span> <span class='fu'>hippMapp3rSegmentation</span>( <span class='no'>imageN4</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span> )
 }</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

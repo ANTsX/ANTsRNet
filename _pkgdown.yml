@@ -182,5 +182,6 @@ reference:
   - '`deepFlash`'
   - '`desikanKillianyTourvilleLabeling`'
   - '`mriSuperResolution`'
+  - '`neuralStyleTransfer`'
   - '`tidNeuralImageAssessment`'
 

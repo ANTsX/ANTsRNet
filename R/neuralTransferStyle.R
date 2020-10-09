@@ -56,8 +56,6 @@
 #' \dontrun{
 #' library( ANTsRNet )
 #'
-#' image <- antsImageRead( "t1.nii.gz" )
-#' imageSr <- mriSuperResolution( image )
 #' }
 #' @export
 neuralStyleTransfer <- function(contentImage, styleImages,
@@ -186,9 +184,9 @@ neuralStyleTransfer <- function(contentImage, styleImages,
     loss <- tf$reduce_sum( tf$pow( a + b, 1.25 ) )
     }
 
-  computTotalLoss <- function( contentArray, styleArrayList, combinationTensor,
-                               featureModel, contentLayerNames, styleLayerNames,
-                               imageShape, contentMaskTensor = NULL, styleMaskTensorList = NULL)
+  computeTotalLoss <- function( contentArray, styleArrayList, combinationTensor,
+                               featureModel, contentLayerNames, styleLayerIndices,
+                               imageShape, contentMaskTensor = NULL, styleMaskTensorList = NULL )
     {
     numberOfStyleImages <- length( styleArrayList )
 
@@ -203,19 +201,272 @@ neuralStyleTransfer <- function(contentImage, styleImages,
 
     features <- featureModel( inputTensor )
 
-    # totalLoss <- tf$zeros( shape = () )
+    totalLoss <- tf$zeros( shape = list() )
 
-    # #content loss
-    # for( i in seq.int( length( contentLayerNames ) ) )
-    #   {
+    # content loss
+    for( i in seq.int( length( contentLayerNames ) ) )
+      {
+      layerFeatures <- features[[contentLayerNames[i]]]
+      contentFeatures <- layerFeatures[1,,,]
+      combinationFeatures <- layerFeatures[3,,,]
+      totalLoss <- totalLoss + contentLoss( contentFeatures, combinationFeatures ) *
+        contentWeight / length( contentLayerNames )
+      }
 
-    #   }
+    # style loss
+    if( useChainedInference )
+      {
+      for( i in seq.int( length( styleLayerIndices ) - 1 ) )
+        {
+        layerFeatures <- features[styleLayerIndices[i]][[1]]
+        styleFeatures <- layerFeatures[2:( numberOfStyleImages + 1 ),,,]
+        combinationFeatures <- layerFeatures[( numberOfStyleImages + 2 ),,,]
+        loss <- list()
+        for( j in seq.int( numberOfStyleImages ) )
+          {
+          if( is.null( styleMaskTensorList ) )
+            {
+            loss[[j]] <- styleLoss( styleFeatures[j], combinationFeatures, imageShape,
+                                    styleMask = NULL, contentMask = contentMaskTensor )
+            } else {
+            loss[[j]] <- styleLoss( styleFeatures[j], combinationFeatures, imageShape,
+                                    styleMask = styleMaskTensorList[[j]], contentMask = contentMaskTensor )
+            }
+          }
 
+        layerFeatures = features[styleLayerIndices[i+1]][[1]]
+        styleFeatures = layerFeatures[2:( numberOfStyleImages + 1 ),,,]
+        combinationFeatures = layerFeatures[( numberOfStyleImages + 2 ),,,]
+        lossP1 <- list()
+        for( j in seq.int( numberOfStyleImages ) )
+          {
+          if( is.null( styleMaskTensorList ) )
+            {
+            lossP1[[j]] <- styleLoss( styleLoss( styleFeatures[j,,,,drop = FALSE], combinationFeatures, imageShape,
+                                      styleMask = NULL, contentMask = contentMaskTensor ) )
+            } else {
+            lossP1[[j]] <- styleLoss( styleLoss( styleFeatures[j,,,,drop = FALSE], combinationFeatures, imageShape,
+                                      styleMask = styleMaskTensorList[i], contentMask = contentMaskTensor ) )
+            }
+          }
 
+        for( j in seq.int( numberOfStyleImages ) )
+          {
+          lossDifference <- loss[j] - lossP1[j]
+          totalLoss <- totalLoss + styleImageWeights[j] * lossDifference / ( 2^( length( styleLayerNames ) - ( i + 1 ) ) )
+          }
+        }
+      } else {
+      for( i in seq.int( length( styleLayerIndices ) ) )
+        {
+        layerFeatures <- features[styleLayerIndices[i]][[1]]
+        styleFeatures <- layerFeatures[2:( numberOfStyleImages + 1 ),,,]
+        combinationFeatures <- layerFeatures[( numberOfStyleImages + 2 ),,,]
+        loss <- list()
+        for( j in seq.int( numberOfStyleImages ) )
+          {
+          if( is.null( styleMaskTensorList ) )
+            {
+            loss[[j]] <- styleLoss( styleFeatures[j], combinationFeatures, imageShape,
+                                    styleMask = NULL, contentMask = contentMaskTensor )
+            } else {
+            loss[[j]] <- styleLoss( styleFeatures[j], combinationFeatures, imageShape,
+                                    styleMask = styleMaskTensorList[[j]], contentMask = contentMaskTensor )
+            }
+          }
+        for( j in seq.int( numberOfStyleImages ) )
+          {
+          totalLoss <- totalLoss + ( loss[[j]] * styleImageWeights[j] / length( styleLayerIndices ) )
+          }
+        }
+      }
+    totalLoss <- totalLoss + totalVariationWeight + totalVariationLoss( combinationTensor )
+    return( totalLoss )
+    }
+
+  computeLossAndGradients <- function( contentArray, styleArrayList, combinationTensor,
+                featureModel, contentLayerNames, styleLayerIndices, imageShape,
+                contentMaskTensor, styleMaskTensorList )
+    {
+    with( tf$GradientTape() %as% tape,
+      {
+      loss <- computeTotalLoss( contentArray, styleArrayList, combinationTensor,
+                    featureModel, contentLayerNames, styleLayerIndices, imageShape, contentMaskTensor,
+                    styleMaskTensorList )
+      } )
+    gradients <- tape$gradient( loss, combinationTensor )
+    return( list( loss = loss, gradients = gradients) )
     }
 
 
+  numberOfStyleImages <- 1
+  if( is.list( styleImages ) )
+    {
+    numberOfStyleImages <- length( styleImages )
+    }
 
+  styleImageList <- list()
+  if( numberOfStyleImages == 1 )
+    {
+    styleImageList[[1]] <- styleImages
+    } else {
+    styleImageList <- styleImages
+    }
 
+  for( i in seq.int( numberOfStyleImages ) )
+    {
+    if( styleImageList[[i]]@dimension != 2 )
+      {
+      stop( "Input style images must be 2-D." )
+      }
+    if( any( dim( styleImageList[[i]] ) != dim( contentImage ) ) )
+      {
+      stop( "Input images must have matching dimensions/shapes." )
+      }
+    }
 
+  numberOfStyleMasks <- 0
+  styleMaskTensorList <- NULL
+  if( ! is.null( styleMasks ) )
+    {
+    numberOfStyleMasks <- 1
+    if( is.list( styleMasks ) )
+      {
+      numberOfStyleMasks <- length( styleMasks )
+      }
+
+    styleMaskTensorList <- list()
+    if( numberOfStyleMasks == 1 )
+      {
+      styleMaskArray <- as.array( thresholdImage( styleMasks, 0, 0, 0, 1 ) )
+      styleMaskTensor <- array( data = styleMaskArray, dim = c( dim( styleMaskArray ), 1 ) )
+      styleMaskTensorList[[1]] <- styleMaskTensor
+      } else {
+      for( i in seq.int( length( styleMasks ) ) )
+        {
+        styleMaskArray <- as.array( thresholdImage( styleMasks[[i]], 0, 0, 0, 1 ) )
+        styleMaskTensor <- array( data = styleMaskArray, dim = c( dim( styleMaskArray ), 1 ) )
+        styleMaskTensorList[[i]] <- styleMaskTensor
+        }
+      }
+    }
+
+  if( numberOfStyleMasks > 0 && numberOfStyleImages != numberOfStyleMasks )
+    {
+    stop( "The number of style images/masks are not the same." )
+    }
+
+  if( is.numeric( styleImageWeights ) )
+    {
+    styleImageWeights <- rep( styleImageWeights, length( styleImageList ) )
+    } else {
+    if( length( styleImageWeights ) == 1 )
+      {
+      styleImageWeights <- rep( styleImageWeights[1], length( styleImageList ) )
+      } else if( length( styleImageWeights ) != length( styleImageList ) ) {
+      stop( "Length of style weights must be 1 or the number of style images." )
+      }
+    }
+
+  if( contentImage@dimension != 2 )
+    {
+    stop( "Input content image must be 2-D." )
+    }
+
+  contentMaskTensor <- NULL
+  if( ! is.null( contentMask ) )
+    {
+    contentMaskArray <- as.array( thresholdImage( contentMask, 0, 0, 0, 1 ) )
+    contentMaskTensor <- array( data = contentMaskArray, dim = c( dim( contentMaskArray ), 1 ) )
+    }
+
+  if( styleLayerNames == "all" )
+    {
+    styleLayerNames <- c( 'block1_conv1', 'block1_conv2', 'block2_conv1',
+          'block2_conv2', 'block3_conv1', 'block3_conv2', 'block3_conv3',
+          'block3_conv4', 'block4_conv1', 'block4_conv2', 'block4_conv3',
+          'block4_conv4', 'block5_conv1', 'block5_conv2', 'block5_conv3',
+          'block5_conv4')
+    }
+
+  model <- tf$keras$applications$VGG19( weights = "imagenet", include_top = FALSE )
+
+  styleLayerIndices <- c()
+  count <- 1
+  for( i in seq.int( length( model$layers ) ) )
+    {
+    index <- which( model$layers[[i]]$name %in% styleLayerNames )
+    if( length( index ) == 0 )
+      {
+      next
+      }
+    styleLayerIndices[count] <- i
+    count <- count + 1
+    }
+  if( length( styleLayerIndices ) != length( styleLayerNames ) )
+    {
+    stop( "Style layer names don't match model." )
+    }
+
+  outputsList <- list()
+  for( i in seq.int( model$layers ) )
+    {
+    outputsList[[i]] <- model$layers[[i]]$output
+    }
+
+  featureModel <- tf$keras$Model( inputs = model$inputs, outputs = outputsList )
+
+  # Preprocess data
+  contentArray <- preprocessAntsImage( contentImage )
+  styleArrayList <- list()
+  for( i in seq.int( numberOfStyleImages ) )
+    {
+    styleArrayList <- preprocessAntsImage( styleImageList[[i]] )
+    }
+
+  imageShape <- c( dim( contentArray ), 3 )
+
+  combinationTensor <- NULL
+  if( is.null( initialCombinationImage ) )
+    {
+    combinationTensor <- tf$Variable( array( data = contentArray, dim = dim( contentArray ) ) )
+    } else {
+    initialCombinationTensor <- preprocessAntsImage( initialCombinationImage, doScaleAndCenter = FALSE )
+    combinationTensor <- tf$Variable( initialCombinationTensor )
+    }
+
+  if( any( imageShape != dim( combinationTensor, 3 ) ) )
+    {
+    stop( "Initial combination image size does not match content image." )
+    }
+
+  optimizer <- tf$optimizers$Adam( learning_rate = learningRate, beta_1 = 0.99, epsilon = 0.1 )
+
+  for( i in seq.int( numberOfIterations ) )
+    {
+    startTime <- Sys.time()
+    lossAndGradients <- computeLossAndGradients( contentArray, styleArrayList,
+                          combinationTensor, featureModel, contentLayerNames,
+                          styleLayerIndices, imageShape, contentMaskTensor,
+                          styleMaskTensorList )
+    endTime <- Sys.time()
+    if( verbose == TRUE )
+      {
+      cat( "Iteration ", i, " of ", numberOfIterations, ": total loss = ", lossAndGradients$loss,
+           " (elapsed time = ", endTime - startTime, "s)",  sep = "" )
+      }
+    optimizer$apply_gradients( list( lossAndGradients$gradients, combinationTensor ) )
+
+    if( ! is.null( outputPrefix ) )
+      {
+      combinationArray <- array( combinationTensor )
+      combinationImage <- postProcessArray( combinationArray, contentImage )
+      combinationRgb <- combinationImage
+      antsImageWrite( combinationRgb, paste0( outputPrefix, "_iteration", i, ".png" ) )
+      }
+    }
+
+  combinationArray <- array( combinationTensor )
+  combinationImage <- postProcessArray( combinationArray, contentImage )
+  return( combinationImage )
 }

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>2-D implementation of the deep back-projection network. — createDeepBackProjectionNetworkModel2D • ANTsRNet</title>
+<title>Perform TID-based assessment of an image. — tidNeuralImageAssessment • ANTsRNet</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,9 @@
 
 
 
-<meta property="og:title" content="2-D implementation of the deep back-projection network. — createDeepBackProjectionNetworkModel2D" />
-<meta property="og:description" content="Creates a keras model of the deep back-project network for image super
-resolution.  More information is provided at the authors' website:" />
+<meta property="og:title" content="Perform TID-based assessment of an image. — tidNeuralImageAssessment" />
+<meta property="og:description" content="Use a ResNet architecture to estimate image quality in 2D or 3D using the TID
+image database described in" />
 
 
 
@@ -109,107 +109,102 @@ resolution.  More information is provided at the authors' website:" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>2-D implementation of the deep back-projection network.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ANTsX/ANTsRNet/blob/master/R/createDeepBackProjectionNetworkModel.R'><code>R/createDeepBackProjectionNetworkModel.R</code></a></small>
-    <div class="hidden name"><code>createDeepBackProjectionNetworkModel2D.Rd</code></div>
+    <h1>Perform TID-based assessment of an image.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/ANTsX/ANTsRNet/blob/master/R/qualityAssessment.R'><code>R/qualityAssessment.R</code></a></small>
+    <div class="hidden name"><code>tidNeuralImageAssessment.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Creates a keras model of the deep back-project network for image super
-resolution.  More information is provided at the authors' website:</p>
+    <p>Use a ResNet architecture to estimate image quality in 2D or 3D using the TID
+image database described in</p>
     </div>
 
-    <pre class="usage"><span class='fu'>createDeepBackProjectionNetworkModel2D</span>(
-  <span class='no'>inputImageSize</span>,
-  <span class='kw'>numberOfOutputs</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>numberOfBaseFilters</span> <span class='kw'>=</span> <span class='fl'>64</span>,
-  <span class='kw'>numberOfFeatureFilters</span> <span class='kw'>=</span> <span class='fl'>256</span>,
-  <span class='kw'>numberOfBackProjectionStages</span> <span class='kw'>=</span> <span class='fl'>7</span>,
-  <span class='kw'>convolutionKernelSize</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>12</span>, <span class='fl'>12</span>),
-  <span class='kw'>strides</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>8</span>, <span class='fl'>8</span>),
-  <span class='kw'>lastConvolution</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>3</span>, <span class='fl'>3</span>),
-  <span class='kw'>numberOfLossFunctions</span> <span class='kw'>=</span> <span class='fl'>1</span>
+    <pre class="usage"><span class='fu'>tidNeuralImageAssessment</span>(
+  <span class='no'>image</span>,
+  <span class='no'>mask</span>,
+  <span class='kw'>patchSize</span> <span class='kw'>=</span> <span class='fl'>101L</span>,
+  <span class='no'>strideLength</span>,
+  <span class='kw'>paddingSize</span> <span class='kw'>=</span> <span class='fl'>0L</span>,
+  <span class='kw'>dimensionsToPredict</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>outputDirectory</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>whichModel</span> <span class='kw'>=</span> <span class='st'>"tidsQualityAssessment"</span>,
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>inputImageSize</th>
-      <td><p>Used for specifying the input tensor shape.  The
-shape (or dimension) of that tensor is the image dimensions followed by
-the number of channels (e.g., red, green, and blue).</p></td>
+      <th>image</th>
+      <td><p>the input image.  Either 2D or 3D.</p></td>
     </tr>
     <tr>
-      <th>numberOfOutputs</th>
-      <td><p>number of outputs (e.g., 3 for RGB images).</p></td>
+      <th>mask</th>
+      <td><p>optional mask for designating calculation ROI.</p></td>
     </tr>
     <tr>
-      <th>numberOfBaseFilters</th>
-      <td><p>number of base filters.</p></td>
+      <th>patchSize</th>
+      <td><p>integer (prime) number for patch size; 101 is good. otherwise,
+choose <code>"global"</code> for a single global estimate of quality.</p></td>
     </tr>
     <tr>
-      <th>numberOfFeatureFilters</th>
-      <td><p>number of feature filters.</p></td>
+      <th>strideLength</th>
+      <td><p>optional value to speed up computation (typically less than
+patch size).  Integer or vector of image dimension length.</p></td>
     </tr>
     <tr>
-      <th>numberOfBackProjectionStages</th>
-      <td><p>number of up-/down-projection stages.  This
-number includes the final up block.</p></td>
+      <th>paddingSize</th>
+      <td><p>positive or negative integer (or vector of image dimension
+length) for (de)padding to remove edge effects.</p></td>
     </tr>
     <tr>
-      <th>convolutionKernelSize</th>
-      <td><p>kernel size for certain convolutional layers.  This
-and <code>strides</code> are dependent on the scale factor discussed in
-original paper.  Factors used in the original implementation are as follows:
-2x --&gt; <code>convolutionKernelSize = c( 6, 6 )</code>,
-4x --&gt; <code>convolutionKernelSize = c( 8, 8 )</code>,
-8x --&gt; <code>convolutionKernelSize = c( 12, 12 )</code>.  We default to 8x parameters.</p></td>
+      <th>dimensionsToPredict</th>
+      <td><p>if image dimension is 3, this parameter specifies
+which dimension(s) should be used for prediction.  If more than one dimension
+is specified, the results are averaged.</p></td>
     </tr>
     <tr>
-      <th>strides</th>
-      <td><p>strides for certain convolutional layers.  This and the
-<code>convolutionKernelSize</code> are dependent on the scale factor discussed in
-original paper.  Factors used in the original implementation are as follows:
-2x --&gt; <code>strides = c( 2, 2 )</code>, 4x --&gt; <code>strides = c( 4, 4 )</code>, 8x --&gt;
-<code>strides = c( 8, 8 )</code>. We default to 8x parameters.</p></td>
+      <th>outputDirectory</th>
+      <td><p>destination directory for storing the downloaded
+template and model weights.  Since these can be reused, if
+<code><a href='https://rdrr.io/r/base/NULL.html'>is.null(outputDirectory)</a></code>, these data will be downloaded to the
+inst/extdata/ subfolder of the ANTsRNet package.</p></td>
     </tr>
     <tr>
-      <th>lastConvolution</th>
-      <td><p>the kernel size for the last convolutional layer</p></td>
+      <th>whichModel</th>
+      <td><p>model type e.g. string tidsQualityAssessment, koniqMBCS</p></td>
     </tr>
     <tr>
-      <th>numberOfLossFunctions</th>
-      <td><p>the number of data targets, e.g. 2 for 2 targets</p></td>
+      <th>verbose</th>
+      <td><p>print progress.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a keras model defining the deep back-projection network.</p>
+    <p>list of QC results predicting both both human rater's mean and standard
+deviation of the MOS ("mean opinion scores").  See the TID2013 paper.  Both
+aggregate and spatial scores are returned, the latter in the form of an image.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    
-<pre>    \url{https://www.toyota-ti.ac.jp/Lab/Denshi/iim/members/muhammad.haris/projects/DBPN.html}
-</pre>
-
-<p>with the paper available here:</p><pre>    \url{https://arxiv.org/abs/1803.02735}
-</pre>
-
-<p>This particular implementation was influenced by the following keras (python)
-implementation:</p><pre>    \url{https://github.com/rajatkb/DBPN-Keras}
-</pre>
-
-<p>with help from the original author's Caffe and Pytorch implementations:</p><pre>    \url{https://github.com/alterzero/DBPN-caffe}
-    \url{https://github.com/alterzero/DBPN-Pytorch}
-</pre>
-
+    <p><a href='https://www.sciencedirect.com/science/article/pii/S0923596514001490'>https://www.sciencedirect.com/science/article/pii/S0923596514001490</a></p>
+<p>where the image assessment is either "global", i.e., a single number or an image
+based on the specified patch size.  In the 3-D case, neighboring slices are used
+for each estimate.  Note that parameters should be kept as consistent as possible
+in order to enable comparison.  Patch size should be roughly 1/12th to 1/4th of
+image size to enable locality. A global estimate can be gained by setting
+<code>patchSize = "global"</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>model</span> <span class='kw'>=</span> <span class='fu'>createDeepBackProjectionNetworkModel2D</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>25</span>, <span class='fl'>25</span>, <span class='fl'>1</span>))
-<span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>model</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2444927 130.6    4467514 238.6         NA   4467514  238.6
-#&gt; Vcells 4359095  33.3   62722786 478.6     102400 150563295 1148.8</div></pre>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+<span class='no'>image</span> <span class='kw'>&lt;-</span> <span class='fu'>antsImageRead</span>( <span class='fu'>getANTsRData</span>( <span class='st'>"r16"</span> ) )
+<span class='no'>mask</span> <span class='kw'>&lt;-</span> <span class='fu'>getMask</span>( <span class='no'>image</span> )
+<span class='no'>tid</span> <span class='kw'>&lt;-</span> <span class='fu'>tidNeuralImageAssessment</span>( <span class='no'>image</span>, <span class='kw'>mask</span> <span class='kw'>=</span> <span class='no'>mask</span>, <span class='kw'>patchSize</span> <span class='kw'>=</span> <span class='fl'>101L</span>,
+          <span class='kw'>strideLength</span> <span class='kw'>=</span> <span class='fl'>7L</span>, <span class='kw'>paddingSize</span> <span class='kw'>=</span> <span class='fl'>0L</span> )
+<span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>( <span class='no'>image</span>, <span class='no'>tid</span>$<span class='no'>MOS</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.5</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/cat.html'>cat</a></span>( <span class='st'>"mean MOS = "</span>, <span class='no'>tid</span>$<span class='no'>MOS.mean</span>, <span class='st'>"\n"</span> )
+<span class='fu'><a href='https://rdrr.io/r/base/cat.html'>cat</a></span>( <span class='st'>"sd MOS = "</span>, <span class='no'>tid</span>$<span class='no'>MOS.standardDeviationMean</span>, <span class='st'>"\n"</span> )
+}</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
