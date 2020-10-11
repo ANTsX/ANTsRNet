@@ -281,5 +281,3 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
 
   return( probabilityImage = probabilityImage )
 }
-
-

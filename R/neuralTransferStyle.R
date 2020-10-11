@@ -80,9 +80,9 @@ neuralStyleTransfer <- function(contentImage, styleImages,
       imageArray[1,,,3] <- as.array( image )
       } else if( image@components == 3 ) {
       imageChannels <- splitChannels( image )
-      imageArray[1,,,1] <- as.array( imageChannels[1] )
-      imageArray[1,,,2] <- as.array( imageChannels[2] )
-      imageArray[1,,,3] <- as.array( imageChannels[3] )
+      imageArray[1,,,1] <- as.array( imageChannels[[1]] )
+      imageArray[1,,,2] <- as.array( imageChannels[[2]] )
+      imageArray[1,,,3] <- as.array( imageChannels[[3]] )
       } else {
       stop( "Unexpected number of components." )
       }
@@ -111,12 +111,16 @@ neuralStyleTransfer <- function(contentImage, styleImages,
     imageArray[,,2] <- imageArray[,,2] + 116.779
     imageArray[,,3] <- imageArray[,,3] + 123.68
     # BGR -> RGB
-    imageArray <- imageArray[,,,rev( seq.int( 3 ) ), drop = FALSE]
+    imageArray <- imageArray[,,rev( seq.int( 3 ) ), drop = FALSE]
     imageArray[imageArray < 0] <- 0
     imageArray[imageArray > 255] <- 255
+ 
+    imageChannels <- list()
+    imageChannels[[1]] <- as.antsImage( drop( imageArray[,,1] ), reference = referenceImage )  
+    imageChannels[[2]] <- as.antsImage( drop( imageArray[,,2] ), reference = referenceImage )  
+    imageChannels[[3]] <- as.antsImage( drop( imageArray[,,3] ), reference = referenceImage )  
 
-    image <- as.antsImage( imageArray, reference = referenceImage,
-                          components = TRUE )
+    image <- mergeChannels( imageChannels )
     return( image )
     }
 
@@ -160,10 +164,9 @@ neuralStyleTransfer <- function(contentImage, styleImages,
         }
       rm( maskTensor )
       }
-
     styleGram <- gramMatrix( styleFeatures, useShiftedActivations )
     contentGram <- gramMatrix( combinationFeatures, useShiftedActivations )
-    size <- imageShape[0] * imageShape[1]
+    size <- imageShape[1] * imageShape[2]
     numberOfChannels <- 3
     loss <- tf$reduce_sum( tf$square( styleGram - contentGram ) ) /
       ( 4.0 * numberOfChannels^2 * size^2 )
@@ -172,16 +175,17 @@ neuralStyleTransfer <- function(contentImage, styleImages,
 
   contentLoss <- function( contentFeatures, combinationFeatures )
     {
-    loss <- tf$reduce_sum( tf$square( contentFeature - combinationFeatures ) )
+    loss <- tf$reduce_sum( tf$square( contentFeatures - combinationFeatures ) )
     return( loss )
     }
 
   totalVariationLoss <- function( x )
     {
     shape <- x$shape
-    a <- tf$square( x[, 1:( shape[1] - 1 ), 1:( shape[2] - 1 ),] - x[, 2:shape[1], 1:( shape[2] - 1 ),] )
-    b <- tf$square( x[, 1:( shape[1] - 1 ), 1:( shape[2] - 1 ),] - x[, 1:( shape[1] - 1 ), 2:shape[2],] )
+    a <- tf$square( x[, 1:( shape[[2]] - 1L ), 1:( shape[[3]] - 1L ),] - x[, 2:shape[[2]], 1:( shape[[3]] - 1L ),] )
+    b <- tf$square( x[, 1:( shape[[2]] - 1L ), 1:( shape[[3]] - 1L ),] - x[, 1:( shape[[2]] - 1L ), 2:shape[[3]],] )
     loss <- tf$reduce_sum( tf$pow( a + b, 1.25 ) )
+    return( loss )
     }
 
   computeTotalLoss <- function( contentArray, styleArrayList, combinationTensor,
@@ -190,7 +194,7 @@ neuralStyleTransfer <- function(contentImage, styleImages,
     {
     numberOfStyleImages <- length( styleArrayList )
 
-    inputArray <- list()
+    inputArrays <- list()
     inputArrays[[1]] <- contentArray
     for( i in seq.int( numberOfStyleImages ) )
       {
@@ -210,7 +214,7 @@ neuralStyleTransfer <- function(contentImage, styleImages,
       contentFeatures <- layerFeatures[1,,,]
       combinationFeatures <- layerFeatures[3,,,]
       totalLoss <- totalLoss + contentLoss( contentFeatures, combinationFeatures ) *
-        contentWeight / length( contentLayerNames )
+        contentWeight / as.numeric( length( contentLayerNames ) )
       }
 
     # style loss
@@ -226,10 +230,10 @@ neuralStyleTransfer <- function(contentImage, styleImages,
           {
           if( is.null( styleMaskTensorList ) )
             {
-            loss[[j]] <- styleLoss( styleFeatures[j], combinationFeatures, imageShape,
+            loss[[j]] <- styleLoss( styleFeatures[j,,,], combinationFeatures, imageShape,
                                     styleMask = NULL, contentMask = contentMaskTensor )
             } else {
-            loss[[j]] <- styleLoss( styleFeatures[j], combinationFeatures, imageShape,
+            loss[[j]] <- styleLoss( styleFeatures[j,,,], combinationFeatures, imageShape,
                                     styleMask = styleMaskTensorList[[j]], contentMask = contentMaskTensor )
             }
           }
@@ -242,10 +246,10 @@ neuralStyleTransfer <- function(contentImage, styleImages,
           {
           if( is.null( styleMaskTensorList ) )
             {
-            lossP1[[j]] <- styleLoss( styleLoss( styleFeatures[j,,,,drop = FALSE], combinationFeatures, imageShape,
+            lossP1[[j]] <- styleLoss( styleLoss( styleFeatures[j,,,], combinationFeatures, imageShape,
                                       styleMask = NULL, contentMask = contentMaskTensor ) )
             } else {
-            lossP1[[j]] <- styleLoss( styleLoss( styleFeatures[j,,,,drop = FALSE], combinationFeatures, imageShape,
+            lossP1[[j]] <- styleLoss( styleLoss( styleFeatures[j,,,], combinationFeatures, imageShape,
                                       styleMask = styleMaskTensorList[i], contentMask = contentMaskTensor ) )
             }
           }
@@ -253,7 +257,8 @@ neuralStyleTransfer <- function(contentImage, styleImages,
         for( j in seq.int( numberOfStyleImages ) )
           {
           lossDifference <- loss[j] - lossP1[j]
-          totalLoss <- totalLoss + styleImageWeights[j] * lossDifference / ( 2^( length( styleLayerNames ) - ( i + 1 ) ) )
+          totalLoss <- totalLoss + styleImageWeights[j] * lossDifference / 
+            ( 2^( as.numeric( length( styleLayerNames ) - ( i + 1 ) ) ) )
           }
         }
       } else {
@@ -267,20 +272,21 @@ neuralStyleTransfer <- function(contentImage, styleImages,
           {
           if( is.null( styleMaskTensorList ) )
             {
-            loss[[j]] <- styleLoss( styleFeatures[j], combinationFeatures, imageShape,
+            loss[[j]] <- styleLoss( styleFeatures[j,,,], combinationFeatures, imageShape,
                                     styleMask = NULL, contentMask = contentMaskTensor )
             } else {
-            loss[[j]] <- styleLoss( styleFeatures[j], combinationFeatures, imageShape,
+            loss[[j]] <- styleLoss( styleFeatures[j,,,], combinationFeatures, imageShape,
                                     styleMask = styleMaskTensorList[[j]], contentMask = contentMaskTensor )
             }
           }
         for( j in seq.int( numberOfStyleImages ) )
           {
-          totalLoss <- totalLoss + ( loss[[j]] * styleImageWeights[j] / length( styleLayerIndices ) )
+          totalLoss <- totalLoss + ( loss[[j]] * styleImageWeights[j] / 
+            as.numeric( length( styleLayerIndices ) ) )
           }
         }
       }
-    totalLoss <- totalLoss + totalVariationWeight + totalVariationLoss( combinationTensor )
+    totalLoss <- totalLoss + totalVariationWeight + tf$cast( totalVariationLoss( combinationTensor ), tf$float32 )
     return( totalLoss )
     }
 
@@ -288,14 +294,13 @@ neuralStyleTransfer <- function(contentImage, styleImages,
                 featureModel, contentLayerNames, styleLayerIndices, imageShape,
                 contentMaskTensor, styleMaskTensorList )
     {
-    with( tf$GradientTape() %as% tape,
-      {
+    with( tf$GradientTape() %as% tape, {
       loss <- computeTotalLoss( contentArray, styleArrayList, combinationTensor,
                     featureModel, contentLayerNames, styleLayerIndices, imageShape, contentMaskTensor,
                     styleMaskTensorList )
-      } )
+      })
     gradients <- tape$gradient( loss, combinationTensor )
-    return( list( loss = loss, gradients = gradients) )
+    list( loss, gradients )
     }
 
 
@@ -421,21 +426,21 @@ neuralStyleTransfer <- function(contentImage, styleImages,
   styleArrayList <- list()
   for( i in seq.int( numberOfStyleImages ) )
     {
-    styleArrayList <- preprocessAntsImage( styleImageList[[i]] )
+    styleArrayList[[i]] <- preprocessAntsImage( styleImageList[[i]] )
     }
 
-  imageShape <- c( dim( contentArray ), 3 )
+  imageShape <- c( dim( contentArray )[2:3], 3 )
 
   combinationTensor <- NULL
   if( is.null( initialCombinationImage ) )
     {
-    combinationTensor <- tf$Variable( array( data = contentArray, dim = dim( contentArray ) ) )
+    combinationTensor <- tf$Variable( array( data = contentArray, dim = dim( contentArray ) ), dtype = tf$float32 )
     } else {
     initialCombinationTensor <- preprocessAntsImage( initialCombinationImage, doScaleAndCenter = FALSE )
-    combinationTensor <- tf$Variable( initialCombinationTensor )
+    combinationTensor <- tf$Variable( initialCombinationTensor, dtype = tf$float32 )
     }
 
-  if( any( imageShape != dim( combinationTensor, 3 ) ) )
+  if( any( imageShape != c( dim( combinationTensor )[2:3], 3 ) ) )
     {
     stop( "Initial combination image size does not match content image." )
     }
@@ -445,28 +450,29 @@ neuralStyleTransfer <- function(contentImage, styleImages,
   for( i in seq.int( numberOfIterations ) )
     {
     startTime <- Sys.time()
-    lossAndGradients <- computeLossAndGradients( contentArray, styleArrayList,
+    c( loss, gradients ) %<-% computeLossAndGradients( contentArray, styleArrayList,
                           combinationTensor, featureModel, contentLayerNames,
                           styleLayerIndices, imageShape, contentMaskTensor,
                           styleMaskTensorList )
     endTime <- Sys.time()
     if( verbose == TRUE )
       {
-      cat( "Iteration ", i, " of ", numberOfIterations, ": total loss = ", lossAndGradients$loss,
-           " (elapsed time = ", endTime - startTime, "s)",  sep = "" )
+      cat( "Iteration ", i, " of ", numberOfIterations, ": total loss = ", 
+        as.numeric( loss ), 
+        " (elapsed time = ", endTime - startTime, "s)\n",  sep = "" )
       }
-    optimizer$apply_gradients( list( lossAndGradients$gradients, combinationTensor ) )
+    optimizer$apply_gradients( list( tuple( gradients, combinationTensor ) ) )
 
     if( ! is.null( outputPrefix ) )
       {
-      combinationArray <- array( combinationTensor )
+      combinationArray <- as.array( combinationTensor )
       combinationImage <- postProcessArray( combinationArray, contentImage )
-      combinationRgb <- combinationImage
+      combinationRgb <- antsImageClone( combinationImage, out_pixeltype = 'unsigned char' )
       antsImageWrite( combinationRgb, paste0( outputPrefix, "_iteration", i, ".png" ) )
       }
     }
 
-  combinationArray <- array( combinationTensor )
+  combinationArray <- as.array( combinationTensor )
   combinationImage <- postProcessArray( combinationArray, contentImage )
   return( combinationImage )
 }
