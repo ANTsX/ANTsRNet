@@ -4,9 +4,9 @@
 #'
 #' @param image input 3-D lung image.
 #' @param modality image type.  Options include "proton" or "ct".
-#' @param outputDirectory destination directory for storing the downloaded
+#' @param antsxnetCacheDirectory destination directory for storing the downloaded
 #' template and model weights.  Since these can be resused, if
-#' \code{is.null(outputDirectory)}, these data will be downloaded to the
+#' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
 #' subdirectory ~/.keras/ANTsXNet/.
 #' @param verbose print progress.
 #' @return segmentation and probability images
@@ -22,7 +22,7 @@
 #' @export
 lungExtraction <- function( image,
   modality = c( "proton", "ct" ),
-  outputDirectory = NULL, verbose = FALSE )
+  antsxnetCacheDirectory = NULL, verbose = FALSE )
   {
 
   if( image@dimension != 3 )
@@ -35,9 +35,9 @@ lungExtraction <- function( image,
   imageModalities <- c( modality )
   channelSize <- length( imageModalities )
 
-  if( is.null( outputDirectory ) )
+  if( is.null( antsxnetCacheDirectory ) )
     {
-    outputDirectory <- "ANTsXNet"
+    antsxnetCacheDirectory <- "ANTsXNet"
     }
 
   if( modality == "proton" )
@@ -46,7 +46,7 @@ lungExtraction <- function( image,
       {
       cat( "Lung extraction:  retrieving model weights.\n" )
       }
-    weightsFileName <- getPretrainedNetwork( "protonLungMri", outputDirectory = outputDirectory )
+    weightsFileName <- getPretrainedNetwork( "protonLungMri", antsxnetCacheDirectory = antsxnetCacheDirectory )
 
     classes <- c( "Background", "LeftLung", "RightLung" )
     numberOfClassificationLabels <- length( classes )
@@ -58,7 +58,7 @@ lungExtraction <- function( image,
       }
     reorientTemplateUrl <- "https://ndownloader.figshare.com/files/22707338"
     reorientTemplateFileNamePath <- tensorflow::tf$keras$utils$get_file(
-      reorientTemplateFileName, reorientTemplateUrl, cache_subdir = outputDirectory )
+      reorientTemplateFileName, reorientTemplateUrl, cache_subdir = antsxnetCacheDirectory )
     reorientTemplate <- antsImageRead( reorientTemplateFileNamePath )
     resampledImageSize <- dim( reorientTemplate )
 
@@ -117,7 +117,7 @@ lungExtraction <- function( image,
       {
       cat( "Lung extraction:  retrieving model weights.\n" )
       }
-    weightsFileName <- getPretrainedNetwork( "ctHumanLung", outputDirectory = outputDirectory )
+    weightsFileName <- getPretrainedNetwork( "ctHumanLung", antsxnetCacheDirectory = antsxnetCacheDirectory )
 
     classes <- c( "Background", "LeftLung", "RightLung", "Trachea" )
     numberOfClassificationLabels <- length( classes )
@@ -129,7 +129,7 @@ lungExtraction <- function( image,
       }
     reorientTemplateUrl <- "https://ndownloader.figshare.com/files/22707335"
     reorientTemplateFileNamePath <- tensorflow::tf$keras$utils$get_file(
-      reorientTemplateFileName, reorientTemplateUrl, cache_subdir = outputDirectory )
+      reorientTemplateFileName, reorientTemplateUrl, cache_subdir = antsxnetCacheDirectory )
     reorientTemplate <- antsImageRead( reorientTemplateFileNamePath )
     resampledImageSize <- dim( reorientTemplate )
 

@@ -24,9 +24,9 @@
 #' @param dimensionsToPredict if image dimension is 3, this parameter specifies
 #' which dimension(s) should be used for prediction.  If more than one dimension
 #' is specified, the results are averaged.
-#' @param outputDirectory destination directory for storing the downloaded
+#' @param antsxnetCacheDirectory destination directory for storing the downloaded
 #' template and model weights.  Since these can be reused, if
-#' \code{is.null(outputDirectory)}, these data will be downloaded to the
+#' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
 #' inst/extdata/ subfolder of the ANTsRNet package.
 #' @param whichModel model type e.g. string tidsQualityAssessment, koniqMBCS
 #' @param verbose print progress.
@@ -47,7 +47,7 @@
 #' @export
 tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
   strideLength, paddingSize = 0L, dimensionsToPredict = 1,
-  outputDirectory = NULL, whichModel="tidsQualityAssessment", verbose = FALSE )
+  antsxnetCacheDirectory = NULL, whichModel="tidsQualityAssessment", verbose = FALSE )
 {
   is.prime <- function( n )
     {
@@ -59,16 +59,16 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
     cat( validModels )
     stop(" : Please pass valid model : ")
     }
-  if( is.null( outputDirectory ) )
+  if( is.null( antsxnetCacheDirectory ) )
     {
-    outputDirectory <- "ANTsXNet"
+    antsxnetCacheDirectory <- "ANTsXNet"
     }
   modelAndWeightsFileName <- paste0( whichModel, ".h5" )
   if( verbose == TRUE )
     {
     cat( "Neural QA:  retreivinging model and weights.\n" )
     }
-  modelAndWeightsFileName <- getPretrainedNetwork( whichModel, modelAndWeightsFileName, outputDirectory = outputDirectory )
+  modelAndWeightsFileName <- getPretrainedNetwork( whichModel, modelAndWeightsFileName, antsxnetCacheDirectory = antsxnetCacheDirectory )
   tidModel <- load_model_hdf5( filepath = modelAndWeightsFileName )
 
   paddingSizeVector <- paddingSize

@@ -131,7 +131,7 @@ various papers including the cortical thickness pipeline:</p>
   <span class='kw'>intensityMatchingType</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>referenceImage</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>intensityNormalizationType</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>outputDirectory</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>antsxnetCacheDirectory</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
 )</pre>
 
@@ -191,10 +191,10 @@ performed if <code>!is.null(referenceImage)</code>.</p></td>
 normalization is not performed.</p></td>
     </tr>
     <tr>
-      <th>outputDirectory</th>
+      <th>antsxnetCacheDirectory</th>
       <td><p>destination directory for storing the downloaded
 template and model weights.  Since these can be resused, if
-<code><a href='https://rdrr.io/r/base/NULL.html'>is.null(outputDirectory)</a></code>, these data will be downloaded to the
+<code><a href='https://rdrr.io/r/base/NULL.html'>is.null(antsxnetCacheDirectory)</a></code>, these data will be downloaded to the
 subdirectory ~/.keras/ANTsXNet/.</p></td>
     </tr>
     <tr>

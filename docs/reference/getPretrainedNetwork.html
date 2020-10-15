@@ -131,7 +131,7 @@
     <span class='st'>"sysuMediaWmhFlairT1Model1"</span>, <span class='st'>"sysuMediaWmhFlairT1Model2"</span>, <span class='st'>"tidsQualityAssessment"</span>,
     <span class='st'>"koniqMBCS"</span>, <span class='st'>"wholeTumorSegmentationT2Flair"</span>),
   <span class='no'>targetFileName</span>,
-  <span class='kw'>outputDirectory</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
+  <span class='kw'>antsxnetCacheDirectory</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -147,10 +147,10 @@ valid possibilities. Note that most require internet access to download.</p></td
       <td><p>optional target filename</p></td>
     </tr>
     <tr>
-      <th>outputDirectory</th>
+      <th>antsxnetCacheDirectory</th>
       <td><p>destination directory for storing the downloaded
 template and model weights.  Since these can be resused, if
-<code><a href='https://rdrr.io/r/base/NULL.html'>is.null(outputDirectory)</a></code>, these data will be downloaded to the
+<code><a href='https://rdrr.io/r/base/NULL.html'>is.null(antsxnetCacheDirectory)</a></code>, these data will be downloaded to the
 subdirectory ~/.keras/ANTsXNet/.</p></td>
     </tr>
     </table>

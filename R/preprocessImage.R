@@ -24,9 +24,9 @@
 #' @param intensityNormalizationType Either rescale the intensities to [0,1]
 #' (i.e., "01") or zero-mean, unit variance (i.e., "0mean").  If \code{NULL}
 #' normalization is not performed.
-#' @param outputDirectory destination directory for storing the downloaded
+#' @param antsxnetCacheDirectory destination directory for storing the downloaded
 #' template and model weights.  Since these can be resused, if
-#' \code{is.null(outputDirectory)}, these data will be downloaded to the
+#' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
 #' subdirectory ~/.keras/ANTsXNet/.
 #' @param verbose print progress to the screen.
 #' @return preprocessed image and, optionally, the brain mask, bias field, and
@@ -49,13 +49,13 @@ preprocessBrainImage <- function( image, truncateIntensity = c( 0.01, 0.99 ),
   doBrainExtraction = TRUE, templateTransformType = NULL, template = "biobank",
   doBiasCorrection = TRUE, returnBiasField = FALSE, doDenoising = TRUE,
   intensityMatchingType = NULL, referenceImage = NULL,
-  intensityNormalizationType = NULL, outputDirectory = NULL,
+  intensityNormalizationType = NULL, antsxnetCacheDirectory = NULL,
   verbose = TRUE )
   {
 
-  if( is.null( outputDirectory ) )
+  if( is.null( antsxnetCacheDirectory ) )
     {
-    outputDirectory <- "ANTsXNet"
+    antsxnetCacheDirectory <- "ANTsXNet"
     }
 
   preprocessedImage <- antsImageClone( image )
@@ -81,7 +81,7 @@ preprocessBrainImage <- function( image, truncateIntensity = c( 0.01, 0.99 ),
       message( "Preprocessing:  brain extraction.\n" )
       }
     probabilityMask <- brainExtraction( preprocessedImage, modality = "t1",
-      outputDirectory = outputDirectory, verbose = verbose )
+      antsxnetCacheDirectory = antsxnetCacheDirectory, verbose = verbose )
     mask <- thresholdImage( probabilityMask, 0.5, 1, 1, 0 )
     }
 
@@ -107,7 +107,7 @@ preprocessBrainImage <- function( image, truncateIntensity = c( 0.01, 0.99 ),
         cat( "Template normalization:  retrieving template.\n" )
         }
       templateFileNamePath <- tensorflow::tf$keras$utils$get_file(
-        templateFileName, templateUrl, cache_subdir = outputDirectory )
+        templateFileName, templateUrl, cache_subdir = antsxnetCacheDirectory )
       templateImage <- antsImageRead( templateFileNamePath )
       } else {
       templateImage <- template
@@ -121,7 +121,7 @@ preprocessBrainImage <- function( image, truncateIntensity = c( 0.01, 0.99 ),
                           invtransforms = registration$invtransforms )
       } else {
       templateProbabilityMask <- brainExtraction( templateImage, modality = "t1",
-        outputDirectory = outputDirectory, verbose = verbose )
+        antsxnetCacheDirectory = antsxnetCacheDirectory, verbose = verbose )
       templateMask <- thresholdImage( templateProbabilityMask, 0.5, 1, 1, 0 )
       templateBrainImage <- templateMask * templateImage
 

@@ -24,9 +24,9 @@
 #'
 #' @param t1 raw or preprocessed 3-D T1-weighted brain image.
 #' @param doPreprocessing perform preprocessing.  See description above.
-#' @param outputDirectory destination directory for storing the downloaded
+#' @param antsxnetCacheDirectory destination directory for storing the downloaded
 #' template and model weights.  Since these can be resused, if
-#' \code{is.null(outputDirectory)}, these data will be downloaded to the
+#' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
 #' inst/extdata/ subfolder of the ANTsRNet package.
 #' @param verbose print progress.
 #' @param debug return feature images in the last layer of the u-net model.
@@ -43,7 +43,7 @@
 #' }
 #' @export
 deepAtropos <- function( t1, doPreprocessing = TRUE,
-  outputDirectory = NULL, verbose = FALSE, debug = FALSE )
+  antsxnetCacheDirectory = NULL, verbose = FALSE, debug = FALSE )
 {
 
   if( t1@dimension != 3 )
@@ -51,9 +51,9 @@ deepAtropos <- function( t1, doPreprocessing = TRUE,
     stop( "Input image dimension must be 3." )
     }
 
-  if( is.null( outputDirectory ) )
+  if( is.null( antsxnetCacheDirectory ) )
     {
-    outputDirectory <- system.file( "extdata", package = "ANTsRNet" )
+    antsxnetCacheDirectory <- system.file( "extdata", package = "ANTsRNet" )
     }
 
   ################################
@@ -72,7 +72,7 @@ deepAtropos <- function( t1, doPreprocessing = TRUE,
         templateTransformType = "AffineFast",
         doBiasCorrection = TRUE,
         doDenoising = TRUE,
-        outputDirectory = outputDirectory,
+        antsxnetCacheDirectory = antsxnetCacheDirectory,
         verbose = verbose )
     t1Preprocessed <- t1Preprocessing$preprocessedImage * t1Preprocessing$brainMask
     }
@@ -100,7 +100,7 @@ deepAtropos <- function( t1, doPreprocessing = TRUE,
     {
     cat( "DeepAtropos:  retrieving model weights.\n" )
     }
-  weightsFileName <- getPretrainedNetwork( "sixTissueOctantBrainSegmentation", outputDirectory = outputDirectory )
+  weightsFileName <- getPretrainedNetwork( "sixTissueOctantBrainSegmentation", antsxnetCacheDirectory = antsxnetCacheDirectory )
   load_model_weights_hdf5( unetModel, filepath = weightsFileName )
 
   unetModel %>% compile(

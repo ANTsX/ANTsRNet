@@ -18,7 +18,7 @@ getPretrainedNetwork(
     "sysuMediaWmhFlairT1Model1", "sysuMediaWmhFlairT1Model2", "tidsQualityAssessment",
     "koniqMBCS", "wholeTumorSegmentationT2Flair"),
   targetFileName,
-  outputDirectory = NULL
+  antsxnetCacheDirectory = NULL
 )
 }
 \arguments{
@@ -27,9 +27,9 @@ valid possibilities. Note that most require internet access to download.}
 
 \item{targetFileName}{optional target filename}
 
-\item{outputDirectory}{destination directory for storing the downloaded
+\item{antsxnetCacheDirectory}{destination directory for storing the downloaded
 template and model weights.  Since these can be resused, if
-\code{is.null(outputDirectory)}, these data will be downloaded to the
+\code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
 subdirectory ~/.keras/ANTsXNet/.}
 }
 \value{

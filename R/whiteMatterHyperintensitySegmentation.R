@@ -23,9 +23,9 @@
 #' was trained on axial slices.  If \code{FALSE}, use ANTsXNet variant
 #' implementation which applies the slice-by-slice models to all 3 dimensions
 #' and averages the results.
-#' @param outputDirectory destination directory for storing the downloaded
+#' @param antsxnetCacheDirectory destination directory for storing the downloaded
 #' template and model weights.  Since these can be resused, if
-#' \code{is.null(outputDirectory)}, these data will be downloaded to the
+#' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
 #' inst/extdata/ subfolder of the ANTsRNet package.
 #' @param verbose print progress.
 #' @return WMH segmentation probability image
@@ -41,7 +41,7 @@
 #' @export
 sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
   doPreprocessing = TRUE, useEnsemble = TRUE, useAxialSlicesOnly = TRUE,
-  outputDirectory = NULL, verbose = FALSE )
+  antsxnetCacheDirectory = NULL, verbose = FALSE )
 {
 
   if( flair@dimension != 3 )
@@ -49,9 +49,9 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
     stop( "Input image dimension must be 3." )
     }
 
-  if( is.null( outputDirectory ) )
+  if( is.null( antsxnetCacheDirectory ) )
     {
-    outputDirectory <- system.file( "extdata", package = "ANTsRNet" )
+    antsxnetCacheDirectory <- system.file( "extdata", package = "ANTsRNet" )
     }
 
   ################################
@@ -68,7 +68,7 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
         doBrainExtraction = FALSE,
         doBiasCorrection = TRUE,
         doDenoising = FALSE,
-        outputDirectory = outputDirectory,
+        antsxnetCacheDirectory = antsxnetCacheDirectory,
         verbose = verbose )
     flairPreprocessed <- flairPreprocessing$preprocessedImage
     }
@@ -85,7 +85,7 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
           templateTransformType = NULL,
           doBiasCorrection = TRUE,
           doDenoising = FALSE,
-          outputDirectory = outputDirectory,
+          antsxnetCacheDirectory = antsxnetCacheDirectory,
           verbose = verbose )
       t1Preprocessed <- t1Preprocessing$preprocessedImage
       }

@@ -3,9 +3,9 @@
 #' Perform super-resolution (2x) of MRI data using deep back projection network.
 #'
 #' @param image magnetic resonance image
-#' @param outputDirectory destination directory for storing the downloaded
+#' @param antsxnetCacheDirectory destination directory for storing the downloaded
 #' template and model weights.  Since these can be resused, if
-#' \code{is.null(outputDirectory)}, these data will be downloaded to the
+#' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
 #' inst/extdata/ subfolder of the ANTsRNet package.
 #' @param verbose print progress.
 #' @return super-resolution image.
@@ -18,16 +18,16 @@
 #' imageSr <- mriSuperResolution( image )
 #' }
 #' @export
-mriSuperResolution <- function( image, outputDirectory = NULL, verbose = FALSE )
+mriSuperResolution <- function( image, antsxnetCacheDirectory = NULL, verbose = FALSE )
 {
   if( image@dimension != 3 )
     {
     stop( "Input image dimension must be 3." )
     }
 
-  if( is.null( outputDirectory ) )
+  if( is.null( antsxnetCacheDirectory ) )
     {
-    outputDirectory <- "ANTsXNet"
+    antsxnetCacheDirectory <- "ANTsXNet"
     }
 
   modelAndWeightsFileName <- "mindmapsSR_16_ANINN222_0.h5"
@@ -35,7 +35,7 @@ mriSuperResolution <- function( image, outputDirectory = NULL, verbose = FALSE )
     {
     cat( "MRI super-resolution:  retrieving model weights.\n" )
     }
-  modelAndWeightsFileName <- getPretrainedNetwork( "mriSuperResolution", modelAndWeightsFileName, outputDirectory = outputDirectory )
+  modelAndWeightsFileName <- getPretrainedNetwork( "mriSuperResolution", modelAndWeightsFileName, antsxnetCacheDirectory = antsxnetCacheDirectory )
   modelSR <- load_model_hdf5( modelAndWeightsFileName )
 
   imageSR <- applySuperResolutionModelToImage( image, modelSR, targetRange = c( -127.5, 127.5 ) )
