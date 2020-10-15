@@ -116,10 +116,7 @@ getPretrainedNetwork <- function(
     {
     outputDirectory <- "ANTsXNet"
     }
-
-  if( ! file.exists( targetFileName ) || overwrite )
-    {
-    targetFileNamePath <- tensorflow::tf$keras$utils$get_file( targetFileName, url, cache_subdir = outputDirectory )
-    }
+  targetFileNamePath <- tensorflow::tf$keras$utils$get_file(
+    targetFileName, url, cache_subdir = outputDirectory )
   return( targetFileNamePath )
 }
