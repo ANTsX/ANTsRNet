@@ -121,9 +121,9 @@
 #'
 #' @param t1 raw or preprocessed 3-D T1-weighted brain image.
 #' @param doPreprocessing perform preprocessing.  See description above.
-#' @param outputDirectory destination directory for storing the downloaded
+#' @param antsxnetCacheDirectory destination directory for storing the downloaded
 #' template and model weights.  Since these can be resused, if
-#' \code{is.null(outputDirectory)}, these data will be downloaded to the
+#' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
 #' subdirectory ~/.keras/ANTsXNet/.
 #' @param verbose print progress.
 #' @param debug return feature images in the last layer of the u-net model.
@@ -140,7 +140,7 @@
 #' }
 #' @export
 desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
-  outputDirectory = NULL, verbose = FALSE, debug = FALSE )
+  antsxnetCacheDirectory = NULL, verbose = FALSE, debug = FALSE )
 {
 
   if( t1@dimension != 3 )
@@ -148,9 +148,9 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
     stop( "Input image dimension must be 3." )
     }
 
-  if( is.null( outputDirectory ) )
+  if( is.null( antsxnetCacheDirectory ) )
     {
-    outputDirectory <- "ANTsXNet"
+    antsxnetCacheDirectory <- "ANTsXNet"
     }
 
   ################################
@@ -169,7 +169,7 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
         templateTransformType = "AffineFast",
         doBiasCorrection = TRUE,
         doDenoising = TRUE,
-        outputDirectory = outputDirectory,
+        antsxnetCacheDirectory = antsxnetCacheDirectory,
         verbose = verbose )
     t1Preprocessed <- t1Preprocessing$preprocessedImage * t1Preprocessing$brainMask
     }
@@ -188,7 +188,7 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
     cat( "DesikanKillianyTourville:  retrieving label spatial priors.\n" )
     }
   priorsFileNamePath <- tensorflow::tf$keras$utils$get_file(
-    priorsFileName, priorsUrl, cache_subdir = outputDirectory )
+    priorsFileName, priorsUrl, cache_subdir = antsxnetCacheDirectory )
   priorsImageList <- splitNDImageToList( antsImageRead( priorsFileNamePath ) )
 
   ################################
@@ -211,7 +211,7 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
     {
     cat( "DesikanKillianyTourville:  retrieving model weights.\n" )
     }
-  weightsFileNamePath <- getPretrainedNetwork( "dktOuterWithSpatialPriors", outputDirectory = outputDirectory )
+  weightsFileNamePath <- getPretrainedNetwork( "dktOuterWithSpatialPriors", antsxnetCacheDirectory = antsxnetCacheDirectory )
   load_model_weights_hdf5( unetModel, filepath = weightsFileNamePath )
 
   unetModel %>% compile(
@@ -290,7 +290,7 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
     {
     cat( "DesikanKillianyTourville:  retrieving inner model weights.\n" )
     }
-  weightsFileName <- getPretrainedNetwork( "dktInner", outputDirectory = outputDirectory )
+  weightsFileName <- getPretrainedNetwork( "dktInner", antsxnetCacheDirectory = antsxnetCacheDirectory )
   load_model_weights_hdf5( unetModel, filepath = weightsFileName )
 
   unetModel %>% compile(

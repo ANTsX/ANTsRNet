@@ -5,9 +5,9 @@
 #' @param fileId one of the permitted file ids or pass "show" to list all
 #'   valid possibilities. Note that most require internet access to download.
 #' @param targetFileName optional target filename
-#' @param outputDirectory destination directory for storing the downloaded
+#' @param antsxnetCacheDirectory destination directory for storing the downloaded
 #' template and model weights.  Since these can be resused, if
-#' \code{is.null(outputDirectory)}, these data will be downloaded to the
+#' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
 #' subdirectory ~/.keras/ANTsXNet/.
 #' @return filename string
 #' @author Avants BB
@@ -57,7 +57,7 @@ getPretrainedNetwork <- function(
               "tidsQualityAssessment",
               "koniqMBCS",
 	            "wholeTumorSegmentationT2Flair" ),
-  targetFileName, outputDirectory = NULL )
+  targetFileName, antsxnetCacheDirectory = NULL )
 {
 
 
@@ -112,11 +112,11 @@ getPretrainedNetwork <- function(
     {
     targetFileName <- paste0( fileId, ".h5" )
     }
-  if( is.null( outputDirectory ) )
+  if( is.null( antsxnetCacheDirectory ) )
     {
-    outputDirectory <- "ANTsXNet"
+    antsxnetCacheDirectory <- "ANTsXNet"
     }
   targetFileNamePath <- tensorflow::tf$keras$utils$get_file(
-    targetFileName, url, cache_subdir = outputDirectory )
+    targetFileName, url, cache_subdir = antsxnetCacheDirectory )
   return( targetFileNamePath )
 }

@@ -7,7 +7,7 @@
 desikanKillianyTourvilleLabeling(
   t1,
   doPreprocessing = TRUE,
-  outputDirectory = NULL,
+  antsxnetCacheDirectory = NULL,
   verbose = FALSE,
   debug = FALSE
 )
@@ -17,9 +17,9 @@ desikanKillianyTourvilleLabeling(
 
 \item{doPreprocessing}{perform preprocessing.  See description above.}
 
-\item{outputDirectory}{destination directory for storing the downloaded
+\item{antsxnetCacheDirectory}{destination directory for storing the downloaded
 template and model weights.  Since these can be resused, if
-\code{is.null(outputDirectory)}, these data will be downloaded to the
+\code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
 subdirectory ~/.keras/ANTsXNet/.}
 
 \item{verbose}{print progress.}

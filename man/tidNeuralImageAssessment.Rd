@@ -11,7 +11,7 @@ tidNeuralImageAssessment(
   strideLength,
   paddingSize = 0L,
   dimensionsToPredict = 1,
-  outputDirectory = NULL,
+  antsxnetCacheDirectory = NULL,
   whichModel = "tidsQualityAssessment",
   verbose = FALSE
 )
@@ -34,9 +34,9 @@ length) for (de)padding to remove edge effects.}
 which dimension(s) should be used for prediction.  If more than one dimension
 is specified, the results are averaged.}
 
-\item{outputDirectory}{destination directory for storing the downloaded
+\item{antsxnetCacheDirectory}{destination directory for storing the downloaded
 template and model weights.  Since these can be reused, if
-\code{is.null(outputDirectory)}, these data will be downloaded to the
+\code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
 inst/extdata/ subfolder of the ANTsRNet package.}
 
 \item{whichModel}{model type e.g. string tidsQualityAssessment, koniqMBCS}

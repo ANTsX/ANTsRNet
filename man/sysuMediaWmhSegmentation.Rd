@@ -10,7 +10,7 @@ sysuMediaWmhSegmentation(
   doPreprocessing = TRUE,
   useEnsemble = TRUE,
   useAxialSlicesOnly = TRUE,
-  outputDirectory = NULL,
+  antsxnetCacheDirectory = NULL,
   verbose = FALSE
 )
 }
@@ -29,9 +29,9 @@ was trained on axial slices.  If \code{FALSE}, use ANTsXNet variant
 implementation which applies the slice-by-slice models to all 3 dimensions
 and averages the results.}
 
-\item{outputDirectory}{destination directory for storing the downloaded
+\item{antsxnetCacheDirectory}{destination directory for storing the downloaded
 template and model weights.  Since these can be resused, if
-\code{is.null(outputDirectory)}, these data will be downloaded to the
+\code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
 inst/extdata/ subfolder of the ANTsRNet package.}
 
 \item{verbose}{print progress.}

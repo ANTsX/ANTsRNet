@@ -126,7 +126,7 @@ image database described in</p>
   <span class='no'>strideLength</span>,
   <span class='kw'>paddingSize</span> <span class='kw'>=</span> <span class='fl'>0L</span>,
   <span class='kw'>dimensionsToPredict</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>outputDirectory</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>antsxnetCacheDirectory</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>whichModel</span> <span class='kw'>=</span> <span class='st'>"tidsQualityAssessment"</span>,
   <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
 )</pre>
@@ -164,10 +164,10 @@ which dimension(s) should be used for prediction.  If more than one dimension
 is specified, the results are averaged.</p></td>
     </tr>
     <tr>
-      <th>outputDirectory</th>
+      <th>antsxnetCacheDirectory</th>
       <td><p>destination directory for storing the downloaded
 template and model weights.  Since these can be reused, if
-<code><a href='https://rdrr.io/r/base/NULL.html'>is.null(outputDirectory)</a></code>, these data will be downloaded to the
+<code><a href='https://rdrr.io/r/base/NULL.html'>is.null(antsxnetCacheDirectory)</a></code>, these data will be downloaded to the
 inst/extdata/ subfolder of the ANTsRNet package.</p></td>
     </tr>
     <tr>

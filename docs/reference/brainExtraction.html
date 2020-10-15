@@ -127,7 +127,7 @@ training data ported from the</p>
   <span class='no'>image</span>,
   <span class='kw'>modality</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"t1"</span>, <span class='st'>"t1nobrainer"</span>, <span class='st'>"t1combined"</span>, <span class='st'>"t2"</span>, <span class='st'>"flair"</span>, <span class='st'>"bold"</span>, <span class='st'>"fa"</span>,
     <span class='st'>"t1t2infant"</span>, <span class='st'>"t1infant"</span>, <span class='st'>"t2infant"</span>),
-  <span class='kw'>outputDirectory</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>antsxnetCacheDirectory</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
 )</pre>
 
@@ -155,10 +155,10 @@ training data ported from the</p>
 </ul></td>
     </tr>
     <tr>
-      <th>outputDirectory</th>
+      <th>antsxnetCacheDirectory</th>
       <td><p>destination directory for storing the downloaded
 template and model weights.  Since these can be resused, if
-<code><a href='https://rdrr.io/r/base/NULL.html'>is.null(outputDirectory)</a></code>, these data will be downloaded to the
+<code><a href='https://rdrr.io/r/base/NULL.html'>is.null(antsxnetCacheDirectory)</a></code>, these data will be downloaded to the
 subdirectory ~/.keras/ANTsXNet/.</p></td>
     </tr>
     <tr>

@@ -122,7 +122,7 @@ labels from Mike Yassa's lab</p>
     <pre class="usage"><span class='fu'>deepFlash</span>(
   <span class='no'>t1</span>,
   <span class='kw'>doPreprocessing</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>outputDirectory</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>antsxnetCacheDirectory</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>debug</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
 )</pre>
@@ -139,10 +139,10 @@ labels from Mike Yassa's lab</p>
       <td><p>perform preprocessing.  See description above.</p></td>
     </tr>
     <tr>
-      <th>outputDirectory</th>
+      <th>antsxnetCacheDirectory</th>
       <td><p>destination directory for storing the downloaded
 template and model weights.  Since these can be resused, if
-<code><a href='https://rdrr.io/r/base/NULL.html'>is.null(outputDirectory)</a></code>, these data will be downloaded to the
+<code><a href='https://rdrr.io/r/base/NULL.html'>is.null(antsxnetCacheDirectory)</a></code>, these data will be downloaded to the
 inst/extdata/ subfolder of the ANTsRNet package.</p></td>
     </tr>
     <tr>

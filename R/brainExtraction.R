@@ -22,9 +22,9 @@
 #'   \item{"t1infant": }{T1-w infant MRI h/t Martin Styner.}
 #'   \item{"t2infant": }{T2-w infant MRI h/t Martin Styner.}
 #' }
-#' @param outputDirectory destination directory for storing the downloaded
+#' @param antsxnetCacheDirectory destination directory for storing the downloaded
 #' template and model weights.  Since these can be resused, if
-#' \code{is.null(outputDirectory)}, these data will be downloaded to the
+#' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
 #' subdirectory ~/.keras/ANTsXNet/.
 #' @param verbose print progress.
 #' @return brain probability mask (ANTsR image)
@@ -40,7 +40,7 @@
 #' @export
 brainExtraction <- function( image,
   modality = c( "t1", "t1nobrainer", "t1combined", "t2", "flair", "bold", "fa", "t1t2infant", "t1infant", "t2infant" ),
-  outputDirectory = NULL, verbose = FALSE )
+  antsxnetCacheDirectory = NULL, verbose = FALSE )
   {
 
   classes <- c( "background", "brain" )
@@ -60,16 +60,16 @@ brainExtraction <- function( image,
     stop( "Image dimension must be 3." )
     }
 
-  if( is.null( outputDirectory ) )
+  if( is.null( antsxnetCacheDirectory ) )
     {
-    outputDirectory <- "ANTsXNet"
+    antsxnetCacheDirectory <- "ANTsXNet"
     }
 
   if( substr( modality, 1, 10 ) == "t1combined" )
     {
 
     brainExtraction_t1 <- brainExtraction( image, modality = "t1",
-      outputDirectory = outputDirectory, verbose = verbose )
+      antsxnetCacheDirectory = antsxnetCacheDirectory, verbose = verbose )
     brainMask <- thresholdImage( brainExtraction_t1, 0.5, Inf ) %>% iMath( "GetLargestComponent" )
 
     # Need to change with voxel resolution
@@ -80,7 +80,7 @@ brainExtraction <- function( image,
       }
 
     brainExtraction_t1nobrainer <- brainExtraction( image * iMath( brainMask, "MD", morphologicalRadius ),
-      modality = "t1nobrainer", outputDirectory = outputDirectory, verbose = verbose )
+      modality = "t1nobrainer", antsxnetCacheDirectory = antsxnetCacheDirectory, verbose = verbose )
     brainExtraction_combined <- iMath( brainExtraction_t1nobrainer * brainMask, "GetLargestComponent" ) %>% iMath( "FillHoles" )
 
     brainExtraction_combined <- brainExtraction_combined + iMath( brainMask, "ME", morphologicalRadius ) + brainMask
@@ -123,7 +123,7 @@ brainExtraction <- function( image,
       {
       cat( "Brain extraction:  retrieving model weights.\n" )
       }
-    weightsFileName <- getPretrainedNetwork( weightsFilePrefix, outputDirectory = outputDirectory )
+    weightsFileName <- getPretrainedNetwork( weightsFilePrefix, antsxnetCacheDirectory = antsxnetCacheDirectory )
 
     reorientTemplateFileName <- "S_template3_resampled.nii.gz"
     if( verbose == TRUE )
@@ -132,7 +132,7 @@ brainExtraction <- function( image,
       }
     reorientTemplateUrl <- "https://ndownloader.figshare.com/files/22597175"
     reorientTemplateFileNamePath <- tensorflow::tf$keras$utils$get_file(
-      reorientTemplateFileName, reorientTemplateUrl, cache_subdir = outputDirectory )
+      reorientTemplateFileName, reorientTemplateUrl, cache_subdir = antsxnetCacheDirectory )
     reorientTemplate <- antsImageRead( reorientTemplateFileNamePath )
     resampledImageSize <- dim( reorientTemplate )
 
@@ -197,7 +197,7 @@ brainExtraction <- function( image,
       {
       cat( "NoBrainer:  retrieving model weights.\n" )
       }
-    weightsFileName <- getPretrainedNetwork( "brainExtractionNoBrainer", outputDirectory = outputDirectory )
+    weightsFileName <- getPretrainedNetwork( "brainExtractionNoBrainer", antsxnetCacheDirectory = antsxnetCacheDirectory )
     model$load_weights( weightsFileName )
 
     if( verbose == TRUE )

@@ -124,7 +124,7 @@ architecture and weights described here:</p>
   <span class='kw'>doPreprocessing</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>numberOfSimulations</span> <span class='kw'>=</span> <span class='fl'>0</span>,
   <span class='kw'>sdAffine</span> <span class='kw'>=</span> <span class='fl'>0.01</span>,
-  <span class='kw'>outputDirectory</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>antsxnetCacheDirectory</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
 )</pre>
 
@@ -152,10 +152,10 @@ transform the input.</p></td>
 parameter.</p></td>
     </tr>
     <tr>
-      <th>outputDirectory</th>
+      <th>antsxnetCacheDirectory</th>
       <td><p>destination directory for storing the downloaded
 template and model weights.  Since these can be resused, if
-<code><a href='https://rdrr.io/r/base/NULL.html'>is.null(outputDirectory)</a></code>, these data will be downloaded to the
+<code><a href='https://rdrr.io/r/base/NULL.html'>is.null(antsxnetCacheDirectory)</a></code>, these data will be downloaded to the
 inst/extdata/ subfolder of the ANTsRNet package.</p></td>
     </tr>
     <tr>
