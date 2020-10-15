@@ -24,7 +24,7 @@
 #' @param outputDirectory destination directory for storing the downloaded
 #' template and model weights.  Since these can be resused, if
 #' \code{is.null(outputDirectory)}, these data will be downloaded to the
-#' inst/extdata/ subfolder of the ANTsRNet package.
+#' subdirectory ~/.keras/ANTsXNet/.
 #' @param verbose print progress.
 #' @return labeled hippocampal mask (ANTsR image)
 #' @author Tustison NJ
@@ -42,12 +42,12 @@
 #' segmentation <- hippMapp3rSegmentation( imageN4, verbose = TRUE )
 #' }
 #' @export
-hippMapp3rSegmentation <- function( t1, doPreprocessing = TRUE, 
+hippMapp3rSegmentation <- function( t1, doPreprocessing = TRUE,
   outputDirectory = NULL, verbose = FALSE )
   {
   if( is.null( outputDirectory ) )
     {
-    outputDirectory <- system.file( "extdata", package = "ANTsRNet" )
+    outputDirectory <- "ANTsXNet"
     }
 
   #########################################
@@ -92,17 +92,16 @@ hippMapp3rSegmentation <- function( t1, doPreprocessing = TRUE,
     cat( "    HippMapp3r: template normalization.\n" )
     }
 
-  templateFileName <- paste0( outputDirectory, "/mprage_hippmapp3r.nii.gz" )
+  templateFileName <- "mprage_hippmapp3r.nii.gz"
   templateUrl <- "https://ndownloader.figshare.com/files/24984689"
-  if( ! file.exists( templateFileName ) )
+  if( verbose == TRUE )
     {
-    if( verbose == TRUE )
-      {
-      cat( "       downloading template.\n" )
-      }
-    download.file( templateUrl, templateFileName, quiet = !verbose )
+    cat( "    HippMapp3r: retrieving template.\n" )
     }
-  templateImage <- antsImageRead( templateFileName )
+  templateFileNamePath <- tensorflow::tf$keras$utils$get_file(
+    templateFileName, templateUrl, cache_subdir = outputDirectory )
+
+  templateImage <- antsImageRead( templateFileNamePath )
   registration <- antsRegistration( fixed = templateImage, moving = t1Preprocessed,
     typeofTransform = "antsRegistrationSyNQuick[t]", verbose = verbose )
   image <- registration$warpedmovout
@@ -135,7 +134,7 @@ hippMapp3rSegmentation <- function( t1, doPreprocessing = TRUE,
     {
     cat( "    HippMapp3r: trim and resample to (160, 160, 128).\n" )
     }
-  imageCropped <- cropImage( imageNormalized, thresholdedMask, 1 )  
+  imageCropped <- cropImage( imageNormalized, thresholdedMask, 1 )
   shapeInitialStage <- c( 160, 160, 128 )
   imageResampled <- resampleImage( imageCropped, shapeInitialStage,
     useVoxels = TRUE, interpType = "linear" )
@@ -146,15 +145,11 @@ hippMapp3rSegmentation <- function( t1, doPreprocessing = TRUE,
     }
   modelInitialStage <- createHippMapp3rUnetModel3D( c( shapeInitialStage, 1 ), doFirstNetwork = TRUE )
 
-  initialStageWeightsFileName <- paste0( outputDirectory, "/hippMapp3rInitial.h5" )
-  if( ! file.exists( initialStageWeightsFileName ) )
+  if( verbose == TRUE )
     {
-    if( verbose == TRUE )
-      {
-      cat( "    HippMapp3r: downloading model weights.\n" )
-      }
-    initialStageWeightsFileName <- getPretrainedNetwork( "hippMapp3rInitial", initialStageWeightsFileName )
+    cat( "    HippMapp3r: retrieving model weights.\n" )
     }
+  initialStageWeightsFileName <- getPretrainedNetwork( "hippMapp3rInitial", outputDirectory = outputDirectory )
   modelInitialStage$load_weights( initialStageWeightsFileName )
 
   if( verbose == TRUE )
@@ -197,18 +192,14 @@ hippMapp3rSegmentation <- function( t1, doPreprocessing = TRUE,
 
   if( verbose == TRUE )
     {
-    cat( "    HippMapp3r: generate second network and download weights.\n" )
+    cat( "    HippMapp3r: generate second network and retrieve weights.\n" )
     }
   modelRefineStage <- createHippMapp3rUnetModel3D( c( shapeRefineStage, 1 ), FALSE )
-  refineStageWeightsFileName <- paste0( outputDirectory, "/hippMapp3rRefine.h5" )
-  if( ! file.exists( refineStageWeightsFileName ) )
+  if( verbose == TRUE )
     {
-    if( verbose == TRUE )
-      {
-      cat( "    HippMapp3r: downloading model weights.\n" )
-      }
-    refineStageWeightsFileName <- getPretrainedNetwork( "hippMapp3rRefine", refineStageWeightsFileName )
+    cat( "    HippMapp3r: retrieving model weights.\n" )
     }
+  refineStageWeightsFileName <- getPretrainedNetwork( "hippMapp3rRefine", outputDirectory = outputDirectory )
   modelRefineStage$load_weights( refineStageWeightsFileName )
 
   dataRefineStage <- array( data = as.array( imageTrimmed ), dim = c( 1, shapeRefineStage, 1 ) )
@@ -218,7 +209,7 @@ hippMapp3rSegmentation <- function( t1, doPreprocessing = TRUE,
   predictionRefineStage <- array( data = 0, dim = c( shapeRefineStage ) )
   for( i in seq_len( numberOfMCIterations ) )
     {
-    if( verbose == TRUE ) 
+    if( verbose == TRUE )
       {
       cat( "        Monte Carlo iteration", i, "out of", numberOfMCIterations, "\n" )
       }
@@ -230,23 +221,23 @@ hippMapp3rSegmentation <- function( t1, doPreprocessing = TRUE,
   predictionRefineStageArray[lower[1]:upper[1],lower[2]:upper[2],lower[3]:upper[3]] <- predictionRefineStage
   probabilityMaskRefineStageResampled <- as.antsImage( predictionRefineStageArray ) %>% antsCopyImageInfo2( imageResampled )
 
-  segmentationImageResampled <- labelClusters( 
+  segmentationImageResampled <- labelClusters(
     thresholdImage( probabilityMaskRefineStageResampled, 0.0, 0.5, 0, 1 ), minClusterSize = 10 )
   segmentationImageResampled[segmentationImageResampled > 2] <- 0
   geom <- labelGeometryMeasures( segmentationImageResampled )
   if( length( geom$VolumeInMillimeters ) < 2 )
     {
-    stop( "Error:  left and right hippocampus not found.")  
+    stop( "Error:  left and right hippocampus not found.")
     }
-  if( geom$Centroid_x[1] < geom$Centroid_x[2] )  
+  if( geom$Centroid_x[1] < geom$Centroid_x[2] )
     {
-    segmentationImageResampled[segmentationImageResampled == 1] <- 3  
-    segmentationImageResampled[segmentationImageResampled == 2] <- 1  
-    segmentationImageResampled[segmentationImageResampled == 3] <- 2  
+    segmentationImageResampled[segmentationImageResampled == 1] <- 3
+    segmentationImageResampled[segmentationImageResampled == 2] <- 1
+    segmentationImageResampled[segmentationImageResampled == 3] <- 2
     }
 
-  segmentationImage <- antsApplyTransforms( fixed = t1, 
-    moving = segmentationImageResampled, transformlist = transforms$invtransforms, 
+  segmentationImage <- antsApplyTransforms( fixed = t1,
+    moving = segmentationImageResampled, transformlist = transforms$invtransforms,
     whichtoinvert = c( TRUE ), interpolator = "genericLabel", verbose = verbose )
 
   return( segmentationImage )

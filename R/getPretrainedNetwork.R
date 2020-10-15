@@ -5,7 +5,10 @@
 #' @param fileId one of the permitted file ids or pass "show" to list all
 #'   valid possibilities. Note that most require internet access to download.
 #' @param targetFileName optional target filename
-#' @param overwrite shoudl the file be overwritten
+#' @param outputDirectory destination directory for storing the downloaded
+#' template and model weights.  Since these can be resused, if
+#' \code{is.null(outputDirectory)}, these data will be downloaded to the
+#' subdirectory ~/.keras/ANTsXNet/.
 #' @return filename string
 #' @author Avants BB
 #' @note See \url{https://figshare.com/authors/Nick_Tustison/441144}
@@ -53,9 +56,8 @@ getPretrainedNetwork <- function(
               "sysuMediaWmhFlairT1Model2",
               "tidsQualityAssessment",
               "koniqMBCS",
-	      "wholeTumorSegmentationT2Flair" ),
-  targetFileName,
-  overwrite = FALSE)
+	            "wholeTumorSegmentationT2Flair" ),
+  targetFileName, outputDirectory = NULL )
 {
 
 
@@ -108,12 +110,16 @@ getPretrainedNetwork <- function(
 
   if( missing( targetFileName ) )
     {
-    targetFileName <- file.path( tempdir(), paste0( fileId, ".h5" ) )
+    targetFileName <- paste0( fileId, ".h5" )
+    }
+  if( is.null( outputDirectory ) )
+    {
+    outputDirectory <- "ANTsXNet"
     }
 
   if( ! file.exists( targetFileName ) || overwrite )
     {
-    download.file( url, targetFileName, overwrite = overwrite )
+    targetFileNamePath <- tensorflow::tf$keras$utils$get_file( targetFileName, url, cache_subdir = outputDirectory )
     }
-  return( targetFileName )
+  return( targetFileNamePath )
 }

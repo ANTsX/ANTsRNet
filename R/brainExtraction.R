@@ -25,7 +25,7 @@
 #' @param outputDirectory destination directory for storing the downloaded
 #' template and model weights.  Since these can be resused, if
 #' \code{is.null(outputDirectory)}, these data will be downloaded to the
-#' inst/extdata/ subfolder of the ANTsRNet package.
+#' subdirectory ~/.keras/ANTsXNet/.
 #' @param verbose print progress.
 #' @return brain probability mask (ANTsR image)
 #' @author Tustison NJ
@@ -62,7 +62,7 @@ brainExtraction <- function( image,
 
   if( is.null( outputDirectory ) )
     {
-    outputDirectory <- system.file( "extdata", package = "ANTsRNet" )
+    outputDirectory <- "ANTsXNet"
     }
 
   if( substr( modality, 1, 10 ) == "t1combined" )
@@ -97,57 +97,43 @@ brainExtraction <- function( image,
     #
     #####################
 
-    weightsFileName <- ''
     weightsFilePrefix <- ''
     if( modality == "t1" )
       {
-      weightsFileName <- paste0( outputDirectory, "/brainExtractionWeights.h5" )
       weightsFilePrefix <- "brainExtraction"
       } else if( modality == "t2" ) {
-      weightsFileName <- paste0( outputDirectory, "/brainExtractionT2Weights.h5" )
       weightsFilePrefix <- "brainExtractionT2"
       } else if( modality == "flair" ) {
-      weightsFileName <- paste0( outputDirectory, "/brainExtractionFlairWeights.h5" )
       weightsFilePrefix <- "brainExtractionFLAIR"
       } else if( modality == "bold" ) {
-      weightsFileName <- paste0( outputDirectory, "/brainExtractionBoldWeights.h5" )
       weightsFilePrefix <- "brainExtractionBOLD"
       } else if( modality == "fa" ) {
-      weightsFileName <- paste0( outputDirectory, "/brainExtractionFaWeights.h5" )
       weightsFilePrefix <- "brainExtractionFA"
       } else if( modality == "t1t2infant" ) {
-      weightsFileName <- paste0( outputDirectory, "/brainExtractionInfantT1T2Weights.h5" )
       weightsFilePrefix <- "brainExtractionInfantT1T2"
       } else if( modality == "t1infant" ) {
-      weightsFileName <- paste0( outputDirectory, "/brainExtractionInfantT1Weights.h5" )
       weightsFilePrefix <- "brainExtractionInfantT1"
       } else if( modality == "t2infant" ) {
-      weightsFileName <- paste0( outputDirectory, "/brainExtractionInfantT2Weights.h5" )
       weightsFilePrefix <- "brainExtractionInfantT2"
       } else {
       stop( "Unknown modality type." )
       }
 
-    if( ! file.exists( weightsFileName ) )
+    if( verbose == TRUE )
       {
-      if( verbose == TRUE )
-        {
-        cat( "Brain extraction:  downloading model weights.\n" )
-        }
-      weightsFileName <- getPretrainedNetwork( weightsFilePrefix, weightsFileName )
+      cat( "Brain extraction:  retrieving model weights.\n" )
       }
+    weightsFileName <- getPretrainedNetwork( weightsFilePrefix, outputDirectory = outputDirectory )
 
-    reorientTemplateFileName <- paste0( outputDirectory, "/S_template3_resampled.nii.gz" )
-    if( ! file.exists( reorientTemplateFileName ) )
+    reorientTemplateFileName <- "S_template3_resampled.nii.gz"
+    if( verbose == TRUE )
       {
-      if( verbose == TRUE )
-        {
-        cat( "Brain extraction:  downloading template.\n" )
-        }
-      reorientTemplateUrl <- "https://ndownloader.figshare.com/files/22597175"
-      download.file( reorientTemplateUrl, reorientTemplateFileName, quiet = !verbose )
+      cat( "Brain extraction:  retrieving template.\n" )
       }
-    reorientTemplate <- antsImageRead( reorientTemplateFileName )
+    reorientTemplateUrl <- "https://ndownloader.figshare.com/files/22597175"
+    reorientTemplateFileNamePath <- tensorflow::tf$keras$utils$get_file(
+      reorientTemplateFileName, reorientTemplateUrl, cache_subdir = outputDirectory )
+    reorientTemplate <- antsImageRead( reorientTemplateFileNamePath )
     resampledImageSize <- dim( reorientTemplate )
 
     unetModel <- createUnetModel3D( c( resampledImageSize, channelSize ),
@@ -207,15 +193,11 @@ brainExtraction <- function( image,
       }
     model <- createNoBrainerUnetModel3D( list( NULL, NULL, NULL, 1 ) )
 
-    weightsFileName <- paste0( outputDirectory, "/noBrainerWeights.h5" )
-    if( ! file.exists( weightsFileName ) )
+    if( verbose == TRUE )
       {
-      if( verbose == TRUE )
-        {
-        cat( "NoBrainer:  downloading model weights.\n" )
-        }
-      weightsFileName <- getPretrainedNetwork( "brainExtractionNoBrainer", weightsFileName )
+      cat( "NoBrainer:  retrieving model weights.\n" )
       }
+    weightsFileName <- getPretrainedNetwork( "brainExtractionNoBrainer", outputDirectory = outputDirectory )
     model$load_weights( weightsFileName )
 
     if( verbose == TRUE )

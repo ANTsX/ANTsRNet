@@ -63,7 +63,7 @@ deepFlash <- function( t1, doPreprocessing = TRUE,
 
   if( is.null( outputDirectory ) )
     {
-    outputDirectory <- system.file( "extdata", package = "ANTsRNet" )
+    outputDirectory <- "ANTsXNet"
     }
 
   ################################
@@ -102,15 +102,11 @@ deepFlash <- function( t1, doPreprocessing = TRUE,
     convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
     weightDecay = 1e-5, addAttentionGating = TRUE )
 
-  weightsFileName <- paste0( outputDirectory, "deepFlashWeights.h5" )
-  if( ! file.exists( weightsFileName ) )
+  if( verbose == TRUE )
     {
-    if( verbose == TRUE )
-      {
-      cat( "DeepFlash:}{downloading model weights.\n" )
-      }
-    weightsFileName <- getPretrainedNetwork( "deepFlash", weightsFileName )
+    cat( "DeepFlash: retrieving model weights.\n" )
     }
+  weightsFileName <- getPretrainedNetwork( "deepFlash", outputDirectory = outputDirectory )
   load_model_weights_hdf5( unetModel, filepath = weightsFileName )
 
   unetModel %>% compile(

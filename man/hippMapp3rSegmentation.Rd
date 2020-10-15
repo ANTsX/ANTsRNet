@@ -17,7 +17,7 @@ hippMapp3rSegmentation(
 \item{outputDirectory}{destination directory for storing the downloaded
 template and model weights.  Since these can be resused, if
 \code{is.null(outputDirectory)}, these data will be downloaded to the
-inst/extdata/ subfolder of the ANTsRNet package.}
+subdirectory ~/.keras/ANTsXNet/.}
 
 \item{verbose}{print progress.}
 

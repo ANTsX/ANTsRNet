@@ -25,15 +25,17 @@ mriSuperResolution <- function( image, outputDirectory = NULL, verbose = FALSE )
     stop( "Input image dimension must be 3." )
     }
 
-  modelAndWeightsFileName <- paste0( outputDirectory, "mindmapsSR_16_ANINN222_0.h5" )
-  if( ! file.exists( modelAndWeightsFileName ) )
+  if( is.null( outputDirectory ) )
     {
-    if( verbose == TRUE )
-      {
-      cat( "MRI super-resolution:  downloading model weights.\n" )
-      }
-    modelAndWeightsFileName <- getPretrainedNetwork( "mriSuperResolution", modelAndWeightsFileName )
+    outputDirectory <- "ANTsXNet"
     }
+
+  modelAndWeightsFileName <- "mindmapsSR_16_ANINN222_0.h5"
+  if( verbose == TRUE )
+    {
+    cat( "MRI super-resolution:  retrieving model weights.\n" )
+    }
+  modelAndWeightsFileName <- getPretrainedNetwork( "mriSuperResolution", modelAndWeightsFileName, outputDirectory = outputDirectory )
   modelSR <- load_model_hdf5( modelAndWeightsFileName )
 
   imageSR <- applySuperResolutionModelToImage( image, modelSR, targetRange = c( -127.5, 127.5 ) )

@@ -124,7 +124,7 @@
 #' @param outputDirectory destination directory for storing the downloaded
 #' template and model weights.  Since these can be resused, if
 #' \code{is.null(outputDirectory)}, these data will be downloaded to the
-#' inst/extdata/ subfolder of the ANTsRNet package.
+#' subdirectory ~/.keras/ANTsXNet/.
 #' @param verbose print progress.
 #' @param debug return feature images in the last layer of the u-net model.
 #' @return list consisting of the segmentation image and probability images for
@@ -150,7 +150,7 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
 
   if( is.null( outputDirectory ) )
     {
-    outputDirectory <- system.file( "extdata", package = "ANTsRNet" )
+    outputDirectory <- "ANTsXNet"
     }
 
   ################################
@@ -180,18 +180,16 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
   #
   ################################
 
-  priorsFileName <- paste0( outputDirectory, "/priorDktLabels.nii.gz" )
+  priorsFileName <- "priorDktLabels.nii.gz"
   priorsUrl <- "https://ndownloader.figshare.com/files/24139802"
 
-  if( ! file.exists( priorsFileName ) )
+  if( verbose == TRUE )
     {
-    if( verbose == TRUE )
-      {
-      cat( "Downloading label spatial priors.\n" )
-      }
-    download.file( priorsUrl, priorsFileName, quiet = !verbose )
+    cat( "DesikanKillianyTourville:  retrieving label spatial priors.\n" )
     }
-  priorsImageList <- splitNDImageToList( antsImageRead( priorsFileName ) )
+  priorsFileNamePath <- tensorflow::tf$keras$utils$get_file(
+    priorsFileName, priorsUrl, cache_subdir = outputDirectory )
+  priorsImageList <- splitNDImageToList( antsImageRead( priorsFileNamePath ) )
 
   ################################
   #
@@ -209,16 +207,12 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
     convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
     weightDecay = 1e-5, addAttentionGating = TRUE )
 
-  weightsFileName <- paste0( outputDirectory, "/dktLabelingOuterWithSpatialPriors.h5" )
-  if( ! file.exists( weightsFileName ) )
+  if( verbose == TRUE )
     {
-    if( verbose == TRUE )
-      {
-      cat( "DesikanKillianyTourville:  downloading model weights.\n" )
-      }
-    weightsFileName <- getPretrainedNetwork( "dktOuterWithSpatialPriors", weightsFileName )
+    cat( "DesikanKillianyTourville:  retrieving model weights.\n" )
     }
-  load_model_weights_hdf5( unetModel, filepath = weightsFileName )
+  weightsFileNamePath <- getPretrainedNetwork( "dktOuterWithSpatialPriors", outputDirectory = outputDirectory )
+  load_model_weights_hdf5( unetModel, filepath = weightsFileNamePath )
 
   unetModel %>% compile(
     optimizer = optimizer_adam(),
@@ -233,7 +227,7 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
 
   if( verbose == TRUE )
     {
-    cat( "Outer model prediction.\n" )
+    cat( "DesikanKillianyTourville:  outer model prediction.\n" )
     }
 
   downsampledImage <- resampleImage( t1Preprocessed, templateSize, useVoxels = TRUE, interpType = 0 )
@@ -292,15 +286,11 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
     convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
     weightDecay = 1e-5, addAttentionGating = TRUE )
 
-  weightsFileName <- paste0( outputDirectory, "dktLabelingInner.h5" )
-  if( ! file.exists( weightsFileName ) )
+  if( verbose == TRUE )
     {
-    if( verbose == TRUE )
-      {
-      cat( "DesikanKillianyTourville:  downloading inner model weights.\n" )
-      }
-    weightsFileName <- getPretrainedNetwork( "dktInner", weightsFileName )
+    cat( "DesikanKillianyTourville:  retrieving inner model weights.\n" )
     }
+  weightsFileName <- getPretrainedNetwork( "dktInner", outputDirectory = outputDirectory )
   load_model_weights_hdf5( unetModel, filepath = weightsFileName )
 
   unetModel %>% compile(

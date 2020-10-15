@@ -22,7 +22,7 @@
 #' preprocessing is performed (brain extraction, bias correction,
 #' normalization to template).
 #' @param numberOfSimulations number of random affine perturbations to
-#' transform the input. 
+#' transform the input.
 #' @param sdAffine define the standard deviation of the affine transformation
 #' parameter.
 #' @param outputDirectory destination directory for storing the downloaded
@@ -46,7 +46,7 @@ brainAge <- function( image, doPreprocessing = TRUE,
   {
   if( is.null( outputDirectory ) )
     {
-    outputDirectory <- system.file( "extdata", package = "ANTsRNet" )
+    outputDirectory <- "ANTsXNet"
     }
 
   preprocessedImage <- image
@@ -97,16 +97,16 @@ brainAge <- function( image, doPreprocessing = TRUE,
       numberOfSimulations = numberOfSimulations,
       transformType = 'affine',
       sdAffine = sdAffine,
-      inputImageInterpolator = 'linear' )    
+      inputImageInterpolator = 'linear' )
     }
 
   brainAgePerSlice <- c()
   for( i in seq.int( numberOfSimulations + 1 ) )
     {
-    batchImage <- preprocessedImage  
-    if( i > 1 )  
+    batchImage <- preprocessedImage
+    if( i > 1 )
       {
-      batchImage <- dataAugmentation$simulatedImages[[i-1]][[1]]  
+      batchImage <- dataAugmentation$simulatedImages[[i-1]][[1]]
       }
     for( j in seq.int( length( whichSlices ) ) )
       {
@@ -119,15 +119,15 @@ brainAge <- function( image, doPreprocessing = TRUE,
       {
       message( "Brain age (DeepBrainNet):  predicting brain age per slice (batch = ", i, ").\n" )
       }
-    
+
     if( i == 1 )
       {
       brainAgePerSlice <- model %>% predict( batchX, verbose = verbose )
       } else {
-      prediction <- model %>% predict( batchX, verbose = verbose )  
+      prediction <- model %>% predict( batchX, verbose = verbose )
       brainAgePerSlice <- brainAgePerSlice + ( prediction - brainAgePerSlice ) / ( i + 1 )
       }
-    }  
+    }
 
   predictedAge <- median( brainAgePerSlice )
 

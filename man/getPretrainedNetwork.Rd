@@ -18,7 +18,7 @@ getPretrainedNetwork(
     "sysuMediaWmhFlairT1Model1", "sysuMediaWmhFlairT1Model2", "tidsQualityAssessment",
     "koniqMBCS", "wholeTumorSegmentationT2Flair"),
   targetFileName,
-  overwrite = FALSE
+  outputDirectory = NULL
 )
 }
 \arguments{
@@ -27,7 +27,10 @@ valid possibilities. Note that most require internet access to download.}
 
 \item{targetFileName}{optional target filename}
 
-\item{overwrite}{shoudl the file be overwritten}
+\item{outputDirectory}{destination directory for storing the downloaded
+template and model weights.  Since these can be resused, if
+\code{is.null(outputDirectory)}, these data will be downloaded to the
+subdirectory ~/.keras/ANTsXNet/.}
 }
 \value{
 filename string
