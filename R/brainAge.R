@@ -67,19 +67,7 @@ brainAge <- function( image, doPreprocessing = TRUE,
 
   # Load the model and weights
 
-  modelWeightsFileName <- paste0( outputDirectory, "/DeepBrainNetModel.h5" )
-  if( ! file.exists( modelWeightsFileName ) )
-    {
-    if( verbose == TRUE )
-      {
-      message( "Brain age (DeepBrainNet):  downloading model weights.\n" )
-      }
-    modelWeightsFileName <- getPretrainedNetwork( "brainAgeDeepBrainNet", modelWeightsFileName )
-    }
-  if( verbose == TRUE )
-    {
-    message( "Brain age (DeepBrainNet):  loading model.\n" )
-    }
+  modelWeightsFileName <- getPretrainedNetwork( "brainAgeDeepBrainNet" )
   model <- load_model_hdf5( modelWeightsFileName )
 
   # The paper only specifies that 80 slices are used for prediction.  I just picked
