@@ -54,7 +54,7 @@ normalization is not performed.}
 \item{outputDirectory}{destination directory for storing the downloaded
 template and model weights.  Since these can be resused, if
 \code{is.null(outputDirectory)}, these data will be downloaded to the
-inst/extdata/ subfolder of the ANTsRNet package.}
+subdirectory ~/.keras/ANTsXNet/.}
 
 \item{verbose}{print progress to the screen.}
 }
@@ -76,9 +76,9 @@ library( ANTsR )
 library( ANTsRNet )
 
 image <- antsImageRead( getANTsRData( "r16" ) )
-preprocessedImage <- preprocessBrainImage( image, 
+preprocessedImage <- preprocessBrainImage( image,
   truncateIntensity = c( 0.01, 0.99 ), doBrainExtraction = FALSE,
-  doBiasCorrection = TRUE, doDenoising = TRUE, 
+  doBiasCorrection = TRUE, doDenoising = TRUE,
   intensityNormalizationType = "01", verbose = FALSE )
 
 }

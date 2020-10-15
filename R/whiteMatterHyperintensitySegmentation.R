@@ -162,25 +162,17 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
     weightsFileName <- ''
     if( numberOfChannels == 1 )
       {
-      weightsFileName <- paste0( outputDirectory, "sysuMediaWmhFlairOnlyModel", i - 1, ".h5" )
-      if( ! file.exists( weightsFileName ) )
+      if( verbose == TRUE )
         {
-        if( verbose == TRUE )
-          {
-          cat( "White matter hyperintensity:  downloading model weights.\n" )
-          }
-        weightsFileName <- getPretrainedNetwork( paste0( "sysuMediaWmhFlairOnlyModel", i - 1 ), weightsFileName )
+        cat( "White matter hyperintensity:  retrieving model weights.\n" )
         }
+      weightsFileName <- getPretrainedNetwork( paste0( "sysuMediaWmhFlairOnlyModel", i - 1 ) )
       } else {
-      weightsFileName <- paste0( outputDirectory, "sysuMediaWmhFlairT1Model", i - 1, ".h5" )
-      if( ! file.exists( weightsFileName ) )
+      if( verbose == TRUE )
         {
-        if( verbose == TRUE )
-          {
-          cat( "White matter hyperintensity:  downloading model weights.\n" )
-          }
-        weightsFileName <- getPretrainedNetwork( paste0( "sysuMediaWmhFlairT1Model", i - 1 ), weightsFileName )
+        cat( "White matter hyperintensity:  downloading model weights.\n" )
         }
+      weightsFileName <- getPretrainedNetwork( paste0( "sysuMediaWmhFlairT1Model", i - 1 ) )
       }
 
     unetModels[[i]] <- createSysuMediaUnetModel2D( c( 200, 200, numberOfChannels ) )

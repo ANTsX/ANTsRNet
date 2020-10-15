@@ -96,15 +96,11 @@ deepAtropos <- function( t1, doPreprocessing = TRUE,
     convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
     weightDecay = 1e-5, addAttentionGating = TRUE )
 
-  weightsFileName <- paste0( outputDirectory, "sixTissueOctantSegmentationWeights.h5" )
-  if( ! file.exists( weightsFileName ) )
+  if( verbose == TRUE )
     {
-    if( verbose == TRUE )
-      {
-      cat( "DeepAtropos:  downloading model weights.\n" )
-      }
-    weightsFileName <- getPretrainedNetwork( "sixTissueOctantBrainSegmentation", weightsFileName )
+    cat( "DeepAtropos:  retrieving model weights.\n" )
     }
+  weightsFileName <- getPretrainedNetwork( "sixTissueOctantBrainSegmentation", outputDirectory = outputDirectory )
   load_model_weights_hdf5( unetModel, filepath = weightsFileName )
 
   unetModel %>% compile(

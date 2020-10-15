@@ -7,7 +7,7 @@
 #' @param outputDirectory destination directory for storing the downloaded
 #' template and model weights.  Since these can be resused, if
 #' \code{is.null(outputDirectory)}, these data will be downloaded to the
-#' inst/extdata/ subfolder of the ANTsRNet package.
+#' subdirectory ~/.keras/ANTsXNet/.
 #' @param verbose print progress.
 #' @return segmentation and probability images
 #' @author Tustison NJ
@@ -37,37 +37,29 @@ lungExtraction <- function( image,
 
   if( is.null( outputDirectory ) )
     {
-    outputDirectory <- system.file( "extdata", package = "ANTsRNet" )
+    outputDirectory <- "ANTsXNet"
     }
 
-  weightsFileName <- ''
-  unetModel <- NULL
   if( modality == "proton" )
     {
-    weightsFileName <- paste0( outputDirectory, "/protonLungSegmentationWeights.h5" )
-    if( ! file.exists( weightsFileName ) )
+    if( verbose == TRUE )
       {
-      if( verbose == TRUE )
-        {
-        cat( "Lung extraction:  downloading model weights.\n" )
-        }
-      weightsFileName <- getPretrainedNetwork( "protonLungMri", weightsFileName )
+      cat( "Lung extraction:  retrieving model weights.\n" )
       }
+    weightsFileName <- getPretrainedNetwork( "protonLungMri", outputDirectory = outputDirectory )
 
     classes <- c( "Background", "LeftLung", "RightLung" )
     numberOfClassificationLabels <- length( classes )
 
-    reorientTemplateFileName <- paste0( outputDirectory, "/protonLungTemplate.nii.gz" )
-    if( ! file.exists( reorientTemplateFileName ) )
+    reorientTemplateFileName <- "protonLungTemplate.nii.gz"
+    if( verbose == TRUE )
       {
-      if( verbose == TRUE )
-        {
-        cat( "Lung extraction:  downloading template.\n" )
-        }
-      reorientTemplateUrl <- "https://ndownloader.figshare.com/files/22707338"
-      download.file( reorientTemplateUrl, reorientTemplateFileName, quiet = !verbose )
+      cat( "Lung extraction:  retrieving template.\n" )
       }
-    reorientTemplate <- antsImageRead( reorientTemplateFileName )
+    reorientTemplateUrl <- "https://ndownloader.figshare.com/files/22707338"
+    reorientTemplateFileNamePath <- tensorflow::tf$keras$utils$get_file(
+      reorientTemplateFileName, reorientTemplateUrl, cache_subdir = outputDirectory )
+    reorientTemplate <- antsImageRead( reorientTemplateFileNamePath )
     resampledImageSize <- dim( reorientTemplate )
 
     unetModel <- createUnetModel3D( c( resampledImageSize, 1 ),
@@ -121,30 +113,24 @@ lungExtraction <- function( image,
                   probabilityImages = probabilityImages ) )
 
     } else if( modality == "ct" ) {
-    weightsFileName <- paste0( outputDirectory, "/ctLungSegmentationWeights.h5" )
-    if( ! file.exists( weightsFileName ) )
+    if( verbose == TRUE )
       {
-      if( verbose == TRUE )
-        {
-        cat( "Lung extraction:  downloading model weights.\n" )
-        }
-      weightsFileName <- getPretrainedNetwork( "ctHumanLung", weightsFileName )
+      cat( "Lung extraction:  retrieving model weights.\n" )
       }
+    weightsFileName <- getPretrainedNetwork( "ctHumanLung", outputDirectory = outputDirectory )
 
     classes <- c( "Background", "LeftLung", "RightLung", "Trachea" )
     numberOfClassificationLabels <- length( classes )
 
-    reorientTemplateFileName <- paste0( outputDirectory, "/ctLungTemplate.nii.gz" )
-    if( ! file.exists( reorientTemplateFileName ) )
+    reorientTemplateFileName <- "ctLungTemplate.nii.gz"
+    if( verbose == TRUE )
       {
-      if( verbose == TRUE )
-        {
-        cat( "Lung extraction:  downloading template.\n" )
-        }
-      reorientTemplateUrl <- "https://ndownloader.figshare.com/files/22707335"
-      download.file( reorientTemplateUrl, reorientTemplateFileName, quiet = !verbose )
+      cat( "Lung extraction:  retrieving template.\n" )
       }
-    reorientTemplate <- antsImageRead( reorientTemplateFileName )
+    reorientTemplateUrl <- "https://ndownloader.figshare.com/files/22707335"
+    reorientTemplateFileNamePath <- tensorflow::tf$keras$utils$get_file(
+      reorientTemplateFileName, reorientTemplateUrl, cache_subdir = outputDirectory )
+    reorientTemplate <- antsImageRead( reorientTemplateFileNamePath )
     resampledImageSize <- dim( reorientTemplate )
 
     unetModel <- createUnetModel3D( c( resampledImageSize, channelSize ),

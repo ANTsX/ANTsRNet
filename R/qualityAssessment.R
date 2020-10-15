@@ -61,17 +61,14 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
     }
   if( is.null( outputDirectory ) )
     {
-    outputDirectory <- system.file( "extdata", package = "ANTsRNet" )
+    outputDirectory <- "ANTsXNet"
     }
-  modelAndWeightsFileName <- paste0( outputDirectory, whichModel, ".h5" )
-  if( ! file.exists( modelAndWeightsFileName ) )
+  modelAndWeightsFileName <- paste0( whichModel, ".h5" )
+  if( verbose == TRUE )
     {
-    if( verbose == TRUE )
-      {
-      cat( "Neural QA:  downloading model and weights.\n" )
-      }
-    modelAndWeightsFileName <- getPretrainedNetwork( whichModel, modelAndWeightsFileName )
+    cat( "Neural QA:  retreivinging model and weights.\n" )
     }
+  modelAndWeightsFileName <- getPretrainedNetwork( whichModel, modelAndWeightsFileName, outputDirectory = outputDirectory )
   tidModel <- load_model_hdf5( filepath = modelAndWeightsFileName )
 
   paddingSizeVector <- paddingSize
