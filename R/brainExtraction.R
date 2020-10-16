@@ -130,9 +130,8 @@ brainExtraction <- function( image,
       {
       cat( "Brain extraction:  retrieving template.\n" )
       }
-    reorientTemplateUrl <- "https://ndownloader.figshare.com/files/22597175"
-    reorientTemplateFileNamePath <- tensorflow::tf$keras$utils$get_file(
-      reorientTemplateFileName, reorientTemplateUrl, cache_subdir = antsxnetCacheDirectory )
+    reorientTemplateFileNamePath <- getANTxNetData( "S_template3",
+      antsxnetCacheDirectory = antsxnetCacheDirectory )
     reorientTemplate <- antsImageRead( reorientTemplateFileNamePath )
     resampledImageSize <- dim( reorientTemplate )
 
@@ -197,7 +196,8 @@ brainExtraction <- function( image,
       {
       cat( "NoBrainer:  retrieving model weights.\n" )
       }
-    weightsFileName <- getPretrainedNetwork( "brainExtractionNoBrainer", antsxnetCacheDirectory = antsxnetCacheDirectory )
+    weightsFileName <- getPretrainedNetwork( "brainExtractionNoBrainer",
+      antsxnetCacheDirectory = antsxnetCacheDirectory )
     model$load_weights( weightsFileName )
 
     if( verbose == TRUE )

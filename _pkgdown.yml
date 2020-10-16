@@ -165,6 +165,7 @@ reference:
   - '`padImageByFactor`'
   - '`reconstructImageFromPatches`'
   - '`getPretrainedNetwork`'
+  - '`getANTsXNetData`'
   - '`regressionMatchImage`'
   - '`resampleTensor`'
   - '`resampleTensorLike`'

@@ -92,22 +92,7 @@ preprocessBrainImage <- function( image, truncateIntensity = c( 0.01, 0.99 ),
     templateImage <- NULL
     if( is.character( template ) )
       {
-      if( template == "biobank" )
-        {
-        templateFileName <- "biobank_resampled.nii.gz"
-        templateUrl <- "https://ndownloader.figshare.com/files/22429242"
-        } else if( template == "croppedMni152" ) {
-        templateFileName <- "croppedMNI152.nii.gz"
-        templateUrl <- "https://ndownloader.figshare.com/files/22933754"
-        } else {
-        stop( "Unrecognized template.")
-        }
-      if( verbose == TRUE )
-        {
-        cat( "Template normalization:  retrieving template.\n" )
-        }
-      templateFileNamePath <- tensorflow::tf$keras$utils$get_file(
-        templateFileName, templateUrl, cache_subdir = antsxnetCacheDirectory )
+      templateFileNamePath <- getANTsXNetData(template, antsxnetCacheDirectory = antsxnetCacheDirectory )
       templateImage <- antsImageRead( templateFileNamePath )
       } else {
       templateImage <- template
