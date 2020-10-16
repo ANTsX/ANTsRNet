@@ -130,7 +130,7 @@ brainExtraction <- function( image,
       {
       cat( "Brain extraction:  retrieving template.\n" )
       }
-    reorientTemplateFileNamePath <- getANTxNetData( "S_template3",
+    reorientTemplateFileNamePath <- getANTsXNetData( "S_template3",
       antsxnetCacheDirectory = antsxnetCacheDirectory )
     reorientTemplate <- antsImageRead( reorientTemplateFileNamePath )
     resampledImageSize <- dim( reorientTemplate )
