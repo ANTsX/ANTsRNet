@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Reconstruct image from a list of patches. — reconstructImageFromPatches • ANTsRNet</title>
+<title>getANTsXNetData — getANTsXNetData • ANTsRNet</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Reconstruct image from a list of patches. — reconstructImageFromPatches" />
-<meta property="og:description" content="Reconstruct image from a list of patches." />
+<meta property="og:title" content="getANTsXNetData — getANTsXNetData" />
+<meta property="og:description" content="Download data such as prefabricated templates and spatial priors." />
 
 
 
@@ -108,68 +108,56 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Reconstruct image from a list of patches.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ANTsX/ANTsRNet/blob/master/R/reconstructImageFromPatches.R'><code>R/reconstructImageFromPatches.R</code></a></small>
-    <div class="hidden name"><code>reconstructImageFromPatches.Rd</code></div>
+    <h1>getANTsXNetData</h1>
+    <small class="dont-index">Source: <a href='https://github.com/ANTsX/ANTsRNet/blob/master/R/getANTsXNetData.R'><code>R/getANTsXNetData.R</code></a></small>
+    <div class="hidden name"><code>getANTsXNetData.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Reconstruct image from a list of patches.</p>
+    <p>Download data such as prefabricated templates and spatial priors.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>reconstructImageFromPatches</span>(
-  <span class='no'>patches</span>,
-  <span class='no'>domainImage</span>,
-  <span class='kw'>strideLength</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>domainImageIsMask</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+    <pre class="usage"><span class='fu'>getANTsXNetData</span>(
+  <span class='kw'>fileId</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"show"</span>, <span class='st'>"biobank"</span>, <span class='st'>"croppedMni152"</span>, <span class='st'>"mprage_hippmapp3r"</span>,
+    <span class='st'>"protonLungTemplate"</span>, <span class='st'>"ctLungTemplate"</span>, <span class='st'>"priorDktLabels"</span>, <span class='st'>"S_template3"</span>),
+  <span class='no'>targetFileName</span>,
+  <span class='kw'>antsxnetCacheDirectory</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>patches</th>
-      <td><p>List or array of patches defining an image.  Patches are assumed
-to have the same format as returned by <code>extractImagePatches</code>.</p></td>
+      <th>fileId</th>
+      <td><p>one of the permitted file ids or pass "show" to list all
+valid possibilities. Note that most require internet access to download.</p></td>
     </tr>
     <tr>
-      <th>domainImage</th>
-      <td><p>Image or mask to define the geometric information of the
-reconstructed image.  If this is a mask image, the reconstruction will only
-use patches in the mask.</p></td>
+      <th>targetFileName</th>
+      <td><p>optional target filename</p></td>
     </tr>
     <tr>
-      <th>strideLength</th>
-      <td><p>Defines the sequential patch overlap for
-<code>maxNumberOfPatches = all</code>.  Can be a image-dimensional vector or a scalar.</p></td>
-    </tr>
-    <tr>
-      <th>domainImageIsMask</th>
-      <td><p>boolean specifying whether the domain image is a
-mask used to limit the region of reconstruction from the patches.</p></td>
+      <th>antsxnetCacheDirectory</th>
+      <td><p>destination directory for storing the downloaded
+template and model weights.  Since these can be resused, if
+<code><a href='https://rdrr.io/r/base/NULL.html'>is.null(antsxnetCacheDirectory)</a></code>, these data will be downloaded to the
+subdirectory ~/.keras/ANTsXNet/.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>an ANTs image.</p>
+    <p>filename string</p>
+    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
+
+    <p>See <a href='https://figshare.com/authors/Nick_Tustison/441144'>https://figshare.com/authors/Nick_Tustison/441144</a>
+or <a href='https://figshare.com/authors/Brian_Avants/418551'>https://figshare.com/authors/Brian_Avants/418551</a>
+for some more descriptions</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>ANTsR</span> )
-
-<span class='no'>image</span> <span class='kw'>&lt;-</span> <span class='fu'>antsImageRead</span>( <span class='fu'>getANTsRData</span>( <span class='st'>"r16"</span> ) )
-<span class='no'>patchSet</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='extractImagePatches.html'>extractImagePatches</a></span>( <span class='no'>image</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>64</span>, <span class='fl'>64</span> ), <span class='st'>"all"</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>8</span>, <span class='fl'>8</span> ) )
-<span class='no'>imageReconstructed</span> <span class='kw'>&lt;-</span>
-  <span class='fu'>reconstructImageFromPatches</span>( <span class='no'>patchSet</span>, <span class='no'>image</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>8</span>, <span class='fl'>8</span> ) )
-<span class='kw pkg'>testthat</span><span class='kw ns'>::</span><span class='fu'><a href='https://testthat.r-lib.org/reference/equality-expectations.html'>expect_equal</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/array.html'>as.array</a></span>(<span class='no'>image</span>), <span class='fu'><a href='https://rdrr.io/r/base/array.html'>as.array</a></span>(<span class='no'>imageReconstructed</span>))
-<span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>image</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2557256 136.6    4468335 238.7         NA   4468335  238.7
-#&gt; Vcells 9503965  72.6   28499006 217.5     102400 150563716 1148.8</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>patchSet</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2555144 136.5    4468335 238.7         NA   4468335  238.7
-#&gt; Vcells 6942330  53.0   28499006 217.5     102400 150563716 1148.8</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>imageReconstructed</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2555138 136.5    4468335 238.7         NA   4468335  238.7
-#&gt; Vcells 6942356  53.0   28499006 217.5     102400 150563716 1148.8</div></pre>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+<span class='no'>net</span> <span class='kw'>&lt;-</span> <span class='fu'>getANTsXNetData</span>(<span class='st'>"biobank"</span>)
+}</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

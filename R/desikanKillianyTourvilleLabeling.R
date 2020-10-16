@@ -180,15 +180,12 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
   #
   ################################
 
-  priorsFileName <- "priorDktLabels.nii.gz"
-  priorsUrl <- "https://ndownloader.figshare.com/files/24139802"
-
   if( verbose == TRUE )
     {
     cat( "DesikanKillianyTourville:  retrieving label spatial priors.\n" )
     }
-  priorsFileNamePath <- tensorflow::tf$keras$utils$get_file(
-    priorsFileName, priorsUrl, cache_subdir = antsxnetCacheDirectory )
+  priorsFileNamePath <- getANTsXNetData( "priorDktLabels",
+    antsxnetCacheDirectory = antsxnetCacheDirectory )
   priorsImageList <- splitNDImageToList( antsImageRead( priorsFileNamePath ) )
 
   ################################
@@ -211,7 +208,8 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
     {
     cat( "DesikanKillianyTourville:  retrieving model weights.\n" )
     }
-  weightsFileNamePath <- getPretrainedNetwork( "dktOuterWithSpatialPriors", antsxnetCacheDirectory = antsxnetCacheDirectory )
+  weightsFileNamePath <- getPretrainedNetwork( "dktOuterWithSpatialPriors",
+    antsxnetCacheDirectory = antsxnetCacheDirectory )
   load_model_weights_hdf5( unetModel, filepath = weightsFileNamePath )
 
   unetModel %>% compile(
@@ -290,7 +288,8 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
     {
     cat( "DesikanKillianyTourville:  retrieving inner model weights.\n" )
     }
-  weightsFileName <- getPretrainedNetwork( "dktInner", antsxnetCacheDirectory = antsxnetCacheDirectory )
+  weightsFileName <- getPretrainedNetwork( "dktInner",
+    antsxnetCacheDirectory = antsxnetCacheDirectory )
   load_model_weights_hdf5( unetModel, filepath = weightsFileName )
 
   unetModel %>% compile(
