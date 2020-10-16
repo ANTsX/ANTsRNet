@@ -170,7 +170,7 @@ lungExtraction <- function( image,
     probabilityImages <- list()
     for( i in seq_len( numberOfClassificationLabels ) )
       {
-      probabilityImageTmp <- probabilityImagesArray[[1]][[i+1]]
+      probabilityImageTmp <- probabilityImagesArray[[1]][[i]]
       probabilityImages[[i]] <- applyAntsrTransformToImage( invertAntsrTransform( xfrm ),
         probabilityImageTmp, image )
       }
@@ -184,5 +184,5 @@ lungExtraction <- function( image,
     } else {
     stop( "Unknown modality type." )
     }
-
+    
   }
