@@ -109,7 +109,9 @@ Documentation page [https://antsx.github.io/ANTsRNet/](https://antsx.github.io/A
 
 ## Publications
 
-* Andrew T. Grainger, Arun Krishnaraj, Michael H. Quinones, Nicholas J. Tustison, Samantha Epstein, Daniela Fuller, Aakash Jha, Kevin L. Allman, Weibin Shi. Deep Learning-based Quantification of Abdominal Subcutaneous and Visceral Fat Volume on CT Images, _Academic Radiology_.  [in press](https://www.academicradiology.org/article/S1076-6332(20)30426-8/pdf)
+* Nicholas J. Tustison, Philip A. Cook, Andrew J. Holbrook, Hans J. Johnson, John Muschelli, Gabriel A. Devenyi, Jeffrey T. Duda, Sandhitsu R. Das, Nicholas C. Cullen, Daniel L. Gillen, Michael A. Yassa, James R. Stone, James C. Gee, and Brian B. Avants for the Alzheimer’s Disease Neuroimaging Initiative.  ANTsX: A dynamic ecosystem for quantitative biological and medical imaging.  [(medrxiv)](https://www.medrxiv.org/content/10.1101/2020.10.19.20215392v1)
+
+* Andrew T. Grainger, Arun Krishnaraj, Michael H. Quinones, Nicholas J. Tustison, Samantha Epstein, Daniela Fuller, Aakash Jha, Kevin L. Allman, Weibin Shi. Deep Learning-based Quantification of Abdominal Subcutaneous and Visceral Fat Volume on CT Images, _Academic Radiology_.  [(pubmed)](https://pubmed.ncbi.nlm.nih.gov/32771313/)
 
 * Nicholas J. Tustison, Brian B. Avants, and James C. Gee. Learning image-based spatial transformations via convolutional neural networks: a review,  _Magnetic Resonance Imaging_, 64:142-153, Dec 2019.  [(pubmed)](https://www.ncbi.nlm.nih.gov/pubmed/31200026) 
 
