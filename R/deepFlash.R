@@ -153,8 +153,11 @@ deepFlash <- function( t1, doPreprocessing = TRUE,
       }
     }
 
-  imageMatrix <- imageListToMatrix( probabilityImages, t1 * 0 + 1 )
-  segmentationMatrix <- matrix( apply( imageMatrix, 2, which.max ), nrow = 1 )
+  imageMatrix <- imageListToMatrix( probabilityImages[2:length( probabilityImages )], t1 * 0 + 1 )
+  backgroundForegroundMatrix <- rbind( imageListToMatrix( list( probabilityImages[[1]] ), t1 * 0 + 1 ),
+                                      colSums( imageMatrix ) )
+  foregroundMatrix <- matrix( apply( backgroundForegroundMatrix, 2, which.max ), nrow = 1 )
+  segmentationMatrix <- ( matrix( apply( imageMatrix, 2, which.max ), nrow = 1 ) + 1 ) * foregroundMatrix
   segmentationImage <- matrixToImages( segmentationMatrix, t1 * 0 + 1 )[[1]]
 
   relabeledImage <- antsImageClone( segmentationImage )
