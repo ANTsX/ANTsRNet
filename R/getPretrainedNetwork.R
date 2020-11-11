@@ -56,6 +56,7 @@ getPretrainedNetwork <- function(
               "sysuMediaWmhFlairT1Model2",
               "tidsQualityAssessment",
               "koniqMBCS",
+              "koniqMS",
 	            "wholeTumorSegmentationT2Flair" ),
   targetFileName, antsxnetCacheDirectory = NULL )
 {
@@ -95,6 +96,7 @@ getPretrainedNetwork <- function(
     hippMapp3rInitial = "https://ndownloader.figshare.com/files/18068408",
     hippMapp3rRefine = "https://ndownloader.figshare.com/files/18068411",
     koniqMBCS = "https://ndownloader.figshare.com/files/24967376",
+    koniqMS = "https://ndownloader.figshare.com/files/25461887",
     mriSuperResolution = "https://ndownloader.figshare.com/files/24128618",
     protonLungMri = "https://ndownloader.figshare.com/files/13606799",
     sixTissueOctantBrainSegmentation = "https://ndownloader.figshare.com/files/23776025",

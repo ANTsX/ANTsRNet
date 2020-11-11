@@ -2,7 +2,7 @@
 % Please edit documentation in R/qualityAssessment.R
 \name{tidNeuralImageAssessment}
 \alias{tidNeuralImageAssessment}
-\title{Perform TID-based assessment of an image.}
+\title{Perform MOS-based assessment of an image.}
 \usage{
 tidNeuralImageAssessment(
   image,
@@ -39,21 +39,28 @@ template and model weights.  Since these can be reused, if
 \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
 inst/extdata/ subfolder of the ANTsRNet package.}
 
-\item{whichModel}{model type e.g. string tidsQualityAssessment, koniqMBCS}
+\item{whichModel}{model type e.g. string tidsQualityAssessment, koniqMS where
+the forms predicts mean opinion score (MOS) and MOS standard deviation and
+the latter predicts mean opinion score (MOS) and sharpness}
 
 \item{verbose}{print progress.}
 }
 \value{
 list of QC results predicting both both human rater's mean and standard
-deviation of the MOS ("mean opinion scores").  See the TID2013 paper.  Both
-aggregate and spatial scores are returned, the latter in the form of an image.
+deviation of the MOS ("mean opinion scores") or sharpness depending on the
+selected network.  Both aggregate and spatial scores are returned, the latter
+in the form of an image.
 }
 \description{
-Use a ResNet architecture to estimate image quality in 2D or 3D using the TID
-image database described in
+Use a ResNet architecture to estimate image quality in 2D or 3D using subjective
+QC image databases described in
 }
 \details{
 \url{https://www.sciencedirect.com/science/article/pii/S0923596514001490}
+
+or
+
+\url{https://doi.org/10.1109/TIP.2020.2967829}
 
 where the image assessment is either "global", i.e., a single number or an image
 based on the specified patch size.  In the 3-D case, neighboring slices are used
