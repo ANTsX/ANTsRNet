@@ -74,8 +74,8 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
     {
     cat( "Neural QA:  retreivinging model and weights.\n" )
     }
-#  modelAndWeightsFileName <- getPretrainedNetwork( whichModel, modelAndWeightsFileName, antsxnetCacheDirectory = antsxnetCacheDirectory )
-  modelAndWeightsFileName = "~/Downloads/resnet_koniq10k_QC_ThreeChan_MS_HR_patch_20201110256x256.h5"
+  modelAndWeightsFileName <- getPretrainedNetwork( whichModel, modelAndWeightsFileName, antsxnetCacheDirectory = antsxnetCacheDirectory )
+#  modelAndWeightsFileName = "~/Downloads/resnet_koniq10k_QC_ThreeChan_MS_HR_patch_20201110256x256.h5"
   tidModel <- load_model_hdf5( filepath = modelAndWeightsFileName )
 
   paddingSizeVector <- paddingSize
