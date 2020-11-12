@@ -135,7 +135,7 @@ model \%>\% compile( loss = loss_dice,
 # Fit the model
 
 # track <- model \%>\% fit( X_train, Y_train,
-#              epochs = 100, batch_size = 4, verbose = 1, shuffle = TRUE,
+#              epochs = 100, batch_size = 5, verbose = 1, shuffle = TRUE,
 #              callbacks = list(
 #                callback_model_checkpoint( "unetModelInterimWeights.h5",
 #                    monitor = 'val_loss', save_best_only = TRUE ),

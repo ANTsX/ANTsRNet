@@ -12,7 +12,8 @@ extractImagePatchCoordinates(
   maskImage = NULL,
   physicalCoordinates = TRUE,
   cornerCoordinates = TRUE,
-  randomSeed
+  randomSeed,
+  randomize = TRUE
 )
 }
 \arguments{
@@ -40,6 +41,8 @@ coordinates of the corner or the center are returned.}
 
 \item{randomSeed}{integer seed that allows reproducible patch extraction
 across runs.}
+
+\item{randomize}{boolean controlling whether we randomize indices when masking.}
 }
 \value{
 a matrix of image patch spatial or index coordinates.

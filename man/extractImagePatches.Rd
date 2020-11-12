@@ -11,7 +11,8 @@ extractImagePatches(
   strideLength = 1,
   maskImage = NULL,
   randomSeed,
-  returnAsArray = FALSE
+  returnAsArray = FALSE,
+  randomize = TRUE
 )
 }
 \arguments{
@@ -38,6 +39,8 @@ across runs.}
 \code{FALSE} (default) the return type is a list where each element is
 a single patch.  Otherwise the return type is an array of size
 \code{dim( numberOfPatches, patchSize )}.}
+
+\item{randomize}{boolean controlling whether we randomize indices when masking.}
 }
 \value{
 a list (or array) of image patches.
