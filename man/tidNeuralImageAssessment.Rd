@@ -39,9 +39,9 @@ template and model weights.  Since these can be reused, if
 \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
 inst/extdata/ subfolder of the ANTsRNet package.}
 
-\item{whichModel}{model type e.g. string tidsQualityAssessment, koniqMS where
-the forms predicts mean opinion score (MOS) and MOS standard deviation and
-the latter predicts mean opinion score (MOS) and sharpness}
+\item{whichModel}{model type e.g. string tidsQualityAssessment, koniqMS, koniqMS2 or koniqMS3 where
+the former predicts mean opinion score (MOS) and MOS standard deviation and
+the latter koniq models predict mean opinion score (MOS) and sharpness}
 
 \item{verbose}{print progress.}
 }
