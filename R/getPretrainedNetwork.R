@@ -56,7 +56,7 @@ getPretrainedNetwork <- function(
               "sysuMediaWmhFlairT1Model2",
               "tidsQualityAssessment",
               "koniqMBCS",
-              "koniqMS",
+              "koniqMS", "koniqMS2", "koniqMS3",
 	            "wholeTumorSegmentationT2Flair" ),
   targetFileName, antsxnetCacheDirectory = NULL )
 {
