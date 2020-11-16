@@ -7,7 +7,7 @@
 createSsdModel3D(
   inputImageSize,
   numberOfClassificationLabels,
-  l2Regularization = 0.0005,
+  l2Regularization = 5e-04,
   minScale = 0.1,
   maxScale = 0.9,
   aspectRatiosPerLayer = list(c("1:1:1", "2:1:1", "1:2:1", "1:1:2"), c("1:1:1",

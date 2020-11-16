@@ -17,6 +17,7 @@
 #' \code{FALSE} (default) the return type is a list where each element is
 #' a single patch.  Otherwise the return type is an array of size
 #' \code{dim( numberOfPatches, patchSize )}.
+#' @param randomize boolean controlling whether we randomize indices when masking.
 #'
 #' @return a list (or array) of image patches.
 #' @author Tustison NJ
@@ -32,7 +33,7 @@
 #'
 #' @export
 extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
-  strideLength = 1, maskImage = NULL, randomSeed, returnAsArray = FALSE )
+  strideLength = 1, maskImage = NULL, randomSeed, returnAsArray = FALSE, randomize=TRUE )
 {
   if ( ! missing( randomSeed ) )
     {
@@ -221,9 +222,10 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
         }
 
       numberOfExtractedPatches <- min( maxNumberOfPatches, nrow( maskIndices ) )
-
-      randomIndices <- maskIndices[
-        sample.int( nrow( maskIndices ), numberOfExtractedPatches ),]
+      if ( randomize ) {
+        randomIndices <- maskIndices[
+          sample.int( nrow( maskIndices ), numberOfExtractedPatches ),]
+        } else randomIndices <- maskIndices
       } else {
       for( d in seq_len( dimensionality ) )
         {
@@ -323,6 +325,7 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
 #' coordinates of the corner or the center are returned.
 #' @param randomSeed integer seed that allows reproducible patch extraction
 #' across runs.
+#' @param randomize boolean controlling whether we randomize indices when masking.
 #'
 #' @return a matrix of image patch spatial or index coordinates.
 #' @author Tustison NJ, Avants B
@@ -340,7 +343,7 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
 #' @export extractImagePatchCoordinates
 extractImagePatchCoordinates <- function( image, patchSize, maxNumberOfPatches = 'all',
   strideLength = 1, maskImage = NULL, physicalCoordinates = TRUE,
-  cornerCoordinates = TRUE, randomSeed )
+  cornerCoordinates = TRUE, randomSeed, randomize=TRUE  )
 {
 
   indexList = list()
@@ -349,7 +352,7 @@ extractImagePatchCoordinates <- function( image, patchSize, maxNumberOfPatches =
     if ( is.list( inds ) ) {
       ptmat = matrix( nrow = length( inds ), ncol = image@dimension )
       for ( k in 1:length( inds ) ) {
-        ptmat[k,] = inds[[k]] + offsetter 
+        ptmat[k,] = inds[[k]] + offsetter
       }
       if ( physical ) return( antsTransformIndexToPhysicalPoint( image, ptmat ) )
       if ( !physical ) return( ptmat )
@@ -491,8 +494,10 @@ extractImagePatchCoordinates <- function( image, patchSize, maxNumberOfPatches =
 
       numberOfExtractedPatches <- min( maxNumberOfPatches, nrow( maskIndices ) )
 
-      randomIndices <- maskIndices[
-        sample.int( nrow( maskIndices ), numberOfExtractedPatches ),]
+      if ( randomize ) {
+        randomIndices <- maskIndices[
+          sample.int( nrow( maskIndices ), numberOfExtractedPatches ),]
+        } else randomIndices <- maskIndices
       } else {
       for( d in seq_len( dimensionality ) )
         {

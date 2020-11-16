@@ -1,10 +1,13 @@
-#' Perform TID-based assessment of an image.
+#' Perform MOS-based assessment of an image.
 #'
-#' Use a ResNet architecture to estimate image quality in 2D or 3D using the TID
-#' image database described in
+#' Use a ResNet architecture to estimate image quality in 2D or 3D using subjective
+#' QC image databases described in
 #'
 #'    \url{https://www.sciencedirect.com/science/article/pii/S0923596514001490}
 #'
+#' or
+#'
+#'    \url{https://doi.org/10.1109/TIP.2020.2967829}
 #'
 #' where the image assessment is either "global", i.e., a single number or an image
 #' based on the specified patch size.  In the 3-D case, neighboring slices are used
@@ -28,11 +31,14 @@
 #' template and model weights.  Since these can be reused, if
 #' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
 #' inst/extdata/ subfolder of the ANTsRNet package.
-#' @param whichModel model type e.g. string tidsQualityAssessment, koniqMBCS
+#' @param whichModel model type e.g. string tidsQualityAssessment, koniqMS, koniqMS2 or koniqMS3 where
+#' the former predicts mean opinion score (MOS) and MOS standard deviation and
+#' the latter koniq models predict mean opinion score (MOS) and sharpness
 #' @param verbose print progress.
 #' @return list of QC results predicting both both human rater's mean and standard
-#' deviation of the MOS ("mean opinion scores").  See the TID2013 paper.  Both
-#' aggregate and spatial scores are returned, the latter in the form of an image.
+#' deviation of the MOS ("mean opinion scores") or sharpness depending on the
+#' selected network.  Both aggregate and spatial scores are returned, the latter
+#' in the form of an image.
 #' @author Avants BB
 #' @examples
 #' \dontrun{
@@ -53,12 +59,13 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
     {
     return( n == 2L || all( n %% 2L:max( 2, floor( sqrt( n ) ) ) != 0 ) )
     }
-  validModels = c("tidsQualityAssessment", "koniqMBCS")
+  validModels = c("tidsQualityAssessment", "koniqMS", "koniqMS2", "koniqMS3")
   if ( ! any( whichModel %in% validModels ) )
     {
     cat( validModels )
     stop(" : Please pass valid model : ")
     }
+  isKoniq = length( grep("koniq",whichModel) ) > 0
   if( is.null( antsxnetCacheDirectory ) )
     {
     antsxnetCacheDirectory <- "ANTsXNet"
@@ -69,7 +76,8 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
     cat( "Neural QA:  retreivinging model and weights.\n" )
     }
   modelAndWeightsFileName <- getPretrainedNetwork( whichModel, modelAndWeightsFileName, antsxnetCacheDirectory = antsxnetCacheDirectory )
-  tidModel <- load_model_hdf5( filepath = modelAndWeightsFileName )
+#  modelAndWeightsFileName = "~/Downloads/resnet_koniq10k_QC_ThreeChan_MS_HR_patch_20201110256x256.h5"
+  tidModel <- load_model_hdf5( filepath = modelAndWeightsFileName, compile=FALSE )
 
   paddingSizeVector <- paddingSize
   if( length( paddingSize ) == 1 )
@@ -97,7 +105,7 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
     if ( whichModel == "tidsQualityAssessment" )
       evaluationImage <- paddedImage %>% iMath( "Normalize" ) * 255
 
-    if ( whichModel == "koniqMBCS" )
+    if ( isKoniq )
       evaluationImage <- ( paddedImage %>% iMath( "Normalize" ) ) * 2.0 - 1.0
 
     if( image@dimension == 2 )
@@ -114,12 +122,12 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
                     MOS.mean = predictedData[1, 1],
                     MOS.standardDeviationMean = predictedData[1, 2] ) )
         }
-      if ( whichModel == "koniqMBCS" ) {
+      if ( isKoniq ) {
         return( list(
                     MOS.mean = predictedData[1, 1],
-                    brightness.mean = predictedData[1, 2],
-                    contrast.mean = predictedData[1, 3],
-                    sharpness.mean = predictedData[1, 4]
+#                    brightness.mean = predictedData[1, 2],
+#                    contrast.mean = predictedData[1, 3],
+                    sharpness.mean = predictedData[1, 2]
 		    ) )
         }
 
@@ -127,9 +135,6 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
 
       mosMean <- 0
       mosStandardDeviation <- 0
-      brightness = 0
-      contrast = 0
-      sharpness = 0
 
       x <- seq.int( image@dimension )
       for( d in seq.int( length( dimensionsToPredict ) ) )
@@ -157,23 +162,14 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
 
         mosMean <- mosMean + predictedData[1, 1]
         mosStandardDeviation <- mosStandardDeviation + predictedData[1, 2]
-        if ( whichModel == "koniqMCBS" )
-	  {
-	  brightness = mosStandardDeviation
-	  contrast = contrast + predictedData[1, 3]
-          sharpness = sharpness + predictedData[1, 4]
-          }
-	}
+	      }
       mosMean <- mosMean / length( dimensionsToPredict )
       mosStandardDeviation <- mosStandardDeviation / length( dimensionsToPredict )
-      brightness = brightness / length( dimensionsToPredict )
-      contrast = contrast/ length( dimensionsToPredict )
-      sharpness = sharpness / length( dimensionsToPredict )
       if ( whichModel == "tidsQualityAssessment" )
         return( list( MOS.mean = mosMean,
                     MOS.standardDeviationMean = mosStandardDeviation ) )
-      if ( whichModel == "koniqMBCS" )
-        return( list( MOS.mean = mosMean, brightness.mean=brightness, contrast.mean=contrast, sharpness.mean=sharpness) )
+      if ( isKoniq )
+        return( list( MOS.mean = mosMean, sharpness.mean=mosStandardDeviation) )
       }
     } else {
 
@@ -210,8 +206,6 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
 
     MOS <- image * 0
     MOS.standardDeviation <- image * 0
-    contrast = image * 0.0
-    sharpness = image * 0.0
 
     for( d in seq.int( length( dimensionsToPredict ) ) )
       {
@@ -250,8 +244,6 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
 
       patchesMOS <- list()
       patchesMOS.standardDeviation <- list()
-      patchesContrast = list()
-      patchesSharpness = list()
       batchX <- array( dim = c( length( patches ), c( patchSize, patchSize ), numberOfChannels ) )
 
       isGoodPatch <- rep( FALSE, length( patches ) )
@@ -265,7 +257,7 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
           if( max( patchImage ) > 0 )
             {
             if ( whichModel == "tidsQualityAssessment" ) patchImage <- patchImage / max( patchImage ) * 255
-            if ( whichModel == "koniqMBCS" ) patchImage <- patchImage / max( patchImage ) * 2.0 - 1.0
+            if ( isKoniq ) patchImage <- patchImage / max( patchImage ) * 2.0 - 1.0
             }
           if( image@dimension == 2 )
             {
@@ -291,18 +283,10 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
           {
           patchesMOS[[i]] <- patchImage * 0 + predictedData[count,1]
           patchesMOS.standardDeviation[[i]] <- patchImage * 0 + predictedData[count,2]
-          if ( whichModel == "koniqMBCS" ) {
-	    patchesContrast[[i]] = patchImage * 0 + predictedData[count,3]
-	    patchesSharpness[[i]] = patchImage * 0 + predictedData[count,4]
-            }
-  	  count <- count + 1
+  	      count <- count + 1
           } else {
           patchesMOS[[i]] <- patchImage * 0
           patchesMOS.standardDeviation[[i]] <- patchImage * 0
-	  if ( whichModel == "koniqMBCS" ) {
-            patchesContrast[[i]] = patchImage * 0
-	    patchesSharpness[[i]] = patchImage * 0
- 	    }
           }
         }
       MOS <- MOS + padOrCropImageToSize(
@@ -311,23 +295,10 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
       MOS.standardDeviation <- MOS.standardDeviation + padOrCropImageToSize(
         reconstructImageFromPatches( patchesMOS.standardDeviation, evaluationImage,
                                      strideLength = strideLengthVector ), dim( image ) )
-      if ( whichModel == "koniqMBCS" ) {
-        contrast <- contrast + padOrCropImageToSize(
-          reconstructImageFromPatches( patchesContrast, evaluationImage,
-                                     strideLength = strideLengthVector ), dim( image ) )
-        sharpness <- sharpness + padOrCropImageToSize(
-          reconstructImageFromPatches( patchesSharpness, evaluationImage,
-                                     strideLength = strideLengthVector ), dim( image ) )
-        }
-
       }
 
     MOS <- MOS / length( dimensionsToPredict )
     MOS.standardDeviation <- MOS.standardDeviation / length( dimensionsToPredict )
-    if ( whichModel == "koniqMBCS" ) {
-      sharpness = sharpness / length( dimensionsToPredict )
-      contrast = contrast / length( dimensionsToPredict )
-    }
     if( missing( mask ) )
       {
       if ( whichModel == "tidsQualityAssessment" )
@@ -336,11 +307,12 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
                     MOS.mean = mean( MOS ),
                     MOS.standardDeviationMean = mean( MOS.standardDeviation ) ) )
 
-      if ( whichModel == "koniqMBCS" )
-        return( list( MOS = MOS,
-                    brightness = MOS.standardDeviation, contrast=contrast, sharpness=sharpness,
-                    MOS.mean = mean( MOS ),
-                    brightness.mean = mean( MOS.standardDeviation ), contrast.mean=mean(contrast), sharpness.mean=mean(sharpness) ) )
+      if ( isKoniq )
+        return( list(
+          MOS = MOS,
+          sharpness = MOS.standardDeviation,
+          MOS.mean = mean( MOS ),
+          sharpness.mean=mean(MOS.standardDeviation) ) )
 
       } else {
       if ( whichModel == "tidsQualityAssessment" )
@@ -348,11 +320,13 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
                     MOS.standardDeviation = MOS.standardDeviation * mask,
                     MOS.mean = mean( MOS[mask >= 0.5] ),
                     MOS.standardDeviationMean = mean( MOS.standardDeviation[mask >= 0.5] ) ) )
-      if ( whichModel == "koniqMBCS" )
-        return( list( MOS = MOS * mask,
-                    brightness = MOS.standardDeviation * mask, contrast=contrast*mask, sharpness=sharpness*mask,
-                    MOS.mean = mean( MOS[mask >= 0.5] ),
-                    brightness.mean = mean( MOS.standardDeviation[mask >= 0.5] ), contrast.mean=mean(contrast[mask >= 0.5]), sharpness.mean=mean(sharpness[mask >= 0.5]) ) )
+      if ( isKoniq )
+        return( list(
+          MOS = MOS * mask,
+          sharpness = MOS.standardDeviation * mask,
+          MOS.mean = mean( MOS[mask >= 0.5] ),
+          sharpness.mean = mean( MOS.standardDeviation[mask >= 0.5] )
+        ) )
 
       }
     }

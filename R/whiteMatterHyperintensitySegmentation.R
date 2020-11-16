@@ -51,7 +51,7 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
 
   if( is.null( antsxnetCacheDirectory ) )
     {
-    antsxnetCacheDirectory <- system.file( "extdata", package = "ANTsRNet" )
+    antsxnetCacheDirectory <- "ANTsXNet"
     }
 
   ################################
