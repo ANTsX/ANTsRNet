@@ -6,7 +6,8 @@
 \usage{
 getANTsXNetData(
   fileId = c("show", "biobank", "croppedMni152", "mprage_hippmapp3r",
-    "protonLungTemplate", "ctLungTemplate", "priorDktLabels", "S_template3"),
+    "protonLungTemplate", "ctLungTemplate", "priorDktLabels", "priorDeepFlashLeftLabels",
+    "priorDeepFlashRightLabels", "S_template3"),
   targetFileName,
   antsxnetCacheDirectory = NULL
 )

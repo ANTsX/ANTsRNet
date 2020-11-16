@@ -7,9 +7,9 @@
 deepFlash(
   t1,
   doPreprocessing = TRUE,
+  doPerHemisphere = TRUE,
   antsxnetCacheDirectory = NULL,
-  verbose = FALSE,
-  debug = FALSE
+  verbose = FALSE
 )
 }
 \arguments{
@@ -17,14 +17,15 @@ deepFlash(
 
 \item{doPreprocessing}{perform preprocessing.  See description above.}
 
+\item{doPerHemisphere}{If TRUE, do prediction based on separate networks per
+hemisphere.  Otherwise, use the single network trained for both hemispheres.}
+
 \item{antsxnetCacheDirectory}{destination directory for storing the downloaded
 template and model weights.  Since these can be resused, if
 \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
 inst/extdata/ subfolder of the ANTsRNet package.}
 
 \item{verbose}{print progress.}
-
-\item{debug}{return feature images in the last layer of the u-net model.}
 }
 \value{
 list consisting of the segmentation image and probability images for

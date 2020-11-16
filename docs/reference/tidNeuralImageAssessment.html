@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Perform TID-based assessment of an image. — tidNeuralImageAssessment • ANTsRNet</title>
+<title>Perform MOS-based assessment of an image. — tidNeuralImageAssessment • ANTsRNet</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,9 @@
 
 
 
-<meta property="og:title" content="Perform TID-based assessment of an image. — tidNeuralImageAssessment" />
-<meta property="og:description" content="Use a ResNet architecture to estimate image quality in 2D or 3D using the TID
-image database described in" />
+<meta property="og:title" content="Perform MOS-based assessment of an image. — tidNeuralImageAssessment" />
+<meta property="og:description" content="Use a ResNet architecture to estimate image quality in 2D or 3D using subjective
+QC image databases described in" />
 
 
 
@@ -109,14 +109,14 @@ image database described in" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Perform TID-based assessment of an image.</h1>
+    <h1>Perform MOS-based assessment of an image.</h1>
     <small class="dont-index">Source: <a href='https://github.com/ANTsX/ANTsRNet/blob/master/R/qualityAssessment.R'><code>R/qualityAssessment.R</code></a></small>
     <div class="hidden name"><code>tidNeuralImageAssessment.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Use a ResNet architecture to estimate image quality in 2D or 3D using the TID
-image database described in</p>
+    <p>Use a ResNet architecture to estimate image quality in 2D or 3D using subjective
+QC image databases described in</p>
     </div>
 
     <pre class="usage"><span class='fu'>tidNeuralImageAssessment</span>(
@@ -172,7 +172,9 @@ inst/extdata/ subfolder of the ANTsRNet package.</p></td>
     </tr>
     <tr>
       <th>whichModel</th>
-      <td><p>model type e.g. string tidsQualityAssessment, koniqMBCS</p></td>
+      <td><p>model type e.g. string tidsQualityAssessment, koniqMS, koniqMS2 or koniqMS3 where
+the former predicts mean opinion score (MOS) and MOS standard deviation and
+the latter koniq models predict mean opinion score (MOS) and sharpness</p></td>
     </tr>
     <tr>
       <th>verbose</th>
@@ -183,11 +185,14 @@ inst/extdata/ subfolder of the ANTsRNet package.</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>list of QC results predicting both both human rater's mean and standard
-deviation of the MOS ("mean opinion scores").  See the TID2013 paper.  Both
-aggregate and spatial scores are returned, the latter in the form of an image.</p>
+deviation of the MOS ("mean opinion scores") or sharpness depending on the
+selected network.  Both aggregate and spatial scores are returned, the latter
+in the form of an image.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p><a href='https://www.sciencedirect.com/science/article/pii/S0923596514001490'>https://www.sciencedirect.com/science/article/pii/S0923596514001490</a></p>
+<p>or</p>
+<p><a href='https://doi.org/10.1109/TIP.2020.2967829'>https://doi.org/10.1109/TIP.2020.2967829</a></p>
 <p>where the image assessment is either "global", i.e., a single number or an image
 based on the specified patch size.  In the 3-D case, neighboring slices are used
 for each estimate.  Note that parameters should be kept as consistent as possible

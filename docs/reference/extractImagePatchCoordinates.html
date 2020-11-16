@@ -125,7 +125,8 @@
   <span class='kw'>maskImage</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>physicalCoordinates</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>cornerCoordinates</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='no'>randomSeed</span>
+  <span class='no'>randomSeed</span>,
+  <span class='kw'>randomize</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -171,6 +172,10 @@ coordinates of the corner or the center are returned.</p></td>
       <th>randomSeed</th>
       <td><p>integer seed that allows reproducible patch extraction
 across runs.</p></td>
+    </tr>
+    <tr>
+      <th>randomize</th>
+      <td><p>boolean controlling whether we randomize indices when masking.</p></td>
     </tr>
     </table>
 

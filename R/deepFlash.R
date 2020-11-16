@@ -35,12 +35,13 @@
 #'
 #' @param t1 raw or preprocessed 3-D T1-weighted brain image.
 #' @param doPreprocessing perform preprocessing.  See description above.
+#' @param doPerHemisphere If TRUE, do prediction based on separate networks per 
+#' hemisphere.  Otherwise, use the single network trained for both hemispheres.
 #' @param antsxnetCacheDirectory destination directory for storing the downloaded
 #' template and model weights.  Since these can be resused, if
 #' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
 #' inst/extdata/ subfolder of the ANTsRNet package.
 #' @param verbose print progress.
-#' @param debug return feature images in the last layer of the u-net model.
 #' @return list consisting of the segmentation image and probability images for
 #' each label.
 #' @author Tustison NJ
@@ -53,8 +54,8 @@
 #' results <- deepFlash( image )
 #' }
 #' @export
-deepFlash <- function( t1, doPreprocessing = TRUE,
-  antsxnetCacheDirectory = NULL, verbose = FALSE, debug = FALSE )
+deepFlash <- function( t1, doPreprocessing = TRUE, doPerHemisphere = TRUE,
+  antsxnetCacheDirectory = NULL, verbose = FALSE )
 {
   if( t1@dimension != 3 )
     {
@@ -87,70 +88,277 @@ deepFlash <- function( t1, doPreprocessing = TRUE,
     t1Preprocessed <- t1Preprocessing$preprocessedImage * t1Preprocessing$brainMask
     }
 
-  ################################
-  #
-  # Build model and load weights
-  #
-  ################################
-
-  templateSize <- c( 160L, 192L, 160L )
+  probabilityImages <- list()
   labels <- c( 0, 5:18 )
 
-  unetModel <- createUnetModel3D( c( templateSize, 1 ),
-    numberOfOutputs = length( labels ), mode = 'classification',
-    numberOfLayers = 4, numberOfFiltersAtBaseLayer = 8, dropoutRate = 0.0,
-    convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
-    weightDecay = 1e-5, addAttentionGating = TRUE )
-
-  if( verbose == TRUE )
-    {
-    cat( "DeepFlash: retrieving model weights.\n" )
-    }
-  weightsFileName <- getPretrainedNetwork( "deepFlash", antsxnetCacheDirectory = antsxnetCacheDirectory )
-  load_model_weights_hdf5( unetModel, filepath = weightsFileName )
-
-  unetModel %>% compile(
-    optimizer = optimizer_adam(),
-    loss = categorical_focal_loss( alpha = 0.25, gamma = 2.0 ),
-    metrics = 'accuracy' )
-
   ################################
   #
-  # Do prediction and normalize to native space
+  # Process left/right in same network
   #
   ################################
 
-  if( verbose == TRUE )
+  if( doPerHemisphere == FALSE )
     {
-    cat( "Prediction.\n" )
-    }
 
-  croppedImage <- padOrCropImageToSize( t1Preprocessed, templateSize )
-  imageArray <- as.array( croppedImage )
+    ################################
+    #
+    # Build model and load weights
+    #
+    ################################
 
-  batchX <- array( data = imageArray, dim = c( 1, templateSize, 1 ) )
-  batchX <- ( batchX - mean( batchX ) ) / sd( batchX )
+    templateSize <- c( 160L, 192L, 160L )
 
-  predictedData <- unetModel %>% predict( batchX, verbose = verbose )
-  probabilityImagesList <- decodeUnet( predictedData, croppedImage )
+    unetModel <- createUnetModel3D( c( templateSize, 1 ),
+      numberOfOutputs = length( labels ), mode = 'classification',
+      numberOfLayers = 4, numberOfFiltersAtBaseLayer = 8, dropoutRate = 0.0,
+      convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
+      weightDecay = 1e-5, addAttentionGating = TRUE )
 
-  probabilityImages <- list()
-  for( i in seq.int( length( probabilityImagesList[[1]] ) ) )
-    {
-    if( i > 1 )
+    if( verbose == TRUE )
       {
-      decroppedImage <- decropImage( probabilityImagesList[[1]][[i]], t1Preprocessed * 0 )
-      } else {
-      decroppedImage <- decropImage( probabilityImagesList[[1]][[i]], t1Preprocessed * 0 + 1 )
+      cat( "DeepFlash: retrieving model weights.\n" )
       }
-    if( doPreprocessing == TRUE )
+    weightsFileName <- getPretrainedNetwork( "deepFlash", antsxnetCacheDirectory = antsxnetCacheDirectory )
+    load_model_weights_hdf5( unetModel, filepath = weightsFileName )
+
+    ################################
+    #
+    # Do prediction and normalize to native space
+    #
+    ################################
+
+    if( verbose == TRUE )
       {
-      probabilityImages[[i]] <- antsApplyTransforms( fixed = t1, moving = decroppedImage,
-          transformlist = t1Preprocessing$templateTransforms$invtransforms,
-          whichtoinvert = c( TRUE ), interpolator = "linear", verbose = verbose )
-      } else {
-      probabilityImages[[i]] <- decroppedImage
+      cat( "Prediction.\n" )
       }
+
+    croppedImage <- padOrCropImageToSize( t1Preprocessed, templateSize )
+    imageArray <- as.array( croppedImage )
+
+    batchX <- array( data = imageArray, dim = c( 1, templateSize, 1 ) )
+    batchX <- ( batchX - mean( batchX ) ) / sd( batchX )
+
+    predictedData <- unetModel %>% predict( batchX, verbose = verbose )
+    probabilityImagesList <- decodeUnet( predictedData, croppedImage )
+
+    for( i in seq.int( length( probabilityImagesList[[1]] ) ) )
+      {
+      if( i > 1 )
+        {
+        decroppedImage <- decropImage( probabilityImagesList[[1]][[i]], t1Preprocessed * 0 )
+        } else {
+        decroppedImage <- decropImage( probabilityImagesList[[1]][[i]], t1Preprocessed * 0 + 1 )
+        }
+      if( doPreprocessing == TRUE )
+        {
+        probabilityImages[[i]] <- antsApplyTransforms( fixed = t1, moving = decroppedImage,
+            transformlist = t1Preprocessing$templateTransforms$invtransforms,
+            whichtoinvert = c( TRUE ), interpolator = "linear", verbose = verbose )
+        } else {
+        probabilityImages[[i]] <- decroppedImage
+        }
+      }
+
+    ################################
+    #
+    # Process left/right in split networks
+    #
+    ################################
+
+    } else {
+
+    ################################
+    #
+    # Left:  download spatial priors
+    #
+    ################################
+
+    spatialPriorsLeftFileNamePath <- getANTsXNetData( "priorDeepFlashLeftLabels",
+      antsxnetCacheDirectory = antsxnetCacheDirectory )
+    spatialPriorsLeft <- antsImageRead( spatialPriorsLeftFileNamePath )
+    priorsImageLeftList <- splitNDImageToList( spatialPriorsLeft )
+
+    ################################
+    #
+    # Left:  build model and load weights
+    #
+    ################################
+
+    templateSize <- c( 64L, 96L, 96L )
+    labelsLeft <- c( 0, 5, 7, 9, 11, 13, 15, 17 )
+    channelSize <- 1 + length( labelsLeft )
+
+    numberOfFilters = 16
+    networkName <- "deepFlashLeft16" 
+
+    unetModel <- createUnetModel3D( c( templateSize, channelSize ),
+      numberOfOutputs = length( labelsLeft ), mode = 'classification',
+      numberOfLayers = 4, numberOfFiltersAtBaseLayer = numberOfFilters, dropoutRate = 0.0,
+      convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
+      weightDecay = 1e-5, addAttentionGating = TRUE )
+
+    if( verbose == TRUE )
+      {
+      cat( "DeepFlash: retrieving model weights (left).\n" )
+      }
+    weightsFileName <- getPretrainedNetwork( networkName, antsxnetCacheDirectory = antsxnetCacheDirectory )
+    load_model_weights_hdf5( unetModel, filepath = weightsFileName )
+
+    ################################
+    #
+    # Left:  do prediction and normalize to native space
+    #
+    ################################
+
+    if( verbose == TRUE )
+      {
+      cat( "Prediction (left).\n" )
+      }
+
+    croppedImage <- cropIndices( t1Preprocessed, c( 31, 52, 1 ), c( 94, 147, 96 ) )
+    imageArray <- as.array( croppedImage )
+    imageArray <- ( imageArray - mean( imageArray ) ) / sd( imageArray )
+
+    batchX <- array( data = 0, dim = c( 1, templateSize, channelSize ) )
+    batchX[1,,,,1] <- imageArray 
+
+    for( i in seq.int( length( priorsImageLeftList ) ) )
+      {
+      croppedPrior <- cropIndices( priorsImageLeftList[[i]], c( 31, 52, 1 ), c( 94, 147, 96 ) )
+      batchX[1,,,,i+1] <- as.array( croppedPrior )
+      }
+
+    predictedData <- unetModel %>% predict( batchX, verbose = verbose )
+    probabilityImagesList <- decodeUnet( predictedData, croppedImage )
+
+    probabilityImagesLeft <- list()
+    for( i in seq.int( length( probabilityImagesList[[1]] ) ) )
+      {
+      if( i > 1 )
+        {
+        decroppedImage <- decropImage( probabilityImagesList[[1]][[i]], t1Preprocessed * 0 )
+        } else {
+        decroppedImage <- decropImage( probabilityImagesList[[1]][[i]], t1Preprocessed * 0 + 1 )
+        }
+      if( doPreprocessing == TRUE )
+        {
+        probabilityImagesLeft[[i]] <- antsApplyTransforms( fixed = t1, moving = decroppedImage,
+            transformlist = t1Preprocessing$templateTransforms$invtransforms,
+            whichtoinvert = c( TRUE ), interpolator = "linear", verbose = verbose )
+        } else {
+        probabilityImagesLeft[[i]] <- decroppedImage
+        }
+      }
+
+    ################################
+    #
+    # Right:  download spatial priors
+    #
+    ################################
+
+    spatialPriorsRightFileNamePath <- getANTsXNetData( "priorDeepFlashRightLabels",
+      antsxnetCacheDirectory = antsxnetCacheDirectory )
+    spatialPriorsRight <- antsImageRead( spatialPriorsRightFileNamePath )
+    priorsImageRightList <- splitNDImageToList( spatialPriorsRight )
+
+    ################################
+    #
+    # Right:  build model and load weights
+    #
+    ################################
+
+    templateSize <- c( 64L, 96L, 96L )
+    labelsRight <- c( 0, 6, 8, 10, 12, 14, 16, 18 )
+    channelSize <- 1 + length( labelsRight )
+
+    numberOfFilters = 16
+    networkName <- "deepFlashRight16" 
+
+    unetModel <- createUnetModel3D( c( templateSize, channelSize ),
+      numberOfOutputs = length( labelsRight ), mode = 'classification',
+      numberOfLayers = 4, numberOfFiltersAtBaseLayer = numberOfFilters, dropoutRate = 0.0,
+      convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
+      weightDecay = 1e-5, addAttentionGating = TRUE )
+
+    if( verbose == TRUE )
+      {
+      cat( "DeepFlash: retrieving model weights (Right).\n" )
+      }
+    weightsFileName <- getPretrainedNetwork( networkName, antsxnetCacheDirectory = antsxnetCacheDirectory )
+    load_model_weights_hdf5( unetModel, filepath = weightsFileName )
+
+    ################################
+    #
+    # Right:  do prediction and normalize to native space
+    #
+    ################################
+
+    if( verbose == TRUE )
+      {
+      cat( "Prediction (Right).\n" )
+      }
+
+    croppedImage <- cropIndices( t1Preprocessed, c( 89, 52, 1 ), c( 152, 147, 96 ) )
+    imageArray <- as.array( croppedImage )
+    imageArray <- ( imageArray - mean( imageArray ) ) / sd( imageArray )
+
+    batchX <- array( data = 0, dim = c( 1, templateSize, channelSize ) )
+    batchX[1,,,,1] <- imageArray 
+
+    for( i in seq.int( length( priorsImageRightList ) ) )
+      {
+      croppedPrior <- cropIndices( priorsImageRightList[[i]], c( 89, 52, 1 ), c( 152, 147, 96 ) )
+      batchX[1,,,,i+1] <- as.array( croppedPrior )
+      }
+
+    predictedData <- unetModel %>% predict( batchX, verbose = verbose )
+    probabilityImagesList <- decodeUnet( predictedData, croppedImage )
+
+    probabilityImagesRight <- list()
+    for( i in seq.int( length( probabilityImagesList[[1]] ) ) )
+      {
+      if( i > 1 )
+        {
+        decroppedImage <- decropImage( probabilityImagesList[[1]][[i]], t1Preprocessed * 0 )
+        } else {
+        decroppedImage <- decropImage( probabilityImagesList[[1]][[i]], t1Preprocessed * 0 + 1 )
+        }
+      if( doPreprocessing == TRUE )
+        {
+        probabilityImagesRight[[i]] <- antsApplyTransforms( fixed = t1, moving = decroppedImage,
+            transformlist = t1Preprocessing$templateTransforms$invtransforms,
+            whichtoinvert = c( TRUE ), interpolator = "linear", verbose = verbose )
+        } else {
+        probabilityImagesRight[[i]] <- decroppedImage
+        }
+      }
+
+    ################################
+    #
+    # Combine priors
+    #
+    ################################
+
+    probabilityBackgroundImage <- antsImageClone(t1) * 0
+    for( i in seq.int( from = 2, to = length( probabilityImagesLeft ) ) )
+      {
+      probabilityBackgroundImage <- probabilityBackgroundImage + probabilityImagesLeft[[i]]
+      }
+    for( i in seq.int( from = 2, to = length( probabilityImagesRight ) ) )
+      {
+      probabilityBackgroundImage <- probabilityBackgroundImage + probabilityImagesRight[[i]]
+      }
+
+    count <- 1
+    probabilityImages[[count]] <- probabilityBackgroundImage * -1 + 1    
+    count <- count + 1
+    for( i in seq.int( from = 2, to = length( probabilityImagesLeft ) ) )
+      {
+      probabilityImages[[count]] <- probabilityImagesLeft[[i]]
+      count <- count + 1
+      probabilityImages[[count]] <- probabilityImagesRight[[i]]
+      count <- count + 1
+      }  
     }
 
   imageMatrix <- imageListToMatrix( probabilityImages[2:length( probabilityImages )], t1 * 0 + 1 )
@@ -171,30 +379,28 @@ deepFlash <- function( t1, doPreprocessing = TRUE,
 
   # debugging
 
-  if( debug == TRUE )
-    {
-    inputImage <- unetModel$input
-    featureLayer <- unetModel$layers[[length( unetModel$layers ) - 1]]
-    featureFunction <- keras::backend()$`function`( list( inputImage ), list( featureLayer$output ) )
-    featureBatch <- featureFunction( list( batchX[1,,,,,drop = FALSE] ) )
-
-    featureImagesList <- decodeUnet( featureBatch[[1]], croppedImage )
-
-    featureImages <- list()
-    for( i in seq.int( length( featureImagesList[[1]] ) ) )
-      {
-      decroppedImage <- decropImage( featureImagesList[[1]][[i]], t1Preprocessed * 0 )
-      if( doPreprocessing == TRUE )
-        {
-        featureImages[[i]] <- antsApplyTransforms( fixed = t1, moving = decroppedImage,
-            transformlist = t1Preprocessing$templateTransforms$invtransforms,
-            whichtoinvert = c( TRUE ), interpolator = "linear", verbose = verbose )
-        } else {
-        featureImages[[i]] <- decroppedImage
-        }
-      }
-    results[['featureImagesLastLayer']] <- featureImages
-    }
+  # if( debug == TRUE )
+  #   {
+  #   inputImage <- unetModel$input
+  #   featureLayer <- unetModel$layers[[length( unetModel$layers ) - 1]]
+  #   featureFunction <- keras::backend()$`function`( list( inputImage ), list( featureLayer$output ) )
+  #   featureBatch <- featureFunction( list( batchX[1,,,,,drop = FALSE] ) )
+  #   featureImagesList <- decodeUnet( featureBatch[[1]], croppedImage )
+  #   featureImages <- list()
+  #   for( i in seq.int( length( featureImagesList[[1]] ) ) )
+  #     {
+  #     decroppedImage <- decropImage( featureImagesList[[1]][[i]], t1Preprocessed * 0 )
+  #     if( doPreprocessing == TRUE )
+  #       {
+  #       featureImages[[i]] <- antsApplyTransforms( fixed = t1, moving = decroppedImage,
+  #           transformlist = t1Preprocessing$templateTransforms$invtransforms,
+  #           whichtoinvert = c( TRUE ), interpolator = "linear", verbose = verbose )
+  #       } else {
+  #       featureImages[[i]] <- decroppedImage
+  #       }
+  #     }
+  #   results[['featureImagesLastLayer']] <- featureImages
+  #   }
 
   return( results )
 }

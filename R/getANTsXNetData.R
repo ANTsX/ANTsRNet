@@ -27,6 +27,8 @@ getANTsXNetData <- function(
               "protonLungTemplate",
               "ctLungTemplate",
               "priorDktLabels",
+              "priorDeepFlashLeftLabels",
+              "priorDeepFlashRightLabels",
               "S_template3" ),
   targetFileName, antsxnetCacheDirectory = NULL )
 {
@@ -46,7 +48,9 @@ getANTsXNetData <- function(
     protonLungTemplate = "https://ndownloader.figshare.com/files/22707338",
     ctLungTemplate = "https://ndownloader.figshare.com/files/22707335",
     priorDktLabels = "https://ndownloader.figshare.com/files/24139802",
-    S_template3 = "https://ndownloader.figshare.com/files/22597175"
+    S_template3 = "https://ndownloader.figshare.com/files/22597175",
+    priorDeepFlashLeftLabels = "https://ndownloader.figshare.com/files/25422098",
+    priorDeepFlashRightLabels = "https://ndownloader.figshare.com/files/25422101"
   )
 
   if( missing( targetFileName ) )

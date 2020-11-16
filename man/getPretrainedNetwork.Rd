@@ -10,13 +10,14 @@ getPretrainedNetwork(
     "brainExtractionBOLD", "brainExtractionFA", "brainExtractionNoBrainer",
     "brainExtractionInfantT1T2", "brainExtractionInfantT1", "brainExtractionInfantT2",
     "brainSegmentation", "brainSegmentationPatchBased", "ctHumanLung", "dbpn4x",
-    "deepFlash", "denoising", "dktInner", "dktOuter", "dktOuterWithSpatialPriors",
-    "functionalLungMri", "hippMapp3rInitial", "hippMapp3rRefine",     
+    "deepFlash", "deepFlashLeft8", "deepFlashRight8", "deepFlashLeft16",
+    "deepFlashRight16", "denoising", "dktInner", "dktOuter", "dktOuterWithSpatialPriors",
+         "functionalLungMri", "hippMapp3rInitial", "hippMapp3rRefine",
     "mriSuperResolution", "protonLungMri", "sixTissueOctantBrainSegmentation",
     "sysuMediaWmhFlairOnlyModel0", "sysuMediaWmhFlairOnlyModel1",
     "sysuMediaWmhFlairOnlyModel2", "sysuMediaWmhFlairT1Model0",
     "sysuMediaWmhFlairT1Model1", "sysuMediaWmhFlairT1Model2", "tidsQualityAssessment",
-    "koniqMBCS", "koniqMS", "wholeTumorSegmentationT2Flair"),
+    "koniqMBCS", "koniqMS", "koniqMS2", "koniqMS3", "wholeTumorSegmentationT2Flair"),
   targetFileName,
   antsxnetCacheDirectory = NULL
 )

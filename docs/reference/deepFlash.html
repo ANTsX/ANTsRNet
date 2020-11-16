@@ -122,9 +122,9 @@ labels from Mike Yassa's lab</p>
     <pre class="usage"><span class='fu'>deepFlash</span>(
   <span class='no'>t1</span>,
   <span class='kw'>doPreprocessing</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>doPerHemisphere</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>antsxnetCacheDirectory</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>debug</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -139,6 +139,11 @@ labels from Mike Yassa's lab</p>
       <td><p>perform preprocessing.  See description above.</p></td>
     </tr>
     <tr>
+      <th>doPerHemisphere</th>
+      <td><p>If TRUE, do prediction based on separate networks per
+hemisphere.  Otherwise, use the single network trained for both hemispheres.</p></td>
+    </tr>
+    <tr>
       <th>antsxnetCacheDirectory</th>
       <td><p>destination directory for storing the downloaded
 template and model weights.  Since these can be resused, if
@@ -148,10 +153,6 @@ inst/extdata/ subfolder of the ANTsRNet package.</p></td>
     <tr>
       <th>verbose</th>
       <td><p>print progress.</p></td>
-    </tr>
-    <tr>
-      <th>debug</th>
-      <td><p>return feature images in the last layer of the u-net model.</p></td>
     </tr>
     </table>
 

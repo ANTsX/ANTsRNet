@@ -124,7 +124,8 @@
   <span class='kw'>strideLength</span> <span class='kw'>=</span> <span class='fl'>1</span>,
   <span class='kw'>maskImage</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='no'>randomSeed</span>,
-  <span class='kw'>returnAsArray</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+  <span class='kw'>returnAsArray</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>randomize</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -167,6 +168,10 @@ across runs.</p></td>
 <code>FALSE</code> (default) the return type is a list where each element is
 a single patch.  Otherwise the return type is an array of size
 <code><a href='https://rdrr.io/r/base/dim.html'>dim( numberOfPatches, patchSize )</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>randomize</th>
+      <td><p>boolean controlling whether we randomize indices when masking.</p></td>
     </tr>
     </table>
 
