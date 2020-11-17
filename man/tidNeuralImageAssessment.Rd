@@ -10,7 +10,7 @@ tidNeuralImageAssessment(
   patchSize = 101L,
   strideLength,
   paddingSize = 0L,
-  dimensionsToPredict = 1,
+  dimensionsToPredict = 1L,
   antsxnetCacheDirectory = NULL,
   whichModel = "tidsQualityAssessment",
   verbose = FALSE
@@ -36,8 +36,8 @@ is specified, the results are averaged.}
 
 \item{antsxnetCacheDirectory}{destination directory for storing the downloaded
 template and model weights.  Since these can be reused, if
-\code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-inst/extdata/ subfolder of the ANTsRNet package.}
+\code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to
+~/.keras/ANTsXNet/.}
 
 \item{whichModel}{model type e.g. string tidsQualityAssessment, koniqMS, koniqMS2 or koniqMS3 where
 the former predicts mean opinion score (MOS) and MOS standard deviation and

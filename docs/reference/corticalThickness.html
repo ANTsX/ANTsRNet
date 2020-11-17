@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Deep learning-based ANTs cortical thickness — corticalThickness • ANTsRNet</title>
+<title>Cortical thickness using deep learning — corticalThickness • ANTsRNet</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,9 @@
 
 
 
-<meta property="og:title" content="Deep learning-based ANTs cortical thickness — corticalThickness" />
-<meta property="og:description" content="Perform cortical thickness using ANTs-based training." />
+<meta property="og:title" content="Cortical thickness using deep learning — corticalThickness" />
+<meta property="og:description" content="Perform KellyKapowski cortical thickness using deepAtropos for
+segmentation.  Description concerning implementaiton and evaluation:" />
 
 
 
@@ -108,53 +109,52 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Deep learning-based ANTs cortical thickness</h1>
+    <h1>Cortical thickness using deep learning</h1>
     <small class="dont-index">Source: <a href='https://github.com/ANTsX/ANTsRNet/blob/master/R/corticalThickness.R'><code>R/corticalThickness.R</code></a></small>
     <div class="hidden name"><code>corticalThickness.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Perform cortical thickness using ANTs-based training.</p>
+    <p>Perform KellyKapowski cortical thickness using <code>deepAtropos</code> for
+segmentation.  Description concerning implementaiton and evaluation:</p>
     </div>
 
-    <pre class="usage"><span class='fu'>corticalThickness</span>(<span class='no'>t1</span>, <span class='kw'>outputDirectory</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>corticalThickness</span>(<span class='no'>t1</span>, <span class='kw'>antsxnetCacheDirectory</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>t1</th>
-      <td><p>raw 3-D T1-weighted brain image.</p></td>
+      <td><p>input 3-D unprocessed T1-weighted brain image</p></td>
     </tr>
     <tr>
-      <th>outputDirectory</th>
+      <th>antsxnetCacheDirectory</th>
       <td><p>destination directory for storing the downloaded
 template and model weights.  Since these can be resused, if
-<code><a href='https://rdrr.io/r/base/NULL.html'>is.null(outputDirectory)</a></code>, these data will be downloaded to the
-inst/extdata/ subfolder of the ANTsRNet package.</p></td>
+<code><a href='https://rdrr.io/r/base/NULL.html'>is.null(antsxnetCacheDirectory)</a></code>, these data will be downloaded to the
+subdirectory ~/.keras/ANTsXNet/.</p></td>
     </tr>
     <tr>
       <th>verbose</th>
       <td><p>print progress.</p></td>
     </tr>
-    <tr>
-      <th>debug</th>
-      <td><p>return feature images in the last layer of the u-net model.</p></td>
-    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>list consisting of the segmentation image and probability images for
-each label.</p>
+    <p>Cortical thickness image and segmentation probability images.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p><a href='https://www.medrxiv.org/content/10.1101/2020.10.19.20215392v1'>https://www.medrxiv.org/content/10.1101/2020.10.19.20215392v1</a></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>ANTsRNet</span> )
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>keras</span> )
 
-<span class='no'>image</span> <span class='kw'>&lt;-</span> <span class='fu'>antsImageRead</span>( <span class='st'>"t1.nii.gz"</span> )
-<span class='no'>antsCT</span> <span class='kw'>&lt;-</span> <span class='fu'>corticalThickness</span>( <span class='no'>image</span> )
+<span class='no'>image</span> <span class='kw'>&lt;-</span> <span class='fu'>antsImageRead</span>( <span class='st'>"t1w_image.nii.gz"</span> )
+<span class='no'>kk</span> <span class='kw'>&lt;-</span> <span class='fu'>corticalThickness</span>( <span class='no'>image</span> )
 }</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
