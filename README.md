@@ -87,8 +87,8 @@ Documentation page [https://antsx.github.io/ANTsRNet/](https://antsx.github.io/A
 * Deep Flash
 * Desikan-Killiany-Tourville cortical labeling
 * Image quality assessment
-    * [TIDS](https://www.sciencedirect.com/science/article/pii/S0923596514001490)
-    * [KONIQ](https://ieeexplore.ieee.org/document/8968750)
+    * [TID2013](https://www.sciencedirect.com/science/article/pii/S0923596514001490)
+    * [KonIQ-10k](https://ieeexplore.ieee.org/document/8968750)
 
 ## Miscellaneous
 
