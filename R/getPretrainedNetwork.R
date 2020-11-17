@@ -49,6 +49,10 @@ getPretrainedNetwork <- function(
               "functionalLungMri",
               "hippMapp3rInitial",
               "hippMapp3rRefine",
+              "koniqMBCS",
+              "koniqMS",
+              "koniqMS2",
+              "koniqMS3",
               "mriSuperResolution",
               "protonLungMri",
               "sixTissueOctantBrainSegmentation",
@@ -59,8 +63,6 @@ getPretrainedNetwork <- function(
               "sysuMediaWmhFlairT1Model1",
               "sysuMediaWmhFlairT1Model2",
               "tidsQualityAssessment",
-              "koniqMBCS",
-              "koniqMS", "koniqMS2", "koniqMS3",
 	            "wholeTumorSegmentationT2Flair" ),
   targetFileName, antsxnetCacheDirectory = NULL )
 {
@@ -78,7 +80,6 @@ getPretrainedNetwork <- function(
     brainAgeFmrib = "https://ndownloader.figshare.com/files/22429077",
     brainAgeDeepBrainNet = "https://ndownloader.figshare.com/files/23573402",
     brainExtraction = "https://ndownloader.figshare.com/files/22944632",
-    # brainExtraction = "https://ndownloader.figshare.com/files/13729661",  # old weights
     brainExtractionT2 = "https://ndownloader.figshare.com/files/23066153",
     brainExtractionFLAIR = "https://ndownloader.figshare.com/files/23562194",
     brainExtractionBOLD = "https://ndownloader.figshare.com/files/22761977",

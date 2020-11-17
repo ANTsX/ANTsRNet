@@ -222,10 +222,13 @@ extractImagePatches <- function( image, patchSize, maxNumberOfPatches = 'all',
         }
 
       numberOfExtractedPatches <- min( maxNumberOfPatches, nrow( maskIndices ) )
-      if ( randomize ) {
+      if( randomize )
+        {
         randomIndices <- maskIndices[
           sample.int( nrow( maskIndices ), numberOfExtractedPatches ),]
-        } else randomIndices <- maskIndices
+        } else {
+        randomIndices <- maskIndices
+        }
       } else {
       for( d in seq_len( dimensionality ) )
         {
