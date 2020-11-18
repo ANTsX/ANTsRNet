@@ -29,7 +29,14 @@ getANTsXNetData <- function(
               "priorDktLabels",
               "priorDeepFlashLeftLabels",
               "priorDeepFlashRightLabels",
-              "S_template3" ),
+              "S_template3",
+              "adni",
+              "ixi",
+              "mni152",
+              "nki",
+              "nki10",
+              "oasis"
+            ),
   targetFileName, antsxnetCacheDirectory = NULL )
 {
 
@@ -50,7 +57,13 @@ getANTsXNetData <- function(
     priorDktLabels = "https://ndownloader.figshare.com/files/24139802",
     S_template3 = "https://ndownloader.figshare.com/files/22597175",
     priorDeepFlashLeftLabels = "https://ndownloader.figshare.com/files/25422098",
-    priorDeepFlashRightLabels = "https://ndownloader.figshare.com/files/25422101"
+    priorDeepFlashRightLabels = "https://ndownloader.figshare.com/files/25422101",
+    adni = "https://ndownloader.figshare.com/files/25516361",
+    ixi = "https://ndownloader.figshare.com/files/25516358",
+    mni152 = "https://ndownloader.figshare.com/files/25516349",
+    nki = "https://ndownloader.figshare.com/files/25516355",
+    nki10 = "https://ndownloader.figshare.com/files/25516346",
+    oasis = "https://ndownloader.figshare.com/files/25516352"
   )
 
   if( missing( targetFileName ) )
