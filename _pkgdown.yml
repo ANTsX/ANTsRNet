@@ -177,6 +177,7 @@ reference:
   - '`brainExtraction`'
   - '`deepAtropos`'
   - '`corticalThickness`'
+  - '`longitudinalCorticalThickness`'
   - '`lungExtraction`'
   - '`brainAge`'
   - '`hippMapp3rSegmentation`'
