@@ -107,7 +107,7 @@ longitudinalCorticalThickness <- function( t1s, template = "oasis", numberOfAffi
   brainsOnly <- list()
   for( s in seq.int( numberOfAffineRefinements + 1 ) )
     {
-    sstTmp <- antsImageClone( templateImage ) * 0
+    sstTmp <- antsImageClone( sst ) * 0
 
     if( verbose )
       {
@@ -127,8 +127,8 @@ longitudinalCorticalThickness <- function( t1s, template = "oasis", numberOfAffi
           template = sst, doBiasCorrection = FALSE, returnBiasField = FALSE,
           doDenoising = FALSE, intensityNormalizationType == "01",
           antsxnetCacheDirectory = antsxnetCacheDirectory, verbose = verbose )
-        brainsOnly[[i]] <- t1sPreprocessed$preprocessedImage * t1sPreprocessed$brainMask
-        sstTmp <- sstTmp + t1sPreprocessed$preprocessedImage
+        brainsOnly[[i]] <- t1Preprocessed$preprocessedImage * t1Preprocessed$brainMask
+        sstTmp <- sstTmp + t1Preprocessed$preprocessedImage
         }
       } else {
       sstMask <- brainExtraction( sst,
