@@ -7,7 +7,7 @@
 longitudinalCorticalThickness(
   t1s,
   template = "oasis",
-  numberOfAffineRefinements = 0,
+  numberOfAffineRefinements = 1,
   antsxnetCacheDirectory = NULL,
   verbose = FALSE
 )
@@ -30,8 +30,8 @@ subdirectory ~/.keras/ANTsXNet/.}
 }
 \value{
 List consisting of the SST, and a (sub-)list for each subject consisting of
-the cortical thickness image, segmentation probability images, and affine mapping to
-the SST.
+the preprocessed image, cortical thickness image, segmentation probability images,
+and affine mapping to the SST.
 }
 \description{
 Perform KellyKapowski cortical thickness longitudinally using \code{deepAtropos}
