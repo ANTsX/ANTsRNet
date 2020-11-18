@@ -85,7 +85,7 @@ corticalThickness <- function( t1, antsxnetCacheDirectory = NULL, verbose = FALS
 #' kk <- corticalThickness( image )
 #' }
 #' @export
-longitudinalCorticalThickness <- function( t1s, template = "oasis", numberOfAffineRefinements = 0,
+longitudinalCorticalThickness <- function( t1s, template = "oasis", numberOfAffineRefinements = 1,
   antsxnetCacheDirectory = NULL, verbose = FALSE )
   {
 
@@ -106,6 +106,7 @@ longitudinalCorticalThickness <- function( t1s, template = "oasis", numberOfAffi
 
   sst <- antsImageClone( templateImage ) * 0
 
+  brainsOnly <- list()
   for( i in seq.int( length( t1s ) ) )
     {
     if( verbose )
@@ -117,13 +118,14 @@ longitudinalCorticalThickness <- function( t1s, template = "oasis", numberOfAffi
       template = templateImage, doBiasCorrection = FALSE, returnBiasField = FALSE,
       doDenoising = FALSE, intensityNormalizationType == "01",
       antsxnetCacheDirectory = antsxnetCacheDirectory, verbose = verbose )
+    brainsOnly[[i]] <- t1sPreprocessed$preprocessedImage * t1sPreprocessed$brainMask
     sst <- sst + t1sPreprocessed$preprocessedImage
     }
   sst <- sst / length( t1s )
 
   ###################
   #
-  #  Optional: affine refinment
+  #  Optional: affine refinement
   #
   ##################
 
@@ -134,18 +136,18 @@ longitudinalCorticalThickness <- function( t1s, template = "oasis", numberOfAffi
       cat( "Affine refinement", i, "( out of", numberOfAffineRefinements, ")" )
       }
     sstTmp <- antsImageClone( sst ) * 0
+    sstMask <- brainExtraction( sst,
+      antsxNetCacheDirectory = antsxnetCacheDirectory, verbose = verbose )
+    sstBrainOnly <- sst * sstMask
     for( i in seq.int( length( t1s ) ) )
       {
       if( verbose )
         {
         cat( "Processing image", i, "( out of", length( t1s ), ")" )
         }
-      t1Preprocessed <- preprocessBrainImage( t1s[[i]], truncateIntensity = c( 0.01, 0.99 ),
-        doBrainExtraction = TRUE, templateTransformType = "antsRegistrationSyNQuick[a]",
-        template = sst, doBiasCorrection = FALSE, returnBiasField = FALSE,
-        doDenoising = FALSE, intensityNormalizationType == "01",
-        antsxnetCacheDirectory = antsxnetCacheDirectory, verbose = verbose )
-      sstTmp <- sstTmp + t1sPreprocessed$preprocessedImage
+      sstRegistration <- antsRegistration( fixed = sstBrainOnly, moving = brainsOnly[[i]],
+        typeofTransform = "antsRegistrationSyNQuick[a]" )
+      sstTmp <- sstTmp + sstRegistration$warpedmovout
       }
     sst <- sstTmp / length( t1s )
     }
@@ -157,7 +159,6 @@ longitudinalCorticalThickness <- function( t1s, template = "oasis", numberOfAffi
   ##################
 
   t1sPreprocessed <- list()
-
   for( i in seq.int( length( t1s ) ) )
     {
     if( verbose )
@@ -165,15 +166,15 @@ longitudinalCorticalThickness <- function( t1s, template = "oasis", numberOfAffi
       cat( "Processing image", i, "( out of", length( t1s ), ")" )
       }
     t1sPreprocessed[[i]] <- preprocessBrainImage( t1s[[i]], truncateIntensity = c( 0.01, 0.99 ),
-      doBrainExtraction = TRUE, templateTransformType = "antsRegistrationSyNQuick[r]",
-      template = templateImage, doBiasCorrection = TRUE, returnBiasField = FALSE,
+      doBrainExtraction = TRUE, templateTransformType = "antsRegistrationSyNQuick[a]",
+      template = sst, doBiasCorrection = TRUE, returnBiasField = FALSE,
       doDenoising = TRUE, intensityNormalizationType == "01",
       antsxnetCacheDirectory = antsxnetCacheDirectory, verbose = verbose )
     }
 
   ###################
   #
-  #  SST atropos
+  #  Deep Atropos of SST for priors
   #
   ##################
 
@@ -182,7 +183,7 @@ longitudinalCorticalThickness <- function( t1s, template = "oasis", numberOfAffi
 
   ###################
   #
-  #  Atropos for each image
+  #  Traditional atropos + KK for each image
   #
   ##################
 
