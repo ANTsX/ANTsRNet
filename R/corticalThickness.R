@@ -64,7 +64,7 @@ corticalThickness <- function( t1, antsxnetCacheDirectory = NULL, verbose = FALS
 #'
 #' @param t1s input list of 3-D unprocessed T1-weighted brain images from a single subject
 #' @param initialTemplate input image to define the orientation of the SST.  Can be a string
-#' (see \code{getANTsXNetData}) or a specified template.  This allows the user to create a 
+#' (see \code{getANTsXNetData}) or a specified template.  This allows the user to create a
 #' SST outside of this routine.
 #' @param numberOfIterations Defines the number of iterations for refining the SST.
 #' @param refinementTransform Transform for defining the refinement registration transform.
@@ -88,7 +88,7 @@ corticalThickness <- function( t1, antsxnetCacheDirectory = NULL, verbose = FALS
 #' }
 #' @export
 longitudinalCorticalThickness <- function( t1s, initialTemplate = "oasis", numberOfIterations = 1,
-  refinementTransform = "antsRegistrationSyNQuick[a]", antsxnetCacheDirectory = NULL, 
+  refinementTransform = "antsRegistrationSyNQuick[a]", antsxnetCacheDirectory = NULL,
   verbose = FALSE )
 {
 
@@ -126,7 +126,7 @@ longitudinalCorticalThickness <- function( t1s, initialTemplate = "oasis", numbe
       transformType <- "antsRegistrationSyNQuick[r]"
       if( s > 1 )
         {
-        transformType <- refinementTransform  
+        transformType <- refinementTransform
         }
       t1Preprocessed <- preprocessBrainImage( t1s[[i]], truncateIntensity = c( 0.01, 0.99 ),
         doBrainExtraction = FALSE, templateTransformType = transformType,
@@ -171,11 +171,11 @@ longitudinalCorticalThickness <- function( t1s, initialTemplate = "oasis", numbe
 
   ###################
   #
-  #  Traditional atropos + KK for each image
+  #  Traditional Atropos + KK for each image
   #
   ##################
 
-  returnList <- list( )
+  returnList <- list()
   for( i in seq.int( length( t1sPreprocessed ) ) )
     {
     if( verbose )
