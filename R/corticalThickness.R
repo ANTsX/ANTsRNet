@@ -187,7 +187,7 @@ longitudinalCorticalThickness <- function( t1s, initialTemplate = "oasis", numbe
       m = "[0.1,1x1x1]", c = "[5,0]", priorweight = 0.5, p = "Socrates[1]",
       verbose = verbose )
 
-    kkSegmentation <- atroposOutput$segmentation
+    kkSegmentation <- ants.imageClone(atroposOutput$segmentation)
     kkSegmentation[kkSegmentation == 4] <- 3
     grayMatter <- atroposOutput$probabilityimages[[2]]
     whiteMatter <- atroposOutput$probabilityimages[[3]] + atroposOutput$probabilityimages[[4]]
