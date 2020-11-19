@@ -35,16 +35,17 @@ corticalThickness <- function( t1, antsxnetCacheDirectory = NULL, verbose = FALS
 
   # Kelly Kapowski cortical thickness
 
-  kkSegmentation <- atropos$segmentationImage
+  kkSegmentation <- antsImageClone(atropos$segmentation)
   kkSegmentation[kkSegmentation == 4] <- 3
-  grayMatter <- atropos$probabilityImages[[3]]
-  whiteMatter <- atropos$probabilityImages[[4]] + atropos$probabilityImages[[5]]
+  grayMatter <- atropos$probabilityimages[[3]]
+  whiteMatter <- atropos$probabilityimages[[4]] + atropos$probabilityimages[[5]]
   kk <- kellyKapowski( s = kkSegmentation, g = grayMatter, w = whiteMatter,
                       its = 45, r = 0.025, m = 1.5, x = 0, t = 10, verbose = verbose )
 
   return( list(
           thicknessImage = kk,
-          csfProbabilityImage = atropos$probabilityImages[[2]],
+          segmentationImage = atropos$segmentation,
+          csfProbabilityImage = atropos$probabilitymages[[2]],
           grayMatterProbabilityImage = atropos$probabilityImages[[3]],
           whiteMatterProbabilityImage = atropos$probabilityImages[[4]],
           deepGrayMatterProbabilityImage = atropos$probabilityImages[[5]],
@@ -187,7 +188,7 @@ longitudinalCorticalThickness <- function( t1s, initialTemplate = "oasis", numbe
       m = "[0.1,1x1x1]", c = "[5,0]", priorweight = 0.5, p = "Socrates[1]",
       verbose = verbose )
 
-    kkSegmentation <- ants.imageClone(atroposOutput$segmentation)
+    kkSegmentation <- antsImageClone(atroposOutput$segmentation)
     kkSegmentation[kkSegmentation == 4] <- 3
     grayMatter <- atroposOutput$probabilityimages[[2]]
     whiteMatter <- atroposOutput$probabilityimages[[3]] + atroposOutput$probabilityimages[[4]]
