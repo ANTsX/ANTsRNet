@@ -40,7 +40,7 @@ corticalThickness <- function( t1, antsxnetCacheDirectory = NULL, verbose = FALS
   grayMatter <- atropos$probabilityimages[[3]]
   whiteMatter <- atropos$probabilityimages[[4]] + atropos$probabilityimages[[5]]
   kk <- kellyKapowski( s = kkSegmentation, g = grayMatter, w = whiteMatter,
-                      its = 45, r = 0.025, m = 1.5, x = 0, t = 10, verbose = verbose )
+                      its = 45, r = 0.025, m = 1.5, x = 0, verbose = verbose )
 
   return( list(
           thicknessImage = kk,
