@@ -23,7 +23,7 @@
 #' }
 #' @export
 corticalThickness <- function( t1, antsxnetCacheDirectory = NULL, verbose = FALSE )
-  {
+{
 
   if( t1@dimension != 3 )
     {
@@ -51,7 +51,7 @@ corticalThickness <- function( t1, antsxnetCacheDirectory = NULL, verbose = FALS
           brainStemProbabilityImage = atropos$probabilityImages[[6]],
           cerebellumProbabilityImage = atropos$probabilityImages[[7]]
         ) )
-  }
+}
 
 
 #' Longitudinal cortical thickness using deep learning
@@ -63,10 +63,12 @@ corticalThickness <- function( t1, antsxnetCacheDirectory = NULL, verbose = FALS
 #' \url{https://pubmed.ncbi.nlm.nih.gov/31356207/}
 #'
 #' @param t1s input list of 3-D unprocessed T1-weighted brain images from a single subject
-#' @param template input image to define the orientation of the SST.  Can be a string
-#' (see \code{getANTsXNetData}) or a specified template.
-#' @param numberOfAffineRefinements Defines the number of sets of affine iterations
-#' for refining the SST.
+#' @param initialTemplate input image to define the orientation of the SST.  Can be a string
+#' (see \code{getANTsXNetData}) or a specified template.  This allows the user to create a 
+#' SST outside of this routine.
+#' @param numberOfIterations Defines the number of iterations for refining the SST.
+#' @param refinementTransform Transform for defining the refinement registration transform.
+#' See options in \code{antsRegistration}.
 #' @param antsxnetCacheDirectory destination directory for storing the downloaded
 #' template and model weights.  Since these can be resused, if
 #' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
@@ -75,7 +77,7 @@ corticalThickness <- function( t1, antsxnetCacheDirectory = NULL, verbose = FALS
 #' @return List consisting of the SST, and a (sub-)list for each subject consisting of
 #' the preprocessed image, cortical thickness image, segmentation probability images,
 #' and affine mapping to the SST.
-#' @author Tustison NJ
+#' @author Tustison NJ, Avants BB
 #' @examples
 #' \dontrun{
 #' library( ANTsRNet )
@@ -85,9 +87,10 @@ corticalThickness <- function( t1, antsxnetCacheDirectory = NULL, verbose = FALS
 #' kk <- corticalThickness( image )
 #' }
 #' @export
-longitudinalCorticalThickness <- function( t1s, template = "oasis", numberOfAffineRefinements = 1,
-  antsxnetCacheDirectory = NULL, verbose = FALSE )
-  {
+longitudinalCorticalThickness <- function( t1s, initialTemplate = "oasis", numberOfIterations = 1,
+  refinementTransform = "antsRegistrationSyNQuick[a]", antsxnetCacheDirectory = NULL, 
+  verbose = FALSE )
+{
 
   ###################
   #
@@ -96,55 +99,41 @@ longitudinalCorticalThickness <- function( t1s, template = "oasis", numberOfAffi
   ##################
 
   sst <- NULL
-  if( is.character( template ) )
+  if( is.character( initialTemplate ) )
     {
-    templateFileNamePath <- getANTsXNetData( template, antsxnetCacheDirectory = antsxnetCacheDirectory )
+    templateFileNamePath <- getANTsXNetData( initialTemplate, antsxnetCacheDirectory = antsxnetCacheDirectory )
     sst <- antsImageRead( templateFileNamePath )
     } else {
-    sst <- template
+    sst <- initialTemplate
     }
 
-  brainsOnly <- list()
-  for( s in seq.int( numberOfAffineRefinements + 1 ) )
+  for( s in seq.int( numberOfIterations ) )
     {
-    sstTmp <- antsImageClone( sst ) * 0
-
     if( verbose )
       {
-      cat( "Affine refinement", i, "( out of", numberOfAffineRefinements, ")" )
+      cat( "Refinement iteration", s, "( out of", numberOfIterations, ")\n" )
       }
 
-    if( s == 1 )
+    sstTmp <- antsImageClone( sst ) * 0
+    for( i in seq.int( length( t1s ) ) )
       {
-      for( i in seq.int( length( t1s ) ) )
+      if( verbose )
         {
-        if( verbose )
-          {
-          cat( "Processing image", i, "( out of", length( t1s ), ")" )
-          }
-        t1Preprocessed <- preprocessBrainImage( t1s[[i]], truncateIntensity = c( 0.01, 0.99 ),
-          doBrainExtraction = TRUE, templateTransformType = "antsRegistrationSyNQuick[r]",
-          template = sst, doBiasCorrection = FALSE, returnBiasField = FALSE,
-          doDenoising = FALSE, intensityNormalizationType == "01",
-          antsxnetCacheDirectory = antsxnetCacheDirectory, verbose = verbose )
-        brainsOnly[[i]] <- t1Preprocessed$preprocessedImage * t1Preprocessed$brainMask
-        sstTmp <- sstTmp + t1Preprocessed$preprocessedImage
+        cat( "\n\n***************************" )
+        cat( "\n\nSST processing image", i, "( out of", length( t1s ), ")\n\n" )
+        cat( "***************************\n\n" )
         }
-      } else {
-      sstMask <- brainExtraction( sst,
+      transformType <- "antsRegistrationSyNQuick[r]"
+      if( s > 1 )
+        {
+        transformType <- refinementTransform  
+        }
+      t1Preprocessed <- preprocessBrainImage( t1s[[i]], truncateIntensity = c( 0.01, 0.99 ),
+        doBrainExtraction = FALSE, templateTransformType = transformType,
+        template = sst, doBiasCorrection = FALSE, returnBiasField = FALSE,
+        doDenoising = FALSE, intensityNormalizationType = "01",
         antsxnetCacheDirectory = antsxnetCacheDirectory, verbose = verbose )
-      sstBrainOnly <- sst * sstMask
-
-      for( i in seq.int( length( t1s ) ) )
-        {
-        if( verbose )
-          {
-          cat( "Processing image", i, "( out of", length( t1s ), ")" )
-          }
-        sstRegistration <- antsRegistration( fixed = sstBrainOnly, moving = brainsOnly[[i]],
-          typeofTransform = "antsRegistrationSyNQuick[a]" )
-        sstTmp <- sstTmp + sstRegistration$warpedmovout
-        }
+      sstTmp <- sstTmp + t1Preprocessed$preprocessedImage
       }
     sst <- sstTmp / length( t1s )
     }
@@ -160,12 +149,14 @@ longitudinalCorticalThickness <- function( t1s, template = "oasis", numberOfAffi
     {
     if( verbose )
       {
-      cat( "Processing image", i, "( out of", length( t1s ), ")" )
+      cat( "\n\n***************************" )
+      cat( "\n\nFinal processing image", i, "( out of", length( t1s ), ")\n\n" )
+      cat( "***************************\n\n" )
       }
     t1sPreprocessed[[i]] <- preprocessBrainImage( t1s[[i]], truncateIntensity = c( 0.01, 0.99 ),
       doBrainExtraction = TRUE, templateTransformType = "antsRegistrationSyNQuick[a]",
       template = sst, doBiasCorrection = TRUE, returnBiasField = FALSE,
-      doDenoising = TRUE, intensityNormalizationType == "01",
+      doDenoising = TRUE, intensityNormalizationType = "01",
       antsxnetCacheDirectory = antsxnetCacheDirectory, verbose = verbose )
     }
 
@@ -193,29 +184,30 @@ longitudinalCorticalThickness <- function( t1s, template = "oasis", numberOfAffi
       }
     atroposOutput <- atropos( t1sPreprocessed[[i]]$preprocessedImage,
       x = t1sPreprocessed[[i]]$brainMask, i = sstAtropos$probabilityImages[2:7],
-      m = "[0.1,1x1x1]", c = "[5,0]", priorweight = 0.25, p = "Socrates[1]",
+      m = "[0.1,1x1x1]", c = "[5,0]", priorweight = 0.5, p = "Socrates[1]",
       verbose = verbose )
 
-    kkSegmentation <- atroposOutput$segmentationImage
+    kkSegmentation <- atroposOutput$segmentation
     kkSegmentation[kkSegmentation == 4] <- 3
-    grayMatter <- atroposOutput$probabilityImages[[2]]
-    whiteMatter <- atroposOutput$probabilityImages[[3]] + atroposOutput$probabilityImages[[4]]
+    grayMatter <- atroposOutput$probabilityimages[[2]]
+    whiteMatter <- atroposOutput$probabilityimages[[3]] + atroposOutput$probabilityimages[[4]]
     kk <- kellyKapowski( s = kkSegmentation, g = grayMatter, w = whiteMatter,
-                        its = 45, r = 0.025, m = 1.5, x = 0, t = 10, verbose = verbose )
+                        its = 45, r = 0.025, m = 1.5, x = 0, verbose = verbose )
 
     returnList[[i]] <- list(
           preprocessedImage = t1sPreprocessed[[i]]$preprocessedImage,
           thicknessImage = kk,
-          csfProbabilityImage = atroposOutput$probabilityImages[[1]],
-          grayMatterProbabilityImage = atropos$probabilityImages[[2]],
-          whiteMatterProbabilityImage = atropos$probabilityImages[[3]],
-          deepGrayMatterProbabilityImage = atropos$probabilityImages[[4]],
-          brainStemProbabilityImage = atropos$probabilityImages[[5]],
-          cerebellumProbabilityImage = atropos$probabilityImages[[6]],
+          segmentationImage = atroposOutput$segmentation,
+          csfProbabilityImage = atroposOutput$probabilityimages[[1]],
+          grayMatterProbabilityImage = atroposOutput$probabilityimages[[2]],
+          whiteMatterProbabilityImage = atroposOutput$probabilityimages[[3]],
+          deepGrayMatterProbabilityImage = atroposOutput$probabilityimages[[4]],
+          brainStemProbabilityImage = atroposOutput$probabilityimages[[5]],
+          cerebellumProbabilityImage = atroposOutput$probabilityimages[[6]],
           templateTransforms = t1sPreprocessed[[i]]$templateTransforms
         )
     }
   returnList[["singleSubjectTemplate"]] <- sst
 
   return( returnList )
-  }
+}

@@ -6,8 +6,9 @@
 \usage{
 longitudinalCorticalThickness(
   t1s,
-  template = "oasis",
-  numberOfAffineRefinements = 1,
+  initialTemplate = "oasis",
+  numberOfIterations = 1,
+  refinementTransform = "antsRegistrationSyNQuick[a]",
   antsxnetCacheDirectory = NULL,
   verbose = FALSE
 )
@@ -15,11 +16,14 @@ longitudinalCorticalThickness(
 \arguments{
 \item{t1s}{input list of 3-D unprocessed T1-weighted brain images from a single subject}
 
-\item{template}{input image to define the orientation of the SST.  Can be a string
-(see \code{getANTsXNetData}) or a specified template.}
+\item{initialTemplate}{input image to define the orientation of the SST.  Can be a string
+(see \code{getANTsXNetData}) or a specified template.  This allows the user to create a
+SST outside of this routine.}
 
-\item{numberOfAffineRefinements}{Defines the number of sets of affine iterations
-for refining the SST.}
+\item{numberOfIterations}{Defines the number of iterations for refining the SST.}
+
+\item{refinementTransform}{Transform for defining the refinement registration transform.
+See options in \code{antsRegistration}.}
 
 \item{antsxnetCacheDirectory}{destination directory for storing the downloaded
 template and model weights.  Since these can be resused, if
@@ -51,5 +55,5 @@ kk <- corticalThickness( image )
 }
 }
 \author{
-Tustison NJ
+Tustison NJ, Avants BB
 }
