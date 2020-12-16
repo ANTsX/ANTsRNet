@@ -41,7 +41,10 @@ template and model weights.  Since these can be reused, if
 
 \item{whichModel}{model type e.g. string tidsQualityAssessment, koniqMS, koniqMS2 or koniqMS3 where
 the former predicts mean opinion score (MOS) and MOS standard deviation and
-the latter koniq models predict mean opinion score (MOS) and sharpness}
+the latter koniq models predict mean opinion score (MOS) and sharpness.  One
+may also directly pass a tensorflow model here. In this case, we assume that
+the input image is scaled to 0 to 255 and the model expects that. May change
+this later.}
 
 \item{verbose}{print progress.}
 }

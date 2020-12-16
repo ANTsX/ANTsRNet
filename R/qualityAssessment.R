@@ -33,7 +33,10 @@
 #' ~/.keras/ANTsXNet/.
 #' @param whichModel model type e.g. string tidsQualityAssessment, koniqMS, koniqMS2 or koniqMS3 where
 #' the former predicts mean opinion score (MOS) and MOS standard deviation and
-#' the latter koniq models predict mean opinion score (MOS) and sharpness
+#' the latter koniq models predict mean opinion score (MOS) and sharpness.  One
+#' may also directly pass a tensorflow model here. In this case, we assume that
+#' the input image is scaled to 0 to 255 and the model expects that. May change
+#' this later.
 #' @param verbose print progress.
 #' @return list of QC results predicting both both human rater's mean and standard
 #' deviation of the MOS ("mean opinion scores") or sharpness depending on the
@@ -60,27 +63,33 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
     {
     return( n == 2L || all( n %% 2L:max( 2, floor( sqrt( n ) ) ) != 0 ) )
     }
-  validModels <- c( "tidsQualityAssessment", "koniqMS", "koniqMS2", "koniqMS3" )
-  if ( ! any( whichModel %in% validModels ) )
-    {
-    cat( validModels )
-    stop( "Please pass valid model" )
-    }
+  if ( class( whichModel ) != "character" ) {
+     userModel = TRUE
+     tidModel = whichModel
+     whichModel = "tidsQualityAssessment"
+  } else {
+    validModels <- c( "tidsQualityAssessment", "koniqMS", "koniqMS2", "koniqMS3"  )
+    if ( ! any( whichModel %in% validModels ) )
+      {
+      cat( validModels )
+      stop( "Please pass valid model" )
+      }
 
-  if( is.null( antsxnetCacheDirectory ) )
-    {
-    antsxnetCacheDirectory <- "ANTsXNet"
-    }
+    if( is.null( antsxnetCacheDirectory ) )
+      {
+      antsxnetCacheDirectory <- "ANTsXNet"
+      }
 
-  if( verbose == TRUE )
-    {
-    cat( "Neural QA:  retreiving model and weights.\n" )
+    if( verbose == TRUE )
+      {
+      cat( "Neural QA:  retreiving model and weights.\n" )
+      }
+
+    modelAndWeightsFileName <- getPretrainedNetwork( whichModel, antsxnetCacheDirectory = antsxnetCacheDirectory )
+    tidModel <- load_model_hdf5( filepath = modelAndWeightsFileName, compile = FALSE )
     }
 
   isKoniq <- grepl( "koniq", whichModel )
-  modelAndWeightsFileName <- getPretrainedNetwork( whichModel, antsxnetCacheDirectory = antsxnetCacheDirectory )
-  tidModel <- load_model_hdf5( filepath = modelAndWeightsFileName, compile = FALSE )
-
   paddingSizeVector <- paddingSize
   if( length( paddingSize ) == 1 )
     {
