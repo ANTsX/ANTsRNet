@@ -268,13 +268,13 @@ and R implementations:</p><pre>    \url{https://github.com/pierluigiferrari/ssd_
 #&gt; ________________________________________________________________________________
 #&gt; boxes7 (Conv2D)           (None, 1, 1, 16)  4624     elu7[0][0]                 
 #&gt; ________________________________________________________________________________
-#&gt; classes4_reshape (Reshape (None, None, 2)   0        classes4[0][0]             
+#&gt; classes4_reshape (Reshape (None, 3364, 2)   0        classes4[0][0]             
 #&gt; ________________________________________________________________________________
-#&gt; classes5_reshape (Reshape (None, None, 2)   0        classes5[0][0]             
+#&gt; classes5_reshape (Reshape (None, 676, 2)    0        classes5[0][0]             
 #&gt; ________________________________________________________________________________
-#&gt; classes6_reshape (Reshape (None, None, 2)   0        classes6[0][0]             
+#&gt; classes6_reshape (Reshape (None, 100, 2)    0        classes6[0][0]             
 #&gt; ________________________________________________________________________________
-#&gt; classes7_reshape (Reshape (None, None, 2)   0        classes7[0][0]             
+#&gt; classes7_reshape (Reshape (None, 4, 2)      0        classes7[0][0]             
 #&gt; ________________________________________________________________________________
 #&gt; anchors4 (RLayer)         (None, 29, 29, 4, 0        boxes4[0][0]               
 #&gt; ________________________________________________________________________________
@@ -284,40 +284,40 @@ and R implementations:</p><pre>    \url{https://github.com/pierluigiferrari/ssd_
 #&gt; ________________________________________________________________________________
 #&gt; anchors7 (RLayer)         (None, 1, 1, 4, 8 0        boxes7[0][0]               
 #&gt; ________________________________________________________________________________
-#&gt; classes_concat (Concatena (None, None, 2)   0        classes4_reshape[0][0]     
+#&gt; classes_concat (Concatena (None, 4144, 2)   0        classes4_reshape[0][0]     
 #&gt;                                                      classes5_reshape[0][0]     
 #&gt;                                                      classes6_reshape[0][0]     
 #&gt;                                                      classes7_reshape[0][0]     
 #&gt; ________________________________________________________________________________
-#&gt; boxes4_reshape (Reshape)  (None, None, 4)   0        boxes4[0][0]               
+#&gt; boxes4_reshape (Reshape)  (None, 3364, 4)   0        boxes4[0][0]               
 #&gt; ________________________________________________________________________________
-#&gt; boxes5_reshape (Reshape)  (None, None, 4)   0        boxes5[0][0]               
+#&gt; boxes5_reshape (Reshape)  (None, 676, 4)    0        boxes5[0][0]               
 #&gt; ________________________________________________________________________________
-#&gt; boxes6_reshape (Reshape)  (None, None, 4)   0        boxes6[0][0]               
+#&gt; boxes6_reshape (Reshape)  (None, 100, 4)    0        boxes6[0][0]               
 #&gt; ________________________________________________________________________________
-#&gt; boxes7_reshape (Reshape)  (None, None, 4)   0        boxes7[0][0]               
+#&gt; boxes7_reshape (Reshape)  (None, 4, 4)      0        boxes7[0][0]               
 #&gt; ________________________________________________________________________________
-#&gt; anchors4_reshape (Reshape (None, None, 8)   0        anchors4[0][0]             
+#&gt; anchors4_reshape (Reshape (None, 3364, 8)   0        anchors4[0][0]             
 #&gt; ________________________________________________________________________________
-#&gt; anchors5_reshape (Reshape (None, None, 8)   0        anchors5[0][0]             
+#&gt; anchors5_reshape (Reshape (None, 676, 8)    0        anchors5[0][0]             
 #&gt; ________________________________________________________________________________
-#&gt; anchors6_reshape (Reshape (None, None, 8)   0        anchors6[0][0]             
+#&gt; anchors6_reshape (Reshape (None, 100, 8)    0        anchors6[0][0]             
 #&gt; ________________________________________________________________________________
-#&gt; anchors7_reshape (Reshape (None, None, 8)   0        anchors7[0][0]             
+#&gt; anchors7_reshape (Reshape (None, 4, 8)      0        anchors7[0][0]             
 #&gt; ________________________________________________________________________________
-#&gt; classes_softmax (Activati (None, None, 2)   0        classes_concat[0][0]       
+#&gt; classes_softmax (Activati (None, 4144, 2)   0        classes_concat[0][0]       
 #&gt; ________________________________________________________________________________
-#&gt; boxes_concat (Concatenate (None, None, 4)   0        boxes4_reshape[0][0]       
+#&gt; boxes_concat (Concatenate (None, 4144, 4)   0        boxes4_reshape[0][0]       
 #&gt;                                                      boxes5_reshape[0][0]       
 #&gt;                                                      boxes6_reshape[0][0]       
 #&gt;                                                      boxes7_reshape[0][0]       
 #&gt; ________________________________________________________________________________
-#&gt; anchors_concat (Concatena (None, None, 8)   0        anchors4_reshape[0][0]     
+#&gt; anchors_concat (Concatena (None, 4144, 8)   0        anchors4_reshape[0][0]     
 #&gt;                                                      anchors5_reshape[0][0]     
 #&gt;                                                      anchors6_reshape[0][0]     
 #&gt;                                                      anchors7_reshape[0][0]     
 #&gt; ________________________________________________________________________________
-#&gt; predictions (Concatenate) (None, None, 14)  0        classes_softmax[0][0]      
+#&gt; predictions (Concatenate) (None, 4144, 14)  0        classes_softmax[0][0]      
 #&gt;                                                      boxes_concat[0][0]         
 #&gt;                                                      anchors_concat[0][0]       
 #&gt; ================================================================================
@@ -4563,13 +4563,13 @@ and R implementations:</p><pre>    \url{https://github.com/pierluigiferrari/ssd_
 #&gt; ________________________________________________________________________________
 #&gt; boxes7 (Conv3D)           (None, 1, 1, 1, 3 25950    elu7[0][0]                 
 #&gt; ________________________________________________________________________________
-#&gt; classes4_reshape (Reshape (None, None, 2)   0        classes4[0][0]             
+#&gt; classes4_reshape (Reshape (None, 121945, 2) 0        classes4[0][0]             
 #&gt; ________________________________________________________________________________
-#&gt; classes5_reshape (Reshape (None, None, 2)   0        classes5[0][0]             
+#&gt; classes5_reshape (Reshape (None, 10985, 2)  0        classes5[0][0]             
 #&gt; ________________________________________________________________________________
-#&gt; classes6_reshape (Reshape (None, None, 2)   0        classes6[0][0]             
+#&gt; classes6_reshape (Reshape (None, 625, 2)    0        classes6[0][0]             
 #&gt; ________________________________________________________________________________
-#&gt; classes7_reshape (Reshape (None, None, 2)   0        classes7[0][0]             
+#&gt; classes7_reshape (Reshape (None, 5, 2)      0        classes7[0][0]             
 #&gt; ________________________________________________________________________________
 #&gt; anchors4 (RLayer)         (None, 29, 29, 29 0        boxes4[0][0]               
 #&gt; ________________________________________________________________________________
@@ -4579,40 +4579,40 @@ and R implementations:</p><pre>    \url{https://github.com/pierluigiferrari/ssd_
 #&gt; ________________________________________________________________________________
 #&gt; anchors7 (RLayer)         (None, 1, 1, 1, 5 0        boxes7[0][0]               
 #&gt; ________________________________________________________________________________
-#&gt; classes_concat (Concatena (None, None, 2)   0        classes4_reshape[0][0]     
+#&gt; classes_concat (Concatena (None, 133560, 2) 0        classes4_reshape[0][0]     
 #&gt;                                                      classes5_reshape[0][0]     
 #&gt;                                                      classes6_reshape[0][0]     
 #&gt;                                                      classes7_reshape[0][0]     
 #&gt; ________________________________________________________________________________
-#&gt; boxes4_reshape (Reshape)  (None, None, 6)   0        boxes4[0][0]               
+#&gt; boxes4_reshape (Reshape)  (None, 121945, 6) 0        boxes4[0][0]               
 #&gt; ________________________________________________________________________________
-#&gt; boxes5_reshape (Reshape)  (None, None, 6)   0        boxes5[0][0]               
+#&gt; boxes5_reshape (Reshape)  (None, 10985, 6)  0        boxes5[0][0]               
 #&gt; ________________________________________________________________________________
-#&gt; boxes6_reshape (Reshape)  (None, None, 6)   0        boxes6[0][0]               
+#&gt; boxes6_reshape (Reshape)  (None, 625, 6)    0        boxes6[0][0]               
 #&gt; ________________________________________________________________________________
-#&gt; boxes7_reshape (Reshape)  (None, None, 6)   0        boxes7[0][0]               
+#&gt; boxes7_reshape (Reshape)  (None, 5, 6)      0        boxes7[0][0]               
 #&gt; ________________________________________________________________________________
-#&gt; anchors4_reshape (Reshape (None, None, 12)  0        anchors4[0][0]             
+#&gt; anchors4_reshape (Reshape (None, 121945, 12 0        anchors4[0][0]             
 #&gt; ________________________________________________________________________________
-#&gt; anchors5_reshape (Reshape (None, None, 12)  0        anchors5[0][0]             
+#&gt; anchors5_reshape (Reshape (None, 10985, 12) 0        anchors5[0][0]             
 #&gt; ________________________________________________________________________________
-#&gt; anchors6_reshape (Reshape (None, None, 12)  0        anchors6[0][0]             
+#&gt; anchors6_reshape (Reshape (None, 625, 12)   0        anchors6[0][0]             
 #&gt; ________________________________________________________________________________
-#&gt; anchors7_reshape (Reshape (None, None, 12)  0        anchors7[0][0]             
+#&gt; anchors7_reshape (Reshape (None, 5, 12)     0        anchors7[0][0]             
 #&gt; ________________________________________________________________________________
-#&gt; classes_softmax (Activati (None, None, 2)   0        classes_concat[0][0]       
+#&gt; classes_softmax (Activati (None, 133560, 2) 0        classes_concat[0][0]       
 #&gt; ________________________________________________________________________________
-#&gt; boxes_concat (Concatenate (None, None, 6)   0        boxes4_reshape[0][0]       
+#&gt; boxes_concat (Concatenate (None, 133560, 6) 0        boxes4_reshape[0][0]       
 #&gt;                                                      boxes5_reshape[0][0]       
 #&gt;                                                      boxes6_reshape[0][0]       
 #&gt;                                                      boxes7_reshape[0][0]       
 #&gt; ________________________________________________________________________________
-#&gt; anchors_concat (Concatena (None, None, 12)  0        anchors4_reshape[0][0]     
+#&gt; anchors_concat (Concatena (None, 133560, 12 0        anchors4_reshape[0][0]     
 #&gt;                                                      anchors5_reshape[0][0]     
 #&gt;                                                      anchors6_reshape[0][0]     
 #&gt;                                                      anchors7_reshape[0][0]     
 #&gt; ________________________________________________________________________________
-#&gt; predictions (Concatenate) (None, None, 20)  0        classes_softmax[0][0]      
+#&gt; predictions (Concatenate) (None, 133560, 20 0        classes_softmax[0][0]      
 #&gt;                                                      boxes_concat[0][0]         
 #&gt;                                                      anchors_concat[0][0]       
 #&gt; ================================================================================

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Resampling a spatial tensor (2-D and 3-D). — layer_resample_tensor_2d • ANTsRNet</title>
+<title>Resampling a spatial tensor (2-D). — layer_resample_tensor_2d • ANTsRNet</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,7 @@
 
 
 
-<meta property="og:title" content="Resampling a spatial tensor (2-D and 3-D). — layer_resample_tensor_2d" />
+<meta property="og:title" content="Resampling a spatial tensor (2-D). — layer_resample_tensor_2d" />
 <meta property="og:description" content="Resamples a spatial tensor based on the specified shape and interpolation type." />
 
 
@@ -108,7 +108,7 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Resampling a spatial tensor (2-D and 3-D).</h1>
+    <h1>Resampling a spatial tensor (2-D).</h1>
     <small class="dont-index">Source: <a href='https://github.com/ANTsX/ANTsRNet/blob/master/R/resampleTensorUtilities.R'><code>R/resampleTensorUtilities.R</code></a></small>
     <div class="hidden name"><code>layer_resample_tensor_2d.Rd</code></div>
     </div>
@@ -120,17 +120,8 @@
     <pre class="usage"><span class='fu'>layer_resample_tensor_2d</span>(
   <span class='no'>object</span>,
   <span class='no'>shape</span>,
-  <span class='kw'>interpolationType</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"nearestNeighbor"</span>, <span class='st'>"linear"</span>, <span class='st'>"cubic"</span>, <span class='st'>"bicubic"</span>, <span class='st'>"nearest"</span>,
+  <span class='kw'>interpolationType</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"nearestNeighbor"</span>, <span class='st'>"nearest"</span>, <span class='st'>"linear"</span>, <span class='st'>"cubic"</span>, <span class='st'>"bicubic"</span>,
     <span class='st'>"bilinear"</span>),
-  <span class='kw'>name</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>trainable</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
-)
-
-<span class='fu'>layer_resample_tensor_3d</span>(
-  <span class='no'>object</span>,
-  <span class='no'>shape</span>,
-  <span class='kw'>interpolationType</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"nearestNeighbor"</span>, <span class='st'>"linear"</span>, <span class='st'>"cubic"</span>, <span class='st'>"bicubic"</span>, <span class='st'>"bilinear"</span>,
-    <span class='st'>"nearest"</span>),
   <span class='kw'>name</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>trainable</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
 )</pre>

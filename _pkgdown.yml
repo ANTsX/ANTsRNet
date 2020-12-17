@@ -171,6 +171,8 @@ reference:
   - '`resampleTensorLike`'
   - '`ResampleTensorLayer2D`'
   - '`ResampleTensorLayer3D`'
+  - '`layer_resample_tensor_2d`'
+  - '`layer_resample_tensor_3d`'
 - title: Applications
   desc: ~
   contents:

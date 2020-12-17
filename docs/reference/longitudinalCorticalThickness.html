@@ -123,8 +123,9 @@ the work described here:</p>
 
     <pre class="usage"><span class='fu'>longitudinalCorticalThickness</span>(
   <span class='no'>t1s</span>,
-  <span class='kw'>template</span> <span class='kw'>=</span> <span class='st'>"oasis"</span>,
-  <span class='kw'>numberOfAffineRefinements</span> <span class='kw'>=</span> <span class='fl'>0</span>,
+  <span class='kw'>initialTemplate</span> <span class='kw'>=</span> <span class='st'>"oasis"</span>,
+  <span class='kw'>numberOfIterations</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>refinementTransform</span> <span class='kw'>=</span> <span class='st'>"antsRegistrationSyNQuick[a]"</span>,
   <span class='kw'>antsxnetCacheDirectory</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
 )</pre>
@@ -137,14 +138,19 @@ the work described here:</p>
       <td><p>input list of 3-D unprocessed T1-weighted brain images from a single subject</p></td>
     </tr>
     <tr>
-      <th>template</th>
+      <th>initialTemplate</th>
       <td><p>input image to define the orientation of the SST.  Can be a string
-(see <code>getANTsXNetData</code>) or a specified template.</p></td>
+(see <code>getANTsXNetData</code>) or a specified template.  This allows the user to create a
+SST outside of this routine.</p></td>
     </tr>
     <tr>
-      <th>numberOfAffineRefinements</th>
-      <td><p>Defines the number of sets of affine iterations
-for refining the SST.</p></td>
+      <th>numberOfIterations</th>
+      <td><p>Defines the number of iterations for refining the SST.</p></td>
+    </tr>
+    <tr>
+      <th>refinementTransform</th>
+      <td><p>Transform for defining the refinement registration transform.
+See options in <code>antsRegistration</code>.</p></td>
     </tr>
     <tr>
       <th>antsxnetCacheDirectory</th>
@@ -162,8 +168,8 @@ subdirectory ~/.keras/ANTsXNet/.</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>List consisting of the SST, and a (sub-)list for each subject consisting of
-the cortical thickness image, segmentation probability images, and affine mapping to
-the SST.</p>
+the preprocessed image, cortical thickness image, segmentation probability images,
+and affine mapping to the SST.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p><a href='https://pubmed.ncbi.nlm.nih.gov/31356207/'>https://pubmed.ncbi.nlm.nih.gov/31356207/</a></p>
