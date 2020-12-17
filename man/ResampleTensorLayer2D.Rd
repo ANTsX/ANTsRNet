@@ -3,7 +3,7 @@
 \docType{class}
 \name{ResampleTensorLayer2D}
 \alias{ResampleTensorLayer2D}
-\title{Creates a resample tensor lambda layer (2-D)}
+\title{Creates a resample tensor layer (2-D)}
 \value{
 a resampled version of the input tensor
 }
@@ -16,7 +16,9 @@ on the specified shape
 \describe{
 \item{shape}{A 2-D vector specifying the new shape.}
 \item{interpolationType}{Type of interpolation.  Can be
-\code{'nearestNeighbor'}, \code{'linear'}, or \code{'cubic'}}
+\code{'nearestNeighbor'}, \code{'nearestNeighbor'},
+\code{'linear'}, \code{'bilinear'},
+\code{'cubic'}, or \code{'bicubic'}}
 \item{x}{}
 \item{mask}{}
 \item{input_shape}{}

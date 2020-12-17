@@ -2,13 +2,13 @@
 % Please edit documentation in R/resampleTensorUtilities.R
 \name{layer_resample_tensor_2d}
 \alias{layer_resample_tensor_2d}
-\title{Resampling a spatial tensor (2-D).}
+\title{Creates a resampled tensor (to fixed size) layer (2-D)}
 \usage{
 layer_resample_tensor_2d(
   object,
   shape,
-  interpolationType = c("nearestNeighbor", "nearest", "linear", "cubic", "bicubic",
-    "bilinear"),
+  interpolationType = c("nearestNeighbor", "nearest", "linear", "bilinear", "cubic",
+    "bicubic"),
   name = NULL,
   trainable = FALSE
 )
@@ -21,7 +21,9 @@ or another Layer which this layer will call.}
 \item{shape}{vector or list of length 2 specifying the shape of the output tensor.}
 
 \item{interpolationType}{type of interpolation for resampling.  Can be
-\code{nearestNeighbor}, \code{linear}, or \code{cubic}.}
+\code{nearestNeighbor}, \code{nearest},
+\code{linear}, \code{bilinear},
+\code{cubic}, or \code{bicubic}.}
 
 \item{name}{The name of the layer}
 
