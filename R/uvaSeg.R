@@ -148,7 +148,7 @@ uvaSegTrain <- function( patches,
     activation = act1
   )
 
-  flat <- layer_flatten(conv_4)
+  flat <- layer_global_average_pooling_2d(conv_4)
   hidden <- layer_dense(flat, units = intermediate_dim, activation = hiddenAct )
 
   z_mean <- layer_dense(hidden, units = latent_dim)
