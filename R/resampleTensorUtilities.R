@@ -240,24 +240,9 @@ ResampleTensorLayer2D <- R6::R6Class(
 
     call = function( x, mask = NULL )
       {
-      K <- tensorflow::tf$keras$backend
-
-      dimensionality <- 2
-
-      newSize <- as.integer( self$shape )
-      inputShape <- K$int_shape( x )
-      inputShape[sapply( inputShape, is.null )] <- NA
-      inputShape <- unlist( inputShape )
-      oldSize <- inputShape[2:( dimensionality + 1 )]
-
-      # if( ! any( is.na( oldSize ) ) && ! any( is.na( newSize ) ) && ! all( newSize == oldSize ) )
-      #   {
-      #   return( x + 0 )
-      #   }
-
       resampledTensor <- NULL
       func <- tfResizingFunction( self$interpolationType )
-      resampledTensor <- func( x, size = newSize )
+      resampledTensor <- func( x, size = self$shape )
       return( resampledTensor )
       }
   )
@@ -376,16 +361,7 @@ ResampleTensorLayer3D <- R6::R6Class(
 
     call = function( x, mask = NULL )
       {
-      K <- tensorflow::tf$keras$backend
-
-      dimensionality <- 3
-
-      newSize <- as.integer( self$shape )
-      inputShape <- K$int_shape( x )
-      inputShape[sapply( inputShape, is.null )] <- NA
-      inputShape <- unlist( inputShape )
-      oldSize <- inputShape[2:( dimensionality + 1 )]
-
+      newSize <- self$shape
       channelSize <- x$get_shape()[[5]]
 
       resampledTensor <- NULL
