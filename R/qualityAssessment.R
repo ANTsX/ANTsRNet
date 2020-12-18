@@ -35,8 +35,10 @@
 #' the former predicts mean opinion score (MOS) and MOS standard deviation and
 #' the latter koniq models predict mean opinion score (MOS) and sharpness.  One
 #' may also directly pass a tensorflow model here. In this case, we assume that
-#' the input image is scaled to 0 to 255 and the model expects that. May change
-#' this later.
+#' the input image is scaled by the \code{imageScaling} parameter.
+#' @param imageScaling a two-vector where the first value is the multiplier and
+#' the second value the subtractor so each image will be scaled as
+#' \code{img = iMath(img,"Normalize")*m  - s }.
 #' @param verbose print progress.
 #' @return list of QC results predicting both both human rater's mean and standard
 #' deviation of the MOS ("mean opinion scores") or sharpness depending on the
@@ -57,8 +59,11 @@
 tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
   strideLength, paddingSize = 0L, dimensionsToPredict = 1L,
   antsxnetCacheDirectory = NULL, whichModel="tidsQualityAssessment",
+  imageScaling,
   verbose = FALSE )
 {
+  if ( missing( imageScaling ) )
+    imageScaling = c(255,127.5)
   is.prime <- function( n )
     {
     return( n == 2L || all( n %% 2L:max( 2, floor( sqrt( n ) ) ) != 0 ) )
@@ -66,9 +71,9 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
   if ( class( whichModel ) != "character" ) {
      userModel = TRUE
      tidModel = whichModel
-     whichModel = "tidsQualityAssessment"
+     whichModel = "userInput"
   } else {
-    validModels <- c( "tidsQualityAssessment", "koniqMS", "koniqMS2", "koniqMS3"  )
+    validModels <- c( "tidsQualityAssessment", "koniqMS", "koniqMS2", "koniqMS3", "userInput"  )
     if ( ! any( whichModel %in% validModels ) )
       {
       cat( validModels )
@@ -128,6 +133,12 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
       evaluationImage <- ( paddedImage %>% iMath( "Normalize" ) ) * 2.0 - 1.0
       }
 
+    if( whichModel == "userInput" )
+      {
+      evaluationImage <- paddedImage %>% iMath( "Normalize" ) * imageScaling[1] - imageScaling[2]
+      }
+
+
     if( image@dimension == 2 )
       {
       batchX <- array( dim = c( 1, dim( evaluationImage ), numberOfChannels ) )
@@ -145,11 +156,17 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
         } else if( isKoniq ) {
         return( list(
                     MOS.mean = predictedData[1, 1],
-#                    brightness.mean = predictedData[1, 2],
-#                    contrast.mean = predictedData[1, 3],
                     sharpness.mean = predictedData[1, 2]
 	           	    ) )
         }
+        if ( whichModel == "userInput" )
+          {
+            return( list(
+                        MOS.mean = predictedData[1, 1],
+                        SD.mean = predictedData[1, 2]
+    	           	    ) )
+          }
+
 
       } else if( image@dimension == 3 ) {
 
@@ -185,10 +202,10 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
 	      }
       mosMean <- mosMean / length( dimensionsToPredict )
       mosStandardDeviation <- mosStandardDeviation / length( dimensionsToPredict )
-      if( whichModel == "tidsQualityAssessment" )
+      if( whichModel == "tidsQualityAssessment" | whichModel == 'userInput')
         return( list( MOS.mean = mosMean,
                       MOS.standardDeviationMean = mosStandardDeviation ) )
-      if( isKoniq )
+      if ( isKoniq )
         return( list( MOS.mean = mosMean, sharpness.mean=mosStandardDeviation) )
       }
     } else {
@@ -279,6 +296,8 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
               patchImage <- patchImage / max( patchImage ) * 255
               } else if( isKoniq ) {
               patchImage <- patchImage / max( patchImage ) * 2.0 - 1.0
+            } else if( whichModel == "userInput" ) {
+              patchImage <- patchImage / max( patchImage ) * imageScaling[1] - imageScaling[2]
               }
             }
           if( image@dimension == 2 )
@@ -327,7 +346,7 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
     MOS.standardDeviation <- MOS.standardDeviation / length( dimensionsToPredict )
     if( missing( mask ) )
       {
-      if ( whichModel == "tidsQualityAssessment" )
+      if ( whichModel == "tidsQualityAssessment" | whichModel == "userInput" )
         return( list( MOS = MOS,
                     MOS.standardDeviation = MOS.standardDeviation,
                     MOS.mean = mean( MOS ),
@@ -341,7 +360,7 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
           sharpness.mean=mean(MOS.standardDeviation) ) )
 
       } else {
-      if ( whichModel == "tidsQualityAssessment" )
+      if ( whichModel == "tidsQualityAssessment" | whichModel == "userInput" )
         return( list( MOS = MOS * mask,
                     MOS.standardDeviation = MOS.standardDeviation * mask,
                     MOS.mean = mean( MOS[mask != 0] ),

@@ -13,6 +13,7 @@ tidNeuralImageAssessment(
   dimensionsToPredict = 1L,
   antsxnetCacheDirectory = NULL,
   whichModel = "tidsQualityAssessment",
+  imageScaling,
   verbose = FALSE
 )
 }
@@ -43,8 +44,11 @@ template and model weights.  Since these can be reused, if
 the former predicts mean opinion score (MOS) and MOS standard deviation and
 the latter koniq models predict mean opinion score (MOS) and sharpness.  One
 may also directly pass a tensorflow model here. In this case, we assume that
-the input image is scaled to 0 to 255 and the model expects that. May change
-this later.}
+the input image is scaled by the \code{imageScaling} parameter.}
+
+\item{imageScaling}{a two-vector where the first value is the multiplier and
+the second value the subtractor so each image will be scaled as
+\code{img = iMath(img,"Normalize")*m  - s }.}
 
 \item{verbose}{print progress.}
 }
