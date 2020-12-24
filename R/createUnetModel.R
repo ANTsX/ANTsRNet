@@ -34,9 +34,11 @@
 #' @param dropoutRate float between 0 and 1 to use between dense layers.
 #' @param weightDecay weighting parameter for L2 regularization of the
 #' kernel weights of the convolution layers.  Default = 0.0.
-#' @param addAttentionGating boolean for "attention u-net variant" from 
+#' @param nnUnetActivationStyle boolean for "nnu-net variant" from
 #'  \url{https://pubmed.ncbi.nlm.nih.gov/30802813/}.
-#' @param mode 'classification' or 'regression' or 'sigmoid'. 
+#' @param addAttentionGating boolean for "attention u-net variant" activation from
+#'  \url{https://pubmed.ncbi.nlm.nih.gov/33288961/}.
+#' @param mode 'classification' or 'regression' or 'sigmoid'.
 #'
 #' @return a u-net keras model
 #' @author Tustison NJ
@@ -127,21 +129,29 @@ createUnetModel2D <- function( inputImageSize,
                                strides = c( 2, 2 ),
                                dropoutRate = 0.0,
                                weightDecay = 0.0,
+                               nnUnetActivationStyle = FALSE,
                                addAttentionGating = FALSE,
                                mode = c( 'classification', 'regression', 'sigmoid' )
                              )
 {
 
-  attentionGate2D <- function( x, g, interShape ) 
+  nnUnetActivation <- function( x )
     {
-    xTheta <- x %>% layer_conv_2d( filters = interShape, kernel_size = c( 1L, 1L ), 
+    x <- x %>% layer_instance_normalization()
+    x <- x %>% layer_activation_leaky_relu( alpha = 0.01 )
+    return( x )
+    }
+
+  attentionGate2D <- function( x, g, interShape )
+    {
+    xTheta <- x %>% layer_conv_2d( filters = interShape, kernel_size = c( 1L, 1L ),
       strides = c( 1L, 1L ) )
-    gPhi <- g %>% layer_conv_2d( filters = interShape, kernel_size = c( 1L, 1L ), 
-      strides = c( 1L, 1L ) )    
+    gPhi <- g %>% layer_conv_2d( filters = interShape, kernel_size = c( 1L, 1L ),
+      strides = c( 1L, 1L ) )
     f <- layer_add( list( xTheta, gPhi ) ) %>% layer_activation_relu()
-    fPsi <- f %>% layer_conv_2d( filters = 1L, kernel_size = c( 1L, 1L ), 
+    fPsi <- f %>% layer_conv_2d( filters = 1L, kernel_size = c( 1L, 1L ),
       strides = c( 1L, 1L ) )
-    alpha <- fPsi %>% layer_activation( activation = "sigmoid" ) 
+    alpha <- fPsi %>% layer_activation( activation = "sigmoid" )
     attention <- layer_multiply( list( x, alpha ) )
     return( attention )
     }
@@ -160,23 +170,33 @@ createUnetModel2D <- function( inputImageSize,
     if( i == 1 )
       {
       conv <- inputs %>% layer_conv_2d( filters = numberOfFilters,
-        kernel_size = convolutionKernelSize, activation = 'relu',
-        padding = 'same',
+        kernel_size = convolutionKernelSize, padding = 'same',
         kernel_regularizer = regularizer_l2( weightDecay ) )
       } else {
       conv <- pool %>% layer_conv_2d( filters = numberOfFilters,
-        kernel_size = convolutionKernelSize, activation = 'relu',
-        padding = 'same',
+        kernel_size = convolutionKernelSize, padding = 'same',
         kernel_regularizer = regularizer_l2( weightDecay ) )
+      }
+    if( nnUnetActivationStyle == TRUE )
+      {
+      conv <- nnUnetActivation( conv )
+      } else {
+      conv <- conv %>% layer_activation_relu()
       }
     if( dropoutRate > 0.0 )
       {
       conv <- conv %>% layer_dropout( rate = dropoutRate )
       }
+    conv <- conv %>% layer_conv_2d( filters = numberOfFilters,
+      kernel_size = convolutionKernelSize, padding = 'same' )
+    if( nnUnetActivationStyle == TRUE )
+      {
+      conv <- nnUnetActivation( conv )
+      } else {
+      conv <- conv %>% layer_activation_relu()
+      }
 
-    encodingConvolutionLayers[[i]] <- conv %>% layer_conv_2d(
-      filters = numberOfFilters, kernel_size = convolutionKernelSize,
-      activation = 'relu', padding = 'same' )
+    encodingConvolutionLayers[[i]] <- conv
 
     if( i < numberOfLayers )
       {
@@ -197,25 +217,34 @@ createUnetModel2D <- function( inputImageSize,
         kernel_size = deconvolutionKernelSize,
         padding = 'same',
         kernel_regularizer = regularizer_l2( weightDecay ) )
+    if( nnUnetActivationStyle == TRUE )
+      {
+      deconv <- nnUnetActivation( deconv )
+      }
     deconv <- deconv %>% layer_upsampling_2d( size = poolSize )
 
     if( addAttentionGating == TRUE )
       {
-      outputs <- attentionGate2D( deconv, 
-        encodingConvolutionLayers[[numberOfLayers - i + 1]], 
+      outputs <- attentionGate2D( deconv,
+        encodingConvolutionLayers[[numberOfLayers - i + 1]],
         as.integer( numberOfFilters / 4 ) )
       outputs <- layer_concatenate( list( deconv, outputs ), axis = 3 )
       } else {
       outputs <- layer_concatenate( list( deconv,
         encodingConvolutionLayers[[numberOfLayers - i + 1]] ),
         axis = 3 )
-      }  
+      }
 
     outputs <- outputs %>%
       layer_conv_2d( filters = numberOfFilters,
-        kernel_size = convolutionKernelSize,
-        activation = 'relu', padding = 'same',
+        kernel_size = convolutionKernelSize, padding = 'same',
         kernel_regularizer = regularizer_l2( weightDecay ) )
+    if( nnUnetActivationStyle == TRUE )
+      {
+      outputs <- nnUnetActivation( outputs )
+      } else {
+      outputs <- outputs %>% layer_activation_relu()
+      }
 
     if( dropoutRate > 0.0 )
       {
@@ -224,19 +253,24 @@ createUnetModel2D <- function( inputImageSize,
 
     outputs <- outputs %>%
       layer_conv_2d( filters = numberOfFilters,
-        kernel_size = convolutionKernelSize,
-        activation = 'relu', padding = 'same',
+        kernel_size = convolutionKernelSize, padding = 'same',
         kernel_regularizer = regularizer_l2( weightDecay ) )
+    if( nnUnetActivationStyle == TRUE )
+      {
+      outputs <- nnUnetActivation( outputs )
+      } else {
+      outputs <- outputs %>% layer_activation_relu()
+      }
     }
 
   convActivation <- ''
   if( mode == 'sigmoid' )
     {
-    convActivation <- 'sigmoid'  
+    convActivation <- 'sigmoid'
     } else if( mode == 'classification' ) {
-    convActivation <- 'softmax'  
+    convActivation <- 'softmax'
     } else if( mode == 'regression' ) {
-    convActivation <- 'linear'  
+    convActivation <- 'linear'
     } else {
     stop( 'Error: unrecognized mode.' )
     }
@@ -287,7 +321,9 @@ createUnetModel2D <- function( inputImageSize,
 #' @param dropoutRate float between 0 and 1 to use between dense layers.
 #' @param weightDecay weighting parameter for L2 regularization of the
 #' kernel weights of the convolution layers.  Default = 0.0.
-#' @param addAttentionGating boolean for "attention u-net variant" from 
+#' @param nnUnetActivationStyle boolean for "nnu-net variant" from
+#'  \url{https://pubmed.ncbi.nlm.nih.gov/30802813/}.
+#' @param addAttentionGating boolean for "attention u-net variant" from
 #  https://pubmed.ncbi.nlm.nih.gov/30802813/.
 #' @param mode 'classification' or 'regression' or 'sigmoid'.
 #'
@@ -328,21 +364,29 @@ createUnetModel3D <- function( inputImageSize,
                                strides = c( 2, 2, 2 ),
                                dropoutRate = 0.0,
                                weightDecay = 0.0,
+                               nnUnetActivationStyle = FALSE,
                                addAttentionGating = FALSE,
                                mode = c( 'classification', 'regression', 'sigmoid' )
                              )
 {
 
-  attentionGate3D <- function( x, g, interShape ) 
+  nnUnetActivation <- function( x )
     {
-    xTheta <- x %>% layer_conv_3d( filters = interShape, kernel_size = c( 1L, 1L, 1L ), 
+    x <- x %>% layer_instance_normalization()
+    x <- x %>% layer_activation_leaky_relu( alpha = 0.01 )
+    return( x )
+    }
+
+  attentionGate3D <- function( x, g, interShape )
+    {
+    xTheta <- x %>% layer_conv_3d( filters = interShape, kernel_size = c( 1L, 1L, 1L ),
       strides = c( 1L, 1L, 1L ) )
-    gPhi <- g %>% layer_conv_3d( filters = interShape, kernel_size = c( 1L, 1L, 1L ), 
-      strides = c( 1L, 1L, 1L ) )    
+    gPhi <- g %>% layer_conv_3d( filters = interShape, kernel_size = c( 1L, 1L, 1L ),
+      strides = c( 1L, 1L, 1L ) )
     f <- layer_add( list( xTheta, gPhi ) ) %>% layer_activation_relu()
-    fPsi <- f %>% layer_conv_3d( filters = 1L, kernel_size = c( 1L, 1L, 1L ), 
+    fPsi <- f %>% layer_conv_3d( filters = 1L, kernel_size = c( 1L, 1L, 1L ),
       strides = c( 1L, 1L, 1L ) )
-    alpha <- fPsi %>% layer_activation( activation = "sigmoid" ) 
+    alpha <- fPsi %>% layer_activation( activation = "sigmoid" )
     attention <- layer_multiply( list( x, alpha ) )
     return( attention )
     }
@@ -361,24 +405,33 @@ createUnetModel3D <- function( inputImageSize,
     if( i == 1 )
       {
       conv <- inputs %>% layer_conv_3d( filters = numberOfFilters,
-        kernel_size = convolutionKernelSize, activation = 'relu',
-        padding = 'same',
+        kernel_size = convolutionKernelSize, padding = 'same',
         kernel_regularizer = regularizer_l2( weightDecay ) )
       } else {
       conv <- pool %>% layer_conv_3d( filters = numberOfFilters,
-        kernel_size = convolutionKernelSize, activation = 'relu',
-        padding = 'same',
+        kernel_size = convolutionKernelSize, padding = 'same',
         kernel_regularizer = regularizer_l2( weightDecay ) )
+      }
+    if( nnUnetActivationStyle == TRUE )
+      {
+      conv <- nnUnetActivation( conv )
+      } else {
+      conv <- conv %>% layer_activation_relu()
       }
     if( dropoutRate > 0.0 )
       {
       conv <- conv %>% layer_dropout( rate = dropoutRate )
       }
+    conv <- conv %>% layer_conv_3d( filters = numberOfFilters,
+      kernel_size = convolutionKernelSize, padding = 'same' )
+    if( nnUnetActivationStyle == TRUE )
+      {
+      conv <- nnUnetActivation( conv )
+      } else {
+      conv <- conv %>% layer_activation_relu()
+      }
 
-    encodingConvolutionLayers[[i]] <- conv %>% layer_conv_3d(
-      filters = numberOfFilters, kernel_size = convolutionKernelSize,
-      activation = 'relu', padding = 'same',
-      kernel_regularizer = regularizer_l2( weightDecay ) )
+    encodingConvolutionLayers[[i]] <- conv
 
     if( i < numberOfLayers )
       {
@@ -399,25 +452,34 @@ createUnetModel3D <- function( inputImageSize,
         kernel_size = deconvolutionKernelSize,
         padding = 'same',
         kernel_regularizer = regularizer_l2( weightDecay ) )
+    if( nnUnetActivationStyle == TRUE )
+      {
+      deconv <- nnUnetActivation( deconv )
+      }
     deconv <- deconv %>% layer_upsampling_3d( size = poolSize )
 
     if( addAttentionGating == TRUE )
       {
-      outputs <- attentionGate3D( deconv, 
-        encodingConvolutionLayers[[numberOfLayers - i + 1]], 
+      outputs <- attentionGate3D( deconv,
+        encodingConvolutionLayers[[numberOfLayers - i + 1]],
         as.integer( numberOfFilters / 4 ) )
       outputs <- layer_concatenate( list( deconv, outputs ), axis = 4 )
       } else {
       outputs <- layer_concatenate( list( deconv,
         encodingConvolutionLayers[[numberOfLayers - i + 1]] ),
         axis = 4 )
-      }  
+      }
 
     outputs <- outputs %>%
       layer_conv_3d( filters = numberOfFilters,
-        kernel_size = convolutionKernelSize,
-        activation = 'relu', padding = 'same',
+        kernel_size = convolutionKernelSize, padding = 'same',
         kernel_regularizer = regularizer_l2( weightDecay ) )
+    if( nnUnetActivationStyle == TRUE )
+      {
+      outputs <- nnUnetActivation( outputs )
+      } else {
+      outputs <- outputs %>% layer_activation_relu()
+      }
 
     if( dropoutRate > 0.0 )
       {
@@ -426,19 +488,24 @@ createUnetModel3D <- function( inputImageSize,
 
     outputs <- outputs %>%
       layer_conv_3d( filters = numberOfFilters,
-        kernel_size = convolutionKernelSize,
-        activation = 'relu', padding = 'same',
+        kernel_size = convolutionKernelSize, padding = 'same',
         kernel_regularizer = regularizer_l2( weightDecay ) )
+    if( nnUnetActivationStyle == TRUE )
+      {
+      outputs <- nnUnetActivation( outputs )
+      } else {
+      outputs <- outputs %>% layer_activation_relu()
+      }
     }
 
   convActivation <- ''
   if( mode == 'sigmoid' )
     {
-    convActivation <- 'sigmoid'  
+    convActivation <- 'sigmoid'
     } else if( mode == 'classification' ) {
-    convActivation <- 'softmax'  
+    convActivation <- 'softmax'
     } else if( mode == 'regression' ) {
-    convActivation <- 'linear'  
+    convActivation <- 'linear'
     } else {
     stop( 'Error: unrecognized mode.' )
     }
