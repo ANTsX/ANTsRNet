@@ -1,3 +1,54 @@
+
+#' Randomly transform image intensities.
+#'
+#' Apply B-spline 1-D maps to an input image for intensity warping.
+#'
+#' @param image input image.
+#' @param numberOfHistogramPoints number of histogram points for intensity warping.
+#' If = 0, no intensity warping is performed.
+#' @param sdIntensityTransform characterize the randomness of the intensity displacement.
+#' @param transformDomainSize Defines the sampling resolution of the B-spline warping.
+#' @return warped intensity image
+#' @author Tustison NJ
+#' @importFrom stats rnorm
+#' @examples
+#'
+#' library( ANTsR )
+#' image <- antsImageRead( getANTsRData( "r16" ) )
+#' transformedImage <- randomlyHistogramWarpImageIntensity( image, transformDomainSize = 10 )
+#' rm(image); gc()
+#' rm(transformedImage); gc()
+#' @export randomlyHistogramWarpImageIntensity
+randomlyHistogramWarpImageIntensity <- function( image, numberOfHistogramPoints = 4,
+  sdIntensityTransform = 0.05, transformDomainSize = 20 )
+  {
+  transformedImage <- antsImageClone( image ) %>% iMath( "Normalize" )
+
+  scatteredData <- matrix( c( 0, rnorm( numberOfHistogramPoints - 2, 0, sdIntensityTransform ), 0 ) )
+  parametricData <- matrix( seq( 0, 1, length.out = numberOfHistogramPoints ) )
+
+  weights <- c( 1000, rep( 1, numberOfHistogramPoints - 2 ), 1000 )
+
+  transformDomainOrigin <- 0
+  transformDomainSpacing <- ( 1.0 - 0 ) / ( transformDomainSize - 1 )
+
+  bsplineHistogramTransform <- fitBsplineObjectToScatteredData( scatteredData, parametricData,
+    c( transformDomainOrigin ), c( transformDomainSpacing ), c( transformDomainSize ),
+    dataWeights = weights )
+
+  transformDomain <- seq( 0, 1, length.out = transformDomainSize )
+
+  for( i in seq.int( length( transformDomain ) - 1 ) )
+    {
+    transformedImage[transformedImage >= transformDomain[i] & transformedImage < transformDomain[i+1]] <-
+      transformedImage[transformedImage >= transformDomain[i] & transformedImage < transformDomain[i+1]] +
+      0.5 * ( bsplineHistogramTransform[i] + bsplineHistogramTransform[i + 1 ] )
+    }
+  transformedImage <- transformedImage * ( max( image ) - min( image ) ) + min( image )
+
+  return( transformedImage )
+  }
+
 #' Randomly transform image data (optional: with corresponding segmentations).
 #'
 #' Apply rigid, affine and/or deformable maps to an input set of training
@@ -16,6 +67,9 @@
 #' @param segmentationImageList list of segmentation images corresponding to the
 #' input image list (optional).
 #' @param numberOfSimulations number of output images.  Default = 10.
+#' @param numberOfHistogramPoints number of histogram points for intensity warping.
+#' If = 0, no intensity warping is performed.
+#' @param sdIntensityTransform characterize the randomness of the intensity displacement.
 #' @param transformType one of the following options
 #' \code{c( "translation", "rigid", "scaleShear", "affine"," deformation" ,
 #'   "affineAndDeformation" )}.  Default = \"affine\".
@@ -61,10 +115,12 @@
 #' rm(image2); gc()
 #' @export randomlyTransformImageData
 randomlyTransformImageData <- function( referenceImage,
-  inputImageList, 
-  segmentationImageList = NULL, 
+  inputImageList,
+  segmentationImageList = NULL,
   numberOfSimulations = 10,
-  transformType = 'affine', 
+  numberOfHistogramPoints = 0,
+  sdIntensityTransform = 0.04,
+  transformType = 'affine',
   sdAffine = 0.02,
   deformationTransformType = c( "bspline", "exponential" ),
   numberOfRandomPoints = 1000,
@@ -75,22 +131,22 @@ randomlyTransformImageData <- function( referenceImage,
   inputImageInterpolator = 'linear',
   segmentationImageInterpolator = 'nearestNeighbor' )
 {
-
-  polarDecomposition <- function( X )
-    {
-    svdX <- svd( X )
-    P <- svdX$u %*% diag( svdX$d ) %*% t( svdX$u )
-    Z <- svdX$u %*% t( svdX$v )
-    if ( det( Z ) < 0 )
-      {
-      Z <- Z * ( -1 )
-      }
-    return( list( P = P, Z = Z, Xtilde = P %*% Z ) )
-    }
-
   createRandomLinearTransform <- function(
     image, fixedParameters, transformType = 'affine', sdAffine = 1.0 )
     {
+
+    polarDecomposition <- function( X )
+      {
+      svdX <- svd( X )
+      P <- svdX$u %*% diag( svdX$d ) %*% t( svdX$u )
+      Z <- svdX$u %*% t( svdX$v )
+      if ( det( Z ) < 0 )
+        {
+        Z <- Z * ( -1 )
+        }
+      return( list( P = P, Z = Z, Xtilde = P %*% Z ) )
+      }
+
     transform <- createAntsrTransform( precision = "float",
       type = "AffineTransform", dimension = image@dimension )
     setAntsrTransformFixedParameters( transform, fixedParameters )
@@ -132,9 +188,9 @@ randomlyTransformImageData <- function( referenceImage,
     fieldType = c( "bspline", "exponential" ), numberOfRandomPoints = 1000,
     sdNoise = 10.0, numberOfFittingLevels = 4, meshSize = 1, sdSmoothing = 4.0 )
     {
-    displacementField <- simulateDisplacementField( domainImage, 
+    displacementField <- simulateDisplacementField( domainImage,
       fieldType = fieldType, numberOfRandomPoints = numberOfRandomPoints,
-      sdNoise = sdNoise, enforceStationaryBoundary = TRUE, 
+      sdNoise = sdNoise, enforceStationaryBoundary = TRUE,
       numberOfFittingLevels = numberOfFittingLevels, meshSize = meshSize,
       sdSmoothing = sdSmoothing )
     displacementFieldTransform <- antsrTransformFromDisplacementField( displacementField )
@@ -189,14 +245,14 @@ randomlyTransformImageData <- function( referenceImage,
     if( transformType == 'deformation' )
       {
       deformableTransform <- createRandomDisplacementFieldTransform(
-        referenceImage, deformationTransformType, numberOfRandomPoints, 
+        referenceImage, deformationTransformType, numberOfRandomPoints,
         sdNoise, numberOfFittingLevels, meshSize, sdSmoothing )
       transforms <- list( deformableTransform )
       }
     if( transformType == 'affineAndDeformation' )
       {
       deformableTransform <- createRandomDisplacementFieldTransform(
-        referenceImage, deformationTransformType, numberOfRandomPoints, 
+        referenceImage, deformationTransformType, numberOfRandomPoints,
         sdNoise, numberOfFittingLevels, meshSize, sdSmoothing )
       linearTransform <- createRandomLinearTransform( referenceImage,
         fixedParameters, 'affine', sdAffine )
@@ -214,15 +270,23 @@ randomlyTransformImageData <- function( referenceImage,
     singleSubjectSimulatedImageList <- list()
     for( j in seq_len( length( singleSubjectImageList ) ) )
       {
+      singleSubjectImage <- NULL
+      if( numberOfHistogramPoints == 0 )
+        {
+        singleSubjectImage <- singleSubjectImageList[[j]]
+        } else {
+        singleSubjectImage <- randomlyHistogramWarpImageIntensities(
+          singleSubjectImageList[[j]], numberOfHistogramPoints, sdIntensityTransform )
+        }
       singleSubjectSimulatedImageList[[j]] <- applyAntsrTransform(
-        simulatedTransforms[[i]], singleSubjectImageList[[j]], referenceImage,
+        simulatedTransforms[[i]], singleSubjectImage, referenceImage,
         interpolation = inputImageInterpolator )
       }
-    simulatedImageList[[i]] <- singleSubjectSimulatedImageList
+    simulatedImageList[[i]] <- singleSubjectImage
 
     if( ! is.null( singleSubjectSegmentationImage ) )
       {
-      simulatedSegmentationImageList[[i]] <- applyAntsrTransform( 
+      simulatedSegmentationImageList[[i]] <- applyAntsrTransform(
         simulatedTransforms[[i]], singleSubjectSegmentationImage, referenceImage,
           interpolation = segmentationImageInterpolator )
       }
@@ -240,3 +304,4 @@ randomlyTransformImageData <- function( referenceImage,
       simulatedTransforms = simulatedTransforms ) )
     }
 }
+

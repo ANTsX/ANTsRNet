@@ -155,6 +155,7 @@ reference:
   - '`randomImageTransformParametersAugmentation`'
   - '`randomImageTransformParametersBatchGenerator`'
   - '`randomlyTransformImageData`'
+  - '`randomlyHistogramWarpImageIntensity`'
 - title: Misc
   desc: ~
   contents:

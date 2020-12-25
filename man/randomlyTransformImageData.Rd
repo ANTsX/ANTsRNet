@@ -9,6 +9,8 @@ randomlyTransformImageData(
   inputImageList,
   segmentationImageList = NULL,
   numberOfSimulations = 10,
+  numberOfHistogramPoints = 0,
+  sdIntensityTransform = 0.04,
   transformType = "affine",
   sdAffine = 0.02,
   deformationTransformType = c("bspline", "exponential"),
@@ -38,6 +40,11 @@ randomly sampled to produce output image list.}
 input image list (optional).}
 
 \item{numberOfSimulations}{number of output images.  Default = 10.}
+
+\item{numberOfHistogramPoints}{number of histogram points for intensity warping.
+If = 0, no intensity warping is performed.}
+
+\item{sdIntensityTransform}{characterize the randomness of the intensity displacement.}
 
 \item{transformType}{one of the following options
 \code{c( "translation", "rigid", "scaleShear", "affine"," deformation" ,
