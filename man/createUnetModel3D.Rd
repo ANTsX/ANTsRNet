@@ -15,6 +15,7 @@ createUnetModel3D(
   strides = c(2, 2, 2),
   dropoutRate = 0,
   weightDecay = 0,
+  nnUnetActivationStyle = FALSE,
   addAttentionGating = FALSE,
   mode = c("classification", "regression", "sigmoid")
 )
@@ -48,6 +49,9 @@ during the decoding.}
 
 \item{weightDecay}{weighting parameter for L2 regularization of the
 kernel weights of the convolution layers.  Default = 0.0.}
+
+\item{nnUnetActivationStyle}{boolean for "nnu-net variant" from
+\url{https://pubmed.ncbi.nlm.nih.gov/30802813/}.}
 
 \item{addAttentionGating}{boolean for "attention u-net variant" from}
 
