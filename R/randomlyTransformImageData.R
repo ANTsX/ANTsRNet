@@ -30,7 +30,7 @@ randomlyHistogramWarpImageIntensity <- function( image, numberOfHistogramPoints 
   weights <- c( 1000, rep( 1, numberOfHistogramPoints - 2 ), 1000 )
 
   transformDomainOrigin <- 0
-  transformDomainSpacing <- ( 1.0 - 0 ) / ( transformDomainSize - 1 )
+  transformDomainSpacing <- ( 1.0 - transformDomainOrigin ) / ( transformDomainSize - 1 )
 
   bsplineHistogramTransform <- fitBsplineObjectToScatteredData( scatteredData, parametricData,
     c( transformDomainOrigin ), c( transformDomainSpacing ), c( transformDomainSize ),
@@ -275,7 +275,7 @@ randomlyTransformImageData <- function( referenceImage,
         {
         singleSubjectImage <- singleSubjectImageList[[j]]
         } else {
-        singleSubjectImage <- randomlyHistogramWarpImageIntensities(
+        singleSubjectImage <- randomlyHistogramWarpImageIntensity(
           singleSubjectImageList[[j]], numberOfHistogramPoints, sdIntensityTransform )
         }
       singleSubjectSimulatedImageList[[j]] <- applyAntsrTransform(
