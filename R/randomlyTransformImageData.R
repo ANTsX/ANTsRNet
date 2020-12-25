@@ -282,7 +282,7 @@ randomlyTransformImageData <- function( referenceImage,
         simulatedTransforms[[i]], singleSubjectImage, referenceImage,
         interpolation = inputImageInterpolator )
       }
-    simulatedImageList[[i]] <- singleSubjectImage
+    simulatedImageList[[i]] <- singleSubjectSimulatedImageList
 
     if( ! is.null( singleSubjectSegmentationImage ) )
       {
