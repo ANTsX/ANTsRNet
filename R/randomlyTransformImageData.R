@@ -1,54 +1,3 @@
-
-#' Randomly transform image intensities.
-#'
-#' Apply B-spline 1-D maps to an input image for intensity warping.
-#'
-#' @param image input image.
-#' @param numberOfHistogramPoints number of histogram points for intensity warping.
-#' If = 0, no intensity warping is performed.
-#' @param sdIntensityTransform characterize the randomness of the intensity displacement.
-#' @param transformDomainSize Defines the sampling resolution of the B-spline warping.
-#' @return warped intensity image
-#' @author Tustison NJ
-#' @importFrom stats rnorm
-#' @examples
-#'
-#' library( ANTsR )
-#' image <- antsImageRead( getANTsRData( "r16" ) )
-#' transformedImage <- randomlyHistogramWarpImageIntensity( image, transformDomainSize = 10 )
-#' rm(image); gc()
-#' rm(transformedImage); gc()
-#' @export randomlyHistogramWarpImageIntensity
-randomlyHistogramWarpImageIntensity <- function( image, numberOfHistogramPoints = 4,
-  sdIntensityTransform = 0.05, transformDomainSize = 20 )
-  {
-  transformedImage <- antsImageClone( image ) %>% iMath( "Normalize" )
-
-  scatteredData <- matrix( c( 0, rnorm( numberOfHistogramPoints - 2, 0, sdIntensityTransform ), 0 ) )
-  parametricData <- matrix( seq( 0, 1, length.out = numberOfHistogramPoints ) )
-
-  weights <- c( 1000, rep( 1, numberOfHistogramPoints - 2 ), 1000 )
-
-  transformDomainOrigin <- 0
-  transformDomainSpacing <- ( 1.0 - transformDomainOrigin ) / ( transformDomainSize - 1 )
-
-  bsplineHistogramTransform <- fitBsplineObjectToScatteredData( scatteredData, parametricData,
-    c( transformDomainOrigin ), c( transformDomainSpacing ), c( transformDomainSize ),
-    dataWeights = weights )
-
-  transformDomain <- seq( 0, 1, length.out = transformDomainSize )
-
-  for( i in seq.int( length( transformDomain ) - 1 ) )
-    {
-    transformedImage[transformedImage >= transformDomain[i] & transformedImage < transformDomain[i+1]] <-
-      transformedImage[transformedImage >= transformDomain[i] & transformedImage < transformDomain[i+1]] +
-      0.5 * ( bsplineHistogramTransform[i] + bsplineHistogramTransform[i + 1 ] )
-    }
-  transformedImage <- transformedImage * ( max( image ) - min( image ) ) + min( image )
-
-  return( transformedImage )
-  }
-
 #' Randomly transform image data (optional: with corresponding segmentations).
 #'
 #' Apply rigid, affine and/or deformable maps to an input set of training
@@ -275,8 +224,9 @@ randomlyTransformImageData <- function( referenceImage,
         {
         singleSubjectImage <- singleSubjectImageList[[j]]
         } else {
-        singleSubjectImage <- randomlyHistogramWarpImageIntensity(
-          singleSubjectImageList[[j]], numberOfHistogramPoints, sdIntensityTransform )
+        singleSubjectImage <- histogramWarpImageIntensities(
+          singleSubjectImageList[[j]], numberOfHistogramPoints,
+          sdIntensityTransform )
         }
       singleSubjectSimulatedImageList[[j]] <- applyAntsrTransform(
         simulatedTransforms[[i]], singleSubjectImage, referenceImage,
