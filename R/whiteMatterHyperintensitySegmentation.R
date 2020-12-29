@@ -273,3 +273,159 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
 
   return( probabilityImage = probabilityImage )
 }
+
+#' White matter hypterintensity probabilistic segmentation
+#'
+#' Perform White matter hypterintensity probabilistic segmentation 
+#' using deep learning
+#'
+#' Preprocessing on the training data consisted of:
+#'    * n4 bias correction,
+#'    * brain extraction, and
+#'    * affine registration to MNI.
+#' The input T1 should undergo the same steps.  If the input T1 is the raw
+#' T1, these steps can be performed by the internal preprocessing, i.e. set
+#' \code{doPreprocessing = TRUE}
+#'
+#' @param flair input 3-D FLAIR brain image.
+#' @param t1 input 3-D T1-weighted brain image (assumed to be aligned to
+#' the flair).
+#' @param doPreprocessing perform preprocessing.  See description above.
+#' @param antsxnetCacheDirectory destination directory for storing the downloaded
+#' template and model weights.  Since these can be resused, if
+#' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
+#' inst/extdata/ subfolder of the ANTsRNet package.
+#' @param verbose print progress.
+#' @param debug return feature images in the last layer of the u-net model.
+#' @return list consisting of the segmentation image and probability images for
+#' each label.
+#' @author Tustison NJ
+#' @examples
+#' \dontrun{
+#' library( ANTsRNet )
+#' library( keras )
+#'
+#' t1 <- antsImageRead( "t1.nii.gz" )
+#' flair <- antsImageRead( "flair.nii.gz" )
+#' results <- ewDavid( t1, flair )
+#' }
+#' @export
+ewDavid <- function( flair, t1, doPreprocessing = TRUE,
+  antsxnetCacheDirectory = NULL, verbose = FALSE )
+{
+
+  if( flair@dimension != 3 )
+    {
+    stop( "Input image dimension must be 3." )
+    }
+  if( t1@dimension != 3 )
+    {
+    stop( "Input t1 image dimension must be 3." )
+    }
+
+  if( is.null( antsxnetCacheDirectory ) )
+    {
+    antsxnetCacheDirectory <- "ANTsXNet"
+    }
+
+  ################################
+  #
+  # Preprocess image
+  #
+  ################################
+
+  t1Preprocessed <- t1
+  flairPreprocessed <- flair
+  if( doPreprocessing == TRUE )
+    {
+    t1Preprocessing <- preprocessBrainImage( t1,
+        truncateIntensity = c( 0.01, 0.99 ),
+        doBrainExtraction = FALSE,
+        template = "croppedMni152",
+        templateTransformType = "AffineFast",
+        doBiasCorrection = FALSE,
+        doDenoising = FALSE,
+        antsxnetCacheDirectory = antsxnetCacheDirectory,
+        verbose = verbose )
+    t1Preprocessed <- t1Preprocessing$preprocessedImage # * t1Preprocessing$brainMask
+
+    flairPreprocessed <- antsApplyTransforms( fixed = t1Preprocessed, moving = flair, 
+      transformlist = t1Preprocessing$templateTransforms$fwdtransforms, interpolator = "linear",
+      verbose = verbose )
+    # flairPreprocessed[t1Preprocessing$brainMask == 0] <- 0
+    }
+
+  ################################
+  #
+  # Build model and load weights
+  #
+  ################################
+
+  patchSize <- c( 112L, 112L, 112L )
+  strideLength <- dim( t1Preprocessed ) - patchSize
+
+  classes <- c( "background", "wmh" )
+  numberOfClassificationLabels <- length( classes )
+  labels <- seq.int( numberOfClassificationLabels ) - 1
+
+  imageModalities <- c( "T1", "FLAIR" )
+  channelSize <- length( imageModalities )
+
+  unetModel <- createUnetModel3D( c( patchSize, channelSize ),
+    numberOfOutputs = numberOfClassificationLabels, mode = 'classification',
+    numberOfLayers = 4, numberOfFiltersAtBaseLayer = 32, dropoutRate = 0.0,
+    convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
+    weightDecay = 1e-5, nnUnetActivationStyle = FALSE, addAttentionGating = TRUE )
+
+  if( verbose == TRUE )
+    {
+    cat( "ewDavid:  retrieving model weights.\n" )
+    }
+  weightsFileName <- getPretrainedNetwork( "ewDavidWmhSegmentationWeights", 
+    antsxnetCacheDirectory = antsxnetCacheDirectory )
+  load_model_weights_hdf5( unetModel, filepath = weightsFileName )
+
+  ################################
+  #
+  # Do prediction and normalize to native space
+  #
+  ################################
+
+  if( verbose == TRUE )
+    {
+    message( "ewDavid:  prediction.\n" )
+    }
+
+  batchX <- array( data = 0, dim = c( 8, patchSize, channelSize ) )
+
+  t1Preprocessed <- ( t1Preprocessed - mean( t1Preprocessed ) ) / sd( t1Preprocessed )
+  t1Patches <- extractImagePatches( t1Preprocessed, patchSize, maxNumberOfPatches = "all",
+                                    strideLength = strideLength, returnAsArray = TRUE )
+  batchX[,,,,1] <- t1Patches
+
+  flairPreprocessed <- ( flairPreprocessed - mean( flairPreprocessed ) ) / sd( flairPreprocessed )
+  flairPatches <- extractImagePatches( flairPreprocessed, patchSize, maxNumberOfPatches = "all",
+                                       strideLength = strideLength, returnAsArray = TRUE )
+  batchX[,,,,2] <- flairPatches
+
+  predictedData <- unetModel %>% predict( batchX, verbose = verbose )
+
+  probabilityImages <- list()
+  for( i in seq.int( dim( predictedData )[5] ) )
+    {
+    message( "ewDavid:  reconstructing image ", classes[i], "\n" )
+    reconstructedImage <- reconstructImageFromPatches( predictedData[,,,,i],
+        domainImage = t1Preprocessed, strideLength = strideLength )
+    if( doPreprocessing == TRUE )
+      {
+      probabilityImages[[i]] <- antsApplyTransforms( fixed = t1, moving = reconstructedImage,
+          transformlist = t1Preprocessing$templateTransforms$invtransforms,
+          whichtoinvert = c( TRUE ), interpolator = "linear", verbose = verbose )
+      } else {
+      probabilityImages[[i]] <- reconstructedImage
+      }
+    }
+
+  return( probabilityImages[[2]] )
+}
+

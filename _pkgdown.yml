@@ -187,6 +187,7 @@ reference:
   - '`brainAge`'
   - '`hippMapp3rSegmentation`'
   - '`sysuMediaWmhSegmentation`'
+  - '`ewDavid`'
   - '`deepFlash`'
   - '`desikanKillianyTourvilleLabeling`'
   - '`mriSuperResolution`'

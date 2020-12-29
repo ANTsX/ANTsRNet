@@ -53,7 +53,7 @@ deepAtropos <- function( t1, doPreprocessing = TRUE,
 
   if( is.null( antsxnetCacheDirectory ) )
     {
-    antsxnetCacheDirectory <- system.file( "extdata", package = "ANTsRNet" )
+    antsxnetCacheDirectory <- "ANTsXNet"
     }
 
   ################################
