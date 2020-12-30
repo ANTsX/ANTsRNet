@@ -29,7 +29,7 @@ histogramWarpImageIntensities <- function( image,
   sdDisplacements = 0.05, transformDomainSize = 20 )
   {
 
-  if( ! is.vector( clampEndPoints ) || length( clampEndPoints ) != 2 )
+  if( length( clampEndPoints ) != 2 )
     {
     stop( "clampEndPoints must be a boolean vector of length 2." )
     }

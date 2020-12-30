@@ -67,8 +67,6 @@ randomlyTransformImageData <- function( referenceImage,
   inputImageList,
   segmentationImageList = NULL,
   numberOfSimulations = 10,
-  numberOfHistogramPoints = 0,
-  sdIntensityTransform = 0.04,
   transformType = 'affine',
   sdAffine = 0.02,
   deformationTransformType = c( "bspline", "exponential" ),
@@ -219,15 +217,7 @@ randomlyTransformImageData <- function( referenceImage,
     singleSubjectSimulatedImageList <- list()
     for( j in seq_len( length( singleSubjectImageList ) ) )
       {
-      singleSubjectImage <- NULL
-      if( numberOfHistogramPoints == 0 )
-        {
-        singleSubjectImage <- singleSubjectImageList[[j]]
-        } else {
-        singleSubjectImage <- histogramWarpImageIntensities(
-          singleSubjectImageList[[j]], numberOfHistogramPoints,
-          sdIntensityTransform )
-        }
+      singleSubjectImage <- singleSubjectImageList[[j]]
       singleSubjectSimulatedImageList[[j]] <- applyAntsrTransform(
         simulatedTransforms[[i]], singleSubjectImage, referenceImage,
         interpolation = inputImageInterpolator )
