@@ -2,6 +2,7 @@
 #'
 #' @param y_true True labels (Tensor)
 #' @param y_pred Predictions (Tensor of the same shape as \code{y_true})
+#' @param smoothingFactor parameter for smoothing the metric.
 #' @return Dice value
 #' @author Tustison NJ
 #'
@@ -28,64 +29,67 @@
 #' rm(model); gc()
 #' @import keras
 #' @export
-multilabel_dice_coefficient <- function( y_true, y_pred )
+
+multilabel_dice_coefficient <- function( y_true, y_pred, smoothingFactor = 0.0 )
 {
-  smoothingFactor <- 1.0
-
-  K <- keras::backend()
-
-  K$set_image_data_format( 'channels_last' )
-
-  y_dims <- unlist( K$int_shape( y_pred ) )
-  numberOfLabels <- y_dims[length( y_dims )]
-
-  # Unlike native R, indexing starts at 0.  However, we are
-  # assuming the background is 0 so we skip index 0.
-
-  if( length( y_dims ) == 3 )
+  multilabel_dice_coefficient_fixed <- function( y_true, y_pred )
     {
-    # 2-D image
-    y_true_permuted <- K$permute_dimensions(
-      y_true, pattern = c( 3L, 0L, 1L, 2L ) )
-    y_pred_permuted <- K$permute_dimensions(
-      y_pred, pattern = c( 3L, 0L, 1L, 2L ) )
-    } else {
-    # 3-D image
-    y_true_permuted <- K$permute_dimensions(
-      y_true, pattern = c( 4L, 0L, 1L, 2L, 3L ) )
-    y_pred_permuted <- K$permute_dimensions(
-      y_pred, pattern = c( 4L, 0L, 1L, 2L, 3L ) )
-    }
-  y_true_label <- K$gather( y_true_permuted, indices = c( 1L ) )
-  y_pred_label <- K$gather( y_pred_permuted, indices = c( 1L ) )
+    K <- keras::backend()
 
-  y_true_label_f <- K$flatten( y_true_label )
-  y_pred_label_f <- K$flatten( y_pred_label )
-  intersection <- y_true_label_f * y_pred_label_f
-  union <- y_true_label_f + y_pred_label_f - intersection
+    K$set_image_data_format( 'channels_last' )
 
-  numerator <- K$sum( intersection )
-  denominator <- K$sum( union )
+    y_dims <- unlist( K$int_shape( y_pred ) )
+    numberOfLabels <- y_dims[length( y_dims )]
 
-  if( numberOfLabels > 2 )
-    {
-    for( j in 2L:( numberOfLabels - 1L ) )
+    # Unlike native R, indexing starts at 0.  However, we are
+    # assuming the background is 0 so we skip index 0.
+
+    if( length( y_dims ) == 3 )
       {
-      y_true_label <- K$gather( y_true_permuted, indices = c( j ) )
-      y_pred_label <- K$gather( y_pred_permuted, indices = c( j ) )
-      y_true_label_f <- K$flatten( y_true_label )
-      y_pred_label_f <- K$flatten( y_pred_label )
-      intersection <- y_true_label_f * y_pred_label_f
-      union <- y_true_label_f + y_pred_label_f - intersection
-
-      numerator <- numerator + K$sum( intersection )
-      denominator <- denominator + K$sum( union )
+      # 2-D image
+      y_true_permuted <- K$permute_dimensions(
+        y_true, pattern = c( 3L, 0L, 1L, 2L ) )
+      y_pred_permuted <- K$permute_dimensions(
+        y_pred, pattern = c( 3L, 0L, 1L, 2L ) )
+      } else {
+      # 3-D image
+      y_true_permuted <- K$permute_dimensions(
+        y_true, pattern = c( 4L, 0L, 1L, 2L, 3L ) )
+      y_pred_permuted <- K$permute_dimensions(
+        y_pred, pattern = c( 4L, 0L, 1L, 2L, 3L ) )
       }
-    }
-  unionOverlap <- numerator / denominator
+    y_true_label <- K$gather( y_true_permuted, indices = c( 1L ) )
+    y_pred_label <- K$gather( y_pred_permuted, indices = c( 1L ) )
 
-  return ( ( 2.0 * unionOverlap + smoothingFactor ) /
-    ( 1.0 + unionOverlap + smoothingFactor ) )
+    y_true_label_f <- K$flatten( y_true_label )
+    y_pred_label_f <- K$flatten( y_pred_label )
+    intersection <- y_true_label_f * y_pred_label_f
+    union <- y_true_label_f + y_pred_label_f - intersection
+
+    numerator <- K$sum( intersection )
+    denominator <- K$sum( union )
+
+    if( numberOfLabels > 2 )
+      {
+      for( j in 2L:( numberOfLabels - 1L ) )
+        {
+        y_true_label <- K$gather( y_true_permuted, indices = c( j ) )
+        y_pred_label <- K$gather( y_pred_permuted, indices = c( j ) )
+        y_true_label_f <- K$flatten( y_true_label )
+        y_pred_label_f <- K$flatten( y_pred_label )
+        intersection <- y_true_label_f * y_pred_label_f
+        union <- y_true_label_f + y_pred_label_f - intersection
+
+        numerator <- numerator + K$sum( intersection )
+        denominator <- denominator + K$sum( union )
+        }
+      }
+    unionOverlap <- numerator / denominator
+
+    return ( ( 2.0 * unionOverlap + smoothingFactor ) /
+      ( 1.0 + unionOverlap + smoothingFactor ) )
+    }
+  return( multilabel_dice_coefficient_fixed )
 }
 
 #' Function to calculate peak-signal-to-noise ratio.
@@ -305,7 +309,7 @@ weighted_categorical_crossentropy <- function( y_true, y_pred, weights )
 
   weighted_categorical_crossentropy_fixed <- function( y_true, y_pred )
     {
-    y_pred <- y_pred / K$sum( y_pred, axis = -1L, keepdims = TRUE )  
+    y_pred <- y_pred / K$sum( y_pred, axis = -1L, keepdims = TRUE )
     y_pred <- K$clip( y_pred, K$epsilon(), 1.0 - K$epsilon() )
     loss <- y_true * K$log( y_pred ) * weightsTensor
     loss <- -K$sum( loss, axis = -1L )
