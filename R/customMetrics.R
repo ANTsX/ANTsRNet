@@ -1,9 +1,9 @@
-#' Dice function for multilabel problems
+#' Dice function for multilabel segmentation problems
 #'
 #' @param y_true True labels (Tensor)
 #' @param y_pred Predictions (Tensor of the same shape as \code{y_true})
 #' @param smoothingFactor parameter for smoothing the metric.
-#' @return Dice value
+#' @return Dice value (negative)
 #' @author Tustison NJ
 #'
 #' @examples
@@ -13,19 +13,10 @@
 #'
 #' model <- createUnetModel2D( c( 64, 64, 1 ) )
 #'
-#' metric_multilabel_dice_coefficient <-
-#'   custom_metric( "multilabel_dice_coefficient",
-#'     multilabel_dice_coefficient )
+#' dice_loss <- multilabel_dice_coefficient( smoothing_factor = 0.1 )
 #'
-#' loss_dice <- function( y_true, y_pred ) {
-#'   -multilabel_dice_coefficient(y_true, y_pred)
-#' }
-#' attr(loss_dice, "py_function_name") <- "multilabel_dice_coefficient"
-#'
-#' model %>% compile( loss = loss_dice,
-#'   optimizer = optimizer_adam( lr = 0.0001 ),
-#'   metrics = c( metric_multilabel_dice_coefficient,
-#'     metric_categorical_crossentropy ) )
+#' model %>% compile( loss = dice_loss,
+#'   optimizer = optimizer_adam( lr = 0.0001 ) )
 #' rm(model); gc()
 #' @import keras
 #' @export
@@ -86,7 +77,7 @@ multilabel_dice_coefficient <- function( y_true, y_pred, smoothingFactor = 0.0 )
       }
     unionOverlap <- numerator / denominator
 
-    return ( ( 2.0 * unionOverlap + smoothingFactor ) /
+    return ( -1.0 * ( 2.0 * unionOverlap + smoothingFactor ) /
       ( 1.0 + unionOverlap + smoothingFactor ) )
     }
   return( multilabel_dice_coefficient_fixed )

@@ -2,20 +2,22 @@
 % Please edit documentation in R/customMetrics.R
 \name{multilabel_dice_coefficient}
 \alias{multilabel_dice_coefficient}
-\title{Dice function for multilabel problems}
+\title{Dice function for multilabel segmentation problems}
 \usage{
-multilabel_dice_coefficient(y_true, y_pred)
+multilabel_dice_coefficient(y_true, y_pred, smoothingFactor = 0)
 }
 \arguments{
 \item{y_true}{True labels (Tensor)}
 
 \item{y_pred}{Predictions (Tensor of the same shape as \code{y_true})}
+
+\item{smoothingFactor}{parameter for smoothing the metric.}
 }
 \value{
-Dice value
+Dice value (negative)
 }
 \description{
-Dice function for multilabel problems
+Dice function for multilabel segmentation problems
 }
 \examples{
 
@@ -24,19 +26,10 @@ library( keras )
 
 model <- createUnetModel2D( c( 64, 64, 1 ) )
 
-metric_multilabel_dice_coefficient <-
-  custom_metric( "multilabel_dice_coefficient",
-    multilabel_dice_coefficient )
+dice_loss <- multilabel_dice_coefficient( smoothing_factor = 0.1 )
 
-loss_dice <- function( y_true, y_pred ) {
-  -multilabel_dice_coefficient(y_true, y_pred)
-}
-attr(loss_dice, "py_function_name") <- "multilabel_dice_coefficient"
-
-model \%>\% compile( loss = loss_dice,
-  optimizer = optimizer_adam( lr = 0.0001 ),
-  metrics = c( metric_multilabel_dice_coefficient,
-    metric_categorical_crossentropy ) )
+model \%>\% compile( loss = dice_loss,
+  optimizer = optimizer_adam( lr = 0.0001 ) )
 rm(model); gc()
 }
 \author{
