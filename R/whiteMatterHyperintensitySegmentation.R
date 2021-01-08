@@ -334,8 +334,9 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE,
   #
   ################################
 
+
   t1Preprocessed <- t1
-  flairPreprocessed <- flair
+  t1Preprocessing <- NULL
   if( doPreprocessing == TRUE )
     {
     t1Preprocessing <- preprocessBrainImage( t1,
@@ -347,13 +348,27 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE,
         doDenoising = FALSE,
         antsxnetCacheDirectory = antsxnetCacheDirectory,
         verbose = verbose )
-    t1Preprocessed <- t1Preprocessing$preprocessedImage # * t1Preprocessing$brainMask
-
-    flairPreprocessed <- antsApplyTransforms( fixed = t1Preprocessed, moving = flair, 
-      transformlist = t1Preprocessing$templateTransforms$fwdtransforms, interpolator = "linear",
-      verbose = verbose )
-    flairPreprocessed[t1Preprocessing$brainMask == 0] <- 0
+    t1Preprocessed <- t1Preprocessing$preprocessedImage * t1Preprocessing$brainMask
     }
+
+  flairPreprocessed <- flair
+  if( doPreprocessing == TRUE )
+    {
+    flairPreprocessing <- preprocessBrainImage( flair,
+        truncateIntensity = c( 0.01, 0.99 ),
+        doBrainExtraction = FALSE,
+        doBiasCorrection = TRUE,
+        doDenoising = FALSE,
+        antsxnetCacheDirectory = antsxnetCacheDirectory,
+        verbose = verbose )
+
+    flairPreprocessed <- antsApplyTransforms( fixed = t1Preprocessed, 
+      moving = flairPreprocessing$preprocessedImage, 
+      transformlist = t1Preprocessing$templateTransforms$fwdtransforms, 
+      interpolator = "linear", verbose = verbose )
+    flairPreprocessed <- flairPreprocessed * t1Preprocessing$brainMask
+    }
+
 
   ################################
   #
