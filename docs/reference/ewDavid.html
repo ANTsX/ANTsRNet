@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Creates a resampled tensor (to fixed size) layer (2-D) — layer_resample_tensor_2d • ANTsRNet</title>
+<title>White matter hypterintensity probabilistic segmentation — ewDavid • ANTsRNet</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,9 @@
 
 
 
-<meta property="og:title" content="Creates a resampled tensor (to fixed size) layer (2-D) — layer_resample_tensor_2d" />
-<meta property="og:description" content="Resamples a spatial tensor based on the specified shape and interpolation type." />
+<meta property="og:title" content="White matter hypterintensity probabilistic segmentation — ewDavid" />
+<meta property="og:description" content="Perform White matter hypterintensity probabilistic segmentation
+using deep learning" />
 
 
 
@@ -108,58 +109,82 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Creates a resampled tensor (to fixed size) layer (2-D)</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ANTsX/ANTsRNet/blob/master/R/resampleTensorUtilities.R'><code>R/resampleTensorUtilities.R</code></a></small>
-    <div class="hidden name"><code>layer_resample_tensor_2d.Rd</code></div>
+    <h1>White matter hypterintensity probabilistic segmentation</h1>
+    <small class="dont-index">Source: <a href='https://github.com/ANTsX/ANTsRNet/blob/master/R/whiteMatterHyperintensitySegmentation.R'><code>R/whiteMatterHyperintensitySegmentation.R</code></a></small>
+    <div class="hidden name"><code>ewDavid.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Resamples a spatial tensor based on the specified shape and interpolation type.</p>
+    <p>Perform White matter hypterintensity probabilistic segmentation
+using deep learning</p>
     </div>
 
-    <pre class="usage"><span class='fu'>layer_resample_tensor_2d</span>(
-  <span class='no'>object</span>,
-  <span class='no'>shape</span>,
-  <span class='kw'>interpolationType</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"nearestNeighbor"</span>, <span class='st'>"nearest"</span>, <span class='st'>"linear"</span>, <span class='st'>"bilinear"</span>, <span class='st'>"cubic"</span>,
-    <span class='st'>"bicubic"</span>),
-  <span class='kw'>name</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>trainable</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+    <pre class="usage"><span class='fu'>ewDavid</span>(
+  <span class='no'>flair</span>,
+  <span class='no'>t1</span>,
+  <span class='kw'>doPreprocessing</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>antsxnetCacheDirectory</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>object</th>
-      <td><p>Object to compose layer with. This is either a
-<a href='https://rdrr.io/pkg/keras/man/keras_model_sequential.html'>keras::keras_model_sequential</a> to add the layer to,
-or another Layer which this layer will call.</p></td>
+      <th>flair</th>
+      <td><p>input 3-D FLAIR brain image.</p></td>
     </tr>
     <tr>
-      <th>shape</th>
-      <td><p>vector or list of length 2 specifying the shape of the output tensor.</p></td>
+      <th>t1</th>
+      <td><p>input 3-D T1-weighted brain image (assumed to be aligned to
+the flair).</p></td>
     </tr>
     <tr>
-      <th>interpolationType</th>
-      <td><p>type of interpolation for resampling.  Can be
-<code>nearestNeighbor</code>, <code>nearest</code>,
-<code>linear</code>, <code>bilinear</code>,
-<code>cubic</code>, or <code>bicubic</code>.</p></td>
+      <th>doPreprocessing</th>
+      <td><p>perform preprocessing.  See description above.</p></td>
     </tr>
     <tr>
-      <th>name</th>
-      <td><p>The name of the layer</p></td>
+      <th>antsxnetCacheDirectory</th>
+      <td><p>destination directory for storing the downloaded
+template and model weights.  Since these can be resused, if
+<code><a href='https://rdrr.io/r/base/NULL.html'>is.null(antsxnetCacheDirectory)</a></code>, these data will be downloaded to the
+inst/extdata/ subfolder of the ANTsRNet package.</p></td>
     </tr>
     <tr>
-      <th>trainable</th>
-      <td><p>Whether the layer weights will be updated during training.</p></td>
+      <th>verbose</th>
+      <td><p>print progress.</p></td>
+    </tr>
+    <tr>
+      <th>debug</th>
+      <td><p>return feature images in the last layer of the u-net model.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a keras layer tensor</p>
+    <p>list consisting of the segmentation image and probability images for
+each label.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
+    <p>Preprocessing on the training data consisted of:</p><ul>
+<li><p>n4 bias correction,</p></li>
+<li><p>brain extraction, and</p></li>
+<li><p>affine registration to MNI.
+The input T1 should undergo the same steps.  If the input T1 is the raw
+T1, these steps can be performed by the internal preprocessing, i.e. set
+<code>doPreprocessing = TRUE</code></p></li>
+</ul>
+
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>ANTsRNet</span> )
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>keras</span> )
+
+<span class='no'>t1</span> <span class='kw'>&lt;-</span> <span class='fu'>antsImageRead</span>( <span class='st'>"t1.nii.gz"</span> )
+<span class='no'>flair</span> <span class='kw'>&lt;-</span> <span class='fu'>antsImageRead</span>( <span class='st'>"flair.nii.gz"</span> )
+<span class='no'>results</span> <span class='kw'>&lt;-</span> <span class='fu'>ewDavid</span>( <span class='no'>t1</span>, <span class='no'>flair</span> )
+}</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

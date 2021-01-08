@@ -132,6 +132,7 @@ website:</p>
   <span class='kw'>strides</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>2</span>, <span class='fl'>2</span>),
   <span class='kw'>dropoutRate</span> <span class='kw'>=</span> <span class='fl'>0</span>,
   <span class='kw'>weightDecay</span> <span class='kw'>=</span> <span class='fl'>0</span>,
+  <span class='kw'>nnUnetActivationStyle</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>addAttentionGating</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>mode</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"classification"</span>, <span class='st'>"regression"</span>, <span class='st'>"sigmoid"</span>)
 )</pre>
@@ -189,9 +190,14 @@ during the decoding.</p></td>
 kernel weights of the convolution layers.  Default = 0.0.</p></td>
     </tr>
     <tr>
-      <th>addAttentionGating</th>
-      <td><p>boolean for "attention u-net variant" from
+      <th>nnUnetActivationStyle</th>
+      <td><p>boolean for "nnu-net variant" from
 <a href='https://pubmed.ncbi.nlm.nih.gov/30802813/'>https://pubmed.ncbi.nlm.nih.gov/30802813/</a>.</p></td>
+    </tr>
+    <tr>
+      <th>addAttentionGating</th>
+      <td><p>boolean for "attention u-net variant" activation from
+<a href='https://pubmed.ncbi.nlm.nih.gov/33288961/'>https://pubmed.ncbi.nlm.nih.gov/33288961/</a>.</p></td>
     </tr>
     <tr>
       <th>mode</th>
@@ -275,25 +281,74 @@ implementation:</p><pre>    \url{https://github.com/joelthelion/ultrasound-nerve
 
 <span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/reexports.html'>compile</a></span>( <span class='kw'>loss</span> <span class='kw'>=</span> <span class='no'>loss_dice</span>,
   <span class='kw'>optimizer</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/optimizer_adam.html'>optimizer_adam</a></span>( <span class='kw'>lr</span> <span class='kw'>=</span> <span class='fl'>0.0001</span> ),
-  <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='no'>metric_multilabel_dice_coefficient</span> )
+  <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='no'>metric_multilabel_dice_coefficient</span> )</div><div class='output co'>#&gt; <span class='error'>Error in py_call_impl(callable, dots$args, dots$keywords): TypeError: Failed to convert object of type &lt;class 'function'&gt; to Tensor. Contents: &lt;function make_python_function.&lt;locals&gt;.python_function at 0x7fcb06103e18&gt;. Consider casting elements to a supported type.</span>
+#&gt; <span class='error'></span>
+#&gt; <span class='error'>Detailed traceback: </span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/training/tracking/base.py", line 517, in _method_wrapper</span>
+#&gt; <span class='error'>    result = method(self, *args, **kwargs)</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/engine/training_v1.py", line 450, in compile</span>
+#&gt; <span class='error'>    masks=self._prepare_output_masks())</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/engine/training_v1.py", line 1957, in _handle_metrics</span>
+#&gt; <span class='error'>    target, output, output_mask))</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/engine/training_v1.py", line 1908, in _handle_per_output_metrics</span>
+#&gt; <span class='error'>    metric_fn, y_true, y_pred, weights=weights, mask=mask)</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/engine/training_utils_v1.py", line 1064, in call_metric_function</span>
+#&gt; <span class='error'>    return metric_fn(y_true, y_pred, sample_weight=weights)</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/metrics.py", line 237, in __call__</span>
+#&gt; <span class='error'>    replica_local_fn, *args, **kwargs)</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/distribute/distributed_training_utils.py", line 66, in call_replica_local_fn</span>
+#&gt; <span class='error'>    return fn(*args, **kwargs)</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/metrics.py", line 217, in replica_local_fn</span>
+#&gt; <span class='error'>    update_op = self.update_state(*args, **kwargs)  # pylint: disable=not-callable</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/utils/metrics_utils.py", line 90, in decorated</span>
+#&gt; <span class='error'>    update_op = update_state_fn(*args, **kwargs)</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/metrics.py", line 177, in update_state_fn</span>
+#&gt; <span class='error'>    return ag_update_state(*args, **kwargs)</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/autograph/impl/api.py", line 667, in wrapper</span>
+#&gt; <span class='error'>    return converted_call(f, args, kwargs, options=options)</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/autograph/impl/api.py", line 350, in converted_call</span>
+#&gt; <span class='error'>    return _call_unconverted(f, args, kwargs, options, False)</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/autograph/impl/api.py", line 478, in _call_unconverted</span>
+#&gt; <span class='error'>    return f(*args, **kwargs)</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/metrics.py", line 620, in update_state</span>
+#&gt; <span class='error'>    matches, sample_weight=sample_weight)</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/metrics.py", line 355, in update_state</span>
+#&gt; <span class='error'>    values = math_ops.cast(values, self._dtype)</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/util/dispatch.py", line 201, in wrapper</span>
+#&gt; <span class='error'>    return target(*args, **kwargs)</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/ops/math_ops.py", line 964, in cast</span>
+#&gt; <span class='error'>    x = ops.convert_to_tensor(x, name="x")</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/profiler/trace.py", line 163, in wrapped</span>
+#&gt; <span class='error'>    return func(*args, **kwargs)</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/framework/ops.py", line 1540, in convert_to_tensor</span>
+#&gt; <span class='error'>    ret = conversion_func(value, dtype=dtype, name=name, as_ref=as_ref)</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/framework/constant_op.py", line 339, in _constant_tensor_conversion_function</span>
+#&gt; <span class='error'>    return constant(v, dtype=dtype, name=name)</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/framework/constant_op.py", line 265, in constant</span>
+#&gt; <span class='error'>    allow_broadcast=True)</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/framework/constant_op.py", line 283, in _constant_impl</span>
+#&gt; <span class='error'>    allow_broadcast=allow_broadcast))</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/framework/tensor_util.py", line 553, in make_tensor_proto</span>
+#&gt; <span class='error'>    "supported type." % (type(values), values))</span></div><div class='input'>
+# Comment out the rest due to travis build constraints
 
-<span class='co'># Comment out the rest due to travis build constraints</span>
+# Fit the model
 
-<span class='co'># Fit the model</span>
+# track &lt;- model %&gt;% fit( X_train, Y_train,
+#              epochs = 100, batch_size = 5, verbose = 1, shuffle = TRUE,
+#              callbacks = list(
+#                callback_model_checkpoint( "unetModelInterimWeights.h5",
+#                    monitor = 'val_loss', save_best_only = TRUE ),
+#                callback_reduce_lr_on_plateau( monitor = "val_loss", factor = 0.1 )
+#              ),
+#              validation_split = 0.2 )
 
-<span class='co'># track &lt;- model %&gt;% fit( X_train, Y_train,</span>
-<span class='co'>#              epochs = 100, batch_size = 5, verbose = 1, shuffle = TRUE,</span>
-<span class='co'>#              callbacks = list(</span>
-<span class='co'>#                callback_model_checkpoint( "unetModelInterimWeights.h5",</span>
-<span class='co'>#                    monitor = 'val_loss', save_best_only = TRUE ),</span>
-<span class='co'>#                callback_reduce_lr_on_plateau( monitor = "val_loss", factor = 0.1 )</span>
-<span class='co'>#              ),</span>
-<span class='co'>#              validation_split = 0.2 )</span>
+# Save the model and/or save the model weights
 
-<span class='co'># Save the model and/or save the model weights</span>
+# save_model_hdf5( model, filepath = 'unetModel.h5' )
+# save_model_weights_hdf5( unetModel, filepath = 'unetModelWeights.h5' ) )
 
-<span class='co'># save_model_hdf5( model, filepath = 'unetModel.h5' )</span>
-<span class='co'># save_model_weights_hdf5( unetModel, filepath = 'unetModelWeights.h5' ) )</span></div></pre>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

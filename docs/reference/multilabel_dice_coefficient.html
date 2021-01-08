@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Dice function for multilabel problems — multilabel_dice_coefficient • ANTsRNet</title>
+<title>Dice function for multilabel segmentation problems — multilabel_dice_coefficient • ANTsRNet</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Dice function for multilabel problems — multilabel_dice_coefficient" />
-<meta property="og:description" content="Dice function for multilabel problems" />
+<meta property="og:title" content="Dice function for multilabel segmentation problems — multilabel_dice_coefficient" />
+<meta property="og:description" content="Dice function for multilabel segmentation problems" />
 
 
 
@@ -108,16 +108,16 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Dice function for multilabel problems</h1>
+    <h1>Dice function for multilabel segmentation problems</h1>
     <small class="dont-index">Source: <a href='https://github.com/ANTsX/ANTsRNet/blob/master/R/customMetrics.R'><code>R/customMetrics.R</code></a></small>
     <div class="hidden name"><code>multilabel_dice_coefficient.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Dice function for multilabel problems</p>
+    <p>Dice function for multilabel segmentation problems</p>
     </div>
 
-    <pre class="usage"><span class='fu'>multilabel_dice_coefficient</span>(<span class='no'>y_true</span>, <span class='no'>y_pred</span>)</pre>
+    <pre class="usage"><span class='fu'>multilabel_dice_coefficient</span>(<span class='no'>y_true</span>, <span class='no'>y_pred</span>, <span class='kw'>smoothingFactor</span> <span class='kw'>=</span> <span class='fl'>0</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -130,11 +130,15 @@
       <th>y_pred</th>
       <td><p>Predictions (Tensor of the same shape as <code>y_true</code>)</p></td>
     </tr>
+    <tr>
+      <th>smoothingFactor</th>
+      <td><p>parameter for smoothing the metric.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Dice value</p>
+    <p>Dice value (negative)</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
@@ -143,22 +147,11 @@
 
 <span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='createUnetModel2D.html'>createUnetModel2D</a></span>( <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>64</span>, <span class='fl'>64</span>, <span class='fl'>1</span> ) )
 
-<span class='no'>metric_multilabel_dice_coefficient</span> <span class='kw'>&lt;-</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/keras/man/metric_binary_accuracy.html'>custom_metric</a></span>( <span class='st'>"multilabel_dice_coefficient"</span>,
-    <span class='no'>multilabel_dice_coefficient</span> )
-
-<span class='no'>loss_dice</span> <span class='kw'>&lt;-</span> <span class='kw'>function</span>( <span class='no'>y_true</span>, <span class='no'>y_pred</span> ) {
-  -<span class='fu'>multilabel_dice_coefficient</span>(<span class='no'>y_true</span>, <span class='no'>y_pred</span>)
-}
-<span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span>(<span class='no'>loss_dice</span>, <span class='st'>"py_function_name"</span>) <span class='kw'>&lt;-</span> <span class='st'>"multilabel_dice_coefficient"</span>
-
-<span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/reexports.html'>compile</a></span>( <span class='kw'>loss</span> <span class='kw'>=</span> <span class='no'>loss_dice</span>,
-  <span class='kw'>optimizer</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/optimizer_adam.html'>optimizer_adam</a></span>( <span class='kw'>lr</span> <span class='kw'>=</span> <span class='fl'>0.0001</span> ),
-  <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='no'>metric_multilabel_dice_coefficient</span>,
-    <span class='no'>metric_categorical_crossentropy</span> ) )
-<span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>model</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2525116 134.9    4626827 247.1         NA   4626827  247.1
-#&gt; Vcells 6881965  52.6   44538719 339.9     102400 140065643 1068.7</div></pre>
+<span class='no'>dice_loss</span> <span class='kw'>&lt;-</span> <span class='fu'>multilabel_dice_coefficient</span>( <span class='kw'>smoothing_factor</span> <span class='kw'>=</span> <span class='fl'>0.1</span> )</div><div class='output co'>#&gt; <span class='error'>Error in multilabel_dice_coefficient(smoothing_factor = 0.1): unused argument (smoothing_factor = 0.1)</span></div><div class='input'>
+<span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/reexports.html'>compile</a></span>( <span class='kw'>loss</span> <span class='kw'>=</span> <span class='no'>dice_loss</span>,
+  <span class='kw'>optimizer</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/optimizer_adam.html'>optimizer_adam</a></span>( <span class='kw'>lr</span> <span class='kw'>=</span> <span class='fl'>0.0001</span> ) )</div><div class='output co'>#&gt; <span class='error'>Error in compile.keras.engine.training.Model(., loss = dice_loss, optimizer = optimizer_adam(lr = 1e-04)): object 'dice_loss' not found</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>model</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
+#&gt; Ncells 2538132 135.6    4297922 229.6         NA   4297922 229.6
+#&gt; Vcells 6906806  52.7   28515156 217.6      65536 128199276 978.1</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

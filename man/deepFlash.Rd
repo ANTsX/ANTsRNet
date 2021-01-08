@@ -8,6 +8,7 @@ deepFlash(
   t1,
   doPreprocessing = TRUE,
   doPerHemisphere = TRUE,
+  whichHemisphereModels = "new",
   antsxnetCacheDirectory = NULL,
   verbose = FALSE
 )
@@ -19,6 +20,8 @@ deepFlash(
 
 \item{doPerHemisphere}{If TRUE, do prediction based on separate networks per
 hemisphere.  Otherwise, use the single network trained for both hemispheres.}
+
+\item{whichHemisphereModels}{"old" or "new".}
 
 \item{antsxnetCacheDirectory}{destination directory for storing the downloaded
 template and model weights.  Since these can be resused, if

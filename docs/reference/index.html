@@ -845,7 +845,7 @@ preceding spatial transformer network layer.</p></td>
         <td>
           <p><code><a href="multilabel_dice_coefficient.html">multilabel_dice_coefficient()</a></code> </p>
         </td>
-        <td><p>Dice function for multilabel problems</p></td>
+        <td><p>Dice function for multilabel segmentation problems</p></td>
       </tr><tr>
         
         <td>
@@ -968,6 +968,12 @@ preceding spatial transformer network layer.</p></td>
           <p><code><a href="randomlyTransformImageData.html">randomlyTransformImageData()</a></code> </p>
         </td>
         <td><p>Randomly transform image data (optional: with corresponding segmentations).</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="histogramWarpImageIntensities.html">histogramWarpImageIntensities()</a></code> </p>
+        </td>
+        <td><p>Transform image intensities based on histogram mapping.</p></td>
       </tr>
     </tbody><tbody>
       <tr>
@@ -1038,39 +1044,39 @@ preceding spatial transformer network layer.</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="resampleTensor.html">resampleTensor()</a></code> </p>
-        </td>
-        <td><p>Resamples a spatial tensor.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="resampleTensorLike.html">resampleTensorLike()</a></code> </p>
-        </td>
-        <td><p>Resamples a tensor.</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="ResampleTensorLayer2D.html">ResampleTensorLayer2D</a></code> </p>
         </td>
-        <td><p>Creates a resample tensor lambda layer (2-D)</p></td>
+        <td><p>Creates a resample tensor layer (2-D)</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="ResampleTensorLayer3D.html">ResampleTensorLayer3D</a></code> </p>
         </td>
-        <td><p>Creates a resample tensor lambda layer (3-D)</p></td>
+        <td><p>Creates a resampled tensor (to fixed size) layer (3-D)</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="layer_resample_tensor_2d.html">layer_resample_tensor_2d()</a></code> </p>
         </td>
-        <td><p>Resampling a spatial tensor (2-D).</p></td>
+        <td><p>Creates a resampled tensor (to fixed size) layer (2-D)</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="layer_resample_tensor_3d.html">layer_resample_tensor_3d()</a></code> </p>
         </td>
         <td><p>Resampling a spatial tensor (3-D).</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="ResampleTensorToTargetTensorLayer2D.html">ResampleTensorToTargetTensorLayer2D</a></code> </p>
+        </td>
+        <td><p>Creates a resampled tensor (to target tensor) layer (2-D)</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="ResampleTensorToTargetTensorLayer3D.html">ResampleTensorToTargetTensorLayer3D</a></code> </p>
+        </td>
+        <td><p>Creates a resampled tensor (to target tensor) layer (3-D)</p></td>
       </tr>
     </tbody><tbody>
       <tr>
@@ -1132,6 +1138,12 @@ preceding spatial transformer network layer.</p></td>
           <p><code><a href="sysuMediaWmhSegmentation.html">sysuMediaWmhSegmentation()</a></code> </p>
         </td>
         <td><p>White matter hyperintensity segmentation</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="ewDavid.html">ewDavid()</a></code> </p>
+        </td>
+        <td><p>White matter hypterintensity probabilistic segmentation</p></td>
       </tr><tr>
         
         <td>

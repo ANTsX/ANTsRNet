@@ -339,8 +339,8 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE,
   if( doPreprocessing == TRUE )
     {
     t1Preprocessing <- preprocessBrainImage( t1,
-        truncateIntensity = c( 0.01, 0.99 ),
-        doBrainExtraction = FALSE,
+        truncateIntensity = c( 0.001, 0.995 ),
+        doBrainExtraction = TRUE,
         template = "croppedMni152",
         templateTransformType = "AffineFast",
         doBiasCorrection = FALSE,
@@ -352,7 +352,7 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE,
     flairPreprocessed <- antsApplyTransforms( fixed = t1Preprocessed, moving = flair, 
       transformlist = t1Preprocessing$templateTransforms$fwdtransforms, interpolator = "linear",
       verbose = verbose )
-    # flairPreprocessed[t1Preprocessing$brainMask == 0] <- 0
+    flairPreprocessed[t1Preprocessing$brainMask == 0] <- 0
     }
 
   ################################
@@ -373,7 +373,7 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE,
 
   unetModel <- createUnetModel3D( c( patchSize, channelSize ),
     numberOfOutputs = numberOfClassificationLabels, mode = 'classification',
-    numberOfLayers = 4, numberOfFiltersAtBaseLayer = 32, dropoutRate = 0.0,
+    numberOfLayers = 4, numberOfFiltersAtBaseLayer = 16, dropoutRate = 0.0,
     convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
     weightDecay = 1e-5, nnUnetActivationStyle = FALSE, addAttentionGating = TRUE )
 

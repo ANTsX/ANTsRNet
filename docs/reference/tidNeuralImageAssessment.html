@@ -128,6 +128,7 @@ QC image databases described in</p>
   <span class='kw'>dimensionsToPredict</span> <span class='kw'>=</span> <span class='fl'>1L</span>,
   <span class='kw'>antsxnetCacheDirectory</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>whichModel</span> <span class='kw'>=</span> <span class='st'>"tidsQualityAssessment"</span>,
+  <span class='no'>imageScaling</span>,
   <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
 )</pre>
 
@@ -174,7 +175,15 @@ template and model weights.  Since these can be reused, if
       <th>whichModel</th>
       <td><p>model type e.g. string tidsQualityAssessment, koniqMS, koniqMS2 or koniqMS3 where
 the former predicts mean opinion score (MOS) and MOS standard deviation and
-the latter koniq models predict mean opinion score (MOS) and sharpness</p></td>
+the latter koniq models predict mean opinion score (MOS) and sharpness.  One
+may also directly pass a tensorflow model here. In this case, we assume that
+the input image is scaled by the <code>imageScaling</code> parameter.</p></td>
+    </tr>
+    <tr>
+      <th>imageScaling</th>
+      <td><p>a two-vector where the first value is the multiplier and
+the second value the subtractor so each image will be scaled as
+<code>img = iMath(img,"Normalize")*m  - s </code>.</p></td>
     </tr>
     <tr>
       <th>verbose</th>

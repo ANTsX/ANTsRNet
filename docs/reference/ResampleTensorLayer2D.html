@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Creates a resample tensor lambda layer (2-D) — ResampleTensorLayer2D • ANTsRNet</title>
+<title>Creates a resample tensor layer (2-D) — ResampleTensorLayer2D • ANTsRNet</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,7 @@
 
 
 
-<meta property="og:title" content="Creates a resample tensor lambda layer (2-D) — ResampleTensorLayer2D" />
+<meta property="og:title" content="Creates a resample tensor layer (2-D) — ResampleTensorLayer2D" />
 <meta property="og:description" content="Creates a lambda layer which interpolates/resizes an input tensor based
 on the specified shape" />
 
@@ -109,7 +109,7 @@ on the specified shape" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Creates a resample tensor lambda layer (2-D)</h1>
+    <h1>Creates a resample tensor layer (2-D)</h1>
     <small class="dont-index">Source: <a href='https://github.com/ANTsX/ANTsRNet/blob/master/R/resampleTensorUtilities.R'><code>R/resampleTensorUtilities.R</code></a></small>
     <div class="hidden name"><code>ResampleTensorLayer2D.Rd</code></div>
     </div>
@@ -131,7 +131,9 @@ on the specified shape</p>
 <dl'>
 <dt>shape</dt><dd><p>A 2-D vector specifying the new shape.</p></dd>
 <dt>interpolationType</dt><dd><p>Type of interpolation.  Can be
-<code>'nearestNeighbor'</code>, <code>'linear'</code>, or <code>'cubic'</code></p></dd>
+<code>'nearestNeighbor'</code>, <code>'nearestNeighbor'</code>,
+<code>'linear'</code>, <code>'bilinear'</code>,
+<code>'cubic'</code>, or <code>'bicubic'</code></p></dd>
 <dt>x</dt><dd><p></p></dd>
 <dt>mask</dt><dd><p></p></dd>
 <dt>input_shape</dt><dd><p></p></dd>

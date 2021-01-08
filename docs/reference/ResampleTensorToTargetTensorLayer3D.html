@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Creates a resampled tensor (to fixed size) layer (2-D) — layer_resample_tensor_2d • ANTsRNet</title>
+<title>Creates a resampled tensor (to target tensor) layer (3-D) — ResampleTensorToTargetTensorLayer3D • ANTsRNet</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,9 @@
 
 
 
-<meta property="og:title" content="Creates a resampled tensor (to fixed size) layer (2-D) — layer_resample_tensor_2d" />
-<meta property="og:description" content="Resamples a spatial tensor based on the specified shape and interpolation type." />
+<meta property="og:title" content="Creates a resampled tensor (to target tensor) layer (3-D) — ResampleTensorToTargetTensorLayer3D" />
+<meta property="og:description" content="Creates a lambda layer which interpolates/resizes an input tensor based
+on the specified target tensor" />
 
 
 
@@ -108,57 +109,43 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Creates a resampled tensor (to fixed size) layer (2-D)</h1>
+    <h1>Creates a resampled tensor (to target tensor) layer (3-D)</h1>
     <small class="dont-index">Source: <a href='https://github.com/ANTsX/ANTsRNet/blob/master/R/resampleTensorUtilities.R'><code>R/resampleTensorUtilities.R</code></a></small>
-    <div class="hidden name"><code>layer_resample_tensor_2d.Rd</code></div>
+    <div class="hidden name"><code>ResampleTensorToTargetTensorLayer3D.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Resamples a spatial tensor based on the specified shape and interpolation type.</p>
+    <p>Creates a lambda layer which interpolates/resizes an input tensor based
+on the specified target tensor</p>
     </div>
 
-    <pre class="usage"><span class='fu'>layer_resample_tensor_2d</span>(
-  <span class='no'>object</span>,
-  <span class='no'>shape</span>,
-  <span class='kw'>interpolationType</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"nearestNeighbor"</span>, <span class='st'>"nearest"</span>, <span class='st'>"linear"</span>, <span class='st'>"bilinear"</span>, <span class='st'>"cubic"</span>,
-    <span class='st'>"bicubic"</span>),
-  <span class='kw'>name</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>trainable</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
-)</pre>
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>object</th>
-      <td><p>Object to compose layer with. This is either a
-<a href='https://rdrr.io/pkg/keras/man/keras_model_sequential.html'>keras::keras_model_sequential</a> to add the layer to,
-or another Layer which this layer will call.</p></td>
-    </tr>
-    <tr>
-      <th>shape</th>
-      <td><p>vector or list of length 2 specifying the shape of the output tensor.</p></td>
-    </tr>
-    <tr>
-      <th>interpolationType</th>
-      <td><p>type of interpolation for resampling.  Can be
-<code>nearestNeighbor</code>, <code>nearest</code>,
-<code>linear</code>, <code>bilinear</code>,
-<code>cubic</code>, or <code>bicubic</code>.</p></td>
-    </tr>
-    <tr>
-      <th>name</th>
-      <td><p>The name of the layer</p></td>
-    </tr>
-    <tr>
-      <th>trainable</th>
-      <td><p>Whether the layer weights will be updated during training.</p></td>
-    </tr>
-    </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a keras layer tensor</p>
+    <p>a resampled version of the input tensor</p>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+
+    
+
+<dl'>
+<dt>interpolationType</dt><dd><p>Type of interpolation.  Can be
+<code>'nearestNeighbor'</code>, <code>'nearestNeighbor'</code>,
+<code>'linear'</code>, <code>'bilinear'</code>,
+<code>'cubic'</code>, or <code>'bicubic'</code></p></dd>
+<dt>x</dt><dd><p></p></dd>
+<dt>mask</dt><dd><p></p></dd>
+<dt>input_shape</dt><dd><p></p></dd>
+
+</dl>
+
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    
+
+<p><code>$initialize</code> instantiates a new class.</p>
+<p><code>$call</code> main body.</p>
+<p><code>$compute_output_shape</code> computes the output shape.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

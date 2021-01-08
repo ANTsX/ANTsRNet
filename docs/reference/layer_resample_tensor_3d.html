@@ -120,8 +120,8 @@
     <pre class="usage"><span class='fu'>layer_resample_tensor_3d</span>(
   <span class='no'>object</span>,
   <span class='no'>shape</span>,
-  <span class='kw'>interpolationType</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"nearestNeighbor"</span>, <span class='st'>"nearest"</span>, <span class='st'>"linear"</span>, <span class='st'>"cubic"</span>, <span class='st'>"bicubic"</span>,
-    <span class='st'>"bilinear"</span>),
+  <span class='kw'>interpolationType</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"nearestNeighbor"</span>, <span class='st'>"nearest"</span>, <span class='st'>"linear"</span>, <span class='st'>"bilinear"</span>, <span class='st'>"cubic"</span>,
+    <span class='st'>"bicubic"</span>),
   <span class='kw'>name</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>trainable</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
 )</pre>
@@ -142,7 +142,9 @@ or another Layer which this layer will call.</p></td>
     <tr>
       <th>interpolationType</th>
       <td><p>type of interpolation for resampling.  Can be
-<code>nearestNeighbor</code>, <code>linear</code>, or <code>cubic</code>.</p></td>
+<code>nearestNeighbor</code>, <code>nearest</code>,
+<code>linear</code>, <code>bilinear</code>,
+<code>cubic</code>, or <code>bicubic</code>.</p></td>
     </tr>
     <tr>
       <th>name</th>

@@ -123,6 +123,7 @@ labels from Mike Yassa's lab</p>
   <span class='no'>t1</span>,
   <span class='kw'>doPreprocessing</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>doPerHemisphere</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>whichHemisphereModels</span> <span class='kw'>=</span> <span class='st'>"new"</span>,
   <span class='kw'>antsxnetCacheDirectory</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
 )</pre>
@@ -142,6 +143,10 @@ labels from Mike Yassa's lab</p>
       <th>doPerHemisphere</th>
       <td><p>If TRUE, do prediction based on separate networks per
 hemisphere.  Otherwise, use the single network trained for both hemispheres.</p></td>
+    </tr>
+    <tr>
+      <th>whichHemisphereModels</th>
+      <td><p>"old" or "new".</p></td>
     </tr>
     <tr>
       <th>antsxnetCacheDirectory</th>

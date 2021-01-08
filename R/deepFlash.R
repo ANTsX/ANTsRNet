@@ -37,6 +37,7 @@
 #' @param doPreprocessing perform preprocessing.  See description above.
 #' @param doPerHemisphere If TRUE, do prediction based on separate networks per 
 #' hemisphere.  Otherwise, use the single network trained for both hemispheres.
+#' @param whichHemisphereModels "old" or "new".
 #' @param antsxnetCacheDirectory destination directory for storing the downloaded
 #' template and model weights.  Since these can be resused, if
 #' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
@@ -55,7 +56,7 @@
 #' }
 #' @export
 deepFlash <- function( t1, doPreprocessing = TRUE, doPerHemisphere = TRUE,
-  antsxnetCacheDirectory = NULL, verbose = FALSE )
+  whichHemisphereModels = "new", antsxnetCacheDirectory = NULL, verbose = FALSE )
 {
   if( t1@dimension != 3 )
     {
@@ -188,8 +189,16 @@ deepFlash <- function( t1, doPreprocessing = TRUE, doPerHemisphere = TRUE,
     labelsLeft <- c( 0, 5, 7, 9, 11, 13, 15, 17 )
     channelSize <- 1 + length( labelsLeft )
 
-    numberOfFilters = 16
-    networkName <- "deepFlashLeft16" 
+    numberOfFilters <- 16
+    networkName <- ''
+    if( whichHemisphereModels == "old" )
+      {
+      networkName <- "deepFlashLeft16" 
+      } else if( whichHemisphereModels == "new" ) {
+      networkName <- "deepFlashLeft16new" 
+      } else {
+      stop( "whichHemisphereModels must be \"old\" or \"new\"." )
+      }
 
     unetModel <- createUnetModel3D( c( templateSize, channelSize ),
       numberOfOutputs = length( labelsLeft ), mode = 'classification',
@@ -271,8 +280,16 @@ deepFlash <- function( t1, doPreprocessing = TRUE, doPerHemisphere = TRUE,
     labelsRight <- c( 0, 6, 8, 10, 12, 14, 16, 18 )
     channelSize <- 1 + length( labelsRight )
 
-    numberOfFilters = 16
-    networkName <- "deepFlashRight16" 
+    numberOfFilters <- 16
+    networkName <- ''
+    if( whichHemisphereModels == "old" )
+      {
+      networkName <- "deepFlashRight16" 
+      } else if( whichHemisphereModels == "new" ) {
+      networkName <- "deepFlashRight16new" 
+      } else {
+      stop( "whichHemisphereModels must be \"old\" or \"new\"." )
+      }
 
     unetModel <- createUnetModel3D( c( templateSize, channelSize ),
       numberOfOutputs = length( labelsRight ), mode = 'classification',

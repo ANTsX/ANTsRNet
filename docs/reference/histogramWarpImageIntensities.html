@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Creates a resampled tensor (to fixed size) layer (2-D) — layer_resample_tensor_2d • ANTsRNet</title>
+<title>Transform image intensities based on histogram mapping. — histogramWarpImageIntensities • ANTsRNet</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Creates a resampled tensor (to fixed size) layer (2-D) — layer_resample_tensor_2d" />
-<meta property="og:description" content="Resamples a spatial tensor based on the specified shape and interpolation type." />
+<meta property="og:title" content="Transform image intensities based on histogram mapping. — histogramWarpImageIntensities" />
+<meta property="og:description" content="Apply B-spline 1-D maps to an input image for intensity warping." />
 
 
 
@@ -108,58 +108,71 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Creates a resampled tensor (to fixed size) layer (2-D)</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ANTsX/ANTsRNet/blob/master/R/resampleTensorUtilities.R'><code>R/resampleTensorUtilities.R</code></a></small>
-    <div class="hidden name"><code>layer_resample_tensor_2d.Rd</code></div>
+    <h1>Transform image intensities based on histogram mapping.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/ANTsX/ANTsRNet/blob/master/R/histogramWarpImageIntensities.R'><code>R/histogramWarpImageIntensities.R</code></a></small>
+    <div class="hidden name"><code>histogramWarpImageIntensities.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Resamples a spatial tensor based on the specified shape and interpolation type.</p>
+    <p>Apply B-spline 1-D maps to an input image for intensity warping.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>layer_resample_tensor_2d</span>(
-  <span class='no'>object</span>,
-  <span class='no'>shape</span>,
-  <span class='kw'>interpolationType</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"nearestNeighbor"</span>, <span class='st'>"nearest"</span>, <span class='st'>"linear"</span>, <span class='st'>"bilinear"</span>, <span class='st'>"cubic"</span>,
-    <span class='st'>"bicubic"</span>),
-  <span class='kw'>name</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>trainable</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+    <pre class="usage"><span class='fu'>histogramWarpImageIntensities</span>(
+  <span class='no'>image</span>,
+  <span class='kw'>breakPoints</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.25</span>, <span class='fl'>0.5</span>, <span class='fl'>0.75</span>),
+  <span class='kw'>displacements</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>clampEndPoints</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>FALSE</span>, <span class='fl'>FALSE</span>),
+  <span class='kw'>sdDisplacements</span> <span class='kw'>=</span> <span class='fl'>0.05</span>,
+  <span class='kw'>transformDomainSize</span> <span class='kw'>=</span> <span class='fl'>20</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>object</th>
-      <td><p>Object to compose layer with. This is either a
-<a href='https://rdrr.io/pkg/keras/man/keras_model_sequential.html'>keras::keras_model_sequential</a> to add the layer to,
-or another Layer which this layer will call.</p></td>
+      <th>image</th>
+      <td><p>input image.</p></td>
     </tr>
     <tr>
-      <th>shape</th>
-      <td><p>vector or list of length 2 specifying the shape of the output tensor.</p></td>
+      <th>breakPoints</th>
+      <td><p>parametric points at which the intensity transform
+displacements are specified between 0, 1.  Alternatively, a single
+number can be given and the sequence is linearly spaced in 0, 1.</p></td>
     </tr>
     <tr>
-      <th>interpolationType</th>
-      <td><p>type of interpolation for resampling.  Can be
-<code>nearestNeighbor</code>, <code>nearest</code>,
-<code>linear</code>, <code>bilinear</code>,
-<code>cubic</code>, or <code>bicubic</code>.</p></td>
+      <th>displacements</th>
+      <td><p>displacements to define intensity warping.  Length
+must be equal to the <code>breakPoints</code>.  Alternatively, if <code>NULL</code>
+random displacements are chosen (random normal:  mean = 0, sd = <code>sdDisplacements</code>).</p></td>
     </tr>
     <tr>
-      <th>name</th>
-      <td><p>The name of the layer</p></td>
+      <th>clampEndPoints</th>
+      <td><p>specify non-zero intensity change at the ends of the histogram.</p></td>
     </tr>
     <tr>
-      <th>trainable</th>
-      <td><p>Whether the layer weights will be updated during training.</p></td>
+      <th>sdDisplacements</th>
+      <td><p>characterize the randomness of the intensity displacement.</p></td>
+    </tr>
+    <tr>
+      <th>transformDomainSize</th>
+      <td><p>Defines the sampling resolution of the B-spline warping.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a keras layer tensor</p>
+    <p>warped intensity image</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'>
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>ANTsR</span> )
+<span class='no'>image</span> <span class='kw'>&lt;-</span> <span class='fu'>antsImageRead</span>( <span class='fu'>getANTsRData</span>( <span class='st'>"r16"</span> ) )
+<span class='no'>transformedImage</span> <span class='kw'>&lt;-</span> <span class='fu'>histogramWarpImageIntensities</span>( <span class='no'>image</span>, <span class='kw'>transformDomainSize</span> <span class='kw'>=</span> <span class='fl'>10</span> )
+<span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>image</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
+#&gt; Ncells 2526551 135.0    4297922 229.6         NA   4297922 229.6
+#&gt; Vcells 6882003  52.6   44554929 340.0      65536 128199276 978.1</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>transformedImage</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
+#&gt; Ncells 2526359 135.0    4297922 229.6         NA   4297922 229.6
+#&gt; Vcells 6881719  52.6   35643944 272.0      65536 128199276 978.1</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
