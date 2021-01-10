@@ -2,6 +2,7 @@
 #'
 #' @param y_true True labels (Tensor)
 #' @param y_pred Predictions (Tensor of the same shape as \code{y_true})
+#' @param dimensionality image dimension.
 #' @param smoothingFactor parameter for smoothing the metric.
 #' @return Dice value (negative)
 #' @author Tustison NJ
@@ -21,7 +22,7 @@
 #' @import keras
 #' @export
 
-multilabel_dice_coefficient <- function( y_true, y_pred, smoothingFactor = 0.0 )
+multilabel_dice_coefficient <- function( y_true, y_pred, dimensionality = 3L, smoothingFactor = 0.0 )
 {
   multilabel_dice_coefficient_fixed <- function( y_true, y_pred )
     {
@@ -35,19 +36,21 @@ multilabel_dice_coefficient <- function( y_true, y_pred, smoothingFactor = 0.0 )
     # Unlike native R, indexing starts at 0.  However, we are
     # assuming the background is 0 so we skip index 0.
 
-    if( length( y_dims ) == 3 )
+    if( dimensionality == 2L )
       {
       # 2-D image
       y_true_permuted <- K$permute_dimensions(
         y_true, pattern = c( 3L, 0L, 1L, 2L ) )
       y_pred_permuted <- K$permute_dimensions(
         y_pred, pattern = c( 3L, 0L, 1L, 2L ) )
-      } else {
+      } else if( dimensionality = 3L ) {
       # 3-D image
       y_true_permuted <- K$permute_dimensions(
         y_true, pattern = c( 4L, 0L, 1L, 2L, 3L ) )
       y_pred_permuted <- K$permute_dimensions(
         y_pred, pattern = c( 4L, 0L, 1L, 2L, 3L ) )
+      } else {
+      stop( "Specified dimensionality not implemented." )  
       }
     y_true_label <- K$gather( y_true_permuted, indices = c( 1L ) )
     y_pred_label <- K$gather( y_pred_permuted, indices = c( 1L ) )
