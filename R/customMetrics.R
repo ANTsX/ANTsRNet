@@ -26,7 +26,7 @@ multilabel_dice_coefficient <- function( y_true, y_pred, dimensionality = 3L, sm
 {
   multilabel_dice_coefficient_fixed <- function( y_true, y_pred )
     {
-    K <- keras::backend()
+    K <- tensorflow::tf$keras$backend
 
     K$set_image_data_format( 'channels_last' )
 
