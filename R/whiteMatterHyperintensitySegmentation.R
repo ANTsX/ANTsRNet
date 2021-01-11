@@ -166,13 +166,15 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
         {
         cat( "White matter hyperintensity:  retrieving model weights.\n" )
         }
-      weightsFileName <- getPretrainedNetwork( paste0( "sysuMediaWmhFlairOnlyModel", i - 1 ) )
+      weightsFileName <- getPretrainedNetwork( paste0( "sysuMediaWmhFlairOnlyModel", i - 1 ), 
+        antsxnetCacheDirectory = antsxnetCacheDirectory )
       } else {
       if( verbose == TRUE )
         {
         cat( "White matter hyperintensity:  downloading model weights.\n" )
         }
-      weightsFileName <- getPretrainedNetwork( paste0( "sysuMediaWmhFlairT1Model", i - 1 ) )
+      weightsFileName <- getPretrainedNetwork( paste0( "sysuMediaWmhFlairT1Model", i - 1 ),
+        antsxnetCacheDirectory = antsxnetCacheDirectory )
       }
 
     unetModels[[i]] <- createSysuMediaUnetModel2D( c( 200, 200, numberOfChannels ) )
@@ -201,7 +203,7 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
 
     if( verbose == TRUE )
       {
-      cat( "Extracting slices for dimension", d, "\n" )
+      cat( "Extracting slices for dimension", dimensionsToPredict[d], "\n" )
       pb <- txtProgressBar( min = 1, max = numberOfSlices, style = 3 )
       }
 
