@@ -14,6 +14,7 @@ tidNeuralImageAssessment(
   antsxnetCacheDirectory = NULL,
   whichModel = "tidsQualityAssessment",
   imageScaling,
+  doPatchScaling = FALSE,
   verbose = FALSE
 )
 }
@@ -49,6 +50,8 @@ the input image is scaled by the \code{imageScaling} parameter.}
 \item{imageScaling}{a two-vector where the first value is the multiplier and
 the second value the subtractor so each image will be scaled as
 \code{img = iMath(img,"Normalize")*m  - s }.}
+
+\item{doPatchScaling}{boolean controlling whether each patch is scaled or}
 
 \item{verbose}{print progress.}
 }

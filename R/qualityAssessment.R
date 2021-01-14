@@ -39,6 +39,8 @@
 #' @param imageScaling a two-vector where the first value is the multiplier and
 #' the second value the subtractor so each image will be scaled as
 #' \code{img = iMath(img,"Normalize")*m  - s }.
+#' @param doPatchScaling boolean controlling whether each patch is scaled or
+#  (if FALSE) only a global scaling of the image is used.
 #' @param verbose print progress.
 #' @return list of QC results predicting both both human rater's mean and standard
 #' deviation of the MOS ("mean opinion scores") or sharpness depending on the
@@ -60,6 +62,7 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
   strideLength, paddingSize = 0L, dimensionsToPredict = 1L,
   antsxnetCacheDirectory = NULL, whichModel="tidsQualityAssessment",
   imageScaling,
+  doPatchScaling = FALSE,
   verbose = FALSE )
 {
   if ( missing( imageScaling ) )
@@ -68,7 +71,7 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
     {
     return( n == 2L || all( n %% 2L:max( 2, floor( sqrt( n ) ) ) != 0 ) )
     }
-  if ( class( whichModel ) != "character" ) {
+  if ( class( whichModel )[1] != "character" ) {
      userModel = TRUE
      tidModel = whichModel
      whichModel = "userInput"
@@ -217,10 +220,25 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
     ###############
 
     evaluationImage <- paddedImage
+    if( whichModel == "tidsQualityAssessment" )
+      {
+      evaluationImage <- paddedImage %>% iMath( "Normalize" ) * 255
+      }
+
+    if( isKoniq )
+      {
+      evaluationImage <- ( paddedImage %>% iMath( "Normalize" ) ) * 2.0 - 1.0
+      }
+
+    if( whichModel == "userInput" )
+      {
+      evaluationImage <- paddedImage %>% iMath( "Normalize" ) * imageScaling[1] - imageScaling[2]
+      }
+
 
     if( ! is.prime( patchSize ) )
       {
-      message( "patch_size should be a prime number:  13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97..." )
+#      message( "patch_size should be a prime number:  13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97..." )
       }
 
     strideLengthVector <- strideLength
@@ -288,8 +306,8 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
           {
           isGoodPatch[i] <- TRUE
           patchImage <- patches[[i]]
-          patchImage <- patchImage - min( patchImage )
-          if( max( patchImage ) > 0 )
+          if ( doPatchScaling ) patchImage <- patchImage - min( patchImage )
+          if( max( patchImage ) > 0 & doPatchScaling )
             {
             if( whichModel == "tidsQualityAssessment" )
               {

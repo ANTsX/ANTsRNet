@@ -17,7 +17,7 @@ elBicho(
 
 \item{mask}{input mask image}
 
-\item{useCoarseSlicesOnly}{if \code{TRUE}, apply weights only in the
+\item{useCoarseSlicesOnly}{if \code{TRUE}, apply network only in the
 dimension of greatest slice thickness.  If \code{FALSE}, apply to all
 dimensions and average the results.}
 
