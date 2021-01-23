@@ -7,9 +7,9 @@
 desikanKillianyTourvilleLabeling(
   t1,
   doPreprocessing = TRUE,
+  returnProbabilityImages = FALSE,
   antsxnetCacheDirectory = NULL,
-  verbose = FALSE,
-  debug = FALSE
+  verbose = FALSE
 )
 }
 \arguments{
@@ -17,14 +17,15 @@ desikanKillianyTourvilleLabeling(
 
 \item{doPreprocessing}{perform preprocessing.  See description above.}
 
+\item{returnProbabilityImages}{whether to return the two sets of probability images
+for the inner and outer labels.}
+
 \item{antsxnetCacheDirectory}{destination directory for storing the downloaded
 template and model weights.  Since these can be resused, if
 \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
 subdirectory ~/.keras/ANTsXNet/.}
 
 \item{verbose}{print progress.}
-
-\item{debug}{return feature images in the last layer of the u-net model.}
 }
 \value{
 list consisting of the segmentation image and probability images for

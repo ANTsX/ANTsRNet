@@ -129,6 +129,7 @@ QC image databases described in</p>
   <span class='kw'>antsxnetCacheDirectory</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>whichModel</span> <span class='kw'>=</span> <span class='st'>"tidsQualityAssessment"</span>,
   <span class='no'>imageScaling</span>,
+  <span class='kw'>doPatchScaling</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
 )</pre>
 
@@ -184,6 +185,10 @@ the input image is scaled by the <code>imageScaling</code> parameter.</p></td>
       <td><p>a two-vector where the first value is the multiplier and
 the second value the subtractor so each image will be scaled as
 <code>img = iMath(img,"Normalize")*m  - s </code>.</p></td>
+    </tr>
+    <tr>
+      <th>doPatchScaling</th>
+      <td><p>boolean controlling whether each patch is scaled or</p></td>
     </tr>
     <tr>
       <th>verbose</th>

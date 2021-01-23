@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Transform image intensities based on histogram mapping. — histogramWarpImageIntensities • ANTsRNet</title>
+<title>Functional lung segmentation. — elBicho • ANTsRNet</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Transform image intensities based on histogram mapping. — histogramWarpImageIntensities" />
-<meta property="og:description" content="Apply B-spline 1-D maps to an input image for intensity warping." />
+<meta property="og:title" content="Functional lung segmentation. — elBicho" />
+<meta property="og:description" content="Perform functional lung segmentation using hyperpolarized gases." />
 
 
 
@@ -108,71 +108,68 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Transform image intensities based on histogram mapping.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ANTsX/ANTsRNet/blob/master/R/histogramWarpImageIntensities.R'><code>R/histogramWarpImageIntensities.R</code></a></small>
-    <div class="hidden name"><code>histogramWarpImageIntensities.Rd</code></div>
+    <h1>Functional lung segmentation.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/ANTsX/ANTsRNet/blob/master/R/lungSegmentation.R'><code>R/lungSegmentation.R</code></a></small>
+    <div class="hidden name"><code>elBicho.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Apply B-spline 1-D maps to an input image for intensity warping.</p>
+    <p>Perform functional lung segmentation using hyperpolarized gases.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>histogramWarpImageIntensities</span>(
-  <span class='no'>image</span>,
-  <span class='kw'>breakPoints</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.25</span>, <span class='fl'>0.5</span>, <span class='fl'>0.75</span>),
-  <span class='kw'>displacements</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>clampEndPoints</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>FALSE</span>, <span class='fl'>FALSE</span>),
-  <span class='kw'>sdDisplacements</span> <span class='kw'>=</span> <span class='fl'>0.05</span>,
-  <span class='kw'>transformDomainSize</span> <span class='kw'>=</span> <span class='fl'>20</span>
+    <pre class="usage"><span class='fu'>elBicho</span>(
+  <span class='no'>ventilationImage</span>,
+  <span class='no'>mask</span>,
+  <span class='kw'>useCoarseSlicesOnly</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>antsxnetCacheDirectory</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>image</th>
-      <td><p>input image.</p></td>
+      <th>ventilationImage</th>
+      <td><p>input ventilation image</p></td>
     </tr>
     <tr>
-      <th>breakPoints</th>
-      <td><p>parametric points at which the intensity transform
-displacements are specified between 0, 1.  Alternatively, a single
-number can be given and the sequence is linearly spaced in 0, 1.</p></td>
+      <th>mask</th>
+      <td><p>input mask image</p></td>
     </tr>
     <tr>
-      <th>displacements</th>
-      <td><p>displacements to define intensity warping.  Length
-must be equal to the <code>breakPoints</code>.  Alternatively, if <code>NULL</code>
-random displacements are chosen (random normal:  mean = 0, sd = <code>sdDisplacements</code>).</p></td>
+      <th>useCoarseSlicesOnly</th>
+      <td><p>if <code>TRUE</code>, apply network only in the
+dimension of greatest slice thickness.  If <code>FALSE</code>, apply to all
+dimensions and average the results.</p></td>
     </tr>
     <tr>
-      <th>clampEndPoints</th>
-      <td><p>specify non-zero intensity change at the ends of the histogram.</p></td>
+      <th>antsxnetCacheDirectory</th>
+      <td><p>destination directory for storing the downloaded
+template and model weights.  Since these can be resused, if
+<code><a href='https://rdrr.io/r/base/NULL.html'>is.null(antsxnetCacheDirectory)</a></code>, these data will be downloaded to the
+inst/extdata/ subfolder of the ANTsRNet package.</p></td>
     </tr>
     <tr>
-      <th>sdDisplacements</th>
-      <td><p>characterize the randomness of the intensity displacement.</p></td>
-    </tr>
-    <tr>
-      <th>transformDomainSize</th>
-      <td><p>Defines the sampling resolution of the B-spline warping.</p></td>
+      <th>verbose</th>
+      <td><p>print progress.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>warped intensity image</p>
+    <p>ventilation segmentation and corresponding probability images</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p><a href='https://pubmed.ncbi.nlm.nih.gov/30195415/'>https://pubmed.ncbi.nlm.nih.gov/30195415/</a></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>ANTsR</span> )
-<span class='no'>image</span> <span class='kw'>&lt;-</span> <span class='fu'>antsImageRead</span>( <span class='fu'>getANTsRData</span>( <span class='st'>"r16"</span> ) )
-<span class='no'>transformedImage</span> <span class='kw'>&lt;-</span> <span class='fu'>histogramWarpImageIntensities</span>( <span class='no'>image</span>, <span class='kw'>transformDomainSize</span> <span class='kw'>=</span> <span class='fl'>10</span> )
-<span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>image</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2521632 134.7    4635777 247.6         NA   4635777  247.6
-#&gt; Vcells 6872069  52.5   44543992 339.9     102400 141977558 1083.3</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>transformedImage</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2521551 134.7    4635777 247.6         NA   4635777  247.6
-#&gt; Vcells 6871970  52.5   35635194 271.9     102400 141977558 1083.3</div></pre>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>ANTsRNet</span> )
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>keras</span> )
+
+<span class='no'>image</span> <span class='kw'>&lt;-</span> <span class='fu'>antsImageRead</span>( <span class='st'>"flair.nii.gz"</span> )
+<span class='no'>probabilityMask</span> <span class='kw'>&lt;-</span><span class='fu'><a href='sysuMediaWmhSegmentation.html'>sysuMediaWmhSegmentation</a></span>( <span class='no'>image</span> )
+}</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

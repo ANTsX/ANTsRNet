@@ -121,12 +121,13 @@
 #'
 #' @param t1 raw or preprocessed 3-D T1-weighted brain image.
 #' @param doPreprocessing perform preprocessing.  See description above.
+#' @param returnProbabilityImages whether to return the two sets of probability images
+#' for the inner and outer labels.
 #' @param antsxnetCacheDirectory destination directory for storing the downloaded
 #' template and model weights.  Since these can be resused, if
 #' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
 #' subdirectory ~/.keras/ANTsXNet/.
 #' @param verbose print progress.
-#' @param debug return feature images in the last layer of the u-net model.
 #' @return list consisting of the segmentation image and probability images for
 #' each label.
 #' @author Tustison NJ
@@ -140,7 +141,7 @@
 #' }
 #' @export
 desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
-  antsxnetCacheDirectory = NULL, verbose = FALSE, debug = FALSE )
+  returnProbabilityImages = FALSE, antsxnetCacheDirectory = NULL, verbose = FALSE )
 {
 
   if( t1@dimension != 3 )
@@ -244,21 +245,21 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
   predictedData <- unetModel %>% predict( batchX, verbose = verbose )
   probabilityImagesList <- decodeUnet( predictedData, downsampledImage )
 
-  probabilityImages <- list()
+  innerProbabilityImages <- list()
   for( i in seq.int( length( probabilityImagesList[[1]] ) ) )
     {
     resampledImage <- resampleImage( probabilityImagesList[[1]][[i]], dim( t1Preprocessed ), useVoxels = TRUE, interpType = 0 )
     if( doPreprocessing == TRUE )
       {
-      probabilityImages[[i]] <- antsApplyTransforms( fixed = t1, moving = resampledImage,
+      innerProbabilityImages[[i]] <- antsApplyTransforms( fixed = t1, moving = resampledImage,
           transformlist = t1Preprocessing$templateTransforms$invtransforms,
           whichtoinvert = c( TRUE ), interpolator = "linear", verbose = verbose )
       } else {
-      probabilityImages[[i]] <- resampledImage
+      innerProbabilityImages[[i]] <- resampledImage
       }
     }
 
-  imageMatrix <- imageListToMatrix( probabilityImages, t1 * 0 + 1 )
+  imageMatrix <- imageListToMatrix( innerProbabilityImages, t1 * 0 + 1 )
   segmentationMatrix <- matrix( apply( imageMatrix, 2, which.max ), nrow = 1 )
   segmentationImage <- matrixToImages( segmentationMatrix, t1 * 0 + 1 )[[1]]
 
@@ -317,7 +318,7 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
   predictedData <- unetModel %>% predict( batchX, verbose = verbose )
   probabilityImagesList <- decodeUnet( predictedData, croppedImage )
 
-  probabilityImages <- list()
+  outerProbabilityImages <- list()
   for( i in seq.int( length( probabilityImagesList[[1]] ) ) )
     {
     if( i > 1 )
@@ -328,15 +329,15 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
       }
     if( doPreprocessing == TRUE )
       {
-      probabilityImages[[i]] <- antsApplyTransforms( fixed = t1, moving = decroppedImage,
+      outerProbabilityImages[[i]] <- antsApplyTransforms( fixed = t1, moving = decroppedImage,
           transformlist = t1Preprocessing$templateTransforms$invtransforms,
           whichtoinvert = c( TRUE ), interpolator = "linear", verbose = verbose )
       } else {
-      probabilityImages[[i]] <- decroppedImage
+      outerProbabilityImages[[i]] <- decroppedImage
       }
     }
 
-  imageMatrix <- imageListToMatrix( probabilityImages, t1 * 0 + 1 )
+  imageMatrix <- imageListToMatrix( outerProbabilityImages, t1 * 0 + 1 )
   segmentationMatrix <- matrix( apply( imageMatrix, 2, which.max ), nrow = 1 )
   segmentationImage <- matrixToImages( segmentationMatrix, t1 * 0 + 1 )[[1]]
 
@@ -355,6 +356,16 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
       }
     }
 
-  return( dktLabelImage )
+  if( returnProbabilityImages == TRUE )
+    {
+    return( list(
+            segmentationImage = dktLabelImage,
+            innerProbabilityImages = innerProbabilityImages,
+            outerProbabilityImages = outerProbabilityImages
+            )
+          )
+    } else {
+    return( dktLabelImage )
+    }
 }
 
