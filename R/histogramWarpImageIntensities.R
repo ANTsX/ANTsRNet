@@ -61,21 +61,21 @@ histogramWarpImageIntensities <- function( image,
     numberOfNonZeroDisplacements <- breakPoints
     }
 
-  weights <- NULL
   if( is.null( displacements ) )
     {
     displacements <- rnorm( numberOfNonZeroDisplacements, 0, sdDisplacements )
-    weights <- rep( 1, length( displacements ) )
-    if( clampEndPoints[1] == TRUE )
-      {
-      displacements <- c( 0, displacements )
-      weights <- c( 1000, weights )
-      }
-    if( clampEndPoints[2] == TRUE )
-      {
-      displacements <- c( displacements, 0 )
-      weights <- c( weights, 1000 )
-      }
+    }
+
+  weights <- rep( 1, length( displacements ) )
+  if( clampEndPoints[1] == TRUE )
+    {
+    displacements <- c( 0, displacements )
+    weights <- c( 1000, weights )
+    }
+  if( clampEndPoints[2] == TRUE )
+    {
+    displacements <- c( displacements, 0 )
+    weights <- c( weights, 1000 )
     }
 
   if( length( displacements ) != length( parametricPoints ) )
