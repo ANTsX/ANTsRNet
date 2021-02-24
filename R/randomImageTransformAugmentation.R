@@ -98,7 +98,7 @@ randomImageTransformAugmentation <- function(
     Z <- x_svd$u %*% t(x_svd$v)
     if ( det( Z ) < 0 ) {
       mydiag = diag( nrow(X) )
-      mydiag[1,1] = -1.0
+      mydiag[nrow(X),nrow(X)] = -1.0
       Z = Z %*% mydiag
       }
     return(list(P = P, Z = Z, Xtilde = P %*% Z))
