@@ -87,9 +87,10 @@ randomlyTransformImageData <- function( referenceImage,
       svdX <- svd( X )
       P <- svdX$u %*% diag( svdX$d ) %*% t( svdX$u )
       Z <- svdX$u %*% t( svdX$v )
-      if ( det( Z ) < 0 )
-        {
-        Z <- Z * ( -1 )
+      if ( det( Z ) < 0 ) {
+        mydiag = diag( nrow(X) )
+        mydiag[1,1] = -1.0
+        Z = Z %*% mydiag
         }
       return( list( P = P, Z = Z, Xtilde = P %*% Z ) )
       }
@@ -244,4 +245,3 @@ randomlyTransformImageData <- function( referenceImage,
       simulatedTransforms = simulatedTransforms ) )
     }
 }
-
