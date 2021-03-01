@@ -457,12 +457,12 @@ multilabel_surface_loss <- function( y_true, y_pred )
           }
         }
       }
-    return( reticulate::r_to_py( y_distance )$astype( np$double ) )
+    return( reticulate::r_to_py( y_distance )$astype( np$float32 ) )
     }
 
   y_true_distance_map = tf$py_function( func = reticulate::py_func( calculateBatchWiseResidualDistanceMaps ),
                                         inp = list( y_true ),
-                                        Tout = tf$double )
+                                        Tout = tf$float32 )
   product <- y_pred * y_true_distance_map
   return( K$mean( product ) )
 }
