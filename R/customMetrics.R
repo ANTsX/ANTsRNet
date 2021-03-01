@@ -419,7 +419,7 @@ multilabel_surface_loss <- function( y_true, y_pred )
     return( residualDistance )
     }
 
-  calculateBatchWiseResidualDistanceMaps <- function( y )
+  calculateBatchwiseResidualDistanceMaps <- function( y )
     {
     y_dims = unlist( K$int_shape( y ) )
 
@@ -454,13 +454,15 @@ multilabel_surface_loss <- function( y_true, y_pred )
         if( dimensionality == 2L )
           {
           y_distance[i,,,j] <- y_batch_distance
+          } else {
+          y_distance[i,,,,j] <- y_batch_distance
           }
         }
       }
     return( reticulate::r_to_py( y_distance )$astype( np$float32 ) )
     }
 
-  y_true_distance_map = tf$py_function( func = reticulate::py_func( calculateBatchWiseResidualDistanceMaps ),
+  y_true_distance_map = tf$py_function( func = reticulate::py_func( calculateBatchwiseResidualDistanceMaps ),
                                         inp = list( y_true ),
                                         Tout = tf$float32 )
   product <- y_pred * y_true_distance_map
