@@ -22,11 +22,11 @@ function value
 The categorical focal loss discussed in this paper:
 }
 \details{
-https://arxiv.org/pdf/1708.02002.pdf
+\url{https://arxiv.org/pdf/1708.02002.pdf}
 
 and ported from this implementation:
 
-https://github.com/umbertogriffo/focal-loss-keras/blob/master/losses.py
+\url{https://github.com/umbertogriffo/focal-loss-keras/blob/master/losses.py}
 
 Used to handle imbalanced classes .
 }

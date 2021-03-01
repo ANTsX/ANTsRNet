@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function for categorical focal loss — categorical_focal_loss • ANTsRNet</title>
+<title>Function for surface loss — multilabel_surface_loss • ANTsRNet</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Function for categorical focal loss — categorical_focal_loss" />
-<meta property="og:description" content="The categorical focal loss discussed in this paper:" />
+<meta property="og:title" content="Function for surface loss — multilabel_surface_loss" />
+<meta property="og:description" content="https://pubmed.ncbi.nlm.nih.gov/33080507/" />
 
 
 
@@ -108,16 +108,16 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Function for categorical focal loss</h1>
+    <h1>Function for surface loss</h1>
     <small class="dont-index">Source: <a href='https://github.com/ANTsX/ANTsRNet/blob/master/R/customMetrics.R'><code>R/customMetrics.R</code></a></small>
-    <div class="hidden name"><code>categorical_focal_loss.Rd</code></div>
+    <div class="hidden name"><code>multilabel_surface_loss.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>The categorical focal loss discussed in this paper:</p>
+    <p><a href='https://pubmed.ncbi.nlm.nih.gov/33080507/'>https://pubmed.ncbi.nlm.nih.gov/33080507/</a></p>
     </div>
 
-    <pre class="usage"><span class='fu'>categorical_focal_loss</span>(<span class='no'>y_true</span>, <span class='no'>y_pred</span>, <span class='kw'>gamma</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.25</span>)</pre>
+    <pre class="usage"><span class='fu'>multilabel_surface_loss</span>(<span class='no'>y_true</span>, <span class='no'>y_pred</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -130,14 +130,6 @@
       <th>y_pred</th>
       <td><p>Predictions (Tensor of the same shape as <code>y_true</code>)</p></td>
     </tr>
-    <tr>
-      <th>gamma</th>
-      <td><p>focusing parameter for modulating factor (1-p). Default = 2.0.</p></td>
-    </tr>
-    <tr>
-      <th>alpha</th>
-      <td><p>weighing factor in balanced cross entropy. Default = 0.25.</p></td>
-    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -145,25 +137,41 @@
     <p>function value</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p><a href='https://arxiv.org/pdf/1708.02002.pdf'>https://arxiv.org/pdf/1708.02002.pdf</a></p>
-<p>and ported from this implementation:</p>
-<p><a href='https://github.com/umbertogriffo/focal-loss-keras/blob/master/losses.py'>https://github.com/umbertogriffo/focal-loss-keras/blob/master/losses.py</a></p>
-<p>Used to handle imbalanced classes .</p>
+    <p>ported from this implementation:</p>
+<p><a href='https://github.com/LIVIAETS/boundary-loss/blob/master/keras_loss.py'>https://github.com/LIVIAETS/boundary-loss/blob/master/keras_loss.py</a></p>
+<p>Note:  Assumption is that y_true is a one-hot representation
+of the segmentation batch.  The background (label 0) should
+be included but is not used in the calculation.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>ANTsRNet</span> )
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>keras</span> )
 
-<span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='createUnetModel2D.html'>createUnetModel2D</a></span>( <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>64</span>, <span class='fl'>64</span>, <span class='fl'>1</span> ) )
+<span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='createUnetModel2D.html'>createUnetModel2D</a></span>( <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>64</span>, <span class='fl'>64</span>, <span class='fl'>1</span> ), <span class='kw'>numberOfOutputs</span> <span class='kw'>=</span> <span class='fl'>2</span> )
 
-<span class='no'>metric_categorical_focal_gain</span> <span class='kw'>&lt;-</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/keras/man/metric_binary_accuracy.html'>custom_metric</a></span>( <span class='st'>"categorical_focal_gain"</span>,
-    <span class='fu'><a href='categorical_focal_gain.html'>categorical_focal_gain</a></span>( <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.25</span>, <span class='kw'>gamma</span> <span class='kw'>=</span> <span class='fl'>2.0</span> ) )
-
-<span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/reexports.html'>compile</a></span>( <span class='kw'>loss</span> <span class='kw'>=</span> <span class='fu'>categorical_focal_loss</span>( <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.25</span>, <span class='kw'>gamma</span> <span class='kw'>=</span> <span class='fl'>2.0</span> ),
+<span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/reexports.html'>compile</a></span>( <span class='kw'>loss</span> <span class='kw'>=</span> <span class='no'>surface_loss</span>,
  <span class='kw'>optimizer</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/optimizer_adam.html'>optimizer_adam</a></span>( <span class='kw'>lr</span> <span class='kw'>=</span> <span class='fl'>0.0001</span> ),
-   <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='no'>metric_categorical_focal_gain</span> ) )</div></pre>
+   <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='st'>"accuracy"</span> )</div><div class='output co'>#&gt; <span class='error'>Error in compile.keras.engine.training.Model(., loss = surface_loss, optimizer = optimizer_adam(lr = 1e-04),     metrics = "accuracy"): object 'surface_loss' not found</span></div><div class='input'>
+<span class='co'>########################################</span>
+<span class='co'>#</span>
+<span class='co'># Run in isolation</span>
+<span class='co'>#</span>
+
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>ANTsR</span> )
+
+<span class='no'>r16</span> <span class='kw'>&lt;-</span> <span class='fu'>antsImageRead</span>( <span class='fu'>getANTsRData</span>( <span class='st'>"r16"</span> ) )
+<span class='no'>r16seg</span> <span class='kw'>&lt;-</span> <span class='fu'>kmeansSegmentation</span>( <span class='no'>r16</span>, <span class='fl'>3</span> )$<span class='no'>segmentation</span>
+<span class='no'>r16array</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/array.html'>array</a></span>( <span class='kw'>data</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/array.html'>as.array</a></span>( <span class='no'>r16seg</span> ), <span class='kw'>dim</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>1</span>, <span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span>( <span class='no'>r16seg</span> ) ) )
+<span class='no'>r16tensor</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>tensorflow</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/pkg/tensorflow/man/tf.html'>tf</a></span>$<span class='fu'>convert_to_tensor</span>( <span class='fu'><a href='encodeUnet.html'>encodeUnet</a></span>( <span class='no'>r16array</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span> ) ) )
+
+<span class='no'>r64</span> <span class='kw'>&lt;-</span> <span class='fu'>antsImageRead</span>( <span class='fu'>getANTsRData</span>( <span class='st'>"r64"</span> ) )
+<span class='no'>r64seg</span> <span class='kw'>&lt;-</span> <span class='fu'>kmeansSegmentation</span>( <span class='no'>r64</span>, <span class='fl'>3</span> )$<span class='no'>segmentation</span>
+<span class='no'>r64array</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/array.html'>array</a></span>( <span class='kw'>data</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/array.html'>as.array</a></span>( <span class='no'>r64seg</span> ), <span class='kw'>dim</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>1</span>, <span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span>( <span class='no'>r64seg</span> ) ) )
+<span class='no'>r64tensor</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>tensorflow</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/pkg/tensorflow/man/tf.html'>tf</a></span>$<span class='fu'>convert_to_tensor</span>( <span class='fu'><a href='encodeUnet.html'>encodeUnet</a></span>( <span class='no'>r64array</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span> ) ) )
+
+<span class='no'>loss_value</span> <span class='kw'>&lt;-</span> <span class='fu'>multilabel_surface_loss</span>( <span class='no'>r16tensor</span>, <span class='no'>r64tensor</span> )$<span class='fu'>numpy</span>()</div><div class='output co'>#&gt; <span class='error'>Error in py_get_attr_impl(x, name, silent): AttributeError: 'Tensor' object has no attribute 'numpy'</span></div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

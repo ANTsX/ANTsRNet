@@ -1,5 +1,9 @@
 #' Dice function for multilabel segmentation problems
 #'
+#' Note:  Assumption is that y_true is a one-hot representation
+#' of the segmentation batch.  The background (label 0) should
+#' be included but is not used in the calculation.
+#'
 #' @param y_true True labels (Tensor)
 #' @param y_pred Predictions (Tensor of the same shape as \code{y_true})
 #' @param dimensionality image dimension.
@@ -9,29 +13,59 @@
 #'
 #' @examples
 #'
+#' library( ANTsR )
 #' library( ANTsRNet )
 #' library( keras )
 #'
 #' model <- createUnetModel2D( c( 64, 64, 1 ) )
 #'
-#' dice_loss <- multilabel_dice_coefficient( smoothing_factor = 0.1 )
+#' dice_loss <- multilabel_dice_coefficient( smoothingFactor = 0.1 )
 #'
 #' model %>% compile( loss = dice_loss,
 #'   optimizer = optimizer_adam( lr = 0.0001 ) )
+#'
+#' ########################################
+#' #
+#' # Run in isolation
+#' #
+#'
+#' library( ANTsR )
+#'
+#' r16 <- antsImageRead( getANTsRData( "r16" ) )
+#' r16seg <- kmeansSegmentation( r16, 3 )$segmentation
+#' r16array <- array( data = as.array( r16seg ), dim = c( 1, dim( r16seg ) ) )
+#' r16tensor <- tensorflow::tf$convert_to_tensor( encodeUnet( r16array, c( 0, 1, 2, 3 ) ) )
+#'
+#' r64 <- antsImageRead( getANTsRData( "r64" ) )
+#' r64seg <- kmeansSegmentation( r64, 3 )$segmentation
+#' r64array <- array( data = as.array( r64seg ), dim = c( 1, dim( r64seg ) ) )
+#' r64tensor <- tensorflow::tf$convert_to_tensor( encodeUnet( r64array, c( 0, 1, 2, 3 ) ) )
+#'
+#' dice_loss <- multilabel_dice_coefficient( r16tensor, r64tensor )
+#' loss_value <- dice_loss( r16tensor, r64tensor )$numpy()
+#'
+#' # Compare with
+#' # overlap_value <- labelOverlapMeasures( r16seg, r64seg )$MeanOverlap[1]
+#'
 #' rm(model); gc()
 #' @import keras
 #' @export
 
-multilabel_dice_coefficient <- function( y_true, y_pred, dimensionality = 3L, smoothingFactor = 0.0 )
+multilabel_dice_coefficient <- function( y_true, y_pred, smoothingFactor = 0.0 )
 {
   multilabel_dice_coefficient_fixed <- function( y_true, y_pred )
     {
     K <- tensorflow::tf$keras$backend
 
-    K$set_image_data_format( 'channels_last' )
-
     y_dims <- unlist( K$int_shape( y_pred ) )
-    numberOfLabels <- y_dims[length( y_dims )]
+
+    dimensionality <- 3L
+    if( length( y_dims ) == 4 )
+      {
+      dimensionality <- 2L
+      }
+
+    numberOfLabels <- as.integer( y_dims[length( y_dims )] )
 
     # Unlike native R, indexing starts at 0.  However, we are
     # assuming the background is 0 so we skip index 0.
@@ -50,7 +84,7 @@ multilabel_dice_coefficient <- function( y_true, y_pred, dimensionality = 3L, sm
       y_pred_permuted <- K$permute_dimensions(
         y_pred, pattern = c( 4L, 0L, 1L, 2L, 3L ) )
       } else {
-      stop( "Specified dimensionality not implemented." )  
+      stop( "Specified dimensionality not implemented." )
       }
     y_true_label <- K$gather( y_true_permuted, indices = c( 1L ) )
     y_pred_label <- K$gather( y_pred_permuted, indices = c( 1L ) )
@@ -63,12 +97,12 @@ multilabel_dice_coefficient <- function( y_true, y_pred, dimensionality = 3L, sm
     numerator <- K$sum( intersection )
     denominator <- K$sum( union )
 
-    if( numberOfLabels > 2 )
+    if( numberOfLabels > 2L )
       {
-      for( j in 2L:( numberOfLabels - 1L ) )
+      for( i in seq.int( from = 2L, to = numberOfLabels - 1L ) )
         {
-        y_true_label <- K$gather( y_true_permuted, indices = c( j ) )
-        y_pred_label <- K$gather( y_pred_permuted, indices = c( j ) )
+        y_true_label <- K$gather( y_true_permuted, indices = c( i ) )
+        y_pred_label <- K$gather( y_pred_permuted, indices = c( i ) )
         y_true_label_f <- K$flatten( y_true_label )
         y_pred_label_f <- K$flatten( y_pred_label )
         intersection <- y_true_label_f * y_pred_label_f
@@ -167,11 +201,11 @@ pearson_correlation_coefficient <- function( y_true, y_pred )
 #' The negative of the categorical focal loss discussed
 #' in this paper:
 #'
-#'   https://arxiv.org/pdf/1708.02002.pdf
+#'   \url{https://arxiv.org/pdf/1708.02002.pdf}
 #'
 #' and ported from this implementation:
 #'
-#'    https://github.com/umbertogriffo/focal-loss-keras/blob/master/losses.py
+#'   \url{https://github.com/umbertogriffo/focal-loss-keras/blob/master/losses.py}
 #'
 #' Used to handle imbalanced classes.
 #'
@@ -220,11 +254,11 @@ categorical_focal_gain <- function( y_true, y_pred, gamma = 2.0, alpha = 0.25 )
 #'
 #' The categorical focal loss discussed in this paper:
 #'
-#'   https://arxiv.org/pdf/1708.02002.pdf
+#'   \url{https://arxiv.org/pdf/1708.02002.pdf}
 #'
 #' and ported from this implementation:
 #'
-#'    https://github.com/umbertogriffo/focal-loss-keras/blob/master/losses.py
+#'   \url{https://github.com/umbertogriffo/focal-loss-keras/blob/master/losses.py}
 #'
 #' Used to handle imbalanced classes .
 #'
@@ -273,7 +307,7 @@ categorical_focal_loss <- function( y_true, y_pred, gamma = 2.0, alpha = 0.25 )
 #'
 #' ported from this implementation:
 #'
-#'    https://gist.github.com/wassname/ce364fddfc8a025bfab4348cf5de852d
+#'    \url{https://gist.github.com/wassname/ce364fddfc8a025bfab4348cf5de852d}
 #'
 #' @param y_true True labels (Tensor)
 #' @param y_pred Predictions (Tensor of the same shape as \code{y_true})
@@ -312,6 +346,127 @@ weighted_categorical_crossentropy <- function( y_true, y_pred, weights )
   return( weighted_categorical_crossentropy_fixed )
 }
 
+#' Function for surface loss
+#'
+#'  \url{https://pubmed.ncbi.nlm.nih.gov/33080507/}
+#'
+#' ported from this implementation:
+#'
+#'  \url{https://github.com/LIVIAETS/boundary-loss/blob/master/keras_loss.py}
+#'
+#' Note:  Assumption is that y_true is a one-hot representation
+#' of the segmentation batch.  The background (label 0) should
+#' be included but is not used in the calculation.
+#'
+#' @param y_true True labels (Tensor)
+#' @param y_pred Predictions (Tensor of the same shape as \code{y_true})
+#'
+#' @return function value
+#' @author Tustison NJ
+#'
+#' @examples
+#'
+#' library( ANTsRNet )
+#' library( keras )
+#'
+#' model <- createUnetModel2D( c( 64, 64, 1 ), numberOfOutputs = 2 )
+#'
+#' model %>% compile( loss = multilabel_surface_loss,
+#'  optimizer = optimizer_adam( lr = 0.0001 ),
+#'    metrics = "accuracy" )
+#'
+#' ########################################
+#' #
+#' # Run in isolation
+#' #
+#'
+#' library( ANTsR )
+#'
+#' r16 <- antsImageRead( getANTsRData( "r16" ) )
+#' r16seg <- kmeansSegmentation( r16, 3 )$segmentation
+#' r16array <- array( data = as.array( r16seg ), dim = c( 1, dim( r16seg ) ) )
+#' r16tensor <- tensorflow::tf$convert_to_tensor( encodeUnet( r16array, c( 0, 1, 2, 3 ) ) )
+#'
+#' r64 <- antsImageRead( getANTsRData( "r64" ) )
+#' r64seg <- kmeansSegmentation( r64, 3 )$segmentation
+#' r64array <- array( data = as.array( r64seg ), dim = c( 1, dim( r64seg ) ) )
+#' r64tensor <- tensorflow::tf$convert_to_tensor( encodeUnet( r64array, c( 0, 1, 2, 3 ) ) )
+#'
+#' loss_value <- multilabel_surface_loss( r16tensor, r64tensor )$numpy()
+#'
+#' @import keras
+#' @export
+multilabel_surface_loss <- function( y_true, y_pred )
+{
+  np <- reticulate::import( "numpy", convert = FALSE )
+  scipy <- reticulate::import( "scipy" )
+  tf <- tensorflow::tf
+  K <- tensorflow::tf$keras$backend
+
+  calculateResidualDistanceMap <- function( segmentation )
+    {
+    distance <- np$zeros_like( segmentation )
+
+    positiveMask <- segmentation$astype( np$bool )
+    if( reticulate::py_to_r( positiveMask$any() ) )
+      {
+      negativeMask <- np$logical_not( positiveMask )
+      residualDistance <- scipy$ndimage$distance_transform_edt( negativeMask ) *
+                  reticulate::py_to_r( negativeMask$astype( np$float32 ) ) -
+                  ( scipy$ndimage$distance_transform_edt( positiveMask ) - 1 ) *
+                  reticulate::py_to_r( positiveMask$astype( np$float32 ) )
+      }
+    return( residualDistance )
+    }
+
+  calculateBatchWiseResidualDistanceMaps <- function( y )
+    {
+    y_dims = unlist( K$int_shape( y ) )
+
+    dimensionality <- 3L
+    if( length( y_dims ) == 4 )
+      {
+      dimensionality <- 2L
+      }
+
+    batchSize <- as.integer( y_dims[1] )
+    numberOfLabels <- as.integer( y_dims[length( y_dims )] )
+
+    y_distance <- array( data = 0, dim = y_dims )
+
+    for( i in seq.int( batchSize ) )
+      {
+      y_batch <- K$gather( y, indices = c( as.integer( i - 1 ) ) )
+      for( j in seq.int( from = 2L, to = numberOfLabels ) )
+        {
+        if( dimensionality == 2L )
+          {
+          y_batch_permuted <- K$permute_dimensions(
+            y_batch, pattern = c( 2L, 0L, 1L ) )
+          } else if( dimensionality == 3L ) {
+          y_batch_permuted <- K$permute_dimensions(
+            y_batch, pattern = c( 3L, 0L, 1L, 2L ) )
+          } else {
+          stop( "Specified dimensionality not implemented." )
+          }
+        y_batch_channel <- K$gather( y_batch_permuted, indices = c( as.integer( j - 1 ) ) )
+        y_batch_distance <- calculateResidualDistanceMap( reticulate::r_to_py( y_batch_channel$numpy() ) )
+        if( dimensionality == 2L )
+          {
+          y_distance[i,,,j] <- y_batch_distance
+          }
+        }
+      }
+    return( reticulate::r_to_py( y_distance )$astype( np$double ) )
+    }
+
+  y_true_distance_map = tf$py_function( func = reticulate::py_func( calculateBatchWiseResidualDistanceMaps ),
+                                        inp = list( y_true ),
+                                        Tout = tf$double )
+  product <- y_pred * y_true_distance_map
+  return( K$mean( product ) )
+}
+
 #' Loss function for the SSD deep learning architecture.
 #'
 #' Creates an R6 class object for use with the SSD deep learning architecture
@@ -322,7 +477,7 @@ weighted_categorical_crossentropy <- function( y_true, y_pred, weights )
 #'
 #' available here:
 #'
-#'         \url{https://arxiv.org/abs/1512.02325}
+#'      \url{https://arxiv.org/abs/1512.02325}
 #'
 #' @docType class
 #'

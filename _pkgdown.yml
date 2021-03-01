@@ -137,6 +137,7 @@ reference:
   - '`categorical_focal_gain`'
   - '`categorical_focal_loss`'
   - '`weighted_categorical_crossentropy`'
+  - '`multilabel_surface_loss`'
 - title: Custom activations
   desc: ~
   contents:

@@ -240,54 +240,44 @@ implementation:</p><pre>    \url{https://github.com/joelthelion/ultrasound-nerve
 
 <span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/reexports.html'>compile</a></span>( <span class='kw'>loss</span> <span class='kw'>=</span> <span class='no'>loss_dice</span>,
   <span class='kw'>optimizer</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/optimizer_adam.html'>optimizer_adam</a></span>( <span class='kw'>lr</span> <span class='kw'>=</span> <span class='fl'>0.0001</span> ),
-  <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='no'>metric_multilabel_dice_coefficient</span> )</div><div class='output co'>#&gt; <span class='error'>Error in py_call_impl(callable, dots$args, dots$keywords): TypeError: Failed to convert object of type &lt;class 'function'&gt; to Tensor. Contents: &lt;function make_python_function.&lt;locals&gt;.python_function at 0x7f83225ee510&gt;. Consider casting elements to a supported type.</span>
+  <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='no'>metric_multilabel_dice_coefficient</span> )</div><div class='output co'>#&gt; <span class='error'>Error in py_call_impl(callable, dots$args, dots$keywords): TypeError: Failed to convert object of type &lt;class 'function'&gt; to Tensor. Contents: &lt;function make_python_function.&lt;locals&gt;.python_function at 0x7f84406b2510&gt;. Consider casting elements to a supported type.</span>
 #&gt; <span class='error'></span>
 #&gt; <span class='error'>Detailed traceback: </span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/training/tracking/base.py", line 517, in _method_wrapper</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/training/tracking/base.py", line 456, in _method_wrapper</span>
 #&gt; <span class='error'>    result = method(self, *args, **kwargs)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/engine/training_v1.py", line 450, in compile</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/engine/training_v1.py", line 439, in compile</span>
 #&gt; <span class='error'>    masks=self._prepare_output_masks())</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/engine/training_v1.py", line 1957, in _handle_metrics</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/engine/training_v1.py", line 1929, in _handle_metrics</span>
 #&gt; <span class='error'>    target, output, output_mask))</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/engine/training_v1.py", line 1908, in _handle_per_output_metrics</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/engine/training_v1.py", line 1880, in _handle_per_output_metrics</span>
 #&gt; <span class='error'>    metric_fn, y_true, y_pred, weights=weights, mask=mask)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/engine/training_utils_v1.py", line 1064, in call_metric_function</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/engine/training_utils.py", line 1155, in call_metric_function</span>
 #&gt; <span class='error'>    return metric_fn(y_true, y_pred, sample_weight=weights)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/metrics.py", line 237, in __call__</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/metrics.py", line 208, in __call__</span>
 #&gt; <span class='error'>    replica_local_fn, *args, **kwargs)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/distribute/distributed_training_utils.py", line 66, in call_replica_local_fn</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/distribute/distributed_training_utils.py", line 1133, in call_replica_local_fn</span>
 #&gt; <span class='error'>    return fn(*args, **kwargs)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/metrics.py", line 217, in replica_local_fn</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/metrics.py", line 188, in replica_local_fn</span>
 #&gt; <span class='error'>    update_op = self.update_state(*args, **kwargs)  # pylint: disable=not-callable</span>
 #&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/utils/metrics_utils.py", line 90, in decorated</span>
 #&gt; <span class='error'>    update_op = update_state_fn(*args, **kwargs)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/metrics.py", line 177, in update_state_fn</span>
-#&gt; <span class='error'>    return ag_update_state(*args, **kwargs)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/autograph/impl/api.py", line 667, in wrapper</span>
-#&gt; <span class='error'>    return converted_call(f, args, kwargs, options=options)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/autograph/impl/api.py", line 350, in converted_call</span>
-#&gt; <span class='error'>    return _call_unconverted(f, args, kwargs, options, False)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/autograph/impl/api.py", line 478, in _call_unconverted</span>
-#&gt; <span class='error'>    return f(*args, **kwargs)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/metrics.py", line 620, in update_state</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/metrics.py", line 605, in update_state</span>
 #&gt; <span class='error'>    matches, sample_weight=sample_weight)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/metrics.py", line 355, in update_state</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/metrics.py", line 331, in update_state</span>
 #&gt; <span class='error'>    values = math_ops.cast(values, self._dtype)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/util/dispatch.py", line 201, in wrapper</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/util/dispatch.py", line 180, in wrapper</span>
 #&gt; <span class='error'>    return target(*args, **kwargs)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/ops/math_ops.py", line 964, in cast</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/ops/math_ops.py", line 787, in cast</span>
 #&gt; <span class='error'>    x = ops.convert_to_tensor(x, name="x")</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/profiler/trace.py", line 163, in wrapped</span>
-#&gt; <span class='error'>    return func(*args, **kwargs)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/framework/ops.py", line 1540, in convert_to_tensor</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/framework/ops.py", line 1341, in convert_to_tensor</span>
 #&gt; <span class='error'>    ret = conversion_func(value, dtype=dtype, name=name, as_ref=as_ref)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/framework/constant_op.py", line 339, in _constant_tensor_conversion_function</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/framework/constant_op.py", line 321, in _constant_tensor_conversion_function</span>
 #&gt; <span class='error'>    return constant(v, dtype=dtype, name=name)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/framework/constant_op.py", line 265, in constant</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/framework/constant_op.py", line 262, in constant</span>
 #&gt; <span class='error'>    allow_broadcast=True)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/framework/constant_op.py", line 283, in _constant_impl</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/framework/constant_op.py", line 300, in _constant_impl</span>
 #&gt; <span class='error'>    allow_broadcast=allow_broadcast))</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/framework/tensor_util.py", line 553, in make_tensor_proto</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/framework/tensor_util.py", line 547, in make_tensor_proto</span>
 #&gt; <span class='error'>    "supported type." % (type(values), values))</span></div><div class='input'>
 <span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>( <span class='no'>model</span> )</div><div class='output co'>#&gt; Model
 #&gt; Model: "model_41"

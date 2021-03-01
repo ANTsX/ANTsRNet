@@ -168,11 +168,11 @@ random displacements are chosen (random normal:  mean = 0, sd = <code>sdDisplace
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>ANTsR</span> )
 <span class='no'>image</span> <span class='kw'>&lt;-</span> <span class='fu'>antsImageRead</span>( <span class='fu'>getANTsRData</span>( <span class='st'>"r16"</span> ) )
 <span class='no'>transformedImage</span> <span class='kw'>&lt;-</span> <span class='fu'>histogramWarpImageIntensities</span>( <span class='no'>image</span>, <span class='kw'>transformDomainSize</span> <span class='kw'>=</span> <span class='fl'>10</span> )
-<span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>image</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2521632 134.7    4635777 247.6         NA   4635777  247.6
-#&gt; Vcells 6872069  52.5   44543992 339.9     102400 141977558 1083.3</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>transformedImage</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2521551 134.7    4635777 247.6         NA   4635777  247.6
-#&gt; Vcells 6871970  52.5   35635194 271.9     102400 141977558 1083.3</div></pre>
+<span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>image</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
+#&gt; Ncells 2545191 136.0    4590141 245.2         NA   4590141 245.2
+#&gt; Vcells 6906720  52.7   44591498 340.3     102400 127495298 972.8</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>transformedImage</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
+#&gt; Ncells 2544873 136.0    4590141 245.2         NA   4590141 245.2
+#&gt; Vcells 6906226  52.7   35673199 272.2     102400 127495298 972.8</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

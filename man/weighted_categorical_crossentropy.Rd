@@ -20,7 +20,7 @@ function value
 ported from this implementation:
 }
 \details{
-https://gist.github.com/wassname/ce364fddfc8a025bfab4348cf5de852d
+\url{https://gist.github.com/wassname/ce364fddfc8a025bfab4348cf5de852d}
 }
 \examples{
 
