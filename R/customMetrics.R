@@ -405,7 +405,7 @@ multilabel_surface_loss <- function( y_true, y_pred )
 
   calculateResidualDistanceMap <- function( segmentation )
     {
-    distance <- np$zeros_like( segmentation )
+    residualDistance <- np$zeros_like( segmentation )
 
     positiveMask <- segmentation$astype( np$bool )
     if( reticulate::py_to_r( positiveMask$any() ) )
