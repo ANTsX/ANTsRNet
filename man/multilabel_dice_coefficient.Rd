@@ -4,16 +4,21 @@
 \alias{multilabel_dice_coefficient}
 \title{Dice function for multilabel segmentation problems}
 \usage{
-multilabel_dice_coefficient(y_true, y_pred, smoothingFactor = 0)
+multilabel_dice_coefficient(
+  y_true,
+  y_pred,
+  dimensionality = 3L,
+  smoothingFactor = 0
+)
 }
 \arguments{
 \item{y_true}{True labels (Tensor)}
 
 \item{y_pred}{Predictions (Tensor of the same shape as \code{y_true})}
 
-\item{smoothingFactor}{parameter for smoothing the metric.}
-
 \item{dimensionality}{image dimension.}
+
+\item{smoothingFactor}{parameter for smoothing the metric.}
 }
 \value{
 Dice value (negative)

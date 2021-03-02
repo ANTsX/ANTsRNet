@@ -51,19 +51,13 @@
 #' @import keras
 #' @export
 
-multilabel_dice_coefficient <- function( y_true, y_pred, smoothingFactor = 0.0 )
+multilabel_dice_coefficient <- function( y_true, y_pred, dimensionality = 3L, smoothingFactor = 0.0 )
 {
   multilabel_dice_coefficient_fixed <- function( y_true, y_pred )
     {
     K <- tensorflow::tf$keras$backend
 
     y_dims <- unlist( K$int_shape( y_pred ) )
-
-    dimensionality <- 3L
-    if( length( y_dims ) == 4 )
-      {
-      dimensionality <- 2L
-      }
 
     numberOfLabels <- as.integer( y_dims[length( y_dims )] )
 
@@ -396,76 +390,79 @@ weighted_categorical_crossentropy <- function( y_true, y_pred, weights )
 #'
 #' @import keras
 #' @export
-multilabel_surface_loss <- function( y_true, y_pred )
+multilabel_surface_loss <- function( y_true, y_pred, dimensionality = 3L )
 {
-  np <- reticulate::import( "numpy", convert = FALSE )
-  scipy <- reticulate::import( "scipy" )
-  tf <- tensorflow::tf
-  K <- tensorflow::tf$keras$backend
-
-  calculateResidualDistanceMap <- function( segmentation )
+  multilabel_surface_loss_fixed <- function( y_true, y_pred )
     {
-    residualDistance <- np$zeros_like( segmentation )
+    np <- reticulate::import( "numpy", convert = FALSE )
+    scipy <- reticulate::import( "scipy" )
+    tf <- tensorflow::tf
+    K <- tensorflow::tf$keras$backend
 
-    positiveMask <- segmentation$astype( np$bool )
-    if( reticulate::py_to_r( positiveMask$any() ) )
+    calculateResidualDistanceMap <- function( segmentation )
       {
-      negativeMask <- np$logical_not( positiveMask )
-      residualDistance <- scipy$ndimage$distance_transform_edt( negativeMask ) *
-                  reticulate::py_to_r( negativeMask$astype( np$float32 ) ) -
-                  ( scipy$ndimage$distance_transform_edt( positiveMask ) - 1 ) *
-                  reticulate::py_to_r( positiveMask$astype( np$float32 ) )
-      }
-    return( residualDistance )
-    }
+      residualDistance <- np$zeros_like( segmentation )
 
-  calculateBatchwiseResidualDistanceMaps <- function( y )
-    {
-    y_dims = unlist( K$int_shape( y ) )
-
-    dimensionality <- 3L
-    if( length( y_dims ) == 4 )
-      {
-      dimensionality <- 2L
-      }
-
-    batchSize <- as.integer( y_dims[1] )
-    numberOfLabels <- as.integer( y_dims[length( y_dims )] )
-
-    y_distance <- array( data = 0, dim = y_dims )
-
-    for( i in seq.int( batchSize ) )
-      {
-      y_batch <- K$gather( y, indices = c( as.integer( i - 1 ) ) )
-      for( j in seq.int( from = 2L, to = numberOfLabels ) )
+      positiveMask <- segmentation$astype( np$bool )
+      if( reticulate::py_to_r( positiveMask$any() ) )
         {
-        if( dimensionality == 2L )
+        negativeMask <- np$logical_not( positiveMask )
+        residualDistance <- scipy$ndimage$distance_transform_edt( negativeMask ) *
+                    reticulate::py_to_r( negativeMask$astype( np$float32 ) ) -
+                    ( scipy$ndimage$distance_transform_edt( positiveMask ) - 1 ) *
+                    reticulate::py_to_r( positiveMask$astype( np$float32 ) )
+        }
+      return( residualDistance )
+      }
+
+    calculateBatchwiseResidualDistanceMaps <- function( y )
+      {
+      y_dims = unlist( K$int_shape( y ) )
+
+      dimensionality <- 3L
+      if( length( y_dims ) == 4 )
+        {
+        dimensionality <- 2L
+        }
+
+      batchSize <- as.integer( y_dims[1] )
+      numberOfLabels <- as.integer( y_dims[length( y_dims )] )
+
+      y_distance <- array( data = 0, dim = y_dims )
+
+      for( i in seq.int( batchSize ) )
+        {
+        y_batch <- K$gather( y, indices = c( as.integer( i - 1 ) ) )
+        for( j in seq.int( from = 2L, to = numberOfLabels ) )
           {
-          y_batch_permuted <- K$permute_dimensions(
-            y_batch, pattern = c( 2L, 0L, 1L ) )
-          } else if( dimensionality == 3L ) {
-          y_batch_permuted <- K$permute_dimensions(
-            y_batch, pattern = c( 3L, 0L, 1L, 2L ) )
-          } else {
-          stop( "Specified dimensionality not implemented." )
-          }
-        y_batch_channel <- K$gather( y_batch_permuted, indices = c( as.integer( j - 1 ) ) )
-        y_batch_distance <- calculateResidualDistanceMap( reticulate::r_to_py( y_batch_channel$numpy() ) )
-        if( dimensionality == 2L )
-          {
-          y_distance[i,,,j] <- y_batch_distance
-          } else {
-          y_distance[i,,,,j] <- y_batch_distance
+          if( dimensionality == 2L )
+            {
+            y_batch_permuted <- K$permute_dimensions(
+              y_batch, pattern = c( 2L, 0L, 1L ) )
+            } else if( dimensionality == 3L ) {
+            y_batch_permuted <- K$permute_dimensions(
+              y_batch, pattern = c( 3L, 0L, 1L, 2L ) )
+            } else {
+            stop( "Specified dimensionality not implemented." )
+            }
+          y_batch_channel <- K$gather( y_batch_permuted, indices = c( as.integer( j - 1 ) ) )
+          y_batch_distance <- calculateResidualDistanceMap( reticulate::r_to_py( y_batch_channel$numpy() ) )
+          if( dimensionality == 2L )
+            {
+            y_distance[i,,,j] <- y_batch_distance
+            } else {
+            y_distance[i,,,,j] <- y_batch_distance
+            }
           }
         }
+      return( reticulate::r_to_py( y_distance )$astype( np$float32 ) )
       }
-    return( reticulate::r_to_py( y_distance )$astype( np$float32 ) )
-    }
 
-  y_true_distance_map <- calculateBatchwiseResidualDistanceMaps( y_true )
-  product <- y_pred * y_true_distance_map
+    y_true_distance_map <- calculateBatchwiseResidualDistanceMaps( y_true )
+    product <- y_pred * y_true_distance_map
 
-  return( K$mean( product ) )
+    return( K$mean( product ) )
+  }
 }
 
 #' Loss function for the SSD deep learning architecture.

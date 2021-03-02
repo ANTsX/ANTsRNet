@@ -4,7 +4,7 @@
 \alias{multilabel_surface_loss}
 \title{Function for surface loss}
 \usage{
-multilabel_surface_loss(y_true, y_pred)
+multilabel_surface_loss(y_true, y_pred, dimensionality = 3L)
 }
 \arguments{
 \item{y_true}{True labels (Tensor)}
@@ -33,7 +33,7 @@ library( keras )
 
 model <- createUnetModel2D( c( 64, 64, 1 ), numberOfOutputs = 2 )
 
-model \%>\% compile( loss = surface_loss,
+model \%>\% compile( loss = multilabel_surface_loss,
  optimizer = optimizer_adam( lr = 0.0001 ),
    metrics = "accuracy" )
 
