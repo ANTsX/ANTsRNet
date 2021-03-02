@@ -395,7 +395,6 @@ multilabel_surface_loss <- function( y_true, y_pred, dimensionality = 3L )
 {
   multilabel_surface_loss_fixed <- function( y_true, y_pred )
     {
-
     np <- reticulate::import( "numpy", convert = FALSE )
     scipy <- reticulate::import( "scipy" )
     tf <- tensorflow::tf
@@ -446,15 +445,17 @@ multilabel_surface_loss <- function( y_true, y_pred, dimensionality = 3L )
           if( dimensionality == 2L )
             {
             y_distance[i,,,j] <- y_batch_distance
+            } else {
+            y_distance[i,,,,j] <- y_batch_distance
             }
           }
         }
       return( reticulate::r_to_py( y_distance )$astype( np$float32 ) )
       }
 
-    y_true_distance_map = tf$py_function( func = reticulate::py_func( calculateBatchWiseResidualDistanceMaps ),
-                                          inp = list( y_true ),
-                                          Tout = tf$float32 )
+    y_true_distance_map <- tf$py_function( func = reticulate::py_func( calculateBatchWiseResidualDistanceMaps ),
+                                           inp = list( y_true ),
+                                           Tout = tf$float32 )
     return( K$mean( K$cast( y_pred, dtype = tf$float32 ) * y_true_distance_map ) )
     }
   return( multilabel_surface_loss_fixed )
