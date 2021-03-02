@@ -462,7 +462,8 @@ multilabel_surface_loss <- function( y_true, y_pred, dimensionality = 3L )
     product <- y_pred * y_true_distance_map
 
     return( K$mean( product ) )
-  }
+    }
+  return( multilabel_surface_loss_fixed )
 }
 
 #' Loss function for the SSD deep learning architecture.
