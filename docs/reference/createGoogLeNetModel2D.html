@@ -81,7 +81,7 @@ recognition based on the paper" />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -92,7 +92,7 @@ recognition based on the paper" />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/ANTsX/ANTsRNet/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -214,17 +214,17 @@ implementation:</p><pre>    https://github.com/fchollet/deep-learning-models/blo
 <span class='co'># testingMetrics &lt;- model %&gt;% evaluate( X_testSmall, Y_testSmall )</span>
 <span class='co'># predictedData &lt;- model %&gt;% predict( X_testSmall, verbose = 1 )</span>
 <span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>model</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;            used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
-#&gt; Ncells  2522466 134.8    4590141 245.2         NA   4590141 245.2
-#&gt; Vcells 32091043 244.9   42865865 327.1     102400 127495298 972.8</div><div class='input'><span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'>createGoogLeNetModel2D</span>( <span class='kw'>inputImageSize</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='no'>resampledImageSize</span>, <span class='fl'>1</span> ),
+#&gt; Ncells  2523507 134.8    4591268 245.3         NA   4591268 245.3
+#&gt; Vcells 32092020 244.9   42867279 327.1     102400 127496083 972.8</div><div class='input'><span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'>createGoogLeNetModel2D</span>( <span class='kw'>inputImageSize</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='no'>resampledImageSize</span>, <span class='fl'>1</span> ),
   <span class='kw'>numberOfClassificationLabels</span> <span class='kw'>=</span> <span class='fl'>2</span> )
 <span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>model</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;            used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
-#&gt; Ncells  2522171 134.7    4590141 245.2         NA   4590141 245.2
-#&gt; Vcells 32090563 244.9   51519038 393.1     102400 127495298 972.8</div><div class='input'>
+#&gt; Ncells  2523212 134.8    4591268 245.3         NA   4591268 245.3
+#&gt; Vcells 32091540 244.9   51520734 393.1     102400 127496083 972.8</div><div class='input'>
 <span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'>createGoogLeNetModel2D</span>( <span class='kw'>inputImageSize</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='no'>resampledImageSize</span>, <span class='fl'>1</span> ),
   <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"regression"</span> )
 <span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>model</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;            used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
-#&gt; Ncells  2522191 134.7    4590141 245.2         NA   4590141 245.2
-#&gt; Vcells 32090602 244.9   51519038 393.1     102400 127495298 972.8</div></pre>
+#&gt; Ncells  2523232 134.8    4591268 245.3         NA   4591268 245.3
+#&gt; Vcells 32091579 244.9   51520734 393.1     102400 127496083 972.8</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

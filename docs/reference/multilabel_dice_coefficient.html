@@ -82,7 +82,7 @@ be included but is not used in the calculation." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -93,7 +93,7 @@ be included but is not used in the calculation." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/ANTsX/ANTsRNet/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -121,7 +121,12 @@ of the segmentation batch.  The background (label 0) should
 be included but is not used in the calculation.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>multilabel_dice_coefficient</span>(<span class='no'>y_true</span>, <span class='no'>y_pred</span>, <span class='kw'>smoothingFactor</span> <span class='kw'>=</span> <span class='fl'>0</span>)</pre>
+    <pre class="usage"><span class='fu'>multilabel_dice_coefficient</span>(
+  <span class='no'>y_true</span>,
+  <span class='no'>y_pred</span>,
+  <span class='kw'>dimensionality</span> <span class='kw'>=</span> <span class='fl'>3L</span>,
+  <span class='kw'>smoothingFactor</span> <span class='kw'>=</span> <span class='fl'>0</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -135,12 +140,12 @@ be included but is not used in the calculation.</p>
       <td><p>Predictions (Tensor of the same shape as <code>y_true</code>)</p></td>
     </tr>
     <tr>
-      <th>smoothingFactor</th>
-      <td><p>parameter for smoothing the metric.</p></td>
-    </tr>
-    <tr>
       <th>dimensionality</th>
       <td><p>image dimension.</p></td>
+    </tr>
+    <tr>
+      <th>smoothingFactor</th>
+      <td><p>parameter for smoothing the metric.</p></td>
     </tr>
     </table>
 
@@ -203,31 +208,19 @@ be included but is not used in the calculation.</p>
 <span class='no'>r16</span> <span class='kw'>&lt;-</span> <span class='fu'>antsImageRead</span>( <span class='fu'>getANTsRData</span>( <span class='st'>"r16"</span> ) )
 <span class='no'>r16seg</span> <span class='kw'>&lt;-</span> <span class='fu'>kmeansSegmentation</span>( <span class='no'>r16</span>, <span class='fl'>3</span> )$<span class='no'>segmentation</span>
 <span class='no'>r16array</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/array.html'>array</a></span>( <span class='kw'>data</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/array.html'>as.array</a></span>( <span class='no'>r16seg</span> ), <span class='kw'>dim</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>1</span>, <span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span>( <span class='no'>r16seg</span> ) ) )
-<span class='no'>r16tensor</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>tensorflow</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/pkg/tensorflow/man/tf.html'>tf</a></span>$<span class='fu'>convert_to_tensor</span>( <span class='fu'><a href='encodeUnet.html'>encodeUnet</a></span>( <span class='no'>r16array</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span> ) ) )
-
+<span class='no'>r16tensor</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>tensorflow</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/pkg/tensorflow/man/tf.html'>tf</a></span>$<span class='fu'>convert_to_tensor</span>( <span class='fu'><a href='encodeUnet.html'>encodeUnet</a></span>( <span class='no'>r16array</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span> ) ) )</div><div class='output co'>#&gt; <span class='error'>Error in if (segmentationLabels == NULL) {    segmentationLabels &lt;- order(unique(segmentationsArray))}: argument is of length zero</span></div><div class='input'>
 <span class='no'>r64</span> <span class='kw'>&lt;-</span> <span class='fu'>antsImageRead</span>( <span class='fu'>getANTsRData</span>( <span class='st'>"r64"</span> ) )
 <span class='no'>r64seg</span> <span class='kw'>&lt;-</span> <span class='fu'>kmeansSegmentation</span>( <span class='no'>r64</span>, <span class='fl'>3</span> )$<span class='no'>segmentation</span>
 <span class='no'>r64array</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/array.html'>array</a></span>( <span class='kw'>data</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/array.html'>as.array</a></span>( <span class='no'>r64seg</span> ), <span class='kw'>dim</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>1</span>, <span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span>( <span class='no'>r64seg</span> ) ) )
-<span class='no'>r64tensor</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>tensorflow</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/pkg/tensorflow/man/tf.html'>tf</a></span>$<span class='fu'>convert_to_tensor</span>( <span class='fu'><a href='encodeUnet.html'>encodeUnet</a></span>( <span class='no'>r64array</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span> ) ) )
-
-<span class='no'>dice_loss</span> <span class='kw'>&lt;-</span> <span class='fu'>multilabel_dice_coefficient</span>( <span class='no'>r16tensor</span>, <span class='no'>r64tensor</span> )
-<span class='no'>loss_value</span> <span class='kw'>&lt;-</span> <span class='fu'>dice_loss</span>( <span class='no'>r16tensor</span>, <span class='no'>r64tensor</span> )$<span class='fu'>numpy</span>()</div><div class='output co'>#&gt; <span class='error'>Error in py_call_impl(callable, dots$args, dots$keywords): TypeError: Input 'y' of 'Mul' Op has type float64 that does not match type float32 of argument 'x'.</span>
-#&gt; <span class='error'></span>
-#&gt; <span class='error'>Detailed traceback: </span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/util/dispatch.py", line 180, in wrapper</span>
-#&gt; <span class='error'>    return target(*args, **kwargs)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/ops/math_ops.py", line 381, in multiply</span>
-#&gt; <span class='error'>    return gen_math_ops.mul(x, y, name)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/ops/gen_math_ops.py", line 6092, in mul</span>
-#&gt; <span class='error'>    "Mul", x=x, y=y, name=name)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/framework/op_def_library.py", line 506, in _apply_op_helper</span>
-#&gt; <span class='error'>    inferred_from[input_arg.type_attr]))</span></div><div class='input'>
+<span class='no'>r64tensor</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>tensorflow</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/pkg/tensorflow/man/tf.html'>tf</a></span>$<span class='fu'>convert_to_tensor</span>( <span class='fu'><a href='encodeUnet.html'>encodeUnet</a></span>( <span class='no'>r64array</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span> ) ) )</div><div class='output co'>#&gt; <span class='error'>Error in if (segmentationLabels == NULL) {    segmentationLabels &lt;- order(unique(segmentationsArray))}: argument is of length zero</span></div><div class='input'>
+<span class='no'>dice_loss</span> <span class='kw'>&lt;-</span> <span class='fu'>multilabel_dice_coefficient</span>( <span class='no'>r16tensor</span>, <span class='no'>r64tensor</span>, <span class='kw'>dimensionality</span> <span class='kw'>=</span> <span class='fl'>2L</span> )
+<span class='no'>loss_value</span> <span class='kw'>&lt;-</span> <span class='fu'>dice_loss</span>( <span class='no'>r16tensor</span>, <span class='no'>r64tensor</span> )$<span class='fu'>numpy</span>()</div><div class='output co'>#&gt; <span class='error'>Error in py_resolve_dots(list(...)): object 'r64tensor' not found</span></div><div class='input'>
 <span class='co'># Compare with</span>
 <span class='co'># overlap_value &lt;- labelOverlapMeasures( r16seg, r64seg )$MeanOverlap[1]</span>
 
 <span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>model</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
-#&gt; Ncells 2555835 136.5    4590141 245.2         NA   4590141 245.2
-#&gt; Vcells 7065346  54.0   28538560 217.8     102400 127495298 972.8</div></pre>
+#&gt; Ncells 2559060 136.7    4591268 245.3         NA   4591268 245.3
+#&gt; Vcells 6282729  48.0   27843464 212.5     102400 127496083 972.8</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

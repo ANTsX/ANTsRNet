@@ -71,7 +71,7 @@ encodeUnet <- function( segmentationsArray, segmentationLabels = NULL )
 decodeUnet <- function( yPredicted, domainImage )
 {
   batchSize <- dim( yPredicted )[1]
-  numberOfSegmentationLabels <- tail( dim( yPredicted ), 1 )
+  numberOfLabels <- tail( dim( yPredicted ), 1 )
 
   imageDimension <- 2
   if( length( dim( yPredicted ) ) == 5 )
@@ -83,7 +83,7 @@ decodeUnet <- function( yPredicted, domainImage )
   for( i in seq_len( batchSize ) )
     {
     probabilityImages <- list()
-    for( j in seq_len( numberOfSegmentationLabels ) )
+    for( j in seq_len( numberOfLabels ) )
       {
       if( imageDimension == 2 )
         {

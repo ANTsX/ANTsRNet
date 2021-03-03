@@ -81,7 +81,7 @@ recognition based on the paper" />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -92,7 +92,7 @@ recognition based on the paper" />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/ANTsX/ANTsRNet/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -207,10 +207,10 @@ implementation:</p><pre>    https://github.com/duggalrahul/AlexNet-Experiments-K
   <span class='kw'>optimizer</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/optimizer_adam.html'>optimizer_adam</a></span>( <span class='kw'>lr</span> <span class='kw'>=</span> <span class='fl'>0.0001</span> ),
   <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='st'>'categorical_crossentropy'</span>, <span class='st'>'accuracy'</span> ) )
 <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;            used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
-#&gt; Ncells  2473779 132.2    4590141 245.2         NA   4590141 245.2
-#&gt; Vcells 31885132 243.3  122305863 933.2     102400 127495298 972.8</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>mnistData</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
-#&gt; Ncells 2472491 132.1    4590141 245.2         NA   4590141 245.2
-#&gt; Vcells 4408020  33.7   97844691 746.5     102400 127495298 972.8</div><div class='input'><span class='co'># Comment out the rest due to travis build constraints</span>
+#&gt; Ncells  2474714 132.2    4591268 245.3         NA   4591268 245.3
+#&gt; Vcells 31885869 243.3  122306380 933.2     102400 127496083 972.8</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>mnistData</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
+#&gt; Ncells 2473429 132.1    4591268 245.3         NA   4591268 245.3
+#&gt; Vcells 4408762  33.7   97845104 746.5     102400 127496083 972.8</div><div class='input'><span class='co'># Comment out the rest due to travis build constraints</span>
 
 <span class='co'># track &lt;- model %&gt;% fit( X_trainSmall, Y_trainSmall, verbose = 1,</span>
 <span class='co'>#   epochs = 1, batch_size = 2, shuffle = TRUE, validation_split = 0.5 )</span>
@@ -220,8 +220,8 @@ implementation:</p><pre>    https://github.com/duggalrahul/AlexNet-Experiments-K
 <span class='co'># testingMetrics &lt;- model %&gt;% evaluate( X_testSmall, Y_testSmall )</span>
 <span class='co'># predictedData &lt;- model %&gt;% predict( X_testSmall, verbose = 1 )</span>
 <span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>model</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
-#&gt; Ncells 2472552 132.1    4590141 245.2         NA   4590141 245.2
-#&gt; Vcells 4408087  33.7   78275753 597.2     102400 127495298 972.8</div></pre>
+#&gt; Ncells 2473490 132.1    4591268 245.3         NA   4591268 245.3
+#&gt; Vcells 4408829  33.7   78276084 597.2     102400 127496083 972.8</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -81,7 +81,7 @@ image segmentation" />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -92,7 +92,7 @@ image segmentation" />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/ANTsX/ANTsRNet/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -237,8 +237,7 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt; Processing image r30 
 #&gt; Processing image r62 
 #&gt; Processing image r64 
-#&gt; Processing image r85 </div><div class='input'><span class='no'>Y_train</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='encodeUnet.html'>encodeUnet</a></span>( <span class='no'>Y_train</span>, <span class='no'>segmentationLabels</span> )
-
+#&gt; Processing image r85 </div><div class='input'><span class='no'>Y_train</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='encodeUnet.html'>encodeUnet</a></span>( <span class='no'>Y_train</span>, <span class='no'>segmentationLabels</span> )</div><div class='output co'>#&gt; <span class='error'>Error in if (segmentationLabels == NULL) {    segmentationLabels &lt;- order(unique(segmentationsArray))}: argument is of length zero</span></div><div class='input'>
 <span class='co'># Perform a simple normalization</span>
 
 <span class='no'>X_train</span> <span class='kw'>&lt;-</span> ( <span class='no'>X_train</span> - <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span>( <span class='no'>X_train</span> ) ) / <span class='fu'><a href='https://rdrr.io/r/stats/sd.html'>sd</a></span>( <span class='no'>X_train</span> )
@@ -281,9 +280,9 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 
 <span class='co'># save_model_hdf5( model, filepath = 'unetModel.h5' )</span>
 <span class='co'># save_model_weights_hdf5( unetModel, filepath = 'unetModelWeights.h5' ) )</span>
-<span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>model</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
-#&gt; Ncells 2506676 133.9    4590141 245.2         NA   4590141 245.2
-#&gt; Vcells 6016713  46.0   32061750 244.7     102400 127495298 972.8</div></pre>
+<span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>model</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
+#&gt; Ncells 2507631  134    4591268 245.3         NA   4591268 245.3
+#&gt; Vcells 5231082   40   32061885 244.7     102400 127496083 972.8</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -82,7 +82,7 @@ website:" />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -93,7 +93,7 @@ website:" />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/ANTsX/ANTsRNet/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -259,8 +259,7 @@ implementation:</p><pre>    \url{https://github.com/joelthelion/ultrasound-nerve
 #&gt; Processing image r30 
 #&gt; Processing image r62 
 #&gt; Processing image r64 
-#&gt; Processing image r85 </div><div class='input'><span class='no'>Y_train</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='encodeUnet.html'>encodeUnet</a></span>( <span class='no'>Y_train</span>, <span class='no'>segmentationLabels</span> )
-
+#&gt; Processing image r85 </div><div class='input'><span class='no'>Y_train</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='encodeUnet.html'>encodeUnet</a></span>( <span class='no'>Y_train</span>, <span class='no'>segmentationLabels</span> )</div><div class='output co'>#&gt; <span class='error'>Error in if (segmentationLabels == NULL) {    segmentationLabels &lt;- order(unique(segmentationsArray))}: argument is of length zero</span></div><div class='input'>
 <span class='co'># Perform a simple normalization</span>
 
 <span class='no'>X_train</span> <span class='kw'>&lt;-</span> ( <span class='no'>X_train</span> - <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span>( <span class='no'>X_train</span> ) ) / <span class='fu'><a href='https://rdrr.io/r/stats/sd.html'>sd</a></span>( <span class='no'>X_train</span> )
@@ -281,7 +280,7 @@ implementation:</p><pre>    \url{https://github.com/joelthelion/ultrasound-nerve
 
 <span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/reexports.html'>compile</a></span>( <span class='kw'>loss</span> <span class='kw'>=</span> <span class='no'>loss_dice</span>,
   <span class='kw'>optimizer</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/optimizer_adam.html'>optimizer_adam</a></span>( <span class='kw'>lr</span> <span class='kw'>=</span> <span class='fl'>0.0001</span> ),
-  <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='no'>metric_multilabel_dice_coefficient</span> )</div><div class='output co'>#&gt; <span class='error'>Error in py_call_impl(callable, dots$args, dots$keywords): TypeError: Failed to convert object of type &lt;class 'function'&gt; to Tensor. Contents: &lt;function make_python_function.&lt;locals&gt;.python_function at 0x7f844c0e4d90&gt;. Consider casting elements to a supported type.</span>
+  <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='no'>metric_multilabel_dice_coefficient</span> )</div><div class='output co'>#&gt; <span class='error'>Error in py_call_impl(callable, dots$args, dots$keywords): TypeError: Failed to convert object of type &lt;class 'function'&gt; to Tensor. Contents: &lt;function make_python_function.&lt;locals&gt;.python_function at 0x7f918afd2d08&gt;. Consider casting elements to a supported type.</span>
 #&gt; <span class='error'></span>
 #&gt; <span class='error'>Detailed traceback: </span>
 #&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/training/tracking/base.py", line 456, in _method_wrapper</span>

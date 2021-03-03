@@ -2,7 +2,7 @@
 % Please edit documentation in R/unetUtilities.R
 \name{decodeUnet}
 \alias{decodeUnet}
-\title{Decoding function for Y_predicted}
+\title{Decoding function for the u-net prediction outcome}
 \usage{
 decodeUnet(yPredicted, domainImage)
 }

@@ -2,12 +2,12 @@
 % Please edit documentation in R/unetUtilities.R
 \name{encodeUnet}
 \alias{encodeUnet}
-\title{Encoding function for Y_train}
+\title{One-hot encoding function}
 \usage{
-encodeUnet(groundTruthSegmentations, segmentationLabels)
+encodeUnet(segmentationsArray, segmentationLabels = NULL)
 }
 \arguments{
-\item{groundTruthSegmentations}{an array of shape (\code{batchSize}, \code{width},
+\item{segmentationsArray}{an array of shape (\code{batchSize}, \code{width},
 \code{height}, \code{<depth>})}
 
 \item{segmentationLabels}{vector of segmentation labels.  Note that a
@@ -18,8 +18,7 @@ an n-D array of shape
 \eqn{ batchSize \times width \times height \times <depth> \times numberOfSegmentationLabels }
 }
 \description{
-Function for translating the segmentations to something readable by the
-optimization process.
+Function for translating the segmentations to a one-hot representation.
 }
 \author{
 Tustison NJ

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Encoding function for Y_train — encodeUnet • ANTsRNet</title>
+<title>One-hot encoding function — encodeUnet • ANTsRNet</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,8 @@
 
 
 
-<meta property="og:title" content="Encoding function for Y_train — encodeUnet" />
-<meta property="og:description" content="Function for translating the segmentations to something readable by the
-optimization process." />
+<meta property="og:title" content="One-hot encoding function — encodeUnet" />
+<meta property="og:description" content="Function for translating the segmentations to a one-hot representation." />
 
 
 
@@ -81,7 +80,7 @@ optimization process." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -92,7 +91,7 @@ optimization process." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/ANTsX/ANTsRNet/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -109,23 +108,22 @@ optimization process." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Encoding function for Y_train</h1>
+    <h1>One-hot encoding function</h1>
     <small class="dont-index">Source: <a href='https://github.com/ANTsX/ANTsRNet/blob/master/R/unetUtilities.R'><code>R/unetUtilities.R</code></a></small>
     <div class="hidden name"><code>encodeUnet.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Function for translating the segmentations to something readable by the
-optimization process.</p>
+    <p>Function for translating the segmentations to a one-hot representation.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>encodeUnet</span>(<span class='no'>groundTruthSegmentations</span>, <span class='no'>segmentationLabels</span>)</pre>
+    <pre class="usage"><span class='fu'>encodeUnet</span>(<span class='no'>segmentationsArray</span>, <span class='kw'>segmentationLabels</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>groundTruthSegmentations</th>
+      <th>segmentationsArray</th>
       <td><p>an array of shape (<code>batchSize</code>, <code>width</code>,
 <code>height</code>, <code>&lt;depth&gt;</code>)</p></td>
     </tr>

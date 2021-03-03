@@ -58,7 +58,7 @@ r64seg <- kmeansSegmentation( r64, 3 )$segmentation
 r64array <- array( data = as.array( r64seg ), dim = c( 1, dim( r64seg ) ) )
 r64tensor <- tensorflow::tf$convert_to_tensor( encodeUnet( r64array, c( 0, 1, 2, 3 ) ) )
 
-dice_loss <- multilabel_dice_coefficient( r16tensor, r64tensor )
+dice_loss <- multilabel_dice_coefficient( r16tensor, r64tensor, dimensionality = 2L )
 loss_value <- dice_loss( r16tensor, r64tensor )$numpy()
 
 # Compare with

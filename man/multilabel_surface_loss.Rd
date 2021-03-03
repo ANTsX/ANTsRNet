@@ -54,7 +54,8 @@ r64seg <- kmeansSegmentation( r64, 3 )$segmentation
 r64array <- array( data = as.array( r64seg ), dim = c( 1, dim( r64seg ) ) )
 r64tensor <- tensorflow::tf$convert_to_tensor( encodeUnet( r64array, c( 0, 1, 2, 3 ) ) )
 
-loss_value <- multilabel_surface_loss( r16tensor, r64tensor )$numpy()
+surface_loss <- multilabel_surface_loss( r16tensor, r64tensor, dimensionality = 2L )
+loss_value <- surface_loss( r16tensor, r64tensor )$numpy()
 
 }
 \author{
