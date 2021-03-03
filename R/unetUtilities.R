@@ -1,9 +1,8 @@
-#' Encoding function for Y_train
+#' One-hot encoding function
 #'
-#' Function for translating the segmentations to something readable by the
-#' optimization process.
+#' Function for translating the segmentations to a one-hot representation.
 #'
-#' @param groundTruthSegmentations an array of shape (\code{batchSize}, \code{width},
+#' @param segmentationsArray an array of shape (\code{batchSize}, \code{width},
 #' \code{height}, \code{<depth>})
 #' @param segmentationLabels vector of segmentation labels.  Note that a
 #' background label (typically 0) needs to be included.
@@ -13,11 +12,15 @@
 #'
 #' @author Tustison NJ
 #' @export
-encodeUnet <- function( groundTruthSegmentations, segmentationLabels )
+encodeUnet <- function( segmentationsArray, segmentationLabels = NULL )
 {
+  if( segmentationLabels == NULL )
+    {
+    segmentationLabels <- order( unique( segmentationsArray ) )
+    }
   numberOfLabels <- length( segmentationLabels )
 
-  dimSegmentations <- dim( groundTruthSegmentations )
+  dimSegmentations <- dim( segmentationsArray )
 
   imageDimension <- 2
   if( length( dimSegmentations ) == 4 )
@@ -30,24 +33,23 @@ encodeUnet <- function( groundTruthSegmentations, segmentationLabels )
     stop( "At least two segmentation labels need to be specified." )
     }
 
-  yEncoded <- array( 0, dim = c( dimSegmentations, numberOfLabels ) )
+  oneHotArray <- array( 0, dim = c( dimSegmentations, numberOfLabels ) )
   for( i in seq_len( numberOfLabels ) )
     {
-    labelY <- groundTruthSegmentations
-    labelY[which( groundTruthSegmentations == segmentationLabels[i] )] <- 1L
-    labelY[which( groundTruthSegmentations != segmentationLabels[i] )] <- 0L
+    perLabel <- segmentationsArray
+    perLabel[which( segmentationsArray == segmentationLabels[i] )] <- 1L
+    perLabel[which( segmentationsArray != segmentationLabels[i] )] <- 0L
     if( imageDimension == 2 )
       {
-      yEncoded[,,,i] <- labelY
+      oneHotArray[,,,i] <- perLabel
       } else {
-      yEncoded[,,,,i] <- labelY
+      oneHotArray[,,,,i] <- perLabel
       }
     }
-
-  return( yEncoded )
+  return( oneHotArray )
 }
 
-#' Decoding function for Y_predicted
+#' Decoding function for the u-net prediction outcome
 #'
 #' Function for translating the U-net predictions to ANTsR probability
 #' images.
