@@ -14,7 +14,7 @@
 #' @export
 encodeUnet <- function( segmentationsArray, segmentationLabels = NULL )
 {
-  if( segmentationLabels == NULL )
+  if( is.null( segmentationLabels ) )
     {
     segmentationLabels <- order( unique( segmentationsArray ) )
     }
