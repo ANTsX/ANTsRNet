@@ -48,7 +48,7 @@ getPretrainedNetwork <- function(
               "dktInner",
               "dktOuter",
               "dktOuterWithSpatialPriors",
-              "elbicho",
+              "elBicho",
               "ewDavidWmhSegmentationWeights",
               "functionalLungMri",
               "hippMapp3rInitial",
