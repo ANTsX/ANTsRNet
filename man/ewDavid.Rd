@@ -8,6 +8,7 @@ ewDavid(
   flair,
   t1,
   doPreprocessing = TRUE,
+  doSlicewise = TRUE,
   antsxnetCacheDirectory = NULL,
   verbose = FALSE
 )

@@ -59,4 +59,3 @@ createAutoencoderModel <- function( numberOfUnitsPerLayer,
     autoencoderModel = keras_model( inputs = inputs, outputs = autoencoder ),
     encoderModel = keras_model( inputs = inputs, outputs = encoder ) ) )
 }
-

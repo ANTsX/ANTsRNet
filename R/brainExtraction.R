@@ -135,11 +135,18 @@ brainExtraction <- function( image,
     reorientTemplate <- antsImageRead( reorientTemplateFileNamePath )
     resampledImageSize <- dim( reorientTemplate )
 
+    addAttentionGating <- FALSE
+    if( modality == "t1" )
+      {
+      addAttentionGating <- FALSE
+      }
+
     unetModel <- createUnetModel3D( c( resampledImageSize, channelSize ),
       numberOfOutputs = numberOfClassificationLabels,
       numberOfLayers = 4, numberOfFiltersAtBaseLayer = 8, dropoutRate = 0.0,
       convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
-      weightDecay = 1e-5 )
+      weightDecay = 1e-5, addAttentionGating = addAttentionGating )
+
 
     unetModel$load_weights( weightsFileName )
 
