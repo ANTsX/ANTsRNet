@@ -293,6 +293,7 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
 #' @param t1 input 3-D T1-weighted brain image (assumed to be aligned to
 #' the flair).
 #' @param doPreprocessing perform preprocessing.  See description above.
+#' @param doSlicewise apply 2-D model along direction of maximal slice thickness.
 #' @param antsxnetCacheDirectory destination directory for storing the downloaded
 #' template and model weights.  Since these can be resused, if
 #' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
@@ -460,7 +461,7 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, doSlicewise = TRUE,
       {
       t1Preprocessing <- preprocessBrainImage( t1,
           truncateIntensity = c( 0.01, 0.99 ),
-          doBrainExtraction = TRUE,
+          doBrainExtraction = FALSE,
           doBiasCorrection = TRUE,
           doDenoising = FALSE,
           antsxnetCacheDirectory = antsxnetCacheDirectory,
@@ -473,7 +474,7 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, doSlicewise = TRUE,
       {
       flairPreprocessing <- preprocessBrainImage( flair,
           truncateIntensity = c( 0.01, 0.99 ),
-          doBrainExtraction = TRUE,
+          doBrainExtraction = FALSE,
           doBiasCorrection = TRUE,
           doDenoising = FALSE,
           antsxnetCacheDirectory = antsxnetCacheDirectory,
@@ -500,6 +501,12 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, doSlicewise = TRUE,
       }
     flairPreprocessed <- ( flairPreprocessed - mean( flairPreprocessed ) ) / sd( flairPreprocessed )
     t1Preprocessed <- ( t1Preprocessed - mean( t1Preprocessed ) ) / sd( t1Preprocessed )
+
+    ################################
+    #
+    # Build model and load weights
+    #
+    ################################
 
     templateSize = c( 256, 256 )
 
@@ -612,7 +619,7 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, doSlicewise = TRUE,
       predictionImageAverage <- resampleImageToTarget( predictionImageAverage, flair )
       }
 
-    return( probabilityImage = predictionImageAverage )
+    return( predictionImageAverage )
     }
 }
 
