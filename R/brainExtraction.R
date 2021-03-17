@@ -138,7 +138,7 @@ brainExtraction <- function( image,
     addAttentionGating <- FALSE
     if( modality == "t1" )
       {
-      addAttentionGating <- TRUE
+      addAttentionGating <- FALSE
       }
 
     unetModel <- createUnetModel3D( c( resampledImageSize, channelSize ),
