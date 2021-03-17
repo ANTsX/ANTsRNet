@@ -138,6 +138,7 @@ reference:
   - '`categorical_focal_loss`'
   - '`weighted_categorical_crossentropy`'
   - '`multilabel_surface_loss`'
+  - '`maximum_mean_discrepancy`'
 - title: Custom activations
   desc: ~
   contents:

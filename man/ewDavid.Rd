@@ -21,6 +21,8 @@ the flair).}
 
 \item{doPreprocessing}{perform preprocessing.  See description above.}
 
+\item{doSlicewise}{apply 2-D model along direction of maximal slice thickness.}
+
 \item{antsxnetCacheDirectory}{destination directory for storing the downloaded
 template and model weights.  Since these can be resused, if
 \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the

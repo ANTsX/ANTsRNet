@@ -461,6 +461,52 @@ multilabel_surface_loss <- function( y_true, y_pred, dimensionality = 3L )
   return( multilabel_surface_loss_fixed )
 }
 
+#' Function for maximum-mean discrepancy
+#'
+#'  \url{https://jmlr.csail.mit.edu/papers/volume13/gretton12a/gretton12a.pdf}
+#'
+#'
+#' @param y_true True labels (Tensor)
+#' @param y_pred Predictions (Tensor of the same shape as \code{y_true})
+#'
+#' @return mmd value
+#' @author Tustison NJ
+#'
+#' @import keras
+#' @export
+
+maximum_mean_discrepancy <- function( y_true, y_pred, sigma = 1.0 )
+  {
+
+  maximum_mean_discrepancy_fixed <- function( y_true, y_pred )
+    {
+    x <- y_true
+    y <- y_pred
+
+    computeKernel <- function( x, y, sigma = 1.0 )
+      {
+      xSize <- K$shape( x )[1]
+      ySize <- K$shape( y )[1]
+      dim <- K$shape( x )[2]
+      xTiled <- K$tile( K$reshape( x, K$stack( list( xSize, 1L, dim ) ) ), K$stack( list( 1L, ySize, 1L ) ) )
+      yTiled <- K$tile( K$reshape( y, K$stack( list( 1L, ySize, dim ) ) ), K$stack( list( xSize, 1L, 1L ) ) )
+
+      denominator <- 2.0 * K$square( sigma )
+      kernelValue <- K$exp( -K$mean( K$square( xTiled - yTiled ) / denominator, axis = 3L ) / K$cast( dim, 'float32' ) )
+      return( kernelValue )
+      }
+
+    xKernel <- computeKernel( x, x, sigma )
+    yKernel <- computeKernel( y, y, sigma )
+    xyKernel <- computeKernel( x, y, sigma )
+
+    mmdValue <- K$mean( xKernel ) + K$mean( yKernel ) - 2 * K$mean( xy_kernel )
+    return( mmdValue )
+    }
+
+  return( maximum_mean_discrepancy_fixed )
+  }
+
 #' Loss function for the SSD deep learning architecture.
 #'
 #' Creates an R6 class object for use with the SSD deep learning architecture
@@ -651,3 +697,5 @@ LossSSD <- R6::R6Class( "LossSSD",
       }
     )
   )
+
+
