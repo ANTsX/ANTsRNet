@@ -109,7 +109,7 @@ getPretrainedNetwork <- function(
     dktOuter = "https://ndownloader.figshare.com/files/23765132",
     dktOuterWithSpatialPriors = "https://ndownloader.figshare.com/files/24230768",
     elBicho = "https://ndownloader.figshare.com/files/26736779",
-    ewDavidWmhSegmentationWeights = "https://ndownloader.figshare.com/files/25998356",
+    ewDavidWmhSegmentationWeights = "https://ndownloader.figshare.com/files/26827691",
     ewDavidWmhSegmentationSlicewiseWeights = "https://ndownloader.figshare.com/files/26787152",
     functionalLungMri = "https://ndownloader.figshare.com/files/13824167",
     hippMapp3rInitial = "https://ndownloader.figshare.com/files/18068408",

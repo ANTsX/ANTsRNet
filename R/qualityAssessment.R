@@ -105,7 +105,9 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
     }
 
   paddedImageSize <- dim( image ) + paddingSizeVector
-  paddedImage <- padOrCropImageToSize( image, paddedImageSize )
+  paddedImage <- padOrCropImageToSize(
+    smoothImage(image,0.5,sigmaInPhysicalCoordinates=FALSE),
+    paddedImageSize )
 
   numberOfChannels <- 3
 
