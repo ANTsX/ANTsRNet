@@ -519,8 +519,8 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, doSlicewise = TRUE,
 
     unetModel <- createUnetModel2D( c( templateSize, channelSize ),
       numberOfOutputs = numberOfClassificationLabels, mode = 'classification',
-      numberOfLayers = 4, numberOfFiltersAtBaseLayer = 32, dropoutRate = 0.0,
-      convolutionKernelSize = c( 3, 3 ), deconvolutionKernelSize = c( 2, 2 ),
+      numberOfLayers = 5, numberOfFiltersAtBaseLayer = 64, dropoutRate = 0.0,
+      convolutionKernelSize = c( 5, 5 ), deconvolutionKernelSize = c( 3, 3 ),
       weightDecay = 1e-5, nnUnetActivationStyle = TRUE, addAttentionGating = TRUE )
 
     if( verbose == TRUE )
