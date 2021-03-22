@@ -317,13 +317,18 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, doSlicewise = TRUE,
   antsxnetCacheDirectory = NULL, verbose = FALSE )
 {
 
-  if( flair@dimension != 3 )
+  doT1Only <- FALSE
+
+  if( ( is.null( flair ) || missing( flair ) ) && ! missing( t1 ) )
     {
-    stop( "Input image dimension must be 3." )
+    doT1Only <- TRUE
+    } else if( missing( t1 ) && missing( flair ) ) {
+    stop( "Either supply a t1 or a t1 and flair.")
     }
-  if( t1@dimension != 3 )
+
+  if( doT1Only && doSlicewise == FALSE )
     {
-    stop( "Input t1 image dimension must be 3." )
+    stop( "T1-only only works with doSlicewies=TRUE" )
     }
 
   if( is.null( antsxnetCacheDirectory ) )
@@ -334,45 +339,45 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, doSlicewise = TRUE,
   if( doSlicewise == FALSE )
     {
 
-      ################################
-      #
-      # Preprocess images
-      #
-      ################################
+    ################################
+    #
+    # Preprocess images
+    #
+    ################################
 
-      t1Preprocessed <- t1
-      t1Preprocessing <- NULL
-      if( doPreprocessing == TRUE )
-        {
-        t1Preprocessing <- preprocessBrainImage( t1,
-            truncateIntensity = c( 0.001, 0.995 ),
-            doBrainExtraction = TRUE,
-            template = "croppedMni152",
-            templateTransformType = "AffineFast",
-            doBiasCorrection = FALSE,
-            doDenoising = FALSE,
-            antsxnetCacheDirectory = antsxnetCacheDirectory,
-            verbose = verbose )
-        t1Preprocessed <- t1Preprocessing$preprocessedImage * t1Preprocessing$brainMask
-        }
+    t1Preprocessed <- t1
+    t1Preprocessing <- NULL
+    if( doPreprocessing == TRUE )
+      {
+      t1Preprocessing <- preprocessBrainImage( t1,
+          truncateIntensity = c( 0.001, 0.995 ),
+          doBrainExtraction = TRUE,
+          template = "croppedMni152",
+          templateTransformType = "AffineFast",
+          doBiasCorrection = FALSE,
+          doDenoising = FALSE,
+          antsxnetCacheDirectory = antsxnetCacheDirectory,
+          verbose = verbose )
+      t1Preprocessed <- t1Preprocessing$preprocessedImage * t1Preprocessing$brainMask
+      }
 
-      flairPreprocessed <- flair
-      if( doPreprocessing == TRUE )
-        {
-        flairPreprocessing <- preprocessBrainImage( flair,
-            truncateIntensity = c( 0.01, 0.99 ),
-            doBrainExtraction = FALSE,
-            doBiasCorrection = TRUE,
-            doDenoising = FALSE,
-            antsxnetCacheDirectory = antsxnetCacheDirectory,
-            verbose = verbose )
+    flairPreprocessed <- flair
+    if( doPreprocessing == TRUE )
+      {
+      flairPreprocessing <- preprocessBrainImage( flair,
+          truncateIntensity = c( 0.01, 0.99 ),
+          doBrainExtraction = FALSE,
+          doBiasCorrection = TRUE,
+          doDenoising = FALSE,
+          antsxnetCacheDirectory = antsxnetCacheDirectory,
+          verbose = verbose )
 
-        flairPreprocessed <- antsApplyTransforms( fixed = t1Preprocessed,
-          moving = flairPreprocessing$preprocessedImage,
-          transformlist = t1Preprocessing$templateTransforms$fwdtransforms,
-          interpolator = "linear", verbose = verbose )
-        flairPreprocessed <- flairPreprocessed * t1Preprocessing$brainMask
-        }
+      flairPreprocessed <- antsApplyTransforms( fixed = t1Preprocessed,
+        moving = flairPreprocessing$preprocessedImage,
+        transformlist = t1Preprocessing$templateTransforms$fwdtransforms,
+        interpolator = "linear", verbose = verbose )
+      flairPreprocessed <- flairPreprocessed * t1Preprocessing$brainMask
+      }
 
     ################################
     #
@@ -469,20 +474,24 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, doSlicewise = TRUE,
       t1Preprocessed <- t1Preprocessing$preprocessedImage
       }
 
-    flairPreprocessed <- flair
-    if( doPreprocessing == TRUE )
+    flairPreprocessed <- NULL
+    if( ! doT1Only )
       {
-      flairPreprocessing <- preprocessBrainImage( flair,
-          truncateIntensity = c( 0.01, 0.99 ),
-          doBrainExtraction = FALSE,
-          doBiasCorrection = TRUE,
-          doDenoising = FALSE,
-          antsxnetCacheDirectory = antsxnetCacheDirectory,
-          verbose = verbose )
-      flairPreprocessed <- flairPreprocessing$preprocessedImage
+      flairPreprocessed <- flair
+      if( doPreprocessing == TRUE )
+        {
+        flairPreprocessing <- preprocessBrainImage( flair,
+            truncateIntensity = c( 0.01, 0.99 ),
+            doBrainExtraction = FALSE,
+            doBiasCorrection = TRUE,
+            doDenoising = FALSE,
+            antsxnetCacheDirectory = antsxnetCacheDirectory,
+            verbose = verbose )
+        flairPreprocessed <- flairPreprocessing$preprocessedImage
+        }
       }
 
-    resamplingParams <- antsGetSpacing( flairPreprocessed )
+    resamplingParams <- antsGetSpacing( t1Preprocessed )
 
     doResampling <- FALSE
     for( d in seq.int( length( resamplingParams ) ) )
@@ -496,10 +505,16 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, doSlicewise = TRUE,
 
     if( doResampling )
       {
-      flairPreprocessed <- resampleImage( flairPreprocessed, resamplingParams, useVoxels = FALSE, interpType = 0 )
+      if( ! doT1Only )
+        {
+        flairPreprocessed <- resampleImage( flairPreprocessed, resamplingParams, useVoxels = FALSE, interpType = 0 )
+        }
       t1Preprocessed <- resampleImage( t1Preprocessed, resamplingParams, useVoxels = FALSE, interpType = 0 )
       }
-    flairPreprocessed <- ( flairPreprocessed - mean( flairPreprocessed ) ) / sd( flairPreprocessed )
+    if( ! doT1Only )
+      {
+      flairPreprocessed <- ( flairPreprocessed - mean( flairPreprocessed ) ) / sd( flairPreprocessed )
+      }
     t1Preprocessed <- ( t1Preprocessed - mean( t1Preprocessed ) ) / sd( t1Preprocessed )
 
     ################################
@@ -515,6 +530,10 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, doSlicewise = TRUE,
     labels <- seq.int( numberOfClassificationLabels ) - 1
 
     imageModalities <- c( "T1", "FLAIR" )
+    if( doT1Only )
+      {
+      imageModalities <- c( "T1" )
+      }
     channelSize <- length( imageModalities )
 
     unetModel <- createUnetModel2D( c( templateSize, channelSize ),
@@ -527,8 +546,14 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, doSlicewise = TRUE,
       {
       cat( "ewDavid:  retrieving model weights.\n" )
       }
-    weightsFileName <- getPretrainedNetwork( "ewDavidWmhSegmentationSlicewiseWeights",
-      antsxnetCacheDirectory = antsxnetCacheDirectory )
+    if( doT1Only )
+      {
+      weightsFileName <- getPretrainedNetwork( "ewDavidWmhSegmentationSlicewiseT1OnlyWeights",
+        antsxnetCacheDirectory = antsxnetCacheDirectory )
+      } else {
+      weightsFileName <- getPretrainedNetwork( "ewDavidWmhSegmentationSlicewiseWeights",
+        antsxnetCacheDirectory = antsxnetCacheDirectory )
+      }
     load_model_weights_hdf5( unetModel, filepath = weightsFileName )
 
     ################################
@@ -539,7 +564,7 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, doSlicewise = TRUE,
 
     useCoarseSlicesOnly <- TRUE
 
-    dimensionsToPredict <- c( which.max( antsGetSpacing( flairPreprocessed ) )[1] )
+    dimensionsToPredict <- c( which.max( antsGetSpacing( t1Preprocessed ) )[1] )
 
     if( useCoarseSlicesOnly == FALSE )
       {
@@ -547,12 +572,12 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, doSlicewise = TRUE,
       }
 
     batchX <- array( data = 0,
-      c( sum( dim( flairPreprocessed )[dimensionsToPredict]), templateSize, channelSize ) )
+      c( sum( dim( t1Preprocessed )[dimensionsToPredict]), templateSize, channelSize ) )
 
     sliceCount <- 1
     for( d in seq.int( length( dimensionsToPredict ) ) )
       {
-      numberOfSlices <- dim( flairPreprocessed )[dimensionsToPredict[d]]
+      numberOfSlices <- dim( t1Preprocessed )[dimensionsToPredict[d]]
 
       if( verbose == TRUE )
         {
@@ -567,11 +592,16 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, doSlicewise = TRUE,
           setTxtProgressBar( pb, i )
           }
 
-        flairSlice <- padOrCropImageToSize( extractSlice( flairPreprocessed, i, dimensionsToPredict[d] ), templateSize )
-        batchX[sliceCount,,,1] <- as.array( flairSlice )
-
         t1Slice <- padOrCropImageToSize( extractSlice( t1Preprocessed, i, dimensionsToPredict[d] ), templateSize )
-        batchX[sliceCount,,,2] <- as.array( t1Slice )
+
+        if( ! doT1Only )
+          {
+          flairSlice <- padOrCropImageToSize( extractSlice( flairPreprocessed, i, dimensionsToPredict[d] ), templateSize )
+          batchX[sliceCount,,,1] <- as.array( flairSlice )
+          batchX[sliceCount,,,2] <- as.array( t1Slice )
+          } else {
+          batchX[sliceCount,,,1] <- as.array( t1Slice )
+          }
 
         sliceCount <- sliceCount + 1
         }
@@ -599,24 +629,24 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, doSlicewise = TRUE,
     permutations[[2]] <- c( 2, 1, 3 )
     permutations[[3]] <- c( 2, 3, 1 )
 
-    predictionImageAverage <- antsImageClone( flairPreprocessed ) * 0
+    predictionImageAverage <- antsImageClone( t1Preprocessed ) * 0
 
     currentStartSlice <- 1
     for( d in seq.int( length( dimensionsToPredict ) ) )
       {
-      currentEndSlice <- currentStartSlice - 1 + dim( flairPreprocessed )[dimensionsToPredict[d]]
+      currentEndSlice <- currentStartSlice - 1 + dim( t1Preprocessed )[dimensionsToPredict[d]]
       whichBatchSlices <- currentStartSlice:currentEndSlice
       predictionPerDimension <- prediction[whichBatchSlices,,,2]
       predictionArray <- aperm( drop( predictionPerDimension ), permutations[[dimensionsToPredict[d]]] )
-      predictionImage <- antsCopyImageInfo( flairPreprocessed,
-        padOrCropImageToSize( as.antsImage( predictionArray ), dim( flairPreprocessed ) ) )
+      predictionImage <- antsCopyImageInfo( t1Preprocessed,
+        padOrCropImageToSize( as.antsImage( predictionArray ), dim( t1Preprocessed ) ) )
       predictionImageAverage <- predictionImageAverage + ( predictionImage - predictionImageAverage ) / d
       currentStartSlice <- currentEndSlice + 1
       }
 
     if( doResampling )
       {
-      predictionImageAverage <- resampleImageToTarget( predictionImageAverage, flair )
+      predictionImageAverage <- resampleImageToTarget( predictionImageAverage, t1 )
       }
 
     return( predictionImageAverage )
