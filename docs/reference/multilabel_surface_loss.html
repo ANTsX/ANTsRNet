@@ -152,32 +152,38 @@ be included but is not used in the calculation.</p>
 
 <span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/reexports.html'>compile</a></span>( <span class='kw'>loss</span> <span class='kw'>=</span> <span class='no'>multilabel_surface_loss</span>,
  <span class='kw'>optimizer</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/optimizer_adam.html'>optimizer_adam</a></span>( <span class='kw'>lr</span> <span class='kw'>=</span> <span class='fl'>0.0001</span> ),
-   <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='st'>"accuracy"</span> )</div><div class='output co'>#&gt; <span class='error'>Error in py_call_impl(callable, dots$args, dots$keywords): TypeError: Failed to convert object of type &lt;class 'function'&gt; to Tensor. Contents: &lt;function make_python_function.&lt;locals&gt;.python_function at 0x7f915fb00268&gt;. Consider casting elements to a supported type.</span>
+   <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='st'>"accuracy"</span> )</div><div class='output co'>#&gt; <span class='error'>Error in py_call_impl(callable, dots$args, dots$keywords): TypeError: Failed to convert object of type &lt;class 'function'&gt; to Tensor. Contents: &lt;function make_python_function.&lt;locals&gt;.python_function at 0x7feea22119d8&gt;. Consider casting elements to a supported type.</span>
 #&gt; <span class='error'></span>
 #&gt; <span class='error'>Detailed traceback: </span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/training/tracking/base.py", line 456, in _method_wrapper</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/training/tracking/base.py", line 517, in _method_wrapper</span>
 #&gt; <span class='error'>    result = method(self, *args, **kwargs)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/engine/training_v1.py", line 446, in compile</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/engine/training_v1.py", line 457, in compile</span>
 #&gt; <span class='error'>    self._compile_weights_loss_and_weighted_metrics()</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/training/tracking/base.py", line 456, in _method_wrapper</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/training/tracking/base.py", line 517, in _method_wrapper</span>
 #&gt; <span class='error'>    result = method(self, *args, **kwargs)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/engine/training_v1.py", line 1515, in _compile_weights_loss_and_weighted_metrics</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/engine/training_v1.py", line 1543, in _compile_weights_loss_and_weighted_metrics</span>
 #&gt; <span class='error'>    self.total_loss = self._prepare_total_loss(masks)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/engine/training_v1.py", line 1579, in _prepare_total_loss</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/engine/training_v1.py", line 1607, in _prepare_total_loss</span>
 #&gt; <span class='error'>    reduction=losses_utils.ReductionV2.NONE)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/utils/losses_utils.py", line 104, in compute_weighted_loss</span>
-#&gt; <span class='error'>    losses = ops.convert_to_tensor_v2(losses)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/framework/ops.py", line 1283, in convert_to_tensor_v2</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/utils/losses_utils.py", line 256, in compute_weighted_loss</span>
+#&gt; <span class='error'>    losses = ops.convert_to_tensor_v2_with_dispatch(losses)</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/util/dispatch.py", line 201, in wrapper</span>
+#&gt; <span class='error'>    return target(*args, **kwargs)</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/framework/ops.py", line 1405, in convert_to_tensor_v2_with_dispatch</span>
+#&gt; <span class='error'>    value, dtype=dtype, dtype_hint=dtype_hint, name=name)</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/framework/ops.py", line 1415, in convert_to_tensor_v2</span>
 #&gt; <span class='error'>    as_ref=False)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/framework/ops.py", line 1341, in convert_to_tensor</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/profiler/trace.py", line 163, in wrapped</span>
+#&gt; <span class='error'>    return func(*args, **kwargs)</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/framework/ops.py", line 1540, in convert_to_tensor</span>
 #&gt; <span class='error'>    ret = conversion_func(value, dtype=dtype, name=name, as_ref=as_ref)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/framework/constant_op.py", line 321, in _constant_tensor_conversion_function</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/framework/constant_op.py", line 339, in _constant_tensor_conversion_function</span>
 #&gt; <span class='error'>    return constant(v, dtype=dtype, name=name)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/framework/constant_op.py", line 262, in constant</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/framework/constant_op.py", line 265, in constant</span>
 #&gt; <span class='error'>    allow_broadcast=True)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/framework/constant_op.py", line 300, in _constant_impl</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/framework/constant_op.py", line 283, in _constant_impl</span>
 #&gt; <span class='error'>    allow_broadcast=allow_broadcast))</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/framework/tensor_util.py", line 547, in make_tensor_proto</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/framework/tensor_util.py", line 553, in make_tensor_proto</span>
 #&gt; <span class='error'>    "supported type." % (type(values), values))</span></div><div class='input'>
 <span class='co'>########################################</span>
 <span class='co'>#</span>
@@ -189,13 +195,15 @@ be included but is not used in the calculation.</p>
 <span class='no'>r16</span> <span class='kw'>&lt;-</span> <span class='fu'>antsImageRead</span>( <span class='fu'>getANTsRData</span>( <span class='st'>"r16"</span> ) )
 <span class='no'>r16seg</span> <span class='kw'>&lt;-</span> <span class='fu'>kmeansSegmentation</span>( <span class='no'>r16</span>, <span class='fl'>3</span> )$<span class='no'>segmentation</span>
 <span class='no'>r16array</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/array.html'>array</a></span>( <span class='kw'>data</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/array.html'>as.array</a></span>( <span class='no'>r16seg</span> ), <span class='kw'>dim</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>1</span>, <span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span>( <span class='no'>r16seg</span> ) ) )
-<span class='no'>r16tensor</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>tensorflow</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/pkg/tensorflow/man/tf.html'>tf</a></span>$<span class='fu'>convert_to_tensor</span>( <span class='fu'><a href='encodeUnet.html'>encodeUnet</a></span>( <span class='no'>r16array</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span> ) ) )</div><div class='output co'>#&gt; <span class='error'>Error in if (segmentationLabels == NULL) {    segmentationLabels &lt;- order(unique(segmentationsArray))}: argument is of length zero</span></div><div class='input'>
+<span class='no'>r16tensor</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>tensorflow</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/pkg/tensorflow/man/tf.html'>tf</a></span>$<span class='fu'>convert_to_tensor</span>( <span class='fu'><a href='encodeUnet.html'>encodeUnet</a></span>( <span class='no'>r16array</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span> ) ) )
+
 <span class='no'>r64</span> <span class='kw'>&lt;-</span> <span class='fu'>antsImageRead</span>( <span class='fu'>getANTsRData</span>( <span class='st'>"r64"</span> ) )
 <span class='no'>r64seg</span> <span class='kw'>&lt;-</span> <span class='fu'>kmeansSegmentation</span>( <span class='no'>r64</span>, <span class='fl'>3</span> )$<span class='no'>segmentation</span>
 <span class='no'>r64array</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/array.html'>array</a></span>( <span class='kw'>data</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/array.html'>as.array</a></span>( <span class='no'>r64seg</span> ), <span class='kw'>dim</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>1</span>, <span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span>( <span class='no'>r64seg</span> ) ) )
-<span class='no'>r64tensor</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>tensorflow</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/pkg/tensorflow/man/tf.html'>tf</a></span>$<span class='fu'>convert_to_tensor</span>( <span class='fu'><a href='encodeUnet.html'>encodeUnet</a></span>( <span class='no'>r64array</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span> ) ) )</div><div class='output co'>#&gt; <span class='error'>Error in if (segmentationLabels == NULL) {    segmentationLabels &lt;- order(unique(segmentationsArray))}: argument is of length zero</span></div><div class='input'>
+<span class='no'>r64tensor</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>tensorflow</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/pkg/tensorflow/man/tf.html'>tf</a></span>$<span class='fu'>convert_to_tensor</span>( <span class='fu'><a href='encodeUnet.html'>encodeUnet</a></span>( <span class='no'>r64array</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span> ) ) )
+
 <span class='no'>surface_loss</span> <span class='kw'>&lt;-</span> <span class='fu'>multilabel_surface_loss</span>( <span class='no'>r16tensor</span>, <span class='no'>r64tensor</span>, <span class='kw'>dimensionality</span> <span class='kw'>=</span> <span class='fl'>2L</span> )
-<span class='no'>loss_value</span> <span class='kw'>&lt;-</span> <span class='fu'>surface_loss</span>( <span class='no'>r16tensor</span>, <span class='no'>r64tensor</span> )$<span class='fu'>numpy</span>()</div><div class='output co'>#&gt; <span class='error'>Error in py_resolve_dots(list(...)): object 'r16tensor' not found</span></div><div class='input'>
+<span class='no'>loss_value</span> <span class='kw'>&lt;-</span> <span class='fu'>surface_loss</span>( <span class='no'>r16tensor</span>, <span class='no'>r64tensor</span> )$<span class='fu'>numpy</span>()</div><div class='output co'>#&gt; <span class='error'>Error in py_get_attr_impl(x, name, silent): AttributeError: 'Tensor' object has no attribute 'numpy'</span></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

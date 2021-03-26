@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>getPretrainedNetwork — getPretrainedNetwork • ANTsRNet</title>
+<title>Function for maximum-mean discrepancy — maximum_mean_discrepancy • ANTsRNet</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="getPretrainedNetwork — getPretrainedNetwork" />
-<meta property="og:description" content="Downloads pretrained network/weights." />
+<meta property="og:title" content="Function for maximum-mean discrepancy — maximum_mean_discrepancy" />
+<meta property="og:description" content="https://jmlr.csail.mit.edu/papers/volume13/gretton12a/gretton12a.pdf" />
 
 
 
@@ -108,71 +108,34 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>getPretrainedNetwork</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ANTsX/ANTsRNet/blob/master/R/getPretrainedNetwork.R'><code>R/getPretrainedNetwork.R</code></a></small>
-    <div class="hidden name"><code>getPretrainedNetwork.Rd</code></div>
+    <h1>Function for maximum-mean discrepancy</h1>
+    <small class="dont-index">Source: <a href='https://github.com/ANTsX/ANTsRNet/blob/master/R/customMetrics.R'><code>R/customMetrics.R</code></a></small>
+    <div class="hidden name"><code>maximum_mean_discrepancy.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Downloads pretrained network/weights.</p>
+    <p><a href='https://jmlr.csail.mit.edu/papers/volume13/gretton12a/gretton12a.pdf'>https://jmlr.csail.mit.edu/papers/volume13/gretton12a/gretton12a.pdf</a></p>
     </div>
 
-    <pre class="usage"><span class='fu'>getPretrainedNetwork</span>(
-  <span class='kw'>fileId</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"show"</span>, <span class='st'>"brainAgeGender"</span>, <span class='st'>"brainAgeFmrib"</span>, <span class='st'>"brainAgeDeepBrainNet"</span>,
-    <span class='st'>"brainExtraction"</span>, <span class='st'>"brainExtractionT2"</span>, <span class='st'>"brainExtractionFLAIR"</span>,
-    <span class='st'>"brainExtractionBOLD"</span>, <span class='st'>"brainExtractionFA"</span>, <span class='st'>"brainExtractionNoBrainer"</span>,
-    <span class='st'>"brainExtractionInfantT1T2"</span>, <span class='st'>"brainExtractionInfantT1"</span>, <span class='st'>"brainExtractionInfantT2"</span>,
-    <span class='st'>"brainSegmentation"</span>, <span class='st'>"brainSegmentationPatchBased"</span>, <span class='st'>"ctHumanLung"</span>, <span class='st'>"dbpn4x"</span>,
-    <span class='st'>"deepFlash"</span>, <span class='st'>"deepFlashLeft8"</span>, <span class='st'>"deepFlashRight8"</span>, <span class='st'>"deepFlashLeft16"</span>,
-    <span class='st'>"deepFlashRight16"</span>, <span class='st'>"deepFlashLeft16new"</span>, <span class='st'>"deepFlashRight16new"</span>, <span class='st'>"denoising"</span>,
-    <span class='st'>"dktInner"</span>, <span class='st'>"dktOuter"</span>, <span class='st'>"dktOuterWithSpatialPriors"</span>, <span class='st'>"elBicho"</span>,
-    <span class='st'>"ewDavidWmhSegmentationWeights"</span>, <span class='st'>"ewDavidWmhSegmentationSlicewiseWeights"</span>,
-    <span class='st'>"ewDavidWmhSegmentationSlicewiseT1OnlyWeights"</span>, <span class='st'>"functionalLungMri"</span>,
-    <span class='st'>"hippMapp3rInitial"</span>, <span class='st'>"hippMapp3rRefine"</span>, <span class='st'>"koniqMBCS"</span>, <span class='st'>"koniqMS"</span>, <span class='st'>"koniqMS2"</span>,
-    <span class='st'>"koniqMS3"</span>, <span class='st'>"mriSuperResolution"</span>, <span class='st'>"protonLungMri"</span>,
-    <span class='st'>"sixTissueOctantBrainSegmentation"</span>, <span class='st'>"sysuMediaWmhFlairOnlyModel0"</span>,
-    <span class='st'>"sysuMediaWmhFlairOnlyModel1"</span>, <span class='st'>"sysuMediaWmhFlairOnlyModel2"</span>,
-    <span class='st'>"sysuMediaWmhFlairT1Model0"</span>, <span class='st'>"sysuMediaWmhFlairT1Model1"</span>,
-    <span class='st'>"sysuMediaWmhFlairT1Model2"</span>, <span class='st'>"tidsQualityAssessment"</span>,
-    <span class='st'>"wholeTumorSegmentationT2Flair"</span>),
-  <span class='no'>targetFileName</span>,
-  <span class='kw'>antsxnetCacheDirectory</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
-)</pre>
+    <pre class="usage"><span class='fu'>maximum_mean_discrepancy</span>(<span class='no'>y_true</span>, <span class='no'>y_pred</span>, <span class='kw'>sigma</span> <span class='kw'>=</span> <span class='fl'>1</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>fileId</th>
-      <td><p>one of the permitted file ids or pass "show" to list all
-valid possibilities. Note that most require internet access to download.</p></td>
+      <th>y_true</th>
+      <td><p>True labels (Tensor)</p></td>
     </tr>
     <tr>
-      <th>targetFileName</th>
-      <td><p>optional target filename</p></td>
-    </tr>
-    <tr>
-      <th>antsxnetCacheDirectory</th>
-      <td><p>destination directory for storing the downloaded
-template and model weights.  Since these can be resused, if
-<code><a href='https://rdrr.io/r/base/NULL.html'>is.null(antsxnetCacheDirectory)</a></code>, these data will be downloaded to the
-subdirectory ~/.keras/ANTsXNet/.</p></td>
+      <th>y_pred</th>
+      <td><p>Predictions (Tensor of the same shape as <code>y_true</code>)</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>filename string</p>
-    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
+    <p>mmd value</p>
 
-    <p>See <a href='https://figshare.com/authors/Nick_Tustison/441144'>https://figshare.com/authors/Nick_Tustison/441144</a>
-or <a href='https://figshare.com/authors/Brian_Avants/418551'>https://figshare.com/authors/Brian_Avants/418551</a>
-for some more descriptions</p>
-
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='no'>net</span> <span class='kw'>&lt;-</span> <span class='fu'>getPretrainedNetwork</span>( <span class='st'>"dbpn4x"</span> )
-}</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

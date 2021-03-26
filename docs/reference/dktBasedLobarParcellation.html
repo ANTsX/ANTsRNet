@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>White matter hypterintensity probabilistic segmentation — ewDavid • ANTsRNet</title>
+<title>Lobar parcellation — dktBasedLobarParcellation • ANTsRNet</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,11 @@
 
 
 
-<meta property="og:title" content="White matter hypterintensity probabilistic segmentation — ewDavid" />
-<meta property="og:description" content="Perform White matter hypterintensity probabilistic segmentation
-using deep learning" />
+<meta property="og:title" content="Lobar parcellation — dktBasedLobarParcellation" />
+<meta property="og:description" content="Use Desikan-Killiany-Tourville labeling to generate a lobar parcellation
+based on an ANTs-flavored brain mask.  The user might want to run to
+multiply the result by the &quot;no-brainer&quot; mask and/or the output from
+DeepAtropos." />
 
 
 
@@ -109,21 +111,22 @@ using deep learning" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>White matter hypterintensity probabilistic segmentation</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ANTsX/ANTsRNet/blob/master/R/whiteMatterHyperintensitySegmentation.R'><code>R/whiteMatterHyperintensitySegmentation.R</code></a></small>
-    <div class="hidden name"><code>ewDavid.Rd</code></div>
+    <h1>Lobar parcellation</h1>
+    <small class="dont-index">Source: <a href='https://github.com/ANTsX/ANTsRNet/blob/master/R/desikanKillianyTourvilleLabeling.R'><code>R/desikanKillianyTourvilleLabeling.R</code></a></small>
+    <div class="hidden name"><code>dktBasedLobarParcellation.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Perform White matter hypterintensity probabilistic segmentation
-using deep learning</p>
+    <p>Use Desikan-Killiany-Tourville labeling to generate a lobar parcellation
+based on an ANTs-flavored brain mask.  The user might want to run to
+multiply the result by the "no-brainer" mask and/or the output from
+DeepAtropos.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>ewDavid</span>(
-  <span class='no'>flair</span>,
+    <pre class="usage"><span class='fu'>dktBasedLobarParcellation</span>(
   <span class='no'>t1</span>,
+  <span class='kw'>dkt</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>doPreprocessing</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>doSlicewise</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>antsxnetCacheDirectory</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
 )</pre>
@@ -132,36 +135,28 @@ using deep learning</p>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>flair</th>
-      <td><p>input 3-D FLAIR brain image.</p></td>
+      <th>t1</th>
+      <td><p>raw or preprocessed 3-D T1-weighted brain image.</p></td>
     </tr>
     <tr>
-      <th>t1</th>
-      <td><p>input 3-D T1-weighted brain image (assumed to be aligned to
-the flair).</p></td>
+      <th>dkt</th>
+      <td><p>dkt label image.  If NULL (default), <code>desikanKillianyTourvilleLabeling</code>
+is called.</p></td>
     </tr>
     <tr>
       <th>doPreprocessing</th>
       <td><p>perform preprocessing.  See description above.</p></td>
     </tr>
     <tr>
-      <th>doSlicewise</th>
-      <td><p>apply 2-D model along direction of maximal slice thickness.</p></td>
-    </tr>
-    <tr>
       <th>antsxnetCacheDirectory</th>
       <td><p>destination directory for storing the downloaded
 template and model weights.  Since these can be resused, if
 <code><a href='https://rdrr.io/r/base/NULL.html'>is.null(antsxnetCacheDirectory)</a></code>, these data will be downloaded to the
-inst/extdata/ subfolder of the ANTsRNet package.</p></td>
+subdirectory ~/.keras/ANTsXNet/.</p></td>
     </tr>
     <tr>
       <th>verbose</th>
       <td><p>print progress.</p></td>
-    </tr>
-    <tr>
-      <th>debug</th>
-      <td><p>return feature images in the last layer of the u-net model.</p></td>
     </tr>
     </table>
 
@@ -171,24 +166,85 @@ inst/extdata/ subfolder of the ANTsRNet package.</p></td>
 each label.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Preprocessing on the training data consisted of:</p><ul>
-<li><p>n4 bias correction,</p></li>
-<li><p>brain extraction, and</p></li>
-<li><p>affine registration to MNI.
-The input T1 should undergo the same steps.  If the input T1 is the raw
-T1, these steps can be performed by the internal preprocessing, i.e. set
-<code>doPreprocessing = TRUE</code></p></li>
+    <p>See <a href='https://surfer.nmr.mgh.harvard.edu/fswiki/CorticalParcellation'>https://surfer.nmr.mgh.harvard.edu/fswiki/CorticalParcellation</a></p>
+<ul>
+<li><p>Label 1002:left caudal anterior cingulate</p></li>
+<li><p>Label 1003:left caudal middle frontal</p></li>
+<li><p>Label 1012:left lateral orbitofrontal</p></li>
+<li><p>Label 1014:left medial orbitofrontal</p></li>
+<li><p>Label 1017:left paracentral</p></li>
+<li><p>Label 1018:left pars opercularis</p></li>
+<li><p>Label 1019:left pars orbitalis</p></li>
+<li><p>Label 1020:left pars triangularis</p></li>
+<li><p>Label 1026:left rostral anterior cingulate</p></li>
+<li><p>Label 1027:left rostral middle frontal</p></li>
+<li><p>Label 1028:left superior frontal</p></li>
+<li><p>Label 2002:right caudal anterior cingulate</p></li>
+<li><p>Label 2003:right caudal middle frontal</p></li>
+<li><p>Label 2012:right lateral orbitofrontal</p></li>
+<li><p>Label 2014:right medial orbitofrontal</p></li>
+<li><p>Label 2017:right paracentral</p></li>
+<li><p>Label 2018:right pars opercularis</p></li>
+<li><p>Label 2019:right pars orbitalis</p></li>
+<li><p>Label 2020:right pars triangularis</p></li>
+<li><p>Label 2026:right rostral anterior cingulate</p></li>
+<li><p>Label 2027:right rostral middle frontal</p></li>
+<li><p>Label 2028:right superior frontal</p>
+<p>Parietal:</p></li>
+<li><p>Label 1008:left inferior parietal</p></li>
+<li><p>Label 1010:left isthmus cingulate</p></li>
+<li><p>Label 1022:left postcentral</p></li>
+<li><p>Label 1023:left posterior cingulate</p></li>
+<li><p>Label 1024:left precentral</p></li>
+<li><p>Label 1025:left precuneus</p></li>
+<li><p>Label 1029:left superior parietal</p></li>
+<li><p>Label 1031:left supramarginal</p></li>
+<li><p>Label 2008:right inferior parietal</p></li>
+<li><p>Label 2010:right isthmus cingulate</p></li>
+<li><p>Label 2022:right postcentral</p></li>
+<li><p>Label 2023:right posterior cingulate</p></li>
+<li><p>Label 2024:right precentral</p></li>
+<li><p>Label 2025:right precuneus</p></li>
+<li><p>Label 2029:right superior parietal</p></li>
+<li><p>Label 2031:right supramarginal</p>
+<p>Temporal:</p></li>
+<li><p>Label 1006:left entorhinal</p></li>
+<li><p>Label 1007:left fusiform</p></li>
+<li><p>Label 1009:left inferior temporal</p></li>
+<li><p>Label 1015:left middle temporal</p></li>
+<li><p>Label 1016:left parahippocampal</p></li>
+<li><p>Label 1030:left superior temporal</p></li>
+<li><p>Label 1034:left transverse temporal</p></li>
+<li><p>Label 2006:right entorhinal</p></li>
+<li><p>Label 2007:right fusiform</p></li>
+<li><p>Label 2009:right inferior temporal</p></li>
+<li><p>Label 2015:right middle temporal</p></li>
+<li><p>Label 2016:right parahippocampal</p></li>
+<li><p>Label 2030:right superior temporal</p></li>
+<li><p>Label 2034:right transverse temporal</p>
+<p>Occipital:</p></li>
+<li><p>Label 1005:left cuneus</p></li>
+<li><p>Label 1011:left lateral occipital</p></li>
+<li><p>Label 1013:left lingual</p></li>
+<li><p>Label 1021:left pericalcarine</p></li>
+<li><p>Label 2005:right cuneus</p></li>
+<li><p>Label 2011:right lateral occipital</p></li>
+<li><p>Label 2013:right lingual</p></li>
+<li><p>Label 2021:right pericalcarine</p>
+<p>Other outer labels:</p></li>
+<li><p>Label 1035:left insula</p></li>
+<li><p>Label 2035:right insula</p></li>
 </ul>
 
+<p>See <code>desikanKillianyTourvilleLabeling</code> for preprocessing information.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>ANTsRNet</span> )
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>keras</span> )
 
-<span class='no'>t1</span> <span class='kw'>&lt;-</span> <span class='fu'>antsImageRead</span>( <span class='st'>"t1.nii.gz"</span> )
-<span class='no'>flair</span> <span class='kw'>&lt;-</span> <span class='fu'>antsImageRead</span>( <span class='st'>"flair.nii.gz"</span> )
-<span class='no'>results</span> <span class='kw'>&lt;-</span> <span class='fu'>ewDavid</span>( <span class='no'>t1</span>, <span class='no'>flair</span> )
+<span class='no'>image</span> <span class='kw'>&lt;-</span> <span class='fu'>antsImageRead</span>( <span class='st'>"t1.nii.gz"</span> )
+<span class='no'>results</span> <span class='kw'>&lt;-</span> <span class='fu'>dktBasedLobarParcellation</span>( <span class='no'>image</span> )
 }</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -233,7 +233,8 @@ implementation:</p><pre>    \url{https://github.com/veugene/fcn_maker/}
 #&gt; Processing image r30 
 #&gt; Processing image r62 
 #&gt; Processing image r64 
-#&gt; Processing image r85 </div><div class='input'><span class='no'>Y_train</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='encodeUnet.html'>encodeUnet</a></span>( <span class='no'>Y_train</span>, <span class='no'>segmentationLabels</span> )</div><div class='output co'>#&gt; <span class='error'>Error in if (segmentationLabels == NULL) {    segmentationLabels &lt;- order(unique(segmentationsArray))}: argument is of length zero</span></div><div class='input'>
+#&gt; Processing image r85 </div><div class='input'><span class='no'>Y_train</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='encodeUnet.html'>encodeUnet</a></span>( <span class='no'>Y_train</span>, <span class='no'>segmentationLabels</span> )
+
 <span class='co'># Perform a simple normalization</span>
 
 <span class='no'>X_train</span> <span class='kw'>&lt;-</span> ( <span class='no'>X_train</span> - <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span>( <span class='no'>X_train</span> ) ) / <span class='fu'><a href='https://rdrr.io/r/stats/sd.html'>sd</a></span>( <span class='no'>X_train</span> )
@@ -243,8 +244,8 @@ implementation:</p><pre>    \url{https://github.com/veugene/fcn_maker/}
 <span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'>createResUnetModel2D</span>( <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span>( <span class='no'>domainImage</span> ), <span class='fl'>1</span> ),
   <span class='kw'>numberOfOutputs</span> <span class='kw'>=</span> <span class='no'>numberOfLabels</span> )
 <span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>domainImage</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
-#&gt; Ncells 2529675 135.1    4591268 245.3         NA   4591268 245.3
-#&gt; Vcells 5266237  40.2   32973271 251.6     102400 127496083 972.8</div><div class='input'>
+#&gt; Ncells 2533258 135.3    4598568 245.6         NA   4598568 245.6
+#&gt; Vcells 6058678  46.3   32977798 251.7     102400 127493339 972.7</div><div class='input'>
 <span class='no'>metric_multilabel_dice_coefficient</span> <span class='kw'>&lt;-</span>
   <span class='fu'><a href='https://rdrr.io/pkg/keras/man/metric_binary_accuracy.html'>custom_metric</a></span>( <span class='st'>"multilabel_dice_coefficient"</span>,
     <span class='no'>multilabel_dice_coefficient</span> )
@@ -272,16 +273,16 @@ implementation:</p><pre>    \url{https://github.com/veugene/fcn_maker/}
 <span class='co'>#              ),</span>
 <span class='co'>#              validation_split = 0.2 )</span>
 <span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>X_train</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
-#&gt; Ncells 2526913 135.0    4591268 245.3         NA   4591268 245.3
-#&gt; Vcells 4868280  37.2   26378617 201.3     102400 127496083 972.8</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>Y_train</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
-#&gt; Ncells 2526773 135.0    4591268 245.3         NA   4591268 245.3
-#&gt; Vcells 4474853  34.2   21102894 161.1     102400 127496083 972.8</div><div class='input'><span class='co'># Save the model and/or save the model weights</span>
+#&gt; Ncells 2529380 135.1    4598568 245.6         NA   4598568 245.6
+#&gt; Vcells 5658861  43.2   26382239 201.3     102400 127493339 972.7</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>Y_train</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
+#&gt; Ncells 2529240 135.1    4598568 245.6         NA   4598568 245.6
+#&gt; Vcells 4479002  34.2   21105792 161.1     102400 127493339 972.7</div><div class='input'><span class='co'># Save the model and/or save the model weights</span>
 
 <span class='co'># save_model_hdf5( model, filepath = 'resUnetModel.h5' )</span>
 <span class='co'># save_model_weights_hdf5( unetModel, filepath = 'resUnetModelWeights.h5' ) )</span>
 <span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>model</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
-#&gt; Ncells 2526723 135.0    4591268 245.3         NA   4591268 245.3
-#&gt; Vcells 4474856  34.2   16882316 128.9     102400 127496083 972.8</div><div class='input'>
+#&gt; Ncells 2529188 135.1    4598568 245.6         NA   4598568 245.6
+#&gt; Vcells 4479001  34.2   16884634 128.9     102400 127493339 972.7</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

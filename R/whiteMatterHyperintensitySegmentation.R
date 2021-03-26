@@ -328,7 +328,7 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, doSlicewise = TRUE,
 
   if( doT1Only && doSlicewise == FALSE )
     {
-    stop( "T1-only only works with doSlicewies=TRUE" )
+    stop( "T1-only only works with doSlicewise=TRUE" )
     }
 
   if( is.null( antsxnetCacheDirectory ) )
