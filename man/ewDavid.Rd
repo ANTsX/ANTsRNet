@@ -9,6 +9,7 @@ ewDavid(
   t1,
   doPreprocessing = TRUE,
   doSlicewise = TRUE,
+  whichAxes = "max",
   antsxnetCacheDirectory = NULL,
   verbose = FALSE
 )
@@ -22,6 +23,10 @@ the flair).}
 \item{doPreprocessing}{perform preprocessing.  See description above.}
 
 \item{doSlicewise}{apply 2-D model along direction of maximal slice thickness.}
+
+\item{whichAxes}{apply 2-D model to 1 or more axes.  In addition to a scalar
+or vector, e.g., \code{whichAxes = c(1, 3)}, one can use "max" for the
+axis with maximum anisotropy (default) or "all" for all axes.}
 
 \item{antsxnetCacheDirectory}{destination directory for storing the downloaded
 template and model weights.  Since these can be resused, if

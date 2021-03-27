@@ -294,6 +294,9 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
 #' the flair).
 #' @param doPreprocessing perform preprocessing.  See description above.
 #' @param doSlicewise apply 2-D model along direction of maximal slice thickness.
+#' @param whichAxes apply 2-D model to 1 or more axes.  In addition to a scalar
+#' or vector, e.g., \code{whichAxes = c(1, 3)}, one can use "max" for the
+#' axis with maximum anisotropy (default) or "all" for all axes.
 #' @param antsxnetCacheDirectory destination directory for storing the downloaded
 #' template and model weights.  Since these can be resused, if
 #' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
@@ -314,7 +317,7 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
 #' }
 #' @export
 ewDavid <- function( flair, t1, doPreprocessing = TRUE, doSlicewise = TRUE,
-  antsxnetCacheDirectory = NULL, verbose = FALSE )
+  whichAxes = "max", antsxnetCacheDirectory = NULL, verbose = FALSE )
 {
 
   doT1Only <- FALSE
@@ -562,13 +565,14 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, doSlicewise = TRUE,
     #
     ################################
 
-    useCoarseSlicesOnly <- TRUE
-
-    dimensionsToPredict <- c( which.max( antsGetSpacing( t1Preprocessed ) )[1] )
-
-    if( useCoarseSlicesOnly == FALSE )
+    dimensionsToPredict <- c( 1 )
+    if( whichAxes == "max" )
       {
+      dimensionsToPredict <- c( which.max( antsGetSpacing( t1Preprocessed ) )[1] )
+      } else if( whichAxes == "all" ) {
       dimensionsToPredict <- 1:3
+      } else {
+      dimensionsToPredict <- whichAxes
       }
 
     batchX <- array( data = 0,
