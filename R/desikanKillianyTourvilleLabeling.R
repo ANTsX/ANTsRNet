@@ -384,6 +384,7 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
 #'  \item{Label 1003:}{left caudal middle frontal}
 #'  \item{Label 1012:}{left lateral orbitofrontal}
 #'  \item{Label 1014:}{left medial orbitofrontal}
+#'  \item{Label 1017:}{left paracentral}
 #'  \item{Label 1018:}{left pars opercularis}
 #'  \item{Label 1019:}{left pars orbitalis}
 #'  \item{Label 1020:}{left pars triangularis}
@@ -394,6 +395,7 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
 #'  \item{Label 2003:}{right caudal middle frontal}
 #'  \item{Label 2012:}{right lateral orbitofrontal}
 #'  \item{Label 2014:}{right medial orbitofrontal}
+#'  \item{Label 2017:}{right paracentral}
 #'  \item{Label 2018:}{right pars opercularis}
 #'  \item{Label 2019:}{right pars orbitalis}
 #'  \item{Label 2020:}{right pars triangularis}
@@ -404,7 +406,6 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
 #'  Parietal:
 #'  \item{Label 1008:}{left inferior parietal}
 #'  \item{Label 1010:}{left isthmus cingulate}
-#'  \item{Label 1017:}{left paracentral}
 #'  \item{Label 1022:}{left postcentral}
 #'  \item{Label 1023:}{left posterior cingulate}
 #'  \item{Label 1024:}{left precentral}
@@ -413,7 +414,6 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
 #'  \item{Label 1031:}{left supramarginal}
 #'  \item{Label 2008:}{right inferior parietal}
 #'  \item{Label 2010:}{right isthmus cingulate}
-#'  \item{Label 2017:}{right paracentral}
 #'  \item{Label 2022:}{right postcentral}
 #'  \item{Label 2023:}{right posterior cingulate}
 #'  \item{Label 2024:}{right precentral}
@@ -617,10 +617,10 @@ dktBasedLobarParcellation <- function( t1, dkt = NULL, doPreprocessing = TRUE,
   #
   ################################
 
-  frontalLabels <- c( 1002, 1003, 1012, 1014, 1018:1020, 1026:1028,
-                      2002, 2003, 2012, 2014, 2018:2020, 2026:2028 )
-  parietalLabels <- c( 1008, 1010, 1017, 1022:1025, 1029, 1031,
-                       2008, 2010, 2017, 2022:2025, 2029, 2031 )
+  frontalLabels <- c( 1002, 1003, 1012, 1014, 1017:1020, 1026:1028,
+                      2002, 2003, 2012, 2014, 2017:2020, 2026:2028 )
+  parietalLabels <- c( 1008, 1010, 1022:1025, 1029, 1031,
+                       2008, 2010, 2022:2025, 2029, 2031 )
   temporalLabels <- c( 1006, 1007, 1009, 1015, 1016, 1030, 1034,
                        2006, 2007, 2009, 2015, 2016, 2030, 2034 )
   occipitalLabels <- c( 1005, 1011, 1013, 1021,
