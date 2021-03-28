@@ -39,7 +39,7 @@
 #' }
 #' @export
 brainExtraction <- function( image,
-  modality = c( "t1", "t1nobrainer", "t1combined", "t2", "flair", "bold", "fa", "t1t2infant", "t1infant", "t2infant" ),
+  modality = c( "t1", "t1x", "t1nobrainer", "t1combined", "t2", "flair", "bold", "fa", "t1t2infant", "t1infant", "t2infant" ),
   antsxnetCacheDirectory = NULL, verbose = FALSE )
   {
 
@@ -101,6 +101,8 @@ brainExtraction <- function( image,
     if( modality == "t1" )
       {
       weightsFilePrefix <- "brainExtraction"
+      } else if( modality == "t1x" ) {
+      weightsFilePrefix <- "brainExtractionT1"
       } else if( modality == "t2" ) {
       weightsFilePrefix <- "brainExtractionT2"
       } else if( modality == "flair" ) {
@@ -135,10 +137,8 @@ brainExtraction <- function( image,
     reorientTemplate <- antsImageRead( reorientTemplateFileNamePath )
     resampledImageSize <- dim( reorientTemplate )
 
-    addAttentionGating <- FALSE
-    if( modality == "t1" )
+    if( modality == "t1x" )
       {
-      addAttentionGating <- FALSE
       classes <- c( "background", "head", "brain" )
       numberOfClassificationLabels <- length( classes )
       }
@@ -147,7 +147,7 @@ brainExtraction <- function( image,
       numberOfOutputs = numberOfClassificationLabels,
       numberOfLayers = 4, numberOfFiltersAtBaseLayer = 8, dropoutRate = 0.0,
       convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
-      weightDecay = 1e-5, addAttentionGating = addAttentionGating )
+      weightDecay = 1e-5, addAttentionGating = FALSE )
 
 
     unetModel$load_weights( weightsFileName )
@@ -183,8 +183,9 @@ brainExtraction <- function( image,
       {
       cat( "Brain extraction:  renormalize probability mask to native space.\n" )
       }
+    whichChannel <- length( probabilityImagesArray[[1]] )  
     probabilityImage <- applyAntsrTransformToImage( invertAntsrTransform( xfrm ),
-      probabilityImagesArray[[1]][[3]], inputImages[[1]] )
+      probabilityImagesArray[[1]][[whichChannel]], inputImages[[1]] )
 
     return( probabilityImage )
     } else {
