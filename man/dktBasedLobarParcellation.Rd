@@ -46,9 +46,11 @@ Frontal lobe:
 \item{Label 1003:}{left caudal middle frontal}
 \item{Label 1012:}{left lateral orbitofrontal}
 \item{Label 1014:}{left medial orbitofrontal}
+\item{Label 1017:}{left paracentral}
 \item{Label 1018:}{left pars opercularis}
 \item{Label 1019:}{left pars orbitalis}
 \item{Label 1020:}{left pars triangularis}
+\item{Label 1024:}{left precentral}
 \item{Label 1026:}{left rostral anterior cingulate}
 \item{Label 1027:}{left rostral middle frontal}
 \item{Label 1028:}{left superior frontal}
@@ -56,9 +58,11 @@ Frontal lobe:
 \item{Label 2003:}{right caudal middle frontal}
 \item{Label 2012:}{right lateral orbitofrontal}
 \item{Label 2014:}{right medial orbitofrontal}
+\item{Label 2017:}{right paracentral}
 \item{Label 2018:}{right pars opercularis}
 \item{Label 2019:}{right pars orbitalis}
 \item{Label 2020:}{right pars triangularis}
+\item{Label 2024:}{right precentral}
 \item{Label 2026:}{right rostral anterior cingulate}
 \item{Label 2027:}{right rostral middle frontal}
 \item{Label 2028:}{right superior frontal}
@@ -66,19 +70,15 @@ Frontal lobe:
 Parietal:
 \item{Label 1008:}{left inferior parietal}
 \item{Label 1010:}{left isthmus cingulate}
-\item{Label 1017:}{left paracentral}
 \item{Label 1022:}{left postcentral}
 \item{Label 1023:}{left posterior cingulate}
-\item{Label 1024:}{left precentral}
 \item{Label 1025:}{left precuneus}
 \item{Label 1029:}{left superior parietal}
 \item{Label 1031:}{left supramarginal}
 \item{Label 2008:}{right inferior parietal}
 \item{Label 2010:}{right isthmus cingulate}
-\item{Label 2017:}{right paracentral}
 \item{Label 2022:}{right postcentral}
 \item{Label 2023:}{right posterior cingulate}
-\item{Label 2024:}{right precentral}
 \item{Label 2025:}{right precuneus}
 \item{Label 2029:}{right superior parietal}
 \item{Label 2031:}{right supramarginal}

@@ -139,6 +139,8 @@ brainExtraction <- function( image,
     if( modality == "t1" )
       {
       addAttentionGating <- FALSE
+      classes <- c( "background", "head", "brain" )
+      numberOfClassificationLabels <- length( classes )
       }
 
     unetModel <- createUnetModel3D( c( resampledImageSize, channelSize ),
@@ -182,7 +184,7 @@ brainExtraction <- function( image,
       cat( "Brain extraction:  renormalize probability mask to native space.\n" )
       }
     probabilityImage <- applyAntsrTransformToImage( invertAntsrTransform( xfrm ),
-      probabilityImagesArray[[1]][[2]], inputImages[[1]] )
+      probabilityImagesArray[[1]][[3]], inputImages[[1]] )
 
     return( probabilityImage )
     } else {
