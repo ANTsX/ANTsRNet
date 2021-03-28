@@ -6,12 +6,12 @@
 \usage{
 getPretrainedNetwork(
   fileId = c("show", "brainAgeGender", "brainAgeFmrib", "brainAgeDeepBrainNet",
-    "brainExtraction", "brainExtractionT2", "brainExtractionFLAIR",
+    "brainExtraction", "brainExtractionT1", "brainExtractionT2", "brainExtractionFLAIR",
     "brainExtractionBOLD", "brainExtractionFA", "brainExtractionNoBrainer",
     "brainExtractionInfantT1T2", "brainExtractionInfantT1", "brainExtractionInfantT2",
     "brainSegmentation", "brainSegmentationPatchBased", "ctHumanLung", "dbpn4x",
     "deepFlash", "deepFlashLeft8", "deepFlashRight8", "deepFlashLeft16",
-    "deepFlashRight16", "deepFlashLeft16new", "deepFlashRight16new", "denoising",     
+    "deepFlashRight16", "deepFlashLeft16new", "deepFlashRight16new",      "denoising",
     "dktInner", "dktOuter", "dktOuterWithSpatialPriors", "elBicho",
     "ewDavidWmhSegmentationWeights", "ewDavidWmhSegmentationSlicewiseWeights",
     "ewDavidWmhSegmentationSlicewiseT1OnlyWeights", "functionalLungMri",
@@ -19,7 +19,7 @@ getPretrainedNetwork(
     "koniqMS3", "mriSuperResolution", "protonLungMri",
     "sixTissueOctantBrainSegmentation", "sysuMediaWmhFlairOnlyModel0",
     "sysuMediaWmhFlairOnlyModel1", "sysuMediaWmhFlairOnlyModel2",
-    "sysuMediaWmhFlairT1Model0", "sysuMediaWmhFlairT1Model1",     
+    "sysuMediaWmhFlairT1Model0",      "sysuMediaWmhFlairT1Model1",
     "sysuMediaWmhFlairT1Model2", "tidsQualityAssessment",
     "wholeTumorSegmentationT2Flair"),
   targetFileName,

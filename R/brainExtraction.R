@@ -10,7 +10,8 @@
 #' @param image input 3-D brain image (or list of images for multi-modal scenarios).
 #' @param modality image type.  Options include:
 #' \itemize{
-#'   \item{"t1": }{T1-weighted MRI---ANTs-trained.}
+#'   \item{"t1": }{T1-weighted MRI---ANTs-trained.  Update from "t1v0"}
+#'   \item{"t1v0": }{T1-weighted MRI---ANTs-trained.}
 #'   \item{"t1nobrainer": }{T1-weighted MRI---FreeSurfer-trained: h/t Satra Ghosh and Jakub Kaczmarzyk.}
 #'   \item{"t1combined": }{Brian's combination of "t1" and "t1nobrainer".  One can also specify
 #'                         "t1combined[X]" where X is the morphological radius.  X = 12 by default.}
@@ -39,7 +40,7 @@
 #' }
 #' @export
 brainExtraction <- function( image,
-  modality = c( "t1", "t1x", "t1nobrainer", "t1combined", "t2", "flair", "bold", "fa", "t1t2infant", "t1infant", "t2infant" ),
+  modality = c( "t1", "t1v0", "t1nobrainer", "t1combined", "t2", "flair", "bold", "fa", "t1t2infant", "t1infant", "t2infant" ),
   antsxnetCacheDirectory = NULL, verbose = FALSE )
   {
 
@@ -98,10 +99,10 @@ brainExtraction <- function( image,
     #####################
 
     weightsFilePrefix <- ''
-    if( modality == "t1" )
+    if( modality == "t1v0" )
       {
       weightsFilePrefix <- "brainExtraction"
-      } else if( modality == "t1x" ) {
+      } else if( modality == "t1" ) {
       weightsFilePrefix <- "brainExtractionT1"
       } else if( modality == "t2" ) {
       weightsFilePrefix <- "brainExtractionT2"
@@ -137,7 +138,7 @@ brainExtraction <- function( image,
     reorientTemplate <- antsImageRead( reorientTemplateFileNamePath )
     resampledImageSize <- dim( reorientTemplate )
 
-    if( modality == "t1x" )
+    if( modality == "t1" )
       {
       classes <- c( "background", "head", "brain" )
       numberOfClassificationLabels <- length( classes )
@@ -148,7 +149,6 @@ brainExtraction <- function( image,
       numberOfLayers = 4, numberOfFiltersAtBaseLayer = 8, dropoutRate = 0.0,
       convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
       weightDecay = 1e-5, addAttentionGating = FALSE )
-
 
     unetModel$load_weights( weightsFileName )
 
@@ -183,9 +183,8 @@ brainExtraction <- function( image,
       {
       cat( "Brain extraction:  renormalize probability mask to native space.\n" )
       }
-    whichChannel <- length( probabilityImagesArray[[1]] )  
     probabilityImage <- applyAntsrTransformToImage( invertAntsrTransform( xfrm ),
-      probabilityImagesArray[[1]][[whichChannel]], inputImages[[1]] )
+      probabilityImagesArray[[1]][[numberOfClassificationLabels]], inputImages[[1]] )
 
     return( probabilityImage )
     } else {

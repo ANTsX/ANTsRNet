@@ -6,7 +6,7 @@
 \usage{
 brainExtraction(
   image,
-  modality = c("t1", "t1nobrainer", "t1combined", "t2", "flair", "bold", "fa",
+  modality = c("t1", "t1v0", "t1nobrainer", "t1combined", "t2", "flair", "bold", "fa",
     "t1t2infant", "t1infant", "t2infant"),
   antsxnetCacheDirectory = NULL,
   verbose = FALSE
@@ -17,7 +17,8 @@ brainExtraction(
 
 \item{modality}{image type.  Options include:
 \itemize{
-\item{"t1": }{T1-weighted MRI---ANTs-trained.}
+\item{"t1": }{T1-weighted MRI---ANTs-trained.  Update from "t1v0"}
+\item{"t1v0": }{T1-weighted MRI---ANTs-trained.}
 \item{"t1nobrainer": }{T1-weighted MRI---FreeSurfer-trained: h/t Satra Ghosh and Jakub Kaczmarzyk.}
 \item{"t1combined": }{Brian's combination of "t1" and "t1nobrainer".  One can also specify
 "t1combined\link{X}" where X is the morphological radius.  X = 12 by default.}
