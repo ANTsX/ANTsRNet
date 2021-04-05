@@ -25,6 +25,9 @@
 #' @param numberOfLayers number of encoding/decoding layers.
 #' @param numberOfFiltersAtBaseLayer number of filters at the beginning and end
 #' of the \verb{'U'}.  Doubles at each descending/ascending layer.
+#' @param numberOfFilters vector explicitly setting the number of filters at
+#' each layer.  One can either set this or \code{numberOfLayers} and
+#' \code{numberOfFiltersAtBaseLayer}.  Default = NULL.
 #' @param convolutionKernelSize 2-d vector defining the kernel size
 #' during the encoding path.
 #' @param deconvolutionKernelSize 2-d vector defining the kernel size
@@ -123,6 +126,7 @@ createUnetModel2D <- function( inputImageSize,
                                numberOfOutputs = 2,
                                numberOfLayers = 4,
                                numberOfFiltersAtBaseLayer = 32,
+                               numberOfFilters = NULL,
                                convolutionKernelSize = c( 3, 3 ),
                                deconvolutionKernelSize = c( 2, 2 ),
                                poolSize = c( 2, 2 ),
@@ -158,6 +162,17 @@ createUnetModel2D <- function( inputImageSize,
 
   mode <- match.arg( mode )
 
+  if( ! is.null( numberOfFilters ) )
+    {
+    numberOfLayers <- length( numberOfFilters )
+    } else {
+    numberOfFilters <- rep( 0, numberOfLayers )
+    for( i in seq_len( numberOfLayers ) )
+      {
+      numberOfFilters[i] <- numberOfFiltersAtBaseLayer * 2 ^ ( i - 1 )
+      }
+    }
+
   inputs <- layer_input( shape = inputImageSize )
 
   # Encoding path
@@ -165,15 +180,13 @@ createUnetModel2D <- function( inputImageSize,
   encodingConvolutionLayers <- list()
   for( i in seq_len( numberOfLayers ) )
     {
-    numberOfFilters <- numberOfFiltersAtBaseLayer * 2 ^ ( i - 1 )
-
     if( i == 1 )
       {
-      conv <- inputs %>% layer_conv_2d( filters = numberOfFilters,
+      conv <- inputs %>% layer_conv_2d( filters = numberOfFilters[i],
         kernel_size = convolutionKernelSize, padding = 'same',
         kernel_regularizer = regularizer_l2( weightDecay ) )
       } else {
-      conv <- pool %>% layer_conv_2d( filters = numberOfFilters,
+      conv <- pool %>% layer_conv_2d( filters = numberOfFilters[i],
         kernel_size = convolutionKernelSize, padding = 'same',
         kernel_regularizer = regularizer_l2( weightDecay ) )
       }
@@ -187,7 +200,7 @@ createUnetModel2D <- function( inputImageSize,
       {
       conv <- conv %>% layer_dropout( rate = dropoutRate )
       }
-    conv <- conv %>% layer_conv_2d( filters = numberOfFilters,
+    conv <- conv %>% layer_conv_2d( filters = numberOfFilters[i],
       kernel_size = convolutionKernelSize, padding = 'same' )
     if( nnUnetActivationStyle == TRUE )
       {
@@ -211,9 +224,8 @@ createUnetModel2D <- function( inputImageSize,
   outputs <- encodingConvolutionLayers[[numberOfLayers]]
   for( i in 2:numberOfLayers )
     {
-    numberOfFilters <- numberOfFiltersAtBaseLayer * 2 ^ ( numberOfLayers - i )
     deconv <- outputs %>%
-      layer_conv_2d_transpose( filters = numberOfFilters,
+      layer_conv_2d_transpose( filters = numberOfFilters[numberOfLayers - i + 1],
         kernel_size = deconvolutionKernelSize,
         padding = 'same',
         kernel_regularizer = regularizer_l2( weightDecay ) )
@@ -227,7 +239,7 @@ createUnetModel2D <- function( inputImageSize,
       {
       outputs <- attentionGate2D( deconv,
         encodingConvolutionLayers[[numberOfLayers - i + 1]],
-        as.integer( numberOfFilters / 4 ) )
+        as.integer( numberOfFilters[numberOfLayers - i + 1] / 4 ) )
       outputs <- layer_concatenate( list( deconv, outputs ), axis = 3 )
       } else {
       outputs <- layer_concatenate( list( deconv,
@@ -236,7 +248,7 @@ createUnetModel2D <- function( inputImageSize,
       }
 
     outputs <- outputs %>%
-      layer_conv_2d( filters = numberOfFilters,
+      layer_conv_2d( filters = numberOfFilters[numberOfLayers - i + 1],
         kernel_size = convolutionKernelSize, padding = 'same',
         kernel_regularizer = regularizer_l2( weightDecay ) )
     if( nnUnetActivationStyle == TRUE )
@@ -252,7 +264,7 @@ createUnetModel2D <- function( inputImageSize,
       }
 
     outputs <- outputs %>%
-      layer_conv_2d( filters = numberOfFilters,
+      layer_conv_2d( filters = numberOfFilters[numberOfLayers - i + 1],
         kernel_size = convolutionKernelSize, padding = 'same',
         kernel_regularizer = regularizer_l2( weightDecay ) )
     if( nnUnetActivationStyle == TRUE )
@@ -312,6 +324,8 @@ createUnetModel2D <- function( inputImageSize,
 #' @param numberOfLayers number of encoding/decoding layers.
 #' @param numberOfFiltersAtBaseLayer number of filters at the beginning and end
 #' of the \verb{'U'}.  Doubles at each descending/ascending layer.
+#' @param numberOfFilters vector explicitly setting the number of filters at
+#' each layer.  One can either set this or \code{numberOfLayers} and
 #' @param convolutionKernelSize 3-d vector defining the kernel size
 #' during the encoding path.
 #' @param deconvolutionKernelSize 3-d vector defining the kernel size
@@ -358,6 +372,7 @@ createUnetModel3D <- function( inputImageSize,
                                numberOfOutputs = 2,
                                numberOfLayers = 4,
                                numberOfFiltersAtBaseLayer = 32,
+                               numberOfFilters = NULL,
                                convolutionKernelSize = c( 3, 3, 3 ),
                                deconvolutionKernelSize = c( 2, 2, 2 ),
                                poolSize = c( 2, 2, 2 ),
@@ -393,6 +408,17 @@ createUnetModel3D <- function( inputImageSize,
 
   mode <- match.arg( mode )
 
+  if( ! is.null( numberOfFilters ) )
+    {
+    numberOfLayers <- length( numberOfFilters )
+    } else {
+    numberOfFilters <- rep( 0, numberOfLayers )
+    for( i in seq_len( numberOfLayers ) )
+      {
+      numberOfFilters[i] <- numberOfFiltersAtBaseLayer * 2 ^ ( i - 1 )
+      }
+    }
+
   inputs <- layer_input( shape = inputImageSize )
 
   # Encoding path
@@ -400,15 +426,13 @@ createUnetModel3D <- function( inputImageSize,
   encodingConvolutionLayers <- list()
   for( i in seq_len( numberOfLayers ) )
     {
-    numberOfFilters <- numberOfFiltersAtBaseLayer * 2 ^ ( i - 1 )
-
     if( i == 1 )
       {
-      conv <- inputs %>% layer_conv_3d( filters = numberOfFilters,
+      conv <- inputs %>% layer_conv_3d( filters = numberOfFilters[i],
         kernel_size = convolutionKernelSize, padding = 'same',
         kernel_regularizer = regularizer_l2( weightDecay ) )
       } else {
-      conv <- pool %>% layer_conv_3d( filters = numberOfFilters,
+      conv <- pool %>% layer_conv_3d( filters = numberOfFilters[i],
         kernel_size = convolutionKernelSize, padding = 'same',
         kernel_regularizer = regularizer_l2( weightDecay ) )
       }
@@ -422,7 +446,7 @@ createUnetModel3D <- function( inputImageSize,
       {
       conv <- conv %>% layer_dropout( rate = dropoutRate )
       }
-    conv <- conv %>% layer_conv_3d( filters = numberOfFilters,
+    conv <- conv %>% layer_conv_3d( filters = numberOfFilters[i],
       kernel_size = convolutionKernelSize, padding = 'same' )
     if( nnUnetActivationStyle == TRUE )
       {
@@ -446,9 +470,8 @@ createUnetModel3D <- function( inputImageSize,
   outputs <- encodingConvolutionLayers[[numberOfLayers]]
   for( i in 2:numberOfLayers )
     {
-    numberOfFilters <- numberOfFiltersAtBaseLayer * 2 ^ ( numberOfLayers - i )
     deconv <- outputs %>%
-      layer_conv_3d_transpose( filters = numberOfFilters,
+      layer_conv_3d_transpose( filters = numberOfFilters[numberOfLayers - i + 1],
         kernel_size = deconvolutionKernelSize,
         padding = 'same',
         kernel_regularizer = regularizer_l2( weightDecay ) )
@@ -462,7 +485,7 @@ createUnetModel3D <- function( inputImageSize,
       {
       outputs <- attentionGate3D( deconv,
         encodingConvolutionLayers[[numberOfLayers - i + 1]],
-        as.integer( numberOfFilters / 4 ) )
+        as.integer( numberOfFilters[numberOfLayers - i + 1] / 4 ) )
       outputs <- layer_concatenate( list( deconv, outputs ), axis = 4 )
       } else {
       outputs <- layer_concatenate( list( deconv,
@@ -471,7 +494,7 @@ createUnetModel3D <- function( inputImageSize,
       }
 
     outputs <- outputs %>%
-      layer_conv_3d( filters = numberOfFilters,
+      layer_conv_3d( filters = numberOfFilters[numberOfLayers - i + 1],
         kernel_size = convolutionKernelSize, padding = 'same',
         kernel_regularizer = regularizer_l2( weightDecay ) )
     if( nnUnetActivationStyle == TRUE )
@@ -487,7 +510,7 @@ createUnetModel3D <- function( inputImageSize,
       }
 
     outputs <- outputs %>%
-      layer_conv_3d( filters = numberOfFilters,
+      layer_conv_3d( filters = numberOfFilters[numberOfLayers - i + 1],
         kernel_size = convolutionKernelSize, padding = 'same',
         kernel_regularizer = regularizer_l2( weightDecay ) )
     if( nnUnetActivationStyle == TRUE )
