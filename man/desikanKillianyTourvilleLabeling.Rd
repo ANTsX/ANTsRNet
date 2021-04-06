@@ -8,6 +8,7 @@ desikanKillianyTourvilleLabeling(
   t1,
   doPreprocessing = TRUE,
   returnProbabilityImages = FALSE,
+  doLobarParcellation = TRUE,
   antsxnetCacheDirectory = NULL,
   verbose = FALSE
 )
@@ -19,6 +20,8 @@ desikanKillianyTourvilleLabeling(
 
 \item{returnProbabilityImages}{whether to return the two sets of probability images
 for the inner and outer labels.}
+
+\item{doLobarParcellation}{perform lobar parcellation (also divided by hemisphere).}
 
 \item{antsxnetCacheDirectory}{destination directory for storing the downloaded
 template and model weights.  Since these can be resused, if
@@ -143,6 +146,86 @@ Outer labels:
 \item{Label 2034:}{right transverse temporal}
 \item{Label 2035:}{right insula}
 }
+
+Performing the lobar parcellation is based on the FreeSurfer division
+described here:
+
+\url{https://surfer.nmr.mgh.harvard.edu/fswiki/CorticalParcellation}
+
+\itemize{
+Frontal lobe:
+\item{Label 1002:}{left caudal anterior cingulate}
+\item{Label 1003:}{left caudal middle frontal}
+\item{Label 1012:}{left lateral orbitofrontal}
+\item{Label 1014:}{left medial orbitofrontal}
+\item{Label 1017:}{left paracentral}
+\item{Label 1018:}{left pars opercularis}
+\item{Label 1019:}{left pars orbitalis}
+\item{Label 1020:}{left pars triangularis}
+\item{Label 1024:}{left precentral}
+\item{Label 1026:}{left rostral anterior cingulate}
+\item{Label 1027:}{left rostral middle frontal}
+\item{Label 1028:}{left superior frontal}
+\item{Label 2002:}{right caudal anterior cingulate}
+\item{Label 2003:}{right caudal middle frontal}
+\item{Label 2012:}{right lateral orbitofrontal}
+\item{Label 2014:}{right medial orbitofrontal}
+\item{Label 2017:}{right paracentral}
+\item{Label 2018:}{right pars opercularis}
+\item{Label 2019:}{right pars orbitalis}
+\item{Label 2020:}{right pars triangularis}
+\item{Label 2024:}{right precentral}
+\item{Label 2026:}{right rostral anterior cingulate}
+\item{Label 2027:}{right rostral middle frontal}
+\item{Label 2028:}{right superior frontal}
+
+Parietal:
+\item{Label 1008:}{left inferior parietal}
+\item{Label 1010:}{left isthmus cingulate}
+\item{Label 1022:}{left postcentral}
+\item{Label 1023:}{left posterior cingulate}
+\item{Label 1025:}{left precuneus}
+\item{Label 1029:}{left superior parietal}
+\item{Label 1031:}{left supramarginal}
+\item{Label 2008:}{right inferior parietal}
+\item{Label 2010:}{right isthmus cingulate}
+\item{Label 2022:}{right postcentral}
+\item{Label 2023:}{right posterior cingulate}
+\item{Label 2025:}{right precuneus}
+\item{Label 2029:}{right superior parietal}
+\item{Label 2031:}{right supramarginal}
+
+Temporal:
+\item{Label 1006:}{left entorhinal}
+\item{Label 1007:}{left fusiform}
+\item{Label 1009:}{left inferior temporal}
+\item{Label 1015:}{left middle temporal}
+\item{Label 1016:}{left parahippocampal}
+\item{Label 1030:}{left superior temporal}
+\item{Label 1034:}{left transverse temporal}
+\item{Label 2006:}{right entorhinal}
+\item{Label 2007:}{right fusiform}
+\item{Label 2009:}{right inferior temporal}
+\item{Label 2015:}{right middle temporal}
+\item{Label 2016:}{right parahippocampal}
+\item{Label 2030:}{right superior temporal}
+\item{Label 2034:}{right transverse temporal}
+
+Occipital:
+\item{Label 1005:}{left cuneus}
+\item{Label 1011:}{left lateral occipital}
+\item{Label 1013:}{left lingual}
+\item{Label 1021:}{left pericalcarine}
+\item{Label 2005:}{right cuneus}
+\item{Label 2011:}{right lateral occipital}
+\item{Label 2013:}{right lingual}
+\item{Label 2021:}{right pericalcarine}
+
+Other outer labels:
+\item{Label 1035:}{left insula}
+\item{Label 2035:}{right insula}
+}
+
 Preprocessing on the training data consisted of:
 \itemize{
 \item n4 bias correction,

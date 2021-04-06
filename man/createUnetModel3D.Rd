@@ -9,6 +9,7 @@ createUnetModel3D(
   numberOfOutputs = 2,
   numberOfLayers = 4,
   numberOfFiltersAtBaseLayer = 32,
+  numberOfFilters = NULL,
   convolutionKernelSize = c(3, 3, 3),
   deconvolutionKernelSize = c(2, 2, 2),
   poolSize = c(2, 2, 2),
@@ -34,6 +35,9 @@ this is the number of outputs.}
 
 \item{numberOfFiltersAtBaseLayer}{number of filters at the beginning and end
 of the \verb{'U'}.  Doubles at each descending/ascending layer.}
+
+\item{numberOfFilters}{vector explicitly setting the number of filters at
+each layer.  One can either set this or \code{numberOfLayers} and}
 
 \item{convolutionKernelSize}{3-d vector defining the kernel size
 during the encoding path.}
