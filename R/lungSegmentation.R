@@ -1,9 +1,9 @@
 #' Functional lung segmentation.
 #'
 #' Perform functional lung segmentation using hyperpolarized gases.
-#' 
+#'
 #' \url{https://pubmed.ncbi.nlm.nih.gov/30195415/}
-#' 
+#'
 #' @param ventilationImage input ventilation image
 #' @param mask input mask image
 #' @param useCoarseSlicesOnly if \code{TRUE}, apply network only in the
@@ -32,11 +32,11 @@ elBicho <- function( ventilationImage, mask,
   if( ventilationImage@dimension != 3 )
     {
     stop( "Input image dimension must be 3." )
-    }  
+    }
 
   if( any( dim( ventilationImage ) != dim( mask ) ) )
     {
-    stop( "Ventilation image and mask size are not the same size." )  
+    stop( "Ventilation image and mask size are not the same size." )
     }
 
   if( is.null( antsxnetCacheDirectory ) )
@@ -57,9 +57,9 @@ elBicho <- function( ventilationImage, mask,
   imageModalities <- c( "Ventilation", "Mask" )
   channelSize <- length( imageModalities )
 
-  preprocessedImage <- ( ventilationImage - mean( ventilationImage ) ) / 
+  preprocessedImage <- ( ventilationImage - mean( ventilationImage ) ) /
     sd( ventilationImage )
- 
+
   ################################
   #
   # Build models and load weights
@@ -70,7 +70,7 @@ elBicho <- function( ventilationImage, mask,
     numberOfOutputs = numberOfClassificationLabels, mode = 'classification',
     numberOfLayers = 4, numberOfFiltersAtBaseLayer = 32, dropoutRate = 0.0,
     convolutionKernelSize = c( 3, 3 ), deconvolutionKernelSize = c( 2, 2 ),
-    weightDecay = 1e-5, addAttentionGating = TRUE )
+    weightDecay = 1e-5, additionalOptions = c( "attentionGating" ) )
 
   if( verbose == TRUE )
     {
@@ -145,7 +145,7 @@ elBicho <- function( ventilationImage, mask,
   permutations[[2]] <- c( 2, 1, 3 )
   permutations[[3]] <- c( 2, 3, 1 )
 
-  probabilityImages <- list() 
+  probabilityImages <- list()
   for( l in seq.int( numberOfClassificationLabels ) )
     {
     probabilityImages[[l]] <- antsImageClone( mask ) * 0
@@ -180,7 +180,7 @@ elBicho <- function( ventilationImage, mask,
   segmentationMatrix <- ( matrix( apply( imageMatrix, 2, which.max ), nrow = 1 ) ) * foregroundMatrix
   segmentationImage <- matrixToImages( segmentationMatrix, mask * 0 + 1 )[[1]]
 
-  return( list( segmentationImage = segmentationImage,  
+  return( list( segmentationImage = segmentationImage,
                 probabilityImages = probabilityImages ) )
 }
 

@@ -285,7 +285,7 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
     numberOfOutputs = length( labels ), mode = 'classification',
     numberOfLayers = 4, numberOfFiltersAtBaseLayer = 16, dropoutRate = 0.0,
     convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
-    weightDecay = 1e-5, addAttentionGating = TRUE )
+    weightDecay = 1e-5, additionalOptions = c( "attentionGating" ) )
 
   if( verbose == TRUE )
     {
@@ -365,7 +365,7 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
     numberOfOutputs = length( labels ), mode = 'classification',
     numberOfLayers = 4, numberOfFiltersAtBaseLayer = 8, dropoutRate = 0.0,
     convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
-    weightDecay = 1e-5, addAttentionGating = TRUE )
+    weightDecay = 1e-5, additionalOptions = c( "attentionGating" ) )
 
   if( verbose == TRUE )
     {

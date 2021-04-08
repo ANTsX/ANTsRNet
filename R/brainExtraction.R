@@ -148,7 +148,7 @@ brainExtraction <- function( image,
       numberOfOutputs = numberOfClassificationLabels,
       numberOfLayers = 4, numberOfFiltersAtBaseLayer = 8, dropoutRate = 0.0,
       convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
-      weightDecay = 1e-5, addAttentionGating = FALSE )
+      weightDecay = 1e-5 )
 
     unetModel$load_weights( weightsFileName )
 
