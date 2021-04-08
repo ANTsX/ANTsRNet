@@ -35,7 +35,7 @@
 #'
 #' @param t1 raw or preprocessed 3-D T1-weighted brain image.
 #' @param doPreprocessing perform preprocessing.  See description above.
-#' @param doPerHemisphere If TRUE, do prediction based on separate networks per 
+#' @param doPerHemisphere If TRUE, do prediction based on separate networks per
 #' hemisphere.  Otherwise, use the single network trained for both hemispheres.
 #' @param whichHemisphereModels "old" or "new".
 #' @param antsxnetCacheDirectory destination directory for storing the downloaded
@@ -113,7 +113,7 @@ deepFlash <- function( t1, doPreprocessing = TRUE, doPerHemisphere = TRUE,
       numberOfOutputs = length( labels ), mode = 'classification',
       numberOfLayers = 4, numberOfFiltersAtBaseLayer = 8, dropoutRate = 0.0,
       convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
-      weightDecay = 1e-5, addAttentionGating = TRUE )
+      weightDecay = 1e-5, additionalOptions = c( "attentionGating" )  )
 
     if( verbose == TRUE )
       {
@@ -193,9 +193,9 @@ deepFlash <- function( t1, doPreprocessing = TRUE, doPerHemisphere = TRUE,
     networkName <- ''
     if( whichHemisphereModels == "old" )
       {
-      networkName <- "deepFlashLeft16" 
+      networkName <- "deepFlashLeft16"
       } else if( whichHemisphereModels == "new" ) {
-      networkName <- "deepFlashLeft16new" 
+      networkName <- "deepFlashLeft16new"
       } else {
       stop( "whichHemisphereModels must be \"old\" or \"new\"." )
       }
@@ -204,7 +204,7 @@ deepFlash <- function( t1, doPreprocessing = TRUE, doPerHemisphere = TRUE,
       numberOfOutputs = length( labelsLeft ), mode = 'classification',
       numberOfLayers = 4, numberOfFiltersAtBaseLayer = numberOfFilters, dropoutRate = 0.0,
       convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
-      weightDecay = 1e-5, addAttentionGating = TRUE )
+      weightDecay = 1e-5, additionalOptions = c( "attentionGating" ) )
 
     if( verbose == TRUE )
       {
@@ -229,7 +229,7 @@ deepFlash <- function( t1, doPreprocessing = TRUE, doPerHemisphere = TRUE,
     imageArray <- ( imageArray - mean( imageArray ) ) / sd( imageArray )
 
     batchX <- array( data = 0, dim = c( 1, templateSize, channelSize ) )
-    batchX[1,,,,1] <- imageArray 
+    batchX[1,,,,1] <- imageArray
 
     for( i in seq.int( length( priorsImageLeftList ) ) )
       {
@@ -284,9 +284,9 @@ deepFlash <- function( t1, doPreprocessing = TRUE, doPerHemisphere = TRUE,
     networkName <- ''
     if( whichHemisphereModels == "old" )
       {
-      networkName <- "deepFlashRight16" 
+      networkName <- "deepFlashRight16"
       } else if( whichHemisphereModels == "new" ) {
-      networkName <- "deepFlashRight16new" 
+      networkName <- "deepFlashRight16new"
       } else {
       stop( "whichHemisphereModels must be \"old\" or \"new\"." )
       }
@@ -295,7 +295,7 @@ deepFlash <- function( t1, doPreprocessing = TRUE, doPerHemisphere = TRUE,
       numberOfOutputs = length( labelsRight ), mode = 'classification',
       numberOfLayers = 4, numberOfFiltersAtBaseLayer = numberOfFilters, dropoutRate = 0.0,
       convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
-      weightDecay = 1e-5, addAttentionGating = TRUE )
+      weightDecay = 1e-5, additionalOptions = c( "attentionGating" ) )
 
     if( verbose == TRUE )
       {
@@ -320,7 +320,7 @@ deepFlash <- function( t1, doPreprocessing = TRUE, doPerHemisphere = TRUE,
     imageArray <- ( imageArray - mean( imageArray ) ) / sd( imageArray )
 
     batchX <- array( data = 0, dim = c( 1, templateSize, channelSize ) )
-    batchX[1,,,,1] <- imageArray 
+    batchX[1,,,,1] <- imageArray
 
     for( i in seq.int( length( priorsImageRightList ) ) )
       {
@@ -367,7 +367,7 @@ deepFlash <- function( t1, doPreprocessing = TRUE, doPerHemisphere = TRUE,
       }
 
     count <- 1
-    probabilityImages[[count]] <- probabilityBackgroundImage * -1 + 1    
+    probabilityImages[[count]] <- probabilityBackgroundImage * -1 + 1
     count <- count + 1
     for( i in seq.int( from = 2, to = length( probabilityImagesLeft ) ) )
       {
@@ -375,7 +375,7 @@ deepFlash <- function( t1, doPreprocessing = TRUE, doPerHemisphere = TRUE,
       count <- count + 1
       probabilityImages[[count]] <- probabilityImagesRight[[i]]
       count <- count + 1
-      }  
+      }
     }
 
   imageMatrix <- imageListToMatrix( probabilityImages[2:length( probabilityImages )], t1 * 0 + 1 )

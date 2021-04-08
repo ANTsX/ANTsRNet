@@ -16,9 +16,8 @@ createUnetModel3D(
   strides = c(2, 2, 2),
   dropoutRate = 0,
   weightDecay = 0,
-  nnUnetActivationStyle = FALSE,
-  addAttentionGating = FALSE,
-  mode = c("classification", "regression", "sigmoid")
+  mode = c("classification", "regression", "sigmoid"),
+  additionalOptions = NA
 )
 }
 \arguments{
@@ -54,12 +53,18 @@ during the decoding.}
 \item{weightDecay}{weighting parameter for L2 regularization of the
 kernel weights of the convolution layers.  Default = 0.0.}
 
-\item{nnUnetActivationStyle}{boolean for "nnu-net variant" from
-\url{https://pubmed.ncbi.nlm.nih.gov/30802813/}.}
-
-\item{addAttentionGating}{boolean for "attention u-net variant" from}
-
 \item{mode}{'classification' or 'regression' or 'sigmoid'.}
+
+\item{additionalOptions}{string or vector of strings specifying
+specific configuration add-ons/tweaks:
+\itemize{
+\item{"attentionGating"}{attention-unet variant in
+\url{https://pubmed.ncbi.nlm.nih.gov/33288961/}}
+\item{"nnUnetActivationStyle"}{U-net activation explained in
+\url{https://pubmed.ncbi.nlm.nih.gov/33288961/}}
+\item{"initialConvolutionalKernelSize\link{X}"}{Set the first two convolutional layer
+kernel sizes to X.}
+}}
 }
 \value{
 a u-net keras model

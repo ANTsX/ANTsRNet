@@ -402,7 +402,7 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, doSlicewise = TRUE,
       numberOfOutputs = numberOfClassificationLabels, mode = 'classification',
       numberOfLayers = 4, numberOfFiltersAtBaseLayer = 16, dropoutRate = 0.0,
       convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
-      weightDecay = 1e-5, nnUnetActivationStyle = FALSE, addAttentionGating = TRUE )
+      weightDecay = 1e-5, additionalOptions = c( "attentionGating" ) )
 
     if( verbose == TRUE )
       {
@@ -543,7 +543,7 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, doSlicewise = TRUE,
       numberOfOutputs = numberOfClassificationLabels, mode = 'classification',
       numberOfLayers = 5, numberOfFiltersAtBaseLayer = 64, dropoutRate = 0.0,
       convolutionKernelSize = c( 5, 5 ), deconvolutionKernelSize = c( 3, 3 ),
-      weightDecay = 1e-5, nnUnetActivationStyle = TRUE, addAttentionGating = TRUE )
+      weightDecay = 1e-5, additionalOptions = c( "attentionGating", "nnUnetActivationStyle" ) )
 
     if( verbose == TRUE )
       {

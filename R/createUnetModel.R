@@ -37,10 +37,16 @@
 #' @param dropoutRate float between 0 and 1 to use between dense layers.
 #' @param weightDecay weighting parameter for L2 regularization of the
 #' kernel weights of the convolution layers.  Default = 0.0.
-#' @param nnUnetActivationStyle boolean for "nnu-net variant" from
-#'  \url{https://pubmed.ncbi.nlm.nih.gov/30802813/}.
-#' @param addAttentionGating boolean for "attention u-net variant" activation from
-#'  \url{https://pubmed.ncbi.nlm.nih.gov/33288961/}.
+#' @param additionalOptions string or vector of strings specifying
+#' specific configuration add-ons/tweaks:
+#' \itemize{
+#'    \item{"attentionGating"}{attention-unet variant in
+#'           \url{https://pubmed.ncbi.nlm.nih.gov/33288961/}}
+#'    \item{"nnUnetActivationStyle"}{U-net activation explained in
+#'           \url{https://pubmed.ncbi.nlm.nih.gov/33288961/}}
+#'    \item{"initialConvolutionalKernelSize[X]"}{Set the first two convolutional layer
+#'           kernel sizes to X.}
+#' }
 #' @param mode 'classification' or 'regression' or 'sigmoid'.
 #'
 #' @return a u-net keras model
@@ -133,9 +139,8 @@ createUnetModel2D <- function( inputImageSize,
                                strides = c( 2, 2 ),
                                dropoutRate = 0.0,
                                weightDecay = 0.0,
-                               nnUnetActivationStyle = FALSE,
-                               addAttentionGating = FALSE,
-                               mode = c( 'classification', 'regression', 'sigmoid' )
+                               mode = c( 'classification', 'regression', 'sigmoid' ),
+                               additionalOptions = NA
                              )
 {
 
@@ -162,6 +167,34 @@ createUnetModel2D <- function( inputImageSize,
 
   mode <- match.arg( mode )
 
+  # Handle additional specific configurations
+
+  initialConvolutionKernelSize <- convolutionKernelSize
+  addAttentionGating <- FALSE
+  nnUnetActivationStyle <- FALSE
+
+  if( ! is.na( additionalOptions ) )
+    {
+    if( "attentionGating" %in% additionalOptions )
+      {
+      addAttentionGating <- TRUE
+      }
+
+    if( "nnUnetActivationStyle" %in% additionalOptions )
+      {
+      nnUnetActivationStyle <- TRUE
+      }
+
+    index <- pmatch( "initialConvolutionKernelSize", additionalOptions )
+    if( ! is.na( index ) )
+      {
+      option <- additionalOptions[index]
+      initialConvolutionKernelSize <- strtoi( sub( "\\]", "", strsplit( option, "\\[" )[[1]][2] ) )
+      }
+    }
+
+  # Specify the number of filters
+
   if( ! is.null( numberOfFilters ) )
     {
     numberOfLayers <- length( numberOfFilters )
@@ -183,7 +216,7 @@ createUnetModel2D <- function( inputImageSize,
     if( i == 1 )
       {
       conv <- inputs %>% layer_conv_2d( filters = numberOfFilters[i],
-        kernel_size = convolutionKernelSize, padding = 'same',
+        kernel_size = initialConvolutionKernelSize, padding = 'same',
         kernel_regularizer = regularizer_l2( weightDecay ) )
       } else {
       conv <- pool %>% layer_conv_2d( filters = numberOfFilters[i],
@@ -200,8 +233,14 @@ createUnetModel2D <- function( inputImageSize,
       {
       conv <- conv %>% layer_dropout( rate = dropoutRate )
       }
-    conv <- conv %>% layer_conv_2d( filters = numberOfFilters[i],
-      kernel_size = convolutionKernelSize, padding = 'same' )
+    if( i == 1 )
+      {
+      conv <- conv %>% layer_conv_2d( filters = numberOfFilters[i],
+        kernel_size = initialConvolutionKernelSize, padding = 'same' )
+      } else {
+      conv <- conv %>% layer_conv_2d( filters = numberOfFilters[i],
+        kernel_size = convolutionKernelSize, padding = 'same' )
+      }
     if( nnUnetActivationStyle == TRUE )
       {
       conv <- nnUnetActivation( conv )
@@ -335,11 +374,17 @@ createUnetModel2D <- function( inputImageSize,
 #' @param dropoutRate float between 0 and 1 to use between dense layers.
 #' @param weightDecay weighting parameter for L2 regularization of the
 #' kernel weights of the convolution layers.  Default = 0.0.
-#' @param nnUnetActivationStyle boolean for "nnu-net variant" from
-#'  \url{https://pubmed.ncbi.nlm.nih.gov/30802813/}.
-#' @param addAttentionGating boolean for "attention u-net variant" from
-#  https://pubmed.ncbi.nlm.nih.gov/30802813/.
 #' @param mode 'classification' or 'regression' or 'sigmoid'.
+#' @param additionalOptions string or vector of strings specifying
+#' specific configuration add-ons/tweaks:
+#' \itemize{
+#'    \item{"attentionGating"}{attention-unet variant in
+#'           \url{https://pubmed.ncbi.nlm.nih.gov/33288961/}}
+#'    \item{"nnUnetActivationStyle"}{U-net activation explained in
+#'           \url{https://pubmed.ncbi.nlm.nih.gov/33288961/}}
+#'    \item{"initialConvolutionalKernelSize[X]"}{Set the first two convolutional layer
+#'           kernel sizes to X.}
+#' }
 #'
 #' @return a u-net keras model
 #' @author Tustison NJ
@@ -379,9 +424,8 @@ createUnetModel3D <- function( inputImageSize,
                                strides = c( 2, 2, 2 ),
                                dropoutRate = 0.0,
                                weightDecay = 0.0,
-                               nnUnetActivationStyle = FALSE,
-                               addAttentionGating = FALSE,
-                               mode = c( 'classification', 'regression', 'sigmoid' )
+                               mode = c( 'classification', 'regression', 'sigmoid' ),
+                               additionalOptions = NA
                              )
 {
 
@@ -408,6 +452,34 @@ createUnetModel3D <- function( inputImageSize,
 
   mode <- match.arg( mode )
 
+  # Handle additional specific configurations
+
+  initialConvolutionKernelSize <- convolutionKernelSize
+  addAttentionGating <- FALSE
+  nnUnetActivationStyle <- FALSE
+
+  if( ! is.na( additionalOptions ) )
+    {
+    if( "attentionGating" %in% additionalOptions )
+      {
+      addAttentionGating <- TRUE
+      }
+
+    if( "nnUnetActivationStyle" %in% additionalOptions )
+      {
+      nnUnetActivationStyle <- TRUE
+      }
+
+    index <- pmatch( "initialConvolutionKernelSize", additionalOptions )
+    if( ! is.na( index ) )
+      {
+      option <- additionalOptions[index]
+      initialConvolutionKernelSize <- strtoi( sub( "\\]", "", strsplit( option, "\\[" )[[1]][2] ) )
+      }
+    }
+
+  # Specify the number of filters
+
   if( ! is.null( numberOfFilters ) )
     {
     numberOfLayers <- length( numberOfFilters )
@@ -429,7 +501,7 @@ createUnetModel3D <- function( inputImageSize,
     if( i == 1 )
       {
       conv <- inputs %>% layer_conv_3d( filters = numberOfFilters[i],
-        kernel_size = convolutionKernelSize, padding = 'same',
+        kernel_size = initialConvolutionKernelSize, padding = 'same',
         kernel_regularizer = regularizer_l2( weightDecay ) )
       } else {
       conv <- pool %>% layer_conv_3d( filters = numberOfFilters[i],
@@ -446,8 +518,14 @@ createUnetModel3D <- function( inputImageSize,
       {
       conv <- conv %>% layer_dropout( rate = dropoutRate )
       }
-    conv <- conv %>% layer_conv_3d( filters = numberOfFilters[i],
-      kernel_size = convolutionKernelSize, padding = 'same' )
+    if( i == 1 )
+      {
+      conv <- conv %>% layer_conv_3d( filters = numberOfFilters[i],
+        kernel_size = initialConvolutionKernelSize, padding = 'same' )
+      } else {
+      conv <- conv %>% layer_conv_3d( filters = numberOfFilters[i],
+        kernel_size = convolutionKernelSize, padding = 'same' )
+      }
     if( nnUnetActivationStyle == TRUE )
       {
       conv <- nnUnetActivation( conv )
