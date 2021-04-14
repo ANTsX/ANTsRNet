@@ -32,8 +32,8 @@ the number of channels (e.g., red, green, and blue).  The batch size
 'classification' this is the number of segmentation labels.  For 'regression'
 this is the number of outputs.}
 
-\item{outputScalarSize}{if greater than 0, a global average pooling
-and dense layer is added to the bottom of the encoding branch.}
+\item{outputScalarSize}{if greater than 0, a global average pooling from each
+encoding layer is concatenated to a dense layer as a secondary output.}
 
 \item{outputScalarActivation}{activation for nonzero output scalar.}
 

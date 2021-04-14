@@ -22,8 +22,8 @@
 #' @param numberOfOutputs Meaning depends on the \code{mode}.  For
 #' 'classification' this is the number of segmentation labels.  For 'regression'
 #' this is the number of outputs.
-#' @param outputScalarSize if greater than 0, a global average pooling
-#' and dense layer is added to the bottom of the encoding branch.
+#' @param outputScalarSize if greater than 0, a global average pooling from each
+#' encoding layer is concatenated to a dense layer as a secondary output.
 #' @param outputScalarActivation activation for nonzero output scalar.
 #' @param numberOfLayers number of encoding/decoding layers.
 #' @param numberOfFiltersAtBaseLayer number of filters at the beginning and end
@@ -266,10 +266,14 @@ createUnetModel2D <- function( inputImageSize,
   scalarOutput <- NULL
   if( outputScalarSize > 0 )
     {
-    scalarOutput <- encodingConvolutionLayers[[numberOfLayers]] %>%
-      layer_global_average_pooling_2d()
-    scalarOutput <- scalarOutput %>% layer_dense( units = outputScalarSize,
-      activation = outputScalarActivation )
+    scalarLayers <- list()
+    for( i in seq.int( numberOfLayers ) )
+      {
+      scalarLayers[[i]] <- encodingConvolutionLayers[[i]] %>%
+          layer_global_average_pooling_2d()
+      }
+    scalarOutput <- layer_concatenate( scalarLayers ) %>%
+      layer_dense( units = outputScalarSize, activation = outputScalarActivation )
     }
 
   # Decoding path
@@ -380,8 +384,8 @@ createUnetModel2D <- function( inputImageSize,
 #' @param numberOfOutputs Meaning depends on the \code{mode}.  For
 #' 'classification' this is the number of segmentation labels.  For 'regression'
 #' this is the number of outputs.
-#' @param outputScalarSize if greater than 0, a global average pooling
-#' and dense layer is added to the bottom of the encoding branch.
+#' @param outputScalarSize if greater than 0, a global average pooling from each
+#' encoding layer is concatenated to a dense layer as a secondary output.
 #' @param outputScalarActivation activation for nonzero output scalar.
 #' @param numberOfLayers number of encoding/decoding layers.
 #' @param numberOfFiltersAtBaseLayer number of filters at the beginning and end
@@ -571,10 +575,14 @@ createUnetModel3D <- function( inputImageSize,
   scalarOutput <- NULL
   if( outputScalarSize > 0 )
     {
-    scalarOutput <- encodingConvolutionLayers[[numberOfLayers]] %>%
-      layer_global_average_pooling_3d()
-    scalarOutput <- scalarOutput %>% layer_dense( units = outputScalarSize,
-      activation = outputScalarActivation )
+    scalarLayers <- list()
+    for( i in seq.int( numberOfLayers ) )
+      {
+      scalarLayers[[i]] <- encodingConvolutionLayers[[i]] %>%
+          layer_global_average_pooling_3d()
+      }
+    scalarOutput <- layer_concatenate( scalarLayers ) %>%
+      layer_dense( units = outputScalarSize, activation = outputScalarActivation )
     }
 
   # Decoding path
