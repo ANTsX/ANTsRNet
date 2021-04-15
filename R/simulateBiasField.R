@@ -50,7 +50,7 @@ simulateBiasField <- function( domainImage, numberOfPoints = 10,
     }
 
   biasField <- fitBsplineObjectToScatteredData( scatteredData, parametricData,
-    parametricDomainOrigin = origin , parametricDomainSpacing = spacing,
+    parametricDomainOrigin = origin, parametricDomainSpacing = spacing,
     parametricDomainSize = shape, numberOfFittingLevels = numberOfFittingLevels,
     meshSize = meshSize )
 
