@@ -158,6 +158,7 @@ reference:
   - '`randomImageTransformParametersBatchGenerator`'
   - '`randomlyTransformImageData`'
   - '`histogramWarpImageIntensities`'
+  - '`simulateBiasField`'
 - title: Misc
   desc: ~
   contents:
