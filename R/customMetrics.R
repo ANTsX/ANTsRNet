@@ -34,7 +34,7 @@ binary_dice_coefficient <- function( y_true, y_pred, smoothingFactor = 0.0 )
 
     y_true_f = K$flatten( y_true )
     y_pred_f = K$flatten( y_pred )
-    intersection = K$sum(y_true_f * y_pred_f)
+    intersection = K$sum( y_true_f * y_pred_f )
     return( -1.0 * ( 2.0 * intersection + smoothing_factor )/
         ( K$sum( y_true_f ) + K$sum( y_pred_f ) + smoothing_factor ) )
 
