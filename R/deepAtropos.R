@@ -24,6 +24,7 @@
 #'
 #' @param t1 raw or preprocessed 3-D T1-weighted brain image.
 #' @param doPreprocessing perform preprocessing.  See description above.
+#' @param useSpatialPriors use MNI spatial tissue priors (0, 1, or 2).  0 is no priors.
 #' @param antsxnetCacheDirectory destination directory for storing the downloaded
 #' template and model weights.  Since these can be resused, if
 #' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
@@ -42,7 +43,7 @@
 #' results <- deepAtropos( image )
 #' }
 #' @export
-deepAtropos <- function( t1, doPreprocessing = TRUE,
+deepAtropos <- function( t1, doPreprocessing = TRUE, useSpatialPriors = 0,
   antsxnetCacheDirectory = NULL, verbose = FALSE, debug = FALSE )
 {
 
@@ -90,7 +91,15 @@ deepAtropos <- function( t1, doPreprocessing = TRUE,
     "deep gray matter", "brain stem", "cerebellum" )
   labels <- c( 0:6 )
 
-  unetModel <- createUnetModel3D( c( patchSize, 1 ),
+  mniPriors <- NULL
+  channelSize <- 1
+  if( useSpatialPriors != 0 )
+    {
+    mniPriors <- splitNDImageToList( antsImageRead( getANTsXNetData( "croppedMni152Priors" ) ) )
+    channelSize <- length( mniPriors ) + 1
+    }
+
+  unetModel <- createUnetModel3D( c( patchSize, channelSize ),
     numberOfOutputs = length( labels ), mode = 'classification',
     numberOfLayers = 4, numberOfFiltersAtBaseLayer = 16, dropoutRate = 0.0,
     convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
@@ -100,13 +109,16 @@ deepAtropos <- function( t1, doPreprocessing = TRUE,
     {
     cat( "DeepAtropos:  retrieving model weights.\n" )
     }
-  weightsFileName <- getPretrainedNetwork( "sixTissueOctantBrainSegmentation", antsxnetCacheDirectory = antsxnetCacheDirectory )
+  weightsFileName <- ''
+  if( useSpatialPriors == 0 )
+    {
+    weightsFileName <- getPretrainedNetwork( "sixTissueOctantBrainSegmentation", antsxnetCacheDirectory = antsxnetCacheDirectory )
+    } else if( useSpatialPriors == 1 ) {
+    weightsFileName <- getPretrainedNetwork( "sixTissueOctantBrainSegmentationWithPriors1", antsxnetCacheDirectory = antsxnetCacheDirectory )
+    } else if( useSpatialPriors == 2 ) {
+    weightsFileName <- getPretrainedNetwork( "sixTissueOctantBrainSegmentationWithPriors2", antsxnetCacheDirectory = antsxnetCacheDirectory )
+    }
   load_model_weights_hdf5( unetModel, filepath = weightsFileName )
-
-  unetModel %>% compile(
-    optimizer = optimizer_adam(),
-    loss = categorical_focal_loss( alpha = 0.25, gamma = 2.0 ),
-    metrics = 'accuracy' )
 
   ################################
   #
@@ -122,7 +134,17 @@ deepAtropos <- function( t1, doPreprocessing = TRUE,
   t1Preprocessed <- ( t1Preprocessed - mean( t1Preprocessed ) ) / sd( t1Preprocessed )
   imagePatches <- extractImagePatches( t1Preprocessed, patchSize, maxNumberOfPatches = "all",
                                        strideLength = strideLength, returnAsArray = TRUE )
-  batchX <- array( data = imagePatches, dim = c( dim( imagePatches ), 1 ) )
+  batchX <- array( data = 0, dim = c( dim( imagePatches ), channelSize ) )
+  batchX[,,,,1] <- imagePatches
+  if( channelSize > 1 )
+    {
+    for( i in seq.int( 1, channelSize-1 ) )
+      {
+      priorPatches <- extractImagePatches( mniPriors[[i]], patchSize, maxNumberOfPatches = "all",
+                        strideLength = strideLength, returnAsArray = TRUE )
+      batchX[,,,,i+1] <- priorPatches
+      }
+    }
   predictedData <- unetModel %>% predict( batchX, verbose = verbose )
 
   probabilityImages <- list()
