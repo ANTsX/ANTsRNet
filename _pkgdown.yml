@@ -131,6 +131,7 @@ reference:
 - title: Custom metrics/losses
   desc: ~
   contents:
+  - '`binary_dice_coefficient`'
   - '`multilabel_dice_coefficient`'
   - '`peak_signal_to_noise_ratio`'
   - '`pearson_correlation_coefficient`'

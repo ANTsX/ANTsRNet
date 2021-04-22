@@ -1,3 +1,47 @@
+#' Dice function for binary segmentation problems
+#'
+#'  Note:  Assumption is that y_true is *not* a one-hot representation
+#'    of the segmentation batch.  For use with e.g., sigmoid activation.
+#'
+#' @param y_true True labels (Tensor)
+#' @param y_pred Predictions (Tensor of the same shape as \code{y_true})
+#' @param smoothingFactor parameter for smoothing the metric.
+#' @return Dice value (negative)
+#' @author Tustison NJ
+#'
+#' @examples
+#'
+#' library( ANTsR )
+#' library( ANTsRNet )
+#' library( keras )
+#'
+#' model <- createUnetModel2D( c( 64, 64, 1 ) )
+#'
+#' dice_loss <- binary_dice_coefficient( smoothingFactor = 0.1 )
+#'
+#' model %>% compile( loss = dice_loss,
+#'   optimizer = optimizer_adam( lr = 0.0001 ) )
+#'
+#' rm(model); gc()
+#' @import keras
+#' @export
+
+binary_dice_coefficient <- function( y_true, y_pred, smoothingFactor = 0.0 )
+{
+  binary_dice_coefficient_fixed <- function( y_true, y_pred )
+    {
+    K <- tensorflow::tf$keras$backend
+
+    y_true_f = K$flatten( y_true )
+    y_pred_f = K$flatten( y_pred )
+    intersection = y_true_f * y_pred_f
+    return( -1.0 * ( 2.0 * intersection + smoothing_factor )/
+        ( K.sum( y_true_f ) + K.sum( y_pred_f ) + smoothing_factor ) )
+
+    }
+  return( binary_dice_coefficient_fixed )
+}
+
 #' Dice function for multilabel segmentation problems
 #'
 #' Note:  Assumption is that y_true is a one-hot representation

@@ -36,9 +36,8 @@ encodeUnet <- function( segmentationsArray, segmentationLabels = NULL )
   oneHotArray <- array( 0, dim = c( dimSegmentations, numberOfLabels ) )
   for( i in seq_len( numberOfLabels ) )
     {
-    perLabel <- segmentationsArray
+    perLabel <- array( 0, dim = dim( segmentationsArray ))
     perLabel[which( segmentationsArray == segmentationLabels[i] )] <- 1L
-    perLabel[which( segmentationsArray != segmentationLabels[i] )] <- 0L
     if( imageDimension == 2 )
       {
       oneHotArray[,,,i] <- perLabel
