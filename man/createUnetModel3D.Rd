@@ -7,6 +7,8 @@
 createUnetModel3D(
   inputImageSize,
   numberOfOutputs = 2,
+  outputScalarSize = 0,
+  outputScalarActivation = "relu",
   numberOfLayers = 4,
   numberOfFiltersAtBaseLayer = 32,
   numberOfFilters = NULL,
@@ -29,6 +31,11 @@ the number of channels (e.g., red, green, and blue).  The batch size
 \item{numberOfOutputs}{Meaning depends on the \code{mode}.  For
 'classification' this is the number of segmentation labels.  For 'regression'
 this is the number of outputs.}
+
+\item{outputScalarSize}{if greater than 0, a global average pooling from each
+encoding layer is concatenated to a dense layer as a secondary output.}
+
+\item{outputScalarActivation}{activation for nonzero output scalar.}
 
 \item{numberOfLayers}{number of encoding/decoding layers.}
 
