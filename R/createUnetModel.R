@@ -22,9 +22,9 @@
 #' @param numberOfOutputs Meaning depends on the \code{mode}.  For
 #' 'classification' this is the number of segmentation labels.  For 'regression'
 #' this is the number of outputs.
-#' @param outputScalarSize if greater than 0, a global average pooling from each
+#' @param scalarOutputSize if greater than 0, a global average pooling from each
 #' encoding layer is concatenated to a dense layer as a secondary output.
-#' @param outputScalarActivation activation for nonzero output scalar.
+#' @param scalarOutputActivation activation for nonzero output scalar.
 #' @param numberOfLayers number of encoding/decoding layers.
 #' @param numberOfFiltersAtBaseLayer number of filters at the beginning and end
 #' of the \verb{'U'}.  Doubles at each descending/ascending layer.
@@ -133,8 +133,8 @@
 #' @export
 createUnetModel2D <- function( inputImageSize,
                                numberOfOutputs = 2,
-                               outputScalarSize = 0,
-                               outputScalarActivation = "relu",
+                               scalarOutputSize = 0,
+                               scalarOutputActivation = "relu",
                                numberOfLayers = 4,
                                numberOfFiltersAtBaseLayer = 32,
                                numberOfFilters = NULL,
@@ -264,7 +264,7 @@ createUnetModel2D <- function( inputImageSize,
     }
 
   scalarOutput <- NULL
-  if( outputScalarSize > 0 )
+  if( scalarOutputSize > 0 )
     {
     scalarLayers <- list()
     for( i in seq.int( numberOfLayers ) )
@@ -273,7 +273,7 @@ createUnetModel2D <- function( inputImageSize,
           layer_global_average_pooling_2d()
       }
     scalarOutput <- layer_concatenate( scalarLayers ) %>%
-      layer_dense( units = outputScalarSize, activation = outputScalarActivation )
+      layer_dense( units = scalarOutputSize, activation = scalarOutputActivation )
     }
 
   # Decoding path
@@ -350,7 +350,7 @@ createUnetModel2D <- function( inputImageSize,
       kernel_regularizer = regularizer_l2( weightDecay ) )
 
   unetModel <- NULL
-  if( outputScalarSize > 0 )
+  if( scalarOutputSize > 0 )
     {
     unetModel <- keras_model( inputs = inputs, outputs = list( outputs, scalarOutput ) )
     } else {
@@ -384,9 +384,9 @@ createUnetModel2D <- function( inputImageSize,
 #' @param numberOfOutputs Meaning depends on the \code{mode}.  For
 #' 'classification' this is the number of segmentation labels.  For 'regression'
 #' this is the number of outputs.
-#' @param outputScalarSize if greater than 0, a global average pooling from each
+#' @param scalarOutputSize if greater than 0, a global average pooling from each
 #' encoding layer is concatenated to a dense layer as a secondary output.
-#' @param outputScalarActivation activation for nonzero output scalar.
+#' @param scalarOutputActivation activation for nonzero output scalar.
 #' @param numberOfLayers number of encoding/decoding layers.
 #' @param numberOfFiltersAtBaseLayer number of filters at the beginning and end
 #' of the \verb{'U'}.  Doubles at each descending/ascending layer.
@@ -442,8 +442,8 @@ createUnetModel2D <- function( inputImageSize,
 #' @export
 createUnetModel3D <- function( inputImageSize,
                                numberOfOutputs = 2,
-                               outputScalarSize = 0,
-                               outputScalarActivation = "relu",
+                               scalarOutputSize = 0,
+                               scalarOutputActivation = "relu",
                                numberOfLayers = 4,
                                numberOfFiltersAtBaseLayer = 32,
                                numberOfFilters = NULL,
@@ -573,7 +573,7 @@ createUnetModel3D <- function( inputImageSize,
     }
 
   scalarOutput <- NULL
-  if( outputScalarSize > 0 )
+  if( scalarOutputSize > 0 )
     {
     scalarLayers <- list()
     for( i in seq.int( numberOfLayers ) )
@@ -582,7 +582,7 @@ createUnetModel3D <- function( inputImageSize,
           layer_global_average_pooling_3d()
       }
     scalarOutput <- layer_concatenate( scalarLayers ) %>%
-      layer_dense( units = outputScalarSize, activation = outputScalarActivation )
+      layer_dense( units = scalarSize, activation = scalarOutputActivation )
     }
 
   # Decoding path
@@ -659,7 +659,7 @@ createUnetModel3D <- function( inputImageSize,
       kernel_regularizer = regularizer_l2( weightDecay ) )
 
   unetModel <- NULL
-  if( outputScalarSize > 0 )
+  if( scalarOutputSize > 0 )
     {
     unetModel <- keras_model( inputs = inputs, outputs = list( outputs, scalarOutput ) )
     } else {

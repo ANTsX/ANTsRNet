@@ -96,6 +96,10 @@ deepAtropos <- function( t1, doPreprocessing = TRUE, useSpatialPriors = 0,
   if( useSpatialPriors != 0 )
     {
     mniPriors <- splitNDImageToList( antsImageRead( getANTsXNetData( "croppedMni152Priors" ) ) )
+    for( i in seq.int( length( mniPriors ) ) )
+      {
+      mniPriors[[i]] <- antsCopyImageInfo( t1Preprocessed, mniPriors[[i]] )
+      }
     channelSize <- length( mniPriors ) + 1
     }
 

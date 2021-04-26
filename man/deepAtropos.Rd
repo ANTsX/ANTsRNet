@@ -7,6 +7,7 @@
 deepAtropos(
   t1,
   doPreprocessing = TRUE,
+  useSpatialPriors = 0,
   antsxnetCacheDirectory = NULL,
   verbose = FALSE,
   debug = FALSE
@@ -16,6 +17,8 @@ deepAtropos(
 \item{t1}{raw or preprocessed 3-D T1-weighted brain image.}
 
 \item{doPreprocessing}{perform preprocessing.  See description above.}
+
+\item{useSpatialPriors}{use MNI spatial tissue priors (0, 1, or 2).  0 is no priors.}
 
 \item{antsxnetCacheDirectory}{destination directory for storing the downloaded
 template and model weights.  Since these can be resused, if

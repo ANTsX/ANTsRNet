@@ -5,10 +5,10 @@
 \title{getANTsXNetData}
 \usage{
 getANTsXNetData(
-  fileId = c("show", "biobank", "croppedMni152", "mprage_hippmapp3r",
-    "protonLungTemplate", "ctLungTemplate", "priorDktLabels", "priorDeepFlashLeftLabels",
-    "priorDeepFlashRightLabels", "S_template3", "adni", "ixi", "kirby", "mni152", "nki",
-    "nki10", "oasis"),
+  fileId = c("show", "biobank", "croppedMni152", "croppedMni152Priors",
+    "mprage_hippmapp3r", "protonLungTemplate", "ctLungTemplate", "priorDktLabels",
+    "priorDeepFlashLeftLabels", "priorDeepFlashRightLabels", "S_template3", "adni",
+    "ixi", "kirby", "mni152", "nki", "nki10", "oasis"),
   targetFileName,
   antsxnetCacheDirectory = NULL
 )
