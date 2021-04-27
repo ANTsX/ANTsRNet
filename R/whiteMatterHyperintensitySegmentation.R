@@ -278,22 +278,14 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
 
 #' White matter hypterintensity probabilistic segmentation
 #'
-#' Perform White matter hypterintensity probabilistic segmentation
+#' Perform white matter hypterintensity probabilistic segmentation
 #' using deep learning
-#'
-#' Preprocessing on the training data consisted of:
-#'    * n4 bias correction,
-#'    * brain extraction, and
-#'    * affine registration to MNI.
-#' The input T1 should undergo the same steps.  If the input T1 is the raw
-#' T1, these steps can be performed by the internal preprocessing, i.e. set
-#' \code{doPreprocessing = TRUE}
 #'
 #' @param flair input 3-D FLAIR brain image.
 #' @param t1 input 3-D T1-weighted brain image (assumed to be aligned to
 #' the flair).
-#' @param doPreprocessing perform preprocessing.  See description above.
-#' @param doSlicewise apply 2-D model along direction of maximal slice thickness.
+#' @param whichModel one of "sysu", "sysuT1Only", "sysuPlus",
+#' "sysuPlusSeg", "sysuWithSite", "sysuWithSiteT1Only".
 #' @param whichAxes apply 2-D model to 1 or more axes.  In addition to a scalar
 #' or vector, e.g., \code{whichAxes = c(1, 3)}, one can use "max" for the
 #' axis with maximum anisotropy (default) or "all" for all axes.
@@ -316,7 +308,7 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
 #' results <- ewDavid( t1, flair )
 #' }
 #' @export
-ewDavid <- function( flair, t1, doPreprocessing = TRUE, doSlicewise = TRUE,
+ewDavid <- function( flair, t1, doPreprocessing = TRUE, whichModel = "sysu",
   whichAxes = "max", antsxnetCacheDirectory = NULL, verbose = FALSE )
 {
 
@@ -329,9 +321,15 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, doSlicewise = TRUE,
     stop( "Either supply a t1 or a t1 and flair.")
     }
 
-  if( doT1Only && doSlicewise == FALSE )
+  if( doT1Only && ! grepl( "T1Only", whichModel ) )
     {
-    stop( "T1-only only works with doSlicewise=TRUE" )
+    stop( "Specify a T1-only model if flair is not supplied." )
+    }
+
+  useT1Segmentation <- FALSE
+  if( grepl( "Seg", whichModel ) )
+    {
+    useT1Segmentation <- TRUE
     }
 
   if( is.null( antsxnetCacheDirectory ) )
@@ -339,121 +337,123 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, doSlicewise = TRUE,
     antsxnetCacheDirectory <- "ANTsXNet"
     }
 
+  doSlicewise <- TRUE
+
   if( doSlicewise == FALSE )
     {
 
-    ################################
-    #
-    # Preprocess images
-    #
-    ################################
+    # ################################
+    # #
+    # # Preprocess images
+    # #
+    # ################################
 
-    t1Preprocessed <- t1
-    t1Preprocessing <- NULL
-    if( doPreprocessing == TRUE )
-      {
-      t1Preprocessing <- preprocessBrainImage( t1,
-          truncateIntensity = c( 0.001, 0.995 ),
-          doBrainExtraction = TRUE,
-          template = "croppedMni152",
-          templateTransformType = "AffineFast",
-          doBiasCorrection = FALSE,
-          doDenoising = FALSE,
-          antsxnetCacheDirectory = antsxnetCacheDirectory,
-          verbose = verbose )
-      t1Preprocessed <- t1Preprocessing$preprocessedImage * t1Preprocessing$brainMask
-      }
+    # t1Preprocessed <- t1
+    # t1Preprocessing <- NULL
+    # if( doPreprocessing == TRUE )
+    #   {
+    #   t1Preprocessing <- preprocessBrainImage( t1,
+    #       truncateIntensity = c( 0.001, 0.995 ),
+    #       doBrainExtraction = TRUE,
+    #       template = "croppedMni152",
+    #       templateTransformType = "AffineFast",
+    #       doBiasCorrection = FALSE,
+    #       doDenoising = FALSE,
+    #       antsxnetCacheDirectory = antsxnetCacheDirectory,
+    #       verbose = verbose )
+    #   t1Preprocessed <- t1Preprocessing$preprocessedImage * t1Preprocessing$brainMask
+    #   }
 
-    flairPreprocessed <- flair
-    if( doPreprocessing == TRUE )
-      {
-      flairPreprocessing <- preprocessBrainImage( flair,
-          truncateIntensity = c( 0.01, 0.99 ),
-          doBrainExtraction = FALSE,
-          doBiasCorrection = TRUE,
-          doDenoising = FALSE,
-          antsxnetCacheDirectory = antsxnetCacheDirectory,
-          verbose = verbose )
+    # flairPreprocessed <- flair
+    # if( doPreprocessing == TRUE )
+    #   {
+    #   flairPreprocessing <- preprocessBrainImage( flair,
+    #       truncateIntensity = c( 0.01, 0.99 ),
+    #       doBrainExtraction = FALSE,
+    #       doBiasCorrection = TRUE,
+    #       doDenoising = FALSE,
+    #       antsxnetCacheDirectory = antsxnetCacheDirectory,
+    #       verbose = verbose )
 
-      flairPreprocessed <- antsApplyTransforms( fixed = t1Preprocessed,
-        moving = flairPreprocessing$preprocessedImage,
-        transformlist = t1Preprocessing$templateTransforms$fwdtransforms,
-        interpolator = "linear", verbose = verbose )
-      flairPreprocessed <- flairPreprocessed * t1Preprocessing$brainMask
-      }
+    #   flairPreprocessed <- antsApplyTransforms( fixed = t1Preprocessed,
+    #     moving = flairPreprocessing$preprocessedImage,
+    #     transformlist = t1Preprocessing$templateTransforms$fwdtransforms,
+    #     interpolator = "linear", verbose = verbose )
+    #   flairPreprocessed <- flairPreprocessed * t1Preprocessing$brainMask
+    #   }
 
-    ################################
-    #
-    # Build model and load weights
-    #
-    ################################
+    # ################################
+    # #
+    # # Build model and load weights
+    # #
+    # ################################
 
-    patchSize <- c( 112L, 112L, 112L )
-    strideLength <- dim( t1Preprocessed ) - patchSize
+    # patchSize <- c( 112L, 112L, 112L )
+    # strideLength <- dim( t1Preprocessed ) - patchSize
 
-    classes <- c( "background", "wmh" )
-    numberOfClassificationLabels <- length( classes )
-    labels <- seq.int( numberOfClassificationLabels ) - 1
+    # classes <- c( "background", "wmh" )
+    # numberOfClassificationLabels <- length( classes )
+    # labels <- seq.int( numberOfClassificationLabels ) - 1
 
-    imageModalities <- c( "T1", "FLAIR" )
-    channelSize <- length( imageModalities )
+    # imageModalities <- c( "T1", "FLAIR" )
+    # channelSize <- length( imageModalities )
 
-    unetModel <- createUnetModel3D( c( patchSize, channelSize ),
-      numberOfOutputs = numberOfClassificationLabels, mode = 'classification',
-      numberOfLayers = 4, numberOfFiltersAtBaseLayer = 16, dropoutRate = 0.0,
-      convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
-      weightDecay = 1e-5, additionalOptions = c( "attentionGating" ) )
+    # unetModel <- createUnetModel3D( c( patchSize, channelSize ),
+    #   numberOfOutputs = numberOfClassificationLabels, mode = 'classification',
+    #   numberOfLayers = 4, numberOfFiltersAtBaseLayer = 16, dropoutRate = 0.0,
+    #   convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
+    #   weightDecay = 1e-5, additionalOptions = c( "attentionGating" ) )
 
-    if( verbose == TRUE )
-      {
-      cat( "ewDavid:  retrieving model weights.\n" )
-      }
-    weightsFileName <- getPretrainedNetwork( "ewDavidWmhSegmentationWeights",
-      antsxnetCacheDirectory = antsxnetCacheDirectory )
-    load_model_weights_hdf5( unetModel, filepath = weightsFileName )
+    # if( verbose == TRUE )
+    #   {
+    #   cat( "ewDavid:  retrieving model weights.\n" )
+    #   }
+    # weightsFileName <- getPretrainedNetwork( "ewDavidWmhSegmentationWeights",
+    #   antsxnetCacheDirectory = antsxnetCacheDirectory )
+    # load_model_weights_hdf5( unetModel, filepath = weightsFileName )
 
-    ################################
-    #
-    # Do prediction and normalize to native space
-    #
-    ################################
+    # ################################
+    # #
+    # # Do prediction and normalize to native space
+    # #
+    # ################################
 
-    if( verbose == TRUE )
-      {
-      message( "ewDavid:  prediction.\n" )
-      }
+    # if( verbose == TRUE )
+    #   {
+    #   message( "ewDavid:  prediction.\n" )
+    #   }
 
-    batchX <- array( data = 0, dim = c( 8, patchSize, channelSize ) )
+    # batchX <- array( data = 0, dim = c( 8, patchSize, channelSize ) )
 
-    t1Preprocessed <- ( t1Preprocessed - mean( t1Preprocessed ) ) / sd( t1Preprocessed )
-    t1Patches <- extractImagePatches( t1Preprocessed, patchSize, maxNumberOfPatches = "all",
-                                      strideLength = strideLength, returnAsArray = TRUE )
-    batchX[,,,,1] <- t1Patches
+    # t1Preprocessed <- ( t1Preprocessed - mean( t1Preprocessed ) ) / sd( t1Preprocessed )
+    # t1Patches <- extractImagePatches( t1Preprocessed, patchSize, maxNumberOfPatches = "all",
+    #                                   strideLength = strideLength, returnAsArray = TRUE )
+    # batchX[,,,,1] <- t1Patches
 
-    flairPreprocessed <- ( flairPreprocessed - mean( flairPreprocessed ) ) / sd( flairPreprocessed )
-    flairPatches <- extractImagePatches( flairPreprocessed, patchSize, maxNumberOfPatches = "all",
-                                        strideLength = strideLength, returnAsArray = TRUE )
-    batchX[,,,,2] <- flairPatches
+    # flairPreprocessed <- ( flairPreprocessed - mean( flairPreprocessed ) ) / sd( flairPreprocessed )
+    # flairPatches <- extractImagePatches( flairPreprocessed, patchSize, maxNumberOfPatches = "all",
+    #                                     strideLength = strideLength, returnAsArray = TRUE )
+    # batchX[,,,,2] <- flairPatches
 
-    predictedData <- unetModel %>% predict( batchX, verbose = verbose )
+    # predictedData <- unetModel %>% predict( batchX, verbose = verbose )
 
-    probabilityImages <- list()
-    for( i in seq.int( dim( predictedData )[5] ) )
-      {
-      message( "ewDavid:  reconstructing image ", classes[i], "\n" )
-      reconstructedImage <- reconstructImageFromPatches( predictedData[,,,,i],
-          domainImage = t1Preprocessed, strideLength = strideLength )
-      if( doPreprocessing == TRUE )
-        {
-        probabilityImages[[i]] <- antsApplyTransforms( fixed = t1, moving = reconstructedImage,
-            transformlist = t1Preprocessing$templateTransforms$invtransforms,
-            whichtoinvert = c( TRUE ), interpolator = "linear", verbose = verbose )
-        } else {
-        probabilityImages[[i]] <- reconstructedImage
-        }
-      }
+    # probabilityImages <- list()
+    # for( i in seq.int( dim( predictedData )[5] ) )
+    #   {
+    #   message( "ewDavid:  reconstructing image ", classes[i], "\n" )
+    #   reconstructedImage <- reconstructImageFromPatches( predictedData[,,,,i],
+    #       domainImage = t1Preprocessed, strideLength = strideLength )
+    #   if( doPreprocessing == TRUE )
+    #     {
+    #     probabilityImages[[i]] <- antsApplyTransforms( fixed = t1, moving = reconstructedImage,
+    #         transformlist = t1Preprocessing$templateTransforms$invtransforms,
+    #         whichtoinvert = c( TRUE ), interpolator = "linear", verbose = verbose )
+    #     } else {
+    #     probabilityImages[[i]] <- reconstructedImage
+    #     }
+    #   }
 
-    return( probabilityImages[[2]] )
+    # return( probabilityImages[[2]] )
 
     } else {  # doSlicewise
 
@@ -469,12 +469,19 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, doSlicewise = TRUE,
       {
       t1Preprocessing <- preprocessBrainImage( t1,
           truncateIntensity = c( 0.01, 0.99 ),
-          doBrainExtraction = FALSE,
+          doBrainExtraction = TRUE,
           doBiasCorrection = TRUE,
           doDenoising = FALSE,
           antsxnetCacheDirectory = antsxnetCacheDirectory,
           verbose = verbose )
       t1Preprocessed <- t1Preprocessing$preprocessedImage
+      }
+
+    t1Segmentation <- NULL
+    if( useT1Segmentation )
+      {
+      atroposSeg <- deepAtropos( t1, doPreprocessing = doPreprocessing, verbose = verbose )
+      t1Segmentation <- atroposSeg$segmentationImage
       }
 
     flairPreprocessed <- NULL
@@ -513,6 +520,10 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, doSlicewise = TRUE,
         flairPreprocessed <- resampleImage( flairPreprocessed, resamplingParams, useVoxels = FALSE, interpType = 0 )
         }
       t1Preprocessed <- resampleImage( t1Preprocessed, resamplingParams, useVoxels = FALSE, interpType = 0 )
+      if( ! is.null( t1Segmentation ) )
+        {
+        t1Segmentation <- resampleImage( t1Segmentation, resamplingParams, useVoxels = FALSE, interpType = 1 )
+        }
       }
     if( ! doT1Only )
       {
@@ -526,36 +537,62 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, doSlicewise = TRUE,
     #
     ################################
 
-    templateSize = c( 256, 256 )
-
-    classes <- c( "background", "wmh" )
-    numberOfClassificationLabels <- length( classes )
-    labels <- seq.int( numberOfClassificationLabels ) - 1
+    templateSize = c( 208, 208 )
 
     imageModalities <- c( "T1", "FLAIR" )
     if( doT1Only )
       {
       imageModalities <- c( "T1" )
       }
+    if( useT1Segmentation )
+      {
+      imageModalities <- c( imageModalities, "T1Seg" )
+      }
     channelSize <- length( imageModalities )
 
-    unetModel <- createUnetModel2D( c( templateSize, channelSize ),
-      numberOfOutputs = numberOfClassificationLabels, mode = 'classification',
-      numberOfLayers = 5, numberOfFiltersAtBaseLayer = 64, dropoutRate = 0.0,
-      convolutionKernelSize = c( 5, 5 ), deconvolutionKernelSize = c( 3, 3 ),
-      weightDecay = 1e-5, additionalOptions = c( "attentionGating", "nnUnetActivationStyle" ) )
+    unetModel <- NULL
+    if( whichModel == "sysu" || whichModel == "sysuT1Only" )
+      {
+      unetModel <- createUnetModel2D( c( templateSize, channelSize ),
+        numberOfOutputs = 1, mode = 'sigmoid',
+        numberOfFilters = c( 64, 96, 128, 256, 512 ), dropoutRate = 0.0,
+        convolutionKernelSize = c( 3, 3 ), deconvolutionKernelSize = c( 2, 2 ),
+        weightDecay = 0, additionalOptions = c( "initialConvolutionKernelSize[5]" ) )
+      } else if( grepl( "WithSite", whichModel ) ) {
+      unetModel <- createUnetModel2D( c( templateSize, channelSize ),
+        numberOfOutputs = 1, mode = 'sigmoid',
+        scalarOutputSize = 3, scalarOutputActivation = "softmax",
+        numberOfFilters = c( 64, 96, 128, 256, 512 ), dropoutRate = 0.0,
+        convolutionKernelSize = c( 3, 3 ), deconvolutionKernelSize = c( 2, 2 ),
+        weightDecay = 0, additionalOptions = c( "initialConvolutionKernelSize[5]" ) )
+      } else {
+      unetModel <- createUnetModel2D( c( templateSize, channelSize ),
+        numberOfOutputs = 1, mode = 'sigmoid',
+        numberOfFilters = c( 64, 96, 128, 256, 512 ), dropoutRate = 0.0,
+        convolutionKernelSize = c( 3, 3 ), deconvolutionKernelSize = c( 2, 2 ),
+        weightDecay = 0,
+        additionalOptions = c( "nnUnetActivationStyle", "attentionGating", "initialConvolutionKernelSize[5]" ) )
+      }
 
     if( verbose == TRUE )
       {
       cat( "ewDavid:  retrieving model weights.\n" )
       }
-    if( doT1Only )
+
+    weightsFileName <- NULL
+    if( whichModel == "sysu" )
       {
-      weightsFileName <- getPretrainedNetwork( "ewDavidWmhSegmentationSlicewiseT1OnlyWeights",
-        antsxnetCacheDirectory = antsxnetCacheDirectory )
-      } else {
-      weightsFileName <- getPretrainedNetwork( "ewDavidWmhSegmentationSlicewiseWeights",
-        antsxnetCacheDirectory = antsxnetCacheDirectory )
+      weightsFileName <- getPretrainedNetwork( "ewDavidSysu", antsxnetCacheDirectory = antsxnetCacheDirectory )
+      } else if( whichModel == "sysuT1Only" ) {
+      weightsFileName <- getPretrainedNetwork( "ewDavidSysuT1Only", antsxnetCacheDirectory = antsxnetCacheDirectory )
+      } else if( whichModel == "sysuPlus" ) {
+      weightsFileName <- getPretrainedNetwork( "ewDavidSysuPlus", antsxnetCacheDirectory = antsxnetCacheDirectory )
+      } else if( whichModel == "sysuPlusSeg" ) {
+      weightsFileName <- getPretrainedNetwork( "ewDavidSysuPlusSeg", antsxnetCacheDirectory = antsxnetCacheDirectory )
+      } else if( whichModel == "sysuWithSite" ) {
+      weightsFileName <- getPretrainedNetwork( "ewDavidSysuWithSite", antsxnetCacheDirectory = antsxnetCacheDirectory )
+      } else if( whichModel == "sysuWithSiteT1Only" ) {
+      weightsFileName <- getPretrainedNetwork( "ewDavidSysuWithSiteT1Only", antsxnetCacheDirectory = antsxnetCacheDirectory )
       }
     load_model_weights_hdf5( unetModel, filepath = weightsFileName )
 
@@ -603,10 +640,19 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, doSlicewise = TRUE,
           flairSlice <- padOrCropImageToSize( extractSlice( flairPreprocessed, i, dimensionsToPredict[d] ), templateSize )
           batchX[sliceCount,,,1] <- as.array( flairSlice )
           batchX[sliceCount,,,2] <- as.array( t1Slice )
+          if( ! is.null( t1Segmentation ) )
+            {
+            t1SegmentationSlice <- padOrCropImageToSize( extractSlice( t1Segmentation, i, dimensionsToPredict[d] ), templateSize )
+            batchX[sliceCount,,,3] <- as.array( t1SegmentationSlice ) / 6
+            }
           } else {
           batchX[sliceCount,,,1] <- as.array( t1Slice )
+          if( ! is.null( t1Segmentation ) )
+            {
+            t1SegmentationSlice <- padOrCropImageToSize( extractSlice( t1Segmentation, i, dimensionsToPredict[d] ), templateSize )
+            batchX[sliceCount,,,2] <- as.array( t1SegmentationSlice ) / 6
+            }
           }
-
         sliceCount <- sliceCount + 1
         }
       if( verbose == TRUE )
@@ -640,7 +686,12 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, doSlicewise = TRUE,
       {
       currentEndSlice <- currentStartSlice - 1 + dim( t1Preprocessed )[dimensionsToPredict[d]]
       whichBatchSlices <- currentStartSlice:currentEndSlice
-      predictionPerDimension <- prediction[whichBatchSlices,,,2]
+      if( is.list( prediction ) )
+        {
+        predictionPerDimension <- prediction[[1]][whichBatchSlices,,,1]
+        } else {
+        predictionPerDimension <- prediction[whichBatchSlices,,,1]
+        }
       predictionArray <- aperm( drop( predictionPerDimension ), permutations[[dimensionsToPredict[d]]] )
       predictionImage <- antsCopyImageInfo( t1Preprocessed,
         padOrCropImageToSize( as.antsImage( predictionArray ), dim( t1Preprocessed ) ) )
@@ -653,7 +704,12 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, doSlicewise = TRUE,
       predictionImageAverage <- resampleImageToTarget( predictionImageAverage, t1 )
       }
 
-    return( predictionImageAverage )
+    if( is.list( prediction ) )
+      {
+      return( list( predictionImageAverage, prediction[[2]] ) )
+      } else {
+      return( predictionImageAverage )
+      }
     }
 }
 

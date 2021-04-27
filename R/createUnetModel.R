@@ -178,7 +178,7 @@ createUnetModel2D <- function( inputImageSize,
   addAttentionGating <- FALSE
   nnUnetActivationStyle <- FALSE
 
-  if( ! is.na( additionalOptions ) )
+  if( ! any( is.na( additionalOptions ) ) )
     {
     if( "attentionGating" %in% additionalOptions )
       {
@@ -487,7 +487,7 @@ createUnetModel3D <- function( inputImageSize,
   addAttentionGating <- FALSE
   nnUnetActivationStyle <- FALSE
 
-  if( ! is.na( additionalOptions ) )
+  if( ! any( is.na( additionalOptions ) ) )
     {
     if( "attentionGating" %in% additionalOptions )
       {

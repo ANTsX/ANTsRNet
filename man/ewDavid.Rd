@@ -8,7 +8,7 @@ ewDavid(
   flair,
   t1,
   doPreprocessing = TRUE,
-  doSlicewise = TRUE,
+  whichModel = "sysu",
   whichAxes = "max",
   antsxnetCacheDirectory = NULL,
   verbose = FALSE
@@ -20,9 +20,8 @@ ewDavid(
 \item{t1}{input 3-D T1-weighted brain image (assumed to be aligned to
 the flair).}
 
-\item{doPreprocessing}{perform preprocessing.  See description above.}
-
-\item{doSlicewise}{apply 2-D model along direction of maximal slice thickness.}
+\item{whichModel}{one of "sysu", "sysuT1Only", "sysuPlus",
+"sysuPlusSeg", "sysuWithSite", "sysuWithSiteT1Only".}
 
 \item{whichAxes}{apply 2-D model to 1 or more axes.  In addition to a scalar
 or vector, e.g., \code{whichAxes = c(1, 3)}, one can use "max" for the
@@ -42,19 +41,8 @@ list consisting of the segmentation image and probability images for
 each label.
 }
 \description{
-Perform White matter hypterintensity probabilistic segmentation
+Perform white matter hypterintensity probabilistic segmentation
 using deep learning
-}
-\details{
-Preprocessing on the training data consisted of:
-\itemize{
-\item n4 bias correction,
-\item brain extraction, and
-\item affine registration to MNI.
-The input T1 should undergo the same steps.  If the input T1 is the raw
-T1, these steps can be performed by the internal preprocessing, i.e. set
-\code{doPreprocessing = TRUE}
-}
 }
 \examples{
 \dontrun{
