@@ -465,6 +465,7 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, whichModel = "sysu",
 
     t1Preprocessed <- t1
     t1Preprocessing <- NULL
+    brainMask <- NULL
     if( doPreprocessing == TRUE )
       {
       t1Preprocessing <- preprocessBrainImage( t1,
@@ -474,7 +475,8 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, whichModel = "sysu",
           doDenoising = FALSE,
           antsxnetCacheDirectory = antsxnetCacheDirectory,
           verbose = verbose )
-      t1Preprocessed <- t1Preprocessing$preprocessedImage
+      brainMask <- t1Preprocessing$brainMask
+      t1Preprocessed <- t1Preprocessing$preprocessedImage * brainMask
       }
 
     t1Segmentation <- NULL
@@ -497,7 +499,7 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, whichModel = "sysu",
             doDenoising = FALSE,
             antsxnetCacheDirectory = antsxnetCacheDirectory,
             verbose = verbose )
-        flairPreprocessed <- flairPreprocessing$preprocessedImage
+        flairPreprocessed <- flairPreprocessing$preprocessedImage * brainMask
         }
       }
 
@@ -570,7 +572,7 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, whichModel = "sysu",
         numberOfOutputs = 1, mode = 'sigmoid',
         numberOfFilters = c( 64, 96, 128, 256, 512 ), dropoutRate = 0.0,
         convolutionKernelSize = c( 3, 3 ), deconvolutionKernelSize = c( 2, 2 ),
-        weightDecay = 0,
+        weightDecay = 1e-5,
         additionalOptions = c( "nnUnetActivationStyle", "attentionGating", "initialConvolutionKernelSize[5]" ) )
       }
 
