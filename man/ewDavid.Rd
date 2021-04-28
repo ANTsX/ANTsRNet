@@ -10,6 +10,8 @@ ewDavid(
   doPreprocessing = TRUE,
   whichModel = "sysu",
   whichAxes = "max",
+  numberOfSimulations = 0,
+  sdAffine = 0.01,
   antsxnetCacheDirectory = NULL,
   verbose = FALSE
 )
@@ -26,6 +28,12 @@ the flair).}
 \item{whichAxes}{apply 2-D model to 1 or more axes.  In addition to a scalar
 or vector, e.g., \code{whichAxes = c(1, 3)}, one can use "max" for the
 axis with maximum anisotropy (default) or "all" for all axes.}
+
+\item{numberOfSimulations}{number of random affine perturbations to
+transform the input.}
+
+\item{sdAffine}{define the standard deviation of the affine transformation
+parameter for the simulations.}
 
 \item{antsxnetCacheDirectory}{destination directory for storing the downloaded
 template and model weights.  Since these can be resused, if

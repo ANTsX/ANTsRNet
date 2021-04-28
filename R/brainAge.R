@@ -24,7 +24,7 @@
 #' @param numberOfSimulations number of random affine perturbations to
 #' transform the input.
 #' @param sdAffine define the standard deviation of the affine transformation
-#' parameter.
+#' parameter for the simulations.
 #' @param antsxnetCacheDirectory destination directory for storing the downloaded
 #' template and model weights.  Since these can be resused, if
 #' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the

@@ -24,7 +24,7 @@ normalization to template).}
 transform the input.}
 
 \item{sdAffine}{define the standard deviation of the affine transformation
-parameter.}
+parameter for the simulations.}
 
 \item{antsxnetCacheDirectory}{destination directory for storing the downloaded
 template and model weights.  Since these can be resused, if

@@ -44,7 +44,7 @@ input image list (optional).}
   "affineAndDeformation" )}.  Default = \"affine\".}
 
 \item{sdAffine}{parameter dictating deviation amount from identity for
-random linear transformations.  Default = 1.0.}
+random linear transformations.  Default = 0.02.}
 
 \item{deformationTransformType}{one of the following options
 \code{c( "bspline", "exponential" )} if deformation is specified in the
@@ -72,11 +72,6 @@ Gaussian smoothing in mm.  Default = 4.0.}
 \code{ c( "nearestNeighbor", "genericLabel" )}.  Default =
 \"nearestNeighbor\".
 Default = 1.0.}
-
-\item{numberOfHistogramPoints}{number of histogram points for intensity warping.
-If = 0, no intensity warping is performed.}
-
-\item{sdIntensityTransform}{characterize the randomness of the intensity displacement.}
 }
 \value{
 list (if no directory set) or boolean for success, failure

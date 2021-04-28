@@ -289,6 +289,10 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
 #' @param whichAxes apply 2-D model to 1 or more axes.  In addition to a scalar
 #' or vector, e.g., \code{whichAxes = c(1, 3)}, one can use "max" for the
 #' axis with maximum anisotropy (default) or "all" for all axes.
+#' @param numberOfSimulations number of random affine perturbations to
+#' transform the input.
+#' @param sdAffine define the standard deviation of the affine transformation
+#' parameter for the simulations.
 #' @param antsxnetCacheDirectory destination directory for storing the downloaded
 #' template and model weights.  Since these can be resused, if
 #' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
@@ -309,7 +313,8 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
 #' }
 #' @export
 ewDavid <- function( flair, t1, doPreprocessing = TRUE, whichModel = "sysu",
-  whichAxes = "max", antsxnetCacheDirectory = NULL, verbose = FALSE )
+  whichAxes = "max", numberOfSimulations = 0, sdAffine = 0.01,
+  antsxnetCacheDirectory = NULL, verbose = FALSE )
 {
 
   doT1Only <- FALSE
@@ -330,6 +335,10 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, whichModel = "sysu",
   if( grepl( "Seg", whichModel ) )
     {
     useT1Segmentation <- TRUE
+    }
+  if( useT1Segmentation && doPreprocessing == True )
+    {
+    stop( "Using the t1 segmentation requires doPreprocessing = FALSE.")
     }
 
   if( is.null( antsxnetCacheDirectory ) )
@@ -482,7 +491,7 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, whichModel = "sysu",
     t1Segmentation <- NULL
     if( useT1Segmentation )
       {
-      atroposSeg <- deepAtropos( t1, doPreprocessing = doPreprocessing, verbose = verbose )
+      atroposSeg <- deepAtropos( t1, doPreprocessing = TRUE, verbose = verbose )
       t1Segmentation <- atroposSeg$segmentationImage
       }
 
@@ -527,11 +536,6 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, whichModel = "sysu",
         t1Segmentation <- resampleImage( t1Segmentation, resamplingParams, useVoxels = FALSE, interpType = 1 )
         }
       }
-    if( ! doT1Only )
-      {
-      flairPreprocessed <- ( flairPreprocessed - mean( flairPreprocessed ) ) / sd( flairPreprocessed )
-      }
-    t1Preprocessed <- ( t1Preprocessed - mean( t1Preprocessed ) ) / sd( t1Preprocessed )
 
     ################################
     #
@@ -617,100 +621,192 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, whichModel = "sysu",
     batchX <- array( data = 0,
       c( sum( dim( t1Preprocessed )[dimensionsToPredict]), templateSize, channelSize ) )
 
-    sliceCount <- 1
-    for( d in seq.int( length( dimensionsToPredict ) ) )
+    dataAugmentation <- NULL
+    if( numberOfSimulations > 0 )
       {
-      numberOfSlices <- dim( t1Preprocessed )[dimensionsToPredict[d]]
-
-      if( verbose == TRUE )
+      if( doT1Only )
         {
-        cat( "Extracting slices for dimension", dimensionsToPredict[d], "\n" )
-        pb <- txtProgressBar( min = 1, max = numberOfSlices, style = 3 )
-        }
-
-      for( i in seq.int( numberOfSlices ) )
-        {
-        if( verbose )
+        if( useT1Segmentation )
           {
-          setTxtProgressBar( pb, i )
-          }
-
-        t1Slice <- padOrCropImageToSize( extractSlice( t1Preprocessed, i, dimensionsToPredict[d] ), templateSize )
-
-        if( ! doT1Only )
-          {
-          flairSlice <- padOrCropImageToSize( extractSlice( flairPreprocessed, i, dimensionsToPredict[d] ), templateSize )
-          batchX[sliceCount,,,1] <- as.array( flairSlice )
-          batchX[sliceCount,,,2] <- as.array( t1Slice )
-          if( ! is.null( t1Segmentation ) )
-            {
-            t1SegmentationSlice <- padOrCropImageToSize( extractSlice( t1Segmentation, i, dimensionsToPredict[d] ), templateSize )
-            batchX[sliceCount,,,3] <- as.array( t1SegmentationSlice ) / 6
-            }
+          dataAugmentation <-
+            randomlyTransformImageData( t1Preprocessed,
+            list( list( t1Preprocessed ) ),
+            list( t1Segmentation ),
+            numberOfSimulations = numberOfSimulations,
+            transformType = 'affine',
+            sdAffine = sdAffine,
+            inputImageInterpolator = 'linear',
+            segmentationImageInterpolator = 'nearestNeighbor' )
           } else {
-          batchX[sliceCount,,,1] <- as.array( t1Slice )
-          if( ! is.null( t1Segmentation ) )
-            {
-            t1SegmentationSlice <- padOrCropImageToSize( extractSlice( t1Segmentation, i, dimensionsToPredict[d] ), templateSize )
-            batchX[sliceCount,,,2] <- as.array( t1SegmentationSlice ) / 6
-            }
+          dataAugmentation <-
+            randomlyTransformImageData( t1Preprocessed,
+            list( list( t1Preprocessed ) ),
+            numberOfSimulations = numberOfSimulations,
+            transformType = 'affine',
+            sdAffine = sdAffine,
+            inputImageInterpolator = 'linear' )
           }
-        sliceCount <- sliceCount + 1
+        } else {
+        if( useT1Segmentation )
+          {
+          dataAugmentation <-
+            randomlyTransformImageData( t1Preprocessed,
+            list( list( flairPreprocessed, t1Preprocessed ) ),
+            list( t1Segmentation ),
+            numberOfSimulations = numberOfSimulations,
+            transformType = 'affine',
+            sdAffine = sdAffine,
+            inputImageInterpolator = 'linear',
+            segmentationImageInterpolator = 'nearestNeighbor' )
+          } else {
+          dataAugmentation <-
+            randomlyTransformImageData( t1Preprocessed,
+            list( list( flairPreprocessed, t1Preprocessed ) ),
+            numberOfSimulations = numberOfSimulations,
+            transformType = 'affine',
+            sdAffine = sdAffine,
+            inputImageInterpolator = 'linear' )
+          }
         }
+      }
+
+    wmhProbabilityImage <- antsImageClone( t1 ) * 0
+    wmhSite <- rep( 0, 3 )
+
+    for( n in seq.int( numberOfSimulations + 1 ) )
+      {
+      batchFlair <- flairPreprocessed
+      batchT1 <- t1Preprocessed
+      batchT1Segmentation <- t1Segmentation
+
+      if( n > 1 )
+        {
+        if( doT1Only )
+          {
+          batchT1 <- dataAugmentation$simulatedImages[[n-1]][[1]]
+          } else {
+          batchFlair <- dataAugmentation$simulatedImages[[n-1]][[1]]
+          batchT1 <- dataAugmentation$simulatedImages[[n-1]][[2]]
+          }
+        if( useT1Segmentation )
+          {
+          batchT1Segmentation <- dataAugmentation$simulatedSegmentationImages[[n-1]]
+          }
+        }
+      if( ! doT1Only )
+        {
+        batchFlair <- ( batchFlair - mean( batchFlair ) ) / sd( batchFlair )
+        }
+      batchT1 <- ( batchT1 - mean( batchT1 ) ) / sd( batchT1 )
+
+      sliceCount <- 1
+      for( d in seq.int( length( dimensionsToPredict ) ) )
+        {
+        numberOfSlices <- dim( batchT1 )[dimensionsToPredict[d]]
+
+        if( verbose == TRUE )
+          {
+          cat( "Extracting slices for dimension", dimensionsToPredict[d], "\n" )
+          pb <- txtProgressBar( min = 1, max = numberOfSlices, style = 3 )
+          }
+
+        for( i in seq.int( numberOfSlices ) )
+          {
+          if( verbose )
+            {
+            setTxtProgressBar( pb, i )
+            }
+
+          t1Slice <- padOrCropImageToSize( extractSlice( batchT1, i, dimensionsToPredict[d] ), templateSize )
+
+          if( ! doT1Only )
+            {
+            flairSlice <- padOrCropImageToSize( extractSlice( batchFlair, i, dimensionsToPredict[d] ), templateSize )
+            batchX[sliceCount,,,1] <- as.array( flairSlice )
+            batchX[sliceCount,,,2] <- as.array( t1Slice )
+            if( ! is.null( t1Segmentation ) )
+              {
+              t1SegmentationSlice <- padOrCropImageToSize( extractSlice( batchT1Segmentation, i, dimensionsToPredict[d] ), templateSize )
+              batchX[sliceCount,,,3] <- as.array( t1SegmentationSlice ) / 6
+              }
+            } else {
+            batchX[sliceCount,,,1] <- as.array( t1Slice )
+            if( ! is.null( t1Segmentation ) )
+              {
+              t1SegmentationSlice <- padOrCropImageToSize( extractSlice( batchT1Segmentation, i, dimensionsToPredict[d] ), templateSize )
+              batchX[sliceCount,,,2] <- as.array( t1SegmentationSlice ) / 6
+              }
+            }
+          sliceCount <- sliceCount + 1
+          }
+        if( verbose == TRUE )
+          {
+          cat( "\n" )
+          }
+        }
+
+      ################################
+      #
+      # Do prediction and then restack into the image
+      #
+      ################################
+
       if( verbose == TRUE )
         {
-        cat( "\n" )
+        if( n == 1 )
+          {
+          cat( "Prediction\n" )
+          }
+        if( n > 1 )
+          {
+          cat( paste0( "Prediction (simulation ", n - 1, ")\n" ) )
+          }
         }
-      }
 
-    ################################
-    #
-    # Do prediction and then restack into the image
-    #
-    ################################
+      prediction <- predict( unetModel, batchX, verbose = verbose )
 
-    if( verbose == TRUE )
-      {
-      cat( "Prediction.\n" )
-      }
+      permutations <- list()
+      permutations[[1]] <- c( 1, 2, 3 )
+      permutations[[2]] <- c( 2, 1, 3 )
+      permutations[[3]] <- c( 2, 3, 1 )
 
-    prediction <- predict( unetModel, batchX, verbose = verbose )
+      predictionImageAverage <- antsImageClone( t1Preprocessed ) * 0
 
-    permutations <- list()
-    permutations[[1]] <- c( 1, 2, 3 )
-    permutations[[2]] <- c( 2, 1, 3 )
-    permutations[[3]] <- c( 2, 3, 1 )
+      currentStartSlice <- 1
+      for( d in seq.int( length( dimensionsToPredict ) ) )
+        {
+        currentEndSlice <- currentStartSlice - 1 + dim( t1Preprocessed )[dimensionsToPredict[d]]
+        whichBatchSlices <- currentStartSlice:currentEndSlice
+        if( is.list( prediction ) )
+          {
+          predictionPerDimension <- prediction[[1]][whichBatchSlices,,,1]
+          } else {
+          predictionPerDimension <- prediction[whichBatchSlices,,,1]
+          }
+        predictionArray <- aperm( drop( predictionPerDimension ), permutations[[dimensionsToPredict[d]]] )
+        predictionImage <- antsCopyImageInfo( t1Preprocessed,
+          padOrCropImageToSize( as.antsImage( predictionArray ), dim( t1Preprocessed ) ) )
+        predictionImageAverage <- predictionImageAverage + ( predictionImage - predictionImageAverage ) / d
+        currentStartSlice <- currentEndSlice + 1
+        }
 
-    predictionImageAverage <- antsImageClone( t1Preprocessed ) * 0
+      if( doResampling )
+        {
+        predictionImageAverage <- resampleImageToTarget( predictionImageAverage, t1 )
+        }
 
-    currentStartSlice <- 1
-    for( d in seq.int( length( dimensionsToPredict ) ) )
-      {
-      currentEndSlice <- currentStartSlice - 1 + dim( t1Preprocessed )[dimensionsToPredict[d]]
-      whichBatchSlices <- currentStartSlice:currentEndSlice
+      wmhProbabilityImage <- wmhProbabilityImage + ( predictionImageAverage - wmhProbabilityImage ) / n
       if( is.list( prediction ) )
         {
-        predictionPerDimension <- prediction[[1]][whichBatchSlices,,,1]
-        } else {
-        predictionPerDimension <- prediction[whichBatchSlices,,,1]
+        wmhSite <- wmhSite + ( colMeans( prediction[[2]] ) - wmhSite ) / n
         }
-      predictionArray <- aperm( drop( predictionPerDimension ), permutations[[dimensionsToPredict[d]]] )
-      predictionImage <- antsCopyImageInfo( t1Preprocessed,
-        padOrCropImageToSize( as.antsImage( predictionArray ), dim( t1Preprocessed ) ) )
-      predictionImageAverage <- predictionImageAverage + ( predictionImage - predictionImageAverage ) / d
-      currentStartSlice <- currentEndSlice + 1
-      }
-
-    if( doResampling )
-      {
-      predictionImageAverage <- resampleImageToTarget( predictionImageAverage, t1 )
       }
 
     if( is.list( prediction ) )
       {
-      return( list( predictionImageAverage, prediction[[2]] ) )
+      return( list( wmhProbabilityImage, wmhSite ) )
       } else {
-      return( predictionImageAverage )
+      return( wmhProbabilityImage )
       }
     }
 }

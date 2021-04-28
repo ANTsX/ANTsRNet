@@ -16,14 +16,11 @@
 #' @param segmentationImageList list of segmentation images corresponding to the
 #' input image list (optional).
 #' @param numberOfSimulations number of output images.  Default = 10.
-#' @param numberOfHistogramPoints number of histogram points for intensity warping.
-#' If = 0, no intensity warping is performed.
-#' @param sdIntensityTransform characterize the randomness of the intensity displacement.
 #' @param transformType one of the following options
 #' \code{c( "translation", "rigid", "scaleShear", "affine"," deformation" ,
 #'   "affineAndDeformation" )}.  Default = \"affine\".
 #' @param sdAffine parameter dictating deviation amount from identity for
-#' random linear transformations.  Default = 1.0.
+#' random linear transformations.  Default = 0.02.
 #' @param deformationTransformType one of the following options
 #' \code{c( "bspline", "exponential" )} if deformation is specified in the
 #' \code{transformType}.  Default = \"bspline\".
@@ -79,7 +76,7 @@ randomlyTransformImageData <- function( referenceImage,
   segmentationImageInterpolator = 'nearestNeighbor' )
 {
   createRandomLinearTransform <- function(
-    image, fixedParameters, transformType = 'affine', sdAffine = 1.0 )
+    image, fixedParameters, transformType = 'affine', sdAffine = 0.02 )
     {
 
     polarDecomposition <- function( X )
@@ -87,10 +84,11 @@ randomlyTransformImageData <- function( referenceImage,
       svdX <- svd( X )
       P <- svdX$u %*% diag( svdX$d ) %*% t( svdX$u )
       Z <- svdX$u %*% t( svdX$v )
-      if ( det( Z ) < 0 ) {
-        mydiag = diag( nrow(X) )
-        mydiag[1,1] = -1.0
-        Z = Z %*% mydiag
+      if( det( Z ) < 0 )
+        {
+        D <- diag( nrow( X ) )
+        D[1, 1] <- -1.0
+        Z <- Z %*% D
         }
       return( list( P = P, Z = Z, Xtilde = P %*% Z ) )
       }
