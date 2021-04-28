@@ -39,7 +39,6 @@
 #' @param segmentationImageInterpolator one of the following options
 #' \code{ c( "nearestNeighbor", "genericLabel" )}.  Default =
 #' \"nearestNeighbor\".
-#' Default = 1.0.
 #' @return list (if no directory set) or boolean for success, failure
 #' @author Avants BB, Tustison NJ
 #' @importFrom ANTsRCore getAntsrTransformFixedParameters iMath resampleImageToTarget applyAntsrTransform antsImagePhysicalSpaceConsistency antsrTransformFromDisplacementField makeImage smoothImage setAntsrTransformFixedParameters getAntsrTransformParameters setAntsrTransformParameters readAntsrTransform createAntsrTransform randomMask mergeChannels

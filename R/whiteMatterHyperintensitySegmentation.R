@@ -756,9 +756,7 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, whichModel = "sysu",
         if( n == 1 )
           {
           cat( "Prediction\n" )
-          }
-        if( n > 1 )
-          {
+          } else {
           cat( paste0( "Prediction (simulation ", n - 1, ")\n" ) )
           }
         }
