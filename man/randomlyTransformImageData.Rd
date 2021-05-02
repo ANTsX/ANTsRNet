@@ -70,8 +70,7 @@ Gaussian smoothing in mm.  Default = 4.0.}
 
 \item{segmentationImageInterpolator}{one of the following options
 \code{ c( "nearestNeighbor", "genericLabel" )}.  Default =
-\"nearestNeighbor\".
-Default = 1.0.}
+\"nearestNeighbor\".}
 }
 \value{
 list (if no directory set) or boolean for success, failure

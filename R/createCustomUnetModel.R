@@ -297,34 +297,44 @@ createHippMapp3rUnetModel3D <- function( inputImageSize,
   return( unetModel )
 }
 
-
 #' Implementation of the sysu_media U-net architecture
 #'
 #' Creates a keras model implementation of the u-net architecture
-#' in the 2017 MICCAI WMH challenge by the sysu_medial team described 
+#' in the 2017 MICCAI WMH challenge by the sysu_medial team described
 #' here:
 #'
 #'     \url{https://pubmed.ncbi.nlm.nih.gov/30125711/}
 #'
-#' with the original implementation available here:
+#' or targeting the claustrum:
+#'
+#'     \url{https://arxiv.org/abs/2008.03465}
+#'
+#' with the original implementations available at
 #'
 #'     \url{https://github.com/hongweilibran/wmh_ibbmTum}
 #'
-#' @param inputImageSize Used for specifying the input tensor shape.  
-#' This will be \code{c(200, 200, 2)} for t1/flair input and 
-#' \code{c(200, 200, 1)} for flair-only input.
+#' and
+#'
+#'     \url{https://github.com/hongweilibran/claustrum_multi_view},
+#'
+#' respectively.
+#'
+#' @param inputImageSize Used for specifying the input tensor shape.
+#' This will be \code{c(200, 200, 2)} for t1/flair input and
+#' \code{c(200, 200, 1)} for flair-only input for wmhs.  For the
+#' claustrum, it is \code{c(180, 180, 1)}.
 #'
 #' @return a u-net keras model
 #' @author Tustison NJ
 #' @examples
 #' \dontrun{
 #'
-#' model <- createLiWmhUnetModel2D( c( 200, 200, 1 ) )
+#' model <- createSysuMediaUnetModel2D( c( 200, 200, 1 ) )
 #'
 #' }
 #' @import keras
 #' @export
-createSysuMediaUnetModel2D <- function( inputImageSize )
+createSysuMediaUnetModel2D <- function( inputImageSize, anatomy = c( "wmh", "claustrum" ) )
 {
   getCropShape <- function( targetLayer, referenceLayer )
     {
@@ -332,7 +342,7 @@ createSysuMediaUnetModel2D <- function( inputImageSize )
 
     cropShape <- list()
 
-    delta <- K$int_shape( targetLayer )[[2]] - K$int_shape( referenceLayer )[[2]] 
+    delta <- K$int_shape( targetLayer )[[2]] - K$int_shape( referenceLayer )[[2]]
     if( delta %% 2 != 0 )
       {
       cropShape[[1]] <- c( as.integer( delta / 2 ), as.integer( delta / 2 ) + 1L )
@@ -340,7 +350,7 @@ createSysuMediaUnetModel2D <- function( inputImageSize )
       cropShape[[1]] <- c( as.integer( delta / 2 ), as.integer( delta / 2 ) )
       }
 
-    delta <- K$int_shape( targetLayer )[[3]] - K$int_shape( referenceLayer )[[3]] 
+    delta <- K$int_shape( targetLayer )[[3]] - K$int_shape( referenceLayer )[[3]]
     if( delta %% 2 != 0 )
       {
       cropShape[[2]] <- c( as.integer( delta / 2 ), as.integer( delta / 2 ) + 1L )
@@ -352,26 +362,33 @@ createSysuMediaUnetModel2D <- function( inputImageSize )
     }
 
   inputs <- layer_input( shape = inputImageSize )
- 
-  numberOfFilters <- as.integer( c( 64, 96, 128, 256, 512 ) )
- 
+
+  if( anatomy == "wmh" )
+    {
+    numberOfFilters <- as.integer( c( 64, 96, 128, 256, 512 ) )
+    } else if( anatomy == "claustrum" ) {
+    numberOfFilters <- as.integer( c( 32, 64, 96, 128, 256 ) )
+    } else {
+    stop( "Unrecognized anatomy" )
+    }
+
   # encoding layers
 
   encodingLayers <- list()
 
-  outputs <- inputs 
+  outputs <- inputs
   for( i in seq.int( length( numberOfFilters ) ) )
     {
     kernel1 <- 3L
     kernel2 <- 3L
-    if( i == 1 )  
+    if( i == 1 && anatomy == "wmh" )
       {
       kernel1 <- 5L
       kernel2 <- 5L
       } else if( i == 4 ) {
       kernel1 <- 3L
       kernel2 <- 4L
-      }  
+      }
     outputs <- outputs %>% layer_conv_2d( numberOfFilters[i], kernel_size = kernel1, padding = 'same' )
     outputs <- outputs %>% layer_activation_relu()
     outputs <- outputs %>% layer_conv_2d( numberOfFilters[i], kernel_size = kernel2, padding = 'same' )
@@ -385,7 +402,7 @@ createSysuMediaUnetModel2D <- function( inputImageSize )
 
   # decoding layers
 
-  for( i in seq.int( from = length( encodingLayers ) - 1, to = 1, by = -1 ) ) 
+  for( i in seq.int( from = length( encodingLayers ) - 1, to = 1, by = -1 ) )
     {
     upsampleLayer <- outputs %>% layer_upsampling_2d( size = c( 2L, 2L ) )
     cropShape <- getCropShape( encodingLayers[[i]], upsampleLayer )
@@ -398,8 +415,8 @@ createSysuMediaUnetModel2D <- function( inputImageSize )
     }
 
   # final
- 
-  cropShape <- getCropShape( inputs, outputs )   
+
+  cropShape <- getCropShape( inputs, outputs )
   outputs <- outputs %>% layer_zero_padding_2d( padding = cropShape )
   outputs <- outputs %>% layer_conv_2d( 1L, kernel_size = 1L, activation = 'sigmoid', padding = 'same' )
 

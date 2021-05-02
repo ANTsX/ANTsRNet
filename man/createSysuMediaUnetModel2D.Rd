@@ -4,12 +4,13 @@
 \alias{createSysuMediaUnetModel2D}
 \title{Implementation of the sysu_media U-net architecture}
 \usage{
-createSysuMediaUnetModel2D(inputImageSize)
+createSysuMediaUnetModel2D(inputImageSize, anatomy = c("wmh", "claustrum"))
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.
 This will be \code{c(200, 200, 2)} for t1/flair input and
-\code{c(200, 200, 1)} for flair-only input.}
+\code{c(200, 200, 1)} for flair-only input for wmhs.  For the
+claustrum, it is \code{c(180, 180, 1)}.}
 }
 \value{
 a u-net keras model
@@ -23,13 +24,21 @@ here:
 \preformatted{\url{https://pubmed.ncbi.nlm.nih.gov/30125711/}
 }
 
-with the original implementation available here:\preformatted{\url{https://github.com/hongweilibran/wmh_ibbmTum}
+or targeting the claustrum:\preformatted{\url{https://arxiv.org/abs/2008.03465}
 }
+
+with the original implementations available at\preformatted{\url{https://github.com/hongweilibran/wmh_ibbmTum}
+}
+
+and\preformatted{\url{https://github.com/hongweilibran/claustrum_multi_view},
+}
+
+respectively.
 }
 \examples{
 \dontrun{
 
-model <- createLiWmhUnetModel2D( c( 200, 200, 1 ) )
+model <- createSysuMediaUnetModel2D( c( 200, 200, 1 ) )
 
 }
 }

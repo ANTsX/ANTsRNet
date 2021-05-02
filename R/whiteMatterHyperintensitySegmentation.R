@@ -54,6 +54,8 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
     antsxnetCacheDirectory <- "ANTsXNet"
     }
 
+  imageSize <- c( 200, 200 )
+
   ################################
   #
   # Preprocess images
@@ -109,7 +111,7 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
     brainMask <- brainExtraction( flair, modality = "flair" )
     }
 
-  referenceImage <- makeImage( c( 200, 200, 200 ),
+  referenceImage <- makeImage( c( 170, 256, 256 ),
                                voxval = 1,
                                spacing = c( 1, 1, 1 ),
                                origin = c( 0, 0, 0 ),
@@ -127,6 +129,12 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
     t1PreprocessedWarped <- applyAntsrTransformToImage( xfrm, t1Preprocessed, referenceImage )
     }
 
+  flairPreprocessedWarped <- flairPreprocessedWarped * brainMaskWarped
+  if ( ! is.null( t1 ) )
+    {
+    t1PreprocessedWarped <- t1PreprocessedWarped * brainMaskWarped
+    }
+
   ################################
   #
   # Gaussian normalize intensity based on brain mask
@@ -136,7 +144,6 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
   meanFlair <- mean( flairPreprocessedWarped[brainMaskWarped > 0], na.rm = TRUE )
   sdFlair <- sd( flairPreprocessedWarped[brainMaskWarped > 0], na.rm = TRUE )
   flairPreprocessedWarped <- ( flairPreprocessedWarped - meanFlair ) / sdFlair
-
   if( numberOfChannels == 2 )
     {
     meanT1 <- mean( t1PreprocessedWarped[brainMaskWarped > 0], na.rm = TRUE )
@@ -156,28 +163,25 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
     numberOfModels <- 3
     }
 
+  if( verbose == TRUE )
+    {
+    cat( "White matter hyperintensity:  retrieving model weights.\n" )
+    }
+
   unetModels <- list()
   for( i in seq.int( numberOfModels ) )
     {
     weightsFileName <- ''
     if( numberOfChannels == 1 )
       {
-      if( verbose == TRUE )
-        {
-        cat( "White matter hyperintensity:  retrieving model weights.\n" )
-        }
       weightsFileName <- getPretrainedNetwork( paste0( "sysuMediaWmhFlairOnlyModel", i - 1 ),
         antsxnetCacheDirectory = antsxnetCacheDirectory )
       } else {
-      if( verbose == TRUE )
-        {
-        cat( "White matter hyperintensity:  downloading model weights.\n" )
-        }
       weightsFileName <- getPretrainedNetwork( paste0( "sysuMediaWmhFlairT1Model", i - 1 ),
         antsxnetCacheDirectory = antsxnetCacheDirectory )
       }
 
-    unetModels[[i]] <- createSysuMediaUnetModel2D( c( 200, 200, numberOfChannels ) )
+    unetModels[[i]] <- createSysuMediaUnetModel2D( c( imageSize, numberOfChannels ), anatomy = "wmh" )
     unetModels[[i]]$load_weights( weightsFileName )
     }
 
@@ -194,7 +198,7 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
     }
 
   batchX <- array( data = 0,
-    c( sum( dim( flairPreprocessedWarped )[dimensionsToPredict]), 200, 200, numberOfChannels ) )
+    c( sum( dim( flairPreprocessedWarped )[dimensionsToPredict]), imageSize, numberOfChannels ) )
 
   sliceCount <- 1
   for( d in seq.int( length( dimensionsToPredict ) ) )
@@ -214,11 +218,11 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
         setTxtProgressBar( pb, i )
         }
 
-      flairSlice <- padOrCropImageToSize( extractSlice( flairPreprocessedWarped, i, dimensionsToPredict[d] ), c( 200, 200 ) )
+      flairSlice <- padOrCropImageToSize( extractSlice( flairPreprocessedWarped, i, dimensionsToPredict[d] ), imageSize )
       batchX[sliceCount,,,1] <- as.array( flairSlice )
       if( numberOfChannels == 2 )
         {
-        t1Slice <- padOrCropImageToSize( extractSlice( t1PreprocessedWarped, i, dimensionsToPredict[d] ), c( 200, 200 ) )
+        t1Slice <- padOrCropImageToSize( extractSlice( t1PreprocessedWarped, i, dimensionsToPredict[d] ), imageSize )
         batchX[sliceCount,,,2] <- as.array( t1Slice )
         }
       sliceCount <- sliceCount + 1
@@ -271,7 +275,7 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
     }
 
   probabilityImage <- applyAntsrTransformToImage( invertAntsrTransform( xfrm ),
-      predictionImageAverage, flair )
+      predictionImageAverage, flair ) * brainMask
 
   return( probabilityImage = probabilityImage )
 }
