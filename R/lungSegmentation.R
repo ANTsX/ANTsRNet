@@ -76,7 +76,7 @@ elBicho <- function( ventilationImage, mask,
     {
     cat( "El Bicho:  retrieving model weights.\n" )
     }
-  weightsFileName <- getPretrainedNetwork( "elbicho", antsxnetCacheDirectory = antsxnetCacheDirectory )
+  weightsFileName <- getPretrainedNetwork( "elBicho", antsxnetCacheDirectory = antsxnetCacheDirectory )
   unetModel$load_weights( weightsFileName )
 
   ################################
