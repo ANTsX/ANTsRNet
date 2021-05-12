@@ -125,7 +125,7 @@ training data ported from the</p>
 
     <pre class="usage"><span class='fu'>brainExtraction</span>(
   <span class='no'>image</span>,
-  <span class='kw'>modality</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"t1"</span>, <span class='st'>"t1nobrainer"</span>, <span class='st'>"t1combined"</span>, <span class='st'>"t2"</span>, <span class='st'>"flair"</span>, <span class='st'>"bold"</span>, <span class='st'>"fa"</span>,
+  <span class='kw'>modality</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"t1"</span>, <span class='st'>"t1v0"</span>, <span class='st'>"t1nobrainer"</span>, <span class='st'>"t1combined"</span>, <span class='st'>"t2"</span>, <span class='st'>"flair"</span>, <span class='st'>"bold"</span>, <span class='st'>"fa"</span>,
     <span class='st'>"t1t2infant"</span>, <span class='st'>"t1infant"</span>, <span class='st'>"t2infant"</span>),
   <span class='kw'>antsxnetCacheDirectory</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
@@ -141,7 +141,8 @@ training data ported from the</p>
     <tr>
       <th>modality</th>
       <td><p>image type.  Options include:</p><ul>
-<li><p>"t1": T1-weighted MRI---ANTs-trained.</p></li>
+<li><p>"t1": T1-weighted MRI---ANTs-trained.  Update from "t1v0"</p></li>
+<li><p>"t1v0": T1-weighted MRI---ANTs-trained.</p></li>
 <li><p>"t1nobrainer": T1-weighted MRI---FreeSurfer-trained: h/t Satra Ghosh and Jakub Kaczmarzyk.</p></li>
 <li><p>"t1combined": Brian's combination of "t1" and "t1nobrainer".  One can also specify
 "t1combinedX" where X is the morphological radius.  X = 12 by default.</p></li>

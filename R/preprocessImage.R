@@ -8,8 +8,9 @@
 #' @param image input t1-weighted brain MRI
 #' @param truncateIntensity 2-element vector giving the low and high quantiles
 #' for intensity truncation.
-#' @param doBrainExtraction boolean for performing ANTsRNet brain extraction
-#' If \code{TRUE}, returns mask.  3-D input only.
+#' @param brainExtractionModality string or NULL.  Perform brain extraction
+#' using antsxnet tools.  One of "t1", "t1v0", "t1nobrainer", "t1combined",
+#' "flair", "t2", "bold", "fa", "t1infant", "t2infant", or NULL.
 #' @param templateTransformType see Details in help for \code{antsRegistration}.
 #' Typically "Rigid" or "Affine".
 #' @param template an ANTs image (not skull-stripped). Other premade templates
@@ -39,14 +40,14 @@
 #'
 #' image <- antsImageRead( getANTsRData( "r16" ) )
 #' preprocessedImage <- preprocessBrainImage( image,
-#'   truncateIntensity = c( 0.01, 0.99 ), doBrainExtraction = FALSE,
+#'   truncateIntensity = c( 0.01, 0.99 ),
 #'   doBiasCorrection = TRUE, doDenoising = TRUE,
 #'   intensityNormalizationType = "01", verbose = FALSE )
 #'
 #' @import keras
 #' @export
 preprocessBrainImage <- function( image, truncateIntensity = c( 0.01, 0.99 ),
-  doBrainExtraction = TRUE, templateTransformType = NULL, template = "biobank",
+  brainExtractionModality = NULL, templateTransformType = NULL, template = "biobank",
   doBiasCorrection = TRUE, returnBiasField = FALSE, doDenoising = TRUE,
   intensityMatchingType = NULL, referenceImage = NULL,
   intensityNormalizationType = NULL, antsxnetCacheDirectory = NULL,
@@ -74,13 +75,13 @@ preprocessBrainImage <- function( image, truncateIntensity = c( 0.01, 0.99 ),
 
   # Brain extraction
   mask <- NULL
-  if( doBrainExtraction == TRUE )
+  if( ! is.null( brainExtractionModality ) )
     {
     if( verbose == TRUE )
       {
       message( "Preprocessing:  brain extraction.\n" )
       }
-    probabilityMask <- brainExtraction( preprocessedImage, modality = "t1",
+    probabilityMask <- brainExtraction( preprocessedImage, modality = brainExtractionModality,
       antsxnetCacheDirectory = antsxnetCacheDirectory, verbose = verbose )
     mask <- thresholdImage( probabilityMask, 0.5, 1, 1, 0 )
     }

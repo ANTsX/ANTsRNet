@@ -130,7 +130,7 @@ longitudinalCorticalThickness <- function( t1s, initialTemplate = "oasis", numbe
         transformType <- refinementTransform
         }
       t1Preprocessed <- preprocessBrainImage( t1s[[i]], truncateIntensity = c( 0.01, 0.99 ),
-        doBrainExtraction = FALSE, templateTransformType = transformType,
+        brainExtractionModality = NULL, templateTransformType = transformType,
         template = sst, doBiasCorrection = FALSE, returnBiasField = FALSE,
         doDenoising = FALSE, intensityNormalizationType = "01",
         antsxnetCacheDirectory = antsxnetCacheDirectory, verbose = verbose )
@@ -155,7 +155,7 @@ longitudinalCorticalThickness <- function( t1s, initialTemplate = "oasis", numbe
       cat( "***************************\n\n" )
       }
     t1sPreprocessed[[i]] <- preprocessBrainImage( t1s[[i]], truncateIntensity = c( 0.01, 0.99 ),
-      doBrainExtraction = TRUE, templateTransformType = "antsRegistrationSyNQuick[a]",
+      brainExtractionModality = "t1", templateTransformType = "antsRegistrationSyNQuick[a]",
       template = sst, doBiasCorrection = TRUE, returnBiasField = FALSE,
       doDenoising = TRUE, intensityNormalizationType = "01",
       antsxnetCacheDirectory = antsxnetCacheDirectory, verbose = verbose )

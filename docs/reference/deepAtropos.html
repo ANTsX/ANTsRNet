@@ -120,6 +120,7 @@
     <pre class="usage"><span class='fu'>deepAtropos</span>(
   <span class='no'>t1</span>,
   <span class='kw'>doPreprocessing</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>useSpatialPriors</span> <span class='kw'>=</span> <span class='fl'>0</span>,
   <span class='kw'>antsxnetCacheDirectory</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>debug</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
@@ -135,6 +136,10 @@
     <tr>
       <th>doPreprocessing</th>
       <td><p>perform preprocessing.  See description above.</p></td>
+    </tr>
+    <tr>
+      <th>useSpatialPriors</th>
+      <td><p>use MNI spatial tissue priors (0, 1, or 2).  0 is no priors.</p></td>
     </tr>
     <tr>
       <th>antsxnetCacheDirectory</th>

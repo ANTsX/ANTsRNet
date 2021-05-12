@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>2-D implementation of the expanded image super resolution architecture. — createExpandedSuperResolutionModel2D • ANTsRNet</title>
+<title>Claustrum segmentation — claustrumSegmentation • ANTsRNet</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,8 @@
 
 
 
-<meta property="og:title" content="2-D implementation of the expanded image super resolution architecture. — createExpandedSuperResolutionModel2D" />
-<meta property="og:description" content="Creates a keras model of the expanded image super resolution deep learning
-framework based on the following python implementation:" />
+<meta property="og:title" content="Claustrum segmentation — claustrumSegmentation" />
+<meta property="og:description" content="Described here:" />
 
 
 
@@ -109,85 +108,72 @@ framework based on the following python implementation:" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>2-D implementation of the expanded image super resolution architecture.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ANTsX/ANTsRNet/blob/master/R/createExpandedSuperResolutionModel.R'><code>R/createExpandedSuperResolutionModel.R</code></a></small>
-    <div class="hidden name"><code>createExpandedSuperResolutionModel2D.Rd</code></div>
+    <h1>Claustrum segmentation</h1>
+    <small class="dont-index">Source: <a href='https://github.com/ANTsX/ANTsRNet/blob/master/R/claustrumSegmentation.R'><code>R/claustrumSegmentation.R</code></a></small>
+    <div class="hidden name"><code>claustrumSegmentation.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Creates a keras model of the expanded image super resolution deep learning
-framework based on the following python implementation:</p>
+    <p>Described here:</p>
     </div>
 
-    <pre class="usage"><span class='fu'>createExpandedSuperResolutionModel2D</span>(
-  <span class='no'>inputImageSize</span>,
-  <span class='kw'>convolutionKernelSizes</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>9</span>, <span class='fl'>9</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>1</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>3</span>, <span class='fl'>3</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>5</span>, <span class='fl'>5</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>5</span>, <span class='fl'>5</span>)),
-  <span class='kw'>numberOfFilters</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>64</span>, <span class='fl'>32</span>, <span class='fl'>32</span>, <span class='fl'>32</span>)
+    <pre class="usage"><span class='fu'>claustrumSegmentation</span>(
+  <span class='no'>t1</span>,
+  <span class='kw'>doPreprocessing</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>useEnsemble</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>antsxnetCacheDirectory</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>inputImageSize</th>
-      <td><p>Used for specifying the input tensor shape.  The
-shape (or dimension) of that tensor is the image dimensions followed by
-the number of channels (e.g., red, green, and blue).  The batch size
-(i.e., number of training images) is not specified a priori.</p></td>
+      <th>t1</th>
+      <td><p>input 3-D T1-weighted brain image.</p></td>
     </tr>
     <tr>
-      <th>convolutionKernelSizes</th>
-      <td><p>a list of 2-D vectors specifying the kernel
-size at each convolution layer.  Default values are the same as given in
-the original paper.  The length of kernel size vectors must be 1 greater
-than the vector length of the number of filters.</p></td>
+      <th>doPreprocessing</th>
+      <td><p>perform n4 bias correction, denoising?</p></td>
     </tr>
     <tr>
-      <th>numberOfFilters</th>
-      <td><p>a vector containing the number of filters for each
-convolutional layer.  Default values are the same as given in the original
-paper.</p></td>
+      <th>useEnsemble</th>
+      <td><p>boolean to check whether to use all 3 sets of weights.</p></td>
+    </tr>
+    <tr>
+      <th>antsxnetCacheDirectory</th>
+      <td><p>destination directory for storing the downloaded
+template and model weights.  Since these can be resused, if
+<code><a href='https://rdrr.io/r/base/NULL.html'>is.null(antsxnetCacheDirectory)</a></code>, these data will be downloaded to the
+inst/extdata/ subfolder of the ANTsRNet package.</p></td>
+    </tr>
+    <tr>
+      <th>verbose</th>
+      <td><p>print progress.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a keras model for image super resolution</p>
+    <p>claustrum probability image</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     
-<pre>    \url{https://github.com/titu1994/Image-Super-Resolution}
+<pre>\url{https://arxiv.org/abs/2008.03465}
+</pre>
+
+<p>with the implementation available at:</p><pre>\url{https://github.com/hongweilibran/claustrum_multi_view}
 </pre>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>createExpandedSuperResolutionModel2D</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>100</span>, <span class='fl'>100</span>, <span class='fl'>1</span> ))</div><div class='output co'>#&gt; Model
-#&gt; Model: "model_25"
-#&gt; ________________________________________________________________________________
-#&gt; Layer (type)              Output Shape      Param #  Connected to               
-#&gt; ================================================================================
-#&gt; input_22 (InputLayer)     [(None, 100, 100, 0                                   
-#&gt; ________________________________________________________________________________
-#&gt; conv2d_476 (Conv2D)       (None, 100, 100,  5248     input_22[0][0]             
-#&gt; ________________________________________________________________________________
-#&gt; conv2d_477 (Conv2D)       (None, 100, 100,  2080     conv2d_476[0][0]           
-#&gt; ________________________________________________________________________________
-#&gt; conv2d_478 (Conv2D)       (None, 100, 100,  18464    conv2d_476[0][0]           
-#&gt; ________________________________________________________________________________
-#&gt; conv2d_479 (Conv2D)       (None, 100, 100,  51232    conv2d_476[0][0]           
-#&gt; ________________________________________________________________________________
-#&gt; average (Average)         (None, 100, 100,  0        conv2d_477[0][0]           
-#&gt;                                                      conv2d_478[0][0]           
-#&gt;                                                      conv2d_479[0][0]           
-#&gt; ________________________________________________________________________________
-#&gt; conv2d_480 (Conv2D)       (None, 100, 100,  801      average[0][0]              
-#&gt; ================================================================================
-#&gt; Total params: 77,825
-#&gt; Trainable params: 77,825
-#&gt; Non-trainable params: 0
-#&gt; ________________________________________________________________________________
-#&gt; 
-#&gt; </div></pre>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>ANTsRNet</span> )
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>keras</span> )
+
+<span class='no'>image</span> <span class='kw'>&lt;-</span> <span class='fu'>antsImageRead</span>( <span class='st'>"t1.nii.gz"</span> )
+<span class='no'>probabilityMask</span> <span class='kw'>&lt;-</span> <span class='fu'>claustrumSegmentation</span>( <span class='no'>image</span> )
+}</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

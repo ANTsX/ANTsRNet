@@ -121,6 +121,7 @@
   <span class='no'>t1</span>,
   <span class='kw'>doPreprocessing</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>returnProbabilityImages</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>doLobarParcellation</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>antsxnetCacheDirectory</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
 )</pre>
@@ -140,6 +141,10 @@
       <th>returnProbabilityImages</th>
       <td><p>whether to return the two sets of probability images
 for the inner and outer labels.</p></td>
+    </tr>
+    <tr>
+      <th>doLobarParcellation</th>
+      <td><p>perform lobar parcellation (also divided by hemisphere).</p></td>
     </tr>
     <tr>
       <th>antsxnetCacheDirectory</th>
@@ -264,7 +269,81 @@ each label.</p>
 <li><p>Label 2031:right supramarginal</p></li>
 <li><p>Label 2034:right transverse temporal</p></li>
 <li><p>Label 2035:right insula</p></li>
-</ul><p>Preprocessing on the training data consisted of:</p><ul>
+</ul>
+
+<p>Performing the lobar parcellation is based on the FreeSurfer division
+described here:</p>
+<p><a href='https://surfer.nmr.mgh.harvard.edu/fswiki/CorticalParcellation'>https://surfer.nmr.mgh.harvard.edu/fswiki/CorticalParcellation</a></p>
+<ul>
+<li><p>Label 1002:left caudal anterior cingulate</p></li>
+<li><p>Label 1003:left caudal middle frontal</p></li>
+<li><p>Label 1012:left lateral orbitofrontal</p></li>
+<li><p>Label 1014:left medial orbitofrontal</p></li>
+<li><p>Label 1017:left paracentral</p></li>
+<li><p>Label 1018:left pars opercularis</p></li>
+<li><p>Label 1019:left pars orbitalis</p></li>
+<li><p>Label 1020:left pars triangularis</p></li>
+<li><p>Label 1024:left precentral</p></li>
+<li><p>Label 1026:left rostral anterior cingulate</p></li>
+<li><p>Label 1027:left rostral middle frontal</p></li>
+<li><p>Label 1028:left superior frontal</p></li>
+<li><p>Label 2002:right caudal anterior cingulate</p></li>
+<li><p>Label 2003:right caudal middle frontal</p></li>
+<li><p>Label 2012:right lateral orbitofrontal</p></li>
+<li><p>Label 2014:right medial orbitofrontal</p></li>
+<li><p>Label 2017:right paracentral</p></li>
+<li><p>Label 2018:right pars opercularis</p></li>
+<li><p>Label 2019:right pars orbitalis</p></li>
+<li><p>Label 2020:right pars triangularis</p></li>
+<li><p>Label 2024:right precentral</p></li>
+<li><p>Label 2026:right rostral anterior cingulate</p></li>
+<li><p>Label 2027:right rostral middle frontal</p></li>
+<li><p>Label 2028:right superior frontal</p>
+<p>Parietal:</p></li>
+<li><p>Label 1008:left inferior parietal</p></li>
+<li><p>Label 1010:left isthmus cingulate</p></li>
+<li><p>Label 1022:left postcentral</p></li>
+<li><p>Label 1023:left posterior cingulate</p></li>
+<li><p>Label 1025:left precuneus</p></li>
+<li><p>Label 1029:left superior parietal</p></li>
+<li><p>Label 1031:left supramarginal</p></li>
+<li><p>Label 2008:right inferior parietal</p></li>
+<li><p>Label 2010:right isthmus cingulate</p></li>
+<li><p>Label 2022:right postcentral</p></li>
+<li><p>Label 2023:right posterior cingulate</p></li>
+<li><p>Label 2025:right precuneus</p></li>
+<li><p>Label 2029:right superior parietal</p></li>
+<li><p>Label 2031:right supramarginal</p>
+<p>Temporal:</p></li>
+<li><p>Label 1006:left entorhinal</p></li>
+<li><p>Label 1007:left fusiform</p></li>
+<li><p>Label 1009:left inferior temporal</p></li>
+<li><p>Label 1015:left middle temporal</p></li>
+<li><p>Label 1016:left parahippocampal</p></li>
+<li><p>Label 1030:left superior temporal</p></li>
+<li><p>Label 1034:left transverse temporal</p></li>
+<li><p>Label 2006:right entorhinal</p></li>
+<li><p>Label 2007:right fusiform</p></li>
+<li><p>Label 2009:right inferior temporal</p></li>
+<li><p>Label 2015:right middle temporal</p></li>
+<li><p>Label 2016:right parahippocampal</p></li>
+<li><p>Label 2030:right superior temporal</p></li>
+<li><p>Label 2034:right transverse temporal</p>
+<p>Occipital:</p></li>
+<li><p>Label 1005:left cuneus</p></li>
+<li><p>Label 1011:left lateral occipital</p></li>
+<li><p>Label 1013:left lingual</p></li>
+<li><p>Label 1021:left pericalcarine</p></li>
+<li><p>Label 2005:right cuneus</p></li>
+<li><p>Label 2011:right lateral occipital</p></li>
+<li><p>Label 2013:right lingual</p></li>
+<li><p>Label 2021:right pericalcarine</p>
+<p>Other outer labels:</p></li>
+<li><p>Label 1035:left insula</p></li>
+<li><p>Label 2035:right insula</p></li>
+</ul>
+
+<p>Preprocessing on the training data consisted of:</p><ul>
 <li><p>n4 bias correction,</p></li>
 <li><p>denoising,</p></li>
 <li><p>brain extraction, and</p></li>

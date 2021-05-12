@@ -66,7 +66,7 @@ hippMapp3rSegmentation <- function( t1, doPreprocessing = TRUE,
     {
     t1Preprocessing <- preprocessBrainImage( t1,
         truncateIntensity = NULL,
-        doBrainExtraction = TRUE,
+        brainExtractionModality = "t1",
         template = NULL,
         doBiasCorrection = TRUE,
         doDenoising = FALSE,

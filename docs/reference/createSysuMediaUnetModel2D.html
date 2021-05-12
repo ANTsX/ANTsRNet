@@ -121,7 +121,7 @@ in the 2017 MICCAI WMH challenge by the sysu_medial team described
 here:</p>
     </div>
 
-    <pre class="usage"><span class='fu'>createSysuMediaUnetModel2D</span>(<span class='no'>inputImageSize</span>)</pre>
+    <pre class="usage"><span class='fu'>createSysuMediaUnetModel2D</span>(<span class='no'>inputImageSize</span>, <span class='kw'>anatomy</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"wmh"</span>, <span class='st'>"claustrum"</span>))</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -130,7 +130,8 @@ here:</p>
       <th>inputImageSize</th>
       <td><p>Used for specifying the input tensor shape.
 This will be <code><a href='https://rdrr.io/r/base/c.html'>c(200, 200, 2)</a></code> for t1/flair input and
-<code><a href='https://rdrr.io/r/base/c.html'>c(200, 200, 1)</a></code> for flair-only input.</p></td>
+<code><a href='https://rdrr.io/r/base/c.html'>c(200, 200, 1)</a></code> for flair-only input for wmhs.  For the
+claustrum, it is <code><a href='https://rdrr.io/r/base/c.html'>c(180, 180, 1)</a></code>.</p></td>
     </tr>
     </table>
 
@@ -143,14 +144,21 @@ This will be <code><a href='https://rdrr.io/r/base/c.html'>c(200, 200, 2)</a></c
 <pre>\url{https://pubmed.ncbi.nlm.nih.gov/30125711/}
 </pre>
 
-<p>with the original implementation available here:</p><pre>\url{https://github.com/hongweilibran/wmh_ibbmTum}
+<p>or targeting the claustrum:</p><pre>\url{https://arxiv.org/abs/2008.03465}
 </pre>
 
+<p>with the original implementations available at</p><pre>\url{https://github.com/hongweilibran/wmh_ibbmTum}
+</pre>
+
+<p>and</p><pre>\url{https://github.com/hongweilibran/claustrum_multi_view},
+</pre>
+
+<p>respectively.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
 
-<span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'>createLiWmhUnetModel2D</span>( <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>200</span>, <span class='fl'>200</span>, <span class='fl'>1</span> ) )
+<span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'>createSysuMediaUnetModel2D</span>( <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>200</span>, <span class='fl'>200</span>, <span class='fl'>1</span> ) )
 
 }</div></pre>
   </div>

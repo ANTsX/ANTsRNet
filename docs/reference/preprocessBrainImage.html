@@ -122,7 +122,7 @@ various papers including the cortical thickness pipeline:</p>
     <pre class="usage"><span class='fu'>preprocessBrainImage</span>(
   <span class='no'>image</span>,
   <span class='kw'>truncateIntensity</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.01</span>, <span class='fl'>0.99</span>),
-  <span class='kw'>doBrainExtraction</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>brainExtractionModality</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>templateTransformType</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>template</span> <span class='kw'>=</span> <span class='st'>"biobank"</span>,
   <span class='kw'>doBiasCorrection</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
@@ -148,9 +148,10 @@ various papers including the cortical thickness pipeline:</p>
 for intensity truncation.</p></td>
     </tr>
     <tr>
-      <th>doBrainExtraction</th>
-      <td><p>boolean for performing ANTsRNet brain extraction
-If <code>TRUE</code>, returns mask.  3-D input only.</p></td>
+      <th>brainExtractionModality</th>
+      <td><p>string or NULL.  Perform brain extraction
+using antsxnet tools.  One of "t1", "t1v0", "t1nobrainer", "t1combined",
+"flair", "t2", "bold", "fa", "t1infant", "t2infant", or NULL.</p></td>
     </tr>
     <tr>
       <th>templateTransformType</th>
@@ -221,7 +222,7 @@ template transforms.</p>
 
 <span class='no'>image</span> <span class='kw'>&lt;-</span> <span class='fu'>antsImageRead</span>( <span class='fu'>getANTsRData</span>( <span class='st'>"r16"</span> ) )
 <span class='no'>preprocessedImage</span> <span class='kw'>&lt;-</span> <span class='fu'>preprocessBrainImage</span>( <span class='no'>image</span>,
-  <span class='kw'>truncateIntensity</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>0.01</span>, <span class='fl'>0.99</span> ), <span class='kw'>doBrainExtraction</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>truncateIntensity</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>0.01</span>, <span class='fl'>0.99</span> ),
   <span class='kw'>doBiasCorrection</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>doDenoising</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>intensityNormalizationType</span> <span class='kw'>=</span> <span class='st'>"01"</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span> )</div></pre>
   </div>

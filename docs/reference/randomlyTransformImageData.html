@@ -173,7 +173,7 @@ input image list (optional).</p></td>
     <tr>
       <th>sdAffine</th>
       <td><p>parameter dictating deviation amount from identity for
-random linear transformations.  Default = 1.0.</p></td>
+random linear transformations.  Default = 0.02.</p></td>
     </tr>
     <tr>
       <th>deformationTransformType</th>
@@ -215,17 +215,7 @@ Gaussian smoothing in mm.  Default = 4.0.</p></td>
       <th>segmentationImageInterpolator</th>
       <td><p>one of the following options
 <code><a href='https://rdrr.io/r/base/c.html'> c( "nearestNeighbor", "genericLabel" )</a></code>.  Default =
-\"nearestNeighbor\".
-Default = 1.0.</p></td>
-    </tr>
-    <tr>
-      <th>numberOfHistogramPoints</th>
-      <td><p>number of histogram points for intensity warping.
-If = 0, no intensity warping is performed.</p></td>
-    </tr>
-    <tr>
-      <th>sdIntensityTransform</th>
-      <td><p>characterize the randomness of the intensity displacement.</p></td>
+\"nearestNeighbor\".</p></td>
     </tr>
     </table>
 
@@ -244,14 +234,14 @@ If = 0, no intensity warping is performed.</p></td>
   <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>( <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>( <span class='no'>image1</span> ), <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>( <span class='no'>image2</span> ) ),
   <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>( <span class='no'>segmentation1</span>, <span class='no'>segmentation2</span> ) )
 <span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>segmentation1</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
-#&gt; Ncells 2593008 138.5    4598568 245.6         NA   4598568 245.6
-#&gt; Vcells 7128651  54.4   28543118 217.8     102400 127493339 972.7</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>segmentation2</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
-#&gt; Ncells 2592807 138.5    4598568 245.6         NA   4598568 245.6
-#&gt; Vcells 7128352  54.4   28543118 217.8     102400 127493339 972.7</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>image1</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
-#&gt; Ncells 2592798 138.5    4598568 245.6         NA   4598568 245.6
-#&gt; Vcells 7128373  54.4   28543118 217.8     102400 127493339 972.7</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>image2</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
-#&gt; Ncells 2592789 138.5    4598568 245.6         NA   4598568 245.6
-#&gt; Vcells 7128394  54.4   28543118 217.8     102400 127493339 972.7</div></pre>
+#&gt; Ncells 2595223 138.6    4600020 245.7         NA   4600020 245.7
+#&gt; Vcells 7133093  54.5   28547201 217.8     102400 127495120 972.8</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>segmentation2</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
+#&gt; Ncells 2595022 138.6    4600020 245.7         NA   4600020 245.7
+#&gt; Vcells 7132794  54.5   28547201 217.8     102400 127495120 972.8</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>image1</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
+#&gt; Ncells 2595013 138.6    4600020 245.7         NA   4600020 245.7
+#&gt; Vcells 7132815  54.5   28547201 217.8     102400 127495120 972.8</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>image2</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
+#&gt; Ncells 2595004 138.6    4600020 245.7         NA   4600020 245.7
+#&gt; Vcells 7132836  54.5   28547201 217.8     102400 127495120 972.8</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -67,7 +67,7 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
     {
     flairPreprocessing <- preprocessBrainImage( flair,
         truncateIntensity = c( 0.01, 0.99 ),
-        doBrainExtraction = FALSE,
+        brainExtractionModality = NULL,
         doBiasCorrection = TRUE,
         doDenoising = FALSE,
         antsxnetCacheDirectory = antsxnetCacheDirectory,
@@ -83,7 +83,7 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
       {
       t1Preprocessing <- preprocessBrainImage( t1,
           truncateIntensity = c( 0.01, 0.99 ),
-          doBrainExtraction = FALSE,
+          brainExtractionModality = NULL,
           templateTransformType = NULL,
           doBiasCorrection = TRUE,
           doDenoising = FALSE,
@@ -367,7 +367,7 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, whichModel = "sysu",
     #   {
     #   t1Preprocessing <- preprocessBrainImage( t1,
     #       truncateIntensity = c( 0.001, 0.995 ),
-    #       doBrainExtraction = TRUE,
+    #       brainExtractionModality = "t1",
     #       template = "croppedMni152",
     #       templateTransformType = "AffineFast",
     #       doBiasCorrection = FALSE,
@@ -382,7 +382,7 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, whichModel = "sysu",
     #   {
     #   flairPreprocessing <- preprocessBrainImage( flair,
     #       truncateIntensity = c( 0.01, 0.99 ),
-    #       doBrainExtraction = FALSE,
+    #       brainExtractionModality = NULL,
     #       doBiasCorrection = TRUE,
     #       doDenoising = FALSE,
     #       antsxnetCacheDirectory = antsxnetCacheDirectory,
@@ -483,7 +483,7 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, whichModel = "sysu",
       {
       t1Preprocessing <- preprocessBrainImage( t1,
           truncateIntensity = c( 0.01, 0.99 ),
-          doBrainExtraction = TRUE,
+          brainExtractionModality = "t1",
           doBiasCorrection = TRUE,
           doDenoising = FALSE,
           antsxnetCacheDirectory = antsxnetCacheDirectory,
@@ -507,11 +507,12 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, whichModel = "sysu",
         {
         flairPreprocessing <- preprocessBrainImage( flair,
             truncateIntensity = c( 0.01, 0.99 ),
-            doBrainExtraction = FALSE,
+            brainExtractionModality = "flair",
             doBiasCorrection = TRUE,
             doDenoising = FALSE,
             antsxnetCacheDirectory = antsxnetCacheDirectory,
             verbose = verbose )
+        brainMask <- flairPreprocessing$brainMask
         flairPreprocessed <- flairPreprocessing$preprocessedImage * brainMask
         }
       }

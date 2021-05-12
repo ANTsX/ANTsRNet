@@ -68,7 +68,7 @@ deepAtropos <- function( t1, doPreprocessing = TRUE, useSpatialPriors = 0,
     {
     t1Preprocessing <- preprocessBrainImage( t1,
         truncateIntensity = c( 0.01, 0.99 ),
-        doBrainExtraction = TRUE,
+        brainExtractionModality = "t1",
         template = "croppedMni152",
         templateTransformType = "AffineFast",
         doBiasCorrection = TRUE,
@@ -100,7 +100,8 @@ deepAtropos <- function( t1, doPreprocessing = TRUE, useSpatialPriors = 0,
       {
       mniPriors[[i]] <- antsCopyImageInfo( t1Preprocessed, mniPriors[[i]] )
       }
-    channelSize <- length( mniPriors ) + 1
+    # channelSize <- length( mniPriors ) + 1
+    channelSize <- 2  # T1 and cerebellum
     }
 
   unetModel <- createUnetModel3D( c( patchSize, channelSize ),
@@ -142,12 +143,12 @@ deepAtropos <- function( t1, doPreprocessing = TRUE, useSpatialPriors = 0,
   batchX[,,,,1] <- imagePatches
   if( channelSize > 1 )
     {
-    for( i in seq.int( 1, channelSize-1 ) )
-      {
-      priorPatches <- extractImagePatches( mniPriors[[i]], patchSize, maxNumberOfPatches = "all",
+    # for( i in seq.int( 1, channelSize-1 ) )
+    #   {
+      priorPatches <- extractImagePatches( mniPriors[[7]], patchSize, maxNumberOfPatches = "all",
                         strideLength = strideLength, returnAsArray = TRUE )
-      batchX[,,,,i+1] <- priorPatches
-      }
+      batchX[,,,,2] <- priorPatches
+      # }
     }
   predictedData <- unetModel %>% predict( batchX, verbose = verbose )
 

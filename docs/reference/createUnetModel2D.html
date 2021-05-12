@@ -124,17 +124,19 @@ website:</p>
     <pre class="usage"><span class='fu'>createUnetModel2D</span>(
   <span class='no'>inputImageSize</span>,
   <span class='kw'>numberOfOutputs</span> <span class='kw'>=</span> <span class='fl'>2</span>,
+  <span class='kw'>scalarOutputSize</span> <span class='kw'>=</span> <span class='fl'>0</span>,
+  <span class='kw'>scalarOutputActivation</span> <span class='kw'>=</span> <span class='st'>"relu"</span>,
   <span class='kw'>numberOfLayers</span> <span class='kw'>=</span> <span class='fl'>4</span>,
   <span class='kw'>numberOfFiltersAtBaseLayer</span> <span class='kw'>=</span> <span class='fl'>32</span>,
+  <span class='kw'>numberOfFilters</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>convolutionKernelSize</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>3</span>, <span class='fl'>3</span>),
   <span class='kw'>deconvolutionKernelSize</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>2</span>, <span class='fl'>2</span>),
   <span class='kw'>poolSize</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>2</span>, <span class='fl'>2</span>),
   <span class='kw'>strides</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>2</span>, <span class='fl'>2</span>),
   <span class='kw'>dropoutRate</span> <span class='kw'>=</span> <span class='fl'>0</span>,
   <span class='kw'>weightDecay</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>nnUnetActivationStyle</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>addAttentionGating</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>mode</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"classification"</span>, <span class='st'>"regression"</span>, <span class='st'>"sigmoid"</span>)
+  <span class='kw'>mode</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"classification"</span>, <span class='st'>"regression"</span>, <span class='st'>"sigmoid"</span>),
+  <span class='kw'>additionalOptions</span> <span class='kw'>=</span> <span class='fl'>NA</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -154,6 +156,15 @@ the number of channels (e.g., red, green, and blue).  The batch size
 this is the number of outputs.</p></td>
     </tr>
     <tr>
+      <th>scalarOutputSize</th>
+      <td><p>if greater than 0, a global average pooling from each
+encoding layer is concatenated to a dense layer as a secondary output.</p></td>
+    </tr>
+    <tr>
+      <th>scalarOutputActivation</th>
+      <td><p>activation for nonzero output scalar.</p></td>
+    </tr>
+    <tr>
       <th>numberOfLayers</th>
       <td><p>number of encoding/decoding layers.</p></td>
     </tr>
@@ -161,6 +172,12 @@ this is the number of outputs.</p></td>
       <th>numberOfFiltersAtBaseLayer</th>
       <td><p>number of filters at the beginning and end
 of the <code>'U'</code>.  Doubles at each descending/ascending layer.</p></td>
+    </tr>
+    <tr>
+      <th>numberOfFilters</th>
+      <td><p>vector explicitly setting the number of filters at
+each layer.  One can either set this or <code>numberOfLayers</code> and
+<code>numberOfFiltersAtBaseLayer</code>.  Default = NULL.</p></td>
     </tr>
     <tr>
       <th>convolutionKernelSize</th>
@@ -190,18 +207,20 @@ during the decoding.</p></td>
 kernel weights of the convolution layers.  Default = 0.0.</p></td>
     </tr>
     <tr>
-      <th>nnUnetActivationStyle</th>
-      <td><p>boolean for "nnu-net variant" from
-<a href='https://pubmed.ncbi.nlm.nih.gov/30802813/'>https://pubmed.ncbi.nlm.nih.gov/30802813/</a>.</p></td>
-    </tr>
-    <tr>
-      <th>addAttentionGating</th>
-      <td><p>boolean for "attention u-net variant" activation from
-<a href='https://pubmed.ncbi.nlm.nih.gov/33288961/'>https://pubmed.ncbi.nlm.nih.gov/33288961/</a>.</p></td>
-    </tr>
-    <tr>
       <th>mode</th>
       <td><p>'classification' or 'regression' or 'sigmoid'.</p></td>
+    </tr>
+    <tr>
+      <th>additionalOptions</th>
+      <td><p>string or vector of strings specifying
+specific configuration add-ons/tweaks:</p><ul>
+<li><p>"attentionGating"attention-unet variant in
+<a href='https://pubmed.ncbi.nlm.nih.gov/33288961/'>https://pubmed.ncbi.nlm.nih.gov/33288961/</a></p></li>
+<li><p>"nnUnetActivationStyle"U-net activation explained in
+<a href='https://pubmed.ncbi.nlm.nih.gov/33288961/'>https://pubmed.ncbi.nlm.nih.gov/33288961/</a></p></li>
+<li><p>"initialConvolutionalKernelSizeX"Set the first two convolutional layer
+kernel sizes to X.</p></li>
+</ul></td>
     </tr>
     </table>
 
@@ -281,7 +300,7 @@ implementation:</p><pre>    \url{https://github.com/joelthelion/ultrasound-nerve
 
 <span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/reexports.html'>compile</a></span>( <span class='kw'>loss</span> <span class='kw'>=</span> <span class='no'>loss_dice</span>,
   <span class='kw'>optimizer</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/optimizer_adam.html'>optimizer_adam</a></span>( <span class='kw'>lr</span> <span class='kw'>=</span> <span class='fl'>0.0001</span> ),
-  <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='no'>metric_multilabel_dice_coefficient</span> )</div><div class='output co'>#&gt; <span class='error'>Error in py_call_impl(callable, dots$args, dots$keywords): TypeError: Failed to convert object of type &lt;class 'function'&gt; to Tensor. Contents: &lt;function make_python_function.&lt;locals&gt;.python_function at 0x7fee9a980840&gt;. Consider casting elements to a supported type.</span>
+  <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='no'>metric_multilabel_dice_coefficient</span> )</div><div class='output co'>#&gt; <span class='error'>Error in py_call_impl(callable, dots$args, dots$keywords): TypeError: Failed to convert object of type &lt;class 'function'&gt; to Tensor. Contents: &lt;function make_python_function.&lt;locals&gt;.python_function at 0x7fd7bf637840&gt;. Consider casting elements to a supported type.</span>
 #&gt; <span class='error'></span>
 #&gt; <span class='error'>Detailed traceback: </span>
 #&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/training/tracking/base.py", line 517, in _method_wrapper</span>

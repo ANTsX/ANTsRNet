@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Wasserstein GAN model — WassersteinGanModel • ANTsRNet</title>
+<title>Dice function for binary segmentation problems — binary_dice_coefficient • ANTsRNet</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,9 @@
 
 
 
-<meta property="og:title" content="Wasserstein GAN model — WassersteinGanModel" />
-<meta property="og:description" content="Wasserstein generative adverserial network from the paper:" />
+<meta property="og:title" content="Dice function for binary segmentation problems — binary_dice_coefficient" />
+<meta property="og:description" content="Note:  Assumption is that y_true is not a one-hot representation
+of the segmentation batch.  For use with e.g., sigmoid activation." />
 
 
 
@@ -108,73 +109,55 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Wasserstein GAN model</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ANTsX/ANTsRNet/blob/master/R/createWassersteinGanModel.R'><code>R/createWassersteinGanModel.R</code></a></small>
-    <div class="hidden name"><code>WassersteinGanModel.Rd</code></div>
+    <h1>Dice function for binary segmentation problems</h1>
+    <small class="dont-index">Source: <a href='https://github.com/ANTsX/ANTsRNet/blob/master/R/customMetrics.R'><code>R/customMetrics.R</code></a></small>
+    <div class="hidden name"><code>binary_dice_coefficient.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Wasserstein generative adverserial network from the paper:</p>
+    <p>Note:  Assumption is that y_true is <em>not</em> a one-hot representation
+of the segmentation batch.  For use with e.g., sigmoid activation.</p>
     </div>
 
+    <pre class="usage"><span class='fu'>binary_dice_coefficient</span>(<span class='no'>y_true</span>, <span class='no'>y_pred</span>, <span class='kw'>smoothingFactor</span> <span class='kw'>=</span> <span class='fl'>0</span>)</pre>
 
-
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>https://arxiv.org/abs/1701.07875</p>
-<p>and ported from the Keras (python) implementation:</p>
-<p>https://github.com/eriklindernoren/Keras-GAN/blob/master/wgan/wgan.py</p>
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>y_true</th>
+      <td><p>True labels (Tensor)</p></td>
+    </tr>
+    <tr>
+      <th>y_pred</th>
+      <td><p>Predictions (Tensor of the same shape as <code>y_true</code>)</p></td>
+    </tr>
+    <tr>
+      <th>smoothingFactor</th>
+      <td><p>parameter for smoothing the metric.</p></td>
+    </tr>
+    </table>
 
-    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-<dl'>
-<dt>inputImageSize</dt><dd><p></p></dd>
-<dt>latentDimension</dt><dd><p></p></dd>
-
-</dl>
-
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    
-
-<p><code>$initialize</code> instantiates a new class and builds the
-generator and critic.
-<code>$buildGenerator</code>build generator.
-<code>$buildGenerator</code>build critic.</p>
+    <p>Dice value (negative)</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>keras</span> )
+    <pre class="examples"><div class='input'>
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>ANTsR</span> )
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>ANTsRNet</span> )
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>keras</span> )
 
-<span class='kw pkg'>keras</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/keras/man/backend.html'>backend</a></span>()$<span class='fu'>clear_session</span>()
+<span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='createUnetModel2D.html'>createUnetModel2D</a></span>( <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>64</span>, <span class='fl'>64</span>, <span class='fl'>1</span> ) )
 
-<span class='co'># Let's use the mnist data set.</span>
+<span class='no'>dice_loss</span> <span class='kw'>&lt;-</span> <span class='fu'>binary_dice_coefficient</span>( <span class='kw'>smoothingFactor</span> <span class='kw'>=</span> <span class='fl'>0.1</span> )
 
-<span class='no'>mnist</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/dataset_mnist.html'>dataset_mnist</a></span>()
+<span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/reexports.html'>compile</a></span>( <span class='kw'>loss</span> <span class='kw'>=</span> <span class='no'>dice_loss</span>,
+  <span class='kw'>optimizer</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/optimizer_adam.html'>optimizer_adam</a></span>( <span class='kw'>lr</span> <span class='kw'>=</span> <span class='fl'>0.0001</span> ) )
 
-<span class='no'>numberOfTrainingData</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span>( <span class='no'>mnist</span>$<span class='no'>train</span>$<span class='no'>y</span> )
-
-<span class='no'>inputImageSize</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span>( <span class='no'>mnist</span>$<span class='no'>train</span>$<span class='no'>x</span>[<span class='fl'>1</span>,,] ), <span class='fl'>1</span> )
-
-<span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/array.html'>array</a></span>( <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>mnist</span>$<span class='no'>train</span>$<span class='no'>x</span> / <span class='fl'>255</span>, <span class='kw'>dim</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='no'>numberOfTrainingData</span>, <span class='no'>inputImageSize</span> ) )
-<span class='no'>y</span> <span class='kw'>&lt;-</span> <span class='no'>mnist</span>$<span class='no'>train</span>$<span class='no'>y</span>
-
-<span class='no'>numberOfClusters</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span>( <span class='fu'><a href='https://rdrr.io/r/base/unique.html'>unique</a></span>( <span class='no'>mnist</span>$<span class='no'>train</span>$<span class='no'>y</span> ) )
-
-<span class='co'># Instantiate the WGAN model</span>
-
-<span class='no'>ganModel</span> <span class='kw'>&lt;-</span> <span class='no'>WassersteinGanModel</span>$<span class='fu'>new</span>(
-   <span class='kw'>inputImageSize</span> <span class='kw'>=</span> <span class='no'>inputImageSize</span>,
-   <span class='kw'>latentDimension</span> <span class='kw'>=</span> <span class='fl'>100</span> )
-<span class='co'># \donttest{</span>
-<span class='no'>ganModel</span>$<span class='fu'>train</span>( <span class='no'>x</span>, <span class='kw'>numberOfEpochs</span> <span class='kw'>=</span> <span class='fl'>5</span> )</div><div class='output co'>#&gt; Epoch 1: [Critic loss: 0.9999204] [Generator loss: 1.000156]
-#&gt; Epoch 2: [Critic loss: 0.9999265] [Generator loss: 1.000161]
-#&gt; Epoch 3: [Critic loss: 0.9999251] [Generator loss: 1.000157]
-#&gt; Epoch 4: [Critic loss: 0.9999258] [Generator loss: 1.000157]
-#&gt; Epoch 5: [Critic loss: 0.999924] [Generator loss: 1.000155]</div><div class='input'># }
-
-</div></pre>
+<span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>model</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
+#&gt; Ncells 2469235 131.9    4600020 245.7         NA   4600020 245.7
+#&gt; Vcells 4390940  33.6  122312029 933.2     102400 127495120 972.8</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

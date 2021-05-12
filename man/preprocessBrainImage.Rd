@@ -7,7 +7,7 @@
 preprocessBrainImage(
   image,
   truncateIntensity = c(0.01, 0.99),
-  doBrainExtraction = TRUE,
+  brainExtractionModality = NULL,
   templateTransformType = NULL,
   template = "biobank",
   doBiasCorrection = TRUE,
@@ -26,8 +26,9 @@ preprocessBrainImage(
 \item{truncateIntensity}{2-element vector giving the low and high quantiles
 for intensity truncation.}
 
-\item{doBrainExtraction}{boolean for performing ANTsRNet brain extraction
-If \code{TRUE}, returns mask.  3-D input only.}
+\item{brainExtractionModality}{string or NULL.  Perform brain extraction
+using antsxnet tools.  One of "t1", "t1v0", "t1nobrainer", "t1combined",
+"flair", "t2", "bold", "fa", "t1infant", "t2infant", or NULL.}
 
 \item{templateTransformType}{see Details in help for \code{antsRegistration}.
 Typically "Rigid" or "Affine".}
@@ -77,7 +78,7 @@ library( ANTsRNet )
 
 image <- antsImageRead( getANTsRData( "r16" ) )
 preprocessedImage <- preprocessBrainImage( image,
-  truncateIntensity = c( 0.01, 0.99 ), doBrainExtraction = FALSE,
+  truncateIntensity = c( 0.01, 0.99 ),
   doBiasCorrection = TRUE, doDenoising = TRUE,
   intensityNormalizationType = "01", verbose = FALSE )
 

@@ -247,7 +247,7 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
     {
     t1Preprocessing <- preprocessBrainImage( t1,
         truncateIntensity = c( 0.01, 0.99 ),
-        doBrainExtraction = TRUE,
+        brainExtractionModality = "t1v0",
         template = "croppedMni152",
         templateTransformType = "AffineFast",
         doBiasCorrection = TRUE,

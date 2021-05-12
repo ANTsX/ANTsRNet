@@ -157,27 +157,27 @@ convolution layer.</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>createDenoisingAutoEncoderSuperResolutionModel2D</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>28</span>, <span class='fl'>28</span>, <span class='fl'>1</span> ))</div><div class='output co'>#&gt; Model
-#&gt; Model: "model_16"
+#&gt; Model: "model_17"
 #&gt; ________________________________________________________________________________
 #&gt; Layer (type)              Output Shape      Param #  Connected to               
 #&gt; ================================================================================
-#&gt; input_13 (InputLayer)     [(None, 28, 28, 1 0                                   
+#&gt; input_14 (InputLayer)     [(None, 28, 28, 1 0                                   
 #&gt; ________________________________________________________________________________
-#&gt; conv2d_90 (Conv2D)        (None, 28, 28, 64 640      input_13[0][0]             
+#&gt; conv2d_105 (Conv2D)       (None, 28, 28, 64 640      input_14[0][0]             
 #&gt; ________________________________________________________________________________
-#&gt; conv2d_91 (Conv2D)        (None, 28, 28, 64 36928    conv2d_90[0][0]            
+#&gt; conv2d_106 (Conv2D)       (None, 28, 28, 64 36928    conv2d_105[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv2d_transpose_37 (Conv (None, 28, 28, 64 36928    conv2d_91[0][0]            
+#&gt; conv2d_transpose_40 (Conv (None, 28, 28, 64 36928    conv2d_106[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; add_30 (Add)              (None, 28, 28, 64 0        conv2d_91[0][0]            
-#&gt;                                                      conv2d_transpose_37[0][0]  
+#&gt; add_30 (Add)              (None, 28, 28, 64 0        conv2d_106[0][0]           
+#&gt;                                                      conv2d_transpose_40[0][0]  
 #&gt; ________________________________________________________________________________
-#&gt; conv2d_transpose_38 (Conv (None, 28, 28, 64 36928    add_30[0][0]               
+#&gt; conv2d_transpose_41 (Conv (None, 28, 28, 64 36928    add_30[0][0]               
 #&gt; ________________________________________________________________________________
-#&gt; add_31 (Add)              (None, 28, 28, 64 0        conv2d_90[0][0]            
-#&gt;                                                      conv2d_transpose_38[0][0]  
+#&gt; add_31 (Add)              (None, 28, 28, 64 0        conv2d_105[0][0]           
+#&gt;                                                      conv2d_transpose_41[0][0]  
 #&gt; ________________________________________________________________________________
-#&gt; conv2d_92 (Conv2D)        (None, 28, 28, 1) 1601     add_31[0][0]               
+#&gt; conv2d_107 (Conv2D)       (None, 28, 28, 1) 1601     add_31[0][0]               
 #&gt; ================================================================================
 #&gt; Total params: 113,025
 #&gt; Trainable params: 113,025
