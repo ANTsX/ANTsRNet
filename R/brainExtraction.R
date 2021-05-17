@@ -119,7 +119,7 @@ brainExtraction <- function( image,
       } else if( modality == "t2infant" ) {
       weightsFilePrefix <- "brainExtractionInfantT2"
       } else if( modality == "experimental" ) {
-      weightsFilePrefix <- "brainExtractionT1withDistance"
+      weightsFilePrefix <- "brainExtractionT1v1"
       } else {
       stop( "Unknown modality type." )
       }
@@ -140,21 +140,25 @@ brainExtraction <- function( image,
     reorientTemplate <- antsImageRead( reorientTemplateFileNamePath )
     resampledImageSize <- dim( reorientTemplate )
 
-    if( modality == "t1" || modality == "experimental" )
+    if( modality == "t1" )
       {
       classes <- c( "background", "head", "brain" )
       numberOfClassificationLabels <- length( classes )
       }
 
+    numberOfFilters <- c( 8, 16, 32, 64 )
+    mode <- "classification"
     if( modality == "experimental" )
       {
-      channelSize <- 2
+      numberOfFilters <- c( 16, 32, 64, 128 )
+      numberOfClassificationLabels <- 1
+      mode <- "sigmoid"
       }
 
     unetModel <- createUnetModel3D( c( resampledImageSize, channelSize ),
-      numberOfOutputs = numberOfClassificationLabels,
-      numberOfLayers = 4, numberOfFiltersAtBaseLayer = 8, dropoutRate = 0.0,
-      convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
+      numberOfOutputs = numberOfClassificationLabels, mode = mode,
+      numberOfFilters = numberOfFilters, dropoutRate = 0.0,
+      convolutionKernelSize = 3, deconvolutionKernelSize = 2,
       weightDecay = 1e-5 )
 
     unetModel$load_weights( weightsFileName )
@@ -172,27 +176,11 @@ brainExtraction <- function( image,
 
     batchX <- array( data = 0, dim = c( 1, resampledImageSize, channelSize ) )
 
-    if( modality == "experimental" )
+    for( i in seq.int( channelSize ) )
       {
-      warpedImage <- applyAntsrTransformToImage( xfrm, inputImages[[1]], reorientTemplate )
+      warpedImage <- applyAntsrTransformToImage( xfrm, inputImages[[i]], reorientTemplate )
       warpedArray <- as.array( warpedImage )
-      batchX[1,,,,1] <- ( warpedArray - mean( warpedArray ) ) / sd( warpedArray )
-
-      index <- floor( antsTransformPhysicalPointToIndex( warpedImage, getCenterOfMass( warpedImage ) ) )
-      warpedDistanceImage <- warpedImage * 0
-      warpedDistanceImage[index[1], index[2], index[3]] <- 1
-      warpedDistanceImage <- iMath( warpedDistanceImage, "MaurerDistance" )
-
-      warpedDistanceArray <- as.array( warpedDistanceImage )
-      batchX[1,,,,2] <- ( warpedDistanceArray - min( warpedDistanceArray ) ) /
-        ( max( warpedDistanceArray ) - min( warpedDistanceArray ) )
-      } else {
-      for( i in seq.int( channelSize ) )
-        {
-        warpedImage <- applyAntsrTransformToImage( xfrm, inputImages[[i]], reorientTemplate )
-        warpedArray <- as.array( warpedImage )
-        batchX[1,,,,i] <- ( warpedArray - mean( warpedArray ) ) / sd( warpedArray )
-        }
+      batchX[1,,,,i] <- ( warpedArray - mean( warpedArray ) ) / sd( warpedArray )
       }
 
     if( verbose == TRUE )

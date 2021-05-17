@@ -7,7 +7,7 @@
 brainExtraction(
   image,
   modality = c("t1", "t1v0", "t1nobrainer", "t1combined", "t2", "flair", "bold", "fa",
-    "t1t2infant", "t1infant", "t2infant"),
+    "t1t2infant", "t1infant", "t2infant", "experimental"),
   antsxnetCacheDirectory = NULL,
   verbose = FALSE
 )
