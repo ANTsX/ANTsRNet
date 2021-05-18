@@ -69,7 +69,7 @@ brainExtraction <- function( image,
   if( substr( modality, 1, 10 ) == "t1combined" )
     {
 
-    brainExtraction_t1 <- brainExtraction( image, modality = "t1v0",
+    brainExtraction_t1 <- brainExtraction( image, modality = "t1",
       antsxnetCacheDirectory = antsxnetCacheDirectory, verbose = verbose )
     brainMask <- thresholdImage( brainExtraction_t1, 0.5, Inf ) %>% iMath( "GetLargestComponent" )
 
