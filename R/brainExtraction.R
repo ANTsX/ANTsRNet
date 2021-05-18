@@ -40,7 +40,7 @@
 #' }
 #' @export
 brainExtraction <- function( image,
-  modality = c( "t1", "t1v0", "t1nobrainer", "t1combined", "t2", "flair", "bold", "fa", "t1t2infant", "t1infant", "t2infant", "experimental" ),
+  modality = c( "t1", "t1v0", "t1nobrainer", "t1combined", "t2", "flair", "bold", "fa", "t1t2infant", "t1infant", "t2infant" ),
   antsxnetCacheDirectory = NULL, verbose = FALSE )
   {
 
@@ -103,7 +103,7 @@ brainExtraction <- function( image,
       {
       weightsFilePrefix <- "brainExtraction"
       } else if( modality == "t1" ) {
-      weightsFilePrefix <- "brainExtractionT1"
+      weightsFilePrefix <- "brainExtractionT1v1"
       } else if( modality == "t2" ) {
       weightsFilePrefix <- "brainExtractionT2"
       } else if( modality == "flair" ) {
@@ -118,8 +118,6 @@ brainExtraction <- function( image,
       weightsFilePrefix <- "brainExtractionInfantT1"
       } else if( modality == "t2infant" ) {
       weightsFilePrefix <- "brainExtractionInfantT2"
-      } else if( modality == "experimental" ) {
-      weightsFilePrefix <- "brainExtractionT1v1"
       } else {
       stop( "Unknown modality type." )
       }
@@ -140,15 +138,9 @@ brainExtraction <- function( image,
     reorientTemplate <- antsImageRead( reorientTemplateFileNamePath )
     resampledImageSize <- dim( reorientTemplate )
 
-    if( modality == "t1" )
-      {
-      classes <- c( "background", "head", "brain" )
-      numberOfClassificationLabels <- length( classes )
-      }
-
     numberOfFilters <- c( 8, 16, 32, 64 )
     mode <- "classification"
-    if( modality == "experimental" )
+    if( modality == "t1" )
       {
       numberOfFilters <- c( 16, 32, 64, 128 )
       numberOfClassificationLabels <- 1

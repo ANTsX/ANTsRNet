@@ -103,7 +103,7 @@ getPretrainedNetwork <- function(
     brainAgeDeepBrainNet = "https://ndownloader.figshare.com/files/23573402",
     brainExtraction = "https://ndownloader.figshare.com/files/22944632",
     brainExtractionT1 = "https://ndownloader.figshare.com/files/27334370",
-    brainExtractionT1v1 = "https://ndownloader.figshare.com/files/28040997",
+    brainExtractionT1v1 = "https://ndownloader.figshare.com/files/28057626",
     brainExtractionT2 = "https://ndownloader.figshare.com/files/23066153",
     brainExtractionFLAIR = "https://ndownloader.figshare.com/files/23562194",
     brainExtractionBOLD = "https://ndownloader.figshare.com/files/22761977",
