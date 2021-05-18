@@ -71,7 +71,9 @@ brainExtraction <- function( image,
 
     brainExtraction_t1 <- brainExtraction( image, modality = "t1",
       antsxnetCacheDirectory = antsxnetCacheDirectory, verbose = verbose )
-    brainMask <- thresholdImage( brainExtraction_t1, 0.5, Inf ) %>% iMath( "GetLargestComponent" )
+    brainMask <- thresholdImage( brainExtraction_t1, 0.5, Inf ) %>%
+      iMath("FillHoles") %>%
+      iMath( "GetLargestComponent" )
 
     # Need to change with voxel resolution
     morphologicalRadius <- 12
