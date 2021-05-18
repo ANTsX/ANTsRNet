@@ -69,18 +69,19 @@ brainExtraction <- function( image,
   if( substr( modality, 1, 10 ) == "t1combined" )
     {
 
-    brainExtraction_t1 <- brainExtraction( image, modality = "t1",
-      antsxnetCacheDirectory = antsxnetCacheDirectory, verbose = verbose )
-    brainMask <- thresholdImage( brainExtraction_t1, 0.5, Inf ) %>%
-      iMath("FillHoles") %>%
-      iMath( "GetLargestComponent" )
-
     # Need to change with voxel resolution
     morphologicalRadius <- 12
     if( grepl( '\\[', modality ) && grepl( '\\]', modality ) )
       {
       morphologicalRadius <- as.numeric( strsplit( strsplit( modality, "\\[" )[[1]][2], "\\]" )[[1]][1] )
       }
+
+    brainExtraction_t1 <- brainExtraction( image, modality = "t1",
+      antsxnetCacheDirectory = antsxnetCacheDirectory, verbose = verbose )
+    brainMask <- thresholdImage( brainExtraction_t1, 0.5, Inf ) %>%
+      morphology("close",morphologicalRadius) %>%
+      iMath("FillHoles") %>%
+      iMath( "GetLargestComponent" )
 
     brainExtraction_t1nobrainer <- brainExtraction( image * iMath( brainMask, "MD", morphologicalRadius ),
       modality = "t1nobrainer", antsxnetCacheDirectory = antsxnetCacheDirectory, verbose = verbose )
