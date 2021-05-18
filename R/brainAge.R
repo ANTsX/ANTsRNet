@@ -57,7 +57,8 @@ brainAge <- function( image, doPreprocessing = TRUE,
       truncateIntensity = c( 0.01, 0.99 ),
       brainExtractionModality = "t1", doBiasCorrection = TRUE,
       returnBiasField = FALSE, doDenoising = TRUE,
-      templateTransformType = "AffineFast", template = "croppedMni152",
+      templateTransformType = "antsRegistrationSyNQuickRepro[a]",
+      template = "croppedMni152",
       antsxnetCacheDirectory = antsxnetCacheDirectory, verbose = verbose )
     preprocessedImage <- preprocessing$preprocessedImage * preprocessing$brainMask
     }
