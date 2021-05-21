@@ -7,9 +7,7 @@
 sysuMediaWmhSegmentation(
   flair,
   t1 = NULL,
-  doPreprocessing = TRUE,
   useEnsemble = TRUE,
-  useAxialSlicesOnly = TRUE,
   antsxnetCacheDirectory = NULL,
   verbose = FALSE
 )
@@ -20,14 +18,7 @@ sysuMediaWmhSegmentation(
 \item{t1}{input 3-D T1-weighted brain image (assumed to be aligned to
 the flair, if specified).}
 
-\item{doPreprocessing}{perform n4 bias correction?}
-
 \item{useEnsemble}{boolean to check whether to use all 3 sets of weights.}
-
-\item{useAxialSlicesOnly}{if \code{TRUE}, use original implementation which
-was trained on axial slices.  If \code{FALSE}, use ANTsXNet variant
-implementation which applies the slice-by-slice models to all 3 dimensions
-and averages the results.}
 
 \item{antsxnetCacheDirectory}{destination directory for storing the downloaded
 template and model weights.  Since these can be resused, if

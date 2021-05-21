@@ -17,12 +17,7 @@
 #' @param flair input 3-D FLAIR brain image.
 #' @param t1 input 3-D T1-weighted brain image (assumed to be aligned to
 #' the flair, if specified).
-#' @param doPreprocessing perform n4 bias correction?
 #' @param useEnsemble boolean to check whether to use all 3 sets of weights.
-#' @param useAxialSlicesOnly if \code{TRUE}, use original implementation which
-#' was trained on axial slices.  If \code{FALSE}, use ANTsXNet variant
-#' implementation which applies the slice-by-slice models to all 3 dimensions
-#' and averages the results.
 #' @param antsxnetCacheDirectory destination directory for storing the downloaded
 #' template and model weights.  Since these can be resused, if
 #' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
@@ -40,8 +35,7 @@
 #' }
 #' @export
 sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
-  doPreprocessing = TRUE, useEnsemble = TRUE, useAxialSlicesOnly = TRUE,
-  antsxnetCacheDirectory = NULL, verbose = FALSE )
+  useEnsemble = TRUE, antsxnetCacheDirectory = NULL, verbose = FALSE )
 {
 
   if( flair@dimension != 3 )
@@ -63,52 +57,11 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
   ################################
 
   flairPreprocessed <- flair
-  if( doPreprocessing == TRUE )
-    {
-    flairPreprocessing <- preprocessBrainImage( flair,
-        truncateIntensity = c( 0.01, 0.99 ),
-        brainExtractionModality = NULL,
-        doBiasCorrection = TRUE,
-        doDenoising = FALSE,
-        antsxnetCacheDirectory = antsxnetCacheDirectory,
-        verbose = verbose )
-    flairPreprocessed <- flairPreprocessing$preprocessedImage
-    }
-
   numberOfChannels <- 1
   if( ! is.null( t1 ) )
     {
     t1Preprocessed <- t1
-    if( doPreprocessing == TRUE )
-      {
-      t1Preprocessing <- preprocessBrainImage( t1,
-          truncateIntensity = c( 0.01, 0.99 ),
-          brainExtractionModality = NULL,
-          templateTransformType = NULL,
-          doBiasCorrection = TRUE,
-          doDenoising = FALSE,
-          antsxnetCacheDirectory = antsxnetCacheDirectory,
-          verbose = verbose )
-      t1Preprocessed <- t1Preprocessing$preprocessedImage
-      }
     numberOfChannels <- 2
-    }
-
-  ################################
-  #
-  # Estimate mask
-  #
-  ################################
-
-  if( verbose == TRUE )
-    {
-    cat( "Estimating brain mask.\n" )
-    }
-  if( ! is.null( t1 ) )
-    {
-    brainMask <- brainExtraction( t1, modality = "t1" )
-    } else {
-    brainMask <- brainExtraction( flair, modality = "flair" )
     }
 
   referenceImage <- makeImage( c( 170, 256, 256 ),
@@ -117,22 +70,14 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
                                origin = c( 0, 0, 0 ),
                                direction = diag( 3 ) )
   centerOfMassReference <- getCenterOfMass( referenceImage )
-  centerOfMassImage <- getCenterOfMass( brainMask )
+  centerOfMassImage <- getCenterOfMass( flair )
   xfrm <- createAntsrTransform( type = "Euler3DTransform",
         center = centerOfMassReference,
         translation = centerOfMassImage - centerOfMassReference )
   flairPreprocessedWarped <- applyAntsrTransformToImage( xfrm, flairPreprocessed, referenceImage )
-  brainMaskWarped <- thresholdImage(
-        applyAntsrTransformToImage( xfrm, brainMask, referenceImage ), 0.5, 1.1, 1, 0 )
   if( ! is.null( t1 ) )
     {
     t1PreprocessedWarped <- applyAntsrTransformToImage( xfrm, t1Preprocessed, referenceImage )
-    }
-
-  flairPreprocessedWarped <- flairPreprocessedWarped * brainMaskWarped
-  if ( ! is.null( t1 ) )
-    {
-    t1PreprocessedWarped <- t1PreprocessedWarped * brainMaskWarped
     }
 
   ################################
@@ -141,13 +86,13 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
   #
   ################################
 
-  meanFlair <- mean( flairPreprocessedWarped[brainMaskWarped > 0], na.rm = TRUE )
-  sdFlair <- sd( flairPreprocessedWarped[brainMaskWarped > 0], na.rm = TRUE )
+  meanFlair <- mean( flairPreprocessedWarped, na.rm = TRUE )
+  sdFlair <- sd( flairPreprocessedWarped, na.rm = TRUE )
   flairPreprocessedWarped <- ( flairPreprocessedWarped - meanFlair ) / sdFlair
   if( numberOfChannels == 2 )
     {
-    meanT1 <- mean( t1PreprocessedWarped[brainMaskWarped > 0], na.rm = TRUE )
-    sdT1 <- sd( t1PreprocessedWarped[brainMaskWarped > 0], na.rm = TRUE )
+    meanT1 <- mean( t1PreprocessedWarped, na.rm = TRUE )
+    sdT1 <- sd( t1PreprocessedWarped, na.rm = TRUE )
     t1PreprocessedWarped <- ( t1PreprocessedWarped - meanT1 ) / sdT1
     }
 
@@ -191,11 +136,10 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
   #
   ################################
 
+  rotate <- function( x ) t( apply( x, 2, rev ) )
+  rotateReverse <- function( x ) apply( t( x ), 2, rev )
+
   dimensionsToPredict <- c( 3 )
-  if( useAxialSlicesOnly == FALSE )
-    {
-    dimensionsToPredict <- 1:3
-    }
 
   batchX <- array( data = 0,
     c( sum( dim( flairPreprocessedWarped )[dimensionsToPredict]), imageSize, numberOfChannels ) )
@@ -219,11 +163,11 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
         }
 
       flairSlice <- padOrCropImageToSize( extractSlice( flairPreprocessedWarped, i, dimensionsToPredict[d] ), imageSize )
-      batchX[sliceCount,,,1] <- as.array( flairSlice )
+      batchX[sliceCount,,,1] <- rotateReverse( as.array( flairSlice ) )
       if( numberOfChannels == 2 )
         {
         t1Slice <- padOrCropImageToSize( extractSlice( t1PreprocessedWarped, i, dimensionsToPredict[d] ), imageSize )
-        batchX[sliceCount,,,2] <- as.array( t1Slice )
+        batchX[sliceCount,,,2] <- rotateReverse( as.array( t1Slice ) )
         }
       sliceCount <- sliceCount + 1
       }
@@ -232,6 +176,10 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
       cat( "\n" )
       }
     }
+
+  antsImageWrite(as.antsImage(drop(batchX[,,,2])), "~/Desktop/t1R.nii.gz") 
+  antsImageWrite(as.antsImage(drop(batchX[,,,1])), "~/Desktop/flairR.nii.gz") 
+
 
   ################################
   #
@@ -253,6 +201,10 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
       }
     }
   prediction <- prediction / numberOfModels
+  for( i in seq.int( dim( flairPreprocessedWarped )[3] ) )
+    {
+    prediction[i,,,1] <- rotate( prediction[i,,,1] )
+    }
 
   permutations <- list()
   permutations[[1]] <- c( 1, 2, 3 )
@@ -275,9 +227,9 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
     }
 
   probabilityImage <- applyAntsrTransformToImage( invertAntsrTransform( xfrm ),
-      predictionImageAverage, flair ) * brainMask
+      predictionImageAverage, flair )
 
-  return( probabilityImage = probabilityImage )
+  return( probabilityImage )
 }
 
 #' White matter hypterintensity probabilistic segmentation
