@@ -177,10 +177,6 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
       }
     }
 
-  antsImageWrite(as.antsImage(drop(batchX[,,,2])), "~/Desktop/t1R.nii.gz") 
-  antsImageWrite(as.antsImage(drop(batchX[,,,1])), "~/Desktop/flairR.nii.gz") 
-
-
   ################################
   #
   # Do prediction and then restack into the image
