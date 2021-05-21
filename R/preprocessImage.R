@@ -84,6 +84,7 @@ preprocessBrainImage <- function( image, truncateIntensity = c( 0.01, 0.99 ),
     probabilityMask <- brainExtraction( preprocessedImage, modality = brainExtractionModality,
       antsxnetCacheDirectory = antsxnetCacheDirectory, verbose = verbose )
     mask <- thresholdImage( probabilityMask, 0.5, 1, 1, 0 )
+    mask <- morphology( mask, "close", 6 ) %>% iMath("FillHoles")
     }
 
   # Template normalization
