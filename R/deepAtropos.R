@@ -24,7 +24,7 @@
 #'
 #' @param t1 raw or preprocessed 3-D T1-weighted brain image.
 #' @param doPreprocessing perform preprocessing.  See description above.
-#' @param useSpatialPriors use MNI spatial tissue priors (0, 1, or 2).  0 is no priors.
+#' @param useSpatialPriors use MNI spatial tissue priors (0 or 1).  0 is no priors.
 #' @param antsxnetCacheDirectory destination directory for storing the downloaded
 #' template and model weights.  Since these can be resused, if
 #' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
@@ -120,8 +120,8 @@ deepAtropos <- function( t1, doPreprocessing = TRUE, useSpatialPriors = 0,
     weightsFileName <- getPretrainedNetwork( "sixTissueOctantBrainSegmentation", antsxnetCacheDirectory = antsxnetCacheDirectory )
     } else if( useSpatialPriors == 1 ) {
     weightsFileName <- getPretrainedNetwork( "sixTissueOctantBrainSegmentationWithPriors1", antsxnetCacheDirectory = antsxnetCacheDirectory )
-    } else if( useSpatialPriors == 2 ) {
-    weightsFileName <- getPretrainedNetwork( "sixTissueOctantBrainSegmentationWithPriors2", antsxnetCacheDirectory = antsxnetCacheDirectory )
+    } else {
+    stop("use_spatial_priors must be a 0 or 1")
     }
   load_model_weights_hdf5( unetModel, filepath = weightsFileName )
 

@@ -18,7 +18,7 @@ deepAtropos(
 
 \item{doPreprocessing}{perform preprocessing.  See description above.}
 
-\item{useSpatialPriors}{use MNI spatial tissue priors (0, 1, or 2).  0 is no priors.}
+\item{useSpatialPriors}{use MNI spatial tissue priors (0 or 1).  0 is no priors.}
 
 \item{antsxnetCacheDirectory}{destination directory for storing the downloaded
 template and model weights.  Since these can be resused, if
