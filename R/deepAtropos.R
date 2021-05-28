@@ -24,7 +24,9 @@
 #'
 #' @param t1 raw or preprocessed 3-D T1-weighted brain image.
 #' @param doPreprocessing perform preprocessing.  See description above.
-#' @param useSpatialPriors use MNI spatial tissue priors (0 or 1).  0 is no priors.
+#' @param useSpatialPriors Use MNI spatial tissue priors (0 or 1).  Currently,
+#' only '0' (no priors) and '1' (cerebellar prior only) are the only two options.
+#' Default is 1.
 #' @param antsxnetCacheDirectory destination directory for storing the downloaded
 #' template and model weights.  Since these can be resused, if
 #' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
@@ -43,7 +45,7 @@
 #' results <- deepAtropos( image )
 #' }
 #' @export
-deepAtropos <- function( t1, doPreprocessing = TRUE, useSpatialPriors = 0,
+deepAtropos <- function( t1, doPreprocessing = TRUE, useSpatialPriors = 1,
   antsxnetCacheDirectory = NULL, verbose = FALSE, debug = FALSE )
 {
 

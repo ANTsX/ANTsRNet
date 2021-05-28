@@ -124,9 +124,7 @@ MICCAI challenge is discussed in</p>
     <pre class="usage"><span class='fu'>sysuMediaWmhSegmentation</span>(
   <span class='no'>flair</span>,
   <span class='kw'>t1</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>doPreprocessing</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>useEnsemble</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>useAxialSlicesOnly</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>antsxnetCacheDirectory</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
 )</pre>
@@ -144,19 +142,8 @@ MICCAI challenge is discussed in</p>
 the flair, if specified).</p></td>
     </tr>
     <tr>
-      <th>doPreprocessing</th>
-      <td><p>perform n4 bias correction?</p></td>
-    </tr>
-    <tr>
       <th>useEnsemble</th>
       <td><p>boolean to check whether to use all 3 sets of weights.</p></td>
-    </tr>
-    <tr>
-      <th>useAxialSlicesOnly</th>
-      <td><p>if <code>TRUE</code>, use original implementation which
-was trained on axial slices.  If <code>FALSE</code>, use ANTsXNet variant
-implementation which applies the slice-by-slice models to all 3 dimensions
-and averages the results.</p></td>
     </tr>
     <tr>
       <th>antsxnetCacheDirectory</th>
