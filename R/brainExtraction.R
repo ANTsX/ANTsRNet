@@ -129,9 +129,9 @@ brainExtraction <- function( image,
       {
       cat( "Brain extraction:  retrieving model weights.\n" )
       }
-    weightsFileName <- getPretrainedNetwork( weightsFilePrefix, antsxnetCacheDirectory = antsxnetCacheDirectory )
+    weightsFileName <- getPretrainedNetwork( weightsFilePrefix,
+      antsxnetCacheDirectory = antsxnetCacheDirectory )
 
-    reorientTemplateFileName <- "S_template3_resampled.nii.gz"
     if( verbose == TRUE )
       {
       cat( "Brain extraction:  retrieving template.\n" )

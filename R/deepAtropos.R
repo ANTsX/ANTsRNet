@@ -91,7 +91,6 @@ deepAtropos <- function( t1, doPreprocessing = TRUE, useSpatialPriors = 1,
 
   classes <- c( "background", "csf", "gray matter", "white matter",
     "deep gray matter", "brain stem", "cerebellum" )
-  labels <- c( 0:6 )
 
   mniPriors <- NULL
   channelSize <- 1
@@ -102,12 +101,11 @@ deepAtropos <- function( t1, doPreprocessing = TRUE, useSpatialPriors = 1,
       {
       mniPriors[[i]] <- antsCopyImageInfo( t1Preprocessed, mniPriors[[i]] )
       }
-    # channelSize <- length( mniPriors ) + 1
-    channelSize <- 2  # T1 and cerebellum
+    channelSize <- 2
     }
 
   unetModel <- createUnetModel3D( c( patchSize, channelSize ),
-    numberOfOutputs = length( labels ), mode = 'classification',
+    numberOfOutputs = length( classes ), mode = 'classification',
     numberOfLayers = 4, numberOfFiltersAtBaseLayer = 16, dropoutRate = 0.0,
     convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
     weightDecay = 1e-5, additionalOptions = c( "attentionGating" ) )
@@ -123,7 +121,7 @@ deepAtropos <- function( t1, doPreprocessing = TRUE, useSpatialPriors = 1,
     } else if( useSpatialPriors == 1 ) {
     weightsFileName <- getPretrainedNetwork( "sixTissueOctantBrainSegmentationWithPriors1", antsxnetCacheDirectory = antsxnetCacheDirectory )
     } else {
-    stop("use_spatial_priors must be a 0 or 1")
+    stop( "useSpatialPriors must be a 0 or 1" )
     }
   load_model_weights_hdf5( unetModel, filepath = weightsFileName )
 
@@ -145,19 +143,19 @@ deepAtropos <- function( t1, doPreprocessing = TRUE, useSpatialPriors = 1,
   batchX[,,,,1] <- imagePatches
   if( channelSize > 1 )
     {
-    # for( i in seq.int( 1, channelSize-1 ) )
-    #   {
-      priorPatches <- extractImagePatches( mniPriors[[7]], patchSize, maxNumberOfPatches = "all",
-                        strideLength = strideLength, returnAsArray = TRUE )
-      batchX[,,,,2] <- priorPatches
-      # }
+    priorPatches <- extractImagePatches( mniPriors[[7]], patchSize, maxNumberOfPatches = "all",
+                      strideLength = strideLength, returnAsArray = TRUE )
+    batchX[,,,,2] <- priorPatches
     }
   predictedData <- unetModel %>% predict( batchX, verbose = verbose )
 
   probabilityImages <- list()
   for( i in seq.int( dim( predictedData )[5] ) )
     {
-    message( "Reconstructing image ", classes[i], "\n" )
+    if( verbose == TRUE )
+      {
+      cat( "Reconstructing image ", classes[i], "\n" )
+      }
     reconstructedImage <- reconstructImageFromPatches( predictedData[,,,,i],
         domainImage = t1Preprocessed, strideLength = strideLength )
     if( doPreprocessing == TRUE )
@@ -172,16 +170,10 @@ deepAtropos <- function( t1, doPreprocessing = TRUE, useSpatialPriors = 1,
 
   imageMatrix <- imageListToMatrix( probabilityImages, t1 * 0 + 1 )
   segmentationMatrix <- matrix( apply( imageMatrix, 2, which.max ), nrow = 1 )
-  segmentationImage <- matrixToImages( segmentationMatrix, t1 * 0 + 1 )[[1]]
+  segmentationImage <- matrixToImages( segmentationMatrix, t1 * 0 + 1 )[[1]] - 1
 
-  relabeledImage <- antsImageClone( segmentationImage )
-
-  for( i in seq.int( length( labels ) ) )
-    {
-    relabeledImage[( segmentationImage == i )] <- labels[i]
-    }
-
-  results <- list( segmentationImage = relabeledImage, probabilityImages = probabilityImages )
+  results <- list( segmentationImage = segmentationImage,
+                   probabilityImages = probabilityImages )
 
   # debugging
 
