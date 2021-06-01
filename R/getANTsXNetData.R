@@ -27,6 +27,7 @@ getANTsXNetData <- function(
               "mprage_hippmapp3r",
               "protonLungTemplate",
               "ctLungTemplate",
+              "luna16LungPriors",
               "priorDktLabels",
               "priorDeepFlashLeftLabels",
               "priorDeepFlashRightLabels",
@@ -42,7 +43,6 @@ getANTsXNetData <- function(
   targetFileName, antsxnetCacheDirectory = NULL )
 {
 
-
   if( fileId[1] == "show" )
     {
     return( fileId )
@@ -57,6 +57,7 @@ getANTsXNetData <- function(
     mprage_hippmapp3r = "https://ndownloader.figshare.com/files/24984689",
     protonLungTemplate = "https://ndownloader.figshare.com/files/22707338",
     ctLungTemplate = "https://ndownloader.figshare.com/files/22707335",
+    luna16LungPriors = "https://ndownloader.figshare.com/files/28253796",
     priorDktLabels = "https://ndownloader.figshare.com/files/24139802",
     S_template3 = "https://ndownloader.figshare.com/files/22597175",
     priorDeepFlashLeftLabels = "https://ndownloader.figshare.com/files/25422098",
