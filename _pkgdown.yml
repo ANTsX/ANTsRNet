@@ -52,6 +52,7 @@ reference:
   - '`createNoBrainerUnetModel3D`'
   - '`createHippMapp3rUnetModel3D`'
   - '`createSysuMediaUnetModel2D`'
+  - '`createHypothalamusUnetModel3D`'
 - title: Segmentation-specific helper functions
   desc: ~
   contents:
@@ -193,6 +194,7 @@ reference:
   - '`sysuMediaWmhSegmentation`'
   - '`ewDavid`'
   - '`claustrumSegmentation`'
+  - '`hypothalamusSegmentation`'
   - '`deepFlash`'
   - '`desikanKillianyTourvilleLabeling`'
   - '`mriSuperResolution`'

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>2-D implementation of the image super resolution deep learning architecture. — createImageSuperResolutionModel2D • ANTsRNet</title>
+<title>Hypothalamus segmentation — hypothalamusSegmentation • ANTsRNet</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,8 @@
 
 
 
-<meta property="og:title" content="2-D implementation of the image super resolution deep learning architecture. — createImageSuperResolutionModel2D" />
-<meta property="og:description" content="Creates a keras model of the image super resolution deep learning framework.
-based on the paper available here:" />
+<meta property="og:title" content="Hypothalamus segmentation — hypothalamusSegmentation" />
+<meta property="og:description" content="Described here:" />
 
 
 
@@ -109,83 +108,70 @@ based on the paper available here:" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>2-D implementation of the image super resolution deep learning architecture.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ANTsX/ANTsRNet/blob/master/R/createImageSuperResolutionModel.R'><code>R/createImageSuperResolutionModel.R</code></a></small>
-    <div class="hidden name"><code>createImageSuperResolutionModel2D.Rd</code></div>
+    <h1>Hypothalamus segmentation</h1>
+    <small class="dont-index">Source: <a href='https://github.com/ANTsX/ANTsRNet/blob/master/R/hypothalamusSegmentation.R'><code>R/hypothalamusSegmentation.R</code></a></small>
+    <div class="hidden name"><code>hypothalamusSegmentation.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Creates a keras model of the image super resolution deep learning framework.
-based on the paper available here:</p>
+    <p>Described here:</p>
     </div>
 
-    <pre class="usage"><span class='fu'>createImageSuperResolutionModel2D</span>(
-  <span class='no'>inputImageSize</span>,
-  <span class='kw'>convolutionKernelSizes</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>9</span>, <span class='fl'>9</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>1</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>5</span>, <span class='fl'>5</span>)),
-  <span class='kw'>numberOfFilters</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>64</span>, <span class='fl'>32</span>)
-)</pre>
+    <pre class="usage"><span class='fu'>hypothalamusSegmentation</span>(<span class='no'>t1</span>, <span class='kw'>antsxnetCacheDirectory</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>inputImageSize</th>
-      <td><p>Used for specifying the input tensor shape.  The
-shape (or dimension) of that tensor is the image dimensions followed by
-the number of channels (e.g., red, green, and blue).  The batch size
-(i.e., number of training images) is not specified a priori.</p></td>
+      <th>t1</th>
+      <td><p>input 3-D T1-weighted brain image.</p></td>
     </tr>
     <tr>
-      <th>convolutionKernelSizes</th>
-      <td><p>a list of 2-D vectors specifying the kernel
-size at each convolution layer.  Default values are the same as given in
-the original paper.  The length of kernel size vectors must be 1 greater
-than the vector length of the number of filters.</p></td>
+      <th>antsxnetCacheDirectory</th>
+      <td><p>destination directory for storing the downloaded
+template and model weights.  Since these can be resused, if
+<code><a href='https://rdrr.io/r/base/NULL.html'>is.null(antsxnetCacheDirectory)</a></code>, these data will be downloaded to the
+inst/extdata/ subfolder of the ANTsRNet package.</p></td>
     </tr>
     <tr>
-      <th>numberOfFilters</th>
-      <td><p>a vector containing the number of filters for each
-convolutional layer.  Default values are the same as given in the original
-paper.</p></td>
+      <th>verbose</th>
+      <td><p>print progress.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a keras model for image super resolution</p>
+    <p>hypothalamic subunit segmentation and probability images</p><ul>
+<li><p>Label 1:  left anterior-inferior</p></li>
+<li><p>Label 2:  left anterior-superior</p></li>
+<li><p>Label 3:  left posterior</p></li>
+<li><p>Label 4:  left tubular inferior</p></li>
+<li><p>Label 5:  left tubular superior</p></li>
+<li><p>Label 6:  right anterior-inferior</p></li>
+<li><p>Label 7:  right anterior-superior</p></li>
+<li><p>Label 8:  right posterior</p></li>
+<li><p>Label 9:  right tubular inferior</p></li>
+<li><p>Label 10: right tubular superior</p></li>
+</ul>
+
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     
-<pre>    \url{https://arxiv.org/pdf/1501.00092}
+<pre>\url{https://pubmed.ncbi.nlm.nih.gov/32853816/}
 </pre>
 
-<p>This particular implementation is based on the following python
-implementation:</p><pre>    \url{https://github.com/titu1994/Image-Super-Resolution}
+<p>with the implementation available at:</p><pre>\url{https://github.com/BBillot/hypothalamus_seg}
 </pre>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>createImageSuperResolutionModel2D</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>100</span>, <span class='fl'>100</span>, <span class='fl'>1</span> ))</div><div class='output co'>#&gt; Model
-#&gt; Model: "model_30"
-#&gt; ________________________________________________________________________________
-#&gt; Layer (type)                        Output Shape                    Param #     
-#&gt; ================================================================================
-#&gt; input_27 (InputLayer)               [(None, 100, 100, 1)]           0           
-#&gt; ________________________________________________________________________________
-#&gt; conv2d_763 (Conv2D)                 (None, 100, 100, 64)            5248        
-#&gt; ________________________________________________________________________________
-#&gt; conv2d_764 (Conv2D)                 (None, 100, 100, 32)            2080        
-#&gt; ________________________________________________________________________________
-#&gt; conv2d_765 (Conv2D)                 (None, 100, 100, 1)             801         
-#&gt; ================================================================================
-#&gt; Total params: 8,129
-#&gt; Trainable params: 8,129
-#&gt; Non-trainable params: 0
-#&gt; ________________________________________________________________________________
-#&gt; 
-#&gt; </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
-#&gt; Ncells 2523834 134.8    4601392 245.8         NA   4601392 245.8
-#&gt; Vcells 4465370  34.1   41228385 314.6     102400 127497379 972.8</div></pre>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>ANTsRNet</span> )
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>keras</span> )
+
+<span class='no'>image</span> <span class='kw'>&lt;-</span> <span class='fu'>antsImageRead</span>( <span class='st'>"t1.nii.gz"</span> )
+<span class='no'>hypo</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='claustrumSegmentation.html'>claustrumSegmentation</a></span>( <span class='no'>image</span> )
+}</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

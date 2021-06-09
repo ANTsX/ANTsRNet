@@ -424,3 +424,115 @@ createSysuMediaUnetModel2D <- function( inputImageSize, anatomy = c( "wmh", "cla
 
   return( unetModel )
 }
+
+#' 3-D u-net architecture for hypothalamus segmentation
+#'
+#'    Implementation of the U-net architecture for hypothalamus segmentation
+#'    described in
+#'
+#'    https://pubmed.ncbi.nlm.nih.gov/32853816/
+#'
+#'    and ported from the original implementation:
+#'
+#'        https://github.com/BBillot/hypothalamus_seg
+#'
+#'    The network has is characterized by the following parameters:
+#'      \itemize{
+#'        \item{3 resolution levels:  24 ---> 48 ---> 96 filters}
+#'        \item{convolution: kernel size:  c(3, 3, 3), activation: 'elu'}
+#'        \item{pool size: c(2, 2, 2)}
+#'      }
+#'
+#' @param inputImageSize Used for specifying the input tensor shape.  The
+#' shape (or dimension) of that tensor is the image dimensions only
+#' (number of channels is 1).
+#'
+#' @return a u-net keras model
+#' @author Tustison NJ
+#' @examples
+#' # Simple examples, must run successfully and quickly. These will be tested.
+#'
+#' library( ANTsRNet )
+#'
+#' model <- createHypothalamusUnetModel3d( c( 160, 160, 160 ) )
+#'
+#' print( model )
+#'
+#' @import keras
+#' @export
+createHypothalamusUnetModel3D <- function( inputImageSize )
+{
+
+  convolutionKernelSize <- c( 3, 3, 3 )
+  poolSize <- c( 2, 2, 2 )
+  numberOfOutputs <- 11
+
+  numberOfLayers <- 3
+  numberOfFiltersAtBaseLayer <- 24
+  numberOfFilters <- c()
+  for( i in seq_len( numberOfLayers ) )
+    {
+    numberOfFilters[i] <- numberOfFiltersAtBaseLayer * 2^(i-1)
+    }
+
+  inputs <- layer_input( shape = c( inputImageSize, 1 ) )
+
+  # Encoding path
+
+  encodingConvolutionLayers <- list()
+  pool <- NULL
+  for( i in seq_len( numberOfLayers ) )
+    {
+    if( i == 1 )
+      {
+      conv <- inputs %>% layer_conv_3d( filters = numberOfFilters[i],
+        kernel_size = convolutionKernelSize, padding = 'same',
+        activation = 'elu' )
+      } else {
+      conv <- pool %>% layer_conv_3d( filters = numberOfFilters[i],
+        kernel_size = convolutionKernelSize, padding = 'same',
+        activation = 'elu' )
+      }
+    conv <- conv %>% layer_conv_3d( filters = numberOfFilters[i],
+      kernel_size = convolutionKernelSize, padding = 'same',
+      activation = 'elu' )
+
+    encodingConvolutionLayers[[i]] <- conv
+
+    conv <- conv %>% layer_batch_normalization( axis = -1 )
+
+    if( i < numberOfLayers )
+      {
+      pool <- conv %>% layer_max_pooling_3d( pool_size = poolSize )
+      } else {
+      outputs <- conv
+      }
+    }
+
+  # Decoding path
+
+  for( i in 2:numberOfLayers )
+    {
+    deconv <- outputs %>% layer_upsampling_3d( size = poolSize )
+    outputs <- layer_concatenate(
+      list( encodingConvolutionLayers[[numberOfLayers - i + 1]], deconv ), axis = 4 )
+    outputs <- outputs %>%
+      layer_conv_3d( filters = numberOfFilters[numberOfLayers - i + 1],
+        kernel_size = convolutionKernelSize, padding = 'same',
+        activation = 'elu' )
+    outputs <- outputs %>%
+      layer_conv_3d( filters = numberOfFilters[numberOfLayers - i + 1],
+        kernel_size = convolutionKernelSize, padding = 'same',
+        activation = 'elu' )
+
+    outputs <- outputs %>% layer_batch_normalization( axis = -1 )
+    }
+
+  outputs <- outputs %>%
+    layer_conv_3d( filters = numberOfOutputs,
+      kernel_size = c( 1, 1, 1 ), activation = 'softmax' )
+
+  unetModel <- keras_model( inputs = inputs, outputs = outputs )
+
+  return( unetModel )
+}
