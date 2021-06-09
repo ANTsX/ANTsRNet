@@ -47,7 +47,7 @@ library( ANTsRNet )
 library( keras )
 
 image <- antsImageRead( "t1.nii.gz" )
-hypo <- claustrumSegmentation( image )
+hypo <- hypothalamusSegmentation( image )
 }
 }
 \author{

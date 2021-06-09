@@ -22,6 +22,9 @@ ewDavid(
 \item{t1}{input 3-D T1-weighted brain image (assumed to be aligned to
 the flair).}
 
+\item{doPreprocessing}{perform n4 bias correction, intensity truncation, brain
+extraction.}
+
 \item{whichModel}{one of "sysu", "sysuT1Only", "sysuPlus",
 "sysuPlusSeg", "sysuWithSite", "sysuWithSiteT1Only".}
 

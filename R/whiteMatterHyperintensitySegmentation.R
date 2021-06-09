@@ -236,6 +236,8 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
 #' @param flair input 3-D FLAIR brain image.
 #' @param t1 input 3-D T1-weighted brain image (assumed to be aligned to
 #' the flair).
+#' @param doPreprocessing perform n4 bias correction, intensity truncation, brain 
+#' extraction.
 #' @param whichModel one of "sysu", "sysuT1Only", "sysuPlus",
 #' "sysuPlusSeg", "sysuWithSite", "sysuWithSiteT1Only".
 #' @param whichAxes apply 2-D model to 1 or more axes.  In addition to a scalar
