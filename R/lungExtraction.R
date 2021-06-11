@@ -111,76 +111,6 @@ lungExtraction <- function( image,
     return( list( segmentationImage = segmentationImage,
                   probabilityImages = probabilityImages ) )
 
-    # } else if( modality == "ctOld" ) {
-    # if( verbose == TRUE )
-    #   {
-    #   cat( "Lung extraction:  retrieving model weights.\n" )
-    #   }
-    # weightsFileName <- getPretrainedNetwork( "ctHumanLung",
-    #   antsxnetCacheDirectory = antsxnetCacheDirectory )
-
-    # classes <- c( "Background", "LeftLung", "RightLung", "Trachea" )
-    # numberOfClassificationLabels <- length( classes )
-
-    # if( verbose == TRUE )
-    #   {
-    #   cat( "Lung extraction:  retrieving template.\n" )
-    #   }
-    # reorientTemplateFileNamePath <- getANTsXNetData( "ctLungTemplate",
-    #   antsxnetCacheDirectory = antsxnetCacheDirectory )
-    # reorientTemplate <- antsImageRead( reorientTemplateFileNamePath )
-    # resampledImageSize <- dim( reorientTemplate )
-
-    # unetModel <- createUnetModel3D( c( resampledImageSize, channelSize ),
-    #   numberOfOutputs = numberOfClassificationLabels,
-    #   numberOfLayers = 4, numberOfFiltersAtBaseLayer = 8, dropoutRate = 0.0,
-    #   convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
-    #   weightDecay = 1e-5 )
-    # unetModel$load_weights( weightsFileName )
-
-    # if( verbose == TRUE )
-    #   {
-    #   cat( "Lung extraction:  normalizing image to the template.\n" )
-    #   }
-    # centerOfMassTemplate <- getCenterOfMass( reorientTemplate * 0 + 1 )
-    # centerOfMassImage <- getCenterOfMass( image  * 0 + 1 )
-    # xfrm <- createAntsrTransform( type = "Euler3DTransform",
-    #   center = centerOfMassTemplate,
-    #   translation = centerOfMassImage - centerOfMassTemplate )
-    # warpedImage <- applyAntsrTransformToImage( xfrm, image, reorientTemplate )
-    # warpedArray <- as.array( warpedImage )
-    # warpedArray[which( warpedArray < -1000 )] <- -1000
-
-    # batchX <- array( data = as.array( warpedImage ),
-    #   dim = c( 1, resampledImageSize, channelSize ) )
-    # batchX <- ( batchX - mean( batchX ) ) / sd( batchX )
-
-    # if( verbose == TRUE )
-    #   {
-    #   cat( "Lung extraction:  prediction and decoding.\n" )
-    #   }
-    # predictedData <- unetModel %>% predict( batchX, verbose = verbose )
-    # probabilityImagesArray <- decodeUnet( predictedData, reorientTemplate )
-
-    # if( verbose == TRUE )
-    #   {
-    #   cat( "Lung extraction:  renormalize probability mask to native space.\n" )
-    #   }
-
-    # probabilityImages <- list()
-    # for( i in seq_len( numberOfClassificationLabels ) )
-    #   {
-    #   probabilityImageTmp <- probabilityImagesArray[[1]][[i]]
-    #   probabilityImages[[i]] <- applyAntsrTransformToImage( invertAntsrTransform( xfrm ),
-    #     probabilityImageTmp, image )
-    #   }
-    # imageMatrix <- imageListToMatrix( probabilityImages, image * 0 + 1 )
-    # segmentationMatrix <- matrix( apply( imageMatrix, 2, which.max ), nrow = 1 ) - 1
-    # segmentationImage <- matrixToImages( segmentationMatrix, image * 0 + 1 )[[1]]
-
-    # return( list( segmentationImage = segmentationImage,
-    #               probabilityImages = probabilityImages ) )
-
     } else if( modality == "ct" ) {
 
     ################################
@@ -203,7 +133,7 @@ lungExtraction <- function( image,
 
     simplifiedDirection <- closestSimplifiedDirectionMatrix( antsGetDirection( image ) )
 
-    referenceImageSize <- c( 200, 200, 200 )
+    referenceImageSize <- c( 128, 128, 128 )
 
     ctPreprocessed <- resampleImage( image, referenceImageSize, useVoxels = TRUE, interpType = 0 )
     ctPreprocessed[ctPreprocessed < -1000] <- -1000
@@ -227,9 +157,11 @@ lungExtraction <- function( image,
     xfrm <- createAntsrTransform( type = "Euler3DTransform",
         center = centerOfMassReference, translation = translation )
     ctPreprocessed <- ( ( ctPreprocessed - min( ctPreprocessed ) ) /
-        ( max( ctPreprocessed ) - min( ctPreprocessed ) ) ) - 0.5
+        ( max( ctPreprocessed ) - min( ctPreprocessed ) ) )
     ctPreprocessedWarped = applyAntsrTransformToImage(
         xfrm, ctPreprocessed, referenceImage, interpolation = "nearestneighbor" )
+    ctPreprocessedWarped <- ( ( ctPreprocessedWarped - min( ctPreprocessedWarped ) ) /
+        ( max( ctPreprocessedWarped ) - min( ctPreprocessedWarped ) ) ) - 0.5
 
     ################################
     #
@@ -242,10 +174,8 @@ lungExtraction <- function( image,
       cat( "Build model and load weights.\n" )
       }
 
-    patchSize <- c( 128L, 128L, 128L )
-    strideLength <- dim( ctPreprocessed ) - patchSize
-
-    weightsFileName <- getPretrainedNetwork( "lungCtOctantWithPriorsSegmentationWeights", antsxnetCacheDirectory = antsxnetCacheDirectory )
+    weightsFileName <- getPretrainedNetwork( "lungCtWithPriorsSegmentationWeights", 
+      antsxnetCacheDirectory = antsxnetCacheDirectory )
 
     classes <- c( "background", "left lung", "right lung", "airways" )
     numberOfClassificationLabels <- length( classes )
@@ -253,16 +183,15 @@ lungExtraction <- function( image,
     luna16Priors <- splitNDImageToList( antsImageRead( getANTsXNetData( "luna16LungPriors" ) ) )
     for( i in seq.int( length( luna16Priors ) ) )
       {
-      luna16Priors[[i]] <- antsCopyImageInfo( ctPreprocessedWarped, luna16Priors[[i]] )
+      luna16Priors[[i]] <- resampleImage( luna16Priors[[i]], referenceImageSize, useVoxels = TRUE )
       }
     channelSize <- length( luna16Priors ) + 1
 
-    unetModel <- createUnetModel3D( c( patchSize, channelSize ),
+    unetModel <- createUnetModel3D( c( referenceImageSize, channelSize ),
       numberOfOutputs = numberOfClassificationLabels, mode = 'classification',
-      numberOfLayers = 4, numberOfFiltersAtBaseLayer = 32, dropoutRate = 0.0,
+      numberOfLayers = 4, numberOfFiltersAtBaseLayer = 16, dropoutRate = 0.0,
       convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
-      weightDecay = 1e-5 )
-
+      weightDecay = 1e-5, additionalOptions = c( "attentionGating" ) )
     load_model_weights_hdf5( unetModel, filepath = weightsFileName )
 
     ################################
@@ -276,15 +205,11 @@ lungExtraction <- function( image,
       cat( "Prediction.\n" )
       }
 
-    imagePatches <- extractImagePatches( ctPreprocessedWarped, patchSize, maxNumberOfPatches = "all",
-                                        strideLength = strideLength, returnAsArray = TRUE )
-    batchX <- array( data = 0, dim = c( dim( imagePatches ), channelSize ) )
-    batchX[,,,,1] <- imagePatches
+    batchX <- array( data = 0, dim = c( 1, referenceImageSize, channelSize ) )
+    batchX[,,,,1] <- as.array( ctPreprocessedWarped )
     for( i in seq.int( length( luna16Priors ) ) )
       {
-      priorPatches <- extractImagePatches( luna16Priors[[i]], patchSize, maxNumberOfPatches = "all",
-                        strideLength = strideLength, returnAsArray = TRUE )
-      batchX[,,,,i+1] <- priorPatches
+      batchX[,,,,i+1] <- as.array( luna16Priors[[i]] ) - 0.5
       }
     predictedData <- unetModel %>% predict( batchX, verbose = verbose )
 
@@ -292,11 +217,12 @@ lungExtraction <- function( image,
     for( i in seq_len( numberOfClassificationLabels ) )
       {
       if( verbose == TRUE )
+        {
         cat( "Reconstructing image", classes[i], "\n" )
-      reconstructedImage <- reconstructImageFromPatches( predictedData[,,,,i],
-          domainImage = ctPreprocessedWarped, strideLength = strideLength )
+        }
+      probabilityImage <- as.antsImage( drop( predictedData[,,,,i] ), reference = ctPreprocessedWarped )  
       probabilityImage <- applyAntsrTransformToImage( invertAntsrTransform( xfrm ),
-        reconstructedImage, ctPreprocessed )
+        probabilityImage, ctPreprocessed )
       probabilityImage <- resampleImage( probabilityImage, resampleParams = dim( image ),
         useVoxels = TRUE, interpType = 0 )
       probabilityImage <- antsCopyImageInfo( image, probabilityImage )
