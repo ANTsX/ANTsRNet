@@ -132,11 +132,7 @@ createResNetModel2D <- function( inputImageSize,
     K <- keras::backend()
 
     initial <- model
-    numberOfFilters <- K$int_shape( initial )[[2]]
-    if( K$image_data_format() == "channels_last" )
-      {
-      numberOfFilters <- K$int_shape( initial )[[4]]
-      }
+    numberOfFilters <- K$int_shape( initial )[[4]]
     blockShape <- c( 1, 1, numberOfFilters )
 
     block <- initial %>% layer_global_average_pooling_2d()
@@ -146,10 +142,6 @@ createResNetModel2D <- function( inputImageSize,
     block <- block %>% layer_dense( units = numberOfFilters, activation = 'sigmoid',
       kernel_initializer = 'he_normal', use_bias = FALSE )
 
-    if( K$image_data_format() == "channels_first" )
-      {
-      block <- block %>% layer_permute( c( 4, 2, 3 ) )
-      }
     x <- list( initial, block ) %>% layer_multiply()
 
     return( x )
@@ -229,9 +221,9 @@ createResNetModel2D <- function( inputImageSize,
 
   layerActivation <- ''
   if( mode == 'classification' ) {
-    layerActivation <- 'softmax'  
+    layerActivation <- 'softmax'
     } else if( mode == 'regression' ) {
-    layerActivation <- 'linear'  
+    layerActivation <- 'linear'
     } else {
     stop( 'Error: unrecognized mode.' )
     }
@@ -282,7 +274,7 @@ createResNetModel2D <- function( inputImageSize,
 #' @param cardinality perform  ResNet (cardinality = 1) or ResNeXt
 #' (cardinality != 1 but powers of 2---try '32' )
 #' @param squeezeAndExcite boolean to add the squeeze-and-excite block variant.
-#' @param mode 'classification' or 'regression'. 
+#' @param mode 'classification' or 'regression'.
 #'
 #' @return an ResNet keras model
 #' @author Tustison NJ
@@ -389,11 +381,7 @@ createResNetModel3D <- function( inputImageSize,
     K <- keras::backend()
 
     initial <- model
-    numberOfFilters <- K$int_shape( initial )[[2]]
-    if( K$image_data_format() == "channels_last" )
-      {
-      numberOfFilters <- K$int_shape( initial )[[5]]
-      }
+    numberOfFilters <- K$int_shape( initial )[[5]]
     blockShape <- c( 1, 1, 1, numberOfFilters )
 
     block <- initial %>% layer_global_average_pooling_3d()
@@ -403,10 +391,6 @@ createResNetModel3D <- function( inputImageSize,
     block <- block %>% layer_dense( units = numberOfFilters, activation = 'sigmoid',
       kernel_initializer = 'he_normal', use_bias = FALSE )
 
-    if( K$image_data_format() == "channels_first" )
-      {
-      block <- block %>% layer_permute( c( 5, 2, 3, 4 ) )
-      }
     x <- list( initial, block ) %>% layer_multiply()
 
     return( x )
@@ -486,9 +470,9 @@ createResNetModel3D <- function( inputImageSize,
 
   layerActivation <- ''
   if( mode == 'classification' ) {
-    layerActivation <- 'softmax'  
+    layerActivation <- 'softmax'
     } else if( mode == 'regression' ) {
-    layerActivation <- 'linear'  
+    layerActivation <- 'linear'
     } else {
     stop( 'Error: unrecognized mode.' )
     }
