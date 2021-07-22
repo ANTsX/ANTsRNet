@@ -3,7 +3,7 @@
 #' Perform proton (H1) or CT lung extraction using a U-net architecture.
 #'
 #' @param image input 3-D lung image.
-#' @param modality image type.  Options include "proton" or "ct".
+#' @param modality image type.  Options include "proton", "ct", or "ventilation".
 #' @param antsxnetCacheDirectory destination directory for storing the downloaded
 #' template and model weights.  Since these can be resused, if
 #' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
@@ -21,7 +21,7 @@
 #' }
 #' @export
 lungExtraction <- function( image,
-  modality = c( "proton", "ct" ),
+  modality = c( "proton", "ct", "ventilation" ),
   antsxnetCacheDirectory = NULL, verbose = FALSE )
   {
 
@@ -174,7 +174,7 @@ lungExtraction <- function( image,
       cat( "Build model and load weights.\n" )
       }
 
-    weightsFileName <- getPretrainedNetwork( "lungCtWithPriorsSegmentationWeights", 
+    weightsFileName <- getPretrainedNetwork( "lungCtWithPriorsSegmentationWeights",
       antsxnetCacheDirectory = antsxnetCacheDirectory )
 
     classes <- c( "background", "left lung", "right lung", "airways" )
@@ -220,7 +220,7 @@ lungExtraction <- function( image,
         {
         cat( "Reconstructing image", classes[i], "\n" )
         }
-      probabilityImage <- as.antsImage( drop( predictedData[,,,,i] ), reference = ctPreprocessedWarped )  
+      probabilityImage <- as.antsImage( drop( predictedData[,,,,i] ), reference = ctPreprocessedWarped )
       probabilityImage <- applyAntsrTransformToImage( invertAntsrTransform( xfrm ),
         probabilityImage, ctPreprocessed )
       probabilityImage <- resampleImage( probabilityImage, resampleParams = dim( image ),
@@ -235,6 +235,110 @@ lungExtraction <- function( image,
 
     return( list( segmentationImage = segmentationImage,
                   probabilityImages = probabilityImages ) )
+
+    } else if( modality == "ventilation" ) {
+
+      templateSize <- c( 256L, 256L )
+
+      imageModalities <- c( "Ventilation" )
+      channelSize <- length( imageModalities )
+
+      preprocessedImage <- ( image - mean( image ) ) / sd( image )
+
+      ################################
+      #
+      # Build models and load weights
+      #
+      ################################
+
+      unetModel <- createUnetModel2D( c( templateSize, channelSize ),
+        numberOfOutputs = 1, mode = 'sigmoid',
+        numberOfLayers = 4, numberOfFiltersAtBaseLayer = 32, dropoutRate = 0.0,
+        convolutionKernelSize = c( 3, 3 ), deconvolutionKernelSize = c( 2, 2 ),
+        weightDecay = 0 )
+
+      if( verbose == TRUE )
+        {
+        cat( "Whole lung mask: retrieving model weights.\n" )
+        }
+      weightsFileName <- getPretrainedNetwork( "wholeLungMaskFromVentilation", antsxnetCacheDirectory = antsxnetCacheDirectory )
+      unetModel$load_weights( weightsFileName )
+
+      ################################
+      #
+      # Extract slices
+      #
+      ################################
+
+      dimensionsToPredict <- c( which.max( antsGetSpacing( preprocessedImage ) )[1] )
+
+      batchX <- array( data = 0,
+        c( sum( dim( preprocessedImage )[dimensionsToPredict]), templateSize, channelSize ) )
+
+      sliceCount <- 1
+      for( d in seq.int( length( dimensionsToPredict ) ) )
+        {
+        numberOfSlices <- dim( preprocessedImage )[dimensionsToPredict[d]]
+
+        if( verbose == TRUE )
+          {
+          cat( "Extracting slices for dimension", dimensionsToPredict[d], "\n" )
+          pb <- txtProgressBar( min = 1, max = numberOfSlices, style = 3 )
+          }
+
+        for( i in seq.int( numberOfSlices ) )
+          {
+          if( verbose )
+            {
+            setTxtProgressBar( pb, i )
+            }
+
+          ventilationSlice <- padOrCropImageToSize( extractSlice( preprocessedImage, i, dimensionsToPredict[d] ), templateSize )
+          batchX[sliceCount,,,1] <- as.array( ventilationSlice )
+
+          sliceCount <- sliceCount + 1
+          }
+        if( verbose == TRUE )
+          {
+          cat( "\n" )
+          }
+        }
+
+      ################################
+      #
+      # Do prediction and then restack into the image
+      #
+      ################################
+
+      if( verbose == TRUE )
+        {
+        cat( "Prediction.\n" )
+        }
+
+      prediction <- predict( unetModel, batchX, verbose = verbose )
+
+      permutations <- list()
+      permutations[[1]] <- c( 1, 2, 3 )
+      permutations[[2]] <- c( 2, 1, 3 )
+      permutations[[3]] <- c( 2, 3, 1 )
+
+      probabilityImage <- antsImageClone( image ) * 0
+
+      currentStartSlice <- 1
+      for( d in seq.int( length( dimensionsToPredict ) ) )
+        {
+        currentEndSlice <- currentStartSlice - 1 + dim( preprocessedImage )[dimensionsToPredict[d]]
+        whichBatchSlices <- currentStartSlice:currentEndSlice
+
+        predictionPerDimension <- prediction[whichBatchSlices,,,1]
+        predictionArray <- aperm( drop( predictionPerDimension ), permutations[[dimensionsToPredict[d]]] )
+        predictionImage <- antsCopyImageInfo( preprocessedImage,
+          padOrCropImageToSize( as.antsImage( predictionArray ), dim( preprocessedImage ) ) )
+        probabilityImage <- probabilityImage + ( predictionImage - probabilityImage ) / d
+        currentStartSlice <- currentEndSlice + 1
+        }
+
+      return( probabilityImage )
 
     } else {
     stop( "Unknown modality type." )

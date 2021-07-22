@@ -87,7 +87,8 @@ getPretrainedNetwork <- function(
               "sysuMediaWmhFlairT1Model1",
               "sysuMediaWmhFlairT1Model2",
               "tidsQualityAssessment",
-	            "wholeTumorSegmentationT2Flair" ),
+	            "wholeTumorSegmentationT2Flair",
+              "wholeLungMaskFromVentilation" ),
   targetFileName, antsxnetCacheDirectory = NULL )
 {
 
@@ -166,7 +167,8 @@ getPretrainedNetwork <- function(
     sysuMediaWmhFlairT1Model1 = "https://ndownloader.figshare.com/files/22898453",
     sysuMediaWmhFlairT1Model2 = "https://ndownloader.figshare.com/files/22898459",
     tidsQualityAssessment = "https://ndownloader.figshare.com/files/24292895",
-    wholeTumorSegmentationT2Flair = "https://ndownloader.figshare.com/files/14087045"
+    wholeTumorSegmentationT2Flair = "https://ndownloader.figshare.com/files/14087045",
+    wholeLungMaskFromVentilation = ""
   )
 
   if( missing( targetFileName ) )
