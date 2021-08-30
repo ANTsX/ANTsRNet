@@ -26,7 +26,7 @@ getPretrainedNetwork(
     "sysuMediaWmhFlairOnlyModel1", "sysuMediaWmhFlairOnlyModel2",
     "sysuMediaWmhFlairT1Model0", "sysuMediaWmhFlairT1Model1",
     "sysuMediaWmhFlairT1Model2", "tidsQualityAssessment",     
-    "wholeTumorSegmentationT2Flair"),
+    "wholeTumorSegmentationT2Flair", "wholeLungMaskFromVentilation"),
   targetFileName,
   antsxnetCacheDirectory = NULL
 )

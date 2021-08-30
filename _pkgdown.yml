@@ -159,6 +159,7 @@ reference:
   - '`randomImageTransformParametersAugmentation`'
   - '`randomImageTransformParametersBatchGenerator`'
   - '`randomlyTransformImageData`'
+  - '`dataAugmentation`'
   - '`histogramWarpImageIntensities`'
   - '`simulateBiasField`'
 - title: Misc

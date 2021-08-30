@@ -6,7 +6,7 @@
 \usage{
 lungExtraction(
   image,
-  modality = c("proton", "ct"),
+  modality = c("proton", "ct", "ventilation"),
   antsxnetCacheDirectory = NULL,
   verbose = FALSE
 )
@@ -14,7 +14,7 @@ lungExtraction(
 \arguments{
 \item{image}{input 3-D lung image.}
 
-\item{modality}{image type.  Options include "proton" or "ct".}
+\item{modality}{image type.  Options include "proton", "ct", or "ventilation".}
 
 \item{antsxnetCacheDirectory}{destination directory for storing the downloaded
 template and model weights.  Since these can be resused, if

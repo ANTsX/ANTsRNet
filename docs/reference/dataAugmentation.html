@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Randomly transform image data (optional: with corresponding segmentations). — randomlyTransformImageData • ANTsRNet</title>
+<title>Randomly transform image data. — dataAugmentation • ANTsRNet</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,11 @@
 
 
 
-<meta property="og:title" content="Randomly transform image data (optional: with corresponding segmentations). — randomlyTransformImageData" />
-<meta property="og:description" content="Apply rigid, affine and/or deformable maps to an input set of training
-images.  The reference image domain defines the space in which this happens." />
+<meta property="og:title" content="Randomly transform image data. — dataAugmentation" />
+<meta property="og:description" content="Given an input image list (possibly multi-modal) and an optional corresponding
+segmentation image list, this function will perform data augmentation with
+the following augmentation possibilities:  spatial transformations, added
+image noise, simulated bias field, and histogram warping." />
 
 
 
@@ -109,45 +111,35 @@ images.  The reference image domain defines the space in which this happens." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Randomly transform image data (optional: with corresponding segmentations).</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ANTsX/ANTsRNet/blob/master/R/randomlyTransformImageData.R'><code>R/randomlyTransformImageData.R</code></a></small>
-    <div class="hidden name"><code>randomlyTransformImageData.Rd</code></div>
+    <h1>Randomly transform image data.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/ANTsX/ANTsRNet/blob/master/R/dataAugmentation.R'><code>R/dataAugmentation.R</code></a></small>
+    <div class="hidden name"><code>dataAugmentation.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Apply rigid, affine and/or deformable maps to an input set of training
-images.  The reference image domain defines the space in which this happens.</p>
+    <p>Given an input image list (possibly multi-modal) and an optional corresponding
+segmentation image list, this function will perform data augmentation with
+the following augmentation possibilities:  spatial transformations, added
+image noise, simulated bias field, and histogram warping.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>randomlyTransformImageData</span>(
-  <span class='no'>referenceImage</span>,
+    <pre class="usage"><span class='fu'>dataAugmentation</span>(
   <span class='no'>inputImageList</span>,
   <span class='kw'>segmentationImageList</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>numberOfSimulations</span> <span class='kw'>=</span> <span class='fl'>10</span>,
-  <span class='kw'>transformType</span> <span class='kw'>=</span> <span class='st'>"affine"</span>,
-  <span class='kw'>sdAffine</span> <span class='kw'>=</span> <span class='fl'>0.02</span>,
-  <span class='kw'>deformationTransformType</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"bspline"</span>, <span class='st'>"exponential"</span>),
-  <span class='kw'>numberOfRandomPoints</span> <span class='kw'>=</span> <span class='fl'>1000</span>,
-  <span class='kw'>sdNoise</span> <span class='kw'>=</span> <span class='fl'>10</span>,
-  <span class='kw'>numberOfFittingLevels</span> <span class='kw'>=</span> <span class='fl'>4</span>,
-  <span class='kw'>meshSize</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>sdSmoothing</span> <span class='kw'>=</span> <span class='fl'>4</span>,
-  <span class='kw'>inputImageInterpolator</span> <span class='kw'>=</span> <span class='st'>"linear"</span>,
-  <span class='kw'>segmentationImageInterpolator</span> <span class='kw'>=</span> <span class='st'>"nearestNeighbor"</span>
+  <span class='kw'>referenceImage</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>transformType</span> <span class='kw'>=</span> <span class='st'>"affineAndDeformation"</span>,
+  <span class='kw'>noiseModel</span> <span class='kw'>=</span> <span class='st'>"additivegaussian"</span>,
+  <span class='kw'>noiseParameters</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>0.05</span>),
+  <span class='kw'>sdSimulatedBiasField</span> <span class='kw'>=</span> <span class='fl'>0.05</span>,
+  <span class='kw'>sdHistogramWarping</span> <span class='kw'>=</span> <span class='fl'>0.05</span>,
+  <span class='kw'>outputNumpyFilePrefix</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>referenceImage</th>
-      <td><p>defines the spatial domain for all output images.  If
-the input images do not match the spatial domain of the reference image, we
-internally resample the target to the reference image.  This could have
-unexpected consequences.  Resampling to the reference domain is performed by
-testing using <code>antsImagePhysicalSpaceConsistency</code> then calling
-<code>resampleImageToTarget</code> upon failure.</p></td>
-    </tr>
     <tr>
       <th>inputImageList</th>
       <td><p>list of lists of input images to warp.  The internal
@@ -165,63 +157,52 @@ input image list (optional).</p></td>
       <td><p>number of output images.  Default = 10.</p></td>
     </tr>
     <tr>
+      <th>referenceImage</th>
+      <td><p>defines the spatial domain for all output images.  If
+the input images do not match the spatial domain of the reference image, we
+internally resample the target to the reference image.  This could have
+unexpected consequences.  Resampling to the reference domain is performed by
+testing using <code>antsImagePhysicalSpaceConsistency</code> then calling
+<code>resampleImageToTarget</code> upon failure.</p></td>
+    </tr>
+    <tr>
       <th>transformType</th>
       <td><p>one of the following options
 <code><a href='https://rdrr.io/r/base/c.html'>c( "translation", "rigid", "scaleShear", "affine"," deformation" ,
-  "affineAndDeformation" )</a></code>.  Default = \"affine\".</p></td>
+  "affineAndDeformation" )</a></code>.</p></td>
     </tr>
     <tr>
-      <th>sdAffine</th>
-      <td><p>parameter dictating deviation amount from identity for
-random linear transformations.  Default = 0.02.</p></td>
-    </tr>
-    <tr>
-      <th>deformationTransformType</th>
+      <th>noiseModel</th>
       <td><p>one of the following options
-<code><a href='https://rdrr.io/r/base/c.html'>c( "bspline", "exponential" )</a></code> if deformation is specified in the
-<code>transformType</code>.  Default = \"bspline\".</p></td>
+<code><a href='https://rdrr.io/r/base/c.html'>c( "additivegaussian", "saltandpepper", "shot", "speckle" )</a></code></p></td>
     </tr>
     <tr>
-      <th>numberOfRandomPoints</th>
-      <td><p>number of displacement points for the deformation
-field.  Default = 1000.</p></td>
+      <th>noiseParameters</th>
+      <td><p>'additivegaussian': <code><a href='https://rdrr.io/r/base/c.html'>c( mean, standardDeviation )</a></code>,
+'saltandpepper': <code><a href='https://rdrr.io/r/base/c.html'>c( probability, saltValue, pepperValue) </a></code>, 'shot':
+scale, 'speckle': standardDeviation.  Note that the standard deviation,
+scale, and probability values are <em>max</em> values and are randomly selected
+in the range 0, noise_parameter.  Also, the "mean", "saltValue" and
+pepperValue" are assumed to be in the intensity normalized range of 0, 1.</p></td>
     </tr>
     <tr>
-      <th>sdNoise</th>
-      <td><p>standard deviation of the displacement field
-noise (in mm).  Default = 10.0.</p></td>
+      <th>sdSimulatedBiasField</th>
+      <td><p>Characterize the standard deviation of the amplitude.</p></td>
     </tr>
     <tr>
-      <th>numberOfFittingLevels</th>
-      <td><p>(bspline deformation only) number of fitting levels.
-Default = 4.</p></td>
+      <th>sdHistogramWarping</th>
+      <td><p>Determines the strength of the bias field.</p></td>
     </tr>
     <tr>
-      <th>meshSize</th>
-      <td><p>(bspline deformation only) scalar or n-D vector determining fitting
-resolution.  Default = 1.</p></td>
-    </tr>
-    <tr>
-      <th>sdSmoothing</th>
-      <td><p>(exponential deformation only) standard deviation of the
-Gaussian smoothing in mm.  Default = 4.0.</p></td>
-    </tr>
-    <tr>
-      <th>inputImageInterpolator</th>
-      <td><p>one of the following options
-<code><a href='https://rdrr.io/r/base/c.html'> c( "linear", "gaussian", "bspline" )</a></code>.  Default = \"linear\".</p></td>
-    </tr>
-    <tr>
-      <th>segmentationImageInterpolator</th>
-      <td><p>one of the following options
-<code><a href='https://rdrr.io/r/base/c.html'> c( "nearestNeighbor", "genericLabel" )</a></code>.  Default =
-\"nearestNeighbor\".</p></td>
+      <th>outputNumpyFilePrefix</th>
+      <td><p>Filename of output numpy array containing all the
+simulated images and segmentations.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>list (if no directory set) or boolean for success, failure</p>
+    <p>list of lists of transformed images and/or outputs to a numpy array.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
@@ -230,18 +211,18 @@ Gaussian smoothing in mm.  Default = 4.0.</p></td>
 <span class='no'>image2</span> <span class='kw'>&lt;-</span> <span class='fu'>antsImageRead</span>( <span class='fu'>getANTsRData</span>( <span class='st'>"r64"</span> ) )
 <span class='no'>segmentation1</span> <span class='kw'>&lt;-</span> <span class='fu'>thresholdImage</span>( <span class='no'>image1</span>, <span class='st'>"Otsu"</span>, <span class='fl'>3</span> )
 <span class='no'>segmentation2</span> <span class='kw'>&lt;-</span> <span class='fu'>thresholdImage</span>( <span class='no'>image2</span>, <span class='st'>"Otsu"</span>, <span class='fl'>3</span> )
-<span class='no'>data</span> <span class='kw'>&lt;-</span> <span class='fu'>randomlyTransformImageData</span>( <span class='no'>image1</span>,
+<span class='no'>data</span> <span class='kw'>&lt;-</span> <span class='fu'>dataAugmentation</span>(
   <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>( <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>( <span class='no'>image1</span> ), <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>( <span class='no'>image2</span> ) ),
-  <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>( <span class='no'>segmentation1</span>, <span class='no'>segmentation2</span> ) )
-<span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>segmentation1</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
-#&gt; Ncells 2598358 138.8    4601961 245.8         NA   4601961 245.8
-#&gt; Vcells 7139266  54.5   28548418 217.9     102400 127497723 972.8</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>segmentation2</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
-#&gt; Ncells 2598157 138.8    4601961 245.8         NA   4601961 245.8
-#&gt; Vcells 7138967  54.5   28548418 217.9     102400 127497723 972.8</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>image1</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
-#&gt; Ncells 2598148 138.8    4601961 245.8         NA   4601961 245.8
-#&gt; Vcells 7138988  54.5   28548418 217.9     102400 127497723 972.8</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>image2</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
-#&gt; Ncells 2598139 138.8    4601961 245.8         NA   4601961 245.8
-#&gt; Vcells 7139009  54.5   28548418 217.9     102400 127497723 972.8</div></pre>
+  <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>( <span class='no'>segmentation1</span>, <span class='no'>segmentation2</span> ) )</div><div class='output co'>#&gt;         Adding simulated bias field.
+#&gt;         Performing intensity histogram warping.</div><div class='output co'>#&gt; <span class='error'>Error in dataAugmentation(list(list(image1), list(image2)), list(segmentation1,     segmentation2)): object 'break_points' not found</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>segmentation1</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
+#&gt; Ncells 2550453 136.3    4601961 245.8         NA   4601961 245.8
+#&gt; Vcells 6914123  52.8   44606902 340.4     102400 127497723 972.8</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>segmentation2</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
+#&gt; Ncells 2549694 136.2    4601961 245.8         NA   4601961 245.8
+#&gt; Vcells 6912894  52.8   35685522 272.3     102400 127497723 972.8</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>image1</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
+#&gt; Ncells 2549685 136.2    4601961 245.8         NA   4601961 245.8
+#&gt; Vcells 6912915  52.8   28548418 217.9     102400 127497723 972.8</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>image2</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
+#&gt; Ncells 2549675 136.2    4601961 245.8         NA   4601961 245.8
+#&gt; Vcells 6912920  52.8   28548418 217.9     102400 127497723 972.8</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
