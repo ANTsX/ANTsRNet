@@ -119,17 +119,17 @@ resolution.  More information is provided at the authors' website:" />
 resolution.  More information is provided at the authors' website:</p>
     </div>
 
-    <pre class="usage"><span class='fu'>createDeepBackProjectionNetworkModel3D</span>(
-  <span class='no'>inputImageSize</span>,
-  <span class='kw'>numberOfOutputs</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>numberOfBaseFilters</span> <span class='kw'>=</span> <span class='fl'>64</span>,
-  <span class='kw'>numberOfFeatureFilters</span> <span class='kw'>=</span> <span class='fl'>256</span>,
-  <span class='kw'>numberOfBackProjectionStages</span> <span class='kw'>=</span> <span class='fl'>7</span>,
-  <span class='kw'>convolutionKernelSize</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>12</span>, <span class='fl'>12</span>, <span class='fl'>12</span>),
-  <span class='kw'>strides</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>8</span>, <span class='fl'>8</span>, <span class='fl'>8</span>),
-  <span class='kw'>lastConvolution</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>3</span>, <span class='fl'>3</span>, <span class='fl'>3</span>),
-  <span class='kw'>numberOfLossFunctions</span> <span class='kw'>=</span> <span class='fl'>1</span>
-)</pre>
+    <pre class="usage"><span class='fu'>createDeepBackProjectionNetworkModel3D</span><span class='op'>(</span>
+  <span class='va'>inputImageSize</span>,
+  numberOfOutputs <span class='op'>=</span> <span class='fl'>1</span>,
+  numberOfBaseFilters <span class='op'>=</span> <span class='fl'>64</span>,
+  numberOfFeatureFilters <span class='op'>=</span> <span class='fl'>256</span>,
+  numberOfBackProjectionStages <span class='op'>=</span> <span class='fl'>7</span>,
+  convolutionKernelSize <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>12</span>, <span class='fl'>12</span>, <span class='fl'>12</span><span class='op'>)</span>,
+  strides <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>8</span>, <span class='fl'>8</span>, <span class='fl'>8</span><span class='op'>)</span>,
+  lastConvolution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>, <span class='fl'>3</span>, <span class='fl'>3</span><span class='op'>)</span>,
+  numberOfLossFunctions <span class='op'>=</span> <span class='fl'>1</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -204,12 +204,16 @@ implementation:</p><pre>    \url{https://github.com/rajatkb/DBPN-Keras}
     \url{https://github.com/alterzero/DBPN-Pytorch}
 </pre>
 
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Tustison NJ</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>model</span> <span class='kw'>=</span> <span class='fu'>createDeepBackProjectionNetworkModel3D</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>25</span>, <span class='fl'>25</span>, <span class='fl'>25</span>, <span class='fl'>1</span>))
-<span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>model</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
-#&gt; Ncells 2483715 132.7    4601961 245.8         NA   4601961 245.8
-#&gt; Vcells 4416883  33.7   40079691 305.8     102400 127497723 972.8</div></pre>
+    <pre class="examples"><div class='input'><span class='va'>model</span> <span class='op'>=</span> <span class='fu'>createDeepBackProjectionNetworkModel3D</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>, <span class='fl'>25</span>, <span class='fl'>25</span>, <span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span><span class='op'>(</span><span class='va'>model</span><span class='op'>)</span>; <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
+#&gt; Ncells 2475142 132.2    4428174 236.5         NA   4428174  236.5
+#&gt; Vcells 4394810  33.6   40151516 306.4      65536 150516454 1148.4</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -225,7 +229,7 @@ implementation:</p><pre>    \url{https://github.com/rajatkb/DBPN-Keras}
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

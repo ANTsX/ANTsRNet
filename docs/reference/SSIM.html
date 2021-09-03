@@ -117,7 +117,7 @@
     <p>Implementation of the SSI quantity for two images proposed in</p>
     </div>
 
-    <pre class="usage"><span class='fu'>SSIM</span>(<span class='no'>x</span>, <span class='no'>y</span>, <span class='kw'>K</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.01</span>, <span class='fl'>0.03</span>))</pre>
+    <pre class="usage"><span class='fu'>SSIM</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, K <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.01</span>, <span class='fl'>0.03</span><span class='op'>)</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -145,14 +145,19 @@ the formula in case of weak denominators.</p></td>
     <p>Z. Wang, A.C. Bovik, H.R. Sheikh, E.P. Simoncelli. "Image quality
 assessment: from error visibility to structural similarity". IEEE TIP.
 13 (4): 600–612.</p>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Avants BB</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>ANTsR</span> )
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span> <span class='va'>ANTsR</span> <span class='op'>)</span>
 
-<span class='no'>r16</span> <span class='kw'>&lt;-</span> <span class='fu'>antsImageRead</span>( <span class='fu'>getANTsRData</span>( <span class='st'>'r16'</span> ) )
-<span class='no'>r85</span> <span class='kw'>&lt;-</span> <span class='fu'>antsImageRead</span>( <span class='fu'>getANTsRData</span>( <span class='st'>'r85'</span> ) )
-<span class='no'>ssimValue</span> <span class='kw'>&lt;-</span> <span class='fu'>SSIM</span>( <span class='no'>r16</span>, <span class='no'>r85</span> )</div></pre>
+<span class='va'>r16</span> <span class='op'>&lt;-</span> <span class='fu'>antsImageRead</span><span class='op'>(</span> <span class='fu'>getANTsRData</span><span class='op'>(</span> <span class='st'>'r16'</span> <span class='op'>)</span> <span class='op'>)</span>
+<span class='va'>r85</span> <span class='op'>&lt;-</span> <span class='fu'>antsImageRead</span><span class='op'>(</span> <span class='fu'>getANTsRData</span><span class='op'>(</span> <span class='st'>'r85'</span> <span class='op'>)</span> <span class='op'>)</span>
+<span class='va'>ssimValue</span> <span class='op'>&lt;-</span> <span class='fu'>SSIM</span><span class='op'>(</span> <span class='va'>r16</span>, <span class='va'>r85</span> <span class='op'>)</span>
+
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -168,7 +173,7 @@ assessment: from error visibility to structural similarity". IEEE TIP.
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

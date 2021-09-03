@@ -121,23 +121,23 @@ training images.  The reference image domain defines the space in which this
 happens.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>randomImageTransformAugmentation</span>(
-  <span class='no'>imageDomain</span>,
-  <span class='no'>predictorImageList</span>,
-  <span class='no'>outcomeImageList</span>,
-  <span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>8</span>,
-  <span class='kw'>typeOfTransform</span> <span class='kw'>=</span> <span class='st'>"Affine"</span>,
-  <span class='kw'>interpolator</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"linear"</span>, <span class='st'>"nearestNeighbor"</span>),
-  <span class='kw'>sdAffine</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>nControlPoints</span> <span class='kw'>=</span> <span class='fl'>100</span>,
-  <span class='kw'>spatialSmoothing</span> <span class='kw'>=</span> <span class='fl'>3</span>,
-  <span class='kw'>composeToField</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>numberOfCompositions</span> <span class='kw'>=</span> <span class='fl'>4</span>,
-  <span class='no'>deformationBasis</span>,
-  <span class='no'>directoryName</span>,
-  <span class='no'>imageDomainY</span>,
-  <span class='kw'>normalization</span> <span class='kw'>=</span> <span class='st'>"none"</span>
-)</pre>
+    <pre class="usage"><span class='fu'>randomImageTransformAugmentation</span><span class='op'>(</span>
+  <span class='va'>imageDomain</span>,
+  <span class='va'>predictorImageList</span>,
+  <span class='va'>outcomeImageList</span>,
+  n <span class='op'>=</span> <span class='fl'>8</span>,
+  typeOfTransform <span class='op'>=</span> <span class='st'>"Affine"</span>,
+  interpolator <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"linear"</span>, <span class='st'>"nearestNeighbor"</span><span class='op'>)</span>,
+  sdAffine <span class='op'>=</span> <span class='fl'>1</span>,
+  nControlPoints <span class='op'>=</span> <span class='fl'>100</span>,
+  spatialSmoothing <span class='op'>=</span> <span class='fl'>3</span>,
+  composeToField <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  numberOfCompositions <span class='op'>=</span> <span class='fl'>4</span>,
+  <span class='va'>deformationBasis</span>,
+  <span class='va'>directoryName</span>,
+  <span class='va'>imageDomainY</span>,
+  normalization <span class='op'>=</span> <span class='st'>"none"</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -220,16 +220,21 @@ otherwise i.e. maps any transformation to a single deformation field.</p></td>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='randomImageTransformBatchGenerator.html'>randomImageTransformBatchGenerator</a></code></p></div>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Avants BB</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>ANTsR</span> )
-<span class='no'>i1</span> <span class='kw'>=</span> <span class='fu'>antsImageRead</span>( <span class='fu'>getANTsRData</span>( <span class='st'>"r16"</span> ) )
-<span class='no'>i2</span> <span class='kw'>=</span> <span class='fu'>antsImageRead</span>( <span class='fu'>getANTsRData</span>( <span class='st'>"r64"</span> ) )
-<span class='no'>s1</span> <span class='kw'>=</span> <span class='fu'>thresholdImage</span>( <span class='no'>i1</span>, <span class='st'>"Otsu"</span>, <span class='fl'>3</span> )
-<span class='no'>s2</span> <span class='kw'>=</span> <span class='fu'>thresholdImage</span>( <span class='no'>i2</span>, <span class='st'>"Otsu"</span>, <span class='fl'>3</span> )
-<span class='no'>rand</span> <span class='kw'>=</span> <span class='fu'>randomImageTransformAugmentation</span>( <span class='no'>i1</span>,
-  <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>( <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>i1</span>), <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>i2</span>) ),  <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>( <span class='no'>s1</span>, <span class='no'>s2</span> ) )</div></pre>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span> <span class='va'>ANTsR</span> <span class='op'>)</span>
+<span class='va'>i1</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/antsImageRead.html'>antsImageRead</a></span><span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/getANTsRData.html'>getANTsRData</a></span><span class='op'>(</span> <span class='st'>"r16"</span> <span class='op'>)</span> <span class='op'>)</span>
+<span class='va'>i2</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/antsImageRead.html'>antsImageRead</a></span><span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/getANTsRData.html'>getANTsRData</a></span><span class='op'>(</span> <span class='st'>"r64"</span> <span class='op'>)</span> <span class='op'>)</span>
+<span class='va'>s1</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/thresholdImage.html'>thresholdImage</a></span><span class='op'>(</span> <span class='va'>i1</span>, <span class='st'>"Otsu"</span>, <span class='fl'>3</span> <span class='op'>)</span>
+<span class='va'>s2</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/thresholdImage.html'>thresholdImage</a></span><span class='op'>(</span> <span class='va'>i2</span>, <span class='st'>"Otsu"</span>, <span class='fl'>3</span> <span class='op'>)</span>
+<span class='va'>rand</span> <span class='op'>=</span> <span class='fu'>randomImageTransformAugmentation</span><span class='op'>(</span> <span class='va'>i1</span>,
+  <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>i1</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>i2</span><span class='op'>)</span> <span class='op'>)</span>,  <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span> <span class='va'>s1</span>, <span class='va'>s2</span> <span class='op'>)</span> <span class='op'>)</span>
+
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -245,7 +250,7 @@ otherwise i.e. maps any transformation to a single deformation field.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

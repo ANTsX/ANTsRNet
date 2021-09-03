@@ -117,12 +117,12 @@
     <p>3-D implementation of the denoising autoencoder image super resolution architecture.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>createDenoisingAutoEncoderSuperResolutionModel3D</span>(
-  <span class='no'>inputImageSize</span>,
-  <span class='kw'>convolutionKernelSizes</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>3</span>, <span class='fl'>3</span>, <span class='fl'>3</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>5</span>, <span class='fl'>5</span>, <span class='fl'>5</span>)),
-  <span class='kw'>numberOfEncodingLayers</span> <span class='kw'>=</span> <span class='fl'>2</span>,
-  <span class='kw'>numberOfFilters</span> <span class='kw'>=</span> <span class='fl'>64</span>
-)</pre>
+    <pre class="usage"><span class='fu'>createDenoisingAutoEncoderSuperResolutionModel3D</span><span class='op'>(</span>
+  <span class='va'>inputImageSize</span>,
+  convolutionKernelSizes <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>, <span class='fl'>3</span>, <span class='fl'>3</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>5</span>, <span class='fl'>5</span>, <span class='fl'>5</span><span class='op'>)</span><span class='op'>)</span>,
+  numberOfEncodingLayers <span class='op'>=</span> <span class='fl'>2</span>,
+  numberOfFilters <span class='op'>=</span> <span class='fl'>64</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -154,16 +154,20 @@ convolution layer.</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>a keras model for image super resolution</p>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Tustison NJ</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>createDenoisingAutoEncoderSuperResolutionModel3D</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>28</span>, <span class='fl'>28</span>, <span class='fl'>28</span>, <span class='fl'>1</span> ))</div><div class='output co'>#&gt; Model
-#&gt; Model: "model_18"
+    <pre class="examples"><div class='input'><span class='fu'>createDenoisingAutoEncoderSuperResolutionModel3D</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='fl'>28</span>, <span class='fl'>28</span>, <span class='fl'>28</span>, <span class='fl'>1</span> <span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; Model
+#&gt; Model: "model_16"
 #&gt; ________________________________________________________________________________
 #&gt; Layer (type)              Output Shape      Param #  Connected to               
 #&gt; ================================================================================
-#&gt; input_15 (InputLayer)     [(None, 28, 28, 2 0                                   
+#&gt; input_13 (InputLayer)     [(None, 28, 28, 2 0                                   
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_40 (Conv3D)        (None, 28, 28, 28 1792     input_15[0][0]             
+#&gt; conv3d_40 (Conv3D)        (None, 28, 28, 28 1792     input_13[0][0]             
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_41 (Conv3D)        (None, 28, 28, 28 110656   conv3d_40[0][0]            
 #&gt; ________________________________________________________________________________
@@ -184,9 +188,10 @@ convolution layer.</p></td>
 #&gt; Non-trainable params: 0
 #&gt; ________________________________________________________________________________
 #&gt; 
-#&gt; </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
-#&gt; Ncells 2485446 132.8    4601961 245.8         NA   4601961 245.8
-#&gt; Vcells 4420275  33.8   32063753 244.7     102400 127497723 972.8</div></pre>
+#&gt; </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
+#&gt; Ncells 2475343 132.2    4428174 236.5         NA   4428174  236.5
+#&gt; Vcells 4395667  33.6   32121213 245.1      65536 150516454 1148.4</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -202,7 +207,7 @@ convolution layer.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

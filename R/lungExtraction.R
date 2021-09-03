@@ -19,9 +19,10 @@
 #' image <- antsImageRead( "lung.nii.gz" )
 #' output <- lungExtraction( image, modality = "proton" )
 #' }
+#' @import keras
 #' @export
 lungExtraction <- function( image,
-  modality = c( "proton", "ct", "ventilation" ),
+  modality = c( "proton", "protonLobes", "ct", "ventilation" ),
   antsxnetCacheDirectory = NULL, verbose = FALSE )
   {
 
@@ -42,11 +43,8 @@ lungExtraction <- function( image,
 
   if( modality == "proton" )
     {
-    if( verbose == TRUE )
-      {
-      cat( "Lung extraction:  retrieving model weights.\n" )
-      }
-    weightsFileName <- getPretrainedNetwork( "protonLungMri", antsxnetCacheDirectory = antsxnetCacheDirectory )
+    weightsFileName <- getPretrainedNetwork( "protonLungMri", 
+      antsxnetCacheDirectory = antsxnetCacheDirectory )
 
     classes <- c( "Background", "LeftLung", "RightLung" )
     numberOfClassificationLabels <- length( classes )
@@ -57,7 +55,7 @@ lungExtraction <- function( image,
       cat( "Lung extraction:  retrieving template.\n" )
       }
     reorientTemplateFileNamePath <- getANTsXNetData( "protonLungTemplate",
-      antsxnetCacheDirectory = antsxnetCacheDirectory)
+      antsxnetCacheDirectory = antsxnetCacheDirectory )
     reorientTemplate <- antsImageRead( reorientTemplateFileNamePath )
     resampledImageSize <- dim( reorientTemplate )
 
@@ -110,6 +108,88 @@ lungExtraction <- function( image,
 
     return( list( segmentationImage = segmentationImage,
                   probabilityImages = probabilityImages ) )
+
+    } else if( modality == "protonLobes" ) {
+
+    reorientTemplateFileNamePath <- getANTsXNetData( "protonLungTemplate",
+      antsxnetCacheDirectory = antsxnetCacheDirectory )
+    reorientTemplate <- antsImageRead( reorientTemplateFileNamePath )
+
+    resampledImageSize <- dim( reorientTemplate )
+
+    spatialPriorsFileNamePath <- getANTsXNetData( "protonLobePriors",
+        antsxnetCacheDirectory = antsxnetCacheDirectory )
+    spatialPriors <- antsImageRead( spatialPriorsFileNamePath )
+    priorsImageList <- splitNDImageToList( spatialPriors )
+
+    channelSize <- 1 + length( priorsImageList )
+    numberOfClassificationLabels <- 1 + length( priorsImageList )
+
+    unetModel <- createUnetModel3D( c( resampledImageSize, channelSize ),
+      numberOfOutputs = numberOfClassificationLabels,
+      numberOfLayers = 4, numberOfFiltersAtBaseLayer = 16, dropoutRate = 0.0,
+      convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
+      additionalOptions = c( "attentionGating" ) )
+    
+    penultimateLayer <- unetModel$layers[[length( unetModel$layers ) - 1]]$output
+
+    outputs2 <- penultimateLayer %>% layer_conv_3d( filters = 1, 
+      kernel_size = c( 1L, 1L, 1L ), activation = 'sigmoid',
+      kernel_regularizer = regularizer_l2( l = 0.0 ) )
+    unetModel = keras_model( inputs = unetModel$input, 
+      outputs = list( unetModel$output, outputs2 ) )  
+
+    weightsFileName <- getPretrainedNetwork( "protonLobes", 
+      antsxnetCacheDirectory = antsxnetCacheDirectory )
+    unetModel$load_weights( weightsFileName )
+
+    if( verbose == TRUE )
+      {
+      cat( "Lung extraction:  normalizing image to the template.\n" )
+      }
+    centerOfMassTemplate <- getCenterOfMass( reorientTemplate * 0 + 1 )
+    centerOfMassImage <- getCenterOfMass( image  * 0 + 1 )
+    xfrm <- createAntsrTransform( type = "Euler3DTransform",
+      center = centerOfMassTemplate,
+      translation = centerOfMassImage - centerOfMassTemplate )
+    warpedImage <- applyAntsrTransformToImage( xfrm, image, reorientTemplate )
+    warpedArray <- as.array( warpedImage )
+    warpedArray <- ( warpedArray - mean( warpedArray ) ) / sd( warpedArray )
+
+    batchX <- array( data = 0, dim = c( 1, resampledImageSize, channelSize ) )
+    batchX[1,,,,1] <- warpedArray
+    for( i in seq.int(length( priorsImageList ) ) )
+      {
+      batchX[1,,,,i+1] <- as.array( priorsImageList[[i]] )
+      }
+
+    predictedData <- unetModel %>% predict( batchX, verbose = verbose )
+    probabilityImagesArray <- decodeUnet( predictedData[[1]], reorientTemplate )
+
+    if( verbose == TRUE )
+      {
+      cat( "Lung extraction:  renormalize probability mask to native space.\n" )
+      }
+
+    probabilityImages <- list()
+    for( i in seq_len( numberOfClassificationLabels ) )
+      {
+      probabilityImageTmp <- probabilityImagesArray[[1]][[i]]
+      probabilityImages[[i]] <- applyAntsrTransformToImage( invertAntsrTransform( xfrm ),
+        probabilityImageTmp, image )
+      }
+
+    imageMatrix <- imageListToMatrix( probabilityImages, image * 0 + 1 )
+    segmentationMatrix <- matrix( apply( imageMatrix, 2, which.max ), nrow = 1 ) - 1
+    segmentationImage <- matrixToImages( segmentationMatrix, image * 0 + 1 )[[1]]
+
+    wholeLungMask <- decodeUnet( predictedData[[2]], reorientTemplate )[[1]][[1]]
+    wholeLungMask <- applyAntsrTransformToImage( invertAntsrTransform( xfrm ), 
+      wholeLungMask, image )
+
+    return( list( segmentationImage = segmentationImage,
+                  probabilityImages = probabilityImages,
+                  wholeLungMaskImage = wholeLungMask ) )
 
     } else if( modality == "ct" ) {
 

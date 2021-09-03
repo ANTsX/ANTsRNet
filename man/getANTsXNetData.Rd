@@ -8,7 +8,8 @@ getANTsXNetData(
   fileId = c("show", "biobank", "croppedMni152", "croppedMni152Priors",
     "mprage_hippmapp3r", "protonLungTemplate", "ctLungTemplate", "luna16LungPriors",
     "priorDktLabels", "priorDeepFlashLeftLabels", "priorDeepFlashRightLabels",
-    "S_template3", "adni", "ixi", "kirby", "mni152", "nki", "nki10", "oasis"),
+    "protonLobePriors", "S_template3", "adni", "ixi", "kirby", "mni152", "nki", "nki10",
+    "oasis"),
   targetFileName,
   antsxnetCacheDirectory = NULL
 )

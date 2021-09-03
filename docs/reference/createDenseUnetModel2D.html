@@ -119,18 +119,18 @@ image segmentation" />
 image segmentation</p>
     </div>
 
-    <pre class="usage"><span class='fu'>createDenseUnetModel2D</span>(
-  <span class='no'>inputImageSize</span>,
-  <span class='kw'>numberOfOutputs</span> <span class='kw'>=</span> <span class='fl'>1L</span>,
-  <span class='kw'>numberOfLayersPerDenseBlock</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>6</span>, <span class='fl'>12</span>, <span class='fl'>36</span>, <span class='fl'>24</span>),
-  <span class='kw'>growthRate</span> <span class='kw'>=</span> <span class='fl'>48</span>,
-  <span class='kw'>initialNumberOfFilters</span> <span class='kw'>=</span> <span class='fl'>96</span>,
-  <span class='kw'>reductionRate</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>depth</span> <span class='kw'>=</span> <span class='fl'>7</span>,
-  <span class='kw'>dropoutRate</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>weightDecay</span> <span class='kw'>=</span> <span class='fl'>0.0001</span>,
-  <span class='kw'>mode</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"classification"</span>, <span class='st'>"regression"</span>)
-)</pre>
+    <pre class="usage"><span class='fu'>createDenseUnetModel2D</span><span class='op'>(</span>
+  <span class='va'>inputImageSize</span>,
+  numberOfOutputs <span class='op'>=</span> <span class='fl'>1L</span>,
+  numberOfLayersPerDenseBlock <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>6</span>, <span class='fl'>12</span>, <span class='fl'>36</span>, <span class='fl'>24</span><span class='op'>)</span>,
+  growthRate <span class='op'>=</span> <span class='fl'>48</span>,
+  initialNumberOfFilters <span class='op'>=</span> <span class='fl'>96</span>,
+  reductionRate <span class='op'>=</span> <span class='fl'>0</span>,
+  depth <span class='op'>=</span> <span class='fl'>7</span>,
+  dropoutRate <span class='op'>=</span> <span class='fl'>0</span>,
+  weightDecay <span class='op'>=</span> <span class='fl'>0.0001</span>,
+  mode <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"classification"</span>, <span class='st'>"regression"</span><span class='op'>)</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -200,67 +200,71 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 <p>with the author's implementation available at:</p><pre>    https://github.com/xmengli999/H-DenseUNet
 </pre>
 
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Tustison NJ</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>ANTsR</span> )
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>ANTsRNet</span> )
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>keras</span> )
+    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span> <span class='va'>ANTsR</span> <span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span> <span class='va'><a href='https://github.com/ANTsX/ANTsRNet'>ANTsRNet</a></span> <span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span> <span class='va'><a href='https://keras.rstudio.com'>keras</a></span> <span class='op'>)</span>
 
-<span class='no'>imageIDs</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='st'>"r16"</span>, <span class='st'>"r27"</span>, <span class='st'>"r30"</span>, <span class='st'>"r62"</span>, <span class='st'>"r64"</span>, <span class='st'>"r85"</span> )
-<span class='no'>trainingBatchSize</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span>( <span class='no'>imageIDs</span> )
+<span class='va'>imageIDs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='st'>"r16"</span>, <span class='st'>"r27"</span>, <span class='st'>"r30"</span>, <span class='st'>"r62"</span>, <span class='st'>"r64"</span>, <span class='st'>"r85"</span> <span class='op'>)</span>
+<span class='va'>trainingBatchSize</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span> <span class='va'>imageIDs</span> <span class='op'>)</span>
 
 <span class='co'># Perform simple 3-tissue segmentation.</span>
 
-<span class='no'>segmentationLabels</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span> )
-<span class='no'>numberOfLabels</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span>( <span class='no'>segmentationLabels</span> )
-<span class='no'>initialization</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span>( <span class='st'>'KMeans['</span>, <span class='no'>numberOfLabels</span>, <span class='st'>']'</span> )
+<span class='va'>segmentationLabels</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span> <span class='op'>)</span>
+<span class='va'>numberOfLabels</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span> <span class='va'>segmentationLabels</span> <span class='op'>)</span>
+<span class='va'>initialization</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span> <span class='st'>'KMeans['</span>, <span class='va'>numberOfLabels</span>, <span class='st'>']'</span> <span class='op'>)</span>
 
-<span class='no'>domainImage</span> <span class='kw'>&lt;-</span> <span class='fu'>antsImageRead</span>( <span class='fu'>getANTsRData</span>( <span class='no'>imageIDs</span>[<span class='fl'>1</span>] ) )
+<span class='va'>domainImage</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/antsImageRead.html'>antsImageRead</a></span><span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/getANTsRData.html'>getANTsRData</a></span><span class='op'>(</span> <span class='va'>imageIDs</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span> <span class='op'>)</span> <span class='op'>)</span>
 
-<span class='no'>X_train</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/array.html'>array</a></span>( <span class='kw'>data</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>dim</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='no'>trainingBatchSize</span>, <span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span>( <span class='no'>domainImage</span> ), <span class='fl'>1</span> ) )
-<span class='no'>Y_train</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/array.html'>array</a></span>( <span class='kw'>data</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>dim</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='no'>trainingBatchSize</span>, <span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span>( <span class='no'>domainImage</span> ) ) )
+<span class='va'>X_train</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/array.html'>array</a></span><span class='op'>(</span> data <span class='op'>=</span> <span class='cn'>NA</span>, dim <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='va'>trainingBatchSize</span>, <span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span><span class='op'>(</span> <span class='va'>domainImage</span> <span class='op'>)</span>, <span class='fl'>1</span> <span class='op'>)</span> <span class='op'>)</span>
+<span class='va'>Y_train</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/array.html'>array</a></span><span class='op'>(</span> data <span class='op'>=</span> <span class='cn'>NA</span>, dim <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='va'>trainingBatchSize</span>, <span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span><span class='op'>(</span> <span class='va'>domainImage</span> <span class='op'>)</span> <span class='op'>)</span> <span class='op'>)</span>
 
-<span class='no'>images</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>()
-<span class='no'>segmentations</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>()
+<span class='va'>images</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>
+<span class='va'>segmentations</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>
 
-<span class='kw'>for</span>( <span class='no'>i</span> <span class='kw'>in</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq_len</a></span>( <span class='no'>trainingBatchSize</span> ) )
-  {
-  <span class='fu'><a href='https://rdrr.io/r/base/cat.html'>cat</a></span>( <span class='st'>"Processing image"</span>, <span class='no'>imageIDs</span>[<span class='no'>i</span>], <span class='st'>"\n"</span> )
-  <span class='no'>image</span> <span class='kw'>&lt;-</span> <span class='fu'>antsImageRead</span>( <span class='fu'>getANTsRData</span>( <span class='no'>imageIDs</span>[<span class='no'>i</span>] ) )
-  <span class='no'>mask</span> <span class='kw'>&lt;-</span> <span class='fu'>getMask</span>( <span class='no'>image</span> )
-  <span class='no'>segmentation</span> <span class='kw'>&lt;-</span> <span class='fu'>atropos</span>( <span class='no'>image</span>, <span class='no'>mask</span>, <span class='no'>initialization</span> )$<span class='no'>segmentation</span>
+<span class='kw'>for</span><span class='op'>(</span> <span class='va'>i</span> <span class='kw'>in</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq_len</a></span><span class='op'>(</span> <span class='va'>trainingBatchSize</span> <span class='op'>)</span> <span class='op'>)</span>
+  <span class='op'>{</span>
+  <span class='fu'><a href='https://rdrr.io/r/base/cat.html'>cat</a></span><span class='op'>(</span> <span class='st'>"Processing image"</span>, <span class='va'>imageIDs</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span>, <span class='st'>"\n"</span> <span class='op'>)</span>
+  <span class='va'>image</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/antsImageRead.html'>antsImageRead</a></span><span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/getANTsRData.html'>getANTsRData</a></span><span class='op'>(</span> <span class='va'>imageIDs</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span> <span class='op'>)</span> <span class='op'>)</span>
+  <span class='va'>mask</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/getMask.html'>getMask</a></span><span class='op'>(</span> <span class='va'>image</span> <span class='op'>)</span>
+  <span class='va'>segmentation</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/atropos.html'>atropos</a></span><span class='op'>(</span> <span class='va'>image</span>, <span class='va'>mask</span>, <span class='va'>initialization</span> <span class='op'>)</span><span class='op'>$</span><span class='va'>segmentation</span>
 
-  <span class='no'>X_train</span>[<span class='no'>i</span>,,, <span class='fl'>1</span>] <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/array.html'>as.array</a></span>( <span class='no'>image</span> )
-  <span class='no'>Y_train</span>[<span class='no'>i</span>,,] <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/array.html'>as.array</a></span>( <span class='no'>segmentation</span> )
-  }</div><div class='output co'>#&gt; Processing image r16 
+  <span class='va'>X_train</span><span class='op'>[</span><span class='va'>i</span>,,, <span class='fl'>1</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/as.array.html'>as.array</a></span><span class='op'>(</span> <span class='va'>image</span> <span class='op'>)</span>
+  <span class='va'>Y_train</span><span class='op'>[</span><span class='va'>i</span>,,<span class='op'>]</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/as.array.html'>as.array</a></span><span class='op'>(</span> <span class='va'>segmentation</span> <span class='op'>)</span>
+  <span class='op'>}</span>
+</div><div class='output co'>#&gt; Processing image r16 
 #&gt; Processing image r27 
 #&gt; Processing image r30 
 #&gt; Processing image r62 
 #&gt; Processing image r64 
-#&gt; Processing image r85 </div><div class='input'><span class='no'>Y_train</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='encodeUnet.html'>encodeUnet</a></span>( <span class='no'>Y_train</span>, <span class='no'>segmentationLabels</span> )
+#&gt; Processing image r85 </div><div class='input'><span class='va'>Y_train</span> <span class='op'>&lt;-</span> <span class='fu'><a href='encodeUnet.html'>encodeUnet</a></span><span class='op'>(</span> <span class='va'>Y_train</span>, <span class='va'>segmentationLabels</span> <span class='op'>)</span>
 
 <span class='co'># Perform a simple normalization</span>
 
-<span class='no'>X_train</span> <span class='kw'>&lt;-</span> ( <span class='no'>X_train</span> - <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span>( <span class='no'>X_train</span> ) ) / <span class='fu'><a href='https://rdrr.io/r/stats/sd.html'>sd</a></span>( <span class='no'>X_train</span> )
+<span class='va'>X_train</span> <span class='op'>&lt;-</span> <span class='op'>(</span> <span class='va'>X_train</span> <span class='op'>-</span> <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span> <span class='va'>X_train</span> <span class='op'>)</span> <span class='op'>)</span> <span class='op'>/</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/sd.html'>sd</a></span><span class='op'>(</span> <span class='va'>X_train</span> <span class='op'>)</span>
 
 <span class='co'># Create the model</span>
 
-<span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'>createDenseUnetModel2D</span>( <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span>( <span class='no'>domainImage</span> ), <span class='fl'>1L</span> ),
-  <span class='kw'>numberOfOutputs</span> <span class='kw'>=</span> <span class='no'>numberOfLabels</span> )
+<span class='va'>model</span> <span class='op'>&lt;-</span> <span class='fu'>createDenseUnetModel2D</span><span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span><span class='op'>(</span> <span class='va'>domainImage</span> <span class='op'>)</span>, <span class='fl'>1L</span> <span class='op'>)</span>,
+  numberOfOutputs <span class='op'>=</span> <span class='va'>numberOfLabels</span> <span class='op'>)</span>
 
-<span class='no'>metric_multilabel_dice_coefficient</span> <span class='kw'>&lt;-</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/keras/man/metric_binary_accuracy.html'>custom_metric</a></span>( <span class='st'>"multilabel_dice_coefficient"</span>,
-    <span class='no'>multilabel_dice_coefficient</span> )
+<span class='va'>metric_multilabel_dice_coefficient</span> <span class='op'>&lt;-</span>
+  <span class='fu'><a href='https://keras.rstudio.com/reference/metric_binary_accuracy.html'>custom_metric</a></span><span class='op'>(</span> <span class='st'>"multilabel_dice_coefficient"</span>,
+    <span class='va'>multilabel_dice_coefficient</span> <span class='op'>)</span>
 
-<span class='no'>loss_dice</span> <span class='kw'>&lt;-</span> <span class='kw'>function</span>( <span class='no'>y_true</span>, <span class='no'>y_pred</span> ) {
-  -<span class='fu'><a href='multilabel_dice_coefficient.html'>multilabel_dice_coefficient</a></span>(<span class='no'>y_true</span>, <span class='no'>y_pred</span>)
-}
-<span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span>(<span class='no'>loss_dice</span>, <span class='st'>"py_function_name"</span>) <span class='kw'>&lt;-</span> <span class='st'>"multilabel_dice_coefficient"</span>
+<span class='va'>loss_dice</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span> <span class='va'>y_true</span>, <span class='va'>y_pred</span> <span class='op'>)</span> <span class='op'>{</span>
+  <span class='op'>-</span><span class='fu'><a href='multilabel_dice_coefficient.html'>multilabel_dice_coefficient</a></span><span class='op'>(</span><span class='va'>y_true</span>, <span class='va'>y_pred</span><span class='op'>)</span>
+<span class='op'>}</span>
+<span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span><span class='op'>(</span><span class='va'>loss_dice</span>, <span class='st'>"py_function_name"</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='st'>"multilabel_dice_coefficient"</span>
 
-<span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/reexports.html'>compile</a></span>( <span class='kw'>loss</span> <span class='kw'>=</span> <span class='no'>loss_dice</span>,
-  <span class='kw'>optimizer</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/optimizer_adam.html'>optimizer_adam</a></span>( <span class='kw'>lr</span> <span class='kw'>=</span> <span class='fl'>0.0001</span> ),
-  <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='no'>metric_multilabel_dice_coefficient</span>,
-    <span class='no'>metric_categorical_crossentropy</span> ) )
+<span class='va'>model</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://generics.r-lib.org/reference/compile.html'>compile</a></span><span class='op'>(</span> loss <span class='op'>=</span> <span class='va'>loss_dice</span>,
+  optimizer <span class='op'>=</span> <span class='fu'><a href='https://keras.rstudio.com/reference/optimizer_adam.html'>optimizer_adam</a></span><span class='op'>(</span> lr <span class='op'>=</span> <span class='fl'>0.0001</span> <span class='op'>)</span>,
+  metrics <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='va'>metric_multilabel_dice_coefficient</span>,
+    <span class='va'>metric_categorical_crossentropy</span> <span class='op'>)</span> <span class='op'>)</span>
 
 <span class='co'># Comment out the rest due to travis build constraints</span>
 
@@ -281,9 +285,10 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 
 <span class='co'># save_model_hdf5( model, filepath = 'unetModel.h5' )</span>
 <span class='co'># save_model_weights_hdf5( unetModel, filepath = 'unetModelWeights.h5' ) )</span>
-<span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>model</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
-#&gt; Ncells 2511296 134.2    4601961 245.8         NA   4601961 245.8
-#&gt; Vcells 6023514  46.0   25870977 197.4     102400 127497723 972.8</div></pre>
+<span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span><span class='op'>(</span><span class='va'>model</span><span class='op'>)</span>; <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
+#&gt; Ncells 2503405 133.7    4428174 236.5         NA   4428174  236.5
+#&gt; Vcells 6002662  45.8   25854039 197.3      65536 150516454 1148.4</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -299,7 +304,7 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

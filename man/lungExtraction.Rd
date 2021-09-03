@@ -6,7 +6,7 @@
 \usage{
 lungExtraction(
   image,
-  modality = c("proton", "ct", "ventilation"),
+  modality = c("proton", "protonLobes", "ct", "ventilation"),
   antsxnetCacheDirectory = NULL,
   verbose = FALSE
 )

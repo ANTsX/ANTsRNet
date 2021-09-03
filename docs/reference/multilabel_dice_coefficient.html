@@ -121,12 +121,12 @@ of the segmentation batch.  The background (label 0) should
 be included but is not used in the calculation.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>multilabel_dice_coefficient</span>(
-  <span class='no'>y_true</span>,
-  <span class='no'>y_pred</span>,
-  <span class='kw'>dimensionality</span> <span class='kw'>=</span> <span class='fl'>3L</span>,
-  <span class='kw'>smoothingFactor</span> <span class='kw'>=</span> <span class='fl'>0</span>
-)</pre>
+    <pre class="usage"><span class='fu'>multilabel_dice_coefficient</span><span class='op'>(</span>
+  <span class='va'>y_true</span>,
+  <span class='va'>y_pred</span>,
+  dimensionality <span class='op'>=</span> <span class='fl'>3L</span>,
+  smoothingFactor <span class='op'>=</span> <span class='fl'>0</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -152,97 +152,103 @@ be included but is not used in the calculation.</p>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>Dice value (negative)</p>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Tustison NJ</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>ANTsR</span> )
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>ANTsRNet</span> )
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>keras</span> )
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span> <span class='va'>ANTsR</span> <span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span> <span class='va'><a href='https://github.com/ANTsX/ANTsRNet'>ANTsRNet</a></span> <span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span> <span class='va'><a href='https://keras.rstudio.com'>keras</a></span> <span class='op'>)</span>
 
-<span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='createUnetModel2D.html'>createUnetModel2D</a></span>( <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>64</span>, <span class='fl'>64</span>, <span class='fl'>1</span> ) )
+<span class='va'>model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='createUnetModel2D.html'>createUnetModel2D</a></span><span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='fl'>64</span>, <span class='fl'>64</span>, <span class='fl'>1</span> <span class='op'>)</span> <span class='op'>)</span>
 
-<span class='no'>dice_loss</span> <span class='kw'>&lt;-</span> <span class='fu'>multilabel_dice_coefficient</span>( <span class='kw'>smoothingFactor</span> <span class='kw'>=</span> <span class='fl'>0.1</span> )
+<span class='va'>dice_loss</span> <span class='op'>&lt;-</span> <span class='fu'>multilabel_dice_coefficient</span><span class='op'>(</span> smoothingFactor <span class='op'>=</span> <span class='fl'>0.1</span> <span class='op'>)</span>
 
-<span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/reexports.html'>compile</a></span>( <span class='kw'>loss</span> <span class='kw'>=</span> <span class='no'>dice_loss</span>,
-  <span class='kw'>optimizer</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/optimizer_adam.html'>optimizer_adam</a></span>( <span class='kw'>lr</span> <span class='kw'>=</span> <span class='fl'>0.0001</span> ) )</div><div class='output co'>#&gt; <span class='error'>Error in py_call_impl(callable, dots$args, dots$keywords): RuntimeError: in user code:</span>
+<span class='va'>model</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://generics.r-lib.org/reference/compile.html'>compile</a></span><span class='op'>(</span> loss <span class='op'>=</span> <span class='va'>dice_loss</span>,
+  optimizer <span class='op'>=</span> <span class='fu'><a href='https://keras.rstudio.com/reference/optimizer_adam.html'>optimizer_adam</a></span><span class='op'>(</span> lr <span class='op'>=</span> <span class='fl'>0.0001</span> <span class='op'>)</span> <span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in py_call_impl(callable, dots$args, dots$keywords): RuntimeError: in user code:</span>
 #&gt; <span class='error'></span>
 #&gt; <span class='error'>    /Library/Frameworks/R.framework/Versions/4.0/Resources/library/reticulate/python/rpytools/call.py:21 python_function  *</span>
 #&gt; <span class='error'>        raise RuntimeError(res[kErrorKey])</span>
 #&gt; <span class='error'></span>
-#&gt; <span class='error'>    RuntimeError: Evaluation error: ValueError: Dimension must be 4 but is 5 for '{{node loss_2/conv2d_957_loss/transpose}} = Transpose[T=DT_FLOAT, Tperm=DT_INT32](conv2d_957_target, loss_2/conv2d_957_loss/transpose/perm)' with input shapes: [?,?,?,?], [5].</span>
+#&gt; <span class='error'>    RuntimeError: Evaluation error: ValueError: Dimension must be 4 but is 5 for '{{node loss_2/conv2d_954_loss/transpose}} = Transpose[T=DT_FLOAT, Tperm=DT_INT32](conv2d_954_target, loss_2/conv2d_954_loss/transpose/perm)' with input shapes: [?,?,?,?], [5].</span>
 #&gt; <span class='error'>    </span>
-#&gt; <span class='error'>    Detailed traceback: </span>
-#&gt; <span class='error'>      File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/util/dispatch.py", line 201, in wrapper</span>
+#&gt; <span class='error'>    Detailed traceback:</span>
+#&gt; <span class='error'>      File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/util/dispatch.py", line 201, in wrapper</span>
 #&gt; <span class='error'>        return target(*args, **kwargs)</span>
-#&gt; <span class='error'>      File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/backend.py", line 3053, in permute_dimensions</span>
+#&gt; <span class='error'>      File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/keras/backend.py", line 3053, in permute_dimensions</span>
 #&gt; <span class='error'>        return array_ops.transpose(x, perm=pattern)</span>
-#&gt; <span class='error'>      File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/util/dispatch.py", line 201, in wrapper</span>
+#&gt; <span class='error'>      File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/util/dispatch.py", line 201, in wrapper</span>
 #&gt; <span class='error'>        return target(*args, **kwargs)</span>
-#&gt; <span class='error'>      File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/ops/array_ops.py", line 2216, in transpose</span>
+#&gt; <span class='error'>      File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/ops/array_ops.py", line 2216, in transpose</span>
 #&gt; <span class='error'>        return transpose_fn(a, perm, name=name)</span>
-#&gt; <span class='error'>      File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/ops/gen_array_ops.py", line 11595, in transpose</span>
+#&gt; <span class='error'>      File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/ops/gen_array_ops.py", line 11595, in transpose</span>
 #&gt; <span class='error'>        "Transpose", x=x, perm=perm, name=name)</span>
-#&gt; <span class='error'>      File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/framework/op_def_library.py", line 750, in _apply_op_helper</span>
+#&gt; <span class='error'>      File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/framework/op_def_library.py", line 750, in _apply_op_helper</span>
 #&gt; <span class='error'>        attrs=attr_protos, op_def=op_def)</span>
-#&gt; <span class='error'>      File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/framework/ops.py", line 3536, in _create_op_internal</span>
+#&gt; <span class='error'>      File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/framework/ops.py", line 3536, in _create_op_internal</span>
 #&gt; <span class='error'>        op_def=op_def)</span>
-#&gt; <span class='error'>      File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/framework/ops.py", line 2016, in __init__</span>
+#&gt; <span class='error'>      File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/framework/ops.py", line 2016, in __init__</span>
 #&gt; <span class='error'>        control_input_ops, op_def)</span>
-#&gt; <span class='error'>      File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/framework/ops.py", line 1856, in _create_c_op</span>
+#&gt; <span class='error'>      File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/framework/ops.py", line 1856, in _create_c_op</span>
 #&gt; <span class='error'>        raise ValueError(str(e))</span>
 #&gt; <span class='error'>    .</span>
 #&gt; <span class='error'></span>
 #&gt; <span class='error'></span>
-#&gt; <span class='error'>Detailed traceback: </span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/training/tracking/base.py", line 517, in _method_wrapper</span>
+#&gt; <span class='error'>Detailed traceback:</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/training/tracking/base.py", line 517, in _method_wrapper</span>
 #&gt; <span class='error'>    result = method(self, *args, **kwargs)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/engine/training_v1.py", line 457, in compile</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/keras/engine/training_v1.py", line 457, in compile</span>
 #&gt; <span class='error'>    self._compile_weights_loss_and_weighted_metrics()</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/training/tracking/base.py", line 517, in _method_wrapper</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/training/tracking/base.py", line 517, in _method_wrapper</span>
 #&gt; <span class='error'>    result = method(self, *args, **kwargs)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/engine/training_v1.py", line 1543, in _compile_weights_loss_and_weighted_metrics</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/keras/engine/training_v1.py", line 1543, in _compile_weights_loss_and_weighted_metrics</span>
 #&gt; <span class='error'>    self.total_loss = self._prepare_total_loss(masks)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/engine/training_v1.py", line 1603, in _prepare_total_loss</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/keras/engine/training_v1.py", line 1603, in _prepare_total_loss</span>
 #&gt; <span class='error'>    per_sample_losses = loss_fn.call(y_true, y_pred)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/losses.py", line 256, in call</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/keras/losses.py", line 256, in call</span>
 #&gt; <span class='error'>    return ag_fn(y_true, y_pred, **self._fn_kwargs)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/autograph/impl/api.py", line 670, in wrapper</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/autograph/impl/api.py", line 670, in wrapper</span>
 #&gt; <span class='error'>    raise e.ag_error_metadata.to_exception(e)</span></div><div class='input'>
 <span class='co'>########################################</span>
 <span class='co'>#</span>
 <span class='co'># Run in isolation</span>
 <span class='co'>#</span>
 
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>ANTsR</span> )
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span> <span class='va'>ANTsR</span> <span class='op'>)</span>
 
-<span class='no'>r16</span> <span class='kw'>&lt;-</span> <span class='fu'>antsImageRead</span>( <span class='fu'>getANTsRData</span>( <span class='st'>"r16"</span> ) )
-<span class='no'>r16seg</span> <span class='kw'>&lt;-</span> <span class='fu'>kmeansSegmentation</span>( <span class='no'>r16</span>, <span class='fl'>3</span> )$<span class='no'>segmentation</span>
-<span class='no'>r16array</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/array.html'>array</a></span>( <span class='kw'>data</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/array.html'>as.array</a></span>( <span class='no'>r16seg</span> ), <span class='kw'>dim</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>1</span>, <span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span>( <span class='no'>r16seg</span> ) ) )
-<span class='no'>r16tensor</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>tensorflow</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/pkg/tensorflow/man/tf.html'>tf</a></span>$<span class='fu'>convert_to_tensor</span>( <span class='fu'><a href='encodeUnet.html'>encodeUnet</a></span>( <span class='no'>r16array</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span> ) ) )
+<span class='va'>r16</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/antsImageRead.html'>antsImageRead</a></span><span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/getANTsRData.html'>getANTsRData</a></span><span class='op'>(</span> <span class='st'>"r16"</span> <span class='op'>)</span> <span class='op'>)</span>
+<span class='va'>r16seg</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/kmeansSegmentation.html'>kmeansSegmentation</a></span><span class='op'>(</span> <span class='va'>r16</span>, <span class='fl'>3</span> <span class='op'>)</span><span class='op'>$</span><span class='va'>segmentation</span>
+<span class='va'>r16array</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/array.html'>array</a></span><span class='op'>(</span> data <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/as.array.html'>as.array</a></span><span class='op'>(</span> <span class='va'>r16seg</span> <span class='op'>)</span>, dim <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='fl'>1</span>, <span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span><span class='op'>(</span> <span class='va'>r16seg</span> <span class='op'>)</span> <span class='op'>)</span> <span class='op'>)</span>
+<span class='va'>r16tensor</span> <span class='op'>&lt;-</span> <span class='fu'>tensorflow</span><span class='fu'>::</span><span class='va'><a href='https://rdrr.io/pkg/tensorflow/man/tf.html'>tf</a></span><span class='op'>$</span><span class='fu'>convert_to_tensor</span><span class='op'>(</span> <span class='fu'><a href='encodeUnet.html'>encodeUnet</a></span><span class='op'>(</span> <span class='va'>r16array</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span> <span class='op'>)</span> <span class='op'>)</span> <span class='op'>)</span>
 
-<span class='no'>r64</span> <span class='kw'>&lt;-</span> <span class='fu'>antsImageRead</span>( <span class='fu'>getANTsRData</span>( <span class='st'>"r64"</span> ) )
-<span class='no'>r64seg</span> <span class='kw'>&lt;-</span> <span class='fu'>kmeansSegmentation</span>( <span class='no'>r64</span>, <span class='fl'>3</span> )$<span class='no'>segmentation</span>
-<span class='no'>r64array</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/array.html'>array</a></span>( <span class='kw'>data</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/array.html'>as.array</a></span>( <span class='no'>r64seg</span> ), <span class='kw'>dim</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>1</span>, <span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span>( <span class='no'>r64seg</span> ) ) )
-<span class='no'>r64tensor</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>tensorflow</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/pkg/tensorflow/man/tf.html'>tf</a></span>$<span class='fu'>convert_to_tensor</span>( <span class='fu'><a href='encodeUnet.html'>encodeUnet</a></span>( <span class='no'>r64array</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span> ) ) )
+<span class='va'>r64</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/antsImageRead.html'>antsImageRead</a></span><span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/getANTsRData.html'>getANTsRData</a></span><span class='op'>(</span> <span class='st'>"r64"</span> <span class='op'>)</span> <span class='op'>)</span>
+<span class='va'>r64seg</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/kmeansSegmentation.html'>kmeansSegmentation</a></span><span class='op'>(</span> <span class='va'>r64</span>, <span class='fl'>3</span> <span class='op'>)</span><span class='op'>$</span><span class='va'>segmentation</span>
+<span class='va'>r64array</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/array.html'>array</a></span><span class='op'>(</span> data <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/as.array.html'>as.array</a></span><span class='op'>(</span> <span class='va'>r64seg</span> <span class='op'>)</span>, dim <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='fl'>1</span>, <span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span><span class='op'>(</span> <span class='va'>r64seg</span> <span class='op'>)</span> <span class='op'>)</span> <span class='op'>)</span>
+<span class='va'>r64tensor</span> <span class='op'>&lt;-</span> <span class='fu'>tensorflow</span><span class='fu'>::</span><span class='va'><a href='https://rdrr.io/pkg/tensorflow/man/tf.html'>tf</a></span><span class='op'>$</span><span class='fu'>convert_to_tensor</span><span class='op'>(</span> <span class='fu'><a href='encodeUnet.html'>encodeUnet</a></span><span class='op'>(</span> <span class='va'>r64array</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span> <span class='op'>)</span> <span class='op'>)</span> <span class='op'>)</span>
 
-<span class='no'>dice_loss</span> <span class='kw'>&lt;-</span> <span class='fu'>multilabel_dice_coefficient</span>( <span class='no'>r16tensor</span>, <span class='no'>r64tensor</span>, <span class='kw'>dimensionality</span> <span class='kw'>=</span> <span class='fl'>2L</span> )
-<span class='no'>loss_value</span> <span class='kw'>&lt;-</span> <span class='fu'>dice_loss</span>( <span class='no'>r16tensor</span>, <span class='no'>r64tensor</span> )$<span class='fu'>numpy</span>()</div><div class='output co'>#&gt; <span class='error'>Error in py_call_impl(callable, dots$args, dots$keywords): TypeError: Input 'y' of 'Mul' Op has type float64 that does not match type float32 of argument 'x'.</span>
+<span class='va'>dice_loss</span> <span class='op'>&lt;-</span> <span class='fu'>multilabel_dice_coefficient</span><span class='op'>(</span> <span class='va'>r16tensor</span>, <span class='va'>r64tensor</span>, dimensionality <span class='op'>=</span> <span class='fl'>2L</span> <span class='op'>)</span>
+<span class='va'>loss_value</span> <span class='op'>&lt;-</span> <span class='fu'>dice_loss</span><span class='op'>(</span> <span class='va'>r16tensor</span>, <span class='va'>r64tensor</span> <span class='op'>)</span><span class='op'>$</span><span class='fu'>numpy</span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in py_call_impl(callable, dots$args, dots$keywords): TypeError: Input 'y' of 'Mul' Op has type float64 that does not match type float32 of argument 'x'.</span>
 #&gt; <span class='error'></span>
-#&gt; <span class='error'>Detailed traceback: </span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/util/dispatch.py", line 201, in wrapper</span>
+#&gt; <span class='error'>Detailed traceback:</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/util/dispatch.py", line 201, in wrapper</span>
 #&gt; <span class='error'>    return target(*args, **kwargs)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/ops/math_ops.py", line 518, in multiply</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/ops/math_ops.py", line 518, in multiply</span>
 #&gt; <span class='error'>    return gen_math_ops.mul(x, y, name)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/ops/gen_math_ops.py", line 6078, in mul</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/ops/gen_math_ops.py", line 6078, in mul</span>
 #&gt; <span class='error'>    "Mul", x=x, y=y, name=name)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/framework/op_def_library.py", line 558, in _apply_op_helper</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/framework/op_def_library.py", line 558, in _apply_op_helper</span>
 #&gt; <span class='error'>    inferred_from[input_arg.type_attr]))</span></div><div class='input'>
 <span class='co'># Compare with</span>
 <span class='co'># overlap_value &lt;- labelOverlapMeasures( r16seg, r64seg )$MeanOverlap[1]</span>
 
-<span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>model</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
-#&gt; Ncells 2569778 137.3    4601961 245.8         NA   4601961 245.8
-#&gt; Vcells 7090659  54.1   28548418 217.9     102400 127497723 972.8</div></pre>
+<span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span><span class='op'>(</span><span class='va'>model</span><span class='op'>)</span>; <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
+#&gt; Ncells 2560056 136.8    4428174 236.5         NA   4428174  236.5
+#&gt; Vcells 7066123  54.0   28524460 217.7      65536 150516454 1148.4</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -258,7 +264,7 @@ be included but is not used in the calculation.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

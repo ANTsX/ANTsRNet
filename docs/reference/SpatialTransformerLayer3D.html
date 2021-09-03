@@ -126,7 +126,7 @@
 
     
 
-<dl'>
+<dl>
 <dt>inputs</dt><dd><p>list of size 2 where the first element are the images. The second
 element are the weights.</p></dd>
 <dt>resampledSize</dt><dd><p>size of the resampled output images.</p></dd>
@@ -140,10 +140,14 @@ element are the weights.</p></dd>
 <p><code>$initialize</code> instantiates a new class.</p>
 <p><code>$call</code> main body.</p>
 <p><code>$compute_output_shape</code> computes the output shape.</p>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Tustison NJ</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>model</span> <span class='kw'>=</span> <span class='no'>SpatialTransformerLayer3D</span>$<span class='fu'>new</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>30L</span>, <span class='fl'>30L</span>, <span class='fl'>30L</span>))
-<span class='no'>model</span>$<span class='fu'>compute_output_shape</span>(<span class='kw'>input_shape</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>25</span>, <span class='fl'>25</span>, <span class='fl'>25</span>))</div><div class='output co'>#&gt; [[1]]
+    <pre class="examples"><div class='input'><span class='va'>model</span> <span class='op'>=</span> <span class='va'>SpatialTransformerLayer3D</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>30L</span>, <span class='fl'>30L</span>, <span class='fl'>30L</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>model</span><span class='op'>$</span><span class='fu'>compute_output_shape</span><span class='op'>(</span>input_shape <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>, <span class='fl'>25</span>, <span class='fl'>25</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [[1]]
 #&gt; NULL
 #&gt; 
 #&gt; [[2]]
@@ -175,7 +179,7 @@ element are the weights.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

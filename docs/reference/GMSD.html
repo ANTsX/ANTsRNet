@@ -117,7 +117,7 @@
     <p>A fast and simple metric that correlates to perceptual quality</p>
     </div>
 
-    <pre class="usage"><span class='fu'>GMSD</span>(<span class='no'>x</span>, <span class='no'>y</span>)</pre>
+    <pre class="usage"><span class='fu'>GMSD</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -135,18 +135,24 @@
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>scalar</p>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Avants BB</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>ANTsR</span> )</div><div class='output co'>#&gt; <span class='message'>Loading required package: ANTsRCore</span></div><div class='output co'>#&gt; <span class='message'></span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span> <span class='va'>ANTsR</span> <span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Loading required package: ANTsRCore</span></div><div class='output co'>#&gt; <span class='message'></span>
 #&gt; <span class='message'>Attaching package: ‘ANTsRCore’</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:stats’:</span>
 #&gt; <span class='message'></span>
 #&gt; <span class='message'>    sd, var</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:base’:</span>
 #&gt; <span class='message'></span>
 #&gt; <span class='message'>    all, any, apply, max, min, prod, range, sum</span></div><div class='input'>
-<span class='no'>r16</span> <span class='kw'>&lt;-</span> <span class='fu'>antsImageRead</span>( <span class='fu'>getANTsRData</span>( <span class='st'>'r16'</span> ) )
-<span class='no'>r85</span> <span class='kw'>&lt;-</span> <span class='fu'>antsImageRead</span>( <span class='fu'>getANTsRData</span>( <span class='st'>'r85'</span> ) )
-<span class='no'>value</span> <span class='kw'>&lt;-</span> <span class='fu'>GMSD</span>( <span class='no'>r16</span>, <span class='no'>r85</span> )</div></pre>
+<span class='va'>r16</span> <span class='op'>&lt;-</span> <span class='fu'>antsImageRead</span><span class='op'>(</span> <span class='fu'>getANTsRData</span><span class='op'>(</span> <span class='st'>'r16'</span> <span class='op'>)</span> <span class='op'>)</span>
+<span class='va'>r85</span> <span class='op'>&lt;-</span> <span class='fu'>antsImageRead</span><span class='op'>(</span> <span class='fu'>getANTsRData</span><span class='op'>(</span> <span class='st'>'r85'</span> <span class='op'>)</span> <span class='op'>)</span>
+<span class='va'>value</span> <span class='op'>&lt;-</span> <span class='fu'>GMSD</span><span class='op'>(</span> <span class='va'>r16</span>, <span class='va'>r85</span> <span class='op'>)</span>
+
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -162,7 +168,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

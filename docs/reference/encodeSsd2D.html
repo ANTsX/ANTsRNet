@@ -135,14 +135,14 @@ However, an exception to this are the anchor boxes whose overlap measure
 is higher that the specified negative threshold.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>encodeSsd2D</span>(
-  <span class='no'>groundTruthLabels</span>,
-  <span class='no'>anchorBoxes</span>,
-  <span class='no'>imageSize</span>,
-  <span class='kw'>variances</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>1</span>, <span class='fl'>4</span>),
-  <span class='kw'>foregroundThreshold</span> <span class='kw'>=</span> <span class='fl'>0.5</span>,
-  <span class='kw'>backgroundThreshold</span> <span class='kw'>=</span> <span class='fl'>0.2</span>
-)</pre>
+    <pre class="usage"><span class='fu'>encodeSsd2D</span><span class='op'>(</span>
+  <span class='va'>groundTruthLabels</span>,
+  <span class='va'>anchorBoxes</span>,
+  <span class='va'>imageSize</span>,
+  variances <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>4</span><span class='op'>)</span>,
+  foregroundThreshold <span class='op'>=</span> <span class='fl'>0.5</span>,
+  backgroundThreshold <span class='op'>=</span> <span class='fl'>0.2</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -207,6 +207,9 @@ python and R implementations:</p><pre>    \url{https://github.com/pierluigiferra
     \url{https://github.com/gsimchoni/ssdkeras}
 </pre>
 
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Tustison NJ</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -223,7 +226,7 @@ python and R implementations:</p><pre>    \url{https://github.com/pierluigiferra
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

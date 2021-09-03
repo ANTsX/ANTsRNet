@@ -117,12 +117,12 @@
     <p>Wraps the AttentionLayer2D taken from the following python implementation</p>
     </div>
 
-    <pre class="usage"><span class='fu'>layer_attention_2d</span>(
-  <span class='no'>object</span>,
-  <span class='no'>numberOfChannels</span>,
-  <span class='kw'>doGoogleBrainVersion</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>trainable</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
-)</pre>
+    <pre class="usage"><span class='fu'>layer_attention_2d</span><span class='op'>(</span>
+  <span class='va'>object</span>,
+  <span class='va'>numberOfChannels</span>,
+  doGoogleBrainVersion <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  trainable <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -130,7 +130,7 @@
     <tr>
       <th>object</th>
       <td><p>Object to compose layer with. This is either a
-<a href='https://rdrr.io/pkg/keras/man/keras_model_sequential.html'>keras::keras_model_sequential</a> to add the layer to
+<a href='https://keras.rstudio.com/reference/keras_model_sequential.html'>keras::keras_model_sequential</a> to add the layer to
 or another Layer which this layer will call.</p></td>
     </tr>
     <tr>
@@ -159,19 +159,20 @@ or another Layer which this layer will call.</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>keras</span> )
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>ANTsRNet</span> )
+<span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span> <span class='va'><a href='https://keras.rstudio.com'>keras</a></span> <span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span> <span class='va'><a href='https://github.com/ANTsX/ANTsRNet'>ANTsRNet</a></span> <span class='op'>)</span>
 
-<span class='no'>inputShape</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>100</span>, <span class='fl'>100</span>, <span class='fl'>3</span> )
-<span class='no'>input</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/layer_input.html'>layer_input</a></span>( <span class='kw'>shape</span> <span class='kw'>=</span> <span class='no'>inputShape</span> )
+<span class='va'>inputShape</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='fl'>100</span>, <span class='fl'>100</span>, <span class='fl'>3</span> <span class='op'>)</span>
+<span class='va'>input</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://keras.rstudio.com/reference/layer_input.html'>layer_input</a></span><span class='op'>(</span> shape <span class='op'>=</span> <span class='va'>inputShape</span> <span class='op'>)</span>
 
-<span class='no'>numberOfFilters</span> <span class='kw'>&lt;-</span> <span class='fl'>64</span>
-<span class='no'>outputs</span> <span class='kw'>&lt;-</span> <span class='no'>input</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/layer_conv_2d.html'>layer_conv_2d</a></span>( <span class='kw'>filters</span> <span class='kw'>=</span> <span class='no'>numberOfFilters</span>, <span class='kw'>kernel_size</span> <span class='kw'>=</span> <span class='fl'>2</span> )
-<span class='no'>outputs</span> <span class='kw'>&lt;-</span> <span class='no'>outputs</span> <span class='kw'>%&gt;%</span> <span class='fu'>layer_attention_2d</span>( <span class='no'>numberOfFilters</span> )
+<span class='va'>numberOfFilters</span> <span class='op'>&lt;-</span> <span class='fl'>64</span>
+<span class='va'>outputs</span> <span class='op'>&lt;-</span> <span class='va'>input</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://keras.rstudio.com/reference/layer_conv_2d.html'>layer_conv_2d</a></span><span class='op'>(</span> filters <span class='op'>=</span> <span class='va'>numberOfFilters</span>, kernel_size <span class='op'>=</span> <span class='fl'>2</span> <span class='op'>)</span>
+<span class='va'>outputs</span> <span class='op'>&lt;-</span> <span class='va'>outputs</span> <span class='op'>%&gt;%</span> <span class='fu'>layer_attention_2d</span><span class='op'>(</span> <span class='va'>numberOfFilters</span> <span class='op'>)</span>
 
-<span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/keras_model.html'>keras_model</a></span>( <span class='kw'>inputs</span> <span class='kw'>=</span> <span class='no'>input</span>, <span class='kw'>outputs</span> <span class='kw'>=</span> <span class='no'>outputs</span> )
-}</div></pre>
+<span class='va'>model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://keras.rstudio.com/reference/keras_model.html'>keras_model</a></span><span class='op'>(</span> inputs <span class='op'>=</span> <span class='va'>input</span>, outputs <span class='op'>=</span> <span class='va'>outputs</span> <span class='op'>)</span>
+<span class='op'>}</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -187,7 +188,7 @@ or another Layer which this layer will call.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

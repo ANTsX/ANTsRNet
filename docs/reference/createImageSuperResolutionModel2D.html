@@ -119,11 +119,11 @@ based on the paper available here:" />
 based on the paper available here:</p>
     </div>
 
-    <pre class="usage"><span class='fu'>createImageSuperResolutionModel2D</span>(
-  <span class='no'>inputImageSize</span>,
-  <span class='kw'>convolutionKernelSizes</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>9</span>, <span class='fl'>9</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>1</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>5</span>, <span class='fl'>5</span>)),
-  <span class='kw'>numberOfFilters</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>64</span>, <span class='fl'>32</span>)
-)</pre>
+    <pre class="usage"><span class='fu'>createImageSuperResolutionModel2D</span><span class='op'>(</span>
+  <span class='va'>inputImageSize</span>,
+  convolutionKernelSizes <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>9</span>, <span class='fl'>9</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>5</span>, <span class='fl'>5</span><span class='op'>)</span><span class='op'>)</span>,
+  numberOfFilters <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>64</span>, <span class='fl'>32</span><span class='op'>)</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -163,29 +163,34 @@ paper.</p></td>
 implementation:</p><pre>    \url{https://github.com/titu1994/Image-Super-Resolution}
 </pre>
 
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Tustison NJ</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>createImageSuperResolutionModel2D</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>100</span>, <span class='fl'>100</span>, <span class='fl'>1</span> ))</div><div class='output co'>#&gt; Model
-#&gt; Model: "model_30"
+    <pre class="examples"><div class='input'><span class='fu'>createImageSuperResolutionModel2D</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='fl'>100</span>, <span class='fl'>100</span>, <span class='fl'>1</span> <span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; Model
+#&gt; Model: "model_28"
 #&gt; ________________________________________________________________________________
 #&gt; Layer (type)                        Output Shape                    Param #     
 #&gt; ================================================================================
-#&gt; input_27 (InputLayer)               [(None, 100, 100, 1)]           0           
+#&gt; input_25 (InputLayer)               [(None, 100, 100, 1)]           0           
 #&gt; ________________________________________________________________________________
-#&gt; conv2d_763 (Conv2D)                 (None, 100, 100, 64)            5248        
+#&gt; conv2d_760 (Conv2D)                 (None, 100, 100, 64)            5248        
 #&gt; ________________________________________________________________________________
-#&gt; conv2d_764 (Conv2D)                 (None, 100, 100, 32)            2080        
+#&gt; conv2d_761 (Conv2D)                 (None, 100, 100, 32)            2080        
 #&gt; ________________________________________________________________________________
-#&gt; conv2d_765 (Conv2D)                 (None, 100, 100, 1)             801         
+#&gt; conv2d_762 (Conv2D)                 (None, 100, 100, 1)             801         
 #&gt; ================================================================================
 #&gt; Total params: 8,129
 #&gt; Trainable params: 8,129
 #&gt; Non-trainable params: 0
 #&gt; ________________________________________________________________________________
 #&gt; 
-#&gt; </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
-#&gt; Ncells 2524371 134.9    4601961 245.8         NA   4601961 245.8
-#&gt; Vcells 4465705  34.1   41228841 314.6     102400 127497723 972.8</div></pre>
+#&gt; </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
+#&gt; Ncells 2514093 134.3    4428174 236.5         NA   4428174  236.5
+#&gt; Vcells 4440879  33.9   41198368 314.4      65536 150516454 1148.4</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -201,7 +206,7 @@ implementation:</p><pre>    \url{https://github.com/titu1994/Image-Super-Resolut
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

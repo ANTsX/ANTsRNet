@@ -121,23 +121,23 @@ segmentation and regression.  More information is provided at the authors'
 website:</p>
     </div>
 
-    <pre class="usage"><span class='fu'>createUnetModel3D</span>(
-  <span class='no'>inputImageSize</span>,
-  <span class='kw'>numberOfOutputs</span> <span class='kw'>=</span> <span class='fl'>2</span>,
-  <span class='kw'>scalarOutputSize</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>scalarOutputActivation</span> <span class='kw'>=</span> <span class='st'>"relu"</span>,
-  <span class='kw'>numberOfLayers</span> <span class='kw'>=</span> <span class='fl'>4</span>,
-  <span class='kw'>numberOfFiltersAtBaseLayer</span> <span class='kw'>=</span> <span class='fl'>32</span>,
-  <span class='kw'>numberOfFilters</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>convolutionKernelSize</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>3</span>, <span class='fl'>3</span>, <span class='fl'>3</span>),
-  <span class='kw'>deconvolutionKernelSize</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>2</span>, <span class='fl'>2</span>, <span class='fl'>2</span>),
-  <span class='kw'>poolSize</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>2</span>, <span class='fl'>2</span>, <span class='fl'>2</span>),
-  <span class='kw'>strides</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>2</span>, <span class='fl'>2</span>, <span class='fl'>2</span>),
-  <span class='kw'>dropoutRate</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>weightDecay</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>mode</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"classification"</span>, <span class='st'>"regression"</span>, <span class='st'>"sigmoid"</span>),
-  <span class='kw'>additionalOptions</span> <span class='kw'>=</span> <span class='fl'>NA</span>
-)</pre>
+    <pre class="usage"><span class='fu'>createUnetModel3D</span><span class='op'>(</span>
+  <span class='va'>inputImageSize</span>,
+  numberOfOutputs <span class='op'>=</span> <span class='fl'>2</span>,
+  scalarOutputSize <span class='op'>=</span> <span class='fl'>0</span>,
+  scalarOutputActivation <span class='op'>=</span> <span class='st'>"relu"</span>,
+  numberOfLayers <span class='op'>=</span> <span class='fl'>4</span>,
+  numberOfFiltersAtBaseLayer <span class='op'>=</span> <span class='fl'>32</span>,
+  numberOfFilters <span class='op'>=</span> <span class='cn'>NULL</span>,
+  convolutionKernelSize <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>, <span class='fl'>3</span>, <span class='fl'>3</span><span class='op'>)</span>,
+  deconvolutionKernelSize <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>, <span class='fl'>2</span>, <span class='fl'>2</span><span class='op'>)</span>,
+  poolSize <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>, <span class='fl'>2</span>, <span class='fl'>2</span><span class='op'>)</span>,
+  strides <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>, <span class='fl'>2</span>, <span class='fl'>2</span><span class='op'>)</span>,
+  dropoutRate <span class='op'>=</span> <span class='fl'>0</span>,
+  weightDecay <span class='op'>=</span> <span class='fl'>0</span>,
+  mode <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"classification"</span>, <span class='st'>"regression"</span>, <span class='st'>"sigmoid"</span><span class='op'>)</span>,
+  additionalOptions <span class='op'>=</span> <span class='cn'>NA</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -239,77 +239,82 @@ kernel sizes to X.</p></li>
 implementation:</p><pre>    \url{https://github.com/joelthelion/ultrasound-nerve-segmentation}
 </pre>
 
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Tustison NJ</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Simple examples, must run successfully and quickly. These will be tested.</span>
 
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>ANTsRNet</span> )
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>keras</span> )
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span> <span class='va'><a href='https://github.com/ANTsX/ANTsRNet'>ANTsRNet</a></span> <span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span> <span class='va'><a href='https://keras.rstudio.com'>keras</a></span> <span class='op'>)</span>
 
-<span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'>createUnetModel3D</span>( <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>64</span>, <span class='fl'>64</span>, <span class='fl'>64</span>, <span class='fl'>1</span> ) )
+<span class='va'>model</span> <span class='op'>&lt;-</span> <span class='fu'>createUnetModel3D</span><span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='fl'>64</span>, <span class='fl'>64</span>, <span class='fl'>64</span>, <span class='fl'>1</span> <span class='op'>)</span> <span class='op'>)</span>
 
-<span class='no'>metric_multilabel_dice_coefficient</span> <span class='kw'>&lt;-</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/keras/man/metric_binary_accuracy.html'>custom_metric</a></span>( <span class='st'>"multilabel_dice_coefficient"</span>,
-    <span class='no'>multilabel_dice_coefficient</span> )
+<span class='va'>metric_multilabel_dice_coefficient</span> <span class='op'>&lt;-</span>
+  <span class='fu'><a href='https://keras.rstudio.com/reference/metric_binary_accuracy.html'>custom_metric</a></span><span class='op'>(</span> <span class='st'>"multilabel_dice_coefficient"</span>,
+    <span class='va'>multilabel_dice_coefficient</span> <span class='op'>)</span>
 
-<span class='no'>loss_dice</span> <span class='kw'>&lt;-</span> <span class='kw'>function</span>( <span class='no'>y_true</span>, <span class='no'>y_pred</span> ) {
-  -<span class='fu'><a href='multilabel_dice_coefficient.html'>multilabel_dice_coefficient</a></span>(<span class='no'>y_true</span>, <span class='no'>y_pred</span>)
-}
-<span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span>(<span class='no'>loss_dice</span>, <span class='st'>"py_function_name"</span>) <span class='kw'>&lt;-</span> <span class='st'>"multilabel_dice_coefficient"</span>
+<span class='va'>loss_dice</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span> <span class='va'>y_true</span>, <span class='va'>y_pred</span> <span class='op'>)</span> <span class='op'>{</span>
+  <span class='op'>-</span><span class='fu'><a href='multilabel_dice_coefficient.html'>multilabel_dice_coefficient</a></span><span class='op'>(</span><span class='va'>y_true</span>, <span class='va'>y_pred</span><span class='op'>)</span>
+<span class='op'>}</span>
+<span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span><span class='op'>(</span><span class='va'>loss_dice</span>, <span class='st'>"py_function_name"</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='st'>"multilabel_dice_coefficient"</span>
 
-<span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/reexports.html'>compile</a></span>( <span class='kw'>loss</span> <span class='kw'>=</span> <span class='no'>loss_dice</span>,
-  <span class='kw'>optimizer</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/optimizer_adam.html'>optimizer_adam</a></span>( <span class='kw'>lr</span> <span class='kw'>=</span> <span class='fl'>0.0001</span> ),
-  <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='no'>metric_multilabel_dice_coefficient</span> )</div><div class='output co'>#&gt; <span class='error'>Error in py_call_impl(callable, dots$args, dots$keywords): TypeError: Failed to convert object of type &lt;class 'function'&gt; to Tensor. Contents: &lt;function make_python_function.&lt;locals&gt;.python_function at 0x7fb02b6bb0d0&gt;. Consider casting elements to a supported type.</span>
+<span class='va'>model</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://generics.r-lib.org/reference/compile.html'>compile</a></span><span class='op'>(</span> loss <span class='op'>=</span> <span class='va'>loss_dice</span>,
+  optimizer <span class='op'>=</span> <span class='fu'><a href='https://keras.rstudio.com/reference/optimizer_adam.html'>optimizer_adam</a></span><span class='op'>(</span> lr <span class='op'>=</span> <span class='fl'>0.0001</span> <span class='op'>)</span>,
+  metrics <span class='op'>=</span> <span class='va'>metric_multilabel_dice_coefficient</span> <span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in py_call_impl(callable, dots$args, dots$keywords): TypeError: Failed to convert object of type &lt;class 'function'&gt; to Tensor. Contents: &lt;function make_python_function.&lt;locals&gt;.python_function at 0x7ffe35e7ec80&gt;. Consider casting elements to a supported type.</span>
 #&gt; <span class='error'></span>
-#&gt; <span class='error'>Detailed traceback: </span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/training/tracking/base.py", line 517, in _method_wrapper</span>
+#&gt; <span class='error'>Detailed traceback:</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/training/tracking/base.py", line 517, in _method_wrapper</span>
 #&gt; <span class='error'>    result = method(self, *args, **kwargs)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/engine/training_v1.py", line 450, in compile</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/keras/engine/training_v1.py", line 450, in compile</span>
 #&gt; <span class='error'>    masks=self._prepare_output_masks())</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/engine/training_v1.py", line 1957, in _handle_metrics</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/keras/engine/training_v1.py", line 1957, in _handle_metrics</span>
 #&gt; <span class='error'>    target, output, output_mask))</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/engine/training_v1.py", line 1908, in _handle_per_output_metrics</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/keras/engine/training_v1.py", line 1908, in _handle_per_output_metrics</span>
 #&gt; <span class='error'>    metric_fn, y_true, y_pred, weights=weights, mask=mask)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/engine/training_utils_v1.py", line 1064, in call_metric_function</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/keras/engine/training_utils_v1.py", line 1064, in call_metric_function</span>
 #&gt; <span class='error'>    return metric_fn(y_true, y_pred, sample_weight=weights)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/metrics.py", line 237, in __call__</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/keras/metrics.py", line 237, in __call__</span>
 #&gt; <span class='error'>    replica_local_fn, *args, **kwargs)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/distribute/distributed_training_utils.py", line 66, in call_replica_local_fn</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/keras/distribute/distributed_training_utils.py", line 66, in call_replica_local_fn</span>
 #&gt; <span class='error'>    return fn(*args, **kwargs)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/metrics.py", line 217, in replica_local_fn</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/keras/metrics.py", line 217, in replica_local_fn</span>
 #&gt; <span class='error'>    update_op = self.update_state(*args, **kwargs)  # pylint: disable=not-callable</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/utils/metrics_utils.py", line 90, in decorated</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/keras/utils/metrics_utils.py", line 90, in decorated</span>
 #&gt; <span class='error'>    update_op = update_state_fn(*args, **kwargs)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/metrics.py", line 177, in update_state_fn</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/keras/metrics.py", line 177, in update_state_fn</span>
 #&gt; <span class='error'>    return ag_update_state(*args, **kwargs)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/autograph/impl/api.py", line 667, in wrapper</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/autograph/impl/api.py", line 667, in wrapper</span>
 #&gt; <span class='error'>    return converted_call(f, args, kwargs, options=options)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/autograph/impl/api.py", line 350, in converted_call</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/autograph/impl/api.py", line 350, in converted_call</span>
 #&gt; <span class='error'>    return _call_unconverted(f, args, kwargs, options, False)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/autograph/impl/api.py", line 478, in _call_unconverted</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/autograph/impl/api.py", line 478, in _call_unconverted</span>
 #&gt; <span class='error'>    return f(*args, **kwargs)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/metrics.py", line 620, in update_state</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/keras/metrics.py", line 620, in update_state</span>
 #&gt; <span class='error'>    matches, sample_weight=sample_weight)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/keras/metrics.py", line 355, in update_state</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/keras/metrics.py", line 355, in update_state</span>
 #&gt; <span class='error'>    values = math_ops.cast(values, self._dtype)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/util/dispatch.py", line 201, in wrapper</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/util/dispatch.py", line 201, in wrapper</span>
 #&gt; <span class='error'>    return target(*args, **kwargs)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/ops/math_ops.py", line 964, in cast</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/ops/math_ops.py", line 964, in cast</span>
 #&gt; <span class='error'>    x = ops.convert_to_tensor(x, name="x")</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/profiler/trace.py", line 163, in wrapped</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/profiler/trace.py", line 163, in wrapped</span>
 #&gt; <span class='error'>    return func(*args, **kwargs)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/framework/ops.py", line 1540, in convert_to_tensor</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/framework/ops.py", line 1540, in convert_to_tensor</span>
 #&gt; <span class='error'>    ret = conversion_func(value, dtype=dtype, name=name, as_ref=as_ref)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/framework/constant_op.py", line 339, in _constant_tensor_conversion_function</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/framework/constant_op.py", line 339, in _constant_tensor_conversion_function</span>
 #&gt; <span class='error'>    return constant(v, dtype=dtype, name=name)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/framework/constant_op.py", line 265, in constant</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/framework/constant_op.py", line 265, in constant</span>
 #&gt; <span class='error'>    allow_broadcast=True)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/framework/constant_op.py", line 283, in _constant_impl</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/framework/constant_op.py", line 283, in _constant_impl</span>
 #&gt; <span class='error'>    allow_broadcast=allow_broadcast))</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-tensorflow/lib/python3.6/site-packages/tensorflow/python/framework/tensor_util.py", line 553, in make_tensor_proto</span>
+#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/framework/tensor_util.py", line 553, in make_tensor_proto</span>
 #&gt; <span class='error'>    "supported type." % (type(values), values))</span></div><div class='input'>
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>( <span class='no'>model</span> )</div><div class='output co'>#&gt; Model
-#&gt; Model: "model_42"
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span> <span class='va'>model</span> <span class='op'>)</span>
+</div><div class='output co'>#&gt; Model
+#&gt; Model: "model_40"
 #&gt; ________________________________________________________________________________
 #&gt; Layer (type)              Output Shape      Param #  Connected to               
 #&gt; ================================================================================
@@ -422,7 +427,7 @@ implementation:</p><pre>    \url{https://github.com/joelthelion/ultrasound-nerve
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
