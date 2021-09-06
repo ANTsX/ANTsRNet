@@ -63,7 +63,7 @@ getANTsXNetData <- function(
     S_template3 = "https://ndownloader.figshare.com/files/22597175",
     priorDeepFlashLeftLabels = "https://ndownloader.figshare.com/files/25422098",
     priorDeepFlashRightLabels = "https://ndownloader.figshare.com/files/25422101",
-    protonLobePriors = "https://figshare.com/ndownloader/files/30636777",
+    protonLobePriors = "https://figshare.com/ndownloader/files/30678452",
     adni = "https://ndownloader.figshare.com/files/25516361",
     ixi = "https://ndownloader.figshare.com/files/25516358",
     kirby = "https://ndownloader.figshare.com/files/25620107",

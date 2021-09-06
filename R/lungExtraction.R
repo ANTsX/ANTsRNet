@@ -22,7 +22,7 @@
 #' @import keras
 #' @export
 lungExtraction <- function( image,
-  modality = c( "proton", "protonLobes", "ct", "ventilation" ),
+  modality = c( "proton", "protonLobes", "maskLobes", "ct", "ventilation" ),
   antsxnetCacheDirectory = NULL, verbose = FALSE )
   {
 
@@ -109,7 +109,7 @@ lungExtraction <- function( image,
     return( list( segmentationImage = segmentationImage,
                   probabilityImages = probabilityImages ) )
 
-    } else if( modality == "protonLobes" ) {
+    } else if( modality == "protonLobes" || modality == "maskLobes" ) {
 
     reorientTemplateFileNamePath <- getANTsXNetData( "protonLungTemplate",
       antsxnetCacheDirectory = antsxnetCacheDirectory )
@@ -131,16 +131,20 @@ lungExtraction <- function( image,
       convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
       additionalOptions = c( "attentionGating" ) )
     
-    penultimateLayer <- unetModel$layers[[length( unetModel$layers ) - 1]]$output
-
-    outputs2 <- penultimateLayer %>% layer_conv_3d( filters = 1, 
-      kernel_size = c( 1L, 1L, 1L ), activation = 'sigmoid',
-      kernel_regularizer = regularizer_l2( l = 0.0 ) )
-    unetModel = keras_model( inputs = unetModel$input, 
-      outputs = list( unetModel$output, outputs2 ) )  
-
-    weightsFileName <- getPretrainedNetwork( "protonLobes", 
-      antsxnetCacheDirectory = antsxnetCacheDirectory )
+    if( modality == "protonLobes" )
+      {
+      penultimateLayer <- unetModel$layers[[length( unetModel$layers ) - 1]]$output
+      outputs2 <- penultimateLayer %>% layer_conv_3d( filters = 1, 
+        kernel_size = c( 1L, 1L, 1L ), activation = 'sigmoid',
+        kernel_regularizer = regularizer_l2( l = 0.0 ) )
+      unetModel = keras_model( inputs = unetModel$input, 
+        outputs = list( unetModel$output, outputs2 ) )  
+      weightsFileName <- getPretrainedNetwork( "protonLobes", 
+        antsxnetCacheDirectory = antsxnetCacheDirectory )
+      } else {
+      weightsFileName <- getPretrainedNetwork( "maskLobes", 
+        antsxnetCacheDirectory = antsxnetCacheDirectory )
+      }
     unetModel$load_weights( weightsFileName )
 
     if( verbose == TRUE )
@@ -154,7 +158,12 @@ lungExtraction <- function( image,
       translation = centerOfMassImage - centerOfMassTemplate )
     warpedImage <- applyAntsrTransformToImage( xfrm, image, reorientTemplate )
     warpedArray <- as.array( warpedImage )
-    warpedArray <- ( warpedArray - mean( warpedArray ) ) / sd( warpedArray )
+    if( modality == "protonLobes" )
+      {
+      warpedArray <- ( warpedArray - mean( warpedArray ) ) / sd( warpedArray )
+      } else {
+      warpedArray[warpedArray != 0] = 1
+      }
 
     batchX <- array( data = 0, dim = c( 1, resampledImageSize, channelSize ) )
     batchX[1,,,,1] <- warpedArray
@@ -164,7 +173,13 @@ lungExtraction <- function( image,
       }
 
     predictedData <- unetModel %>% predict( batchX, verbose = verbose )
-    probabilityImagesArray <- decodeUnet( predictedData[[1]], reorientTemplate )
+    
+    if( modality == "protonLobes" )
+      {
+      probabilityImagesArray <- decodeUnet( predictedData[[1]], reorientTemplate )
+      } else {
+      probabilityImagesArray <- decodeUnet( predictedData, reorientTemplate )
+      }
 
     if( verbose == TRUE )
       {
@@ -183,13 +198,19 @@ lungExtraction <- function( image,
     segmentationMatrix <- matrix( apply( imageMatrix, 2, which.max ), nrow = 1 ) - 1
     segmentationImage <- matrixToImages( segmentationMatrix, image * 0 + 1 )[[1]]
 
-    wholeLungMask <- decodeUnet( predictedData[[2]], reorientTemplate )[[1]][[1]]
-    wholeLungMask <- applyAntsrTransformToImage( invertAntsrTransform( xfrm ), 
-      wholeLungMask, image )
+    if( modality == "protonLobes" )
+      {
+      wholeLungMask <- decodeUnet( predictedData[[2]], reorientTemplate )[[1]][[1]]
+      wholeLungMask <- applyAntsrTransformToImage( invertAntsrTransform( xfrm ), 
+        wholeLungMask, image )
+      return( list( segmentationImage = segmentationImage,
+                    probabilityImages = probabilityImages,
+                    wholeLungMaskImage = wholeLungMask ) )
+      } else {
+      return( list( segmentationImage = segmentationImage,
+                    probabilityImages = probabilityImages ) )
 
-    return( list( segmentationImage = segmentationImage,
-                  probabilityImages = probabilityImages,
-                  wholeLungMaskImage = wholeLungMask ) )
+      }              
 
     } else if( modality == "ct" ) {
 
