@@ -197,6 +197,7 @@ reference:
   - '`claustrumSegmentation`'
   - '`hypothalamusSegmentation`'
   - '`deepFlash`'
+  - '`deepFlashDeprecated`'
   - '`desikanKillianyTourvilleLabeling`'
   - '`mriSuperResolution`'
   - '`neuralStyleTransfer`'
