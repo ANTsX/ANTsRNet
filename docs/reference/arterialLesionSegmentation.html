@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Dice function for binary segmentation problems — binary_dice_coefficient • ANTsRNet</title>
+<title>Arterial lesion segmentation — arterialLesionSegmentation • ANTsRNet</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,8 @@
 
 
 
-<meta property="og:title" content="Dice function for binary segmentation problems — binary_dice_coefficient" />
-<meta property="og:description" content="Note:  Assumption is that y_true is not a one-hot representation
-of the segmentation batch.  For use with e.g., sigmoid activation." />
+<meta property="og:title" content="Arterial lesion segmentation — arterialLesionSegmentation" />
+<meta property="og:description" content="Perform arterial lesion segmentation using U-net." />
 
 
 
@@ -109,59 +108,57 @@ of the segmentation batch.  For use with e.g., sigmoid activation." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Dice function for binary segmentation problems</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ANTsX/ANTsRNet/blob/master/R/customMetrics.R'><code>R/customMetrics.R</code></a></small>
-    <div class="hidden name"><code>binary_dice_coefficient.Rd</code></div>
+    <h1>Arterial lesion segmentation</h1>
+    <small class="dont-index">Source: <a href='https://github.com/ANTsX/ANTsRNet/blob/master/R/histology.R'><code>R/histology.R</code></a></small>
+    <div class="hidden name"><code>arterialLesionSegmentation.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Note:  Assumption is that y_true is <em>not</em> a one-hot representation
-of the segmentation batch.  For use with e.g., sigmoid activation.</p>
+    <p>Perform arterial lesion segmentation using U-net.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>binary_dice_coefficient</span><span class='op'>(</span><span class='va'>y_true</span>, <span class='va'>y_pred</span>, smoothingFactor <span class='op'>=</span> <span class='fl'>0</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>arterialLesionSegmentation</span><span class='op'>(</span>
+  <span class='va'>image</span>,
+  antsxnetCacheDirectory <span class='op'>=</span> <span class='cn'>NULL</span>,
+  verbose <span class='op'>=</span> <span class='cn'>FALSE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>y_true</th>
-      <td><p>True labels (Tensor)</p></td>
+      <th>image</th>
+      <td><p>input 3-D lung image.</p></td>
     </tr>
     <tr>
-      <th>y_pred</th>
-      <td><p>Predictions (Tensor of the same shape as <code>y_true</code>)</p></td>
+      <th>antsxnetCacheDirectory</th>
+      <td><p>destination directory for storing the downloaded
+template and model weights.  Since these can be resused, if
+<code><a href='https://rdrr.io/r/base/NULL.html'>is.null(antsxnetCacheDirectory)</a></code>, these data will be downloaded to the
+subdirectory ~/.keras/ANTsXNet/.</p></td>
     </tr>
     <tr>
-      <th>smoothingFactor</th>
-      <td><p>parameter for smoothing the metric.</p></td>
+      <th>verbose</th>
+      <td><p>print progress.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Dice value (negative)</p>
+    <p>segmentation and probability images</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Tustison NJ</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span> <span class='va'>ANTsR</span> <span class='op'>)</span>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
 <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span> <span class='va'><a href='https://github.com/ANTsX/ANTsRNet'>ANTsRNet</a></span> <span class='op'>)</span>
 <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span> <span class='va'><a href='https://keras.rstudio.com'>keras</a></span> <span class='op'>)</span>
 
-<span class='va'>model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='createUnetModel2D.html'>createUnetModel2D</a></span><span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='fl'>64</span>, <span class='fl'>64</span>, <span class='fl'>1</span> <span class='op'>)</span> <span class='op'>)</span>
-
-<span class='va'>dice_loss</span> <span class='op'>&lt;-</span> <span class='fu'>binary_dice_coefficient</span><span class='op'>(</span> smoothingFactor <span class='op'>=</span> <span class='fl'>0.1</span> <span class='op'>)</span>
-
-<span class='va'>model</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://generics.r-lib.org/reference/compile.html'>compile</a></span><span class='op'>(</span> loss <span class='op'>=</span> <span class='va'>dice_loss</span>,
-  optimizer <span class='op'>=</span> <span class='fu'><a href='https://keras.rstudio.com/reference/optimizer_adam.html'>optimizer_adam</a></span><span class='op'>(</span> lr <span class='op'>=</span> <span class='fl'>0.0001</span> <span class='op'>)</span> <span class='op'>)</span>
-
-<span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span><span class='op'>(</span><span class='va'>model</span><span class='op'>)</span>; <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2461357 131.5    4420934 236.2         NA   4420934  236.2
-#&gt; Vcells 4369165  33.4   98026492 747.9      65536 150512559 1148.4</div></pre>
+<span class='va'>image</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/antsImageRead.html'>antsImageRead</a></span><span class='op'>(</span> <span class='st'>"image.nii.gz"</span> <span class='op'>)</span>
+<span class='va'>output</span> <span class='op'>&lt;-</span> <span class='fu'><a href='lungExtraction.html'>lungExtraction</a></span><span class='op'>(</span> <span class='va'>image</span> <span class='op'>)</span>
+<span class='op'>}</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
