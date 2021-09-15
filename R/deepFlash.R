@@ -256,7 +256,6 @@ deepFlash <- function( t1, t2 = NULL, useContralaterality = TRUE, doPreprocessin
   predictedData <- unetModel %>% predict( batchX, verbose = verbose )
   probabilityImagesList <- decodeUnet( predictedData[[1]], t1Cropped )
 
-  probabilityImagesLeft <- list()
   for( i in seq.int( length( probabilityImagesList[[1]] ) ) )
     {
     for( j in seq.int( dim( predictedData[[1]] )[1] ) )
@@ -448,12 +447,12 @@ deepFlash <- function( t1, t2 = NULL, useContralaterality = TRUE, doPreprocessin
         {
         if( useContralaterality )
           {
-          probabilityImagesRight[[i]] <- probabilityImagesRight[[i]] +  probabilityImage / 2
+          probabilityImagesRight[[i]] <- ( probabilityImagesRight[[i]] +  probabilityImage ) / 2
           } else {
           probabilityImagesRight <- append( probabilityImagesRight, probabilityImage )
           }
         } else {    # flipped
-        probabilityImagesLeft[[i]] <- probabilityImagesLeft[[i]] +  probabilityImage / 2
+        probabilityImagesLeft[[i]] <- ( probabilityImagesLeft[[i]] +  probabilityImage ) / 2
         }
       }
     }
@@ -493,9 +492,14 @@ deepFlash <- function( t1, t2 = NULL, useContralaterality = TRUE, doPreprocessin
 
     if( j == 1 )  # not flipped
       {
-      foregroundProbabilityImageRight <- antsImageClone( probabilityImage )
+      if( useContralaterality )
+        {
+        foregroundProbabilityImageRight <- ( foregroundProbabilityImageRight + probabilityImage ) / 2
+        } else {
+        foregroundProbabilityImageRight <- probabilityImage
+        }
       } else {    # flipped
-      foregroundProbabilityImageRight <- antsImageClone( probabilityImage )
+      foregroundProbabilityImageLeft <- ( foregroundProbabilityImageLeft + probabilityImage ) / 2
       }
     }
 
@@ -505,7 +509,7 @@ deepFlash <- function( t1, t2 = NULL, useContralaterality = TRUE, doPreprocessin
   #
   ################################
 
-  probabilityBackgroundImage <- antsImageClone(t1) * 0
+  probabilityBackgroundImage <- antsImageClone( t1 ) * 0
   for( i in seq.int( from = 2, to = length( probabilityImagesLeft ) ) )
     {
     probabilityBackgroundImage <- probabilityBackgroundImage + probabilityImagesLeft[[i]]
