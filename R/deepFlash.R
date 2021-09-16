@@ -84,7 +84,7 @@ deepFlash <- function( t1, t2 = NULL, useContralaterality = TRUE, doPreprocessin
         template = "deepFlashTemplateT1",
         templateTransformType = "antsRegistrationSyNQuickRepro[a]",
         doBiasCorrection = TRUE,
-        doDenoising = FALSE,
+        doDenoising = TRUE,
         antsxnetCacheDirectory = antsxnetCacheDirectory,
         verbose = verbose )
     t1Preprocessed <- t1Preprocessing$preprocessedImage
@@ -109,7 +109,7 @@ deepFlash <- function( t1, t2 = NULL, useContralaterality = TRUE, doPreprocessin
           brainExtractionModality = NULL,
           templateTransformType = NULL,
           doBiasCorrection = TRUE,
-          doDenoising = FALSE,
+          doDenoising = TRUE,
           antsxnetCacheDirectory = antsxnetCacheDirectory,
           verbose = verbose )
       t2Preprocessed <- antsApplyTransforms( fixed = t1Preprocessed,
