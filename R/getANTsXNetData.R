@@ -60,7 +60,7 @@ getANTsXNetData <- function(
     croppedMni152Priors = "https://ndownloader.figshare.com/files/27688437",
     deepFlashPriors = "https://ndownloader.figshare.com/files/28966470",
     deepFlashTemplateT1 = "https://ndownloader.figshare.com/files/28966278",
-    deepFlashTemplateT2 = "https://ndownloader.figshare.com/files/28966263",
+    deepFlashTemplateT2 = "https://figshare.com/ndownloader/files/30813688",
     mprage_hippmapp3r = "https://ndownloader.figshare.com/files/24984689",
     protonLungTemplate = "https://ndownloader.figshare.com/files/22707338",
     ctLungTemplate = "https://ndownloader.figshare.com/files/22707335",
