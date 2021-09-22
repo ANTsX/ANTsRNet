@@ -33,9 +33,6 @@
 #'
 #' @param t1 raw or preprocessed 3-D T1-weighted brain image.
 #' @param t2 optional raw or preprocessed 3-D T2-weighted brain image.
-#' @param useContralaterality If TRUE, use both hemispherical models to also
-#' predict the corresponding contralateral segmentation and use both sets of
-#' priors to produce the results.  Mainly used for debugging.
 #' @param doPreprocessing perform preprocessing.  See description above.
 #' @param antsxnetCacheDirectory destination directory for storing the downloaded
 #' template and model weights.  Since these can be resused, if
@@ -54,7 +51,7 @@
 #' results <- deepFlash( image )
 #' }
 #' @export
-deepFlash <- function( t1, t2 = NULL, useContralaterality = TRUE, doPreprocessing = TRUE,
+deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
   antsxnetCacheDirectory = NULL, verbose = FALSE )
 {
   if( t1@dimension != 3 )
@@ -69,6 +66,23 @@ deepFlash <- function( t1, t2 = NULL, useContralaterality = TRUE, doPreprocessin
 
   ################################
   #
+  # Options temporarily taken from the user
+  #
+  ################################
+
+  # @param useContralaterality If TRUE, use both hemispherical models to also
+  # predict the corresponding contralateral segmentation and use both sets of
+  # priors to produce the results.  Mainly used for debugging.
+  #
+  # @param useHierarchicalParcellation If TRUE, use both hemispherical models to also
+  # predict the corresponding contralateral segmentation and use both sets of
+  # priors to produce the results.  Mainly used for debugging.
+  
+  useHierarchicalParcellation <- TRUE
+  useContralaterality <- TRUE
+
+  ################################
+  #
   # Preprocess image
   #
   ################################
@@ -76,7 +90,8 @@ deepFlash <- function( t1, t2 = NULL, useContralaterality = TRUE, doPreprocessin
   t1Preprocessed <- t1
   t1Preprocessing <- NULL
   t1PreprocessedFlipped <- NULL
-  if( doPreprocessing == TRUE )
+  t1Template <- antsImageRead( getANTsXNetData( "deepFlashTemplateT1" ) )
+  if( doPreprocessing )
     {
     t1Preprocessing <- preprocessBrainImage( t1,
         truncateIntensity = c( 0.01, 0.995 ),
@@ -84,11 +99,10 @@ deepFlash <- function( t1, t2 = NULL, useContralaterality = TRUE, doPreprocessin
         template = "deepFlashTemplateT1",
         templateTransformType = "antsRegistrationSyNQuickRepro[a]",
         doBiasCorrection = TRUE,
-        doDenoising = TRUE,
+        doDenoising = FALSE,
         antsxnetCacheDirectory = antsxnetCacheDirectory,
         verbose = verbose )
     t1Preprocessed <- t1Preprocessing$preprocessedImage
-    t1Preprocessed <- ( t1Preprocessed - mean( t1Preprocessed ) ) / sd( t1Preprocessed )
     if( useContralaterality )
       {
       t1PreprocessedDimension <- dim( t1Preprocessed )
@@ -100,23 +114,24 @@ deepFlash <- function( t1, t2 = NULL, useContralaterality = TRUE, doPreprocessin
 
   t2Preprocessed <- t2
   t2PreprocessedFlipped <- NULL
+  t2Template <- NULL
   if( ! is.null( t2 ) )
     {
-    if( doPreprocessing == TRUE )
+    t2Template <- antsImageRead( getANTsXNetData( "deepFlashTemplateT2" ) )  
+    if( doPreprocessing )
       {
       t2Preprocessing <- preprocessBrainImage( t2,
           truncateIntensity = c( 0.01, 0.995 ),
           brainExtractionModality = NULL,
           templateTransformType = NULL,
           doBiasCorrection = TRUE,
-          doDenoising = TRUE,
+          doDenoising = FALSE,
           antsxnetCacheDirectory = antsxnetCacheDirectory,
           verbose = verbose )
       t2Preprocessed <- antsApplyTransforms( fixed = t1Preprocessed,
           moving = t2Preprocessing$preprocessedImage,
           transformlist = t1Preprocessing$templateTransforms$fwdtransforms,
           verbose = verbose )
-      t2Preprocessed <- ( t2Preprocessed - mean( t2Preprocessed ) ) / sd( t2Preprocessed )
       if( useContralaterality )
         {
         t2PreprocessedDimension <- dim( t2Preprocessed )
@@ -155,7 +170,7 @@ deepFlash <- function( t1, t2 = NULL, useContralaterality = TRUE, doPreprocessin
   labelsLeft <- labels[seq.int( 2, length( labels ), by = 2)]
   priorsImageLeftList <- priorsImageList[seq.int(2, length( priorsImageList ), by = 2 )]
   probabilityImagesLeft <- list()
-  foregroundProbabilityImageLeft <- NULL
+  foregroundProbabilityImagesLeft <- list()
   lowerBoundLeft <- c( 77, 75, 57 )
   upperBoundLeft <- c( 140, 138, 152 )
   tmpCropped <- cropIndices( t1Preprocessed, lowerBoundLeft, upperBoundLeft )
@@ -164,30 +179,45 @@ deepFlash <- function( t1, t2 = NULL, useContralaterality = TRUE, doPreprocessin
   spacing <- antsGetSpacing( tmpCropped )
   direction <- antsGetDirection( tmpCropped )
 
+  t1TemplateRoiLeft <- cropIndices( t1Template, lowerBoundLeft, upperBoundLeft )
+  t1TemplateRoiLeft <- ( t1TemplateRoiLeft - mean( t1TemplateRoiLeft ) ) / sd( t1TemplateRoiLeft )
+  t2TemplateRoiLeft <- NULL
+  if( ! is.null( t2Template ) )
+    {
+    t2TemplateRoiLeft <- cropIndices( t2Template, lowerBoundLeft, upperBoundLeft )
+    t2TemplateRoiLeft <- ( t2TemplateRoiLeft - mean( t2TemplateRoiLeft ) ) / sd( t2TemplateRoiLeft )
+    }
+
   labelsRight <- labels[seq.int( 3, length( labels ), by = 2)]
   priorsImageRightList <- priorsImageList[seq.int(3, length( priorsImageList ), by = 2 )]
   probabilityImagesRight <- list()
-  foregroundProbabilityImageRight <- NULL
+  foregroundProbabilityImagesRight <- list()
   lowerBoundRight <- c( 21, 75, 57 )
   upperBoundRight <- c( 84, 138, 152 )
   tmpCropped <- cropIndices( t1Preprocessed, lowerBoundRight, upperBoundRight )
   originRight <- antsGetOrigin( tmpCropped )
 
+  t1TemplateRoiRight <- cropIndices( t1Template, lowerBoundRight, upperBoundRight )
+  t1TemplateRoiRight <- ( t1TemplateRoiRight - mean( t1TemplateRoiRight ) ) / sd( t1TemplateRoiRight )
+  t2TemplateRoiRight <- NULL
+  if( ! is.null( t2Template ) )
+    {
+    t2TemplateRoiRight <- cropIndices( t2Template, lowerBoundRight, upperBoundRight )
+    t2TemplateRoiRight <- ( t2TemplateRoiRight - mean( t2TemplateRoiRight ) ) / sd( t2TemplateRoiRight )
+    }
+
   ################################
   #
-  # Left:  build model and load weights
+  # Create model
   #
   ################################
 
   channelSize <- 1 + length( labelsLeft )
-  numberOfClassificationLabels <- 1 + length( labelsLeft )
-
-  networkName <- 'deepFlashLeftT1'
   if( ! is.null( t2 ) )
     {
-    networkName <- 'deepFlashLeftBoth'
-    channelSize <- channelSize + 1
+    channelSize <- channelSize + 1  
     }
+  numberOfClassificationLabels <- 1 + length( labelsLeft )
 
   unetModel <- createUnetModel3D( c( imageSize, channelSize ),
     numberOfOutputs = numberOfClassificationLabels, mode = 'classification',
@@ -196,9 +226,42 @@ deepFlash <- function( t1, t2 = NULL, useContralaterality = TRUE, doPreprocessin
     dropoutRate = 0.0, weightDecay = 0 )
 
   penultimateLayer <- unetModel$layers[[length( unetModel$layers ) - 1]]$output
-  output <- penultimateLayer %>% keras::layer_conv_3d( filters = 1, kernel_size = 1L,
+
+  # medial temporal lobe
+  output1 <- penultimateLayer %>% keras::layer_conv_3d( filters = 1, kernel_size = 1L,
     activation = 'sigmoid', kernel_regularizer = keras::regularizer_l2( 0.0 ) )
-  unetModel <- keras::keras_model( inputs = unetModel$input, outputs = list( unetModel$output, output ) )
+
+  if( useHierarchicalParcellation ) 
+    {
+    # Hippocampus
+    output2 <- penultimateLayer %>% keras::layer_conv_3d( filters = 1, kernel_size = 1L,
+      activation = 'sigmoid', kernel_regularizer = keras::regularizer_l2( 0.0 ) )
+
+    # EC, perirhinal, and parahippo.
+    output3 <- penultimateLayer %>% keras::layer_conv_3d( filters = 1, kernel_size = 1L,
+      activation = 'sigmoid', kernel_regularizer = keras::regularizer_l2( 0.0 ) )
+
+    unetModel <- keras::keras_model( inputs = unetModel$input, outputs = list( unetModel$output, output1, output2, output3 ) )
+    } else {
+    unetModel <- keras::keras_model( inputs = unetModel$input, outputs = list( unetModel$output, output1 ) )
+    }
+
+  ################################
+  #
+  # Left:  build model and load weights
+  #
+  ################################
+
+  networkName <- 'deepFlashLeftT1'
+  if( ! is.null( t2 ) )
+    {
+    networkName <- 'deepFlashLeftBoth'
+    }
+
+  if( useHierarchicalParcellation )
+    {
+    networkName <- paste0( networkName, "Hierarchical" )  
+    }
 
   if( verbose == TRUE )
     {
@@ -227,19 +290,23 @@ deepFlash <- function( t1, t2 = NULL, useContralaterality = TRUE, doPreprocessin
     }
 
   t1Cropped <- cropIndices( t1Preprocessed, lowerBoundLeft, upperBoundLeft )
+  t1Cropped <- histogramMatchImage( t1Cropped, t1TemplateRoiLeft, 255, 64, TRUE )
   batchX[1,,,,1] <- as.array( t1Cropped )
   if( useContralaterality )
     {
     t1Cropped <- cropIndices( t1PreprocessedFlipped, lowerBoundLeft, upperBoundLeft )
+    t1Cropped <- histogramMatchImage( t1Cropped, t1TemplateRoiLeft, 255, 64, TRUE )
     batchX[2,,,,1] <- as.array( t1Cropped )
     }
   if( ! is.null( t2 ) )
     {
     t2Cropped <- cropIndices( t2Preprocessed, lowerBoundLeft, upperBoundLeft )
+    t2Cropped <- histogramMatchImage( t2Cropped, t2TemplateRoiLeft, 255, 64, TRUE )
     batchX[1,,,,2] <- as.array( t2Cropped )
     if( useContralaterality )
       {
-      t1Cropped <- cropIndices( t2PreprocessedFlipped, lowerBoundLeft, upperBoundLeft )
+      t2Cropped <- cropIndices( t2PreprocessedFlipped, lowerBoundLeft, upperBoundLeft )
+      t2Cropped <- histogramMatchImage( t2Cropped, t2TemplateRoiLeft, 255, 64, TRUE )
       batchX[2,,,,2] <- as.array( t2Cropped )
       }
     }
@@ -256,7 +323,7 @@ deepFlash <- function( t1, t2 = NULL, useContralaterality = TRUE, doPreprocessin
   predictedData <- unetModel %>% predict( batchX, verbose = verbose )
   probabilityImagesList <- decodeUnet( predictedData[[1]], t1Cropped )
 
-  for( i in seq.int( length( probabilityImagesList[[1]] ) ) )
+  for( i in seq.int( 1 + length( labelsLeft ) ) )
     {
     for( j in seq.int( dim( predictedData[[1]] )[1] ) )
       {
@@ -294,44 +361,41 @@ deepFlash <- function( t1, t2 = NULL, useContralaterality = TRUE, doPreprocessin
 
   ################################
   #
-  # Left:  do prediction of foreground and normalize to native space
+  # Left:  do prediction of mtl, hippocampal, and ec regions and normalize to native space
   #
   ################################
 
-  probabilityImagesList <- decodeUnet( predictedData[[2]], t1Cropped )
-
-  for( j in seq.int( dim( predictedData[[2]] )[1] ) )
+  for( i in seq.int( 2, length( predictedData ) ) )
     {
-    probabilityImage <- probabilityImagesList[[j]][[1]]
-    if( i > 1 )
+    probabilityImagesList <- decodeUnet( predictedData[[i]], t1Cropped ) 
+    for( j in seq.int( dim( predictedData[[i]] )[1] ) )
       {
+      probabilityImage <- probabilityImagesList[[j]][[1]]
       probabilityImage <- decropImage( probabilityImage, t1Preprocessed * 0 )
-      } else {
-      probabilityImage <- decropImage( probabilityImage, t1Preprocessed * 0 + 1 )
-      }
 
-    if( j == 2 ) # flipped
-      {
-      probabilityArray <- as.array( probabilityImage )
-      probabilityArrayDimension <- dim( probabilityImage )
-      probabilityArrayFlipped <- probabilityArray[probabilityArrayDimension[1]:1,,]
-      probabilityImage <- as.antsImage( probabilityArrayFlipped, reference = probabilityImage )
-      }
+      if( j == 2 ) # flipped
+        {
+        probabilityArray <- as.array( probabilityImage )
+        probabilityArrayDimension <- dim( probabilityImage )
+        probabilityArrayFlipped <- probabilityArray[probabilityArrayDimension[1]:1,,]
+        probabilityImage <- as.antsImage( probabilityArrayFlipped, reference = probabilityImage )
+        }
 
-    if( doPreprocessing == TRUE )
-      {
-      probabilityImage <- antsApplyTransforms( fixed = t1, moving = probabilityImage,
-          transformlist = t1Preprocessing$templateTransforms$invtransforms,
-          whichtoinvert = c( TRUE ), interpolator = "linear", verbose = verbose )
-      }
+      if( doPreprocessing )
+        {
+        probabilityImage <- antsApplyTransforms( fixed = t1, moving = probabilityImage,
+            transformlist = t1Preprocessing$templateTransforms$invtransforms,
+            whichtoinvert = c( TRUE ), interpolator = "linear", verbose = verbose )
+        }
 
-    if( j == 1 )  # not flipped
-      {
-      foregroundProbabilityImageLeft <- antsImageClone( probabilityImage )
-      } else {    # flipped
-      foregroundProbabilityImageRight <- antsImageClone( probabilityImage )
+      if( j == 1 )  # not flipped
+        {
+        foregroundProbabilityImagesLeft <- append( foregroundProbabilityImagesLeft, probabilityImage )
+        } else {    # flipped
+        foregroundProbabilityImagesRight <- append( foregroundProbabilityImagesRight, probabilityImage )
+        }
       }
-    }
+    }  
 
   ################################
   #
@@ -339,26 +403,16 @@ deepFlash <- function( t1, t2 = NULL, useContralaterality = TRUE, doPreprocessin
   #
   ################################
 
-  channelSize <- 1 + length( labelsRight )
-  numberOfClassificationLabels <- 1 + length( labelsRight )
-
   networkName <- 'deepFlashRightT1'
   if( ! is.null( t2 ) )
     {
     networkName <- 'deepFlashRightBoth'
-    channelSize <- channelSize + 1
     }
 
-  unetModel <- createUnetModel3D( c( imageSize, channelSize ),
-    numberOfOutputs = numberOfClassificationLabels, mode = 'classification',
-    numberOfFilters = c( 32, 64, 96, 128, 256 ),
-    convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
-    dropoutRate = 0.0, weightDecay = 0 )
-
-  penultimateLayer <- unetModel$layers[[length( unetModel$layers ) - 1]]$output
-  output <- penultimateLayer %>% keras::layer_conv_3d( filters = 1, kernel_size = 1L,
-    activation = 'sigmoid', kernel_regularizer = keras::regularizer_l2( 0.0 ) )
-  unetModel <- keras::keras_model( inputs = unetModel$input, outputs = list( unetModel$output, output ) )
+  if( useHierarchicalParcellation )
+    {
+    networkName <- paste0( networkName, "Hierarchical" )  
+    }
 
   if( verbose == TRUE )
     {
@@ -387,19 +441,23 @@ deepFlash <- function( t1, t2 = NULL, useContralaterality = TRUE, doPreprocessin
     }
 
   t1Cropped <- cropIndices( t1Preprocessed, lowerBoundRight, upperBoundRight )
+  t1Cropped <- histogramMatchImage( t1Cropped, t1TemplateRoiRight, 255, 64, TRUE )
   batchX[1,,,,1] <- as.array( t1Cropped )
   if( useContralaterality )
     {
     t1Cropped <- cropIndices( t1PreprocessedFlipped, lowerBoundRight, upperBoundRight )
+    t1Cropped <- histogramMatchImage( t1Cropped, t1TemplateRoiRight, 255, 64, TRUE )
     batchX[2,,,,1] <- as.array( t1Cropped )
     }
   if( ! is.null( t2 ) )
     {
     t2Cropped <- cropIndices( t2Preprocessed, lowerBoundRight, upperBoundRight )
+    t2Cropped <- histogramMatchImage( t2Cropped, t2TemplateRoiRight, 255, 64, TRUE )
     batchX[1,,,,2] <- as.array( t2Cropped )
     if( useContralaterality )
       {
-      t1Cropped <- cropIndices( t2PreprocessedFlipped, lowerBoundRight, upperBoundRight )
+      t2Cropped <- cropIndices( t2PreprocessedFlipped, lowerBoundRight, upperBoundRight )
+      t2Cropped <- histogramMatchImage( t2Cropped, t2TemplateRoiRight, 255, 64, TRUE )
       batchX[2,,,,2] <- as.array( t2Cropped )
       }
     }
@@ -416,7 +474,7 @@ deepFlash <- function( t1, t2 = NULL, useContralaterality = TRUE, doPreprocessin
   predictedData <- unetModel %>% predict( batchX, verbose = verbose )
   probabilityImagesList <- decodeUnet( predictedData[[1]], t1Cropped )
 
-  for( i in seq.int( length( probabilityImagesList[[1]] ) ) )
+  for( i in seq.int( 1 + length( labelsRight ) ) )
     {
     for( j in seq.int( dim( predictedData[[1]] )[1] ) )
       {
@@ -436,7 +494,7 @@ deepFlash <- function( t1, t2 = NULL, useContralaterality = TRUE, doPreprocessin
         probabilityImage <- as.antsImage( probabilityArrayFlipped, reference = probabilityImage )
         }
 
-      if( doPreprocessing == TRUE )
+      if( doPreprocessing )
         {
         probabilityImage <- antsApplyTransforms( fixed = t1, moving = probabilityImage,
             transformlist = t1Preprocessing$templateTransforms$invtransforms,
@@ -459,49 +517,46 @@ deepFlash <- function( t1, t2 = NULL, useContralaterality = TRUE, doPreprocessin
 
   ################################
   #
-  # Right:  do prediction of foreground and normalize to native space
+  # Right:  do prediction of mtl, hippocampal, and ec regions and normalize to native space
   #
   ################################
 
-  probabilityImagesList <- decodeUnet( predictedData[[2]], t1Cropped )
-
-  for( j in seq.int( dim( predictedData[[2]] )[1] ) )
+  for( i in seq.int( 2, length( predictedData ) ) )
     {
-    probabilityImage <- probabilityImagesList[[j]][[1]]
-    if( i > 1 )
-      {
+    probabilityImagesList <- decodeUnet( predictedData[[i]], t1Cropped )
+    for( j in seq.int( dim( predictedData[[i]] )[1] ) )
+      { 
+      probabilityImage <- probabilityImagesList[[j]][[1]]
       probabilityImage <- decropImage( probabilityImage, t1Preprocessed * 0 )
-      } else {
-      probabilityImage <- decropImage( probabilityImage, t1Preprocessed * 0 + 1 )
-      }
 
-    if( j == 2 ) # flipped
-      {
-      probabilityArray <- as.array( probabilityImage )
-      probabilityArrayDimension <- dim( probabilityImage )
-      probabilityArrayFlipped <- probabilityArray[probabilityArrayDimension[1]:1,,]
-      probabilityImage <- as.antsImage( probabilityArrayFlipped, reference = probabilityImage )
-      }
-
-    if( doPreprocessing == TRUE )
-      {
-      probabilityImage <- antsApplyTransforms( fixed = t1, moving = probabilityImage,
-          transformlist = t1Preprocessing$templateTransforms$invtransforms,
-          whichtoinvert = c( TRUE ), interpolator = "linear", verbose = verbose )
-      }
-
-    if( j == 1 )  # not flipped
-      {
-      if( useContralaterality )
+      if( j == 2 ) # flipped
         {
-        foregroundProbabilityImageRight <- ( foregroundProbabilityImageRight + probabilityImage ) / 2
-        } else {
-        foregroundProbabilityImageRight <- probabilityImage
+        probabilityArray <- as.array( probabilityImage )
+        probabilityArrayDimension <- dim( probabilityImage )
+        probabilityArrayFlipped <- probabilityArray[probabilityArrayDimension[1]:1,,]
+        probabilityImage <- as.antsImage( probabilityArrayFlipped, reference = probabilityImage )
         }
-      } else {    # flipped
-      foregroundProbabilityImageLeft <- ( foregroundProbabilityImageLeft + probabilityImage ) / 2
+
+      if( doPreprocessing )
+        {
+        probabilityImage <- antsApplyTransforms( fixed = t1, moving = probabilityImage,
+            transformlist = t1Preprocessing$templateTransforms$invtransforms,
+            whichtoinvert = c( TRUE ), interpolator = "linear", verbose = verbose )
+        }
+
+      if( j == 1 )  # not flipped
+        {
+        if( useContralaterality )
+          {
+          foregroundProbabilityImagesRight[[i-1]] <- ( foregroundProbabilityImagesRight[[i-1]] + probabilityImage ) / 2
+          } else {
+          foregroundProbabilityImagesRight <- append( foregroundProbabilityImagesRight, probabilityImage )
+          }
+        } else {    # flipped
+        foregroundProbabilityImagesLeft[[i-1]] <- ( foregroundProbabilityImagesLeft[[i-1]] + probabilityImage ) / 2
+        }
       }
-    }
+    }  
 
   ################################
   #
@@ -530,6 +585,12 @@ deepFlash <- function( t1, t2 = NULL, useContralaterality = TRUE, doPreprocessin
     count <- count + 1
     }
 
+  ################################
+  #
+  # Convert probability images to segmentation
+  #
+  ################################
+
   imageMatrix <- imageListToMatrix( probabilityImages[2:length( probabilityImages )], t1 * 0 + 1 )
   backgroundForegroundMatrix <- rbind( imageListToMatrix( list( probabilityImages[[1]] ), t1 * 0 + 1 ),
                                       colSums( imageMatrix ) )
@@ -543,11 +604,27 @@ deepFlash <- function( t1, t2 = NULL, useContralaterality = TRUE, doPreprocessin
     relabeledImage[( segmentationImage == i )] <- labels[i]
     }
 
-  foregroundProbabilityImage = foregroundProbabilityImageLeft + foregroundProbabilityImageRight
+  foregroundProbabilityImages <- list()
+  for( i in seq.int( length( foregroundProbabilityImagesLeft ) ) )
+    {
+    foregroundProbabilityImages[[i]] <- foregroundProbabilityImagesLeft[[i]] + foregroundProbabilityImagesRight[[i]]
+    }
 
-  results <- list( segmentationImage = relabeledImage,
-                   probabilityImages = probabilityImages,
-                   foregroundProbabilityImage = foregroundProbabilityImage )
+  results <- NULL
+  if( useHierarchicalParcellation )
+    {
+    results <- list( segmentationImage = relabeledImage,
+                    probabilityImages = probabilityImages,
+                    medialTemporalLobelProbabilityImage = foregroundProbabilityImages[[1]],
+                    hippocampalProbabilityImage = foregroundProbabilityImages[[2]],
+                    otherRegionProbabilityImage = foregroundProbabilityImages[[3]]
+                  )
+    } else {
+    results <- list( segmentationImage = relabeledImage,
+                    probabilityImages = probabilityImages,
+                    medialTemporalLobelProbabilityImage = foregroundProbabilityImages[[1]]
+                  )
+    }              
 
   return( results )
 }

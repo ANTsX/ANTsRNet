@@ -211,11 +211,11 @@ implementation:</p><pre>    https://github.com/duggalrahul/AlexNet-Experiments-K
   metrics <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='st'>'categorical_crossentropy'</span>, <span class='st'>'accuracy'</span> <span class='op'>)</span> <span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span><span class='op'>(</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;            used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells  2473904 132.2    4420934 236.2         NA   4420934  236.2
-#&gt; Vcells 31876625 243.2   98026492 747.9      65536 150512559 1148.4</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span><span class='op'>(</span><span class='va'>mnistData</span><span class='op'>)</span>; <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span><span class='op'>(</span><span class='op'>)</span>
+#&gt; Ncells  2474576 132.2    4421272 236.2         NA   4421272  236.2
+#&gt; Vcells 31877541 243.3   98027188 747.9      65536 150513636 1148.4</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span><span class='op'>(</span><span class='va'>mnistData</span><span class='op'>)</span>; <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span><span class='op'>(</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2470039 132.0    4420934 236.2         NA   4420934  236.2
-#&gt; Vcells 4395219  33.6   78421194 598.4      65536 150512559 1148.4</div><div class='input'><span class='co'># Comment out the rest due to travis build constraints</span>
+#&gt; Ncells 2470708 132.0    4421272 236.2         NA   4421272  236.2
+#&gt; Vcells 4396130  33.6   78421751 598.4      65536 150513636 1148.4</div><div class='input'><span class='co'># Comment out the rest due to travis build constraints</span>
 
 <span class='co'># track &lt;- model %&gt;% fit( X_trainSmall, Y_trainSmall, verbose = 1,</span>
 <span class='co'>#   epochs = 1, batch_size = 2, shuffle = TRUE, validation_split = 0.5 )</span>
@@ -226,8 +226,8 @@ implementation:</p><pre>    https://github.com/duggalrahul/AlexNet-Experiments-K
 <span class='co'># predictedData &lt;- model %&gt;% predict( X_testSmall, verbose = 1 )</span>
 <span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span><span class='op'>(</span><span class='va'>model</span><span class='op'>)</span>; <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span><span class='op'>(</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2470100 132.0    4420934 236.2         NA   4420934  236.2
-#&gt; Vcells 4395286  33.6   62736956 478.7      65536 150512559 1148.4</div></pre>
+#&gt; Ncells 2470769 132.0    4421272 236.2         NA   4421272  236.2
+#&gt; Vcells 4396197  33.6   62737401 478.7      65536 150513636 1148.4</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Transform image intensities based on histogram mapping. — histogramWarpImageIntensities • ANTsRNet</title>
+<title>Hippocampal/Enthorhinal segmentation using "Deep Flash" — deepFlashDeprecated • ANTsRNet</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,9 @@
 
 
 
-<meta property="og:title" content="Transform image intensities based on histogram mapping. — histogramWarpImageIntensities" />
-<meta property="og:description" content="Apply B-spline 1-D maps to an input image for intensity warping." />
+<meta property="og:title" content="Hippocampal/Enthorhinal segmentation using "Deep Flash" — deepFlashDeprecated" />
+<meta property="og:description" content="Perform hippocampal/entorhinal segmentation in T1 images using
+labels from Mike Yassa's lab" />
 
 
 
@@ -108,76 +109,106 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Transform image intensities based on histogram mapping.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ANTsX/ANTsRNet/blob/master/R/histogramWarpImageIntensities.R'><code>R/histogramWarpImageIntensities.R</code></a></small>
-    <div class="hidden name"><code>histogramWarpImageIntensities.Rd</code></div>
+    <h1>Hippocampal/Enthorhinal segmentation using "Deep Flash"</h1>
+    <small class="dont-index">Source: <a href='https://github.com/ANTsX/ANTsRNet/blob/master/R/deepFlash.R'><code>R/deepFlash.R</code></a></small>
+    <div class="hidden name"><code>deepFlashDeprecated.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Apply B-spline 1-D maps to an input image for intensity warping.</p>
+    <p>Perform hippocampal/entorhinal segmentation in T1 images using
+labels from Mike Yassa's lab</p>
     </div>
 
-    <pre class="usage"><span class='fu'>histogramWarpImageIntensities</span><span class='op'>(</span>
-  <span class='va'>image</span>,
-  breakPoints <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.25</span>, <span class='fl'>0.5</span>, <span class='fl'>0.75</span><span class='op'>)</span>,
-  displacements <span class='op'>=</span> <span class='cn'>NULL</span>,
-  clampEndPoints <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='cn'>FALSE</span>, <span class='cn'>FALSE</span><span class='op'>)</span>,
-  sdDisplacements <span class='op'>=</span> <span class='fl'>0.05</span>,
-  transformDomainSize <span class='op'>=</span> <span class='fl'>20</span>
+    <pre class="usage"><span class='fu'>deepFlashDeprecated</span><span class='op'>(</span>
+  <span class='va'>t1</span>,
+  doPreprocessing <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  doPerHemisphere <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  whichHemisphereModels <span class='op'>=</span> <span class='st'>"new"</span>,
+  antsxnetCacheDirectory <span class='op'>=</span> <span class='cn'>NULL</span>,
+  verbose <span class='op'>=</span> <span class='cn'>FALSE</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>image</th>
-      <td><p>input image.</p></td>
+      <th>t1</th>
+      <td><p>raw or preprocessed 3-D T1-weighted brain image.</p></td>
     </tr>
     <tr>
-      <th>breakPoints</th>
-      <td><p>parametric points at which the intensity transform
-displacements are specified between 0, 1.  Alternatively, a single
-number can be given and the sequence is linearly spaced in 0, 1.</p></td>
+      <th>doPreprocessing</th>
+      <td><p>perform preprocessing.  See description above.</p></td>
     </tr>
     <tr>
-      <th>displacements</th>
-      <td><p>displacements to define intensity warping.  Length
-must be equal to the <code>breakPoints</code>.  Alternatively, if <code>NULL</code>
-random displacements are chosen (random normal:  mean = 0, sd = <code>sdDisplacements</code>).</p></td>
+      <th>doPerHemisphere</th>
+      <td><p>If TRUE, do prediction based on separate networks per
+hemisphere.  Otherwise, use the single network trained for both hemispheres.</p></td>
     </tr>
     <tr>
-      <th>clampEndPoints</th>
-      <td><p>specify non-zero intensity change at the ends of the histogram.</p></td>
+      <th>whichHemisphereModels</th>
+      <td><p>"old" or "new".</p></td>
     </tr>
     <tr>
-      <th>sdDisplacements</th>
-      <td><p>characterize the randomness of the intensity displacement.</p></td>
+      <th>antsxnetCacheDirectory</th>
+      <td><p>destination directory for storing the downloaded
+template and model weights.  Since these can be resused, if
+<code><a href='https://rdrr.io/r/base/NULL.html'>is.null(antsxnetCacheDirectory)</a></code>, these data will be downloaded to the
+inst/extdata/ subfolder of the ANTsRNet package.</p></td>
     </tr>
     <tr>
-      <th>transformDomainSize</th>
-      <td><p>Defines the sampling resolution of the B-spline warping.</p></td>
+      <th>verbose</th>
+      <td><p>print progress.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>warped intensity image</p>
+    <p>list consisting of the segmentation image and probability images for
+each label.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p><a href='https://faculty.sites.uci.edu/myassa/'>https://faculty.sites.uci.edu/myassa/</a></p>
+<p>The labeling is as follows:</p><ul>
+<li><p>Label 0 :background</p></li>
+<li><p>Label 5 :left aLEC</p></li>
+<li><p>Label 6 :right aLEC</p></li>
+<li><p>Label 7 :left pMEC</p></li>
+<li><p>Label 8 :right pMEC</p></li>
+<li><p>Label 9 :left perirhinal</p></li>
+<li><p>Label 10:right perirhinal</p></li>
+<li><p>Label 11:left parahippocampal</p></li>
+<li><p>Label 12:right parahippocampal</p></li>
+<li><p>Label 13:left DG/CA3</p></li>
+<li><p>Label 14:right DG/CA3</p></li>
+<li><p>Label 15:left CA1</p></li>
+<li><p>Label 16:right CA1</p></li>
+<li><p>Label 17:left subiculum</p></li>
+<li><p>Label 18:right subiculum</p></li>
+</ul>
+
+<p>Preprocessing on the training data consisted of:</p><ul>
+<li><p>n4 bias correction,</p></li>
+<li><p>denoising,</p></li>
+<li><p>brain extraction, and</p></li>
+<li><p>affine registration to MNI.
+The input T1 should undergo the same steps.  If the input T1 is the raw
+T1, these steps can be performed by the internal preprocessing, i.e. set
+<code>doPreprocessing = TRUE</code></p></li>
+</ul>
+
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Tustison NJ</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span> <span class='va'>ANTsR</span> <span class='op'>)</span>
-<span class='va'>image</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/antsImageRead.html'>antsImageRead</a></span><span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/getANTsRData.html'>getANTsRData</a></span><span class='op'>(</span> <span class='st'>"r16"</span> <span class='op'>)</span> <span class='op'>)</span>
-<span class='va'>transformedImage</span> <span class='op'>&lt;-</span> <span class='fu'>histogramWarpImageIntensities</span><span class='op'>(</span> <span class='va'>image</span>, transformDomainSize <span class='op'>=</span> <span class='fl'>10</span> <span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span><span class='op'>(</span><span class='va'>image</span><span class='op'>)</span>; <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2549039 136.2    4421272 236.2         NA   4421272  236.2
-#&gt; Vcells 6906696  52.7   28525737 217.7      65536 150513636 1148.4</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span><span class='op'>(</span><span class='va'>transformedImage</span><span class='op'>)</span>; <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2548070 136.1    4421272 236.2         NA   4421272  236.2
-#&gt; Vcells 6905117  52.7   28525737 217.7      65536 150513636 1148.4</div></pre>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span> <span class='va'><a href='https://github.com/ANTsX/ANTsRNet'>ANTsRNet</a></span> <span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span> <span class='va'><a href='https://keras.rstudio.com'>keras</a></span> <span class='op'>)</span>
+
+<span class='va'>image</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/antsImageRead.html'>antsImageRead</a></span><span class='op'>(</span> <span class='st'>"t1.nii.gz"</span> <span class='op'>)</span>
+<span class='va'>results</span> <span class='op'>&lt;-</span> <span class='fu'><a href='deepFlash.html'>deepFlash</a></span><span class='op'>(</span> <span class='va'>image</span> <span class='op'>)</span>
+<span class='op'>}</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

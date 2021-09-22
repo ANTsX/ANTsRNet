@@ -121,9 +121,8 @@ labels from Mike Yassa's lab</p>
 
     <pre class="usage"><span class='fu'>deepFlash</span><span class='op'>(</span>
   <span class='va'>t1</span>,
+  t2 <span class='op'>=</span> <span class='cn'>NULL</span>,
   doPreprocessing <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  doPerHemisphere <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  whichHemisphereModels <span class='op'>=</span> <span class='st'>"new"</span>,
   antsxnetCacheDirectory <span class='op'>=</span> <span class='cn'>NULL</span>,
   verbose <span class='op'>=</span> <span class='cn'>FALSE</span>
 <span class='op'>)</span></pre>
@@ -136,17 +135,12 @@ labels from Mike Yassa's lab</p>
       <td><p>raw or preprocessed 3-D T1-weighted brain image.</p></td>
     </tr>
     <tr>
+      <th>t2</th>
+      <td><p>optional raw or preprocessed 3-D T2-weighted brain image.</p></td>
+    </tr>
+    <tr>
       <th>doPreprocessing</th>
       <td><p>perform preprocessing.  See description above.</p></td>
-    </tr>
-    <tr>
-      <th>doPerHemisphere</th>
-      <td><p>If TRUE, do prediction based on separate networks per
-hemisphere.  Otherwise, use the single network trained for both hemispheres.</p></td>
-    </tr>
-    <tr>
-      <th>whichHemisphereModels</th>
-      <td><p>"old" or "new".</p></td>
     </tr>
     <tr>
       <th>antsxnetCacheDirectory</th>
@@ -188,9 +182,7 @@ each label.</p>
 
 <p>Preprocessing on the training data consisted of:</p><ul>
 <li><p>n4 bias correction,</p></li>
-<li><p>denoising,</p></li>
-<li><p>brain extraction, and</p></li>
-<li><p>affine registration to MNI.
+<li><p>affine registration to deep flash template.
 The input T1 should undergo the same steps.  If the input T1 is the raw
 T1, these steps can be performed by the internal preprocessing, i.e. set
 <code>doPreprocessing = TRUE</code></p></li>

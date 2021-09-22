@@ -7,7 +7,6 @@
 deepFlash(
   t1,
   t2 = NULL,
-  useContralaterality = TRUE,
   doPreprocessing = TRUE,
   antsxnetCacheDirectory = NULL,
   verbose = FALSE
@@ -17,10 +16,6 @@ deepFlash(
 \item{t1}{raw or preprocessed 3-D T1-weighted brain image.}
 
 \item{t2}{optional raw or preprocessed 3-D T2-weighted brain image.}
-
-\item{useContralaterality}{If TRUE, use both hemispherical models to also
-predict the corresponding contralateral segmentation and use both sets of
-priors to produce the results.  Mainly used for debugging.}
 
 \item{doPreprocessing}{perform preprocessing.  See description above.}
 
