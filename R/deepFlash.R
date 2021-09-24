@@ -233,11 +233,11 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
 
   if( useHierarchicalParcellation ) 
     {
-    # Hippocampus
+    # EC, perirhinal, and parahippo.
     output2 <- penultimateLayer %>% keras::layer_conv_3d( filters = 1, kernel_size = 1L,
       activation = 'sigmoid', kernel_regularizer = keras::regularizer_l2( 0.0 ) )
 
-    # EC, perirhinal, and parahippo.
+    # Hippocampus
     output3 <- penultimateLayer %>% keras::layer_conv_3d( filters = 1, kernel_size = 1L,
       activation = 'sigmoid', kernel_regularizer = keras::regularizer_l2( 0.0 ) )
 
@@ -616,8 +616,8 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
     results <- list( segmentationImage = relabeledImage,
                     probabilityImages = probabilityImages,
                     medialTemporalLobelProbabilityImage = foregroundProbabilityImages[[1]],
-                    hippocampalProbabilityImage = foregroundProbabilityImages[[2]],
-                    otherRegionProbabilityImage = foregroundProbabilityImages[[3]]
+                    otherRegionProbabilityImage = foregroundProbabilityImages[[2]],
+                    hippocampalProbabilityImage = foregroundProbabilityImages[[3]]
                   )
     } else {
     results <- list( segmentationImage = relabeledImage,
