@@ -227,7 +227,7 @@ lungExtraction <- function( image,
 
     closestSimplifiedDirectionMatrix <- function( direction )
       {
-      closest = floor( abs( direction + 0.5 ) )
+      closest = floor( abs( direction ) + 0.5 )
       closest[direction < 0] <- closest[direction < 0] * -1.0
       return( closest )
       }
