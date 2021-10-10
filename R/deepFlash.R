@@ -93,8 +93,8 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
   t1Template <- antsImageRead( getANTsXNetData( "deepFlashTemplateT1" ) )
   templateProbabilityMask <- brainExtraction( t1Template, modality = "t1",
     antsxnetCacheDirectory = antsxnetCacheDirectory, verbose = verbose )
-  t1Mask <- thresholdImage( templateProbabilityMask, 0.5, 1, 1, 0 )  
-  t1Template <- t1Template * t1Mask
+  templateMask <- thresholdImage( templateProbabilityMask, 0.5, 1, 1, 0 )  
+  t1Template <- t1Template * templateMask
   templateTransforms <- NULL  
   if( doPreprocessing )
     {
