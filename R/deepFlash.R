@@ -103,7 +103,7 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
       cat( "Preprocessing T1.\n" )  
       }
 
-    # Truncate intensity
+    # Truncate intensity (source of variation with ANTsPyNet solution)
     quantiles <- quantile( t1Preprocessed, c( 0.01, 0.995 ) )
     t1Preprocessed[t1Preprocessed < quantiles[1]] <- quantiles[1]
     t1Preprocessed[t1Preprocessed > quantiles[2]] <- quantiles[2]
@@ -122,7 +122,8 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
       typeofTransform = "antsRegistrationSyNQuickRepro[a]", verbose = verbose )
     templateTransforms <- list( fwdtransforms = registration$fwdtransforms, 
                                 invtransforms = registration$invtransforms )  
-    t1Preprocessed <- registration$warpedmovout                            
+    t1Preprocessed <- registration$warpedmovout        
+
     }
   if( useContralaterality )
     {
@@ -146,7 +147,7 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
         cat( "Preprocessing T2.\n" )  
         }
 
-      # Truncate intensity
+      # Truncate intensity (source of variation with ANTsPyNet solution)
       quantiles <- quantile( t2Preprocessed, c( 0.01, 0.995 ) )
       t2Preprocessed[t2Preprocessed < quantiles[1]] <- quantiles[1]
       t2Preprocessed[t2Preprocessed > quantiles[2]] <- quantiles[2]
@@ -318,23 +319,23 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
     }
 
   t1Cropped <- cropIndices( t1Preprocessed, lowerBoundLeft, upperBoundLeft )
-  t1Cropped <- histogramMatchImage( t1Cropped, t1TemplateRoiLeft, 255, 64, TRUE )
+  t1Cropped <- histogramMatchImage( t1Cropped, t1TemplateRoiLeft, 255, 64, FALSE )
   batchX[1,,,,1] <- as.array( t1Cropped )
   if( useContralaterality )
     {
     t1Cropped <- cropIndices( t1PreprocessedFlipped, lowerBoundLeft, upperBoundLeft )
-    t1Cropped <- histogramMatchImage( t1Cropped, t1TemplateRoiLeft, 255, 64, TRUE )
+    t1Cropped <- histogramMatchImage( t1Cropped, t1TemplateRoiLeft, 255, 64, FALSE )
     batchX[2,,,,1] <- as.array( t1Cropped )
     }
   if( ! is.null( t2 ) )
     {
     t2Cropped <- cropIndices( t2Preprocessed, lowerBoundLeft, upperBoundLeft )
-    t2Cropped <- histogramMatchImage( t2Cropped, t2TemplateRoiLeft, 255, 64, TRUE )
+    t2Cropped <- histogramMatchImage( t2Cropped, t2TemplateRoiLeft, 255, 64, FALSE )
     batchX[1,,,,2] <- as.array( t2Cropped )
     if( useContralaterality )
       {
       t2Cropped <- cropIndices( t2PreprocessedFlipped, lowerBoundLeft, upperBoundLeft )
-      t2Cropped <- histogramMatchImage( t2Cropped, t2TemplateRoiLeft, 255, 64, TRUE )
+      t2Cropped <- histogramMatchImage( t2Cropped, t2TemplateRoiLeft, 255, 64, FALSE )
       batchX[2,,,,2] <- as.array( t2Cropped )
       }
     }
@@ -469,23 +470,23 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
     }
 
   t1Cropped <- cropIndices( t1Preprocessed, lowerBoundRight, upperBoundRight )
-  t1Cropped <- histogramMatchImage( t1Cropped, t1TemplateRoiRight, 255, 64, TRUE )
+  t1Cropped <- histogramMatchImage( t1Cropped, t1TemplateRoiRight, 255, 64, FALSE )
   batchX[1,,,,1] <- as.array( t1Cropped )
   if( useContralaterality )
     {
     t1Cropped <- cropIndices( t1PreprocessedFlipped, lowerBoundRight, upperBoundRight )
-    t1Cropped <- histogramMatchImage( t1Cropped, t1TemplateRoiRight, 255, 64, TRUE )
+    t1Cropped <- histogramMatchImage( t1Cropped, t1TemplateRoiRight, 255, 64, FALSE )
     batchX[2,,,,1] <- as.array( t1Cropped )
     }
   if( ! is.null( t2 ) )
     {
     t2Cropped <- cropIndices( t2Preprocessed, lowerBoundRight, upperBoundRight )
-    t2Cropped <- histogramMatchImage( t2Cropped, t2TemplateRoiRight, 255, 64, TRUE )
+    t2Cropped <- histogramMatchImage( t2Cropped, t2TemplateRoiRight, 255, 64, FALSE )
     batchX[1,,,,2] <- as.array( t2Cropped )
     if( useContralaterality )
       {
       t2Cropped <- cropIndices( t2PreprocessedFlipped, lowerBoundRight, upperBoundRight )
-      t2Cropped <- histogramMatchImage( t2Cropped, t2TemplateRoiRight, 255, 64, TRUE )
+      t2Cropped <- histogramMatchImage( t2Cropped, t2TemplateRoiRight, 255, 64, FALSE )
       batchX[2,,,,2] <- as.array( t2Cropped )
       }
     }
