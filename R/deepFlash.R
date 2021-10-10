@@ -88,28 +88,48 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
   ################################
 
   t1Preprocessed <- t1
-  t1Preprocessing <- NULL
+  t1Mask <- NULL
   t1PreprocessedFlipped <- NULL
   t1Template <- antsImageRead( getANTsXNetData( "deepFlashTemplateT1" ) )
+  templateProbabilityMask <- brainExtraction( t1Template, modality = "t1",
+    antsxnetCacheDirectory = antsxnetCacheDirectory, verbose = verbose )
+  t1Mask <- thresholdImage( templateProbabilityMask, 0.5, 1, 1, 0 )  
+  t1Template <- t1Template * t1Mask
+  templateTransforms <- NULL  
   if( doPreprocessing )
     {
-    t1Preprocessing <- preprocessBrainImage( t1,
-        truncateIntensity = c( 0.01, 0.995 ),
-        brainExtractionModality = "t1",
-        template = "deepFlashTemplateT1",
-        templateTransformType = "antsRegistrationSyNQuickRepro[a]",
-        doBiasCorrection = TRUE,
-        doDenoising = FALSE,
-        antsxnetCacheDirectory = antsxnetCacheDirectory,
-        verbose = verbose )
-    t1Preprocessed <- t1Preprocessing$preprocessedImage
-    if( useContralaterality )
+    if( verbose ) 
       {
-      t1PreprocessedDimension <- dim( t1Preprocessed )
-      t1PreprocessedArray <- as.array( t1Preprocessed )
-      t1PreprocessedArrayFlipped <- t1PreprocessedArray[t1PreprocessedDimension[1]:1,,]
-      t1PreprocessedFlipped <- as.antsImage( t1PreprocessedArrayFlipped, reference = t1Preprocessed )
+      cat( "Preprocessing T1.\n" )  
       }
+
+    # Truncate intensity
+    quantiles <- quantile( t1Preprocessed, c( 0.01, 0.995 ) )
+    t1Preprocessed[t1Preprocessed < quantiles[1]] <- quantiles[1]
+    t1Preprocessed[t1Preprocessed > quantiles[2]] <- quantiles[2]
+
+    # Brain extraction
+    probabilityMask <- brainExtraction( t1Preprocessed, modality = "t1", 
+      antsxnetCacheDirectory = antsxnetCacheDirectory, verbose = verbose )
+    t1Mask <- thresholdImage( probabilityMask, 0.5, 1, 1, 0)  
+    t1Preprocessed <- t1Preprocessed * t1Mask
+
+    # Do bias correction
+    t1Preprocessed <- n4BiasFieldCorrection( t1Preprocessed, t1Mask, shrinkFactor = 4, verbose = verbose )
+
+    # Warp to template
+    registration <- antsRegistration( fixed = t1Template, moving = t1Preprocessed, 
+      typeofTransform = "antsRegistrationSyNQuickRepro[a]", verbose = verbose )
+    templateTransforms <- list( fwdtransforms = registration$fwdtransforms, 
+                                invtransforms = registration$invtransforms )  
+    t1Preprocessed <- registration$warpedmovout                            
+    }
+  if( useContralaterality )
+    {
+    t1PreprocessedDimension <- dim( t1Preprocessed )
+    t1PreprocessedArray <- as.array( t1Preprocessed )
+    t1PreprocessedArrayFlipped <- t1PreprocessedArray[t1PreprocessedDimension[1]:1,,]
+    t1PreprocessedFlipped <- as.antsImage( t1PreprocessedArrayFlipped, reference = t1Preprocessed )
     }
 
   t2Preprocessed <- t2
@@ -118,27 +138,35 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
   if( ! is.null( t2 ) )
     {
     t2Template <- antsImageRead( getANTsXNetData( "deepFlashTemplateT2" ) )  
+    t2Template <- t2Template * templateMask
     if( doPreprocessing )
       {
-      t2Preprocessing <- preprocessBrainImage( t2,
-          truncateIntensity = c( 0.01, 0.995 ),
-          brainExtractionModality = NULL,
-          templateTransformType = NULL,
-          doBiasCorrection = TRUE,
-          doDenoising = FALSE,
-          antsxnetCacheDirectory = antsxnetCacheDirectory,
-          verbose = verbose )
-      t2Preprocessed <- antsApplyTransforms( fixed = t1Preprocessed,
-          moving = t2Preprocessing$preprocessedImage,
-          transformlist = t1Preprocessing$templateTransforms$fwdtransforms,
-          verbose = verbose )
-      if( useContralaterality )
+      if( verbose ) 
         {
-        t2PreprocessedDimension <- dim( t2Preprocessed )
-        t2PreprocessedArray <- as.array( t2Preprocessed )
-        t2PreprocessedArrayFlipped <- t2PreprocessedArray[t2PreprocessedDimension[1]:1,,]
-        t2PreprocessedFlipped <- as.antsImage(t2PreprocessedArrayFlipped, reference = t2Preprocessed )
+        cat( "Preprocessing T2.\n" )  
         }
+
+      # Truncate intensity
+      quantiles <- quantile( t2Preprocessed, c( 0.01, 0.995 ) )
+      t2Preprocessed[t2Preprocessed < quantiles[1]] <- quantiles[1]
+      t2Preprocessed[t2Preprocessed > quantiles[2]] <- quantiles[2]
+
+      # Brain extraction
+      t2Preprocessed <- t2Preprocessed * t1Mask
+
+      # Do bias correction
+      t2Preprocessed <- n4BiasFieldCorrection( t2Preprocessed, t1Mask, shrinkFactor = 4, verbose = verbose )
+
+      # Warp to template
+      t2Preprocessed <- antsApplyTransforms( fixed = t1Template, moving = t2Preprocessed, 
+        transformlist = templateTransforms$fwdtransforms, verbose = verbose )
+      }    
+    if( useContralaterality )
+      {
+      t2PreprocessedDimension <- dim( t2Preprocessed )
+      t2PreprocessedArray <- as.array( t2Preprocessed )
+      t2PreprocessedArrayFlipped <- t2PreprocessedArray[t2PreprocessedDimension[1]:1,,]
+      t2PreprocessedFlipped <- as.antsImage(t2PreprocessedArrayFlipped, reference = t2Preprocessed )
       }
     }
 
@@ -346,7 +374,7 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
       if( doPreprocessing == TRUE )
         {
         probabilityImage <- antsApplyTransforms( fixed = t1, moving = probabilityImage,
-            transformlist = t1Preprocessing$templateTransforms$invtransforms,
+            transformlist = templateTransforms$invtransforms,
             whichtoinvert = c( TRUE ), interpolator = "linear", verbose = verbose )
         }
 
@@ -384,7 +412,7 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
       if( doPreprocessing )
         {
         probabilityImage <- antsApplyTransforms( fixed = t1, moving = probabilityImage,
-            transformlist = t1Preprocessing$templateTransforms$invtransforms,
+            transformlist = templateTransforms$invtransforms,
             whichtoinvert = c( TRUE ), interpolator = "linear", verbose = verbose )
         }
 
@@ -497,7 +525,7 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
       if( doPreprocessing )
         {
         probabilityImage <- antsApplyTransforms( fixed = t1, moving = probabilityImage,
-            transformlist = t1Preprocessing$templateTransforms$invtransforms,
+            transformlist = templateTransforms$invtransforms,
             whichtoinvert = c( TRUE ), interpolator = "linear", verbose = verbose )
         }
 
@@ -540,7 +568,7 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
       if( doPreprocessing )
         {
         probabilityImage <- antsApplyTransforms( fixed = t1, moving = probabilityImage,
-            transformlist = t1Preprocessing$templateTransforms$invtransforms,
+            transformlist = templateTransforms$invtransforms,
             whichtoinvert = c( TRUE ), interpolator = "linear", verbose = verbose )
         }
 
