@@ -133,7 +133,8 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
   t2Template <- NULL
   if( ! is.null( t2 ) )
     {
-    t2Template <- antsImageRead( getANTsXNetData( "deepFlashTemplateT2" ) )  
+    t2Template <- antsImageRead( getANTsXNetData( "deepFlashTemplateT2" ) ) 
+    t2Template <- antsCopyImageInfo(t1Template, t2Template) 
     t2Template <- t2Template * templateMask
     if( doPreprocessing )
       {
