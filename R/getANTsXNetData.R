@@ -58,7 +58,7 @@ getANTsXNetData <- function(
     biobank = "https://ndownloader.figshare.com/files/22429242",
     croppedMni152 = "https://ndownloader.figshare.com/files/22933754",
     croppedMni152Priors = "https://ndownloader.figshare.com/files/27688437",
-    deepFlashPriors = "https://ndownloader.figshare.com/files/28966470",
+    deepFlashPriors = "https://figshare.com/ndownloader/files/31208272",
     deepFlashTemplateT1 = "https://figshare.com/ndownloader/files/31207795",
     deepFlashTemplateT2 = "https://figshare.com/ndownloader/files/31207798",
     mprage_hippmapp3r = "https://ndownloader.figshare.com/files/24984689",
