@@ -183,7 +183,7 @@ dataAugmentation <- function( inputImageList,
 
       # Simulated bias field
 
-      if( sdSimulatedBiasField > 0 )
+      if( sdSimulatedBiasField > 0 & verbose )
         {
         cat( "        Adding simulated bias field.\n" )
         }
@@ -193,7 +193,7 @@ dataAugmentation <- function( inputImageList,
 
       # Histogram intensity warping
 
-      if( sdHistogramWarping > 0 )
+      if( sdHistogramWarping > 0 & verbose )
         {
         cat( "        Performing intensity histogram warping.\n" )
         }
