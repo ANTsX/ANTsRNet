@@ -10,7 +10,7 @@ neuralStyleTransfer(
   initialCombinationImage = NULL,
   numberOfIterations = 10,
   learningRate = 1,
-  totalVariationWeight = 0.000085,
+  totalVariationWeight = 8.5e-05,
   contentWeight = 0.025,
   styleImageWeights = 1,
   contentLayerNames = c("block5_conv2"),
