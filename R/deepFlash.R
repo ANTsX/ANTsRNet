@@ -77,7 +77,7 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
   # @param useHierarchicalParcellation If TRUE, use both hemispherical models to also
   # predict the corresponding contralateral segmentation and use both sets of
   # priors to produce the results.  Mainly used for debugging.
-  
+
   useHierarchicalParcellation <- TRUE
   useContralaterality <- TRUE
 
@@ -90,34 +90,30 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
   t1Preprocessed <- t1
   t1Mask <- NULL
   t1PreprocessedFlipped <- NULL
-  t1Template <- antsImageRead( getANTsXNetData( "deepFlashTemplateT1" ) )
-  templateProbabilityMask <- brainExtraction( t1Template, modality = "t1",
-    antsxnetCacheDirectory = antsxnetCacheDirectory, verbose = verbose )
-  templateMask <- thresholdImage( templateProbabilityMask, 0.5, 1, 1, 0 )  
-  t1Template <- t1Template * templateMask
-  templateTransforms <- NULL  
+  t1Template <- antsImageRead( getANTsXNetData( "deepFlashTemplateT1SkullStripped" ) )
+  templateTransforms <- NULL
   if( doPreprocessing )
     {
-    if( verbose ) 
+    if( verbose )
       {
-      cat( "Preprocessing T1.\n" )  
+      cat( "Preprocessing T1.\n" )
       }
 
     # Brain extraction
-    probabilityMask <- brainExtraction( t1Preprocessed, modality = "t1", 
+    probabilityMask <- brainExtraction( t1Preprocessed, modality = "t1",
       antsxnetCacheDirectory = antsxnetCacheDirectory, verbose = verbose )
-    t1Mask <- thresholdImage( probabilityMask, 0.5, 1, 1, 0)  
+    t1Mask <- thresholdImage( probabilityMask, 0.5, 1, 1, 0)
     t1Preprocessed <- t1Preprocessed * t1Mask
 
     # Do bias correction
     t1Preprocessed <- n4BiasFieldCorrection( t1Preprocessed, t1Mask, shrinkFactor = 4, verbose = verbose )
 
     # Warp to template
-    registration <- antsRegistration( fixed = t1Template, moving = t1Preprocessed, 
+    registration <- antsRegistration( fixed = t1Template, moving = t1Preprocessed,
       typeofTransform = "antsRegistrationSyNQuickRepro[a]", verbose = verbose )
-    templateTransforms <- list( fwdtransforms = registration$fwdtransforms, 
-                                invtransforms = registration$invtransforms )  
-    t1Preprocessed <- registration$warpedmovout        
+    templateTransforms <- list( fwdtransforms = registration$fwdtransforms,
+                                invtransforms = registration$invtransforms )
+    t1Preprocessed <- registration$warpedmovout
 
     }
   if( useContralaterality )
@@ -133,14 +129,13 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
   t2Template <- NULL
   if( ! is.null( t2 ) )
     {
-    t2Template <- antsImageRead( getANTsXNetData( "deepFlashTemplateT2" ) ) 
-    t2Template <- antsCopyImageInfo(t1Template, t2Template) 
-    t2Template <- t2Template * templateMask
+    t2Template <- antsImageRead( getANTsXNetData( "deepFlashTemplateT2SkullStripped" ) )
+    t2Template <- antsCopyImageInfo(t1Template, t2Template)
     if( doPreprocessing )
       {
-      if( verbose ) 
+      if( verbose )
         {
-        cat( "Preprocessing T2.\n" )  
+        cat( "Preprocessing T2.\n" )
         }
 
       # Brain extraction
@@ -150,9 +145,9 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
       t2Preprocessed <- n4BiasFieldCorrection( t2Preprocessed, t1Mask, shrinkFactor = 4, verbose = verbose )
 
       # Warp to template
-      t2Preprocessed <- antsApplyTransforms( fixed = t1Template, moving = t2Preprocessed, 
+      t2Preprocessed <- antsApplyTransforms( fixed = t1Template, moving = t2Preprocessed,
         transformlist = templateTransforms$fwdtransforms, verbose = verbose )
-      }    
+      }
     if( useContralaterality )
       {
       t2PreprocessedDimension <- dim( t2Preprocessed )
@@ -235,7 +230,7 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
   channelSize <- 1 + length( labelsLeft )
   if( ! is.null( t2 ) )
     {
-    channelSize <- channelSize + 1  
+    channelSize <- channelSize + 1
     }
   numberOfClassificationLabels <- 1 + length( labelsLeft )
 
@@ -251,7 +246,7 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
   output1 <- penultimateLayer %>% keras::layer_conv_3d( filters = 1, kernel_size = 1L,
     activation = 'sigmoid', kernel_regularizer = keras::regularizer_l2( 0.0 ) )
 
-  if( useHierarchicalParcellation ) 
+  if( useHierarchicalParcellation )
     {
     # EC, perirhinal, and parahippo.
     output2 <- penultimateLayer %>% keras::layer_conv_3d( filters = 1, kernel_size = 1L,
@@ -280,7 +275,7 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
 
   if( useHierarchicalParcellation )
     {
-    networkName <- paste0( networkName, "Hierarchical" )  
+    networkName <- paste0( networkName, "Hierarchical" )
     }
 
   if( verbose == TRUE )
@@ -387,7 +382,7 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
 
   for( i in seq.int( 2, length( predictedData ) ) )
     {
-    probabilityImagesList <- decodeUnet( predictedData[[i]], t1Cropped ) 
+    probabilityImagesList <- decodeUnet( predictedData[[i]], t1Cropped )
     for( j in seq.int( dim( predictedData[[i]] )[1] ) )
       {
       probabilityImage <- probabilityImagesList[[j]][[1]]
@@ -415,7 +410,7 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
         foregroundProbabilityImagesRight <- append( foregroundProbabilityImagesRight, probabilityImage )
         }
       }
-    }  
+    }
 
   ################################
   #
@@ -431,7 +426,7 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
 
   if( useHierarchicalParcellation )
     {
-    networkName <- paste0( networkName, "Hierarchical" )  
+    networkName <- paste0( networkName, "Hierarchical" )
     }
 
   if( verbose == TRUE )
@@ -545,7 +540,7 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
     {
     probabilityImagesList <- decodeUnet( predictedData[[i]], t1Cropped )
     for( j in seq.int( dim( predictedData[[i]] )[1] ) )
-      { 
+      {
       probabilityImage <- probabilityImagesList[[j]][[1]]
       probabilityImage <- decropImage( probabilityImage, t1Preprocessed * 0 )
 
@@ -576,7 +571,7 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
         foregroundProbabilityImagesLeft[[i-1]] <- ( foregroundProbabilityImagesLeft[[i-1]] + probabilityImage ) / 2
         }
       }
-    }  
+    }
 
   ################################
   #
@@ -644,7 +639,7 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
                     probabilityImages = probabilityImages,
                     medialTemporalLobelProbabilityImage = foregroundProbabilityImages[[1]]
                   )
-    }              
+    }
 
   return( results )
 }
