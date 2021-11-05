@@ -128,9 +128,9 @@ dataAugmentation <- function( inputImageList,
         {
         if( referenceImage@dimension == 2 )
           {
-          batchY[i,,] <- as.array( segmentation )
+          batchY[i,,] <- as.array( segmentation[[1]] )
           } else {
-          batchY[i,,,] <- as.array( segmentation )
+          batchY[i,,,] <- as.array( segmentation[[1]] )
           }
         }
       }
@@ -228,7 +228,7 @@ dataAugmentation <- function( inputImageList,
       {
       cat( "Writing images to numpy array\n" )
       }
-    np$save( paste0( outputNumpyFilePrefix, "SimulatedImages.npy", batchX ) )
+    np$save( paste0( outputNumpyFilePrefix, "SimulatedImages.npy"), batchX  )
     }
   if( ! is.null( batchY ) )
     {
@@ -237,7 +237,7 @@ dataAugmentation <- function( inputImageList,
       {
       cat( "Writing segmentation images to numpy array\n" )
       }
-    np$save( paste0( outputNumpyFilePrefix, "SimulatedSegmentationImages.npy", batchY ) )
+    np$save( paste0( outputNumpyFilePrefix, "SimulatedSegmentationImages.npy"), batchY )
     }
 
   if( is.null( segmentationImageList ) )
