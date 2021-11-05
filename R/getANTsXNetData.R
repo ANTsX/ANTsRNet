@@ -62,9 +62,9 @@ getANTsXNetData <- function(
     croppedMni152Priors = "https://ndownloader.figshare.com/files/27688437",
     deepFlashPriors = "https://figshare.com/ndownloader/files/31208272",
     deepFlashTemplateT1 = "https://figshare.com/ndownloader/files/31207795",
-    deepFlashTemplateT1SkullStripped = "DERIVED",
+    deepFlashTemplateT1SkullStripped = "https://figshare.com/ndownloader/files/31339867",
     deepFlashTemplateT2 = "https://figshare.com/ndownloader/files/31207798",
-    deepFlashTemplateT2SkullStripped = "DERIVED",
+    deepFlashTemplateT2SkullStripped = "https://figshare.com/ndownloader/files/31339870",
     mprage_hippmapp3r = "https://ndownloader.figshare.com/files/24984689",
     protonLungTemplate = "https://ndownloader.figshare.com/files/22707338",
     ctLungTemplate = "https://ndownloader.figshare.com/files/22707335",
@@ -93,31 +93,8 @@ getANTsXNetData <- function(
     antsxnetCacheDirectory <- "ANTsXNet"
     }
 
-  if( url != "DERIVED" )
-    {
-    targetFileNamePath <- tensorflow::tf$keras$utils$get_file(
-      targetFileName, url, cache_subdir = antsxnetCacheDirectory )
-    } else {
-    targetFileNamePath <- paste0( "~/.keras/", antsxnetCacheDirectory, "/", targetFileName )
-    if( ! file.exists( targetFileNamePath ) )
-      {
-      if( fileId == "deepFlashTemplateT1SkullStripped" || fileId == "deepFlashTemplateT2SkullStripped" )
-        {
-        t1File <- getANTsXNetData( "deepFlashTemplateT1", antsxnetCacheDirectory = antsxnetCacheDirectory )
-        t1 <- antsImageRead( t1File )
-        probabilityMask <- brainExtraction( t1, modality = "t1", antsxnetCacheDirectory = antsxnetCacheDirectory, verbose = FALSE )
-        mask <- thresholdImage( probabilityMask, 0.5, 1.1, 1, 0 )
-        if( fileId == "deepFlashTemplateT2SkullStripped" )
-          {
-          t2File <- getANTsXNetData( "deepFlashTemplateT2", antsxnetCacheDirectory = antsxnetCacheDirectory )
-          t2 <- antsImageRead( t2File )
-          antsImageWrite( t2 * mask, targetFileNamePath )
-          } else {
-          antsImageWrite( t1 * mask, targetFileNamePath )
-          }
-        }
-      }
-    }
+  targetFileNamePath <- tensorflow::tf$keras$utils$get_file(
+    targetFileName, url, cache_subdir = antsxnetCacheDirectory )
 
   return( targetFileNamePath )
 }
