@@ -14,6 +14,12 @@
 #'
 #'     \url{https://github.com/hongweilibran/wmh_ibbmTum}
 #'
+#' The original implementation used global thresholding as a quick
+#' brain extraction approach.  Due to possible generalization difficulties,
+#' we leave such post-processing steps to the user.  For brain or white
+#' matter masking see functions brainExtraction or deepAtropos,
+#' respectively.
+#'
 #' @param flair input 3-D FLAIR brain image.
 #' @param t1 input 3-D T1-weighted brain image (assumed to be aligned to
 #' the flair, if specified).
@@ -236,7 +242,7 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
 #' @param flair input 3-D FLAIR brain image.
 #' @param t1 input 3-D T1-weighted brain image (assumed to be aligned to
 #' the flair).
-#' @param doPreprocessing perform n4 bias correction, intensity truncation, brain 
+#' @param doPreprocessing perform n4 bias correction, intensity truncation, brain
 #' extraction.
 #' @param whichModel one of "sysu", "sysuT1Only", "sysuPlus",
 #' "sysuPlusSeg", "sysuWithSite", "sysuWithSiteT1Only".
