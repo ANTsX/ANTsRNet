@@ -135,10 +135,9 @@ dataAugmentation <- function( inputImageList,
         }
       }
 
+    simulatedLocalImageList <- list()
     for( j in seq.int( numberOfModalities ) )
       {
-      simulatedLocalImageList <- list()
-
       if( verbose )
         {
         cat( "    Modality ", j, "\n" )
