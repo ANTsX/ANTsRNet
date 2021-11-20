@@ -278,9 +278,12 @@ dataAugmentation <- function( inputImageList,
     np$save( paste0( outputNumpyFilePrefix, "SimulatedPointsets.npy"), batchYpt )
     }
 
-  if( is.null( segmentationImageList ) )
+  if( is.null( segmentationImageList )  & is.null(pointsetList ))
     {
     return( list( simulatedImages = simulatedImageList ) )
+    } else if( is.null( segmentationImageList ) ) {
+    return( list( simulatedImages = simulatedImageList,
+                  simulatedPointsetList = simulatedPointsetList ) )
     } else if( is.null( pointsetList ) ) {
     return( list( simulatedImages = simulatedImageList,
                   simulatedSegmentationImages = simulatedSegmentationImageList ) )
