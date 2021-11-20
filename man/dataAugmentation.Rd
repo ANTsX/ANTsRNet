@@ -7,6 +7,7 @@
 dataAugmentation(
   inputImageList,
   segmentationImageList = NULL,
+  pointsetList = NULL,
   numberOfSimulations = 10,
   referenceImage = NULL,
   transformType = "affineAndDeformation",
@@ -27,6 +28,10 @@ randomly sampled to produce output image list.}
 
 \item{segmentationImageList}{list of segmentation images corresponding to the
 input image list (optional).}
+
+\item{pointsetList}{list of pointsets (matrices) corresponding to the
+input image list (optional).  If using this option, the transformType must
+be invertible.}
 
 \item{numberOfSimulations}{number of output images.  Default = 10.}
 
@@ -76,9 +81,12 @@ image1 <- antsImageRead( getANTsRData( "r16" ) )
 image2 <- antsImageRead( getANTsRData( "r64" ) )
 segmentation1 <- thresholdImage( image1, "Otsu", 3 )
 segmentation2 <- thresholdImage( image2, "Otsu", 3 )
+pts1 = getCentroids( segmentation1 )[,1:2]
+pts2 = getCentroids( segmentation2 )[,1:2]
 data <- dataAugmentation(
   list( list( image1 ), list( image2 ) ),
-  list( segmentation1, segmentation2 ) )
+  list( segmentation1, segmentation2 ),
+  list( pts1, pts2), transformType='scaleShear' )
 rm(segmentation1); gc()
 rm(segmentation2); gc()
 rm(image1); gc()

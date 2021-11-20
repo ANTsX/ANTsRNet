@@ -44,6 +44,12 @@ with the sysu_media's team entry is discussed in
 
 with the original implementation available here:\preformatted{\url{https://github.com/hongweilibran/wmh_ibbmTum}
 }
+
+The original implementation used global thresholding as a quick
+brain extraction approach.  Due to possible generalization difficulties,
+we leave such post-processing steps to the user.  For brain or white
+matter masking see functions brainExtraction or deepAtropos,
+respectively.
 }
 \examples{
 \dontrun{

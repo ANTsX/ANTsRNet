@@ -11,6 +11,9 @@
 #' randomly sampled to produce output image list.
 #' @param segmentationImageList list of segmentation images corresponding to the
 #' input image list (optional).
+#' @param pointsetList list of pointsets (matrices) corresponding to the
+#' input image list (optional).  If using this option, the transformType must
+#' be invertible.
 #' @param numberOfSimulations number of output images.  Default = 10.
 #' @param referenceImage defines the spatial domain for all output images.  If
 #' the input images do not match the spatial domain of the reference image, we
@@ -44,9 +47,12 @@
 #' image2 <- antsImageRead( getANTsRData( "r64" ) )
 #' segmentation1 <- thresholdImage( image1, "Otsu", 3 )
 #' segmentation2 <- thresholdImage( image2, "Otsu", 3 )
+#' pts1 = getCentroids( segmentation1 )[,1:2]
+#' pts2 = getCentroids( segmentation2 )[,1:2]
 #' data <- dataAugmentation(
 #'   list( list( image1 ), list( image2 ) ),
-#'   list( segmentation1, segmentation2 ) )
+#'   list( segmentation1, segmentation2 ),
+#'   list( pts1, pts2), transformType='scaleShear' )
 #' rm(segmentation1); gc()
 #' rm(segmentation2); gc()
 #' rm(image1); gc()
@@ -54,6 +60,7 @@
 #' @export dataAugmentation
 dataAugmentation <- function( inputImageList,
   segmentationImageList = NULL,
+  pointsetList = NULL,
   numberOfSimulations = 10,
   referenceImage = NULL,
   transformType = 'affineAndDeformation',
@@ -77,6 +84,12 @@ dataAugmentation <- function( inputImageList,
 
   batchX <- NULL
   batchY <- NULL
+  batchYpt <- NULL
+  npts = 0
+  if ( ! is.null( pointsetList ) ) {
+    npts = nrow( pointsetList[[1]] )
+    batchYpt <- array( NA, dim = c( numberOfSimulations, npts, referenceImage@dimension ) )
+  }
   if( ! is.null( outputNumpyFilePrefix ) )
     {
     batchX <- array( data = 0,
@@ -111,6 +124,7 @@ dataAugmentation <- function( inputImageList,
 
   simulatedImageList <- list()
   simulatedSegmentationImageList <- list()
+  simulatedPointsetList <- list()
 
   for( i in seq.int( numberOfSimulations ) )
     {
@@ -132,6 +146,20 @@ dataAugmentation <- function( inputImageList,
           } else {
           batchY[i,,,] <- as.array( segmentation[[1]] )
           }
+        }
+      }
+
+    points <- NULL
+    if( ! is.null( pointsetList ) )
+      {
+      simtx <- transformAugmentation$simulatedTransforms[[i]]
+      simtxinv = invertAntsrTransform( simtx )
+      whichsub = transformAugmentation$whichSubject[i]
+      simpt = applyAntsrTransformToPoint( simtxinv, pointsetList[[whichsub]] )
+      simulatedPointsetList[[i]] <- simpt
+      if( ! is.null( batchYpt ) )
+        {
+        batchYpt[i,,] = simpt
         }
       }
 
@@ -229,6 +257,7 @@ dataAugmentation <- function( inputImageList,
       }
     np$save( paste0( outputNumpyFilePrefix, "SimulatedImages.npy"), batchX  )
     }
+
   if( ! is.null( batchY ) )
     {
     np <- reticulate::import( "numpy" )
@@ -239,12 +268,27 @@ dataAugmentation <- function( inputImageList,
     np$save( paste0( outputNumpyFilePrefix, "SimulatedSegmentationImages.npy"), batchY )
     }
 
+  if( ! is.null( batchYpt ) )
+    {
+    np <- reticulate::import( "numpy" )
+    if( verbose )
+      {
+      cat( "Writing points to numpy array\n" )
+      }
+    np$save( paste0( outputNumpyFilePrefix, "SimulatedPointsets.npy"), batchYpt )
+    }
+
   if( is.null( segmentationImageList ) )
     {
     return( list( simulatedImages = simulatedImageList ) )
-    } else {
+    } else if( is.null( pointsetList ) ) {
     return( list( simulatedImages = simulatedImageList,
                   simulatedSegmentationImages = simulatedSegmentationImageList ) )
+    } else {
+    return( list( simulatedImages = simulatedImageList,
+                  simulatedSegmentationImages = simulatedSegmentationImageList,
+                  simulatedPointsetList = simulatedPointsetList ) )
+
     }
 
 }
