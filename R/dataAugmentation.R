@@ -255,7 +255,8 @@ dataAugmentation <- function( inputImageList,
       {
       cat( "Writing images to numpy array\n" )
       }
-    np$save( paste0( outputNumpyFilePrefix, "SimulatedImages.npy"), batchX  )
+    if ( ! is.null( outputNumpyFilePrefix ) )
+      np$save( paste0( outputNumpyFilePrefix, "SimulatedImages.npy"), batchX  )
     }
 
   if( ! is.null( batchY ) )
@@ -265,7 +266,8 @@ dataAugmentation <- function( inputImageList,
       {
       cat( "Writing segmentation images to numpy array\n" )
       }
-    np$save( paste0( outputNumpyFilePrefix, "SimulatedSegmentationImages.npy"), batchY )
+    if ( ! is.null( outputNumpyFilePrefix ) )
+      np$save( paste0( outputNumpyFilePrefix, "SimulatedSegmentationImages.npy"), batchY )
     }
 
   if( ! is.null( batchYpt ) )
@@ -275,7 +277,8 @@ dataAugmentation <- function( inputImageList,
       {
       cat( "Writing points to numpy array\n" )
       }
-    np$save( paste0( outputNumpyFilePrefix, "SimulatedPointsets.npy"), batchYpt )
+    if ( ! is.null( outputNumpyFilePrefix ) )
+      np$save( paste0( outputNumpyFilePrefix, "SimulatedPointsets.npy"), batchYpt )
     }
 
   if( is.null( segmentationImageList )  & is.null(pointsetList ))
