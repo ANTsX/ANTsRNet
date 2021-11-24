@@ -192,6 +192,7 @@ dataAugmentation <- function( inputImageList,
           cat( "        Adding noise (",  noiseModel,  ").\n" )
           }
 
+        if ( any(noiseParameters) > 0 )
         if( tolower( noiseModel ) == "additivegaussian" )
           {
           parameters <- c( noiseParameters[1], runif(1, min = 0.0, max = noiseParameters[2] ) )
@@ -217,8 +218,10 @@ dataAugmentation <- function( inputImageList,
         cat( "        Adding simulated bias field.\n" )
         }
 
-      biasField <- simulateBiasField( image, sdBiasField = sdSimulatedBiasField )
-      image <- image * ( biasField + 1 )
+      if ( sdSimulatedBiasField > 0 ) {
+        biasField <- simulateBiasField( image, sdBiasField = sdSimulatedBiasField )
+        image <- image * ( biasField + 1 )
+        }
 
       # Histogram intensity warping
 
@@ -227,10 +230,12 @@ dataAugmentation <- function( inputImageList,
         cat( "        Performing intensity histogram warping.\n" )
         }
 
-      breakPoints <- c( 0.2, 0.4, 0.6, 0.8 )
-      displacements = rnorm( length( breakPoints ), mean = 0, sd = sdHistogramWarping )
-      image <- histogramWarpImageIntensities( image, breakPoints = breakPoints,
-          clampEndPoints = c( FALSE, FALSE ), displacements = displacements )
+      if ( sdHistogramWarping > 0 ) {
+        breakPoints <- c( 0.2, 0.4, 0.6, 0.8 )
+        displacements = rnorm( length( breakPoints ), mean = 0, sd = sdHistogramWarping )
+        image <- histogramWarpImageIntensities( image, breakPoints = breakPoints,
+            clampEndPoints = c( FALSE, FALSE ), displacements = displacements )
+        }
 
       simulatedLocalImageList[[j]] <- image
 
