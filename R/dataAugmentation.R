@@ -192,7 +192,7 @@ dataAugmentation <- function( inputImageList,
           cat( "        Adding noise (",  noiseModel,  ").\n" )
           }
 
-        if ( any(noiseParameters) > 0 )
+        if ( any(noiseParameters > 0 ) )
         if( tolower( noiseModel ) == "additivegaussian" )
           {
           parameters <- c( noiseParameters[1], runif(1, min = 0.0, max = noiseParameters[2] ) )
