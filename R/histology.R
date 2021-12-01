@@ -16,7 +16,7 @@
 #' library( keras )
 #'
 #' image <- antsImageRead( "image.nii.gz" )
-#' output <- lungExtraction( image )
+#' output <- arterialLesionSegmentation( image )
 #' }
 #' @import keras
 #' @export
@@ -39,16 +39,13 @@ arterialLesionSegmentation <- function( image,
   weightsFileName <- getPretrainedNetwork( "arterialLesionWeibinShi",
     antsxnetCacheDirectory = antsxnetCacheDirectory )
 
-  classes <- c( "background", "foreground" )
-  numberOfClassificationLabels <- length( classes )
-
   resampledImageSize <- c( 512, 512 )
 
   unetModel <- createUnetModel2D( c( resampledImageSize, 1 ),
-    numberOfOutputs = numberOfClassificationLabels, mode = "classification",
+    numberOfOutputs = 1, mode = "sigmoid",
     numberOfFilters = c( 64, 96, 128, 256, 512 ),
     convolutionKernelSize = c( 3, 3 ), deconvolutionKernelSize = c( 2, 2 ),
-    dropoutRate = 0.0, weightDecay = 0, 
+    dropoutRate = 0.0, weightDecay = 0,
     additionalOptions = c( "initialConvolutionKernelSize[5]", "attentionGating" ) )
   unetModel$load_weights( weightsFileName )
 
@@ -56,11 +53,11 @@ arterialLesionSegmentation <- function( image,
     {
     cat( "Preprocessing:  Resampling and N4 bias correction.\n" )
     }
-  preprocessedImage <- antsImageClone( image ) 
+  preprocessedImage <- antsImageClone( image )
   preprocessedImage <- preprocessedImage / max( preprocessedImage )
-  preprocessedImage <- resampleImage( preprocessedImage, resampledImageSize, 
+  preprocessedImage <- resampleImage( preprocessedImage, resampledImageSize,
       useVoxels = TRUE, interpType = 0 )
-  preprocessedImage <- n4BiasFieldCorrection( preprocessedImage, 
+  preprocessedImage <- n4BiasFieldCorrection( preprocessedImage,
       shrinkFactor = 2, returnBiasField = FALSE, verbose = verbose )
 
   batchX <- array( data = as.array( preprocessedImage ),
@@ -68,26 +65,14 @@ arterialLesionSegmentation <- function( image,
   batchX <- ( batchX - min( batchX ) ) / ( max( batchX ) - min( batchX ) )
 
   predictedData <- unetModel %>% predict( batchX, verbose = verbose )
-  probabilityImagesArray <- decodeUnet( predictedData, preprocessedImage )
+  foregroundProbabilityImage <- as.antsImage( drop( predictedData ), reference = preprocessedImage )
 
   if( verbose == TRUE )
     {
     cat( "Post-processing:  resampling to original space.\n" )
     }
 
-  probabilityImages <- list()
-  for( i in seq_len( numberOfClassificationLabels ) )
-    {
-    probabilityImageTmp <- probabilityImagesArray[[1]][[i]]
-    probabilityImages[[i]] <- resampleImageToTarget( probabilityImageTmp, image )
-    }
+  foregroundProbabilityImage <- resampleImageToTarget( foregroundProbabilityImage, image )
 
-  imageMatrix <- imageListToMatrix( probabilityImages, image * 0 + 1 )
-  segmentationMatrix <- matrix( apply( imageMatrix, 2, which.max ), nrow = 1 ) - 1
-  segmentationImage <- matrixToImages( segmentationMatrix, image * 0 + 1 )[[1]]
-
-  return( list( segmentationImage = segmentationImage,
-                probabilityImages = probabilityImages ) )
-
-
+  return( foregroundProbabilityImage )
   }
