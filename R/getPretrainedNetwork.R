@@ -112,7 +112,7 @@ getPretrainedNetwork <- function(
 
   url <- switch(
     fileId,
-    arterialLesionWeibinShi = "https://figshare.com/ndownloader/files/30761716",
+    arterialLesionWeibinShi = "https://figshare.com/ndownloader/files/31624922",
     brainAgeGender = "https://ndownloader.figshare.com/files/22179948",
     brainAgeFmrib = "https://ndownloader.figshare.com/files/22429077",
     brainAgeDeepBrainNet = "https://ndownloader.figshare.com/files/23573402",
