@@ -34,7 +34,7 @@
 #'    pepperValue" are assumed to be in the intensity normalized range of [0, 1].
 #' @param sdSimulatedBiasField Characterize the standard deviation of the amplitude.
 #' @param sdHistogramWarping Determines the strength of the bias field.
-#' @param sdAffine Determines the amount of transformation based change
+#' @param sdAffine Determines the amount of transformation based change.
 #' @param outputNumpyFilePrefix Filename of output numpy array containing all the
 #'    simulated images and segmentations.
 #' @return list of lists of transformed images and/or outputs to a numpy array.
@@ -47,12 +47,12 @@
 #' image2 <- antsImageRead( getANTsRData( "r64" ) )
 #' segmentation1 <- thresholdImage( image1, "Otsu", 3 )
 #' segmentation2 <- thresholdImage( image2, "Otsu", 3 )
-#' pts1 = getCentroids( segmentation1 )[,1:2]
-#' pts2 = getCentroids( segmentation2 )[,1:2]
+#' points1 = getCentroids( segmentation1 )[,1:2]
+#' points2 = getCentroids( segmentation2 )[,1:2]
 #' data <- dataAugmentation(
 #'   list( list( image1 ), list( image2 ) ),
 #'   list( segmentation1, segmentation2 ),
-#'   list( pts1, pts2), transformType='scaleShear' )
+#'   list( points1, points2 ), transformType = 'scaleShear' )
 #' rm(segmentation1); gc()
 #' rm(segmentation2); gc()
 #' rm(image1); gc()
@@ -84,12 +84,14 @@ dataAugmentation <- function( inputImageList,
 
   batchX <- NULL
   batchY <- NULL
-  batchYpt <- NULL
-  npts = 0
-  if ( ! is.null( pointsetList ) ) {
-    npts = nrow( pointsetList[[1]] )
-    batchYpt <- array( NA, dim = c( numberOfSimulations, npts, referenceImage@dimension ) )
-  }
+  batchYpoints <- NULL
+  numberOfPoints <- 0
+
+  if( ! is.null( pointsetList ) )
+    {
+    numberOfPoints = nrow( pointsetList[[1]] )
+    batchYpoints <- array( NA, dim = c( numberOfSimulations, numberOfPoints, referenceImage@dimension ) )
+    }
   if( ! is.null( outputNumpyFilePrefix ) )
     {
     batchX <- array( data = 0,
@@ -136,30 +138,29 @@ dataAugmentation <- function( inputImageList,
     segmentation <- NULL
     if( ! is.null( segmentationImageList ) )
       {
-      segmentation <- transformAugmentation$simulatedSegmentationImages[i]
+      segmentation <- transformAugmentation$simulatedSegmentationImages[[i]]
       simulatedSegmentationImageList[[i]] <- segmentation
       if( ! is.null( batchY ) )
         {
         if( referenceImage@dimension == 2 )
           {
-          batchY[i,,] <- as.array( segmentation[[1]] )
+          batchY[i,,] <- as.array( segmentation )
           } else {
-          batchY[i,,,] <- as.array( segmentation[[1]] )
+          batchY[i,,,] <- as.array( segmentation )
           }
         }
       }
 
-    points <- NULL
     if( ! is.null( pointsetList ) )
       {
-      simtx <- transformAugmentation$simulatedTransforms[[i]]
-      simtxinv = invertAntsrTransform( simtx )
-      whichsub = transformAugmentation$whichSubject[i]
-      simpt = applyAntsrTransformToPoint( simtxinv, pointsetList[[whichsub]] )
-      simulatedPointsetList[[i]] <- simpt
-      if( ! is.null( batchYpt ) )
+      simulatedTransform <- transformAugmentation$simulatedTransforms[[i]]
+      simulatedTransformInverse <- invertAntsrTransform( simulatedTransform )
+      whichSubject <- transformAugmentation$whichSubject[i]
+      simulatedPoints <- applyAntsrTransformToPoint( simulatedTransformInverse, pointsetList[[whichSubject]] )
+      simulatedPointsetList[[i]] <- simulatedPoints
+      if( ! is.null( batchYpoints ) )
         {
-        batchYpt[i,,] = simpt
+        batchYpoints[i,,] <- simulatedPoints
         }
       }
 
@@ -192,50 +193,65 @@ dataAugmentation <- function( inputImageList,
           cat( "        Adding noise (",  noiseModel,  ").\n" )
           }
 
-        if ( any(noiseParameters > 0 ) )
-        if( tolower( noiseModel ) == "additivegaussian" )
+        if( any( noiseParameters > 0 ) )
           {
-          parameters <- c( noiseParameters[1], runif(1, min = 0.0, max = noiseParameters[2] ) )
-          image <- addNoiseToImage( image, noiseModel = "additivegaussian", noiseParameters = parameters )
-          } else if( tolower( noiseModel ) == "saltandpepper" ) {
-          parameters <- c( runif(1, min = 0.0, max = noiseParameters[1] ), noiseParameters[2], noiseParameters[3] )
-          image <- addNoiseToImage(image, noiseModel = "saltandpepper", noiseParameters = parameters )
-          } else if( tolower( noiseModel ) == "shot" ) {
-          parameters <- c( runif(1, min = 0.0, max = noiseParameters[1] ) )
-          image <- addNoiseToImage(image, noiseModel = "shot", noiseParameters = parameters )
-          } else if( tolower( noiseModel ) == "speckle" ) {
-          parameters <- c( runif(1, min = 0.0, max = noiseParameters[1] ) )
-          image <- addNoiseToImage(image, noiseModel = "speckle", noiseParameters = parameters )
-          } else {
-          stop( "Unrecognized noise model." )
+          if( tolower( noiseModel ) == "additivegaussian" )
+            {
+            parameters <- c( noiseParameters[1], runif( 1, min = 0.0, max = noiseParameters[2] ) )
+            image <- addNoiseToImage( image, noiseModel = "additivegaussian", noiseParameters = parameters )
+            } else if( tolower( noiseModel ) == "saltandpepper" ) {
+            parameters <- c( runif( 1, min = 0.0, max = noiseParameters[1] ), noiseParameters[2], noiseParameters[3] )
+            image <- addNoiseToImage( image, noiseModel = "saltandpepper", noiseParameters = parameters )
+            } else if( tolower( noiseModel ) == "shot" ) {
+            parameters <- c( runif(1, min = 0.0, max = noiseParameters[1] ) )
+            image <- addNoiseToImage( image, noiseModel = "shot", noiseParameters = parameters )
+            } else if( tolower( noiseModel ) == "speckle" ) {
+            parameters <- c( runif( 1, min = 0.0, max = noiseParameters[1] ) )
+            image <- addNoiseToImage( image, noiseModel = "speckle", noiseParameters = parameters )
+            } else {
+            stop( "Unrecognized noise model." )
+            }
           }
         }
 
       # Simulated bias field
 
-      if( sdSimulatedBiasField > 0 & verbose )
+      if ( sdSimulatedBiasField > 0 )
         {
-        cat( "        Adding simulated bias field.\n" )
-        }
 
-      if ( sdSimulatedBiasField > 0 ) {
+        if( verbose )
+          {
+          cat( "        Adding simulated bias field.\n" )
+          }
+
         biasField <- simulateBiasField( image, sdBiasField = sdSimulatedBiasField )
         image <- image * ( biasField + 1 )
         }
 
       # Histogram intensity warping
 
-      if( sdHistogramWarping > 0 & verbose )
+      if ( sdHistogramWarping > 0 )
         {
-        cat( "        Performing intensity histogram warping.\n" )
-        }
 
-      if ( sdHistogramWarping > 0 ) {
+        if( verbose )
+          {
+          cat( "        Performing intensity histogram warping.\n" )
+          }
+
         breakPoints <- c( 0.2, 0.4, 0.6, 0.8 )
         displacements = rnorm( length( breakPoints ), mean = 0, sd = sdHistogramWarping )
         image <- histogramWarpImageIntensities( image, breakPoints = breakPoints,
             clampEndPoints = c( FALSE, FALSE ), displacements = displacements )
         }
+
+      # Rescale to original intensity range
+
+      if( verbose )
+        {
+        cat( "        Rescaling to original intensity range.\n" )
+        }
+
+      image <- iMath( image, "Normalize" ) * ( imageRange[2] - imageRange[1] ) + imageRange[1]
 
       simulatedLocalImageList[[j]] <- image
 
@@ -260,8 +276,10 @@ dataAugmentation <- function( inputImageList,
       {
       cat( "Writing images to numpy array\n" )
       }
-    if ( ! is.null( outputNumpyFilePrefix ) )
+    if( ! is.null( outputNumpyFilePrefix ) )
+      {
       np$save( paste0( outputNumpyFilePrefix, "SimulatedImages.npy"), batchX  )
+      }
     }
 
   if( ! is.null( batchY ) )
@@ -271,22 +289,26 @@ dataAugmentation <- function( inputImageList,
       {
       cat( "Writing segmentation images to numpy array\n" )
       }
-    if ( ! is.null( outputNumpyFilePrefix ) )
+    if( ! is.null( outputNumpyFilePrefix ) )
+      {
       np$save( paste0( outputNumpyFilePrefix, "SimulatedSegmentationImages.npy"), batchY )
+      }
     }
 
-  if( ! is.null( batchYpt ) )
+  if( ! is.null( batchYpoints ) )
     {
     np <- reticulate::import( "numpy" )
     if( verbose )
       {
       cat( "Writing points to numpy array\n" )
       }
-    if ( ! is.null( outputNumpyFilePrefix ) )
-      np$save( paste0( outputNumpyFilePrefix, "SimulatedPointsets.npy"), batchYpt )
+    if( ! is.null( outputNumpyFilePrefix ) )
+      {
+      np$save( paste0( outputNumpyFilePrefix, "SimulatedPointsets.npy"), batchYpoints )
+      }
     }
 
-  if( is.null( segmentationImageList )  & is.null(pointsetList ))
+  if( is.null( segmentationImageList ) & is.null( pointsetList ) )
     {
     return( list( simulatedImages = simulatedImageList ) )
     } else if( is.null( segmentationImageList ) ) {

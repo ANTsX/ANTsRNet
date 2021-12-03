@@ -233,12 +233,14 @@ randomlyTransformImageData <- function( referenceImage,
   if( is.null( segmentationImageList[[1]] ) )
     {
     return( list( simulatedImages = simulatedImageList,
-                  simulatedTransforms = simulatedTransforms, whichSubject = randomIndices ) )
+                  simulatedTransforms = simulatedTransforms,
+                  whichSubject = randomIndices ) )
     }
   else
     {
     return( list( simulatedImages = simulatedImageList,
       simulatedSegmentationImages = simulatedSegmentationImageList,
-      simulatedTransforms = simulatedTransforms, whichSubject = randomIndices ) )
+      simulatedTransforms = simulatedTransforms,
+      whichSubject = randomIndices ) )
     }
 }
