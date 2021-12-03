@@ -89,7 +89,7 @@ dataAugmentation <- function( inputImageList,
 
   if( ! is.null( pointsetList ) )
     {
-    numberOfPoints = nrow( pointsetList[[1]] )
+    numberOfPoints <- nrow( pointsetList[[1]] )
     batchYpoints <- array( NA, dim = c( numberOfSimulations, numberOfPoints, referenceImage@dimension ) )
     }
   if( ! is.null( outputNumpyFilePrefix ) )
