@@ -127,7 +127,7 @@ dataAugmentation <- function( inputImageList,
   simulatedImageList <- list()
   simulatedSegmentationImageList <- list()
   simulatedPointsetList <- list()
-
+  subjectIDs = rep( NA, numberOfSimulations )
   for( i in seq.int( numberOfSimulations ) )
     {
     if( verbose )
@@ -151,11 +151,12 @@ dataAugmentation <- function( inputImageList,
         }
       }
 
+    whichSubject <- transformAugmentation$whichSubject[i]
+    subjectIDs[ i ] = whichSubject
     if( ! is.null( pointsetList ) )
       {
       simulatedTransform <- transformAugmentation$simulatedTransforms[[i]]
       simulatedTransformInverse <- invertAntsrTransform( simulatedTransform )
-      whichSubject <- transformAugmentation$whichSubject[i]
       simulatedPoints <- applyAntsrTransformToPoint( simulatedTransformInverse, pointsetList[[whichSubject]] )
       simulatedPointsetList[[i]] <- simulatedPoints
       if( ! is.null( batchYpoints ) )
@@ -310,17 +311,21 @@ dataAugmentation <- function( inputImageList,
 
   if( is.null( segmentationImageList ) & is.null( pointsetList ) )
     {
-    return( list( simulatedImages = simulatedImageList ) )
+    return( list( simulatedImages = simulatedImageList,
+      subjectIDs = subjectIDs ) )
     } else if( is.null( segmentationImageList ) ) {
     return( list( simulatedImages = simulatedImageList,
-                  simulatedPointsetList = simulatedPointsetList ) )
+                  simulatedPointsetList = simulatedPointsetList,
+                  subjectIDs = subjectIDs ) )
     } else if( is.null( pointsetList ) ) {
     return( list( simulatedImages = simulatedImageList,
-                  simulatedSegmentationImages = simulatedSegmentationImageList ) )
+                  simulatedSegmentationImages = simulatedSegmentationImageList,
+                  subjectIDs = subjectIDs ) )
     } else {
     return( list( simulatedImages = simulatedImageList,
                   simulatedSegmentationImages = simulatedSegmentationImageList,
-                  simulatedPointsetList = simulatedPointsetList ) )
+                  simulatedPointsetList = simulatedPointsetList,
+                  subjectIDs = subjectIDs ) )
 
     }
 
