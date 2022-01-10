@@ -34,6 +34,8 @@
 #' @param t1 raw or preprocessed 3-D T1-weighted brain image.
 #' @param t2 optional raw or preprocessed 3-D T2-weighted brain image.
 #' @param doPreprocessing perform preprocessing.  See description above.
+#' @param useRankIntensity If false, use histogram matching with cropped template 
+#' ROI.  Otherwise, use a rank intensity transform on the cropped ROI.
 #' @param antsxnetCacheDirectory destination directory for storing the downloaded
 #' template and model weights.  Since these can be resused, if
 #' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
@@ -52,7 +54,7 @@
 #' }
 #' @export
 deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
-  antsxnetCacheDirectory = NULL, verbose = FALSE )
+  antsxnetCacheDirectory = NULL, useRankIntensity = FALSE, verbose = FALSE )
 {
   if( t1@dimension != 3 )
     {
@@ -278,6 +280,11 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
     networkName <- paste0( networkName, "Hierarchical" )
     }
 
+  if( useRankIntensity )  
+    {
+    networkName <- paste0( networkName, "_ri" ) 
+    }
+
   if( verbose == TRUE )
     {
     cat( "DeepFlash: retrieving model weights (left).\n" )
@@ -305,23 +312,43 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
     }
 
   t1Cropped <- cropIndices( t1Preprocessed, lowerBoundLeft, upperBoundLeft )
-  t1Cropped <- histogramMatchImage( t1Cropped, t1TemplateRoiLeft, 255, 64, FALSE )
+  if( useRankIntensity )
+    {
+    t1Cropped <- rankIntensity( t1Cropped )  
+    } else {
+    t1Cropped <- histogramMatchImage( t1Cropped, t1TemplateRoiLeft, 255, 64, FALSE )
+    }
   batchX[1,,,,1] <- as.array( t1Cropped )
   if( useContralaterality )
     {
     t1Cropped <- cropIndices( t1PreprocessedFlipped, lowerBoundLeft, upperBoundLeft )
-    t1Cropped <- histogramMatchImage( t1Cropped, t1TemplateRoiLeft, 255, 64, FALSE )
+    if( useRankIntensity )
+      {
+      t1Cropped <- rankIntensity( t1Cropped )  
+      } else {
+      t1Cropped <- histogramMatchImage( t1Cropped, t1TemplateRoiLeft, 255, 64, FALSE )
+      }
     batchX[2,,,,1] <- as.array( t1Cropped )
     }
   if( ! is.null( t2 ) )
     {
     t2Cropped <- cropIndices( t2Preprocessed, lowerBoundLeft, upperBoundLeft )
-    t2Cropped <- histogramMatchImage( t2Cropped, t2TemplateRoiLeft, 255, 64, FALSE )
+    if( useRankIntensity )
+      {
+      t2Cropped <- rankIntensity( t2Cropped )  
+      } else {
+      t2Cropped <- histogramMatchImage( t2Cropped, t2TemplateRoiLeft, 255, 64, FALSE )
+      }
     batchX[1,,,,2] <- as.array( t2Cropped )
     if( useContralaterality )
       {
       t2Cropped <- cropIndices( t2PreprocessedFlipped, lowerBoundLeft, upperBoundLeft )
-      t2Cropped <- histogramMatchImage( t2Cropped, t2TemplateRoiLeft, 255, 64, FALSE )
+      if( useRankIntensity )
+        {
+        t2Cropped <- rankIntensity( t2Cropped )  
+        } else {
+        t2Cropped <- histogramMatchImage( t2Cropped, t2TemplateRoiLeft, 255, 64, FALSE )
+        }
       batchX[2,,,,2] <- as.array( t2Cropped )
       }
     }
@@ -429,6 +456,11 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
     networkName <- paste0( networkName, "Hierarchical" )
     }
 
+  if( useRankIntensity )  
+    {
+    networkName <- paste0( networkName, "_ri" ) 
+    }
+
   if( verbose == TRUE )
     {
     cat( "DeepFlash: retrieving model weights (Right).\n" )
@@ -456,23 +488,43 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
     }
 
   t1Cropped <- cropIndices( t1Preprocessed, lowerBoundRight, upperBoundRight )
-  t1Cropped <- histogramMatchImage( t1Cropped, t1TemplateRoiRight, 255, 64, FALSE )
+  if( useRankIntensity )
+    {
+    t1Cropped <- rankIntensity( t1Cropped )  
+    } else {
+    t1Cropped <- histogramMatchImage( t1Cropped, t1TemplateRoiRight, 255, 64, FALSE )
+    }
   batchX[1,,,,1] <- as.array( t1Cropped )
   if( useContralaterality )
     {
     t1Cropped <- cropIndices( t1PreprocessedFlipped, lowerBoundRight, upperBoundRight )
-    t1Cropped <- histogramMatchImage( t1Cropped, t1TemplateRoiRight, 255, 64, FALSE )
+    if( useRankIntensity )
+      {
+      t1Cropped <- rankIntensity( t1Cropped )  
+      } else {
+      t1Cropped <- histogramMatchImage( t1Cropped, t1TemplateRoiRight, 255, 64, FALSE )
+      }
     batchX[2,,,,1] <- as.array( t1Cropped )
     }
   if( ! is.null( t2 ) )
     {
     t2Cropped <- cropIndices( t2Preprocessed, lowerBoundRight, upperBoundRight )
-    t2Cropped <- histogramMatchImage( t2Cropped, t2TemplateRoiRight, 255, 64, FALSE )
+    if( useRankIntensity )
+      {
+      t2Cropped <- rankIntensity( t2Cropped )  
+      } else {
+      t2Cropped <- histogramMatchImage( t2Cropped, t2TemplateRoiRight, 255, 64, FALSE )
+      }
     batchX[1,,,,2] <- as.array( t2Cropped )
     if( useContralaterality )
       {
       t2Cropped <- cropIndices( t2PreprocessedFlipped, lowerBoundRight, upperBoundRight )
-      t2Cropped <- histogramMatchImage( t2Cropped, t2TemplateRoiRight, 255, 64, FALSE )
+      if( useRankIntensity )
+        {
+        t2Cropped <- rankIntensity( t2Cropped )  
+        } else {
+        t2Cropped <- histogramMatchImage( t2Cropped, t2TemplateRoiRight, 255, 64, FALSE )
+        }
       batchX[2,,,,2] <- as.array( t2Cropped )
       }
     }
