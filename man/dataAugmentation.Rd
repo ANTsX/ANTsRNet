@@ -60,7 +60,7 @@ pepperValue" are assumed to be in the intensity normalized range of \link{0, 1}.
 
 \item{sdHistogramWarping}{Determines the strength of the bias field.}
 
-\item{sdAffine}{Determines the amount of transformation based change}
+\item{sdAffine}{Determines the amount of transformation based change.}
 
 \item{outputNumpyFilePrefix}{Filename of output numpy array containing all the
 simulated images and segmentations.}
@@ -81,12 +81,12 @@ image1 <- antsImageRead( getANTsRData( "r16" ) )
 image2 <- antsImageRead( getANTsRData( "r64" ) )
 segmentation1 <- thresholdImage( image1, "Otsu", 3 )
 segmentation2 <- thresholdImage( image2, "Otsu", 3 )
-pts1 = getCentroids( segmentation1 )[,1:2]
-pts2 = getCentroids( segmentation2 )[,1:2]
+points1 = getCentroids( segmentation1 )[,1:2]
+points2 = getCentroids( segmentation2 )[,1:2]
 data <- dataAugmentation(
   list( list( image1 ), list( image2 ) ),
   list( segmentation1, segmentation2 ),
-  list( pts1, pts2), transformType='scaleShear' )
+  list( points1, points2 ), transformType = 'scaleShear' )
 rm(segmentation1); gc()
 rm(segmentation2); gc()
 rm(image1); gc()

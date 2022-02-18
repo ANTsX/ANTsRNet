@@ -119,13 +119,13 @@ framework based on the following python implementation:" />
 framework based on the following python implementation:</p>
     </div>
 
-    <pre class="usage"><span class='fu'>createResNetSuperResolutionModel3D</span><span class='op'>(</span>
-  <span class='va'>inputImageSize</span>,
-  convolutionKernelSize <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>, <span class='fl'>3</span>, <span class='fl'>3</span><span class='op'>)</span>,
-  numberOfFilters <span class='op'>=</span> <span class='fl'>64</span>,
-  numberOfResidualBlocks <span class='op'>=</span> <span class='fl'>5</span>,
-  numberOfResNetBlocks <span class='op'>=</span> <span class='fl'>1</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>createResNetSuperResolutionModel3D</span>(
+  <span class='no'>inputImageSize</span>,
+  <span class='kw'>convolutionKernelSize</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>3</span>, <span class='fl'>3</span>, <span class='fl'>3</span>),
+  <span class='kw'>numberOfFilters</span> <span class='kw'>=</span> <span class='fl'>64</span>,
+  <span class='kw'>numberOfResidualBlocks</span> <span class='kw'>=</span> <span class='fl'>5</span>,
+  <span class='kw'>numberOfResNetBlocks</span> <span class='kw'>=</span> <span class='fl'>1</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -166,99 +166,95 @@ will double the upsampling amount.</p></td>
 <pre>    \url{https://github.com/titu1994/Image-Super-Resolution}
 </pre>
 
-    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
-
-    <p>Tustison NJ</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>inputImageSize</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>256</span>, <span class='fl'>256</span>, <span class='fl'>30</span>, <span class='fl'>1</span><span class='op'>)</span>
-<span class='fu'>createResNetSuperResolutionModel3D</span><span class='op'>(</span><span class='va'>inputImageSize</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; Model
-#&gt; Model: "model_33"
+    <pre class="examples"><div class='input'><span class='no'>inputImageSize</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>256</span>, <span class='fl'>256</span>, <span class='fl'>30</span>, <span class='fl'>1</span>)
+<span class='fu'>createResNetSuperResolutionModel3D</span>(<span class='no'>inputImageSize</span>)</div><div class='output co'>#&gt; Model
+#&gt; Model: "model_35"
 #&gt; ________________________________________________________________________________
 #&gt; Layer (type)              Output Shape      Param #  Connected to               
 #&gt; ================================================================================
-#&gt; input_30 (InputLayer)     [(None, 256, 256, 0                                   
+#&gt; input_32 (InputLayer)     [(None, 256, 256, 0                                   
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_129 (Conv3D)       (None, 256, 256,  1792     input_30[0][0]             
+#&gt; conv3d_129 (Conv3D)       (None, 256, 256,  1792     input_32[0][0]             
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_130 (Conv3D)       (None, 256, 256,  110656   conv3d_129[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_642 ( (None, 256, 256,  256      conv3d_130[0][0]           
+#&gt; batch_normalization_644 ( (None, 256, 256,  256      conv3d_130[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; activation_516 (Activatio (None, 256, 256,  0        batch_normalization_642[0][
+#&gt; activation_519 (Activatio (None, 256, 256,  0        batch_normalization_644[0][
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_131 (Conv3D)       (None, 256, 256,  110656   activation_516[0][0]       
+#&gt; conv3d_131 (Conv3D)       (None, 256, 256,  110656   activation_519[0][0]       
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_643 ( (None, 256, 256,  256      conv3d_131[0][0]           
+#&gt; batch_normalization_645 ( (None, 256, 256,  256      conv3d_131[0][0]           
 #&gt; ________________________________________________________________________________
 #&gt; add_162 (Add)             (None, 256, 256,  0        conv3d_129[0][0]           
-#&gt;                                                      batch_normalization_643[0][
+#&gt;                                                      batch_normalization_645[0][
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_132 (Conv3D)       (None, 256, 256,  110656   add_162[0][0]              
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_644 ( (None, 256, 256,  256      conv3d_132[0][0]           
+#&gt; batch_normalization_646 ( (None, 256, 256,  256      conv3d_132[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; activation_517 (Activatio (None, 256, 256,  0        batch_normalization_644[0][
+#&gt; activation_520 (Activatio (None, 256, 256,  0        batch_normalization_646[0][
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_133 (Conv3D)       (None, 256, 256,  110656   activation_517[0][0]       
+#&gt; conv3d_133 (Conv3D)       (None, 256, 256,  110656   activation_520[0][0]       
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_645 ( (None, 256, 256,  256      conv3d_133[0][0]           
+#&gt; batch_normalization_647 ( (None, 256, 256,  256      conv3d_133[0][0]           
 #&gt; ________________________________________________________________________________
 #&gt; add_163 (Add)             (None, 256, 256,  0        add_162[0][0]              
-#&gt;                                                      batch_normalization_645[0][
+#&gt;                                                      batch_normalization_647[0][
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_134 (Conv3D)       (None, 256, 256,  110656   add_163[0][0]              
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_646 ( (None, 256, 256,  256      conv3d_134[0][0]           
+#&gt; batch_normalization_648 ( (None, 256, 256,  256      conv3d_134[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; activation_518 (Activatio (None, 256, 256,  0        batch_normalization_646[0][
+#&gt; activation_521 (Activatio (None, 256, 256,  0        batch_normalization_648[0][
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_135 (Conv3D)       (None, 256, 256,  110656   activation_518[0][0]       
+#&gt; conv3d_135 (Conv3D)       (None, 256, 256,  110656   activation_521[0][0]       
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_647 ( (None, 256, 256,  256      conv3d_135[0][0]           
+#&gt; batch_normalization_649 ( (None, 256, 256,  256      conv3d_135[0][0]           
 #&gt; ________________________________________________________________________________
 #&gt; add_164 (Add)             (None, 256, 256,  0        add_163[0][0]              
-#&gt;                                                      batch_normalization_647[0][
+#&gt;                                                      batch_normalization_649[0][
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_136 (Conv3D)       (None, 256, 256,  110656   add_164[0][0]              
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_648 ( (None, 256, 256,  256      conv3d_136[0][0]           
+#&gt; batch_normalization_650 ( (None, 256, 256,  256      conv3d_136[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; activation_519 (Activatio (None, 256, 256,  0        batch_normalization_648[0][
+#&gt; activation_522 (Activatio (None, 256, 256,  0        batch_normalization_650[0][
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_137 (Conv3D)       (None, 256, 256,  110656   activation_519[0][0]       
+#&gt; conv3d_137 (Conv3D)       (None, 256, 256,  110656   activation_522[0][0]       
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_649 ( (None, 256, 256,  256      conv3d_137[0][0]           
+#&gt; batch_normalization_651 ( (None, 256, 256,  256      conv3d_137[0][0]           
 #&gt; ________________________________________________________________________________
 #&gt; add_165 (Add)             (None, 256, 256,  0        add_164[0][0]              
-#&gt;                                                      batch_normalization_649[0][
+#&gt;                                                      batch_normalization_651[0][
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_138 (Conv3D)       (None, 256, 256,  110656   add_165[0][0]              
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_650 ( (None, 256, 256,  256      conv3d_138[0][0]           
+#&gt; batch_normalization_652 ( (None, 256, 256,  256      conv3d_138[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; activation_520 (Activatio (None, 256, 256,  0        batch_normalization_650[0][
+#&gt; activation_523 (Activatio (None, 256, 256,  0        batch_normalization_652[0][
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_139 (Conv3D)       (None, 256, 256,  110656   activation_520[0][0]       
+#&gt; conv3d_139 (Conv3D)       (None, 256, 256,  110656   activation_523[0][0]       
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_651 ( (None, 256, 256,  256      conv3d_139[0][0]           
+#&gt; batch_normalization_653 ( (None, 256, 256,  256      conv3d_139[0][0]           
 #&gt; ________________________________________________________________________________
 #&gt; add_166 (Add)             (None, 256, 256,  0        add_165[0][0]              
-#&gt;                                                      batch_normalization_651[0][
+#&gt;                                                      batch_normalization_653[0][
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_140 (Conv3D)       (None, 256, 256,  110656   add_166[0][0]              
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_652 ( (None, 256, 256,  256      conv3d_140[0][0]           
+#&gt; batch_normalization_654 ( (None, 256, 256,  256      conv3d_140[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; activation_521 (Activatio (None, 256, 256,  0        batch_normalization_652[0][
+#&gt; activation_524 (Activatio (None, 256, 256,  0        batch_normalization_654[0][
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_141 (Conv3D)       (None, 256, 256,  110656   activation_521[0][0]       
+#&gt; conv3d_141 (Conv3D)       (None, 256, 256,  110656   activation_524[0][0]       
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_653 ( (None, 256, 256,  256      conv3d_141[0][0]           
+#&gt; batch_normalization_655 ( (None, 256, 256,  256      conv3d_141[0][0]           
 #&gt; ________________________________________________________________________________
 #&gt; add_167 (Add)             (None, 256, 256,  0        add_166[0][0]              
-#&gt;                                                      batch_normalization_653[0][
+#&gt;                                                      batch_normalization_655[0][
 #&gt; ________________________________________________________________________________
 #&gt; add_168 (Add)             (None, 256, 256,  0        add_167[0][0]              
 #&gt;                                                      conv3d_129[0][0]           
@@ -290,7 +286,7 @@ will double the upsampling amount.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

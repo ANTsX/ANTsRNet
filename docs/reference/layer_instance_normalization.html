@@ -117,20 +117,20 @@
     <p>Creates an instance normalization layer</p>
     </div>
 
-    <pre class="usage"><span class='fu'>layer_instance_normalization</span><span class='op'>(</span>
-  <span class='va'>object</span>,
-  axis <span class='op'>=</span> <span class='cn'>NULL</span>,
-  epsilon <span class='op'>=</span> <span class='fl'>0.001</span>,
-  center <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  scale <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  betaInitializer <span class='op'>=</span> <span class='st'>"zeros"</span>,
-  gammaInitializer <span class='op'>=</span> <span class='st'>"ones"</span>,
-  betaRegularizer <span class='op'>=</span> <span class='cn'>NULL</span>,
-  gammaRegularizer <span class='op'>=</span> <span class='cn'>NULL</span>,
-  betaConstraint <span class='op'>=</span> <span class='cn'>NULL</span>,
-  gammaConstraint <span class='op'>=</span> <span class='cn'>NULL</span>,
-  trainable <span class='op'>=</span> <span class='cn'>TRUE</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>layer_instance_normalization</span>(
+  <span class='no'>object</span>,
+  <span class='kw'>axis</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>epsilon</span> <span class='kw'>=</span> <span class='fl'>0.001</span>,
+  <span class='kw'>center</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>scale</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>betaInitializer</span> <span class='kw'>=</span> <span class='st'>"zeros"</span>,
+  <span class='kw'>gammaInitializer</span> <span class='kw'>=</span> <span class='st'>"ones"</span>,
+  <span class='kw'>betaRegularizer</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>gammaRegularizer</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>betaConstraint</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>gammaConstraint</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>trainable</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -138,7 +138,7 @@
     <tr>
       <th>object</th>
       <td><p>Object to compose layer with. This is either a
-<a href='https://keras.rstudio.com/reference/keras_model_sequential.html'>keras::keras_model_sequential</a> to add the layer to,
+<a href='https://rdrr.io/pkg/keras/man/keras_model_sequential.html'>keras::keras_model_sequential</a> to add the layer to,
 or another Layer which this layer will call.</p></td>
     </tr>
     <tr>
@@ -195,9 +195,6 @@ error if <code>axis = 0</code>.</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>a keras layer tensor</p>
-    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
-
-    <p>Tustison NJ</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -214,7 +211,7 @@ error if <code>axis = 0</code>.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

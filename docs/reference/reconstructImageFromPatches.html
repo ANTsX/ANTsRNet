@@ -117,12 +117,12 @@
     <p>Reconstruct image from a list of patches.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>reconstructImageFromPatches</span><span class='op'>(</span>
-  <span class='va'>patches</span>,
-  <span class='va'>domainImage</span>,
-  strideLength <span class='op'>=</span> <span class='fl'>1</span>,
-  domainImageIsMask <span class='op'>=</span> <span class='cn'>FALSE</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>reconstructImageFromPatches</span>(
+  <span class='no'>patches</span>,
+  <span class='no'>domainImage</span>,
+  <span class='kw'>strideLength</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>domainImageIsMask</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -153,29 +153,23 @@ mask used to limit the region of reconstruction from the patches.</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>an ANTs image.</p>
-    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
-
-    <p>Tustison NJ</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span> <span class='va'>ANTsR</span> <span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>ANTsR</span> )
 
-<span class='va'>image</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/antsImageRead.html'>antsImageRead</a></span><span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/getANTsRData.html'>getANTsRData</a></span><span class='op'>(</span> <span class='st'>"r16"</span> <span class='op'>)</span> <span class='op'>)</span>
-<span class='va'>patchSet</span> <span class='op'>&lt;-</span> <span class='fu'><a href='extractImagePatches.html'>extractImagePatches</a></span><span class='op'>(</span> <span class='va'>image</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='fl'>64</span>, <span class='fl'>64</span> <span class='op'>)</span>, <span class='st'>"all"</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='fl'>8</span>, <span class='fl'>8</span> <span class='op'>)</span> <span class='op'>)</span>
-<span class='va'>imageReconstructed</span> <span class='op'>&lt;-</span>
-  <span class='fu'>reconstructImageFromPatches</span><span class='op'>(</span> <span class='va'>patchSet</span>, <span class='va'>image</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='fl'>8</span>, <span class='fl'>8</span> <span class='op'>)</span> <span class='op'>)</span>
-<span class='fu'>testthat</span><span class='fu'>::</span><span class='fu'><a href='https://testthat.r-lib.org/reference/equality-expectations.html'>expect_equal</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/as.array.html'>as.array</a></span><span class='op'>(</span><span class='va'>image</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/as.array.html'>as.array</a></span><span class='op'>(</span><span class='va'>imageReconstructed</span><span class='op'>)</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span><span class='op'>(</span><span class='va'>image</span><span class='op'>)</span>; <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2595231 138.7    4421272 236.2         NA   4421272  236.2
-#&gt; Vcells 9686234  74.0   28525737 217.7      65536 150513636 1148.4</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span><span class='op'>(</span><span class='va'>patchSet</span><span class='op'>)</span>; <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2592246 138.5    4421272 236.2         NA   4421272  236.2
-#&gt; Vcells 7123144  54.4   28525737 217.7      65536 150513636 1148.4</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span><span class='op'>(</span><span class='va'>imageReconstructed</span><span class='op'>)</span>; <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2592240 138.5    4421272 236.2         NA   4421272  236.2
-#&gt; Vcells 7123170  54.4   28525737 217.7      65536 150513636 1148.4</div></pre>
+<span class='no'>image</span> <span class='kw'>&lt;-</span> <span class='fu'>antsImageRead</span>( <span class='fu'>getANTsRData</span>( <span class='st'>"r16"</span> ) )
+<span class='no'>patchSet</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='extractImagePatches.html'>extractImagePatches</a></span>( <span class='no'>image</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>64</span>, <span class='fl'>64</span> ), <span class='st'>"all"</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>8</span>, <span class='fl'>8</span> ) )
+<span class='no'>imageReconstructed</span> <span class='kw'>&lt;-</span>
+  <span class='fu'>reconstructImageFromPatches</span>( <span class='no'>patchSet</span>, <span class='no'>image</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>8</span>, <span class='fl'>8</span> ) )
+<span class='kw pkg'>testthat</span><span class='kw ns'>::</span><span class='fu'><a href='https://testthat.r-lib.org/reference/equality-expectations.html'>expect_equal</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/array.html'>as.array</a></span>(<span class='no'>image</span>), <span class='fu'><a href='https://rdrr.io/r/base/array.html'>as.array</a></span>(<span class='no'>imageReconstructed</span>))
+<span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>image</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
+#&gt; Ncells 2628774 140.4    4477500 239.2         NA   4477500 239.2
+#&gt; Vcells 9728082  74.3   28558084 217.9     102400 127434651 972.3</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>patchSet</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
+#&gt; Ncells 2626614 140.3    4477500 239.2         NA   4477500 239.2
+#&gt; Vcells 7166367  54.7   28558084 217.9     102400 127434651 972.3</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>imageReconstructed</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
+#&gt; Ncells 2626608 140.3    4477500 239.2         NA   4477500 239.2
+#&gt; Vcells 7166393  54.7   28558084 217.9     102400 127434651 972.3</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -191,7 +185,7 @@ mask used to limit the region of reconstruction from the patches.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

@@ -126,7 +126,7 @@
 
     
 
-<dl>
+<dl'>
 <dt>numberOfClusters</dt><dd><p>number of clusters.</p></dd>
 <dt>initialClusterWeights</dt><dd><p></p></dd>
 <dt>alpha</dt><dd><p>parameter</p></dd>
@@ -141,16 +141,12 @@
 <p><code>$initialize</code> instantiates a new class.</p>
 <p><code>$call</code> main body.</p>
 <p><code>$compute_output_shape</code> computes the output shape.</p>
-    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
-
-    <p>Tustison NJ</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>model</span> <span class='op'>=</span> <span class='va'>ClusteringLayer</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span>numberOfClusters <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
-<span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='va'>model</span><span class='op'>$</span><span class='fu'>build</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>20</span>, <span class='fl'>20</span><span class='op'>)</span><span class='op'>)</span>
-<span class='op'>}</span>
-</div></pre>
+    <pre class="examples"><div class='input'><span class='no'>model</span> <span class='kw'>=</span> <span class='no'>ClusteringLayer</span>$<span class='fu'>new</span>(<span class='kw'>numberOfClusters</span> <span class='kw'>=</span> <span class='fl'>2</span>)
+<span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+<span class='no'>model</span>$<span class='fu'><a href='https://rdrr.io/r/utils/PkgUtils.html'>build</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>20</span>, <span class='fl'>20</span>))
+}</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -166,7 +162,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

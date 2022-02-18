@@ -9,6 +9,7 @@ deepFlash(
   t2 = NULL,
   doPreprocessing = TRUE,
   antsxnetCacheDirectory = NULL,
+  useRankIntensity = FALSE,
   verbose = FALSE
 )
 }
@@ -23,6 +24,9 @@ deepFlash(
 template and model weights.  Since these can be resused, if
 \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
 inst/extdata/ subfolder of the ANTsRNet package.}
+
+\item{useRankIntensity}{If false, use histogram matching with cropped template
+ROI.  Otherwise, use a rank intensity transform on the cropped ROI.}
 
 \item{verbose}{print progress.}
 }
@@ -48,8 +52,8 @@ The labeling is as follows:
 \item{Label 10:}{right perirhinal}
 \item{Label 11:}{left parahippocampal}
 \item{Label 12:}{right parahippocampal}
-\item{Label 13:}{left DG/CA3}
-\item{Label 14:}{right DG/CA3}
+\item{Label 13:}{left DG/CA2/CA3/CA4}
+\item{Label 14:}{right DG/CA2/CA3/CA4}
 \item{Label 15:}{left CA1}
 \item{Label 16:}{right CA1}
 \item{Label 17:}{left subiculum}

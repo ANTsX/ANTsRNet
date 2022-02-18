@@ -119,17 +119,17 @@ image segmentation and regression with the paper available here:" />
 image segmentation and regression with the paper available here:</p>
     </div>
 
-    <pre class="usage"><span class='fu'>createResUnetModel3D</span><span class='op'>(</span>
-  <span class='va'>inputImageSize</span>,
-  numberOfOutputs <span class='op'>=</span> <span class='fl'>1</span>,
-  numberOfFiltersAtBaseLayer <span class='op'>=</span> <span class='fl'>32</span>,
-  bottleNeckBlockDepthSchedule <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>, <span class='fl'>4</span><span class='op'>)</span>,
-  convolutionKernelSize <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>, <span class='fl'>3</span>, <span class='fl'>3</span><span class='op'>)</span>,
-  deconvolutionKernelSize <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>, <span class='fl'>2</span>, <span class='fl'>2</span><span class='op'>)</span>,
-  dropoutRate <span class='op'>=</span> <span class='fl'>0</span>,
-  weightDecay <span class='op'>=</span> <span class='fl'>0.0001</span>,
-  mode <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"classification"</span>, <span class='st'>"regression"</span><span class='op'>)</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>createResUnetModel3D</span>(
+  <span class='no'>inputImageSize</span>,
+  <span class='kw'>numberOfOutputs</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>numberOfFiltersAtBaseLayer</span> <span class='kw'>=</span> <span class='fl'>32</span>,
+  <span class='kw'>bottleNeckBlockDepthSchedule</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>3</span>, <span class='fl'>4</span>),
+  <span class='kw'>convolutionKernelSize</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>3</span>, <span class='fl'>3</span>, <span class='fl'>3</span>),
+  <span class='kw'>deconvolutionKernelSize</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>2</span>, <span class='fl'>2</span>, <span class='fl'>2</span>),
+  <span class='kw'>dropoutRate</span> <span class='kw'>=</span> <span class='fl'>0</span>,
+  <span class='kw'>weightDecay</span> <span class='kw'>=</span> <span class='fl'>0.0001</span>,
+  <span class='kw'>mode</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"classification"</span>, <span class='st'>"regression"</span>)
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -195,44 +195,40 @@ kernel weights of the convolution layers.  Default = 0.0.</p></td>
 implementation:</p><pre>    \url{https://github.com/veugene/fcn_maker/}
 </pre>
 
-    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
-
-    <p>Tustison NJ</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span> <span class='va'><a href='https://github.com/ANTsX/ANTsRNet'>ANTsRNet</a></span> <span class='op'>)</span>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span> <span class='va'><a href='https://keras.rstudio.com'>keras</a></span> <span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>ANTsRNet</span> )
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>keras</span> )
 
-<span class='va'>model</span> <span class='op'>&lt;-</span> <span class='fu'>createResUnetModel3D</span><span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='fl'>64</span>, <span class='fl'>64</span>, <span class='fl'>64</span>, <span class='fl'>1</span> <span class='op'>)</span> <span class='op'>)</span>
+<span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'>createResUnetModel3D</span>( <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>64</span>, <span class='fl'>64</span>, <span class='fl'>64</span>, <span class='fl'>1</span> ) )
 
-<span class='va'>metric_multilabel_dice_coefficient</span> <span class='op'>&lt;-</span>
-  <span class='fu'><a href='https://keras.rstudio.com/reference/metric_binary_accuracy.html'>custom_metric</a></span><span class='op'>(</span> <span class='st'>"multilabel_dice_coefficient"</span>,
-    <span class='va'>multilabel_dice_coefficient</span> <span class='op'>)</span>
+<span class='no'>metric_multilabel_dice_coefficient</span> <span class='kw'>&lt;-</span>
+  <span class='fu'><a href='https://rdrr.io/pkg/keras/man/metric_binary_accuracy.html'>custom_metric</a></span>( <span class='st'>"multilabel_dice_coefficient"</span>,
+    <span class='no'>multilabel_dice_coefficient</span> )
 
-<span class='va'>loss_dice</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span> <span class='va'>y_true</span>, <span class='va'>y_pred</span> <span class='op'>)</span> <span class='op'>{</span>
-  <span class='op'>-</span><span class='fu'><a href='multilabel_dice_coefficient.html'>multilabel_dice_coefficient</a></span><span class='op'>(</span><span class='va'>y_true</span>, <span class='va'>y_pred</span><span class='op'>)</span>
-<span class='op'>}</span>
-<span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span><span class='op'>(</span><span class='va'>loss_dice</span>, <span class='st'>"py_function_name"</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='st'>"multilabel_dice_coefficient"</span>
+<span class='no'>loss_dice</span> <span class='kw'>&lt;-</span> <span class='kw'>function</span>( <span class='no'>y_true</span>, <span class='no'>y_pred</span> ) {
+  -<span class='fu'><a href='multilabel_dice_coefficient.html'>multilabel_dice_coefficient</a></span>(<span class='no'>y_true</span>, <span class='no'>y_pred</span>)
+}
+<span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span>(<span class='no'>loss_dice</span>, <span class='st'>"py_function_name"</span>) <span class='kw'>&lt;-</span> <span class='st'>"multilabel_dice_coefficient"</span>
 
-<span class='va'>model</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://generics.r-lib.org/reference/compile.html'>compile</a></span><span class='op'>(</span> loss <span class='op'>=</span> <span class='va'>loss_dice</span>,
-  optimizer <span class='op'>=</span> <span class='fu'><a href='https://keras.rstudio.com/reference/optimizer_adam.html'>optimizer_adam</a></span><span class='op'>(</span> lr <span class='op'>=</span> <span class='fl'>0.0001</span> <span class='op'>)</span>,
-  metrics <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='va'>metric_multilabel_dice_coefficient</span>,
-    <span class='va'>metric_categorical_crossentropy</span> <span class='op'>)</span> <span class='op'>)</span>
+<span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/reexports.html'>compile</a></span>( <span class='kw'>loss</span> <span class='kw'>=</span> <span class='no'>loss_dice</span>,
+  <span class='kw'>optimizer</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/optimizer_adam.html'>optimizer_adam</a></span>( <span class='kw'>lr</span> <span class='kw'>=</span> <span class='fl'>0.0001</span> ),
+  <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='no'>metric_multilabel_dice_coefficient</span>,
+    <span class='no'>metric_categorical_crossentropy</span> ) )
 
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span> <span class='va'>model</span> <span class='op'>)</span>
-</div><div class='output co'>#&gt; Model
-#&gt; Model: "model_35"
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>( <span class='no'>model</span> )</div><div class='output co'>#&gt; Model
+#&gt; Model: "model_37"
 #&gt; ________________________________________________________________________________
 #&gt; Layer (type)              Output Shape      Param #  Connected to               
 #&gt; ================================================================================
-#&gt; input_32 (InputLayer)     [(None, 64, 64, 6 0                                   
+#&gt; input_34 (InputLayer)     [(None, 64, 64, 6 0                                   
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_144 (Conv3D)       (None, 64, 64, 64 896      input_32[0][0]             
+#&gt; conv3d_144 (Conv3D)       (None, 64, 64, 64 896      input_34[0][0]             
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_692 ( (None, 64, 64, 64 128      conv3d_144[0][0]           
+#&gt; batch_normalization_694 ( (None, 64, 64, 64 128      conv3d_144[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; thresholded_re_lu_38 (Thr (None, 64, 64, 64 0        batch_normalization_692[0][
+#&gt; thresholded_re_lu_38 (Thr (None, 64, 64, 64 0        batch_normalization_694[0][
 #&gt; ________________________________________________________________________________
 #&gt; max_pooling3d_4 (MaxPooli (None, 32, 32, 32 0        thresholded_re_lu_38[0][0] 
 #&gt; ________________________________________________________________________________
@@ -243,21 +239,21 @@ implementation:</p><pre>    \url{https://github.com/veugene/fcn_maker/}
 #&gt; add_190 (Add)             (None, 32, 32, 32 0        conv3d_146[0][0]           
 #&gt;                                                      conv3d_145[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_693 ( (None, 32, 32, 32 128      add_190[0][0]              
+#&gt; batch_normalization_695 ( (None, 32, 32, 32 128      add_190[0][0]              
 #&gt; ________________________________________________________________________________
-#&gt; thresholded_re_lu_39 (Thr (None, 32, 32, 32 0        batch_normalization_693[0][
+#&gt; thresholded_re_lu_39 (Thr (None, 32, 32, 32 0        batch_normalization_695[0][
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_147 (Conv3D)       (None, 16, 16, 16 1056     thresholded_re_lu_39[0][0] 
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_694 ( (None, 16, 16, 16 128      conv3d_147[0][0]           
+#&gt; batch_normalization_696 ( (None, 16, 16, 16 128      conv3d_147[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; thresholded_re_lu_40 (Thr (None, 16, 16, 16 0        batch_normalization_694[0][
+#&gt; thresholded_re_lu_40 (Thr (None, 16, 16, 16 0        batch_normalization_696[0][
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_148 (Conv3D)       (None, 16, 16, 16 1056     thresholded_re_lu_40[0][0] 
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_695 ( (None, 16, 16, 16 128      conv3d_148[0][0]           
+#&gt; batch_normalization_697 ( (None, 16, 16, 16 128      conv3d_148[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; thresholded_re_lu_41 (Thr (None, 16, 16, 16 0        batch_normalization_695[0][
+#&gt; thresholded_re_lu_41 (Thr (None, 16, 16, 16 0        batch_normalization_697[0][
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_150 (Conv3D)       (None, 16, 16, 16 4224     add_190[0][0]              
 #&gt; ________________________________________________________________________________
@@ -266,15 +262,15 @@ implementation:</p><pre>    \url{https://github.com/veugene/fcn_maker/}
 #&gt; add_191 (Add)             (None, 16, 16, 16 0        conv3d_150[0][0]           
 #&gt;                                                      conv3d_149[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_696 ( (None, 16, 16, 16 512      add_191[0][0]              
+#&gt; batch_normalization_698 ( (None, 16, 16, 16 512      add_191[0][0]              
 #&gt; ________________________________________________________________________________
-#&gt; thresholded_re_lu_42 (Thr (None, 16, 16, 16 0        batch_normalization_696[0][
+#&gt; thresholded_re_lu_42 (Thr (None, 16, 16, 16 0        batch_normalization_698[0][
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_151 (Conv3D)       (None, 16, 16, 16 4128     thresholded_re_lu_42[0][0] 
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_697 ( (None, 16, 16, 16 128      conv3d_151[0][0]           
+#&gt; batch_normalization_699 ( (None, 16, 16, 16 128      conv3d_151[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; thresholded_re_lu_43 (Thr (None, 16, 16, 16 0        batch_normalization_697[0][
+#&gt; thresholded_re_lu_43 (Thr (None, 16, 16, 16 0        batch_normalization_699[0][
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_153 (Conv3D)       (None, 16, 16, 16 16512    add_191[0][0]              
 #&gt; ________________________________________________________________________________
@@ -283,15 +279,15 @@ implementation:</p><pre>    \url{https://github.com/veugene/fcn_maker/}
 #&gt; add_192 (Add)             (None, 16, 16, 16 0        conv3d_153[0][0]           
 #&gt;                                                      conv3d_152[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_698 ( (None, 16, 16, 16 512      add_192[0][0]              
+#&gt; batch_normalization_700 ( (None, 16, 16, 16 512      add_192[0][0]              
 #&gt; ________________________________________________________________________________
-#&gt; thresholded_re_lu_44 (Thr (None, 16, 16, 16 0        batch_normalization_698[0][
+#&gt; thresholded_re_lu_44 (Thr (None, 16, 16, 16 0        batch_normalization_700[0][
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_154 (Conv3D)       (None, 16, 16, 16 4128     thresholded_re_lu_44[0][0] 
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_699 ( (None, 16, 16, 16 128      conv3d_154[0][0]           
+#&gt; batch_normalization_701 ( (None, 16, 16, 16 128      conv3d_154[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; thresholded_re_lu_45 (Thr (None, 16, 16, 16 0        batch_normalization_699[0][
+#&gt; thresholded_re_lu_45 (Thr (None, 16, 16, 16 0        batch_normalization_701[0][
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_156 (Conv3D)       (None, 16, 16, 16 16512    add_192[0][0]              
 #&gt; ________________________________________________________________________________
@@ -300,21 +296,21 @@ implementation:</p><pre>    \url{https://github.com/veugene/fcn_maker/}
 #&gt; add_193 (Add)             (None, 16, 16, 16 0        conv3d_156[0][0]           
 #&gt;                                                      conv3d_155[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_700 ( (None, 16, 16, 16 512      add_193[0][0]              
+#&gt; batch_normalization_702 ( (None, 16, 16, 16 512      add_193[0][0]              
 #&gt; ________________________________________________________________________________
-#&gt; thresholded_re_lu_46 (Thr (None, 16, 16, 16 0        batch_normalization_700[0][
+#&gt; thresholded_re_lu_46 (Thr (None, 16, 16, 16 0        batch_normalization_702[0][
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_157 (Conv3D)       (None, 8, 8, 8, 6 8256     thresholded_re_lu_46[0][0] 
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_701 ( (None, 8, 8, 8, 6 256      conv3d_157[0][0]           
+#&gt; batch_normalization_703 ( (None, 8, 8, 8, 6 256      conv3d_157[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; thresholded_re_lu_47 (Thr (None, 8, 8, 8, 6 0        batch_normalization_701[0][
+#&gt; thresholded_re_lu_47 (Thr (None, 8, 8, 8, 6 0        batch_normalization_703[0][
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_158 (Conv3D)       (None, 8, 8, 8, 6 4160     thresholded_re_lu_47[0][0] 
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_702 ( (None, 8, 8, 8, 6 256      conv3d_158[0][0]           
+#&gt; batch_normalization_704 ( (None, 8, 8, 8, 6 256      conv3d_158[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; thresholded_re_lu_48 (Thr (None, 8, 8, 8, 6 0        batch_normalization_702[0][
+#&gt; thresholded_re_lu_48 (Thr (None, 8, 8, 8, 6 0        batch_normalization_704[0][
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_160 (Conv3D)       (None, 8, 8, 8, 2 33024    add_193[0][0]              
 #&gt; ________________________________________________________________________________
@@ -323,15 +319,15 @@ implementation:</p><pre>    \url{https://github.com/veugene/fcn_maker/}
 #&gt; add_194 (Add)             (None, 8, 8, 8, 2 0        conv3d_160[0][0]           
 #&gt;                                                      conv3d_159[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_703 ( (None, 8, 8, 8, 2 1024     add_194[0][0]              
+#&gt; batch_normalization_705 ( (None, 8, 8, 8, 2 1024     add_194[0][0]              
 #&gt; ________________________________________________________________________________
-#&gt; thresholded_re_lu_49 (Thr (None, 8, 8, 8, 2 0        batch_normalization_703[0][
+#&gt; thresholded_re_lu_49 (Thr (None, 8, 8, 8, 2 0        batch_normalization_705[0][
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_161 (Conv3D)       (None, 8, 8, 8, 6 16448    thresholded_re_lu_49[0][0] 
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_704 ( (None, 8, 8, 8, 6 256      conv3d_161[0][0]           
+#&gt; batch_normalization_706 ( (None, 8, 8, 8, 6 256      conv3d_161[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; thresholded_re_lu_50 (Thr (None, 8, 8, 8, 6 0        batch_normalization_704[0][
+#&gt; thresholded_re_lu_50 (Thr (None, 8, 8, 8, 6 0        batch_normalization_706[0][
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_163 (Conv3D)       (None, 8, 8, 8, 2 65792    add_194[0][0]              
 #&gt; ________________________________________________________________________________
@@ -340,15 +336,15 @@ implementation:</p><pre>    \url{https://github.com/veugene/fcn_maker/}
 #&gt; add_195 (Add)             (None, 8, 8, 8, 2 0        conv3d_163[0][0]           
 #&gt;                                                      conv3d_162[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_705 ( (None, 8, 8, 8, 2 1024     add_195[0][0]              
+#&gt; batch_normalization_707 ( (None, 8, 8, 8, 2 1024     add_195[0][0]              
 #&gt; ________________________________________________________________________________
-#&gt; thresholded_re_lu_51 (Thr (None, 8, 8, 8, 2 0        batch_normalization_705[0][
+#&gt; thresholded_re_lu_51 (Thr (None, 8, 8, 8, 2 0        batch_normalization_707[0][
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_164 (Conv3D)       (None, 8, 8, 8, 6 16448    thresholded_re_lu_51[0][0] 
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_706 ( (None, 8, 8, 8, 6 256      conv3d_164[0][0]           
+#&gt; batch_normalization_708 ( (None, 8, 8, 8, 6 256      conv3d_164[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; thresholded_re_lu_52 (Thr (None, 8, 8, 8, 6 0        batch_normalization_706[0][
+#&gt; thresholded_re_lu_52 (Thr (None, 8, 8, 8, 6 0        batch_normalization_708[0][
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_166 (Conv3D)       (None, 8, 8, 8, 2 65792    add_195[0][0]              
 #&gt; ________________________________________________________________________________
@@ -357,15 +353,15 @@ implementation:</p><pre>    \url{https://github.com/veugene/fcn_maker/}
 #&gt; add_196 (Add)             (None, 8, 8, 8, 2 0        conv3d_166[0][0]           
 #&gt;                                                      conv3d_165[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_707 ( (None, 8, 8, 8, 2 1024     add_196[0][0]              
+#&gt; batch_normalization_709 ( (None, 8, 8, 8, 2 1024     add_196[0][0]              
 #&gt; ________________________________________________________________________________
-#&gt; thresholded_re_lu_53 (Thr (None, 8, 8, 8, 2 0        batch_normalization_707[0][
+#&gt; thresholded_re_lu_53 (Thr (None, 8, 8, 8, 2 0        batch_normalization_709[0][
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_167 (Conv3D)       (None, 8, 8, 8, 6 16448    thresholded_re_lu_53[0][0] 
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_708 ( (None, 8, 8, 8, 6 256      conv3d_167[0][0]           
+#&gt; batch_normalization_710 ( (None, 8, 8, 8, 6 256      conv3d_167[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; thresholded_re_lu_54 (Thr (None, 8, 8, 8, 6 0        batch_normalization_708[0][
+#&gt; thresholded_re_lu_54 (Thr (None, 8, 8, 8, 6 0        batch_normalization_710[0][
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_169 (Conv3D)       (None, 8, 8, 8, 2 65792    add_196[0][0]              
 #&gt; ________________________________________________________________________________
@@ -374,21 +370,21 @@ implementation:</p><pre>    \url{https://github.com/veugene/fcn_maker/}
 #&gt; add_197 (Add)             (None, 8, 8, 8, 2 0        conv3d_169[0][0]           
 #&gt;                                                      conv3d_168[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_709 ( (None, 8, 8, 8, 2 1024     add_197[0][0]              
+#&gt; batch_normalization_711 ( (None, 8, 8, 8, 2 1024     add_197[0][0]              
 #&gt; ________________________________________________________________________________
-#&gt; thresholded_re_lu_55 (Thr (None, 8, 8, 8, 2 0        batch_normalization_709[0][
+#&gt; thresholded_re_lu_55 (Thr (None, 8, 8, 8, 2 0        batch_normalization_711[0][
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_170 (Conv3D)       (None, 4, 4, 4, 1 32896    thresholded_re_lu_55[0][0] 
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_710 ( (None, 4, 4, 4, 1 512      conv3d_170[0][0]           
+#&gt; batch_normalization_712 ( (None, 4, 4, 4, 1 512      conv3d_170[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; thresholded_re_lu_56 (Thr (None, 4, 4, 4, 1 0        batch_normalization_710[0][
+#&gt; thresholded_re_lu_56 (Thr (None, 4, 4, 4, 1 0        batch_normalization_712[0][
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_171 (Conv3D)       (None, 4, 4, 4, 1 16512    thresholded_re_lu_56[0][0] 
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_711 ( (None, 4, 4, 4, 1 512      conv3d_171[0][0]           
+#&gt; batch_normalization_713 ( (None, 4, 4, 4, 1 512      conv3d_171[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; thresholded_re_lu_57 (Thr (None, 4, 4, 4, 1 0        batch_normalization_711[0][
+#&gt; thresholded_re_lu_57 (Thr (None, 4, 4, 4, 1 0        batch_normalization_713[0][
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_173 (Conv3D)       (None, 4, 4, 4, 5 131584   add_197[0][0]              
 #&gt; ________________________________________________________________________________
@@ -397,15 +393,15 @@ implementation:</p><pre>    \url{https://github.com/veugene/fcn_maker/}
 #&gt; add_198 (Add)             (None, 4, 4, 4, 5 0        conv3d_173[0][0]           
 #&gt;                                                      conv3d_172[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_712 ( (None, 4, 4, 4, 5 2048     add_198[0][0]              
+#&gt; batch_normalization_714 ( (None, 4, 4, 4, 5 2048     add_198[0][0]              
 #&gt; ________________________________________________________________________________
-#&gt; thresholded_re_lu_58 (Thr (None, 4, 4, 4, 5 0        batch_normalization_712[0][
+#&gt; thresholded_re_lu_58 (Thr (None, 4, 4, 4, 5 0        batch_normalization_714[0][
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_174 (Conv3D)       (None, 4, 4, 4, 1 65664    thresholded_re_lu_58[0][0] 
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_713 ( (None, 4, 4, 4, 1 512      conv3d_174[0][0]           
+#&gt; batch_normalization_715 ( (None, 4, 4, 4, 1 512      conv3d_174[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; thresholded_re_lu_59 (Thr (None, 4, 4, 4, 1 0        batch_normalization_713[0][
+#&gt; thresholded_re_lu_59 (Thr (None, 4, 4, 4, 1 0        batch_normalization_715[0][
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_transpose_28 (Conv (None, 4, 4, 4, 1 131200   thresholded_re_lu_59[0][0] 
 #&gt; ________________________________________________________________________________
@@ -420,15 +416,15 @@ implementation:</p><pre>    \url{https://github.com/veugene/fcn_maker/}
 #&gt; add_199 (Add)             (None, 8, 8, 8, 5 0        up_sampling3d_5[0][0]      
 #&gt;                                                      conv3d_175[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_714 ( (None, 8, 8, 8, 5 2048     add_199[0][0]              
+#&gt; batch_normalization_716 ( (None, 8, 8, 8, 5 2048     add_199[0][0]              
 #&gt; ________________________________________________________________________________
-#&gt; thresholded_re_lu_60 (Thr (None, 8, 8, 8, 5 0        batch_normalization_714[0][
+#&gt; thresholded_re_lu_60 (Thr (None, 8, 8, 8, 5 0        batch_normalization_716[0][
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_176 (Conv3D)       (None, 8, 8, 8, 6 32832    thresholded_re_lu_60[0][0] 
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_715 ( (None, 8, 8, 8, 6 256      conv3d_176[0][0]           
+#&gt; batch_normalization_717 ( (None, 8, 8, 8, 6 256      conv3d_176[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; thresholded_re_lu_61 (Thr (None, 8, 8, 8, 6 0        batch_normalization_715[0][
+#&gt; thresholded_re_lu_61 (Thr (None, 8, 8, 8, 6 0        batch_normalization_717[0][
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_178 (Conv3D)       (None, 8, 8, 8, 2 131328   add_199[0][0]              
 #&gt; ________________________________________________________________________________
@@ -442,15 +438,15 @@ implementation:</p><pre>    \url{https://github.com/veugene/fcn_maker/}
 #&gt; add_201 (Add)             (None, 8, 8, 8, 2 0        add_197[0][0]              
 #&gt;                                                      conv3d_179[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_716 ( (None, 8, 8, 8, 2 1024     add_201[0][0]              
+#&gt; batch_normalization_718 ( (None, 8, 8, 8, 2 1024     add_201[0][0]              
 #&gt; ________________________________________________________________________________
-#&gt; thresholded_re_lu_62 (Thr (None, 8, 8, 8, 2 0        batch_normalization_716[0][
+#&gt; thresholded_re_lu_62 (Thr (None, 8, 8, 8, 2 0        batch_normalization_718[0][
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_180 (Conv3D)       (None, 8, 8, 8, 6 16448    thresholded_re_lu_62[0][0] 
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_717 ( (None, 8, 8, 8, 6 256      conv3d_180[0][0]           
+#&gt; batch_normalization_719 ( (None, 8, 8, 8, 6 256      conv3d_180[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; thresholded_re_lu_63 (Thr (None, 8, 8, 8, 6 0        batch_normalization_717[0][
+#&gt; thresholded_re_lu_63 (Thr (None, 8, 8, 8, 6 0        batch_normalization_719[0][
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_182 (Conv3D)       (None, 8, 8, 8, 2 65792    add_201[0][0]              
 #&gt; ________________________________________________________________________________
@@ -459,15 +455,15 @@ implementation:</p><pre>    \url{https://github.com/veugene/fcn_maker/}
 #&gt; add_202 (Add)             (None, 8, 8, 8, 2 0        conv3d_182[0][0]           
 #&gt;                                                      conv3d_181[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_718 ( (None, 8, 8, 8, 2 1024     add_202[0][0]              
+#&gt; batch_normalization_720 ( (None, 8, 8, 8, 2 1024     add_202[0][0]              
 #&gt; ________________________________________________________________________________
-#&gt; thresholded_re_lu_64 (Thr (None, 8, 8, 8, 2 0        batch_normalization_718[0][
+#&gt; thresholded_re_lu_64 (Thr (None, 8, 8, 8, 2 0        batch_normalization_720[0][
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_183 (Conv3D)       (None, 8, 8, 8, 6 16448    thresholded_re_lu_64[0][0] 
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_719 ( (None, 8, 8, 8, 6 256      conv3d_183[0][0]           
+#&gt; batch_normalization_721 ( (None, 8, 8, 8, 6 256      conv3d_183[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; thresholded_re_lu_65 (Thr (None, 8, 8, 8, 6 0        batch_normalization_719[0][
+#&gt; thresholded_re_lu_65 (Thr (None, 8, 8, 8, 6 0        batch_normalization_721[0][
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_185 (Conv3D)       (None, 8, 8, 8, 2 65792    add_202[0][0]              
 #&gt; ________________________________________________________________________________
@@ -476,15 +472,15 @@ implementation:</p><pre>    \url{https://github.com/veugene/fcn_maker/}
 #&gt; add_203 (Add)             (None, 8, 8, 8, 2 0        conv3d_185[0][0]           
 #&gt;                                                      conv3d_184[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_720 ( (None, 8, 8, 8, 2 1024     add_203[0][0]              
+#&gt; batch_normalization_722 ( (None, 8, 8, 8, 2 1024     add_203[0][0]              
 #&gt; ________________________________________________________________________________
-#&gt; thresholded_re_lu_66 (Thr (None, 8, 8, 8, 2 0        batch_normalization_720[0][
+#&gt; thresholded_re_lu_66 (Thr (None, 8, 8, 8, 2 0        batch_normalization_722[0][
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_186 (Conv3D)       (None, 8, 8, 8, 6 16448    thresholded_re_lu_66[0][0] 
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_721 ( (None, 8, 8, 8, 6 256      conv3d_186[0][0]           
+#&gt; batch_normalization_723 ( (None, 8, 8, 8, 6 256      conv3d_186[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; thresholded_re_lu_67 (Thr (None, 8, 8, 8, 6 0        batch_normalization_721[0][
+#&gt; thresholded_re_lu_67 (Thr (None, 8, 8, 8, 6 0        batch_normalization_723[0][
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_transpose_30 (Conv (None, 8, 8, 8, 6 32832    thresholded_re_lu_67[0][0] 
 #&gt; ________________________________________________________________________________
@@ -499,15 +495,15 @@ implementation:</p><pre>    \url{https://github.com/veugene/fcn_maker/}
 #&gt; add_204 (Add)             (None, 16, 16, 16 0        up_sampling3d_7[0][0]      
 #&gt;                                                      conv3d_187[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_722 ( (None, 16, 16, 16 1024     add_204[0][0]              
+#&gt; batch_normalization_724 ( (None, 16, 16, 16 1024     add_204[0][0]              
 #&gt; ________________________________________________________________________________
-#&gt; thresholded_re_lu_68 (Thr (None, 16, 16, 16 0        batch_normalization_722[0][
+#&gt; thresholded_re_lu_68 (Thr (None, 16, 16, 16 0        batch_normalization_724[0][
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_188 (Conv3D)       (None, 16, 16, 16 8224     thresholded_re_lu_68[0][0] 
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_723 ( (None, 16, 16, 16 128      conv3d_188[0][0]           
+#&gt; batch_normalization_725 ( (None, 16, 16, 16 128      conv3d_188[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; thresholded_re_lu_69 (Thr (None, 16, 16, 16 0        batch_normalization_723[0][
+#&gt; thresholded_re_lu_69 (Thr (None, 16, 16, 16 0        batch_normalization_725[0][
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_190 (Conv3D)       (None, 16, 16, 16 32896    add_204[0][0]              
 #&gt; ________________________________________________________________________________
@@ -521,15 +517,15 @@ implementation:</p><pre>    \url{https://github.com/veugene/fcn_maker/}
 #&gt; add_206 (Add)             (None, 16, 16, 16 0        add_193[0][0]              
 #&gt;                                                      conv3d_191[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_724 ( (None, 16, 16, 16 512      add_206[0][0]              
+#&gt; batch_normalization_726 ( (None, 16, 16, 16 512      add_206[0][0]              
 #&gt; ________________________________________________________________________________
-#&gt; thresholded_re_lu_70 (Thr (None, 16, 16, 16 0        batch_normalization_724[0][
+#&gt; thresholded_re_lu_70 (Thr (None, 16, 16, 16 0        batch_normalization_726[0][
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_192 (Conv3D)       (None, 16, 16, 16 4128     thresholded_re_lu_70[0][0] 
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_725 ( (None, 16, 16, 16 128      conv3d_192[0][0]           
+#&gt; batch_normalization_727 ( (None, 16, 16, 16 128      conv3d_192[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; thresholded_re_lu_71 (Thr (None, 16, 16, 16 0        batch_normalization_725[0][
+#&gt; thresholded_re_lu_71 (Thr (None, 16, 16, 16 0        batch_normalization_727[0][
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_194 (Conv3D)       (None, 16, 16, 16 16512    add_206[0][0]              
 #&gt; ________________________________________________________________________________
@@ -538,15 +534,15 @@ implementation:</p><pre>    \url{https://github.com/veugene/fcn_maker/}
 #&gt; add_207 (Add)             (None, 16, 16, 16 0        conv3d_194[0][0]           
 #&gt;                                                      conv3d_193[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_726 ( (None, 16, 16, 16 512      add_207[0][0]              
+#&gt; batch_normalization_728 ( (None, 16, 16, 16 512      add_207[0][0]              
 #&gt; ________________________________________________________________________________
-#&gt; thresholded_re_lu_72 (Thr (None, 16, 16, 16 0        batch_normalization_726[0][
+#&gt; thresholded_re_lu_72 (Thr (None, 16, 16, 16 0        batch_normalization_728[0][
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_195 (Conv3D)       (None, 16, 16, 16 4128     thresholded_re_lu_72[0][0] 
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_727 ( (None, 16, 16, 16 128      conv3d_195[0][0]           
+#&gt; batch_normalization_729 ( (None, 16, 16, 16 128      conv3d_195[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; thresholded_re_lu_73 (Thr (None, 16, 16, 16 0        batch_normalization_727[0][
+#&gt; thresholded_re_lu_73 (Thr (None, 16, 16, 16 0        batch_normalization_729[0][
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_transpose_32 (Conv (None, 16, 16, 16 8224     thresholded_re_lu_73[0][0] 
 #&gt; ________________________________________________________________________________
@@ -561,9 +557,9 @@ implementation:</p><pre>    \url{https://github.com/veugene/fcn_maker/}
 #&gt; add_208 (Add)             (None, 32, 32, 32 0        up_sampling3d_9[0][0]      
 #&gt;                                                      conv3d_196[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_728 ( (None, 32, 32, 32 512      add_208[0][0]              
+#&gt; batch_normalization_730 ( (None, 32, 32, 32 512      add_208[0][0]              
 #&gt; ________________________________________________________________________________
-#&gt; thresholded_re_lu_74 (Thr (None, 32, 32, 32 0        batch_normalization_728[0][
+#&gt; thresholded_re_lu_74 (Thr (None, 32, 32, 32 0        batch_normalization_730[0][
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_197 (Conv3D)       (None, 32, 32, 32 110624   thresholded_re_lu_74[0][0] 
 #&gt; ________________________________________________________________________________
@@ -583,9 +579,9 @@ implementation:</p><pre>    \url{https://github.com/veugene/fcn_maker/}
 #&gt; add_210 (Add)             (None, 64, 64, 64 0        conv3d_144[0][0]           
 #&gt;                                                      conv3d_198[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_729 ( (None, 64, 64, 64 128      add_210[0][0]              
+#&gt; batch_normalization_731 ( (None, 64, 64, 64 128      add_210[0][0]              
 #&gt; ________________________________________________________________________________
-#&gt; thresholded_re_lu_75 (Thr (None, 64, 64, 64 0        batch_normalization_729[0][
+#&gt; thresholded_re_lu_75 (Thr (None, 64, 64, 64 0        batch_normalization_731[0][
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_199 (Conv3D)       (None, 64, 64, 64 33       thresholded_re_lu_75[0][0] 
 #&gt; ================================================================================
@@ -611,7 +607,7 @@ implementation:</p><pre>    \url{https://github.com/veugene/fcn_maker/}
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

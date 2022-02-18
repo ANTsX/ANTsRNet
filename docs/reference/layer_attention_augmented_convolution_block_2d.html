@@ -117,16 +117,16 @@
     <p>Creates a 2-D attention augmented convolutional layer as described in the paper</p>
     </div>
 
-    <pre class="usage"><span class='fu'>layer_attention_augmented_convolution_block_2d</span><span class='op'>(</span>
-  <span class='va'>inputLayer</span>,
-  <span class='va'>numberOfOutputFilters</span>,
-  kernelSize <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>, <span class='fl'>3</span><span class='op'>)</span>,
-  strides <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>)</span>,
-  depthOfQueries <span class='op'>=</span> <span class='fl'>0.2</span>,
-  depthOfValues <span class='op'>=</span> <span class='fl'>0.2</span>,
-  numberOfAttentionHeads <span class='op'>=</span> <span class='fl'>8</span>,
-  useRelativeEncodings <span class='op'>=</span> <span class='cn'>TRUE</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>layer_attention_augmented_convolution_block_2d</span>(
+  <span class='no'>inputLayer</span>,
+  <span class='no'>numberOfOutputFilters</span>,
+  <span class='kw'>kernelSize</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>3</span>, <span class='fl'>3</span>),
+  <span class='kw'>strides</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>1</span>),
+  <span class='kw'>depthOfQueries</span> <span class='kw'>=</span> <span class='fl'>0.2</span>,
+  <span class='kw'>depthOfValues</span> <span class='kw'>=</span> <span class='fl'>0.2</span>,
+  <span class='kw'>numberOfAttentionHeads</span> <span class='kw'>=</span> <span class='fl'>8</span>,
+  <span class='kw'>useRelativeEncodings</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -179,9 +179,6 @@ Either absolute or, if <code>&lt; 1.0</code>, number of <code>v</code> filters =
     <p><a href='https://arxiv.org/abs/1904.09925'>https://arxiv.org/abs/1904.09925</a></p>
 <p>with the implementation ported from the following repository</p>
 <p><a href='https://github.com/titu1994/keras-attention-augmented-convs'>https://github.com/titu1994/keras-attention-augmented-convs</a></p>
-    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
-
-    <p>Tustison NJ</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -198,7 +195,7 @@ Either absolute or, if <code>&lt; 1.0</code>, number of <code>v</code> filters =
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

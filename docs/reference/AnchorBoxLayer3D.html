@@ -129,19 +129,18 @@ In the last dimension, the first 6 values correspond to the
 
     
 
-<pre><span class='va'>anchorBoxGenerator</span> <span class='op'>&lt;-</span> <span class='va'>AnchorBoxLayer3D</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span> <span class='va'>imageSize</span>,
-     <span class='va'>scale</span>, <span class='va'>nextScale</span>, aspectRatios <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='st'>'1:1:1'</span>, <span class='st'>'2:1:1'</span>, <span class='st'>'1:2:1'</span>, <span class='st'>'1:1:2'</span> <span class='op'>)</span>,
-     variances <span class='op'>=</span> <span class='fl'>1.0</span> <span class='op'>)</span>
+<pre><span class='no'>anchorBoxGenerator</span> <span class='kw'>&amp;</span><span class='no'>lt</span>;- <span class='no'>AnchorBoxLayer3D</span>$<span class='fu'>new</span>( <span class='no'>imageSize</span>,
+     <span class='no'>scale</span>, <span class='no'>nextScale</span>, <span class='kw'>aspectRatios</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='st'>'1:1:1'</span>, <span class='st'>'2:1:1'</span>, <span class='st'>'1:2:1'</span>, <span class='st'>'1:1:2'</span> ),
+     <span class='kw'>variances</span> <span class='kw'>=</span> <span class='fl'>1.0</span> )
 
-<span class='va'>anchorBoxGenerator</span><span class='op'>$</span><span class='fu'>call</span><span class='op'>(</span> <span class='va'>x</span>, mask <span class='op'>=</span> <span class='cn'>NULL</span> <span class='op'>)</span>
-<span class='va'>anchorBoxGenerator</span><span class='op'>$</span><span class='fu'>compute_output_shape</span><span class='op'>(</span> <span class='va'>input_shape</span> <span class='op'>)</span>
-</pre>
+<span class='no'>anchorBoxGenerator</span>$<span class='fu'><a href='https://rdrr.io/r/base/call.html'>call</a></span>( <span class='no'>x</span>, <span class='kw'>mask</span> <span class='kw'>=</span> <span class='kw'>NULL</span> )
+<span class='no'>anchorBoxGenerator</span>$<span class='fu'>compute_output_shape</span>( <span class='no'>input_shape</span> )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
 
     
 
-<dl>
+<dl'>
 <dt>anchorBoxGenerator</dt><dd><p>A <code>process</code> object.</p></dd>
 <dt>imageSize</dt><dd><p>size of the input image.</p></dd>
 <dt>scale</dt><dd><p>scale of each box (in pixels).</p></dd>
@@ -166,15 +165,11 @@ Defaults to 1.0.</p></dd>
 <p><code>$initialize</code> instantiates a new class.</p>
 <p><code>$call</code> main body.</p>
 <p><code>$compute_output_shape</code> computes the output shape.</p>
-    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
-
-    <p>Tustison NJ</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>x</span> <span class='op'>=</span> <span class='va'>AnchorBoxLayer3D</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span>imageSize <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>20</span>, <span class='fl'>20</span>, <span class='fl'>20</span><span class='op'>)</span>,
-scale <span class='op'>=</span> <span class='fl'>2</span>, nextScale <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
-<span class='va'>x</span><span class='op'>$</span><span class='fu'>build</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; NULL</div></pre>
+    <pre class="examples"><div class='input'><span class='no'>x</span> <span class='kw'>=</span> <span class='no'>AnchorBoxLayer3D</span>$<span class='fu'>new</span>(<span class='kw'>imageSize</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>20</span>, <span class='fl'>20</span>, <span class='fl'>20</span>),
+<span class='kw'>scale</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>nextScale</span> <span class='kw'>=</span> <span class='fl'>2</span>)
+<span class='no'>x</span>$<span class='fu'><a href='https://rdrr.io/r/utils/PkgUtils.html'>build</a></span>()</div><div class='output co'>#&gt; NULL</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -190,7 +185,7 @@ scale <span class='op'>=</span> <span class='fl'>2</span>, nextScale <span class
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

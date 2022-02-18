@@ -32,7 +32,7 @@ library( ANTsRNet )
 library( keras )
 
 image <- antsImageRead( "image.nii.gz" )
-output <- lungExtraction( image )
+output <- arterialLesionSegmentation( image )
 }
 }
 \author{

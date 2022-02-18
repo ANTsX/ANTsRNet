@@ -135,20 +135,19 @@ SSD: Single Shot MultiBox Detector.</p>
 
     
 
-<pre><span class='va'>ssdLoss</span> <span class='op'>&lt;-</span> <span class='va'>LossSSD</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span> dimension <span class='op'>=</span> <span class='fl'>2L</span>, backgroundRatio <span class='op'>=</span> <span class='fl'>3L</span>,
-  minNumberOfBackgroundBoxes <span class='op'>=</span> <span class='fl'>0L</span>,  alpha <span class='op'>=</span> <span class='fl'>1.0</span>,
-  <span class='va'>numberOfClassificationLabels</span> <span class='op'>)</span>
+<pre><span class='no'>ssdLoss</span> <span class='kw'>&amp;</span><span class='no'>lt</span>;- <span class='no'>LossSSD</span>$<span class='fu'>new</span>( <span class='kw'>dimension</span> <span class='kw'>=</span> <span class='fl'>2L</span>, <span class='kw'>backgroundRatio</span> <span class='kw'>=</span> <span class='fl'>3L</span>,
+  <span class='kw'>minNumberOfBackgroundBoxes</span> <span class='kw'>=</span> <span class='fl'>0L</span>,  <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>1.0</span>,
+  <span class='no'>numberOfClassificationLabels</span> )
 
-<span class='va'>ssdLoss</span><span class='op'>$</span><span class='fu'>smooth_l1_loss</span><span class='op'>(</span> <span class='va'>y_true</span>, <span class='va'>y_pred</span> <span class='op'>)</span>
-<span class='va'>ssdLoss</span><span class='op'>$</span><span class='fu'>log_loss</span><span class='op'>(</span> <span class='va'>y_true</span>, <span class='va'>y_pred</span> <span class='op'>)</span>
-<span class='va'>ssdLoss</span><span class='op'>$</span><span class='fu'>compute_loss</span><span class='op'>(</span> <span class='va'>y_true</span>, <span class='va'>y_pred</span> <span class='op'>)</span>
-</pre>
+<span class='no'>ssdLoss</span>$<span class='fu'>smooth_l1_loss</span>( <span class='no'>y_true</span>, <span class='no'>y_pred</span> )
+<span class='no'>ssdLoss</span>$<span class='fu'>log_loss</span>( <span class='no'>y_true</span>, <span class='no'>y_pred</span> )
+<span class='no'>ssdLoss</span>$<span class='fu'>compute_loss</span>( <span class='no'>y_true</span>, <span class='no'>y_pred</span> )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
 
     
 
-<dl>
+<dl'>
 <dt>ssdLoss</dt><dd><p>A <code>process</code> object.</p></dd>
 <dt>dimension</dt><dd><p>image dimensionality.</p></dd>
 <dt>backgroundRatio</dt><dd><p>The maximum ratio of background to foreround
@@ -170,9 +169,6 @@ computation.</p></dd>
 <p><code>$smooth_l1_loss</code> smooth loss</p>
 <p><code>$log_loss</code> log loss</p>
 <p><code>$compute_loss</code> computes total loss.</p>
-    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
-
-    <p>Tustison NJ</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -189,7 +185,7 @@ computation.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

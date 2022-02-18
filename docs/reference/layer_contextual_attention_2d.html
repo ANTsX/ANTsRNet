@@ -117,25 +117,25 @@
     <p>Contextual attention layer for generative image inpainting described in</p>
     </div>
 
-    <pre class="usage"><span class='fu'>layer_contextual_attention_2d</span><span class='op'>(</span>
-  <span class='va'>object</span>,
-  kernelSize <span class='op'>=</span> <span class='fl'>3L</span>,
-  stride <span class='op'>=</span> <span class='fl'>1L</span>,
-  dilationRate <span class='op'>=</span> <span class='fl'>1L</span>,
-  fusionKernelSize <span class='op'>=</span> <span class='fl'>0L</span>,
-  name <span class='op'>=</span> <span class='cn'>NULL</span>,
-  trainable <span class='op'>=</span> <span class='cn'>FALSE</span>
-<span class='op'>)</span>
+    <pre class="usage"><span class='fu'>layer_contextual_attention_2d</span>(
+  <span class='no'>object</span>,
+  <span class='kw'>kernelSize</span> <span class='kw'>=</span> <span class='fl'>3L</span>,
+  <span class='kw'>stride</span> <span class='kw'>=</span> <span class='fl'>1L</span>,
+  <span class='kw'>dilationRate</span> <span class='kw'>=</span> <span class='fl'>1L</span>,
+  <span class='kw'>fusionKernelSize</span> <span class='kw'>=</span> <span class='fl'>0L</span>,
+  <span class='kw'>name</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>trainable</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+)
 
-<span class='fu'>layer_contextual_attention_3d</span><span class='op'>(</span>
-  <span class='va'>object</span>,
-  kernelSize <span class='op'>=</span> <span class='fl'>3L</span>,
-  stride <span class='op'>=</span> <span class='fl'>1L</span>,
-  dilationRate <span class='op'>=</span> <span class='fl'>1L</span>,
-  fusionKernelSize <span class='op'>=</span> <span class='fl'>0L</span>,
-  name <span class='op'>=</span> <span class='cn'>NULL</span>,
-  trainable <span class='op'>=</span> <span class='cn'>FALSE</span>
-<span class='op'>)</span></pre>
+<span class='fu'>layer_contextual_attention_3d</span>(
+  <span class='no'>object</span>,
+  <span class='kw'>kernelSize</span> <span class='kw'>=</span> <span class='fl'>3L</span>,
+  <span class='kw'>stride</span> <span class='kw'>=</span> <span class='fl'>1L</span>,
+  <span class='kw'>dilationRate</span> <span class='kw'>=</span> <span class='fl'>1L</span>,
+  <span class='kw'>fusionKernelSize</span> <span class='kw'>=</span> <span class='fl'>0L</span>,
+  <span class='kw'>name</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>trainable</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -143,7 +143,7 @@
     <tr>
       <th>object</th>
       <td><p>Object to compose layer with. This is either a
-<a href='https://keras.rstudio.com/reference/keras_model_sequential.html'>keras::keras_model_sequential</a> to add the layer to,
+<a href='https://rdrr.io/pkg/keras/man/keras_model_sequential.html'>keras::keras_model_sequential</a> to add the layer to,
 or another Layer which this layer will call.</p></td>
     </tr>
     <tr>
@@ -184,13 +184,10 @@ CVPR 2018.</p>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>layer_contextual_attention_2d</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; &lt;kerastools.layer.RLayer&gt;</div><div class='input'><span class='fu'>layer_contextual_attention_3d</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; &lt;kerastools.layer.RLayer&gt;</div><div class='input'><span class='fu'>keras</span><span class='fu'>::</span><span class='fu'><a href='https://keras.rstudio.com/reference/keras_model_sequential.html'>keras_model_sequential</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-    <span class='fu'>layer_contextual_attention_2d</span><span class='op'>(</span>fusionKernelSize <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
-<span class='fu'>keras</span><span class='fu'>::</span><span class='fu'><a href='https://keras.rstudio.com/reference/keras_model_sequential.html'>keras_model_sequential</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-    <span class='fu'>layer_contextual_attention_3d</span><span class='op'>(</span><span class='op'>)</span>
-</div></pre>
+    <pre class="examples"><div class='input'><span class='fu'>layer_contextual_attention_2d</span>()</div><div class='output co'>#&gt; &lt;kerastools.layer.RLayer&gt;</div><div class='input'><span class='fu'>layer_contextual_attention_3d</span>()</div><div class='output co'>#&gt; &lt;kerastools.layer.RLayer&gt;</div><div class='input'><span class='kw pkg'>keras</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/keras/man/keras_model_sequential.html'>keras_model_sequential</a></span>() <span class='kw'>%&gt;%</span>
+    <span class='fu'>layer_contextual_attention_2d</span>(<span class='kw'>fusionKernelSize</span> <span class='kw'>=</span> <span class='fl'>2</span>)
+<span class='kw pkg'>keras</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/keras/man/keras_model_sequential.html'>keras_model_sequential</a></span>() <span class='kw'>%&gt;%</span>
+    <span class='fu'>layer_contextual_attention_3d</span>()</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -206,7 +203,7 @@ CVPR 2018.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

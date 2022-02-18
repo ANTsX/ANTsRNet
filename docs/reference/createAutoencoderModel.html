@@ -121,11 +121,11 @@ number of units in the encoding branch.  Ported to Keras R from the
 Keras python implementation here:</p>
     </div>
 
-    <pre class="usage"><span class='fu'>createAutoencoderModel</span><span class='op'>(</span>
-  <span class='va'>numberOfUnitsPerLayer</span>,
-  activation <span class='op'>=</span> <span class='st'>"relu"</span>,
-  initializer <span class='op'>=</span> <span class='st'>"glorot_uniform"</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>createAutoencoderModel</span>(
+  <span class='no'>numberOfUnitsPerLayer</span>,
+  <span class='kw'>activation</span> <span class='kw'>=</span> <span class='st'>"relu"</span>,
+  <span class='kw'>initializer</span> <span class='kw'>=</span> <span class='st'>"glorot_uniform"</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -151,18 +151,13 @@ in the encoding branch</p></td>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p><a href='https://github.com/XifengGuo/DEC-keras'>https://github.com/XifengGuo/DEC-keras</a></p>
-    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
-
-    <p>Tustison NJ</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span> <span class='va'><a href='https://github.com/ANTsX/ANTsRNet'>ANTsRNet</a></span> <span class='op'>)</span>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span> <span class='va'><a href='https://keras.rstudio.com'>keras</a></span> <span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>ANTsRNet</span> )
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>keras</span> )
 
-<span class='va'>ae</span> <span class='op'>&lt;-</span> <span class='fu'>createAutoencoderModel</span><span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='fl'>784</span>, <span class='fl'>500</span>, <span class='fl'>500</span>, <span class='fl'>2000</span>, <span class='fl'>10</span> <span class='op'>)</span> <span class='op'>)</span>
-
-</div></pre>
+<span class='no'>ae</span> <span class='kw'>&lt;-</span> <span class='fu'>createAutoencoderModel</span>( <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>784</span>, <span class='fl'>500</span>, <span class='fl'>500</span>, <span class='fl'>2000</span>, <span class='fl'>10</span> ) )</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -178,7 +173,7 @@ in the encoding branch</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

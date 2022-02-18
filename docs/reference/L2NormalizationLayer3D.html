@@ -133,18 +133,17 @@ to See Better.</p>
 
     
 
-<pre><span class='va'>layer</span> <span class='op'>&lt;-</span> <span class='va'>L2NormalizationLayer3D</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span> <span class='va'>scale</span> <span class='op'>)</span>
+<pre><span class='no'>layer</span> <span class='kw'>&amp;</span><span class='no'>lt</span>;- <span class='no'>L2NormalizationLayer3D</span>$<span class='fu'>new</span>( <span class='no'>scale</span> )
 
-<span class='va'>layer</span><span class='op'>$</span><span class='fu'>call</span><span class='op'>(</span> <span class='va'>x</span>, mask <span class='op'>=</span> <span class='cn'>NULL</span> <span class='op'>)</span>
-<span class='va'>layer</span><span class='op'>$</span><span class='fu'>build</span><span class='op'>(</span> <span class='va'>input_shape</span> <span class='op'>)</span>
-<span class='va'>layer</span><span class='op'>$</span><span class='fu'>compute_output_shape</span><span class='op'>(</span> <span class='va'>input_shape</span> <span class='op'>)</span>
-</pre>
+<span class='no'>layer</span>$<span class='fu'><a href='https://rdrr.io/r/base/call.html'>call</a></span>( <span class='no'>x</span>, <span class='kw'>mask</span> <span class='kw'>=</span> <span class='kw'>NULL</span> )
+<span class='no'>layer</span>$<span class='fu'><a href='https://rdrr.io/r/utils/PkgUtils.html'>build</a></span>( <span class='no'>input_shape</span> )
+<span class='no'>layer</span>$<span class='fu'>compute_output_shape</span>( <span class='no'>input_shape</span> )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
 
     
 
-<dl>
+<dl'>
 <dt>layer</dt><dd><p>A <code>process</code> object.</p></dd>
 <dt>scale</dt><dd><p>feature scale.  Default = 20</p></dd>
 <dt>x</dt><dd><p></p></dd>
@@ -161,16 +160,12 @@ to See Better.</p>
 <p><code>$build</code></p>
 <p><code>$call</code> main body.</p>
 <p><code>$compute_output_shape</code> computes the output shape.</p>
-    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
-
-    <p>Tustison NJ</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>x</span> <span class='op'>=</span> <span class='va'>L2NormalizationLayer3D</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span><span class='op'>)</span>
-<span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='va'>x</span><span class='op'>$</span><span class='fu'>build</span><span class='op'>(</span>input_shape <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>20</span>, <span class='fl'>20</span>, <span class='fl'>20</span>, <span class='fl'>20</span>, <span class='fl'>4</span><span class='op'>)</span><span class='op'>)</span>
-<span class='op'>}</span>
-</div></pre>
+    <pre class="examples"><div class='input'><span class='no'>x</span> <span class='kw'>=</span> <span class='no'>L2NormalizationLayer3D</span>$<span class='fu'>new</span>()
+<span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+<span class='no'>x</span>$<span class='fu'><a href='https://rdrr.io/r/utils/PkgUtils.html'>build</a></span>(<span class='kw'>input_shape</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>20</span>, <span class='fl'>20</span>, <span class='fl'>20</span>, <span class='fl'>20</span>, <span class='fl'>4</span>))
+}</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -186,7 +181,7 @@ to See Better.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

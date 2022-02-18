@@ -16,8 +16,8 @@
 #'   \item{Label 10:}{right perirhinal}
 #'   \item{Label 11:}{left parahippocampal}
 #'   \item{Label 12:}{right parahippocampal}
-#'   \item{Label 13:}{left DG/CA3}
-#'   \item{Label 14:}{right DG/CA3}
+#'   \item{Label 13:}{left DG/CA2/CA3/CA4}
+#'   \item{Label 14:}{right DG/CA2/CA3/CA4}
 #'   \item{Label 15:}{left CA1}
 #'   \item{Label 16:}{right CA1}
 #'   \item{Label 17:}{left subiculum}
@@ -34,7 +34,7 @@
 #' @param t1 raw or preprocessed 3-D T1-weighted brain image.
 #' @param t2 optional raw or preprocessed 3-D T2-weighted brain image.
 #' @param doPreprocessing perform preprocessing.  See description above.
-#' @param useRankIntensity If false, use histogram matching with cropped template 
+#' @param useRankIntensity If false, use histogram matching with cropped template
 #' ROI.  Otherwise, use a rank intensity transform on the cropped ROI.
 #' @param antsxnetCacheDirectory destination directory for storing the downloaded
 #' template and model weights.  Since these can be resused, if
@@ -280,9 +280,9 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
     networkName <- paste0( networkName, "Hierarchical" )
     }
 
-  if( useRankIntensity )  
+  if( useRankIntensity )
     {
-    networkName <- paste0( networkName, "_ri" ) 
+    networkName <- paste0( networkName, "_ri" )
     }
 
   if( verbose == TRUE )
@@ -314,7 +314,7 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
   t1Cropped <- cropIndices( t1Preprocessed, lowerBoundLeft, upperBoundLeft )
   if( useRankIntensity )
     {
-    t1Cropped <- rankIntensity( t1Cropped )  
+    t1Cropped <- rankIntensity( t1Cropped )
     } else {
     t1Cropped <- histogramMatchImage( t1Cropped, t1TemplateRoiLeft, 255, 64, FALSE )
     }
@@ -324,7 +324,7 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
     t1Cropped <- cropIndices( t1PreprocessedFlipped, lowerBoundLeft, upperBoundLeft )
     if( useRankIntensity )
       {
-      t1Cropped <- rankIntensity( t1Cropped )  
+      t1Cropped <- rankIntensity( t1Cropped )
       } else {
       t1Cropped <- histogramMatchImage( t1Cropped, t1TemplateRoiLeft, 255, 64, FALSE )
       }
@@ -335,7 +335,7 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
     t2Cropped <- cropIndices( t2Preprocessed, lowerBoundLeft, upperBoundLeft )
     if( useRankIntensity )
       {
-      t2Cropped <- rankIntensity( t2Cropped )  
+      t2Cropped <- rankIntensity( t2Cropped )
       } else {
       t2Cropped <- histogramMatchImage( t2Cropped, t2TemplateRoiLeft, 255, 64, FALSE )
       }
@@ -345,7 +345,7 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
       t2Cropped <- cropIndices( t2PreprocessedFlipped, lowerBoundLeft, upperBoundLeft )
       if( useRankIntensity )
         {
-        t2Cropped <- rankIntensity( t2Cropped )  
+        t2Cropped <- rankIntensity( t2Cropped )
         } else {
         t2Cropped <- histogramMatchImage( t2Cropped, t2TemplateRoiLeft, 255, 64, FALSE )
         }
@@ -456,9 +456,9 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
     networkName <- paste0( networkName, "Hierarchical" )
     }
 
-  if( useRankIntensity )  
+  if( useRankIntensity )
     {
-    networkName <- paste0( networkName, "_ri" ) 
+    networkName <- paste0( networkName, "_ri" )
     }
 
   if( verbose == TRUE )
@@ -490,7 +490,7 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
   t1Cropped <- cropIndices( t1Preprocessed, lowerBoundRight, upperBoundRight )
   if( useRankIntensity )
     {
-    t1Cropped <- rankIntensity( t1Cropped )  
+    t1Cropped <- rankIntensity( t1Cropped )
     } else {
     t1Cropped <- histogramMatchImage( t1Cropped, t1TemplateRoiRight, 255, 64, FALSE )
     }
@@ -500,7 +500,7 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
     t1Cropped <- cropIndices( t1PreprocessedFlipped, lowerBoundRight, upperBoundRight )
     if( useRankIntensity )
       {
-      t1Cropped <- rankIntensity( t1Cropped )  
+      t1Cropped <- rankIntensity( t1Cropped )
       } else {
       t1Cropped <- histogramMatchImage( t1Cropped, t1TemplateRoiRight, 255, 64, FALSE )
       }
@@ -511,7 +511,7 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
     t2Cropped <- cropIndices( t2Preprocessed, lowerBoundRight, upperBoundRight )
     if( useRankIntensity )
       {
-      t2Cropped <- rankIntensity( t2Cropped )  
+      t2Cropped <- rankIntensity( t2Cropped )
       } else {
       t2Cropped <- histogramMatchImage( t2Cropped, t2TemplateRoiRight, 255, 64, FALSE )
       }
@@ -521,7 +521,7 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
       t2Cropped <- cropIndices( t2PreprocessedFlipped, lowerBoundRight, upperBoundRight )
       if( useRankIntensity )
         {
-        t2Cropped <- rankIntensity( t2Cropped )  
+        t2Cropped <- rankIntensity( t2Cropped )
         } else {
         t2Cropped <- histogramMatchImage( t2Cropped, t2TemplateRoiRight, 255, 64, FALSE )
         }

@@ -119,12 +119,12 @@ from a basis of deformations." />
 from a basis of deformations.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>basisWarp</span><span class='op'>(</span>
-  <span class='va'>deformationBasis</span>,
-  <span class='va'>betaParameters</span>,
-  numberOfCompositions <span class='op'>=</span> <span class='fl'>2</span>,
-  spatialSmoothing <span class='op'>=</span> <span class='fl'>0</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>basisWarp</span>(
+  <span class='no'>deformationBasis</span>,
+  <span class='no'>betaParameters</span>,
+  <span class='kw'>numberOfCompositions</span> <span class='kw'>=</span> <span class='fl'>2</span>,
+  <span class='kw'>spatialSmoothing</span> <span class='kw'>=</span> <span class='fl'>0</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -153,23 +153,19 @@ from a basis of deformations.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='randomImageTransformParametersBatchGenerator.html'>randomImageTransformParametersBatchGenerator</a></code></p></div>
-    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
-
-    <p>Avants BB</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span> <span class='va'>ANTsR</span> <span class='op'>)</span>
-<span class='va'>i1</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/ri.html'>ri</a></span><span class='op'>(</span> <span class='fl'>1</span> <span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/resampleImage.html'>resampleImage</a></span><span class='op'>(</span> <span class='fl'>4</span> <span class='op'>)</span>
-<span class='va'>i2</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/ri.html'>ri</a></span><span class='op'>(</span> <span class='fl'>2</span> <span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/resampleImage.html'>resampleImage</a></span><span class='op'>(</span> <span class='fl'>4</span> <span class='op'>)</span>
-<span class='va'>reg</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/antsRegistration.html'>antsRegistration</a></span><span class='op'>(</span> <span class='va'>i1</span>, <span class='va'>i2</span>, <span class='st'>'SyN'</span> <span class='op'>)</span>
-<span class='va'>w</span> <span class='op'>=</span>  <span class='fu'><a href='https://rdrr.io/pkg/ANTsR/man/composeTransformsToField.html'>composeTransformsToField</a></span><span class='op'>(</span> <span class='va'>i1</span>, <span class='va'>reg</span><span class='op'>$</span><span class='va'>fwd</span> <span class='op'>)</span>
-<span class='va'>bw</span> <span class='op'>=</span> <span class='fu'>basisWarp</span><span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span> <span class='va'>w</span>, <span class='va'>w</span> <span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='fl'>0.25</span>, <span class='fl'>0.25</span> <span class='op'>)</span>, <span class='fl'>2</span>, <span class='fl'>0</span> <span class='op'>)</span>
-<span class='va'>bwApp</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/applyAntsrTransformToImage.html'>applyAntsrTransformToImage</a></span><span class='op'>(</span> <span class='va'>bw</span>, <span class='va'>i2</span>, <span class='va'>i1</span> <span class='op'>)</span>
-<span class='va'>bw</span> <span class='op'>=</span> <span class='fu'>basisWarp</span><span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span> <span class='va'>w</span>, <span class='va'>w</span> <span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='fl'>0.25</span>, <span class='fl'>0.25</span> <span class='op'>)</span><span class='op'>*</span><span class='op'>(</span><span class='op'>-</span><span class='fl'>1.0</span><span class='op'>)</span>, <span class='fl'>2</span>, <span class='fl'>0</span> <span class='op'>)</span> <span class='co'># inverse</span>
-<span class='va'>bwApp</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/applyAntsrTransformToImage.html'>applyAntsrTransformToImage</a></span><span class='op'>(</span> <span class='va'>bw</span>, <span class='va'>i1</span>, <span class='va'>i2</span> <span class='op'>)</span>
-<span class='op'>}</span>
-</div></pre>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>ANTsR</span> )
+<span class='no'>i1</span> <span class='kw'>=</span> <span class='fu'>ri</span>( <span class='fl'>1</span> ) <span class='kw'>%&gt;%</span> <span class='fu'>resampleImage</span>( <span class='fl'>4</span> )
+<span class='no'>i2</span> <span class='kw'>=</span> <span class='fu'>ri</span>( <span class='fl'>2</span> ) <span class='kw'>%&gt;%</span> <span class='fu'>resampleImage</span>( <span class='fl'>4</span> )
+<span class='no'>reg</span> <span class='kw'>=</span> <span class='fu'>antsRegistration</span>( <span class='no'>i1</span>, <span class='no'>i2</span>, <span class='st'>'SyN'</span> )
+<span class='no'>w</span> <span class='kw'>=</span>  <span class='fu'><a href='https://rdrr.io/pkg/ANTsR/man/composeTransformsToField.html'>composeTransformsToField</a></span>( <span class='no'>i1</span>, <span class='no'>reg</span>$<span class='no'>fwd</span> )
+<span class='no'>bw</span> <span class='kw'>=</span> <span class='fu'>basisWarp</span>( <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>( <span class='no'>w</span>, <span class='no'>w</span> ), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>0.25</span>, <span class='fl'>0.25</span> ), <span class='fl'>2</span>, <span class='fl'>0</span> )
+<span class='no'>bwApp</span> <span class='kw'>=</span> <span class='fu'>applyAntsrTransformToImage</span>( <span class='no'>bw</span>, <span class='no'>i2</span>, <span class='no'>i1</span> )
+<span class='no'>bw</span> <span class='kw'>=</span> <span class='fu'>basisWarp</span>( <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>( <span class='no'>w</span>, <span class='no'>w</span> ), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>0.25</span>, <span class='fl'>0.25</span> )*(-<span class='fl'>1.0</span>), <span class='fl'>2</span>, <span class='fl'>0</span> ) <span class='co'># inverse</span>
+<span class='no'>bwApp</span> <span class='kw'>=</span> <span class='fu'>applyAntsrTransformToImage</span>( <span class='no'>bw</span>, <span class='no'>i1</span>, <span class='no'>i2</span> )
+}</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -185,7 +181,7 @@ from a basis of deformations.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>
