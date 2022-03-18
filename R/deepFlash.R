@@ -54,7 +54,7 @@
 #' }
 #' @export
 deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
-  antsxnetCacheDirectory = NULL, useRankIntensity = FALSE, verbose = FALSE )
+  antsxnetCacheDirectory = NULL, useRankIntensity = TRUE, verbose = FALSE )
 {
   if( t1@dimension != 3 )
     {
