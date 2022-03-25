@@ -1,6 +1,6 @@
 #' Hippocampal/Enthorhinal segmentation using "Deep Flash"
 #'
-#' Perform hippocampal/entorhinal segmentation in T1 images using
+#' Perform hippocampal/entorhinal segmentation in T1 and T1/T2 images using
 #' labels from Mike Yassa's lab
 #'
 #' \url{https://faculty.sites.uci.edu/myassa/}
@@ -27,9 +27,7 @@
 #' Preprocessing on the training data consisted of:
 #'    * n4 bias correction,
 #'    * affine registration to deep flash template.
-#' The input T1 should undergo the same steps.  If the input T1 is the raw
-#' T1, these steps can be performed by the internal preprocessing, i.e. set
-#' \code{doPreprocessing = TRUE}
+#' which is performed on the input images if \code{doPreprocessing = TRUE}.
 #'
 #' @param t1 raw or preprocessed 3-D T1-weighted brain image.
 #' @param t2 optional raw or preprocessed 3-D T2-weighted brain image.
