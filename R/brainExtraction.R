@@ -10,8 +10,7 @@
 #' @param image input 3-D brain image (or list of images for multi-modal scenarios).
 #' @param modality image type.  Options include:
 #' \itemize{
-#'   \item{"t1": }{T1-weighted MRI---ANTs-trained.  Update from "t1v0"}
-#'   \item{"t1v0": }{T1-weighted MRI---ANTs-trained.}
+#'   \item{"t1": }{T1-weighted MRI---ANTs-trained.  Previous versions are specified as "t1.v0", "t1.v1".}
 #'   \item{"t1nobrainer": }{T1-weighted MRI---FreeSurfer-trained: h/t Satra Ghosh and Jakub Kaczmarzyk.}
 #'   \item{"t1combined": }{Brian's combination of "t1" and "t1nobrainer".  One can also specify
 #'                         "t1combined[X]" where X is the morphological radius.  X = 12 by default.}
@@ -40,7 +39,7 @@
 #' }
 #' @export
 brainExtraction <- function( image,
-  modality = c( "t1", "t1v0", "t1nobrainer", "t1combined", "t2", "flair", "bold", "fa", "t1t2infant", "t1infant", "t2infant" ),
+  modality = c( "t1", "t1.v0", "t1.v1", "t1nobrainer", "t1combined", "t2", "flair", "bold", "fa", "t1t2infant", "t1infant", "t2infant" ),
   antsxnetCacheDirectory = NULL, verbose = FALSE )
   {
 
@@ -102,11 +101,13 @@ brainExtraction <- function( image,
     #####################
 
     weightsFilePrefix <- ''
-    if( modality == "t1v0" )
+    if( modality == "t1.v0" )
       {
       weightsFilePrefix <- "brainExtraction"
-      } else if( modality == "t1" ) {
+      } else if( modality == "t1.v1" ) {
       weightsFilePrefix <- "brainExtractionT1v1"
+      } else if( modality == "t1" ) {
+      weightsFilePrefix <- "brainExtractionRobustT1"
       } else if( modality == "t2" ) {
       weightsFilePrefix <- "brainExtractionT2"
       } else if( modality == "flair" ) {
@@ -143,7 +144,7 @@ brainExtraction <- function( image,
 
     numberOfFilters <- c( 8, 16, 32, 64 )
     mode <- "classification"
-    if( modality == "t1" )
+    if( modality == "t1.v1" || modality == "t1" )
       {
       numberOfFilters <- c( 16, 32, 64, 128 )
       numberOfClassificationLabels <- 1
@@ -174,8 +175,13 @@ brainExtraction <- function( image,
     for( i in seq.int( channelSize ) )
       {
       warpedImage <- applyAntsrTransformToImage( xfrm, inputImages[[i]], reorientTemplate )
-      warpedArray <- as.array( warpedImage )
-      batchX[1,,,,i] <- ( warpedArray - mean( warpedArray ) ) / sd( warpedArray )
+      if( modality == "t1" )
+        {
+        batchX[1,,,,i] <- as.array( iMath( warpedImage, "Normalize" ) )
+        } else {
+        warpedArray <- as.array( warpedImage )
+        batchX[1,,,,i] <- ( warpedArray - mean( warpedArray ) ) / sd( warpedArray )
+        }
       }
 
     if( verbose == TRUE )
