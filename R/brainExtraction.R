@@ -140,6 +140,10 @@ brainExtraction <- function( image,
     reorientTemplateFileNamePath <- getANTsXNetData( "S_template3",
       antsxnetCacheDirectory = antsxnetCacheDirectory )
     reorientTemplate <- antsImageRead( reorientTemplateFileNamePath )
+    if( modality == "t1" )
+      {
+      antsSetSpacing( reorientTemplate, c( 1.5, 1.5, 1.5 ) ) 
+      }
     resampledImageSize <- dim( reorientTemplate )
 
     numberOfFilters <- c( 8, 16, 32, 64 )
