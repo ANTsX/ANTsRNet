@@ -16,7 +16,7 @@
 #'                         "t1combined[X]" where X is the morphological radius.  X = 12 by default.}
 #'   \item{"flair": }{FLAIR MRI.}
 #'   \item{"t2": }{T2-w MRI.}
-#'   \item{"bold": }{3-D BOLD MRI.}
+#'   \item{"bold": }{3-D mean BOLD MRI.}
 #'   \item{"fa": }{Fractional anisotropy.}
 #'   \item{"t1t2infant": }{Combined T1-w/T2-w infant MRI h/t Martin Styner.}
 #'   \item{"t1infant": }{T1-w infant MRI h/t Martin Styner.}
@@ -39,7 +39,9 @@
 #' }
 #' @export
 brainExtraction <- function( image,
-  modality = c( "t1", "t1.v0", "t1.v1", "t1nobrainer", "t1combined", "t2", "flair", "bold", "fa", "t1t2infant", "t1infant", "t2infant" ),
+  modality = c( "t1", "t1.v0", "t1.v1", "t1nobrainer", "t1combined", "t2", "t2.v0",
+                "t2star", "flair", "flair.v0", "bold", "bold.v0", "fa", "fa.v0",
+                "t1t2infant", "t1infant", "t2infant" ),
   antsxnetCacheDirectory = NULL, verbose = FALSE )
   {
 
@@ -101,6 +103,8 @@ brainExtraction <- function( image,
     #####################
 
     weightsFilePrefix <- ''
+    isStandardNetwork <- FALSE
+
     if( modality == "t1.v0" )
       {
       weightsFilePrefix <- "brainExtraction"
@@ -108,14 +112,30 @@ brainExtraction <- function( image,
       weightsFilePrefix <- "brainExtractionT1v1"
       } else if( modality == "t1" ) {
       weightsFilePrefix <- "brainExtractionRobustT1"
-      } else if( modality == "t2" ) {
+      isStandardNetwork <- TRUE
+      } else if( modality == "t2.v0" ) {
       weightsFilePrefix <- "brainExtractionT2"
-      } else if( modality == "flair" ) {
+      } else if( modality == "t2" ) {
+      weightsFilePrefix <- "brainExtractionRobustT2"
+      isStandardNetwork <- TRUE
+      } else if( modality == "t2star" ) {
+      weightsFilePrefix <- "brainExtractionRobustT2Star"
+      isStandardNetwork <- TRUE
+      } else if( modality == "flair.v0" ) {
       weightsFilePrefix <- "brainExtractionFLAIR"
-      } else if( modality == "bold" ) {
+      } else if( modality == "flair" ) {
+      weightsFilePrefix <- "brainExtractionRobustFLAIR"
+      isStandardNetwork <- TRUE
+      } else if( modality == "bold.v0" ) {
       weightsFilePrefix <- "brainExtractionBOLD"
-      } else if( modality == "fa" ) {
+      } else if( modality == "bold" ) {
+      weightsFilePrefix <- "brainExtractionRobustBOLD"
+      isStandardNetwork <- TRUE
+      } else if( modality == "fa.v0" ) {
       weightsFilePrefix <- "brainExtractionFA"
+      } else if( modality == "fa" ) {
+      weightsFilePrefix <- "brainExtractionRobustFA"
+      isStandardNetwork <- TRUE
       } else if( modality == "t1t2infant" ) {
       weightsFilePrefix <- "brainExtractionInfantT1T2"
       } else if( modality == "t1infant" ) {
@@ -140,15 +160,15 @@ brainExtraction <- function( image,
     reorientTemplateFileNamePath <- getANTsXNetData( "S_template3",
       antsxnetCacheDirectory = antsxnetCacheDirectory )
     reorientTemplate <- antsImageRead( reorientTemplateFileNamePath )
-    if( modality == "t1" )
+    if( isStandardNetwork && modality != "t1.v1" )
       {
-      antsSetSpacing( reorientTemplate, c( 1.5, 1.5, 1.5 ) ) 
+      antsSetSpacing( reorientTemplate, c( 1.5, 1.5, 1.5 ) )
       }
     resampledImageSize <- dim( reorientTemplate )
 
     numberOfFilters <- c( 8, 16, 32, 64 )
     mode <- "classification"
-    if( modality == "t1.v1" || modality == "t1" )
+    if( isStandardNetwork )
       {
       numberOfFilters <- c( 16, 32, 64, 128 )
       numberOfClassificationLabels <- 1
@@ -179,7 +199,7 @@ brainExtraction <- function( image,
     for( i in seq.int( channelSize ) )
       {
       warpedImage <- applyAntsrTransformToImage( xfrm, inputImages[[i]], reorientTemplate )
-      if( modality == "t1" )
+      if( isStandardNetwork && modality != "t1.v1" )
         {
         batchX[1,,,,i] <- as.array( iMath( warpedImage, "Normalize" ) )
         } else {
