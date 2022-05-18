@@ -221,6 +221,25 @@ getPretrainedNetwork <- function(
     {
     antsxnetCacheDirectory <- "ANTsXNet"
     }
+
+  targetFileNamePath <- ""
+
+  # Check if file exists before involving keras, which requires a writeable cache directory
+  # Checking first allows singularity containers to use internal data
+  if (fs::is_absolute_path(antsxnetCacheDirectory))
+    {
+    targetFileNamePath <- fs::path_join(c(antsxnetCacheDirectory, targetFileName))
+    }
+  else
+    {
+    targetFileNamePath <- fs::path_join(c("~/.keras", antsxnetCacheDirectory, targetFileName))
+    }
+
+  if (fs::file_exists(targetFileNamePath))
+    {
+    return(targetFileNamePath)
+    }
+
   targetFileNamePath <- tensorflow::tf$keras$utils$get_file(
     targetFileName, url, cache_subdir = antsxnetCacheDirectory )
   return( targetFileNamePath )
