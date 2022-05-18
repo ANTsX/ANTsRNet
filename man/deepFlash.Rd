@@ -9,7 +9,7 @@ deepFlash(
   t2 = NULL,
   doPreprocessing = TRUE,
   antsxnetCacheDirectory = NULL,
-  useRankIntensity = FALSE,
+  useRankIntensity = TRUE,
   verbose = FALSE
 )
 }
@@ -35,7 +35,7 @@ list consisting of the segmentation image and probability images for
 each label.
 }
 \description{
-Perform hippocampal/entorhinal segmentation in T1 images using
+Perform hippocampal/entorhinal segmentation in T1 and T1/T2 images using
 labels from Mike Yassa's lab
 }
 \details{
@@ -64,9 +64,7 @@ Preprocessing on the training data consisted of:
 \itemize{
 \item n4 bias correction,
 \item affine registration to deep flash template.
-The input T1 should undergo the same steps.  If the input T1 is the raw
-T1, these steps can be performed by the internal preprocessing, i.e. set
-\code{doPreprocessing = TRUE}
+which is performed on the input images if \code{doPreprocessing = TRUE}.
 }
 }
 \examples{

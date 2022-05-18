@@ -6,8 +6,9 @@
 \usage{
 brainExtraction(
   image,
-  modality = c("t1", "t1v0", "t1nobrainer", "t1combined", "t2", "flair", "bold", "fa",
-    "t1t2infant", "t1infant", "t2infant"),
+  modality = c("t1", "t1.v0", "t1.v1", "t1nobrainer", "t1combined", "t2", "t2.v0",
+    "t2star", "flair", "flair.v0", "bold", "bold.v0", "fa", "fa.v0", "t1t2infant",
+    "t1infant", "t2infant"),
   antsxnetCacheDirectory = NULL,
   verbose = FALSE
 )
@@ -17,14 +18,13 @@ brainExtraction(
 
 \item{modality}{image type.  Options include:
 \itemize{
-\item{"t1": }{T1-weighted MRI---ANTs-trained.  Update from "t1v0"}
-\item{"t1v0": }{T1-weighted MRI---ANTs-trained.}
+\item{"t1": }{T1-weighted MRI---ANTs-trained.  Previous versions are specified as "t1.v0", "t1.v1".}
 \item{"t1nobrainer": }{T1-weighted MRI---FreeSurfer-trained: h/t Satra Ghosh and Jakub Kaczmarzyk.}
 \item{"t1combined": }{Brian's combination of "t1" and "t1nobrainer".  One can also specify
 "t1combined\link{X}" where X is the morphological radius.  X = 12 by default.}
 \item{"flair": }{FLAIR MRI.}
 \item{"t2": }{T2-w MRI.}
-\item{"bold": }{3-D BOLD MRI.}
+\item{"bold": }{3-D mean BOLD MRI.}
 \item{"fa": }{Fractional anisotropy.}
 \item{"t1t2infant": }{Combined T1-w/T2-w infant MRI h/t Martin Styner.}
 \item{"t1infant": }{T1-w infant MRI h/t Martin Styner.}

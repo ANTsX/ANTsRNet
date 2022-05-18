@@ -37,9 +37,12 @@ random points and B-spline fitting.
 
 library( ANTsR )
 image <- antsImageRead( getANTsRData( "r16" ) )
-biasFieldImage <- simulateBiasField( image )
+logField <- simulateBiasField(image, numberOfPoints = 10, sdBiasField = 1.0,
+   numberOfFittingLevels = 2, meshSize = 10 ) \%>\% iMath( "Normalize" )
+logField <- ( exp( logField ) )^4
+image <- image * logField
 rm(image); gc()
-rm(biasFieldImage); gc()
+rm(logField); gc()
 }
 \author{
 Tustison NJ
