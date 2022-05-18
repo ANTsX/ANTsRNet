@@ -12,7 +12,7 @@
 #'
 #' library( ANTsRNet )
 #'
-#' model <- createDenseModel(166)
+#' model <- createDenseModel( 166 )
 #'
 #' @import keras
 #' @export
@@ -25,18 +25,12 @@ createDenseModel <- function( inputVectorSize,
 {
   input <- layer_input( shape = c( inputVectorSize ) )
 
-  output <- NULL
+  output <- input
 
   numberOfFilters = numberOfFiltersAtBaseLayer
   for( i in seq.int( numberOfLayers ) )
     {
-    if( i == 1 )
-      {
-      output <- input %>% layer_dense( units = numberOfFilters )
-      } else {
-      output <- output %>% layer_dense( units = numberOfFilters )
-      }
-
+    output <- output %>% layer_dense( units = numberOfFilters )
     output <- output %>% layer_activation_leaky_relu( alpha = 0.2 )
     numberOfFilters <- floor( numberOfFilters / 2 )
     }
