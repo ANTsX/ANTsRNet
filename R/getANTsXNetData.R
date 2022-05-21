@@ -103,7 +103,7 @@ getANTsXNetData <- function(
     }
   else
     {
-    targetFileNamePath <- fs::path_join(c("~/.keras", antsxnetCacheDirectory, targetFileName))
+    targetFileNamePath <- fs::path_join( path.expand( c( "~/.keras", antsxnetCacheDirectory, targetFileName ) ) )
     }
 
   if (fs::file_exists(targetFileNamePath))

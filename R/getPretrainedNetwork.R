@@ -75,6 +75,8 @@ getPretrainedNetwork <- function(
               "dktInner",
               "dktOuter",
               "dktOuterWithSpatialPriors",
+              "e13x5_coronal_weights",
+              "e13x5_sagittal_weights",
               "elBicho",
               "ewDavidWmhSegmentationWeights",
               "ewDavidWmhSegmentationSlicewiseWeights",
@@ -176,6 +178,8 @@ getPretrainedNetwork <- function(
     dktInner = "https://ndownloader.figshare.com/files/23266943",
     dktOuter = "https://ndownloader.figshare.com/files/23765132",
     dktOuterWithSpatialPriors = "https://ndownloader.figshare.com/files/24230768",
+    e13x5_coronal_weights = "https://figshare.com/ndownloader/files/35211226",
+    e13x5_sagittal_weights = "https://figshare.com/ndownloader/files/35211220",
     elBicho = "https://ndownloader.figshare.com/files/26736779",
     ewDavidWmhSegmentationWeights = "https://ndownloader.figshare.com/files/26827691",
     # ewDavidWmhSegmentationSlicewiseWeights = "https://ndownloader.figshare.com/files/26787152",
@@ -232,7 +236,7 @@ getPretrainedNetwork <- function(
     }
   else
     {
-    targetFileNamePath <- fs::path_join(c("~/.keras", antsxnetCacheDirectory, targetFileName))
+    targetFileNamePath <- fs::path_join( path.expand( c( "~/.keras", antsxnetCacheDirectory, targetFileName ) ) )
     }
 
   if (fs::file_exists(targetFileNamePath))
