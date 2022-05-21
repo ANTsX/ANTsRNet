@@ -34,7 +34,7 @@ Simple multilayer dense network.
 
 library( ANTsRNet )
 
-model <- createDenseModel(166)
+model <- createDenseModel( 166 )
 
 }
 \author{
