@@ -108,11 +108,11 @@ getANTsXNetData <- function(
 
   if (fs::file_exists(targetFileNamePath))
     {
-    return(targetFileNamePath)
+    return( as.character( targetFileNamePath) )
     }
 
   targetFileNamePath <- tensorflow::tf$keras$utils$get_file(
     targetFileName, url, cache_subdir = antsxnetCacheDirectory )
 
-  return( targetFileNamePath )
+  return( as.character( targetFileNamePath ) )
 }
