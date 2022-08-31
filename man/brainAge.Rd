@@ -45,7 +45,7 @@ architecture and weights described here:
 
 and described in the following article:
 
-\url{https://academic.oup.com/brain/article-abstract/doi/10.1093/brain/awaa160/5863667?redirectedFrom=fulltext}
+\url{https://pubmed.ncbi.nlm.nih.gov/32591831/}
 
 Preprocessing on the training data consisted of:
 \itemize{

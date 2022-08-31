@@ -119,13 +119,13 @@ random points and B-spline fitting." />
 random points and B-spline fitting.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>simulateBiasField</span>(
-  <span class='no'>domainImage</span>,
-  <span class='kw'>numberOfPoints</span> <span class='kw'>=</span> <span class='fl'>10</span>,
-  <span class='kw'>sdBiasField</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>numberOfFittingLevels</span> <span class='kw'>=</span> <span class='fl'>4</span>,
-  <span class='kw'>meshSize</span> <span class='kw'>=</span> <span class='fl'>1</span>
-)</pre>
+    <pre class="usage"><span class='fu'>simulateBiasField</span><span class='op'>(</span>
+  <span class='va'>domainImage</span>,
+  numberOfPoints <span class='op'>=</span> <span class='fl'>10</span>,
+  sdBiasField <span class='op'>=</span> <span class='fl'>1</span>,
+  numberOfFittingLevels <span class='op'>=</span> <span class='fl'>4</span>,
+  meshSize <span class='op'>=</span> <span class='fl'>1</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -158,17 +158,25 @@ dimension).</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>simulated bias field</p>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Tustison NJ</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>ANTsR</span> )
-<span class='no'>image</span> <span class='kw'>&lt;-</span> <span class='fu'>antsImageRead</span>( <span class='fu'>getANTsRData</span>( <span class='st'>"r16"</span> ) )
-<span class='no'>biasFieldImage</span> <span class='kw'>&lt;-</span> <span class='fu'>simulateBiasField</span>( <span class='no'>image</span> )
-<span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>image</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
-#&gt; Ncells 2628154 140.4    4477500 239.2         NA   4477500 239.2
-#&gt; Vcells 7169320  54.7   28558084 217.9     102400 127434651 972.3</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span>(<span class='no'>biasFieldImage</span>); <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span>()</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
-#&gt; Ncells 2627731 140.4    4477500 239.2         NA   4477500 239.2
-#&gt; Vcells 7168651  54.7   28558084 217.9     102400 127434651 972.3</div></pre>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span> <span class='va'>ANTsR</span> <span class='op'>)</span>
+<span class='va'>image</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/antsImageRead.html'>antsImageRead</a></span><span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/getANTsRData.html'>getANTsRData</a></span><span class='op'>(</span> <span class='st'>"r16"</span> <span class='op'>)</span> <span class='op'>)</span>
+<span class='va'>logField</span> <span class='op'>&lt;-</span> <span class='fu'>simulateBiasField</span><span class='op'>(</span><span class='va'>image</span>, numberOfPoints <span class='op'>=</span> <span class='fl'>10</span>, sdBiasField <span class='op'>=</span> <span class='fl'>1.0</span>,
+   numberOfFittingLevels <span class='op'>=</span> <span class='fl'>2</span>, meshSize <span class='op'>=</span> <span class='fl'>10</span> <span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/iMath.html'>iMath</a></span><span class='op'>(</span> <span class='st'>"Normalize"</span> <span class='op'>)</span>
+<span class='va'>logField</span> <span class='op'>&lt;-</span> <span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span><span class='op'>(</span> <span class='va'>logField</span> <span class='op'>)</span> <span class='op'>)</span><span class='op'>^</span><span class='fl'>4</span>
+<span class='va'>image</span> <span class='op'>&lt;-</span> <span class='va'>image</span> <span class='op'>*</span> <span class='va'>logField</span>
+<span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span><span class='op'>(</span><span class='va'>image</span><span class='op'>)</span>; <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
+#&gt; Ncells 2647009 141.4    4559225 243.5         NA   4559225  243.5
+#&gt; Vcells 7194575  54.9   28582631 218.1      65536 150535985 1148.5</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span><span class='op'>(</span><span class='va'>logField</span><span class='op'>)</span>; <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
+#&gt; Ncells 2646958 141.4    4559225 243.5         NA   4559225  243.5
+#&gt; Vcells 7194526  54.9   28582631 218.1      65536 150535985 1148.5</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -184,7 +192,7 @@ dimension).</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

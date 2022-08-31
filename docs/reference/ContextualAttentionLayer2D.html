@@ -133,17 +133,18 @@ CVPR 2018.</p>
 
     
 
-<pre><span class='no'>layer</span> <span class='kw'>&amp;</span><span class='no'>lt</span>;- <span class='no'>ContextualAttentionLayer2D</span>$<span class='fu'>new</span>( <span class='no'>scale</span> )
+<pre><span class='va'>layer</span> <span class='op'>&lt;-</span> <span class='va'>ContextualAttentionLayer2D</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span> <span class='va'>scale</span> <span class='op'>)</span>
 
-<span class='no'>layer</span>$<span class='fu'><a href='https://rdrr.io/r/base/call.html'>call</a></span>( <span class='no'>x</span>, <span class='kw'>mask</span> <span class='kw'>=</span> <span class='kw'>NULL</span> )
-<span class='no'>layer</span>$<span class='fu'><a href='https://rdrr.io/r/utils/PkgUtils.html'>build</a></span>( <span class='no'>input_shape</span> )
-<span class='no'>layer</span>$<span class='fu'>compute_output_shape</span>( <span class='no'>input_shape</span> )</pre>
+<span class='va'>layer</span><span class='op'>$</span><span class='fu'>call</span><span class='op'>(</span> <span class='va'>x</span>, mask <span class='op'>=</span> <span class='cn'>NULL</span> <span class='op'>)</span>
+<span class='va'>layer</span><span class='op'>$</span><span class='fu'>build</span><span class='op'>(</span> <span class='va'>input_shape</span> <span class='op'>)</span>
+<span class='va'>layer</span><span class='op'>$</span><span class='fu'>compute_output_shape</span><span class='op'>(</span> <span class='va'>input_shape</span> <span class='op'>)</span>
+</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
 
     
 
-<dl'>
+<dl>
 <dt>layer</dt><dd><p>A <code>process</code> object.</p></dd>
 <dt>scale</dt><dd><p>feature scale.  Default = 20</p></dd>
 <dt>x</dt><dd><p></p></dd>
@@ -160,10 +161,14 @@ CVPR 2018.</p>
 <p><code>$build</code></p>
 <p><code>$call</code> main body.</p>
 <p><code>$compute_output_shape</code> computes the output shape.</p>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Tustison NJ</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>x</span> <span class='kw'>=</span> <span class='no'>ContextualAttentionLayer2D</span>$<span class='fu'>new</span>()
-<span class='no'>x</span>$<span class='fu'><a href='https://rdrr.io/r/utils/PkgUtils.html'>build</a></span>()</div><div class='output co'>#&gt; NULL</div><div class='input'>
+    <pre class="examples"><div class='input'><span class='va'>x</span> <span class='op'>=</span> <span class='va'>ContextualAttentionLayer2D</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span><span class='op'>)</span>
+<span class='va'>x</span><span class='op'>$</span><span class='fu'>build</span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; NULL</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -180,7 +185,7 @@ CVPR 2018.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

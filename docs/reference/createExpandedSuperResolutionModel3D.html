@@ -119,12 +119,12 @@ framework based on the following python implementation:" />
 framework based on the following python implementation:</p>
     </div>
 
-    <pre class="usage"><span class='fu'>createExpandedSuperResolutionModel3D</span>(
-  <span class='no'>inputImageSize</span>,
-  <span class='kw'>convolutionKernelSizes</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>9</span>, <span class='fl'>9</span>, <span class='fl'>9</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>3</span>, <span class='fl'>3</span>, <span class='fl'>3</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>5</span>, <span class='fl'>5</span>, <span class='fl'>5</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>5</span>, <span class='fl'>5</span>,
-    <span class='fl'>5</span>)),
-  <span class='kw'>numberOfFilters</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>64</span>, <span class='fl'>32</span>, <span class='fl'>32</span>, <span class='fl'>32</span>)
-)</pre>
+    <pre class="usage"><span class='fu'>createExpandedSuperResolutionModel3D</span><span class='op'>(</span>
+  <span class='va'>inputImageSize</span>,
+  convolutionKernelSizes <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>9</span>, <span class='fl'>9</span>, <span class='fl'>9</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>, <span class='fl'>3</span>, <span class='fl'>3</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>5</span>, <span class='fl'>5</span>, <span class='fl'>5</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>5</span>, <span class='fl'>5</span>,
+    <span class='fl'>5</span><span class='op'>)</span><span class='op'>)</span>,
+  numberOfFilters <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>64</span>, <span class='fl'>32</span>, <span class='fl'>32</span>, <span class='fl'>32</span><span class='op'>)</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -160,16 +160,20 @@ paper.</p></td>
 <pre>    \url{https://github.com/titu1994/Image-Super-Resolution}
 </pre>
 
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Tustison NJ</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>createExpandedSuperResolutionModel3D</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>100</span>, <span class='fl'>100</span>, <span class='fl'>100</span>, <span class='fl'>1</span> ))</div><div class='output co'>#&gt; Model
-#&gt; Model: "model_26"
+    <pre class="examples"><div class='input'><span class='fu'>createExpandedSuperResolutionModel3D</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='fl'>100</span>, <span class='fl'>100</span>, <span class='fl'>100</span>, <span class='fl'>1</span> <span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; Model
+#&gt; Model: "model_25"
 #&gt; ________________________________________________________________________________
 #&gt; Layer (type)              Output Shape      Param #  Connected to               
 #&gt; ================================================================================
-#&gt; input_23 (InputLayer)     [(None, 100, 100, 0                                   
+#&gt; input_22 (InputLayer)     [(None, 100, 100, 0                                   
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_106 (Conv3D)       (None, 100, 100,  46720    input_23[0][0]             
+#&gt; conv3d_106 (Conv3D)       (None, 100, 100,  46720    input_22[0][0]             
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_107 (Conv3D)       (None, 100, 100,  2080     conv3d_106[0][0]           
 #&gt; ________________________________________________________________________________
@@ -204,7 +208,7 @@ paper.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

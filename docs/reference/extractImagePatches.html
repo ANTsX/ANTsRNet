@@ -117,16 +117,16 @@
     <p>Extract 2-D or 3-D image patches.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>extractImagePatches</span>(
-  <span class='no'>image</span>,
-  <span class='no'>patchSize</span>,
-  <span class='kw'>maxNumberOfPatches</span> <span class='kw'>=</span> <span class='st'>"all"</span>,
-  <span class='kw'>strideLength</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>maskImage</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='no'>randomSeed</span>,
-  <span class='kw'>returnAsArray</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>randomize</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
-)</pre>
+    <pre class="usage"><span class='fu'>extractImagePatches</span><span class='op'>(</span>
+  <span class='va'>image</span>,
+  <span class='va'>patchSize</span>,
+  maxNumberOfPatches <span class='op'>=</span> <span class='st'>"all"</span>,
+  strideLength <span class='op'>=</span> <span class='fl'>1</span>,
+  maskImage <span class='op'>=</span> <span class='cn'>NULL</span>,
+  <span class='va'>randomSeed</span>,
+  returnAsArray <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  randomize <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -178,16 +178,21 @@ a single patch.  Otherwise the return type is an array of size
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>a list (or array) of image patches.</p>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Tustison NJ</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>ANTsR</span> )
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span> <span class='va'>ANTsR</span> <span class='op'>)</span>
 
-<span class='no'>image</span> <span class='kw'>&lt;-</span> <span class='fu'>antsImageRead</span>( <span class='fu'>getANTsRData</span>( <span class='st'>"r16"</span> ) )
-<span class='no'>maskImage</span> <span class='kw'>&lt;-</span> <span class='fu'>getMask</span>( <span class='no'>image</span>, <span class='fl'>1</span>, <span class='fl'>1000</span> )
-<span class='no'>patchSet1</span> <span class='kw'>&lt;-</span> <span class='fu'>extractImagePatches</span>( <span class='no'>image</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>32</span>, <span class='fl'>32</span> ), <span class='fl'>10</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>32</span>, <span class='fl'>32</span> ), <span class='kw'>randomSeed</span> <span class='kw'>=</span> <span class='fl'>0</span> )
-<span class='no'>patchSet2</span> <span class='kw'>&lt;-</span> <span class='fu'>extractImagePatches</span>( <span class='no'>image</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>32</span>, <span class='fl'>32</span> ), <span class='fl'>10</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>32</span>, <span class='fl'>32</span> ), <span class='kw'>randomSeed</span> <span class='kw'>=</span> <span class='fl'>1</span> )
-<span class='no'>patchSet3</span> <span class='kw'>&lt;-</span> <span class='fu'>extractImagePatches</span>( <span class='no'>image</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>32</span>, <span class='fl'>32</span> ), <span class='fl'>10</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>32</span>, <span class='fl'>32</span> ), <span class='no'>maskImage</span>, <span class='kw'>randomSeed</span> <span class='kw'>=</span> <span class='fl'>0</span> )</div></pre>
+<span class='va'>image</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/antsImageRead.html'>antsImageRead</a></span><span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/getANTsRData.html'>getANTsRData</a></span><span class='op'>(</span> <span class='st'>"r16"</span> <span class='op'>)</span> <span class='op'>)</span>
+<span class='va'>maskImage</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/getMask.html'>getMask</a></span><span class='op'>(</span> <span class='va'>image</span>, <span class='fl'>1</span>, <span class='fl'>1000</span> <span class='op'>)</span>
+<span class='va'>patchSet1</span> <span class='op'>&lt;-</span> <span class='fu'>extractImagePatches</span><span class='op'>(</span> <span class='va'>image</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='fl'>32</span>, <span class='fl'>32</span> <span class='op'>)</span>, <span class='fl'>10</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='fl'>32</span>, <span class='fl'>32</span> <span class='op'>)</span>, randomSeed <span class='op'>=</span> <span class='fl'>0</span> <span class='op'>)</span>
+<span class='va'>patchSet2</span> <span class='op'>&lt;-</span> <span class='fu'>extractImagePatches</span><span class='op'>(</span> <span class='va'>image</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='fl'>32</span>, <span class='fl'>32</span> <span class='op'>)</span>, <span class='fl'>10</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='fl'>32</span>, <span class='fl'>32</span> <span class='op'>)</span>, randomSeed <span class='op'>=</span> <span class='fl'>1</span> <span class='op'>)</span>
+<span class='va'>patchSet3</span> <span class='op'>&lt;-</span> <span class='fu'>extractImagePatches</span><span class='op'>(</span> <span class='va'>image</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='fl'>32</span>, <span class='fl'>32</span> <span class='op'>)</span>, <span class='fl'>10</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='fl'>32</span>, <span class='fl'>32</span> <span class='op'>)</span>, <span class='va'>maskImage</span>, randomSeed <span class='op'>=</span> <span class='fl'>0</span> <span class='op'>)</span>
+
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -203,7 +208,7 @@ a single patch.  Otherwise the return type is an array of size
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

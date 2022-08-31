@@ -126,7 +126,7 @@
 
     
 
-<dl'>
+<dl>
 <dt>outputDimension</dt><dd><p></p></dd>
 <dt>numberOfMixtures</dt><dd><p></p></dd>
 
@@ -149,10 +149,14 @@ thus circumventing the add_weight() function.  Instead, I
 recreated dense layer functionality using the keras definition
 here:</p>
 <p>https://github.com/keras-team/keras/blob/master/keras/layers/core.py#L796-L937</p>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Tustison NJ</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>MixtureDensityNetworkLayer</span>$<span class='fu'>new</span>(<span class='kw'>outputDimension</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>50</span>, <span class='fl'>48</span>),
- <span class='kw'>numberOfMixtures</span> <span class='kw'>=</span> <span class='fl'>3</span>)</div><div class='output co'>#&gt; &lt;MixtureDensityNetworkLayer&gt;
+    <pre class="examples"><div class='input'><span class='va'>MixtureDensityNetworkLayer</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span>outputDimension <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>50</span>, <span class='fl'>48</span><span class='op'>)</span>,
+ numberOfMixtures <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; &lt;MixtureDensityNetworkLayer&gt;
 #&gt;   Inherits from: &lt;KerasLayer&gt;
 #&gt;   Public:
 #&gt;     .set_wrapper: function (wrapper) 
@@ -186,7 +190,7 @@ here:</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

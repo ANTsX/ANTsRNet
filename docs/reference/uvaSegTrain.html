@@ -119,7 +119,7 @@ followed by k-means clustering to produce a segmentation and probabilities." />
 followed by k-means clustering to produce a segmentation and probabilities.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>uvaSegTrain</span>(<span class='no'>patches</span>, <span class='no'>k</span>, <span class='no'>convControl</span>, <span class='kw'>standardize</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>patches2</span>)</pre>
+    <pre class="usage"><span class='fu'>uvaSegTrain</span><span class='op'>(</span><span class='va'>patches</span>, <span class='va'>k</span>, <span class='va'>convControl</span>, standardize <span class='op'>=</span> <span class='cn'>TRUE</span>, <span class='va'>patches2</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -161,18 +161,23 @@ may be useful for super-resolution</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>model is output</p>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Avants BB</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+<span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
 
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>ANTsR</span>)
-<span class='no'>img</span> <span class='kw'>&lt;-</span> <span class='fu'>ri</span>( <span class='fl'>1</span> ) <span class='kw'>%&gt;%</span> <span class='fu'>resampleImage</span>( <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>4</span>,<span class='fl'>4</span>) ) <span class='kw'>%&gt;%</span> <span class='fu'>iMath</span>( <span class='st'>"Normalize"</span> )
-<span class='no'>mask</span> <span class='kw'>=</span> <span class='fu'>randomMask</span>( <span class='fu'>getMask</span>( <span class='no'>img</span> ), <span class='fl'>50</span> )
-<span class='no'>r</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>3</span>, <span class='fl'>3</span> )
-<span class='no'>patch</span> <span class='kw'>=</span> <span class='fu'>getNeighborhoodInMask</span>( <span class='no'>img</span>, <span class='no'>mask</span>, <span class='no'>r</span>, <span class='kw'>boundary.condition</span> <span class='kw'>=</span> <span class='st'>"NA"</span> )
-<span class='no'>uvaSegModel</span> <span class='kw'>=</span> <span class='fu'>uvaSegTrain</span>( <span class='no'>patch</span>, <span class='fl'>6</span> )
-}</div></pre>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>ANTsR</span><span class='op'>)</span>
+<span class='va'>img</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/ri.html'>ri</a></span><span class='op'>(</span> <span class='fl'>1</span> <span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/resampleImage.html'>resampleImage</a></span><span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>4</span>,<span class='fl'>4</span><span class='op'>)</span> <span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/iMath.html'>iMath</a></span><span class='op'>(</span> <span class='st'>"Normalize"</span> <span class='op'>)</span>
+<span class='va'>mask</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/randomMask.html'>randomMask</a></span><span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/getMask.html'>getMask</a></span><span class='op'>(</span> <span class='va'>img</span> <span class='op'>)</span>, <span class='fl'>50</span> <span class='op'>)</span>
+<span class='va'>r</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='fl'>3</span>, <span class='fl'>3</span> <span class='op'>)</span>
+<span class='va'>patch</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/getNeighborhoodInMask.html'>getNeighborhoodInMask</a></span><span class='op'>(</span> <span class='va'>img</span>, <span class='va'>mask</span>, <span class='va'>r</span>, boundary.condition <span class='op'>=</span> <span class='st'>"NA"</span> <span class='op'>)</span>
+<span class='va'>uvaSegModel</span> <span class='op'>=</span> <span class='fu'>uvaSegTrain</span><span class='op'>(</span> <span class='va'>patch</span>, <span class='fl'>6</span> <span class='op'>)</span>
+<span class='op'>}</span>
+
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -188,7 +193,7 @@ may be useful for super-resolution</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

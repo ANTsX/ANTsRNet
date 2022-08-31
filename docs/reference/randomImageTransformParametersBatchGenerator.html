@@ -128,9 +128,11 @@ The class calls <code><a href='randomImageTransformParametersAugmentation.html'>
     
 
 <pre>
-<span class='no'>bgen</span> <span class='kw'>=</span> <span class='no'>randomImageTransformParametersBatchGenerator</span>$<span class='fu'>new</span>( <span class='no'>...</span> )
+<span class='va'>bgen</span> <span class='op'>=</span> <span class='va'>randomImageTransformParametersBatchGenerator</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span> <span class='va'>...</span> <span class='op'>)</span>
 
-<span class='no'>bgen</span>$<span class='fu'>generate</span>( <span class='kw'>batchSize</span> <span class='kw'>=</span> <span class='fl'>32L</span> )</pre>
+<span class='va'>bgen</span><span class='op'>$</span><span class='fu'>generate</span><span class='op'>(</span> batchSize <span class='op'>=</span> <span class='fl'>32L</span> <span class='op'>)</span>
+
+</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
 
@@ -165,20 +167,22 @@ This operation will test
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>ANTsR</span> )
-<span class='no'>i1</span> <span class='kw'>=</span> <span class='fu'>antsImageRead</span>( <span class='fu'>getANTsRData</span>( <span class='st'>"r16"</span> ) )
-<span class='no'>i2</span> <span class='kw'>=</span> <span class='fu'>antsImageRead</span>( <span class='fu'>getANTsRData</span>( <span class='st'>"r64"</span> ) )
-<span class='no'>s1</span> <span class='kw'>=</span> <span class='fu'>thresholdImage</span>( <span class='no'>i1</span>, <span class='st'>"Otsu"</span>, <span class='fl'>3</span> )
-<span class='no'>s2</span> <span class='kw'>=</span> <span class='fu'>thresholdImage</span>( <span class='no'>i2</span>, <span class='st'>"Otsu"</span>, <span class='fl'>3</span> )
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span> <span class='va'>ANTsR</span> <span class='op'>)</span>
+<span class='va'>i1</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/antsImageRead.html'>antsImageRead</a></span><span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/getANTsRData.html'>getANTsRData</a></span><span class='op'>(</span> <span class='st'>"r16"</span> <span class='op'>)</span> <span class='op'>)</span>
+<span class='va'>i2</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/antsImageRead.html'>antsImageRead</a></span><span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/getANTsRData.html'>getANTsRData</a></span><span class='op'>(</span> <span class='st'>"r64"</span> <span class='op'>)</span> <span class='op'>)</span>
+<span class='va'>s1</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/thresholdImage.html'>thresholdImage</a></span><span class='op'>(</span> <span class='va'>i1</span>, <span class='st'>"Otsu"</span>, <span class='fl'>3</span> <span class='op'>)</span>
+<span class='va'>s2</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/thresholdImage.html'>thresholdImage</a></span><span class='op'>(</span> <span class='va'>i2</span>, <span class='st'>"Otsu"</span>, <span class='fl'>3</span> <span class='op'>)</span>
 <span class='co'># see ANTsRNet randomImageTransformAugmentation</span>
-<span class='no'>predictors</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>( <span class='no'>i1</span>, <span class='no'>i2</span>, <span class='no'>i2</span>, <span class='no'>i1</span> )
-<span class='no'>trainingData</span> <span class='kw'>&lt;-</span> <span class='no'>randomImageTransformParametersBatchGenerator</span>$<span class='fu'>new</span>(
-  <span class='kw'>imageList</span> <span class='kw'>=</span> <span class='no'>predictors</span>,
-  <span class='kw'>transformType</span> <span class='kw'>=</span> <span class='st'>"Affine"</span>,
-  <span class='kw'>imageDomain</span> <span class='kw'>=</span> <span class='no'>i1</span>, <span class='kw'>txParamMeans</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>0</span>,<span class='fl'>0</span>), <span class='kw'>txParamSDs</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span>(<span class='fl'>6</span>)*<span class='fl'>0.01</span>
-  )
-<span class='no'>testBatchGenFunction</span> <span class='kw'>=</span> <span class='no'>trainingData</span>$<span class='fu'>generate</span>( <span class='fl'>2</span> )
-<span class='no'>myout</span> <span class='kw'>=</span> <span class='fu'>testBatchGenFunction</span>( )</div></pre>
+<span class='va'>predictors</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span> <span class='va'>i1</span>, <span class='va'>i2</span>, <span class='va'>i2</span>, <span class='va'>i1</span> <span class='op'>)</span>
+<span class='va'>trainingData</span> <span class='op'>&lt;-</span> <span class='va'>randomImageTransformParametersBatchGenerator</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span>
+  imageList <span class='op'>=</span> <span class='va'>predictors</span>,
+  transformType <span class='op'>=</span> <span class='st'>"Affine"</span>,
+  imageDomain <span class='op'>=</span> <span class='va'>i1</span>, txParamMeans<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>0</span>,<span class='fl'>0</span><span class='op'>)</span>, txParamSDs<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span><span class='op'>(</span><span class='fl'>6</span><span class='op'>)</span><span class='op'>*</span><span class='fl'>0.01</span>
+  <span class='op'>)</span>
+<span class='va'>testBatchGenFunction</span> <span class='op'>=</span> <span class='va'>trainingData</span><span class='op'>$</span><span class='fu'>generate</span><span class='op'>(</span> <span class='fl'>2</span> <span class='op'>)</span>
+<span class='va'>myout</span> <span class='op'>=</span> <span class='fu'>testBatchGenFunction</span><span class='op'>(</span> <span class='op'>)</span>
+
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -194,7 +198,7 @@ This operation will test
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

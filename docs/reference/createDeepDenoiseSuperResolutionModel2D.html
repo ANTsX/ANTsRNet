@@ -119,14 +119,14 @@ framework based on the following python implementation:" />
 framework based on the following python implementation:</p>
     </div>
 
-    <pre class="usage"><span class='fu'>createDeepDenoiseSuperResolutionModel2D</span>(
-  <span class='no'>inputImageSize</span>,
-  <span class='kw'>layers</span> <span class='kw'>=</span> <span class='fl'>2</span>,
-  <span class='kw'>lowestResolution</span> <span class='kw'>=</span> <span class='fl'>64</span>,
-  <span class='kw'>convolutionKernelSize</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>3</span>, <span class='fl'>3</span>),
-  <span class='kw'>poolSize</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>2</span>, <span class='fl'>2</span>),
-  <span class='kw'>strides</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>2</span>, <span class='fl'>2</span>)
-)</pre>
+    <pre class="usage"><span class='fu'>createDeepDenoiseSuperResolutionModel2D</span><span class='op'>(</span>
+  <span class='va'>inputImageSize</span>,
+  layers <span class='op'>=</span> <span class='fl'>2</span>,
+  lowestResolution <span class='op'>=</span> <span class='fl'>64</span>,
+  convolutionKernelSize <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>, <span class='fl'>3</span><span class='op'>)</span>,
+  poolSize <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>, <span class='fl'>2</span><span class='op'>)</span>,
+  strides <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>, <span class='fl'>2</span><span class='op'>)</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -171,11 +171,15 @@ during the encoding path</p></td>
 <pre>    \url{https://github.com/titu1994/Image-Super-Resolution}
 </pre>
 
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Tustison NJ</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='fu'>createDeepDenoiseSuperResolutionModel2D</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>256L</span>, <span class='fl'>256L</span>, <span class='fl'>3L</span>))
-}</div></pre>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='fu'>createDeepDenoiseSuperResolutionModel2D</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>256L</span>, <span class='fl'>256L</span>, <span class='fl'>3L</span><span class='op'>)</span><span class='op'>)</span>
+<span class='op'>}</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -191,7 +195,7 @@ during the encoding path</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

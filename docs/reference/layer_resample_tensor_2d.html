@@ -117,14 +117,14 @@
     <p>Resamples a spatial tensor based on the specified shape and interpolation type.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>layer_resample_tensor_2d</span>(
-  <span class='no'>object</span>,
-  <span class='no'>shape</span>,
-  <span class='kw'>interpolationType</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"nearestNeighbor"</span>, <span class='st'>"nearest"</span>, <span class='st'>"linear"</span>, <span class='st'>"bilinear"</span>, <span class='st'>"cubic"</span>,
-    <span class='st'>"bicubic"</span>),
-  <span class='kw'>name</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>trainable</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
-)</pre>
+    <pre class="usage"><span class='fu'>layer_resample_tensor_2d</span><span class='op'>(</span>
+  <span class='va'>object</span>,
+  <span class='va'>shape</span>,
+  interpolationType <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"nearestNeighbor"</span>, <span class='st'>"nearest"</span>, <span class='st'>"linear"</span>, <span class='st'>"bilinear"</span>, <span class='st'>"cubic"</span>,
+    <span class='st'>"bicubic"</span><span class='op'>)</span>,
+  name <span class='op'>=</span> <span class='cn'>NULL</span>,
+  trainable <span class='op'>=</span> <span class='cn'>FALSE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -159,6 +159,9 @@ or another Layer which this layer will call.</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>a keras layer tensor</p>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Tustison NJ</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -175,7 +178,7 @@ or another Layer which this layer will call.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

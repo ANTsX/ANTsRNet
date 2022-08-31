@@ -2,7 +2,7 @@
 #'
 #' Described here:
 #'
-#'     \url{https://arxiv.org/abs/2008.03465}
+#'     \url{https://pubmed.ncbi.nlm.nih.gov/34520080/}
 #'
 #' with the implementation available at:
 #'

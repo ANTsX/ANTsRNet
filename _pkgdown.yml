@@ -204,4 +204,6 @@ reference:
   - '`tidNeuralImageAssessment`'
   - '`elBicho`'
   - '`arterialLesionSegmentation`'
+  - '`allenE13x5BrainExtraction`'
+  - '`allenHisologyBrainMask`'
 

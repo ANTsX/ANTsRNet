@@ -119,17 +119,17 @@ recognition based on the paper" />
 recognition based on the paper</p>
     </div>
 
-    <pre class="usage"><span class='fu'>createDenseNetModel3D</span>(
-  <span class='no'>inputImageSize</span>,
-  <span class='kw'>numberOfClassificationLabels</span> <span class='kw'>=</span> <span class='fl'>1000</span>,
-  <span class='kw'>numberOfFilters</span> <span class='kw'>=</span> <span class='fl'>16</span>,
-  <span class='kw'>depth</span> <span class='kw'>=</span> <span class='fl'>7</span>,
-  <span class='kw'>numberOfDenseBlocks</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>growthRate</span> <span class='kw'>=</span> <span class='fl'>12</span>,
-  <span class='kw'>dropoutRate</span> <span class='kw'>=</span> <span class='fl'>0.2</span>,
-  <span class='kw'>weightDecay</span> <span class='kw'>=</span> <span class='fl'>0.0001</span>,
-  <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"classification"</span>
-)</pre>
+    <pre class="usage"><span class='fu'>createDenseNetModel3D</span><span class='op'>(</span>
+  <span class='va'>inputImageSize</span>,
+  numberOfClassificationLabels <span class='op'>=</span> <span class='fl'>1000</span>,
+  numberOfFilters <span class='op'>=</span> <span class='fl'>16</span>,
+  depth <span class='op'>=</span> <span class='fl'>7</span>,
+  numberOfDenseBlocks <span class='op'>=</span> <span class='fl'>1</span>,
+  growthRate <span class='op'>=</span> <span class='fl'>12</span>,
+  dropoutRate <span class='op'>=</span> <span class='fl'>0.2</span>,
+  weightDecay <span class='op'>=</span> <span class='fl'>0.0001</span>,
+  mode <span class='op'>=</span> <span class='st'>"classification"</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -192,47 +192,51 @@ Convolutional Networks Networks</p>
 implementation:</p><pre>    https://github.com/tdeboissiere/DeepLearningImplementations/blob/master/DenseNet/densenet.py
 </pre>
 
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Tustison NJ</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+<span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
 
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>ANTsRNet</span> )
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>keras</span> )
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span> <span class='va'><a href='https://github.com/ANTsX/ANTsRNet'>ANTsRNet</a></span> <span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span> <span class='va'><a href='https://keras.rstudio.com'>keras</a></span> <span class='op'>)</span>
 
-<span class='no'>mnistData</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/dataset_mnist.html'>dataset_mnist</a></span>()
-<span class='no'>numberOfLabels</span> <span class='kw'>&lt;-</span> <span class='fl'>10</span>
+<span class='va'>mnistData</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/dataset_mnist.html'>dataset_mnist</a></span><span class='op'>(</span><span class='op'>)</span>
+<span class='va'>numberOfLabels</span> <span class='op'>&lt;-</span> <span class='fl'>10</span>
 
 <span class='co'># Extract a small subset for something that can run quickly</span>
 
-<span class='no'>X_trainSmall</span> <span class='kw'>&lt;-</span> <span class='no'>mnistData</span>$<span class='no'>train</span>$<span class='no'>x</span>[<span class='fl'>1</span>:<span class='fl'>10</span>,,]
-<span class='no'>X_trainSmall</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/array.html'>array</a></span>( <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>X_trainSmall</span>, <span class='kw'>dim</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span>( <span class='no'>X_trainSmall</span> ), <span class='fl'>1</span> ) )
-<span class='no'>Y_trainSmall</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/to_categorical.html'>to_categorical</a></span>( <span class='no'>mnistData</span>$<span class='no'>train</span>$<span class='no'>y</span>[<span class='fl'>1</span>:<span class='fl'>10</span>], <span class='no'>numberOfLabels</span> )
+<span class='va'>X_trainSmall</span> <span class='op'>&lt;-</span> <span class='va'>mnistData</span><span class='op'>$</span><span class='va'>train</span><span class='op'>$</span><span class='va'>x</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>10</span>,,<span class='op'>]</span>
+<span class='va'>X_trainSmall</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/array.html'>array</a></span><span class='op'>(</span> data <span class='op'>=</span> <span class='va'>X_trainSmall</span>, dim <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span><span class='op'>(</span> <span class='va'>X_trainSmall</span> <span class='op'>)</span>, <span class='fl'>1</span> <span class='op'>)</span> <span class='op'>)</span>
+<span class='va'>Y_trainSmall</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/to_categorical.html'>to_categorical</a></span><span class='op'>(</span> <span class='va'>mnistData</span><span class='op'>$</span><span class='va'>train</span><span class='op'>$</span><span class='va'>y</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>10</span><span class='op'>]</span>, <span class='va'>numberOfLabels</span> <span class='op'>)</span>
 
-<span class='no'>X_testSmall</span> <span class='kw'>&lt;-</span> <span class='no'>mnistData</span>$<span class='no'>test</span>$<span class='no'>x</span>[<span class='fl'>1</span>:<span class='fl'>10</span>,,]
-<span class='no'>X_testSmall</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/array.html'>array</a></span>( <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>X_testSmall</span>, <span class='kw'>dim</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span>( <span class='no'>X_testSmall</span> ), <span class='fl'>1</span> ) )
-<span class='no'>Y_testSmall</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/to_categorical.html'>to_categorical</a></span>( <span class='no'>mnistData</span>$<span class='no'>test</span>$<span class='no'>y</span>[<span class='fl'>1</span>:<span class='fl'>10</span>], <span class='no'>numberOfLabels</span> )
+<span class='va'>X_testSmall</span> <span class='op'>&lt;-</span> <span class='va'>mnistData</span><span class='op'>$</span><span class='va'>test</span><span class='op'>$</span><span class='va'>x</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>10</span>,,<span class='op'>]</span>
+<span class='va'>X_testSmall</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/array.html'>array</a></span><span class='op'>(</span> data <span class='op'>=</span> <span class='va'>X_testSmall</span>, dim <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span><span class='op'>(</span> <span class='va'>X_testSmall</span> <span class='op'>)</span>, <span class='fl'>1</span> <span class='op'>)</span> <span class='op'>)</span>
+<span class='va'>Y_testSmall</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/to_categorical.html'>to_categorical</a></span><span class='op'>(</span> <span class='va'>mnistData</span><span class='op'>$</span><span class='va'>test</span><span class='op'>$</span><span class='va'>y</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>10</span><span class='op'>]</span>, <span class='va'>numberOfLabels</span> <span class='op'>)</span>
 
 <span class='co'># We add a dimension of 1 to specify the channel size</span>
 
-<span class='no'>inputImageSize</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span>( <span class='no'>X_trainSmall</span> )[<span class='fl'>2</span>:<span class='fl'>3</span>], <span class='fl'>1</span> )
+<span class='va'>inputImageSize</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span><span class='op'>(</span> <span class='va'>X_trainSmall</span> <span class='op'>)</span><span class='op'>[</span><span class='fl'>2</span><span class='op'>:</span><span class='fl'>3</span><span class='op'>]</span>, <span class='fl'>1</span> <span class='op'>)</span>
 
-<span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='createDenseNetModel2D.html'>createDenseNetModel2D</a></span>( <span class='kw'>inputImageSize</span> <span class='kw'>=</span> <span class='no'>inputImageSize</span>,
-  <span class='kw'>numberOfClassificationLabels</span> <span class='kw'>=</span> <span class='no'>numberOfLabels</span> )
+<span class='va'>model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='createDenseNetModel2D.html'>createDenseNetModel2D</a></span><span class='op'>(</span> inputImageSize <span class='op'>=</span> <span class='va'>inputImageSize</span>,
+  numberOfClassificationLabels <span class='op'>=</span> <span class='va'>numberOfLabels</span> <span class='op'>)</span>
 
-<span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/reexports.html'>compile</a></span>( <span class='kw'>loss</span> <span class='kw'>=</span> <span class='st'>'categorical_crossentropy'</span>,
-  <span class='kw'>optimizer</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/optimizer_adam.html'>optimizer_adam</a></span>( <span class='kw'>lr</span> <span class='kw'>=</span> <span class='fl'>0.0001</span> ),
-  <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='st'>'categorical_crossentropy'</span>, <span class='st'>'accuracy'</span> ) )
+<span class='va'>model</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://generics.r-lib.org/reference/compile.html'>compile</a></span><span class='op'>(</span> loss <span class='op'>=</span> <span class='st'>'categorical_crossentropy'</span>,
+  optimizer <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/optimizer_adam.html'>optimizer_adam</a></span><span class='op'>(</span> lr <span class='op'>=</span> <span class='fl'>0.0001</span> <span class='op'>)</span>,
+  metrics <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='st'>'categorical_crossentropy'</span>, <span class='st'>'accuracy'</span> <span class='op'>)</span> <span class='op'>)</span>
 
-<span class='no'>track</span> <span class='kw'>&lt;-</span> <span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/reexports.html'>fit</a></span>( <span class='no'>X_trainSmall</span>, <span class='no'>Y_trainSmall</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>epochs</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>batch_size</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>shuffle</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>validation_split</span> <span class='kw'>=</span> <span class='fl'>0.5</span> )
+<span class='va'>track</span> <span class='op'>&lt;-</span> <span class='va'>model</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://generics.r-lib.org/reference/fit.html'>fit</a></span><span class='op'>(</span> <span class='va'>X_trainSmall</span>, <span class='va'>Y_trainSmall</span>, verbose <span class='op'>=</span> <span class='fl'>1</span>,
+  epochs <span class='op'>=</span> <span class='fl'>1</span>, batch_size <span class='op'>=</span> <span class='fl'>2</span>, shuffle <span class='op'>=</span> <span class='cn'>TRUE</span>, validation_split <span class='op'>=</span> <span class='fl'>0.5</span> <span class='op'>)</span>
 
 <span class='co'># Now test the model</span>
 
-<span class='no'>testingMetrics</span> <span class='kw'>&lt;-</span> <span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/reexports.html'>evaluate</a></span>( <span class='no'>X_testSmall</span>, <span class='no'>Y_testSmall</span> )
-<span class='no'>predictedData</span> <span class='kw'>&lt;-</span> <span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/r/stats/predict.html'>predict</a></span>( <span class='no'>X_testSmall</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>1</span> )
+<span class='va'>testingMetrics</span> <span class='op'>&lt;-</span> <span class='va'>model</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/pkg/tensorflow/man/evaluate.html'>evaluate</a></span><span class='op'>(</span> <span class='va'>X_testSmall</span>, <span class='va'>Y_testSmall</span> <span class='op'>)</span>
+<span class='va'>predictedData</span> <span class='op'>&lt;-</span> <span class='va'>model</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/r/stats/predict.html'>predict</a></span><span class='op'>(</span> <span class='va'>X_testSmall</span>, verbose <span class='op'>=</span> <span class='fl'>1</span> <span class='op'>)</span>
 
-}</div></pre>
+<span class='op'>}</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -248,7 +252,7 @@ implementation:</p><pre>    https://github.com/tdeboissiere/DeepLearningImplemen
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

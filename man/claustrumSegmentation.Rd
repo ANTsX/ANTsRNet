@@ -33,7 +33,7 @@ claustrum probability image
 Described here:
 }
 \details{
-\preformatted{\url{https://arxiv.org/abs/2008.03465}
+\preformatted{\url{https://pubmed.ncbi.nlm.nih.gov/34520080/}
 }
 
 with the implementation available at:\preformatted{\url{https://github.com/hongweilibran/claustrum_multi_view}

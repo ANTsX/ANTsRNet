@@ -128,7 +128,7 @@
 
     
 
-<dl'>
+<dl>
 <dt>lowResolutionImageSize</dt><dd><p></p></dd>
 <dt>numberOfResidualBlocks</dt><dd><p></p></dd>
 
@@ -142,22 +142,27 @@
 generator and discriminator.
 <code>$buildGenerator</code>build generator.
 <code>$buildGenerator</code>build discriminator.</p>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Tustison NJ</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
 
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>keras</span> )
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>( <span class='no'>ANTsRNet</span> )
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span> <span class='va'><a href='https://keras.rstudio.com'>keras</a></span> <span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span> <span class='va'><a href='https://github.com/ANTsX/ANTsRNet'>ANTsRNet</a></span> <span class='op'>)</span>
 
-<span class='kw pkg'>keras</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/keras/man/backend.html'>backend</a></span>()$<span class='fu'>clear_session</span>()
+<span class='fu'>keras</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/keras/man/backend.html'>backend</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>clear_session</span><span class='op'>(</span><span class='op'>)</span>
 
-<span class='no'>ganModel</span> <span class='kw'>&lt;-</span> <span class='no'>SuperResolutionGanModel</span>$<span class='fu'>new</span>(
-   <span class='kw'>lowResolutionImageSize</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>112</span>, <span class='fl'>112</span>, <span class='fl'>3</span> ) )
-<span class='kw pkg'>testthat</span><span class='kw ns'>::</span><span class='fu'><a href='https://testthat.r-lib.org/reference/expect_error.html'>expect_error</a></span>({
- <span class='no'>ganModel</span> <span class='kw'>&lt;-</span> <span class='no'>SuperResolutionGanModel</span>$<span class='fu'>new</span>(
-   <span class='kw'>lowResolutionImageSize</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>( <span class='fl'>64</span>, <span class='fl'>65</span>, <span class='fl'>3</span> ) )
- })
-}</div></pre>
+<span class='va'>ganModel</span> <span class='op'>&lt;-</span> <span class='va'>SuperResolutionGanModel</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span>
+   lowResolutionImageSize <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='fl'>112</span>, <span class='fl'>112</span>, <span class='fl'>3</span> <span class='op'>)</span> <span class='op'>)</span>
+<span class='fu'>testthat</span><span class='fu'>::</span><span class='fu'><a href='https://testthat.r-lib.org/reference/expect_error.html'>expect_error</a></span><span class='op'>(</span><span class='op'>{</span>
+ <span class='va'>ganModel</span> <span class='op'>&lt;-</span> <span class='va'>SuperResolutionGanModel</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span>
+   lowResolutionImageSize <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='fl'>64</span>, <span class='fl'>65</span>, <span class='fl'>3</span> <span class='op'>)</span> <span class='op'>)</span>
+ <span class='op'>}</span><span class='op'>)</span>
+<span class='op'>}</span>
+
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -173,7 +178,7 @@ generator and discriminator.
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
