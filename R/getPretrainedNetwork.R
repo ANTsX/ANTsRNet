@@ -181,7 +181,7 @@ getPretrainedNetwork <- function(
     dktOuterWithSpatialPriors = "https://ndownloader.figshare.com/files/24230768",
     e13x5_coronal_weights = "https://figshare.com/ndownloader/files/35211226",
     e13x5_sagittal_weights = "https://figshare.com/ndownloader/files/35211220",
-    allen_brain_mask_weights = "https://figshare.com/ndownloader/files/36990001",
+    allen_brain_mask_weights = "https://figshare.com/ndownloader/files/36999880",
     elBicho = "https://ndownloader.figshare.com/files/26736779",
     ewDavidWmhSegmentationWeights = "https://ndownloader.figshare.com/files/26827691",
     # ewDavidWmhSegmentationSlicewiseWeights = "https://ndownloader.figshare.com/files/26787152",

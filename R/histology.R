@@ -183,13 +183,13 @@ allenE13x5BrainExtraction <- function( image, view = c( "coronal", "sagittal" ),
         } else {
         slice <- imageChannels[[i]] 
         }
-      sliceResampled <- resampleImage( slice, resampledImageSize, useVoxels = TRUE, interpType = 0 )
-      sliceArray <- as.array( sliceResampled )
-      if( max( sliceArray ) > min( sliceArray ) )
+      if( max( slice ) > min( slice ) )
         {
+        sliceResampled <- resampleImage( slice, resampledImageSize, useVoxels = TRUE, interpType = 0 )
+        sliceArray <- as.array( sliceResampled )
         sliceArray <- ( sliceArray - min( sliceArray ) ) / ( max( sliceArray ) - min( sliceArray ) ) 
+        batchX[count,,,1] <- sliceArray
         }
-      batchX[count,,,1] <- sliceArray
       count <- count + 1
       }
     }  
@@ -352,13 +352,13 @@ allenHistologyBrainMask <- function( image,
         } else {
         slice <- imageChannels[[i]] 
         }
-      sliceResampled <- resampleImage( slice, resampledImageSize, useVoxels = TRUE, interpType = 0 )
-      sliceArray <- as.array( sliceResampled )
-      if( max( sliceArray ) > min( sliceArray ) )
+      if( max( slice ) > min( slice ) )
         {
+        sliceResampled <- resampleImage( slice, resampledImageSize, useVoxels = TRUE, interpType = 0 )
+        sliceArray <- as.array( sliceResampled )
         sliceArray <- ( sliceArray - min( sliceArray ) ) / ( max( sliceArray ) - min( sliceArray ) ) 
+        batchX[count,,,1] <- sliceArray
         }
-      batchX[count,,,1] <- sliceArray
       count <- count + 1
       }
     }  
