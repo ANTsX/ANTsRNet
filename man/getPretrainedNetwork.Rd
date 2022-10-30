@@ -22,7 +22,7 @@ getPretrainedNetwork(
     "deepFlashLeftBothHierarchical_ri", "deepFlashRightBothHierarchical_ri",
     "deepFlashLeft8", "deepFlashRight8", "deepFlashLeft16", "deepFlashRight16",
     "deepFlashLeft16new", "deepFlashRight16new", "denoising", "dktInner", "dktOuter",
-    "dktOuterWithSpatialPriors", "e13x5_coronal_weights", "e13x5_sagittal_weights",
+    "dktOuterWithSpatialPriors", "ex5_coronal_weights", "ex5_sagittal_weights",
     "allen_brain_mask_weights", "elBicho", "ewDavidWmhSegmentationWeights",
     "ewDavidWmhSegmentationSlicewiseWeights",
     "ewDavidWmhSegmentationSlicewiseT1OnlyWeights", "ewDavidSysu", "ewDavidSysuT1Only",  

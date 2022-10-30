@@ -77,7 +77,7 @@ arterialLesionSegmentation <- function( image,
   return( foregroundProbabilityImage )
   }
 
-#' Perform brain extraction of Allen's E13.5 mouse embroyonic data.
+#' Perform brain extraction of Allen's E13.5 and E15.5 mouse embroyonic data.
 #'
 #' @param image input image
 #' @param view Two trained networks are available:  "coronal" or "sagittal".
@@ -95,11 +95,11 @@ arterialLesionSegmentation <- function( image,
 #' library( keras )
 #'
 #' image <- antsImageRead( "image.nii.gz" )
-#' output <- allenE13x5BrainExtraction( image )
+#' output <- allenEx5BrainExtraction( image )
 #' }
 #' @import keras
 #' @export
-allenE13x5BrainExtraction <- function( image, view = c( "coronal", "sagittal" ), 
+allenEx5BrainExtraction <- function( image, view = c( "coronal", "sagittal" ), 
   whichAxis = 3, antsxnetCacheDirectory = NULL, verbose = FALSE )
   {
 
@@ -116,10 +116,10 @@ allenE13x5BrainExtraction <- function( image, view = c( "coronal", "sagittal" ),
   weightsFileName <- ""
   if( tolower( view ) == "coronal" )
     {
-    weightsFileName <- getPretrainedNetwork( "e13x5_coronal_weights",
+    weightsFileName <- getPretrainedNetwork( "ex5_coronal_weights",
         antsxnetCacheDirectory = antsxnetCacheDirectory )
     } else if( tolower( view ) == "sagittal" ) {
-    weightsFileName <- getPretrainedNetwork( "e13x5_sagittal_weights",
+    weightsFileName <- getPretrainedNetwork( "ex5_sagittal_weights",
         antsxnetCacheDirectory = antsxnetCacheDirectory )
     } else {
     stop( "Valid view options are coronal and sagittal.")
