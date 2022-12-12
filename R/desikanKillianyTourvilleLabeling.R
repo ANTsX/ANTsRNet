@@ -222,7 +222,7 @@
 #' }
 #' @export
 desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
-  returnProbabilityImages = FALSE, doLobarParcellation = TRUE,
+  returnProbabilityImages = FALSE, doLobarParcellation = FALSE,
   antsxnetCacheDirectory = NULL, verbose = FALSE )
 {
 
