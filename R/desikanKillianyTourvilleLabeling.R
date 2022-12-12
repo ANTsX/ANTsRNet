@@ -263,7 +263,7 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
   #
   ################################
 
-  if( verbose == TRUE )
+  if( verbose )
     {
     cat( "DesikanKillianyTourville:  retrieving label spatial priors.\n" )
     }
@@ -287,7 +287,7 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
     convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
     weightDecay = 1e-5, additionalOptions = c( "attentionGating" ) )
 
-  if( verbose == TRUE )
+  if( verbose )
     {
     cat( "DesikanKillianyTourville:  retrieving model weights.\n" )
     }
@@ -295,18 +295,13 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
     antsxnetCacheDirectory = antsxnetCacheDirectory )
   load_model_weights_hdf5( unetModel, filepath = weightsFileNamePath )
 
-  unetModel %>% compile(
-    optimizer = optimizer_adam(),
-    loss = tensorflow::tf$keras$losses$CategoricalCrossentropy(),
-    metrics = c( 'accuracy', metric_categorical_crossentropy ) )
-
   ################################
   #
   # Do prediction and normalize to native space
   #
   ################################
 
-  if( verbose == TRUE )
+  if( verbose )
     {
     cat( "DesikanKillianyTourville:  outer model prediction.\n" )
     }
@@ -367,7 +362,7 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
     convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
     weightDecay = 1e-5, additionalOptions = c( "attentionGating" ) )
 
-  if( verbose == TRUE )
+  if( verbose )
     {
     cat( "DesikanKillianyTourville:  retrieving inner model weights.\n" )
     }
@@ -375,18 +370,13 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
     antsxnetCacheDirectory = antsxnetCacheDirectory )
   load_model_weights_hdf5( unetModel, filepath = weightsFileName )
 
-  unetModel %>% compile(
-    optimizer = optimizer_adam(),
-    loss = categorical_focal_loss( alpha = 0.25, gamma = 2.0 ),
-    metrics = 'accuracy' )
-
   ################################
   #
   # Do inner model prediction and normalize to native space
   #
   ################################
 
-  if( verbose == TRUE )
+  if( verbose )
     {
     cat( "Inner model prediction.\n" )
     }
@@ -440,7 +430,7 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
 
   if( doLobarParcellation )
     {
-    if( verbose == TRUE )
+    if( verbose )
       {
       cat( "Doing lobar parcellation.\n" )
       }
@@ -453,7 +443,7 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
 
     # Consolidate lobar cortical labels
 
-    if( verbose == TRUE )
+    if( verbose )
       {
       cat( "   Consolidating cortical labels.\n" )
       }
@@ -502,7 +492,7 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
 
     # Do left/right
 
-    if( verbose == TRUE )
+    if( verbose )
       {
       cat( "   Doing left/right hemispheres.\n" )
       }
