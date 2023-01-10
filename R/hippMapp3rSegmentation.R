@@ -6,7 +6,7 @@
 #'
 #' with models and architecture ported from
 #'
-#' https://github.com/mgoubran/HippMapp3r
+#' https://github.com/AICONSlab/HippMapp3r
 #'
 #' Additional documentation and attribution resources found at
 #'
@@ -45,6 +45,12 @@
 hippMapp3rSegmentation <- function( t1, doPreprocessing = TRUE,
   antsxnetCacheDirectory = NULL, verbose = FALSE )
   {
+
+  if( t1@dimension != 3 )
+    {
+    stop( "Image dimension must be 3." )
+    }
+
   if( is.null( antsxnetCacheDirectory ) )
     {
     antsxnetCacheDirectory <- "ANTsXNet"
@@ -204,7 +210,10 @@ hippMapp3rSegmentation <- function( t1, doPreprocessing = TRUE,
 
   dataRefineStage <- array( data = as.array( imageTrimmed ), dim = c( 1, shapeRefineStage, 1 ) )
 
-  cat( "    HippMapp3r:  do Monte Carlo iterations (SpatialDropout).\n" )
+  if( verbose == TRUE )
+    {
+    cat( "    HippMapp3r:  do Monte Carlo iterations (SpatialDropout).\n" )
+    }
   numberOfMCIterations <- 30
   predictionRefineStage <- array( data = 0, dim = c( shapeRefineStage ) )
   for( i in seq_len( numberOfMCIterations ) )

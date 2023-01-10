@@ -4,12 +4,16 @@
 \alias{createHyperMapp3rUnetModel3D}
 \title{Implementation of the "HyperMapp3r" U-net architecture}
 \usage{
-createHyperMapp3rUnetModel3D(inputImageSize, dataFormat = "channels_first")
+createHyperMapp3rUnetModel3D(inputImageSize, dataFormat = "channels_last")
 }
 \arguments{
 \item{inputImageSize}{Used for specifying the input tensor shape.  The
 shape (or dimension) of that tensor is the image dimensions followed by
 the number of channels (e.g., red, green, and blue).}
+
+\item{dataFormat}{One of "channels_first" or "channels_last".  We do this
+for this specific architecture as the original weights were saved in
+"channels_first" format.}
 }
 \value{
 a u-net keras model

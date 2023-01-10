@@ -2,7 +2,7 @@
 % Please edit documentation in R/whiteMatterHyperintensitySegmentation.R
 \name{ewDavid}
 \alias{ewDavid}
-\title{White matter hypterintensity probabilistic segmentation}
+\title{White matter hyperintensity probabilistic segmentation}
 \usage{
 ewDavid(
   flair,
@@ -52,7 +52,7 @@ list consisting of the segmentation image and probability images for
 each label.
 }
 \description{
-Perform white matter hypterintensity probabilistic segmentation
+Perform white matter hyperintensity probabilistic segmentation
 using deep learning
 }
 \examples{

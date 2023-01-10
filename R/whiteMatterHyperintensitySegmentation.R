@@ -234,9 +234,181 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
   return( probabilityImage )
 }
 
-#' White matter hypterintensity probabilistic segmentation
+#' hyperMapp3rSegmentation
 #'
-#' Perform white matter hypterintensity probabilistic segmentation
+#' Perform HyperMapp3r (white matter hyperintensity) segmentation described in
+#'
+#'  https://pubmed.ncbi.nlm.nih.gov/35088930/
+#'
+#' with models and architecture ported from
+#'
+#' https://github.com/AICONSlab/HyperMapp3r
+#'
+#' Additional documentation and attribution resources found at
+#'
+#' https://hypermapp3r.readthedocs.io/en/latest/
+#'
+#' Preprocessing consists of:
+#'    * n4 bias correction and
+#'    * brain extraction.
+#' The input T1 should undergo the same steps.  If the input T1 is the raw
+#' T1, these steps can be performed by the internal preprocessing, i.e. set
+#' \code{doPreprocessing = TRUE}
+#'
+#' @param image input 3-D T1-weighted brain image.
+#' @param doPreprocessing perform preprocessing.  See description above.
+#' @param antsxnetCacheDirectory destination directory for storing the downloaded
+#' template and model weights.  Since these can be resused, if
+#' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
+#' subdirectory ~/.keras/ANTsXNet/.
+#' @param verbose print progress.
+#' @return white matter hyperintensity probability mask
+#' @author Tustison NJ
+#' @examples
+#' \dontrun{
+#' library( ANTsRNet )
+#' library( keras )
+#'
+#' wmh <- hyperMapp3rSegmentation( image, verbose = TRUE )
+#' }
+#' @export
+hyperMapp3rSegmentation <- function( t1, flair, doPreprocessing = TRUE,
+  numberOfMonteCarloIterations = 30, antsxnetCacheDirectory = NULL, verbose = FALSE )
+  {
+
+  if( t1@dimension != 3 )
+    {
+    stop( "Image dimension must be 3." )
+    }
+
+  if( is.null( antsxnetCacheDirectory ) )
+    {
+    antsxnetCacheDirectory <- "ANTsXNet"
+    }
+
+  #########################################
+  #
+  # Perform preprocessing
+  #
+
+  if( verbose == TRUE )
+    {
+    cat( "*************  Preprocessing  ***************\n" )
+    cat( "\n" )
+    }
+
+  t1Preprocessed <- t1
+  brainMask <- NULL
+  if( doPreprocessing == TRUE )
+    {
+    t1Preprocessing <- preprocessBrainImage( t1,
+        truncateIntensity = c( 0.01, 0.99 ),
+        brainExtractionModality = "t1",
+        template = NULL,
+        doBiasCorrection = TRUE,
+        doDenoising = FALSE,
+        antsxnetCacheDirectory = antsxnetCacheDirectory,
+        verbose = verbose )
+    brainMask <- t1Preprocessing$brainMask
+    t1Preprocessed <- t1Preprocessing$preprocessedImage * brainMask
+    } else {
+    # If we don't generate the mask from the preprocessing, we assume that we
+    # can extract the brain directly from the foreground of the t1 image.
+    brainMask <- thresholdImage( t1, 0, 0, 0, 1 )
+    }
+
+  t1PreprocessedMean <- mean( t1Preprocessed[brainMask > 0] )
+  t1PreprocessedSd <- sd( t1Preprocessed[brainMask > 0] )
+  t1Preprocessed[brainMask > 0] <- ( t1Preprocessed[brainMask > 0] - t1PreprocessedMean ) / t1PreprocessedSd
+
+  flairPreprocessed <- flair
+  if( doPreprocessing == TRUE )
+    {
+    flairPreprocessing <- preprocessBrainImage( flair,
+        truncateIntensity = c( 0.01, 0.99 ),
+        brainExtractionModality = "flair",
+        template = NULL,
+        doBiasCorrection = TRUE,
+        doDenoising = FALSE,
+        antsxnetCacheDirectory = antsxnetCacheDirectory,
+        verbose = verbose )
+    flairPreprocessed <- flairPreprocessing$preprocessedImage * brainMask
+    }
+
+  flairPreprocessedMean <- mean( flairPreprocessed[brainMask > 0] )
+  flairPreprocessedSd <- sd( flairPreprocessed[brainMask > 0] )
+  flairPreprocessed[brainMask > 0] <- ( flairPreprocessed[brainMask > 0] - flairPreprocessedMean ) / flairPreprocessedSd
+
+  # Reorient to hypermapp3r space
+  if( verbose == TRUE )
+    {
+    cat( "    HyperMapp3r: reorient input images.\n" )
+    }
+
+  channelSize <- 2
+  inputImageSize <- c( 224, 224, 224 )
+  templateArray <- array( data = 1, dim = inputImageSize )
+  templateDirection <- diag( 3 )
+  reorientTemplate <- as.antsImage( templateArray, origin = c( 0, 0, 0 ),
+     spacing = c( 1, 1, 1 ), direction = templateDirection )
+
+  centerOfMassTemplate <- getCenterOfMass( reorientTemplate )
+  centerOfMassImage <- getCenterOfMass( brainMask )
+  xfrm <- createAntsrTransform( type = "Euler3DTransform",
+    center = centerOfMassTemplate,
+    translation = centerOfMassImage - centerOfMassTemplate )
+
+  batchX <- array( data = 0, dim = c( 1, inputImageSize, channelSize ) )
+
+  t1PreprocessedWarped <- applyAntsrTransformToImage( xfrm, t1Preprocessed, reorientTemplate )
+  batchX[1,,,,1] <- as.array( t1PreprocessedWarped )
+
+  flairPreprocessedWarped <- applyAntsrTransformToImage( xfrm, flairPreprocessed, reorientTemplate )
+  batchX[1,,,,2] <- as.array( flairPreprocessedWarped )
+
+  if( verbose == TRUE )
+    {
+    cat( "    HyperMapp3r: generate network and load weights.\n" )
+    }
+  model <- createHyperMapp3rUnetModel3D( c( inputImageSize, 2 ) )
+  weightsFileName <- getPretrainedNetwork( "hyperMapp3r",
+    antsxnetCacheDirectory = antsxnetCacheDirectory )
+  model$load_weights( weightsFileName )
+
+  if( verbose == TRUE )
+    {
+    cat( "    HyperMapp3r: prediction.\n" )
+    }
+
+
+  if( verbose == TRUE )
+    {
+    cat( "    HyperMapp3r: do Monte Carlo iterations (SpatialDropout).\n" )
+    }
+
+  predictionArray <- array( data = 0, dim = c( inputImageSize ) )
+  for( i in seq_len( numberOfMonteCarloIterations ) )
+    {
+    if( verbose == TRUE )
+      {
+      cat( "        Monte Carlo iteration", i, "out of", numberOfMonteCarloIterations, "\n" )
+      }
+    predictionArray <- ( model$predict( batchX, verbose = verbose )[1,,,,1] +
+                              ( i - 1 ) * predictionArray ) / i
+    }
+  predictionImage <- as.antsImage( predictionArray, origin = antsGetOrigin( reorientTemplate ),
+      spacing = antsGetSpacing( reorientTemplate ), direction = antsGetDirection( reorientTemplate ) )
+
+  xfrmInv <- invertAntsrTransform( xfrm )
+  probabilityImage <- applyAntsrTransformToImage( xfrmInv, predictionImage, t1 )
+
+  return( probabilityImage )
+  }
+
+
+#' White matter hyperintensity probabilistic segmentation
+#'
+#' Perform white matter hyperintensity probabilistic segmentation
 #' using deep learning
 #'
 #' @param flair input 3-D FLAIR brain image.

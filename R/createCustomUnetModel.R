@@ -311,6 +311,9 @@ createHippMapp3rUnetModel3D <- function( inputImageSize,
 #' @param inputImageSize Used for specifying the input tensor shape.  The
 #' shape (or dimension) of that tensor is the image dimensions followed by
 #' the number of channels (e.g., red, green, and blue).
+#' @param dataFormat One of "channels_first" or "channels_last".  We do this
+#' for this specific architecture as the original weights were saved in
+#' "channels_first" format.
 #'
 #' @return a u-net keras model
 #' @author Tustison NJ
@@ -323,7 +326,7 @@ createHippMapp3rUnetModel3D <- function( inputImageSize,
 #' @import keras
 #' @export
 createHyperMapp3rUnetModel3D <- function( inputImageSize,
-                                          dataFormat = "channels_first" )
+                                          dataFormat = "channels_last" )
 {
   channelsAxis <- NULL
   if( dataFormat == "channels_last" )
@@ -334,8 +337,6 @@ createHyperMapp3rUnetModel3D <- function( inputImageSize,
     } else {
     stop( "Unexpected string for data_format." )
     }
-  # Note that in the layer_concatenate calls below, there is an
-  # "off-by-1" issue so instead of "channelAxis" we use "channelAxis - 1".
 
   layer_convB_3d <- function( input, numberOfFilters, kernelSize = 3, strides = 1 )
     {
