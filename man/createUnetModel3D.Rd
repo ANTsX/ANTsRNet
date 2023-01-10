@@ -82,15 +82,19 @@ segmentation and regression.  More information is provided at the authors'
 website:
 }
 \details{
-\preformatted{    \url{https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/}
-}
+\if{html}{\out{<div class="sourceCode">}}\preformatted{    \url{https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/}
+}\if{html}{\out{</div>}}
 
-with the paper available here:\preformatted{    \url{https://arxiv.org/abs/1505.04597}
-}
+with the paper available here:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{    \url{https://arxiv.org/abs/1505.04597}
+}\if{html}{\out{</div>}}
 
 This particular implementation was influenced by the following python
-implementation:\preformatted{    \url{https://github.com/joelthelion/ultrasound-nerve-segmentation}
-}
+implementation:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{    \url{https://github.com/joelthelion/ultrasound-nerve-segmentation}
+}\if{html}{\out{</div>}}
 }
 \examples{
 # Simple examples, must run successfully and quickly. These will be tested.

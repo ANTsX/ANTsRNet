@@ -8,7 +8,7 @@ desikanKillianyTourvilleLabeling(
   t1,
   doPreprocessing = TRUE,
   returnProbabilityImages = FALSE,
-  doLobarParcellation = TRUE,
+  doLobarParcellation = FALSE,
   antsxnetCacheDirectory = NULL,
   verbose = FALSE
 )
