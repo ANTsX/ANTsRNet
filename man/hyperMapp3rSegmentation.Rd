@@ -14,6 +14,10 @@ hyperMapp3rSegmentation(
 )
 }
 \arguments{
+\item{t1}{input 3-D t1-weighted MR image.  Assumed to be aligned with the flair.}
+
+\item{flair}{input 3-D flair MR image.  Assumed to be aligned with the t1.}
+
 \item{doPreprocessing}{perform preprocessing.  See description above.}
 
 \item{antsxnetCacheDirectory}{destination directory for storing the downloaded
@@ -22,8 +26,6 @@ template and model weights.  Since these can be resused, if
 subdirectory ~/.keras/ANTsXNet/.}
 
 \item{verbose}{print progress.}
-
-\item{image}{input 3-D T1-weighted brain image.}
 }
 \value{
 white matter hyperintensity probability mask

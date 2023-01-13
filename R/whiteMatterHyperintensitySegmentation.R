@@ -255,7 +255,8 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
 #' T1, these steps can be performed by the internal preprocessing, i.e. set
 #' \code{doPreprocessing = TRUE}
 #'
-#' @param image input 3-D T1-weighted brain image.
+#' @param t1 input 3-D t1-weighted MR image.  Assumed to be aligned with the flair.
+#' @param flair input 3-D flair MR image.  Assumed to be aligned with the t1.
 #' @param doPreprocessing perform preprocessing.  See description above.
 #' @param antsxnetCacheDirectory destination directory for storing the downloaded
 #' template and model weights.  Since these can be resused, if
