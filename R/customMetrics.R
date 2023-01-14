@@ -215,7 +215,7 @@ peak_signal_to_noise_ratio <- function( y_true, y_pred )
 #' @export
 pearson_correlation_coefficient <- function( y_true, y_pred )
 {
-  K <- keras::backend()
+  K <- tensorflow::tf$keras$backend
 
   N <- K$sum( K$ones_like( y_true ) )
 
@@ -276,7 +276,7 @@ categorical_focal_gain <- function( y_true, y_pred, gamma = 2.0, alpha = 0.25 )
 {
   categorical_focal_gain_fixed <- function( y_true, y_pred )
     {
-    K <- keras::backend()
+    K <- tensorflow::tf$keras$backend
 
     y_pred <- y_pred / K$sum( y_pred, axis = -1L, keepdims = TRUE )
     y_pred <- K$clip( y_pred, K$epsilon(), 1.0 - K$epsilon() )
@@ -369,7 +369,7 @@ categorical_focal_loss <- function( y_true, y_pred, gamma = 2.0, alpha = 0.25 )
 #' @export
 weighted_categorical_crossentropy <- function( y_true, y_pred, weights )
 {
-  K <- keras::backend()
+  K <- tensorflow::tf$keras$backend
 
   weightsTensor <- K$variable( weights )
 
@@ -529,6 +529,8 @@ maximum_mean_discrepancy <- function( y_true, y_pred, sigma = 1.0 )
 
     computeKernel <- function( x, y, sigma = 1.0 )
       {
+      K <- tensorflow::tf$keras$backend
+
       xSize <- K$shape( x )[1]
       ySize <- K$shape( y )[1]
       dim <- K$shape( x )[2]
@@ -549,6 +551,32 @@ maximum_mean_discrepancy <- function( y_true, y_pred, sigma = 1.0 )
     }
 
   return( maximum_mean_discrepancy_fixed )
+  }
+
+#' Function for masked mean-squared error
+#'
+#' @param y_true True labels (Tensor)
+#' @param y_pred Predictions (Tensor of the same shape as \code{y_true})
+#'
+#' @return masked mse value
+#' @author Tustison NJ
+#'
+#' @import keras
+#' @export
+
+masked_mse_error <- function( y_true, y_pred, maskExcludeValue = 1.0 )
+  {
+  masked_mse_error_fixed <- function( y_true, y_pred )
+    {
+    K <- tensorflow::tf$keras$backend
+
+    maskTrue = K$cast( K$not_equal ( y_true, maskExcludeValue ), K$floatx() )
+    maskedSquaredError = K$square( maskTrue * ( y_true - y_pred ) )
+    maskedMse = K$sum( K$flatten( maskedSquaredError)) / K$sum(K$flatten( maskTrue ) )
+    return( maskedMse )
+    }
+
+  return( masked_mse_error_fixed )
   }
 
 #' Loss function for the SSD deep learning architecture.
