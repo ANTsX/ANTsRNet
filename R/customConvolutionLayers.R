@@ -176,20 +176,50 @@ PartialConv2DLayer <- R6::R6Class( "PartialConv2DLayer",
 
    compute_output_shape = function( self, input_shape )
      {
+     # https://github.com/keras-team/keras/blob/master/keras/utils/conv_utils.py#L118-L141
+     convOutputLength = function( inputLength, filterSize, stride, dilation = 1,
+        padding = c( "same", "valid", "full", "causal" ) )
+       {
+       if( is.null( inputLength ) )
+         {
+         return( NULL )
+         }
+       padding <- match.arg( padding )
+       dilatedFilterSize = filterSize + ( filterSize - 1 ) * ( dilation - 1 )
+
+       outputLength <- NULL
+       if( padding == "same" || padding == "causal" )
+         {
+         outputLength <- inputLength
+         } else if( padding == "valid" ) {
+         outputLength <- inputLength - dilatedFilterSize + 1
+         } else if( padding == "full" ) {
+         outputLength <- inputLength + dilatedFilterSize - 1
+         }
+       return( floor( ( outputLength + stride - 1 ) / stride ) )
+       }
+
+     newSpatialDims <- rep( NA, 2 )
+     for( i in seq.int( length( newSpatialDims ) ) )
+       {
+       index <- i + 1
+       if( self$data_format == "channels_first" )
+         {
+         index <- i + 2
+         }
+       newSpatialDims[i] <- convOutputLength( input_shape[[index]],
+         self$kernel_size[i], self$strides[i], self$dilation_rate[i], padding = "same" )
+       }
+
      newShape <- NULL
      if( self$data_format == "channels_first" )
        {
-       new_shape = list( input_shape[[1]],
-                         self$filters,
-                         floor( input_shape[[3]] / self$strides[1] + 1 ),
-                         floor( input_shape[[4]] / self$strides[2] + 1 )
-                       )
+       new_shape = list( input_shape[[1]], self$filters,
+                         newSpatialDims[1], newSpatialDims[2] )
        } else if( self$data_format == "channels_last" ) {
        new_shape = list( input_shape[[1]],
-                         floor( input_shape[[2]] / self$strides[1] + 1 ),
-                         floor( input_shape[[3]] / self$strides[2] + 1 ),
-                         self$filters
-                       )
+                         newSpatialDims[1], newSpatialDims[2],
+                         self$filters )
        }
      return( list( newShape, newShape ) )
      }
@@ -417,22 +447,50 @@ PartialConv3DLayer <- R6::R6Class( "PartialConv3DLayer",
 
    compute_output_shape = function( self, input_shape )
      {
+     # https://github.com/keras-team/keras/blob/master/keras/utils/conv_utils.py#L118-L141
+     convOutputLength = function( inputLength, filterSize, stride, dilation = 1,
+        padding = c( "same", "valid", "full", "causal" ) )
+       {
+       if( is.null( inputLength ) )
+         {
+         return( NULL )
+         }
+       padding <- match.arg( padding )
+       dilatedFilterSize = filterSize + ( filterSize - 1 ) * ( dilation - 1 )
+
+       outputLength <- NULL
+       if( padding == "same" || padding == "causal" )
+         {
+         outputLength <- inputLength
+         } else if( padding == "valid" ) {
+         outputLength <- inputLength - dilatedFilterSize + 1
+         } else if( padding == "full" ) {
+         outputLength <- inputLength + dilatedFilterSize - 1
+         }
+       return( floor( ( outputLength + stride - 1 ) / stride ) )
+       }
+
+     newSpatialDims <- rep( NA, 3 )
+     for( i in seq.int( length( newSpatialDims ) ) )
+       {
+       index <- i + 1
+       if( self$data_format == "channels_first" )
+         {
+         index <- i + 2
+         }
+       newSpatialDims[i] <- convOutputLength( input_shape[[index]],
+         self$kernel_size[i], self$strides[i], self$dilation_rate[i], padding = "same" )
+       }
+
      newShape <- NULL
      if( self$data_format == "channels_first" )
        {
-       new_shape = list( input_shape[[1]],
-                         self$filters,
-                         floor( input_shape[[3]] / self$strides[1] + 1 ),
-                         floor( input_shape[[4]] / self$strides[2] + 1 ),
-                         floor( input_shape[[5]] / self$strides[3] + 1 )
-                       )
+       new_shape = list( input_shape[[1]], self$filters,
+                         newSpatialDims[1], newSpatialDims[2], newSpatialDims[3] )
        } else if( self$data_format == "channels_last" ) {
        new_shape = list( input_shape[[1]],
-                         floor( input_shape[[2]] / self$strides[1] + 1 ),
-                         floor( input_shape[[3]] / self$strides[2] + 1 ),
-                         floor( input_shape[[4]] / self$strides[3] + 1 ),
-                         self$filters
-                       )
+                         newSpatialDims[1], newSpatialDims[2], newSpatialDims[3],
+                         self$filters )
        }
      return( list( newShape, newShape ) )
      }
