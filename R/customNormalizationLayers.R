@@ -143,7 +143,7 @@ InstanceNormalizationLayer <- R6::R6Class( "InstanceNormalizationLayer",
 
    call = function( inputs, mask = NULL )
       {
-      K <- keras::backend()
+      K <- tensorflow::tf$keras$backend
 
       inputShape <- K$int_shape( inputs )
       reductionAxes <- as.list( seq( from = 0,
