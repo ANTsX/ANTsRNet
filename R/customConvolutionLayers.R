@@ -1,3 +1,49 @@
+#' Compute output length in single dimension for convolution filter
+#'
+#' Utility function to calculate the output shape of a convolutional
+#' filter along a single dimension.  It's based on the python keras
+#' utility located here
+#'
+#' https://github.com/keras-team/keras/blob/master/keras/utils/conv_utils.py#L118-L141
+#'
+#' but I can't see to locate it's R analog so it's reproduced explicitly
+#' in ANTsRNet.
+#'
+#' @param inputLength input size along a single dimension.
+#' @param filterSize kernel size along a single dimension.
+#' @param stride stride length along a single dimension.
+#' @param dilation dilation rate along a single dimension.
+#' @param padding type of padding.  Can be "same", "valid", "full", or "causal".
+#' @return the output size along a single dimension.
+#' @author Tustison NJ
+#'
+#' @examples
+#' library( ANTsRNet )
+#' outputSize <- convOutputLength( 256, filterSize = 3, stride = 2, padding = "same" )
+#' testthat::expect_identical( outputSize, 128 )
+#' @export
+convOutputLength = function( inputLength, filterSize, stride, dilation = 1,
+   padding = c( "same", "valid", "full", "causal" ) )
+  {
+  if( is.null( inputLength ) )
+    {
+    return( NULL )
+    }
+  padding <- match.arg( padding )
+  dilatedFilterSize = filterSize + ( filterSize - 1 ) * ( dilation - 1 )
+
+  outputLength <- NULL
+  if( padding == "same" || padding == "causal" )
+    {
+    outputLength <- inputLength
+    } else if( padding == "valid" ) {
+    outputLength <- inputLength - dilatedFilterSize + 1
+    } else if( padding == "full" ) {
+    outputLength <- inputLength + dilatedFilterSize - 1
+    }
+  return( floor( ( outputLength + stride - 1 ) / stride ) )
+  }
+
 #' Creates 2D partial convolution layer
 #'
 #' Creates 2D partial convolution layer as described in the paper
@@ -176,29 +222,6 @@ PartialConv2DLayer <- R6::R6Class( "PartialConv2DLayer",
 
    compute_output_shape = function( self, input_shape )
      {
-     # https://github.com/keras-team/keras/blob/master/keras/utils/conv_utils.py#L118-L141
-     convOutputLength = function( inputLength, filterSize, stride, dilation = 1,
-        padding = c( "same", "valid", "full", "causal" ) )
-       {
-       if( is.null( inputLength ) )
-         {
-         return( NULL )
-         }
-       padding <- match.arg( padding )
-       dilatedFilterSize = filterSize + ( filterSize - 1 ) * ( dilation - 1 )
-
-       outputLength <- NULL
-       if( padding == "same" || padding == "causal" )
-         {
-         outputLength <- inputLength
-         } else if( padding == "valid" ) {
-         outputLength <- inputLength - dilatedFilterSize + 1
-         } else if( padding == "full" ) {
-         outputLength <- inputLength + dilatedFilterSize - 1
-         }
-       return( floor( ( outputLength + stride - 1 ) / stride ) )
-       }
-
      newSpatialDims <- rep( NA, 2 )
      for( i in seq.int( length( newSpatialDims ) ) )
        {
@@ -447,29 +470,6 @@ PartialConv3DLayer <- R6::R6Class( "PartialConv3DLayer",
 
    compute_output_shape = function( self, input_shape )
      {
-     # https://github.com/keras-team/keras/blob/master/keras/utils/conv_utils.py#L118-L141
-     convOutputLength = function( inputLength, filterSize, stride, dilation = 1,
-        padding = c( "same", "valid", "full", "causal" ) )
-       {
-       if( is.null( inputLength ) )
-         {
-         return( NULL )
-         }
-       padding <- match.arg( padding )
-       dilatedFilterSize = filterSize + ( filterSize - 1 ) * ( dilation - 1 )
-
-       outputLength <- NULL
-       if( padding == "same" || padding == "causal" )
-         {
-         outputLength <- inputLength
-         } else if( padding == "valid" ) {
-         outputLength <- inputLength - dilatedFilterSize + 1
-         } else if( padding == "full" ) {
-         outputLength <- inputLength + dilatedFilterSize - 1
-         }
-       return( floor( ( outputLength + stride - 1 ) / stride ) )
-       }
-
      newSpatialDims <- rep( NA, 3 )
      for( i in seq.int( length( newSpatialDims ) ) )
        {
