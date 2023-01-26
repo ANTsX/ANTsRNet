@@ -38,10 +38,13 @@ regressionMatchImage <- function( sourceImage, referenceImage,
     sourceIntensities <- as.numeric( sourceImage )
     referenceIntensities <- as.numeric( referenceImage )
     }
-
-  model <- lm( referenceIntensities ~
-    stats::poly( sourceIntensities, polyOrder ) )
-  matchedSourceIntensities <- predict( model )
+  sourceIntensitiesPoly <- stats::poly( sourceIntensities, polyOrder )
+  model <- lm( referenceIntensities ~ sourceIntensitiesPoly )
+  if( ! is.null( maskImage ) )
+    {
+    sourceIntensitiesPoly <- stats::poly( as.numeric( sourceImage ), polyOrder )
+    }
+  matchedSourceIntensities <- predict( model, sourceIntensitiesPoly )
 
   if( truncate )
     {
