@@ -85,77 +85,92 @@ PartialConv2DLayer <- R6::R6Class( "PartialConv2DLayer",
 
     filters = NULL,
 
-    kernel_size = NULL,
+    kernelSize = NULL,
+
+    eps = 1e-6,
 
     strides = c( 1L, 1L ),
 
     padding = "valid",
 
-    data_format = "channels_last",
+    dataFormat = "channels_last",
 
-    dilation_rate = c( 1L, 1L ),
+    dilationRate = c( 1L, 1L ),
 
     activation = NULL,
 
-    use_bias = TRUE,
+    useBias = TRUE,
 
-    kernel_initializer = "glorot_uniform",
+    kernelInitializer = "glorot_uniform",
 
-    bias_initializer = "zeros",
+    biasInitializer = "zeros",
 
-    kernel_regularizer = NULL,
+    kernelRegularizer = NULL,
 
-    bias_regularizer = NULL,
+    biasRegularizer = NULL,
 
-    activity_regularizer = NULL,
+    activityRegularizer = NULL,
 
-    initialize = function()
+    initialize = function( filters = NULL,
+        kernelSize = NULL, eps = 1e-6, strides = c( 1L, 1L ), padding = "valid",
+        dataFormat = "channels_last", dilationRate = c( 1L, 1L ), activation = NULL,
+        useBias = TRUE, kernelInitializer = "glorot_uniform", biasInitializer = "zeros",
+        kernelRegularizer = NULL, biasRegularizer = NULL, activityRegularizer = NULL )
       {
+      self$filters <- as.integer( filters )
+      self$kernelSize <- as.integer( kernelSize )
+      if( length( kernelSize ) == 1 )
+        {
+        self$kernelSize <- c( self$kernelSize, self$kernelSize )
+        }
+      self$eps <- eps
+      self$strides <- as.integer( strides )
+      self$padding <- padding
+      self$dataFormat <- dataFormat
+      self$dilationRate <- as.integer( dilationRate )
+      self$activation <- activation
+      self$useBias <- useBias
+      self$kernelInitializer <- kernelInitializer
+      self$biasInitializer <- biasInitializer
+      self$kernelRegularizer <- kernelRegularizer
+      self$biasRegularizer <- biasRegularizer
+      self$activityRegularizer <- activityRegularizer
       },
 
     build = function( input_shape )
       {
-      K <- tensorflow::tf$keras$backend
-
-      if( self$data_format == 'channels_first' )
+      if( self$dataFormat == 'channels_first' )
         {
         self$channelAxis <- 2
         } else {
         self$channelAxis <- 4
         }
 
-      if( is.null( input_shape[[channelAxis]] ) )
-        {
-        stop('The channel dimension of the inputs should be defined. Found `None`.')
-        }
-      dimensionality <- as.integer( length( input_shape ) )
-
+      self$dimensionality <- as.list( input_shape[[1]] )[[4]]
       # Image kernel
-      kernel_shape <- list( self$kernel_size[1], self$kernel_size[2],
-                            dimensionality, self$filters )
-      self$kernel <- self$add_weight( shape = kernel_shape,
-                                      initializer = self$kernel_initializer,
+      kernelShape <- list( self$kernelSize[1], self$kernelSize[2],
+                            self$dimensionality, self$filters )
+      self$kernel <- self$add_weight( shape = kernelShape,
+                                      initializer = self$kernelInitializer,
                                       name = "image_kernel",
-                                      regularizer = self$kernel_regularizer,
-                                      constraint = self.kernel_constraint )
+                                      regularizer = self$kernelRegularizer,
+                                      constraint = self$kernelConstraint,
+                                      trainable = TRUE )
       # Mask kernel
-      self$kernelMask <- K$ones( shape = kernel_shape )
+      # self$maskKernel <- tensorflow::tf$Variable( initial_value = tensorflow::tf$ones( kernelShape ),
+      #                                             trainable = FALSE )
+      self$maskKernel <- self$add_weight( shape = kernelShape,
+                                      initializer = tensorflow::tf$keras$initializers$Ones(),
+                                      name = "mask_kernel",
+                                      trainable = FALSE )
 
-      # Calculate padding size to achieve zero-padding
-      self$pconvPadding <- list(
-         c( floor( ( self$kernel_size[1]-1 ) / 2 ), floor( ( self$kernel_size[1] - 1 ) / 2 ) ),
-         c( floor( ( self$kernel_size[2]-1 ) / 2 ), floor( ( self$kernel_size[2] - 1 ) / 2 ) )
-      )
-
-     self$windowSize <- self$kernel_size[1] * self$kernel_size[2]
-
-     if( self$use_bias )
+     if( self$useBias )
        {
        self$bias <- self$add_weight( shape = shape( self$filters ),
-                                     initializer = self$bias_initializer,
+                                     initializer = self$biasInitializer,
                                      name = 'bias',
-                                     regularizer = self$bias_regularizer,
-                                     constraint = self$bias_constraint )
+                                     regularizer = self$biasRegularizer,
+                                     constraint = self$biasConstraint )
        } else {
        self$bias <- NULL
        }
@@ -163,84 +178,78 @@ PartialConv2DLayer <- R6::R6Class( "PartialConv2DLayer",
 
    call = function( inputs, mask = NULL )
      {
-     K <- tensorflow::tf$keras$backend
-
      # Both image and mask must be supplied
      if( ! is.list( inputs ) || length( inputs ) != 2 )
        {
        stop( "PartialConvolution2D must be called on a list of two tensors [img, mask]" )
        }
 
-     # Padding done explicitly so that padding becomes part of the masked partial convolution
-     images <- K$spatial_2d_padding( inputs[[1]], self$pconvPadding, self$data_format )
-     masks <- K$spatial_2d_padding( inputs[[2]], self$pconvPadding, self$data_format )
+     features <- inputs[[1]]
+     featureMask <- inputs[[2]]
+     if( featureMask$shape[[self$channelAxis]] == 1 )
+       {
+       # featureMask <- tensorflow::tf$repeat( featureMask, featureMask$shape[[self$channelAxis]], axis=self$channelAxis )
+       featureMask <- tensorflow::tf$tile( featureMask, list( 1L, 1L, 1L, featureMask$shape[[self$channelAxis]] ) )
+       }
 
-     # Apply convolutions to mask
-     maskOutput <- K$conv2d(
-         masks, self$kernelMask,
-         strides = self$strides,
-         padding = 'valid',
-         data_format = self$data_format,
-         dilation_rate = self$dilation_rate
-     )
+     K <- tensorflow::tf$keras$backend
 
-     # Apply convolutions to image
-     imageOutput <- K$conv2d(
-         images * masks, self$kernel,
-         strides = self$strides,
-         padding = 'valid',
-         data_format = self$data_format,
-         dilation_rate = self$dilation_rate
-     )
+     features <- tensorflow::tf$multiply( features, featureMask )
+     features <- K$conv2d( features, self$kernel, strides = self$strides, padding = "same",
+                          data_format = self$dataFormat, dilation_rate = self$dilationRate )
+     norm <- K$conv2d( featureMask, self$maskKernel, strides = self$strides, padding = 'same',
+                          data_format = self$dataFormat, dilation_rate = self$dilationRate )
 
-     # Calculate the mask ratio on each pixel in the output mask
-     maskRatio <- self$windowSize / ( maskOutput + 1e-8 )
+     # See corresponding note in antspynet as to why I opted for the following workaround.
 
-     # Clip output to be between 0 and 1
-     maskOutput <- K$clip( maskOutput, 0, 1 )
-
-     # Remove ratio values where there are holes
-     maskRatio <- maskRatio * maskOutput
-
-     # Normalize iamge output
-     imageOutput <- imageOutput * maskRatio
+     featureMaskFanin <- self$kernelSize[1] * self$kernelSize[2]
+     for( i in seq.int( 2, featureMaskFanin ) )
+       {
+       features <- tensorflow::tf$where( tensorflow::tf$equal( norm,
+                                                           tensorflow::tf$constant( i, dtype = tensorflow::tf$float32 ) ),
+                                         tensorflow::tf$math$divide( features,
+                                                           tensorflow::tf$constant( i, dtype = tensorflow::tf$float32 ) ),
+                                         features )
+       }
 
      # Apply bias only to the image (if chosen to do so)
-     if( self$use_bias )
+     if( self$useBias )
        {
-       imageOutput <- K$bias_add( imageOutput, self$bias, data_format = self$data_format )
+       features <- K$bias_add( features, self$bias, data_format = self$dataFormat )
        }
 
      # Apply activations on the image
      if( ! is.null( self$activation ) )
        {
-       imageOutput = self$activation( imageOutput )
+       features <- self$activation( features )
        }
 
-     return( list( img_output, mask_output ) )
+     featureMask <- tensorflow::tf$where( tensorflow::tf$greater( norm, self$eps ), 1.0, 0.0 )
+
+     return( list( features, featureMask ) )
      },
 
-   compute_output_shape = function( self, input_shape )
+   compute_output_shape = function( self, inputShape )
      {
      newSpatialDims <- rep( NA, 2 )
      for( i in seq.int( length( newSpatialDims ) ) )
        {
        index <- i + 1
-       if( self$data_format == "channels_first" )
+       if( self$dataFormat == "channels_first" )
          {
          index <- i + 2
          }
-       newSpatialDims[i] <- convOutputLength( input_shape[[index]],
-         self$kernel_size[i], self$strides[i], self$dilation_rate[i], padding = "same" )
+       newSpatialDims[i] <- convOutputLength( inputShape[[index]],
+         self$kernelSize[i], self$strides[i], self$dilationRate[i], padding = "same" )
        }
 
      newShape <- NULL
      if( self$data_format == "channels_first" )
        {
-       new_shape = list( input_shape[[1]], self$filters,
+       new_shape = list( inputShape[[1]], self$filters,
                          newSpatialDims[1], newSpatialDims[2] )
        } else if( self$data_format == "channels_last" ) {
-       new_shape = list( input_shape[[1]],
+       new_shape = list( inputShape[[1]],
                          newSpatialDims[1], newSpatialDims[2],
                          self$filters )
        }
@@ -257,285 +266,36 @@ PartialConv2DLayer <- R6::R6Class( "PartialConv2DLayer",
 #' [keras::keras_model_sequential] to add the layer to,
 #' or another Layer which this layer will call.
 #' @param filters number of filters
-#' @param kernel_size kernel size
+#' @param kernelSize kernel size
 #' @param strides strides
 #' @param padding padding
-#' @param data_format format
-#' @param dilation_rate dilate rate
+#' @param dataFormat format
+#' @param dilationRate dilate rate
 #' @param activation activation
-#' @param kernel_initializer kernel initializer
-#' @param bias_initializer bias initializer
-#' @param kernel_regularizer kernel regularizer
-#' @param bias_regularizer bias regularizer
-#' @param activity_regularizer activity regularizer
-#' @param use_bias use bias
+#' @param kernelInitializer kernel initializer
+#' @param biasInitializer bias initializer
+#' @param kernelRegularizer kernel regularizer
+#' @param biasRegularizer bias regularizer
+#' @param activityRegularizer activity regularizer
+#' @param useBias use bias
 #' @param trainable Whether the layer weights will be updated during training.
 #' @return a keras layer tensor
 #' @author Tustison NJ
 #' @import keras
 #' @export
-layer_partial_convolution_2d <- function( object, filters, kernel_size,
+layer_partial_conv_2d <- function( object, filters, kernelSize,
     strides = c( 1L, 1L ), padding = "valid",
-    data_format = "channels_last", dilation_rate = c( 1L, 1L ), activation = NULL,
-    kernel_initializer = "glorot_uniform", bias_initializer = "zeros",
-    kernel_regularizer = NULL, bias_regularizer = NULL, activity_regularizer = NULL,
-    use_bias = TRUE, trainable = TRUE )
+    dataFormat = "channels_last", dilationRate = c( 1L, 1L ), activation = NULL,
+    kernelInitializer = "glorot_uniform", biasInitializer = "zeros",
+    kernelRegularizer = NULL, biasRegularizer = NULL, activityRegularizer = NULL,
+    useBias = TRUE, trainable = TRUE )
     {
     create_layer( PartialConv2DLayer, object,
-      list( filters = filters, kernel_size = kernel_size, strides = strides, padding = padding,
-            data_format = data_format, dilation_rate = dilation_rate, activation = activation,
-            kernel_initializer = kernel_initializer, bias_initializer = bias_initializer,
-            kernel_regularizer = kernel_regularizer, bias_regularizer = bias_regularizer,
-            activity_regularizer = activity_regularizer, use_bias = use_bias, trainable = trainable )
+      list( filters = filters, kernelSize = kernelSize, strides = strides, padding = padding,
+            dataFormat = dataFormat, dilationRate = dilationRate, activation = activation,
+            kernelInitializer = kernelInitializer, biasInitializer = biasInitializer,
+            kernelRegularizer = kernelRegularizer, biasRegularizer = biasRegularizer,
+            activityRegularizer = activityRegularizer, useBias = useBias, trainable = trainable )
        )
     }
-
-
-#' Creates 3D partial convolution layer
-#'
-#' Creates 3D partial convolution layer as described in the paper
-#'
-#'   \url{https://arxiv.org/abs/1804.07723}
-#'
-#' with the implementation ported from the following python implementation
-#'
-#'   \url{https://github.com/MathiasGruber/PConv-Keras}
-#'
-#' @docType class
-#'
-#' @section Arguments:
-#'
-#' @section Details:
-#'   \code{$initialize} instantiates a new class.
-#'
-#'   \code{$call} main body.
-#'
-#'   \code{$compute_output_shape} computes the output shape.
-#'
-#' @author Tustison NJ
-#'
-#' @return a partial convolution layer 3D
-#'
-#' @name PartialConv3DLayer
-NULL
-
-#' @export
-PartialConv3DLayer <- R6::R6Class( "PartialConv3DLayer",
-
-  inherit = KerasLayer,
-
-  lock_objects = FALSE,
-
-  public = list(
-
-    dimensionality = NULL,
-
-    filters = NULL,
-
-    kernel_size = NULL,
-
-    strides = c( 1L, 1L, 1L),
-
-    padding = "valid",
-
-    data_format = "channels_last",
-
-    dilation_rate = c( 1L, 1L, 1L ),
-
-    activation = NULL,
-
-    use_bias = TRUE,
-
-    kernel_initializer = "glorot_uniform",
-
-    bias_initializer = "zeros",
-
-    kernel_regularizer = NULL,
-
-    bias_regularizer = NULL,
-
-    activity_regularizer = NULL,
-
-    initialize = function()
-      {
-      },
-
-    build = function( input_shape )
-      {
-      K <- tensorflow::tf$keras$backend
-
-      if( self$data_format == 'channels_first' )
-        {
-        self$channelAxis <- 2
-        } else {
-        self$channelAxis <- 5
-        }
-
-      if( is.null( input_shape[[channelAxis]] ) )
-        {
-        stop('The channel dimension of the inputs should be defined. Found `None`.')
-        }
-      dimensionality <- as.integer( length( input_shape ) )
-
-      # Image kernel
-      kernel_shape <- list( self$kernel_size[1], self$kernel_size[2], self$kernel_size[3],
-                            dimensionality, self$filters )
-      self$kernel <- self$add_weight( shape = kernel_shape,
-                                      initializer = self$kernel_initializer,
-                                      name = "image_kernel",
-                                      regularizer = self$kernel_regularizer,
-                                      constraint = self.kernel_constraint )
-      # Mask kernel
-      self$kernelMask <- K$ones( shape = kernel_shape )
-
-      # Calculate padding size to achieve zero-padding
-      self$pconvPadding <- list(
-         c( floor( ( self$kernel_size[1]-1 ) / 2 ), floor( ( self$kernel_size[1] - 1 ) / 2 ) ),
-         c( floor( ( self$kernel_size[2]-1 ) / 2 ), floor( ( self$kernel_size[2] - 1 ) / 2 ) ),
-         c( floor( ( self$kernel_size[3]-1 ) / 2 ), floor( ( self$kernel_size[3] - 1 ) / 2 ) )
-      )
-
-     self$windowSize <- self$kernel_size[1] * self$kernel_size[2] * self$kernel_size[3]
-
-     if( self$use_bias )
-       {
-       self$bias <- self$add_weight( shape = shape( self$filters ),
-                                     initializer = self$bias_initializer,
-                                     name = 'bias',
-                                     regularizer = self$bias_regularizer,
-                                     constraint = self$bias_constraint )
-       } else {
-       self$bias <- NULL
-       }
-     },
-
-   call = function( inputs, mask = NULL )
-     {
-     K <- tensorflow::tf$keras$backend
-
-     # Both image and mask must be supplied
-     if( ! is.list( inputs ) || length( inputs ) != 2 )
-       {
-       stop( "PartialConvolution2D must be called on a list of two tensors [img, mask]" )
-       }
-
-     # Padding done explicitly so that padding becomes part of the masked partial convolution
-     images <- K$spatial_3d_padding( inputs[[1]], self$pconvPadding, self$data_format )
-     masks <- K$spatial_3d_padding( inputs[[2]], self$pconvPadding, self$data_format )
-
-     # Apply convolutions to mask
-     maskOutput <- K$conv3d(
-         masks, self$kernelMask,
-         strides = self$strides,
-         padding = 'valid',
-         data_format = self$data_format,
-         dilation_rate = self$dilation_rate
-     )
-
-     # Apply convolutions to image
-     imageOutput <- K$conv3d(
-         images * masks, self$kernel,
-         strides = self$strides,
-         padding = 'valid',
-         data_format = self$data_format,
-         dilation_rate = self$dilation_rate
-     )
-
-     # Calculate the mask ratio on each pixel in the output mask
-     maskRatio <- self$windowSize / ( maskOutput + 1e-8 )
-
-     # Clip output to be between 0 and 1
-     maskOutput <- K$clip( maskOutput, 0, 1 )
-
-     # Remove ratio values where there are holes
-     maskRatio <- maskRatio * maskOutput
-
-     # Normalize iamge output
-     imageOutput <- imageOutput * maskRatio
-
-     # Apply bias only to the image (if chosen to do so)
-     if( self$use_bias )
-       {
-       imageOutput <- K$bias_add( imageOutput, self$bias, data_format = self$data_format )
-       }
-
-     # Apply activations on the image
-     if( ! is.null( self$activation ) )
-       {
-       imageOutput = self$activation( imageOutput )
-       }
-
-     return( list( img_output, mask_output ) )
-     },
-
-   compute_output_shape = function( self, input_shape )
-     {
-     newSpatialDims <- rep( NA, 3 )
-     for( i in seq.int( length( newSpatialDims ) ) )
-       {
-       index <- i + 1
-       if( self$data_format == "channels_first" )
-         {
-         index <- i + 2
-         }
-       newSpatialDims[i] <- convOutputLength( input_shape[[index]],
-         self$kernel_size[i], self$strides[i], self$dilation_rate[i], padding = "same" )
-       }
-
-     newShape <- NULL
-     if( self$data_format == "channels_first" )
-       {
-       new_shape = list( input_shape[[1]], self$filters,
-                         newSpatialDims[1], newSpatialDims[2], newSpatialDims[3] )
-       } else if( self$data_format == "channels_last" ) {
-       new_shape = list( input_shape[[1]],
-                         newSpatialDims[1], newSpatialDims[2], newSpatialDims[3],
-                         self$filters )
-       }
-     return( list( newShape, newShape ) )
-     }
-  )
-)
-
-#' Partial convolution layer 3D
-#'
-#' Creates an 3D partial convolution layer
-#'
-#' @param object Object to compose layer with. This is either a
-#' [keras::keras_model_sequential] to add the layer to,
-#' or another Layer which this layer will call.
-#' @param filters number of filters
-#' @param kernel_size kernel size
-#' @param strides strides
-#' @param padding padding
-#' @param data_format format
-#' @param dilation_rate dilate rate
-#' @param activation activation
-#' @param kernel_initializer kernel initializer
-#' @param bias_initializer bias initializer
-#' @param kernel_regularizer kernel regularizer
-#' @param bias_regularizer bias regularizer
-#' @param activity_regularizer activity regularizer
-#' @param use_bias use bias
-#' @param trainable Whether the layer weights will be updated during training.
-#' @return a keras layer tensor
-#' @author Tustison NJ
-#' @import keras
-#' @export
-layer_partial_convolution_3d <- function( object, filters, kernel_size,
-    strides = c( 1L, 1L, 1L ), padding = "valid",
-    data_format = "channels_last", dilation_rate = c( 1L, 1L, 1L ), activation = NULL,
-    kernel_initializer = "glorot_uniform", bias_initializer = "zeros",
-    kernel_regularizer = NULL, bias_regularizer = NULL, activity_regularizer = NULL,
-    use_bias = TRUE, trainable = TRUE )
-    {
-    create_layer( PartialConv3DLayer, object,
-      list( filters = filters, kernel_size = kernel_size, strides = strides, padding = padding,
-            data_format = data_format, dilation_rate = dilation_rate, activation = activation,
-            kernel_initializer = kernel_initializer, bias_initializer = bias_initializer,
-            kernel_regularizer = kernel_regularizer, bias_regularizer = bias_regularizer,
-            activity_regularizer = activity_regularizer, use_bias = use_bias, trainable = trainable )
-       )
-    }
-
 
