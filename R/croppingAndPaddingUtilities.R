@@ -107,7 +107,7 @@ padOrCropImageToSize <- function( image, size )
 
   if( any( delta < 0 ) )
     {
-    padSize <- abs( min( delta ) )
+    padSize <- ceiling( 0.5 * abs( min( delta ) ) )
     image <- iMath( image, "PadImage", padSize )
     }
   croppedImage <- cropImageCenter( image, size )
