@@ -5,7 +5,7 @@
 \title{wholeHeadInpainting}
 \usage{
 wholeHeadInpainting(
-  t1,
+  image,
   roiMask,
   modality = "t1",
   antsxnetCacheDirectory = NULL,
@@ -13,6 +13,8 @@ wholeHeadInpainting(
 )
 }
 \arguments{
+\item{image}{input 3-D MR image.}
+
 \item{roiMask}{binary mask image}
 
 \item{modality}{Modality image type.  Options include: "t1": T1-weighted MRI.
@@ -24,8 +26,6 @@ template and model weights.  Since these can be resused, if
 subdirectory ~/.keras/ANTsXNet/.}
 
 \item{verbose}{print progress.}
-
-\item{image}{input 3-D MR image.}
 }
 \value{
 inpainted image
