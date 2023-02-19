@@ -137,9 +137,10 @@ wholeHeadInpainting <- function( image, roiMask, modality = "t1",
     index <- lowerSlice + i
 
     slice <- extractSlice( imageReoriented, index, 2, collapseStrategy = 1 )
+    maskSlice <- extractSlice( roiInvertedMaskReoriented, index, 2, collapseStrategy = 1 )
     predictedSlice <- as.antsImage( predictedData[i,,,1], reference = slice )
     predictedSlice <- padOrCropImageToSize( predictedSlice, dim( slice ) )
-    predictedSlice <- regressionMatchImage( predictedSlice, slice )
+    predictedSlice <- regressionMatchImage( predictedSlice, slice, mask = maskSlice )
 
     imageReorientedArray[,index,] <- as.array( predictedSlice )
     }
