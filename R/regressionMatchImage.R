@@ -6,7 +6,7 @@
 #' @param sourceImage image whose intensities we will match to the
 #'                    \code{referenceImage} intensities.
 #' @param referenceImage defines the reference intensity function.
-#' @param maskImage Defines voxels for regression modeling.
+#' @param mask Defines voxels for regression modeling.
 #' @param polyOrder of polynomial fit.  Default is 1 (linear fit).
 #' @param truncate boolean which turns on/off the clipping of intensities.
 #' @return the \code{sourceImage} matched to the \code{referenceImage}.
@@ -21,7 +21,7 @@
 #' testthat::expect_error(regressionMatchImage( bad_source, referenceImage ))
 #' @export
 regressionMatchImage <- function( sourceImage, referenceImage,
-  maskImage = NULL, polyOrder = 1, truncate = TRUE )
+  mask = NULL, polyOrder = 1, truncate = TRUE )
   {
   if( any( dim( sourceImage ) != dim( referenceImage ) ) )
     {
@@ -30,17 +30,17 @@ regressionMatchImage <- function( sourceImage, referenceImage,
 
   sourceIntensities <- c()
   referenceIntensities <- c()
-  if( ! is.null( maskImage ) )
+  if( ! is.null( mask ) )
     {
-    sourceIntensities <- as.numeric( sourceImage[maskImage != 0] )
-    referenceIntensities <- as.numeric( referenceImage[maskImage != 0] )
+    sourceIntensities <- as.numeric( sourceImage[mask != 0] )
+    referenceIntensities <- as.numeric( referenceImage[mask != 0] )
     } else {
     sourceIntensities <- as.numeric( sourceImage )
     referenceIntensities <- as.numeric( referenceImage )
     }
   sourceIntensitiesPoly <- stats::poly( sourceIntensities, polyOrder )
   model <- lm( referenceIntensities ~ sourceIntensitiesPoly )
-  if( ! is.null( maskImage ) )
+  if( ! is.null( mask ) )
     {
     sourceIntensitiesPoly <- stats::poly( as.numeric( sourceImage ), polyOrder )
     }

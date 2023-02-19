@@ -7,7 +7,7 @@
 regressionMatchImage(
   sourceImage,
   referenceImage,
-  maskImage = NULL,
+  mask = NULL,
   polyOrder = 1,
   truncate = TRUE
 )
@@ -18,7 +18,7 @@ regressionMatchImage(
 
 \item{referenceImage}{defines the reference intensity function.}
 
-\item{maskImage}{Defines voxels for regression modeling.}
+\item{mask}{Defines voxels for regression modeling.}
 
 \item{polyOrder}{of polynomial fit.  Default is 1 (linear fit).}
 
