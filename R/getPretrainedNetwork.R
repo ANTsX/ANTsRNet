@@ -114,6 +114,8 @@ getPretrainedNetwork <- function(
               "tidsQualityAssessment",
               "wholeHeadInpaintingT1",
               "wholeHeadInpaintingFLAIR",
+              "wholeHeadInpaintingPatchBasedT1",
+              "wholeHeadInpaintingPatchBasedFLAIR",
 	             "wholeTumorSegmentationT2Flair",
               "wholeLungMaskFromVentilation" ),
   targetFileName, antsxnetCacheDirectory = NULL )
@@ -221,6 +223,8 @@ getPretrainedNetwork <- function(
     tidsQualityAssessment = "https://figshare.com/ndownloader/files/35295391",
     wholeHeadInpaintingT1 = "https://figshare.com/ndownloader/files/39255422",
     wholeHeadInpaintingFLAIR = "https://figshare.com/ndownloader/files/39255419",
+    wholeHeadInpaintingPatchBasedT1 = "https://figshare.com/ndownloader/files/39337442",
+    wholeHeadInpaintingPatchBasedFLAIR = "https://figshare.com/ndownloader/files/39337439",
     wholeTumorSegmentationT2Flair = "https://ndownloader.figshare.com/files/14087045",
     wholeLungMaskFromVentilation = "https://ndownloader.figshare.com/files/28914441"
   )
