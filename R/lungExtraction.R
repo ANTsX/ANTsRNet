@@ -394,7 +394,8 @@ lungExtraction <- function( image,
             setTxtProgressBar( pb, i )
             }
 
-          ventilationSlice <- padOrCropImageToSize( extractSlice( preprocessedImage, i, dimensionsToPredict[d] ), templateSize )
+          ventilationSlice <- padOrCropImageToSize( 
+             extractSlice( preprocessedImage, i, dimensionsToPredict[d], collapseStrategy = 1 ), templateSize )
           batchX[sliceCount,,,1] <- as.array( ventilationSlice )
 
           sliceCount <- sliceCount + 1
