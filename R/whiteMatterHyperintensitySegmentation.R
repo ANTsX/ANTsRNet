@@ -109,12 +109,12 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
   ################################
 
   numberOfModels <- 1
-  if( useEnsemble == TRUE )
+  if( useEnsemble )
     {
     numberOfModels <- 3
     }
 
-  if( verbose == TRUE )
+  if( verbose )
     {
     cat( "White matter hyperintensity:  retrieving model weights.\n" )
     }
@@ -155,7 +155,7 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
     {
     numberOfSlices <- dim( flairPreprocessedWarped )[dimensionsToPredict[d]]
 
-    if( verbose == TRUE )
+    if( verbose )
       {
       cat( "Extracting slices for dimension", dimensionsToPredict[d], "\n" )
       pb <- txtProgressBar( min = 1, max = numberOfSlices, style = 3 )
@@ -177,7 +177,7 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
         }
       sliceCount <- sliceCount + 1
       }
-    if( verbose == TRUE )
+    if( verbose )
       {
       cat( "\n" )
       }
@@ -189,7 +189,7 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
   #
   ################################
 
-  if( verbose == TRUE )
+  if( verbose )
     {
     cat( "Prediction.\n" )
     }
@@ -292,7 +292,7 @@ hyperMapp3rSegmentation <- function( t1, flair, doPreprocessing = TRUE,
   # Perform preprocessing
   #
 
-  if( verbose == TRUE )
+  if( verbose )
     {
     cat( "*************  Preprocessing  ***************\n" )
     cat( "\n" )
@@ -300,7 +300,7 @@ hyperMapp3rSegmentation <- function( t1, flair, doPreprocessing = TRUE,
 
   t1Preprocessed <- t1
   brainMask <- NULL
-  if( doPreprocessing == TRUE )
+  if( doPreprocessing )
     {
     t1Preprocessing <- preprocessBrainImage( t1,
         truncateIntensity = c( 0.01, 0.99 ),
@@ -323,7 +323,7 @@ hyperMapp3rSegmentation <- function( t1, flair, doPreprocessing = TRUE,
   t1Preprocessed[brainMask > 0] <- ( t1Preprocessed[brainMask > 0] - t1PreprocessedMean ) / t1PreprocessedSd
 
   flairPreprocessed <- flair
-  if( doPreprocessing == TRUE )
+  if( doPreprocessing )
     {
     flairPreprocessing <- preprocessBrainImage( flair,
         truncateIntensity = c( 0.01, 0.99 ),
@@ -341,7 +341,7 @@ hyperMapp3rSegmentation <- function( t1, flair, doPreprocessing = TRUE,
   flairPreprocessed[brainMask > 0] <- ( flairPreprocessed[brainMask > 0] - flairPreprocessedMean ) / flairPreprocessedSd
 
   # Reorient to hypermapp3r space
-  if( verbose == TRUE )
+  if( verbose )
     {
     cat( "    HyperMapp3r: reorient input images.\n" )
     }
@@ -367,7 +367,7 @@ hyperMapp3rSegmentation <- function( t1, flair, doPreprocessing = TRUE,
   flairPreprocessedWarped <- applyAntsrTransformToImage( xfrm, flairPreprocessed, reorientTemplate )
   batchX[1,,,,2] <- as.array( flairPreprocessedWarped )
 
-  if( verbose == TRUE )
+  if( verbose )
     {
     cat( "    HyperMapp3r: generate network and load weights.\n" )
     }
@@ -376,13 +376,13 @@ hyperMapp3rSegmentation <- function( t1, flair, doPreprocessing = TRUE,
     antsxnetCacheDirectory = antsxnetCacheDirectory )
   model$load_weights( weightsFileName )
 
-  if( verbose == TRUE )
+  if( verbose )
     {
     cat( "    HyperMapp3r: prediction.\n" )
     }
 
 
-  if( verbose == TRUE )
+  if( verbose )
     {
     cat( "    HyperMapp3r: do Monte Carlo iterations (SpatialDropout).\n" )
     }
@@ -390,7 +390,7 @@ hyperMapp3rSegmentation <- function( t1, flair, doPreprocessing = TRUE,
   predictionArray <- array( data = 0, dim = c( inputImageSize ) )
   for( i in seq_len( numberOfMonteCarloIterations ) )
     {
-    if( verbose == TRUE )
+    if( verbose )
       {
       cat( "        Monte Carlo iteration", i, "out of", numberOfMonteCarloIterations, "\n" )
       }
@@ -492,7 +492,7 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, whichModel = "sysu",
 
     # t1Preprocessed <- t1
     # t1Preprocessing <- NULL
-    # if( doPreprocessing == TRUE )
+    # if( doPreprocessing )
     #   {
     #   t1Preprocessing <- preprocessBrainImage( t1,
     #       truncateIntensity = c( 0.001, 0.995 ),
@@ -507,7 +507,7 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, whichModel = "sysu",
     #   }
 
     # flairPreprocessed <- flair
-    # if( doPreprocessing == TRUE )
+    # if( doPreprocessing )
     #   {
     #   flairPreprocessing <- preprocessBrainImage( flair,
     #       truncateIntensity = c( 0.01, 0.99 ),
@@ -546,7 +546,7 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, whichModel = "sysu",
     #   convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
     #   weightDecay = 1e-5, additionalOptions = c( "attentionGating" ) )
 
-    # if( verbose == TRUE )
+    # if( verbose )
     #   {
     #   cat( "ewDavid:  retrieving model weights.\n" )
     #   }
@@ -560,7 +560,7 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, whichModel = "sysu",
     # #
     # ################################
 
-    # if( verbose == TRUE )
+    # if( verbose )
     #   {
     #   message( "ewDavid:  prediction.\n" )
     #   }
@@ -585,7 +585,7 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, whichModel = "sysu",
     #   message( "ewDavid:  reconstructing image ", classes[i], "\n" )
     #   reconstructedImage <- reconstructImageFromPatches( predictedData[,,,,i],
     #       domainImage = t1Preprocessed, strideLength = strideLength )
-    #   if( doPreprocessing == TRUE )
+    #   if( doPreprocessing )
     #     {
     #     probabilityImages[[i]] <- antsApplyTransforms( fixed = t1, moving = reconstructedImage,
     #         transformlist = t1Preprocessing$templateTransforms$invtransforms,
@@ -608,7 +608,7 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, whichModel = "sysu",
     t1Preprocessed <- t1
     t1Preprocessing <- NULL
     brainMask <- NULL
-    if( doPreprocessing == TRUE )
+    if( doPreprocessing )
       {
       t1Preprocessing <- preprocessBrainImage( t1,
           truncateIntensity = c( 0.01, 0.99 ),
@@ -632,7 +632,7 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, whichModel = "sysu",
     if( ! doT1Only )
       {
       flairPreprocessed <- flair
-      if( doPreprocessing == TRUE )
+      if( doPreprocessing )
         {
         flairPreprocessing <- preprocessBrainImage( flair,
             truncateIntensity = c( 0.01, 0.99 ),
@@ -714,7 +714,7 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, whichModel = "sysu",
         additionalOptions = c( "nnUnetActivationStyle", "attentionGating", "initialConvolutionKernelSize[5]" ) )
       }
 
-    if( verbose == TRUE )
+    if( verbose )
       {
       cat( "ewDavid:  retrieving model weights.\n" )
       }
@@ -838,7 +838,7 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, whichModel = "sysu",
         {
         numberOfSlices <- dim( batchT1 )[dimensionsToPredict[d]]
 
-        if( verbose == TRUE )
+        if( verbose )
           {
           cat( "Extracting slices for dimension", dimensionsToPredict[d], "\n" )
           pb <- txtProgressBar( min = 1, max = numberOfSlices, style = 3 )
@@ -873,7 +873,7 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, whichModel = "sysu",
             }
           sliceCount <- sliceCount + 1
           }
-        if( verbose == TRUE )
+        if( verbose )
           {
           cat( "\n" )
           }
@@ -885,7 +885,7 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, whichModel = "sysu",
       #
       ################################
 
-      if( verbose == TRUE )
+      if( verbose )
         {
         if( n == 1 )
           {
