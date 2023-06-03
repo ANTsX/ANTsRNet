@@ -44,7 +44,12 @@ getANTsXNetData <- function(
               "mni152",
               "nki",
               "nki10",
-              "oasis"
+              "oasis",
+              "magetTemplate",
+              "magetTemplateBrainMask",
+              "magetCerebellumTemplate",
+              "magetCerebellumTemplatePriors",
+              "magetCerebellumxTemplate0GenericAffine"
             ),
   targetFileName, antsxnetCacheDirectory = NULL )
 {
@@ -80,12 +85,22 @@ getANTsXNetData <- function(
     mni152 = "https://ndownloader.figshare.com/files/25516349",
     nki = "https://ndownloader.figshare.com/files/25516355",
     nki10 = "https://ndownloader.figshare.com/files/25516346",
-    oasis = "https://ndownloader.figshare.com/files/25516352"
+    oasis = "https://ndownloader.figshare.com/files/25516352",
+    magetTemplate = "https://figshare.com/ndownloader/files/41052572",
+    magetTemplateBrainMask = "https://figshare.com/ndownloader/files/41052569",
+    magetCerebellumTemplate = "https://figshare.com/ndownloader/files/41052581",
+    magetCerebellumTemplatePriors = "https://figshare.com/ndownloader/files/41052578",
+    magetCerebellumxTemplate0GenericAffine = "https://figshare.com/ndownloader/files/41052575"            
   )
 
   if( missing( targetFileName ) )
     {
-    targetFileName <- paste0( fileId, ".nii.gz" )
+    if( fileId == "magetCerebellumxTemplate0GenericAffine" )
+      {
+      targetFileName <- paste0( fileId, ".mat" )
+      } else {
+      targetFileName <- paste0( fileId, ".nii.gz" )
+      }
     }
 
   if( is.null( antsxnetCacheDirectory ) )
