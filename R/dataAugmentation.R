@@ -66,7 +66,7 @@ dataAugmentation <- function( inputImageList,
   transformType = 'affineAndDeformation',
   noiseModel = 'additivegaussian',
   noiseParameters = c( 0.0, 0.05 ),
-  sdSimulatedBiasField = 0.05,
+  sdSimulatedBiasField = 1.0,
   sdHistogramWarping = 0.05,
   sdAffine = 0.05,
   outputNumpyFilePrefix = NULL,
@@ -225,8 +225,11 @@ dataAugmentation <- function( inputImageList,
           cat( "        Adding simulated bias field.\n" )
           }
 
-        biasField <- simulateBiasField( image, sdBiasField = sdSimulatedBiasField )
-        image <- image * ( biasField + 1 )
+        logField <- simulateBiasField(image, numberOfPoints = 10, 
+          sdBiasField = sdSimulatedBiasField, numberOfFittingLevels = 2, meshSize = 10 ) %>% 
+          iMath( "Normalize" )
+        logField <- ( exp( logField ) )^sample( c( 2, 3, 4 ), 1 )
+        image <- image * logField
         }
 
       # Histogram intensity warping
