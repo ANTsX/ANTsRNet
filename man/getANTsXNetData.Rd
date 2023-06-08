@@ -10,7 +10,10 @@ getANTsXNetData(
     "deepFlashTemplateT2", "deepFlashTemplateT2SkullStripped", "mprage_hippmapp3r",
     "protonLungTemplate", "ctLungTemplate", "luna16LungPriors", "priorDktLabels",
     "priorDeepFlashLeftLabels", "priorDeepFlashRightLabels", "protonLobePriors",
-    "S_template3", "adni", "ixi", "kirby", "mni152", "nki", "nki10", "oasis"),
+    "S_template3", "adni", "ixi", "kirby", "mni152", "nki", "nki10", "oasis",
+    "magetTemplate", "magetTemplateBrainMask", "magetCerebellumTemplate", 
+    
+    "magetCerebellumTemplatePriors", "magetCerebellumxTemplate0GenericAffine"),
   targetFileName,
   antsxnetCacheDirectory = NULL
 )

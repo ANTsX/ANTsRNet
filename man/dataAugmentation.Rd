@@ -13,7 +13,7 @@ dataAugmentation(
   transformType = "affineAndDeformation",
   noiseModel = "additivegaussian",
   noiseParameters = c(0, 0.05),
-  sdSimulatedBiasField = 0.05,
+  sdSimulatedBiasField = 1,
   sdHistogramWarping = 0.05,
   sdAffine = 0.05,
   outputNumpyFilePrefix = NULL,
