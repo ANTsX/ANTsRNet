@@ -283,7 +283,7 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
     networkName <- paste0( networkName, "_ri" )
     }
 
-  if( verbose == TRUE )
+  if( verbose )
     {
     cat( "DeepFlash: retrieving model weights (left).\n" )
     }
@@ -296,7 +296,7 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
   #
   ################################
 
-  if( verbose == TRUE )
+  if( verbose )
     {
     cat( "Prediction (left).\n" )
     }
@@ -459,7 +459,7 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
     networkName <- paste0( networkName, "_ri" )
     }
 
-  if( verbose == TRUE )
+  if( verbose )
     {
     cat( "DeepFlash: retrieving model weights (Right).\n" )
     }
@@ -472,7 +472,7 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
   #
   ################################
 
-  if( verbose == TRUE )
+  if( verbose )
     {
     cat( "Prediction (Right).\n" )
     }
@@ -811,7 +811,7 @@ deepFlashDeprecated <- function( t1, doPreprocessing = TRUE, doPerHemisphere = T
       convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
       weightDecay = 1e-5, additionalOptions = c( "attentionGating" )  )
 
-    if( verbose == TRUE )
+    if( verbose )
       {
       cat( "DeepFlash: retrieving model weights.\n" )
       }
@@ -824,7 +824,7 @@ deepFlashDeprecated <- function( t1, doPreprocessing = TRUE, doPerHemisphere = T
     #
     ################################
 
-    if( verbose == TRUE )
+    if( verbose )
       {
       cat( "Prediction.\n" )
       }
@@ -902,7 +902,7 @@ deepFlashDeprecated <- function( t1, doPreprocessing = TRUE, doPerHemisphere = T
       convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
       weightDecay = 1e-5, additionalOptions = c( "attentionGating" ) )
 
-    if( verbose == TRUE )
+    if( verbose )
       {
       cat( "DeepFlash: retrieving model weights (left).\n" )
       }
@@ -915,7 +915,7 @@ deepFlashDeprecated <- function( t1, doPreprocessing = TRUE, doPerHemisphere = T
     #
     ################################
 
-    if( verbose == TRUE )
+    if( verbose )
       {
       cat( "Prediction (left).\n" )
       }
@@ -993,7 +993,7 @@ deepFlashDeprecated <- function( t1, doPreprocessing = TRUE, doPerHemisphere = T
       convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
       weightDecay = 1e-5, additionalOptions = c( "attentionGating" ) )
 
-    if( verbose == TRUE )
+    if( verbose )
       {
       cat( "DeepFlash: retrieving model weights (Right).\n" )
       }
@@ -1006,7 +1006,7 @@ deepFlashDeprecated <- function( t1, doPreprocessing = TRUE, doPerHemisphere = T
     #
     ################################
 
-    if( verbose == TRUE )
+    if( verbose )
       {
       cat( "Prediction (Right).\n" )
       }
