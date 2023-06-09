@@ -102,10 +102,12 @@ cerebellumMorphology <- function( t1, initialCerebellumMask = NULL,
   spatialPriorsFileNamePath <- getANTsXNetData( "magetCerebellumTemplatePriors",
       antsxnetCacheDirectory = antsxnetCacheDirectory )
   spatialPriors <- antsImageRead( spatialPriorsFileNamePath )
-  priorsImageList <- splitNDImageToList( spatialPriors )
-  for( i in seq.int( length( priorsImageList ) ) )
+  # priorsImageList <- splitNDImageToList( spatialPriors )
+  spatialPriorsArray <- as.array( spatialPriors )
+  priorsImageList <- list()
+  for( i in seq.int( dim( spatialPriorsArray )[[4]] ) )
     {
-    priorsImageList[[i]] <- antsCopyImageInfo( t1CerebellumTemplate, priorsImageList[[i]] )
+    priorsImageList[[i]] <- as.antsImage( spatialPriorsArray[,,,i], reference = t1CerebellumTemplate )
     }
 
   ################################
@@ -199,19 +201,19 @@ cerebellumMorphology <- function( t1, initialCerebellumMask = NULL,
       additionalOptions <- NA
       } else if( m == 2 ) {
       labels <- c( 0, 1, 2, 3 )
-      channelSize <- len( labels )
-      whichPriors <- c( 0, 1, 2 )
+      channelSize <- length( labels )
+      whichPriors <- c( 1, 2, 3 )
       networkName <- "cerebellumTissue"
       additionalOptions <- NA
       } else {
-      labels <- c( 0, 1, 2, 3 )
-      channelSize <- len( labels )
-      whichPriors <- c( seq.int( 3, 14 ), seq.int( 16, 27 ) )
+      labels <- c( 0, seq.int( 1, 12 ), seq.int( 101, 112 ) )
+      channelSize <- length( labels )
+      whichPriors <- c( seq.int( 4, 15 ), seq.int( 17, 28 ) )
       networkName <- "cerebellumLabels"
       additionalOptions <- c( "attentionGating" )
       }
 
-    numberOfClassificationLabels <- length( laebls )
+    numberOfClassificationLabels <- length( labels )
     unetModel <- createUnetModel3D( c( imageSize, channelSize ),
       numberOfOutputs = numberOfClassificationLabels, mode = "classification",
       numberOfFilters = c( 32, 64, 96, 128, 256 ),
@@ -258,7 +260,7 @@ cerebellumMorphology <- function( t1, initialCerebellumMask = NULL,
        ( max( t1PreprocessedInCerebellumSpace ) - min( t1PreprocessedInCerebellumSpace ) )
 
     batchX <- array( data = 0, dim = c( 2, imageSize, channelSize ) )
-    batchX[1,,,,1] <- padOrCropImageToSize( t1PreprocessedInCerebellumSpace, imageSize )
+    batchX[1,,,,1] <- as.array( padOrCropImageToSize( t1PreprocessedInCerebellumSpace, imageSize ) )
     batchX[2,,,,1] <- batchX[1,imageSize[1]:1,,,1]
 
     if( m > 1 )
@@ -267,7 +269,7 @@ cerebellumMorphology <- function( t1, initialCerebellumMask = NULL,
         {
         for( j in seq.int( dim( batchX )[1] ) )
           {
-          batchX[j,,,,i+1] <- as.array( padOrCropImageToSize( priorsImageList[[whichPriors[i]]], iamgeSize ) )
+          batchX[j,,,,i+1] <- as.array( padOrCropImageToSize( priorsImageList[[whichPriors[i]]], imageSize ) )
           }
         }
       }
@@ -282,30 +284,33 @@ cerebellumMorphology <- function( t1, initialCerebellumMask = NULL,
       upperIndices <- dim( referenceImage )
       targetImageDecropped <- cropIndices( targetImagePadded, lowerIndices, upperIndices )
       targetImageDecropped <- antsCopyImageInfo( referenceImage, targetImageDecropped )
+      identityXfrm <- createAntsrTransform( type = "Euler3DTransform" )
+      targetImageDecropped <- applyAntsrTransformToImage( identityXfrm, targetImageDecropped, referenceImage, interpolation = "linear" )
       return( targetImageDecropped )
       }
 
     if( m == 1 )
       {
       # whole cerebellum
-      probabilityImage <- as.antsImage( 0.5 * predicted_data[1,,,,2] +
-                                        predicted_data[2,dim( predictedData )[2]:1,,,2] )
+      probabilityImage <- as.antsImage( 0.5 * ( predictedData[1,,,,2] +
+                                        predictedData[2,dim( predictedData )[2]:1,,,2] ) )
       probabilityImage <- decropToCerebellumTemplateSpace( probabilityImage, t1CerebellumTemplate )
       t1PreprocessedMaskInCerebellumSpace <- thresholdImage( probabilityImage, 0.5, 1, 1, 0 )
-      probability_image <- antsApplyTransforms( fixed = t1,
+
+      probabilityImage <- antsApplyTransforms( fixed = t1,
           moving = probabilityImage,
           transformlist = templateTransforms$invtransforms,
           whichtoinvert = whichtoinvert, interpolator = "linear", verbose = verbose )
-      cerebellumProbabilityImage = probabilityImage
+      cerebellumProbabilityImage <- probabilityImage
       } else if( m == 2 ) {
 
       # tissue labels
       for( i in seq.int( length( tissueLabels ) ) )
         {
-        probabilityImage <- as.antsImage( 0.5 * predicted_data[1,,,,i] +
-                                          predicted_data[2,dim( predictedData )[2]:1,,,i] )
+        probabilityImage <- as.antsImage( 0.5 * ( predictedData[1,,,,i] +
+                                          predictedData[2,dim( predictedData )[2]:1,,,i] ) )
         probabilityImage <- decropToCerebellumTemplateSpace( probabilityImage, t1CerebellumTemplate )
-        probability_image <- antsApplyTransforms( fixed = t1,
+        probabilityImage <- antsApplyTransforms( fixed = t1,
             moving = probabilityImage,
             transformlist = templateTransforms$invtransforms,
             whichtoinvert = whichtoinvert, interpolator = "linear", verbose = verbose )
@@ -323,10 +328,10 @@ cerebellumMorphology <- function( t1, initialCerebellumMask = NULL,
       # region labels
       for( i in seq.int( length( regionLabels ) ) )
         {
-        probabilityImage <- as.antsImage( 0.5 * predicted_data[1,,,,i] +
-                                          predicted_data[2,dim( predictedData )[2]:1,,,i] )
+        probabilityImage <- as.antsImage( 0.5 * ( predictedData[1,,,,i] +
+                                          predictedData[2,dim( predictedData )[2]:1,,,i] ) )
         probabilityImage <- decropToCerebellumTemplateSpace( probabilityImage, t1CerebellumTemplate )
-        probability_image <- antsApplyTransforms( fixed = t1,
+        probabilityImage <- antsApplyTransforms( fixed = t1,
             moving = probabilityImage,
             transformlist = templateTransforms$invtransforms,
             whichtoinvert = whichtoinvert, interpolator = "linear", verbose = verbose )
@@ -358,19 +363,6 @@ cerebellumMorphology <- function( t1, initialCerebellumMask = NULL,
     {
     relabeledImage[( segmentationImage == i )] <- labels[i]
     }
-  imageMatrix <- imageListToMatrix( probabilityImages[2:length( probabilityImages )], t1 * 0 + 1 )
-  backgroundForegroundMatrix <- rbind( imageListToMatrix( list( probabilityImages[[1]] ), t1 * 0 + 1 ),
-                                      colSums( imageMatrix ) )
-  foregroundMatrix <- matrix( apply( backgroundForegroundMatrix, 2, which.max ), nrow = 1 ) - 1
-  segmentationMatrix <- ( matrix( apply( imageMatrix, 2, which.max ), nrow = 1 ) + 1 ) * foregroundMatrix
-  segmentationImage <- matrixToImages( segmentationMatrix, t1 * 0 + 1 )[[1]]
-
-  relabeledImage <- antsImageClone( segmentationImage )
-  for( i in seq.int( length( labels ) ) )
-    {
-    relabeledImage[( segmentationImage == i )] <- labels[i]
-    }
-
   regionSegmentation <- antsImageClone( relabeledImage )
 
 
@@ -391,19 +383,6 @@ cerebellumMorphology <- function( t1, initialCerebellumMask = NULL,
     {
     relabeledImage[( segmentationImage == i )] <- labels[i]
     }
-  imageMatrix <- imageListToMatrix( probabilityImages[2:length( probabilityImages )], t1 * 0 + 1 )
-  backgroundForegroundMatrix <- rbind( imageListToMatrix( list( probabilityImages[[1]] ), t1 * 0 + 1 ),
-                                      colSums( imageMatrix ) )
-  foregroundMatrix <- matrix( apply( backgroundForegroundMatrix, 2, which.max ), nrow = 1 ) - 1
-  segmentationMatrix <- ( matrix( apply( imageMatrix, 2, which.max ), nrow = 1 ) + 1 ) * foregroundMatrix
-  segmentationImage <- matrixToImages( segmentationMatrix, t1 * 0 + 1 )[[1]]
-
-  relabeledImage <- antsImageClone( segmentationImage )
-  for( i in seq.int( length( labels ) ) )
-    {
-    relabeledImage[( segmentationImage == i )] <- labels[i]
-    }
-
   tissueSegmentation <- antsImageClone( relabeledImage )
 
   if( computeThicknessImage )
@@ -426,7 +405,7 @@ cerebellumMorphology <- function( t1, initialCerebellumMask = NULL,
     results <- list( cerebellumProbabilityImage = cerebellumProbabilityImage,
                      parcellationSegmentationImage = regionSegmentation,
                      parcellationProbabilityImages = regionProbabilityImages,
-                     tissueSegmentationImage = tissueSegmentationImage,
+                     tissueSegmentationImage = tissueSegmentation,
                      tissueProbabilityImages = tissueProbabilityImages,
                      thicknessImage = kk
                   )
@@ -435,7 +414,7 @@ cerebellumMorphology <- function( t1, initialCerebellumMask = NULL,
     results <- list( cerebellumProbabilityImage = cerebellumProbabilityImage,
                      parcellationSegmentationImage = regionSegmentation,
                      parcellationProbabilityImages = regionProbabilityImages,
-                     tissueSegmentationImage = tissueSegmentationImage,
+                     tissueSegmentationImage = tissueSegmentation,
                      tissueProbabilityImages = tissueProbabilityImages
                   )
     return( results )
