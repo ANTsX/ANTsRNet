@@ -158,7 +158,7 @@ getPretrainedNetwork <- function(
     brainSegmentationPatchBased = "https://ndownloader.figshare.com/files/14249717",
     cerebellumWhole = "https://figshare.com/ndownloader/files/41107727",
     cerebellumTissue = "https://figshare.com/ndownloader/files/41107724",
-    cerebellumLabels = "https://figshare.com/ndownloader/files/41107730",
+    cerebellumLabels = "https://figshare.com/ndownloader/files/41168678",
     claustrum_axial_0 = "https://ndownloader.figshare.com/files/27844068",
     claustrum_axial_1 = "https://ndownloader.figshare.com/files/27844059",
     claustrum_axial_2 = "https://ndownloader.figshare.com/files/27844062",
