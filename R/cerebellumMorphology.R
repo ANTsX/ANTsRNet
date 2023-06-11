@@ -43,7 +43,7 @@
 #' which is performed on the input images if \code{doPreprocessing = TRUE}.
 #'
 #' @param t1 raw or preprocessed 3-D T1-weighted brain image.
-#' @param initialCerebellumMask Option for initialization.  If not specified, the
+#' @param cerebellumMask Option for initialization.  If not specified, the
 #' cerebellum ROI is determined using ANTsXNet brain_extraction followed by
 #' registration to a template.
 #' @param computeThicknessImage Compute KellyKapowski thickness image of the gray
@@ -66,7 +66,7 @@
 #' cereb <- cerebellumMorphology( image )
 #' }
 #' @export
-cerebellumMorphology <- function( t1, initialCerebellumMask = NULL,
+cerebellumMorphology <- function( t1, cerebellumMask = NULL,
   computeThicknessImage = FALSE, doPreprocessing = TRUE,
   antsxnetCacheDirectory = NULL, verbose = FALSE )
 {
@@ -130,7 +130,7 @@ cerebellumMorphology <- function( t1, initialCerebellumMask = NULL,
     t1Preprocessed <- n4BiasFieldCorrection( t1Preprocessed, shrinkFactor = 4, verbose = verbose )
     }
 
-  if( is.null( initialCerebellumMask ) )
+  if( is.null( cerebellumMask ) )
     {
     # Brain extraction
     probabilityMask <- brainExtraction( t1Preprocessed, modality = "t1",
@@ -162,7 +162,7 @@ cerebellumMorphology <- function( t1, initialCerebellumMask = NULL,
       }
 
     registration <- antsRegistration(fixed = t1TemplateBrain * t1CerebellumTemplateMask,
-                                     moving = t1Preprocessed * initialCerebellumMask,
+                                     moving = t1Preprocessed * cerebellumMask,
                                      typeofTransform  = transformType, verbose = verbose )
     registration$invtransforms <- append( registration$invtransforms, cerebellumxTemplateXfrm )
     registration$fwdtransforms <- append( registration$fwdtransforms, cerebellumxTemplateXfrm, 0 )
@@ -172,6 +172,12 @@ cerebellumMorphology <- function( t1, initialCerebellumMask = NULL,
 
   t1PreprocessedInCerebellumSpace <- antsApplyTransforms(t1CerebellumTemplate, t1Preprocessed,
                                                          transformlist = registration$fwdtransforms )
+  t1PreprocessedMaskInCerebellumSpace <- NULL
+  if( ! is.null( cerebellumMask ) )
+    {
+    t1PreprocessedMaskInCerebellumSpace <- antsApplyTransforms(t1CerebellumTemplate, cerebellumMask,
+                                                               transformlist = registration$fwdtransforms )
+    }
 
   ################################
   #
@@ -184,13 +190,18 @@ cerebellumMorphology <- function( t1, initialCerebellumMask = NULL,
 
   imageSize <- c( 240, 144, 144 )
 
-  t1PreprocessedMaskInCerebellumSpace <- NULL
   cerebellumProbabilityImage <- NULL
   tissueProbabilityImages <- list()
   regionProbabilityImages <- list()
   whichPriors <- NULL
 
-  for( m in seq.int( 3 ) )
+  startM <- 1
+  if( ! is.null( cerebellumMask ) )
+    {
+    startM <- 2
+    cerebellumProbabilityImage <- antsImageClone( cerebellumMask )
+    }
+  for( m in seq.int( startM, 3 ) )
     {
     if( m == 1 )
       {
@@ -364,7 +375,6 @@ cerebellumMorphology <- function( t1, initialCerebellumMask = NULL,
     relabeledImage[( segmentationImage == i )] <- labels[i]
     }
   regionSegmentation <- antsImageClone( relabeledImage )
-
 
   # tissue labels
 
