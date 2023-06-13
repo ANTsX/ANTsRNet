@@ -95,6 +95,8 @@ cerebellumMorphology <- function( t1, cerebellumMask = NULL,
   t1TemplateBrainMask <- antsImageRead( getANTsXNetData( "magetTemplateBrainMask" ) )
   t1TemplateBrain <- t1Template * t1TemplateBrainMask
   t1CerebellumTemplate <- antsImageRead( getANTsXNetData( "magetCerebellumTemplate" ) )
+  t1CerebellumTemplate <- ( ( t1CerebellumTemplate - min( t1CerebellumTemplate ) ) /
+                            ( max( t1CerebellumTemplate ) - min( t1CerebellumTemplate ) ) )
   cerebellumxTemplateXfrm <- getANTsXNetData( "magetCerebellumxTemplate0GenericAffine" )
 
   # spatial priors are in the space of the cerebellar template.  First three are
@@ -206,18 +208,18 @@ cerebellumMorphology <- function( t1, cerebellumMask = NULL,
     if( m == 1 )
       {
       labels <- c( 0, 1 )
-      channelSize <- 1
+      channelSize <- 2
       whichPriors <- NULL
       networkName <- "cerebellumWhole"
-      additionalOptions <- NA
+      additionalOptions <- c( "attentionGating" )
       } else if( m == 2 ) {
-      labels <- c( 0, 1, 2, 3 )
+      labels <- tissueLabels
       channelSize <- length( labels )
       whichPriors <- c( 1, 2, 3 )
       networkName <- "cerebellumTissue"
       additionalOptions <- NA
       } else {
-      labels <- c( 0, seq.int( 1, 12 ), seq.int( 101, 112 ) )
+      labels <- regionLabels
       channelSize <- length( labels )
       whichPriors <- c( seq.int( 4, 15 ), seq.int( 17, 28 ) )
       networkName <- "cerebellumLabels"
@@ -274,6 +276,13 @@ cerebellumMorphology <- function( t1, cerebellumMask = NULL,
     batchX[1,,,,1] <- as.array( padOrCropImageToSize( t1PreprocessedInCerebellumSpace, imageSize ) )
     batchX[2,,,,1] <- batchX[1,imageSize[1]:1,,,1]
 
+    if( m == 1 )
+      {
+      for( j in seq.int( dim( batchX )[1] ) )
+        {
+        batchX[j,,,,2] <- as.array( padOrCropImageToSize( t1CerebellumTemplate, imageSize ) )
+        }
+      }
     if( m > 1 )
       {
       for( i in seq.int( length( whichPriors ) ) )
