@@ -228,7 +228,7 @@ createUnetModel2D <- function( inputImageSize,
         kernel_size = convolutionKernelSize, padding = 'same',
         kernel_regularizer = regularizer_l2( weightDecay ) )
       }
-    if( nnUnetActivationStyle == TRUE )
+    if( nnUnetActivationStyle )
       {
       conv <- nnUnetActivation( conv )
       } else {
@@ -246,7 +246,7 @@ createUnetModel2D <- function( inputImageSize,
       conv <- conv %>% layer_conv_2d( filters = numberOfFilters[i],
         kernel_size = convolutionKernelSize, padding = 'same' )
       }
-    if( nnUnetActivationStyle == TRUE )
+    if( nnUnetActivationStyle )
       {
       conv <- nnUnetActivation( conv )
       } else {
@@ -286,7 +286,7 @@ createUnetModel2D <- function( inputImageSize,
         kernel_size = deconvolutionKernelSize,
         padding = 'same',
         kernel_regularizer = regularizer_l2( weightDecay ) )
-    if( nnUnetActivationStyle == TRUE )
+    if( nnUnetActivationStyle )
       {
       deconv <- nnUnetActivation( deconv )
       }
@@ -308,7 +308,7 @@ createUnetModel2D <- function( inputImageSize,
       layer_conv_2d( filters = numberOfFilters[numberOfLayers - i + 1],
         kernel_size = convolutionKernelSize, padding = 'same',
         kernel_regularizer = regularizer_l2( weightDecay ) )
-    if( nnUnetActivationStyle == TRUE )
+    if( nnUnetActivationStyle )
       {
       outputs <- nnUnetActivation( outputs )
       } else {
@@ -324,7 +324,7 @@ createUnetModel2D <- function( inputImageSize,
       layer_conv_2d( filters = numberOfFilters[numberOfLayers - i + 1],
         kernel_size = convolutionKernelSize, padding = 'same',
         kernel_regularizer = regularizer_l2( weightDecay ) )
-    if( nnUnetActivationStyle == TRUE )
+    if( nnUnetActivationStyle )
       {
       outputs <- nnUnetActivation( outputs )
       } else {
@@ -537,7 +537,7 @@ createUnetModel3D <- function( inputImageSize,
         kernel_size = convolutionKernelSize, padding = 'same',
         kernel_regularizer = regularizer_l2( weightDecay ) )
       }
-    if( nnUnetActivationStyle == TRUE )
+    if( nnUnetActivationStyle )
       {
       conv <- nnUnetActivation( conv )
       } else {
@@ -555,7 +555,7 @@ createUnetModel3D <- function( inputImageSize,
       conv <- conv %>% layer_conv_3d( filters = numberOfFilters[i],
         kernel_size = convolutionKernelSize, padding = 'same' )
       }
-    if( nnUnetActivationStyle == TRUE )
+    if( nnUnetActivationStyle )
       {
       conv <- nnUnetActivation( conv )
       } else {
@@ -595,7 +595,7 @@ createUnetModel3D <- function( inputImageSize,
         kernel_size = deconvolutionKernelSize,
         padding = 'same',
         kernel_regularizer = regularizer_l2( weightDecay ) )
-    if( nnUnetActivationStyle == TRUE )
+    if( nnUnetActivationStyle )
       {
       deconv <- nnUnetActivation( deconv )
       }
@@ -617,7 +617,7 @@ createUnetModel3D <- function( inputImageSize,
       layer_conv_3d( filters = numberOfFilters[numberOfLayers - i + 1],
         kernel_size = convolutionKernelSize, padding = 'same',
         kernel_regularizer = regularizer_l2( weightDecay ) )
-    if( nnUnetActivationStyle == TRUE )
+    if( nnUnetActivationStyle )
       {
       outputs <- nnUnetActivation( outputs )
       } else {
@@ -633,7 +633,7 @@ createUnetModel3D <- function( inputImageSize,
       layer_conv_3d( filters = numberOfFilters[numberOfLayers - i + 1],
         kernel_size = convolutionKernelSize, padding = 'same',
         kernel_regularizer = regularizer_l2( weightDecay ) )
-    if( nnUnetActivationStyle == TRUE )
+    if( nnUnetActivationStyle )
       {
       outputs <- nnUnetActivation( outputs )
       } else {
