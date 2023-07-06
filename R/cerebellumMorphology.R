@@ -56,7 +56,7 @@
 #' @param verbose print progress.
 #' @return List consisting of the multiple segmentation images and probability
 #' images for each label and foreground.  Optional thickness image.
-#' @author Tustison NJ
+#' @author Tustison NJ, Tustison MG
 #' @examples
 #' \dontrun{
 #' library( ANTsRNet )
