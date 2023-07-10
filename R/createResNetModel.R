@@ -93,7 +93,7 @@ createResNetModel2D <- function( inputImageSize,
 
   groupedConvolutionLayer2D <- function( model, numberOfFilters, strides )
     {
-    K <- keras::backend()
+    K <- tensorflow::tf$keras$backend
 
     # Per standard ResNet, this is just a 2-D convolution
     if( cardinality == 1 )
@@ -129,7 +129,7 @@ createResNetModel2D <- function( inputImageSize,
 
   squeezeAndExciteBlock2D <- function( model, ratio = 16 )
     {
-    K <- keras::backend()
+    K <- tensorflow::tf$keras$backend
 
     initial <- model
     numberOfFilters <- K$int_shape( initial )[[4]]
@@ -342,7 +342,7 @@ createResNetModel3D <- function( inputImageSize,
 
   groupedConvolutionLayer3D <- function( model, numberOfFilters, strides )
     {
-    K <- keras::backend()
+    K <- tensorflow::tf$keras$backend
 
     # Per standard ResNet, this is just a 2-D convolution
     if( cardinality == 1 )
@@ -378,7 +378,7 @@ createResNetModel3D <- function( inputImageSize,
 
   squeezeAndExciteBlock3D <- function( model, ratio = 16 )
     {
-    K <- keras::backend()
+    K <- tensorflow::tf$keras$backend
 
     initial <- model
     numberOfFilters <- K$int_shape( initial )[[5]]

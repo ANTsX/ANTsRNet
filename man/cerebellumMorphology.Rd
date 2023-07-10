@@ -6,15 +6,22 @@
 \usage{
 cerebellumMorphology(
   t1,
-  t2 = NULL,
+  cerebellumMask = NULL,
+  computeThicknessImage = FALSE,
   doPreprocessing = TRUE,
   antsxnetCacheDirectory = NULL,
-  useRankIntensity = TRUE,
   verbose = FALSE
 )
 }
 \arguments{
 \item{t1}{raw or preprocessed 3-D T1-weighted brain image.}
+
+\item{cerebellumMask}{Option for initialization.  If not specified, the
+cerebellum ROI is determined using ANTsXNet brain_extraction followed by
+registration to a template.}
+
+\item{computeThicknessImage}{Compute KellyKapowski thickness image of the gray
+matter.}
 
 \item{doPreprocessing}{perform preprocessing.  See description above.}
 
@@ -24,13 +31,6 @@ template and model weights.  Since these can be ressed, if
 inst/extdata/ subfolder of the ANTsRNet package.}
 
 \item{verbose}{print progress.}
-
-\item{initialCerebellumMask}{Option for initialization.  If not specified, the
-cerebellum ROI is determined using ANTsXNet brain_extraction followed by
-registration to a template.}
-
-\item{computeThicknessImage}{Compute KellyKapowski thickness image of the gray
-matter.}
 }
 \value{
 List consisting of the multiple segmentation images and probability
@@ -92,5 +92,5 @@ cereb <- cerebellumMorphology( image )
 }
 }
 \author{
-Tustison NJ
+Tustison NJ, Tustison MG
 }

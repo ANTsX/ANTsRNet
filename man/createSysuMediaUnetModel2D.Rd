@@ -21,23 +21,17 @@ in the 2017 MICCAI WMH challenge by the sysu_medial team described
 here:
 }
 \details{
-\if{html}{\out{<div class="sourceCode">}}\preformatted{\url{https://pubmed.ncbi.nlm.nih.gov/30125711/}
-}\if{html}{\out{</div>}}
+\preformatted{\url{https://pubmed.ncbi.nlm.nih.gov/30125711/}
+}
 
-or targeting the claustrum:
+or targeting the claustrum:\preformatted{\url{https://arxiv.org/abs/2008.03465}
+}
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{\url{https://arxiv.org/abs/2008.03465}
-}\if{html}{\out{</div>}}
+with the original implementations available at\preformatted{\url{https://github.com/hongweilibran/wmh_ibbmTum}
+}
 
-with the original implementations available at
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{\url{https://github.com/hongweilibran/wmh_ibbmTum}
-}\if{html}{\out{</div>}}
-
-and
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{\url{https://github.com/hongweilibran/claustrum_multi_view},
-}\if{html}{\out{</div>}}
+and\preformatted{\url{https://github.com/hongweilibran/claustrum_multi_view},
+}
 
 respectively.
 }

@@ -68,8 +68,8 @@ Various preprocessing steps that have been previously described in
 various papers including the cortical thickness pipeline:
 }
 \details{
-\if{html}{\out{<div class="sourceCode">}}\preformatted{\url{https://www.ncbi.nlm.nih.gov/pubmed/24879923}
-}\if{html}{\out{</div>}}
+\preformatted{\url{https://www.ncbi.nlm.nih.gov/pubmed/24879923}
+}
 }
 \examples{
 

@@ -15,10 +15,8 @@ based on the paper
 W. Liu, D. Anguelov, D. Erhan, C. Szegedy, S. Reed, C-Y. Fu, A. Berg.
 SSD: Single Shot MultiBox Detector.
 
-available here:
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{ \url{https://arxiv.org/abs/1512.02325}
-}\if{html}{\out{</div>}}
+available here:\preformatted{ \url{https://arxiv.org/abs/1512.02325}
+}
 }
 \section{Usage}{
 
