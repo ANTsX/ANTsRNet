@@ -32,7 +32,7 @@ mriModalityClassification <- function( image,
   antsxnetCacheDirectory = NULL, verbose = FALSE )
   {
 
-  if( inputImages[[1]]@dimension != 3 )
+  if( image@dimension != 3 )
     {
     stop( "Image dimension must be 3." )
     }
