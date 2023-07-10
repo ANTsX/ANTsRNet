@@ -25,15 +25,18 @@
 #' \code{c( "translation", "rigid", "scaleShear", "affine"," deformation" ,
 #'   "affineAndDeformation" )}.
 #' @param noiseModel one of the following options
-#'   \code{c( "additivegaussian", "saltandpepper", "shot", "speckle" )}
-#' @param noiseParameters 'additivegaussian': \code{c( mean, standardDeviation )},
+#' \code{c( "additivegaussian", "saltandpepper", "shot", "speckle", or "random" )}.
+#' Alternatively, one can specify an array or list of one or more of the options and
+#' one is selected at random with reasonable, randomized parameters.
+#' Note that the "speckle" model takes much longer than the others.
+#' #' @param noiseParameters 'additivegaussian': \code{c( mean, standardDeviation )},
 #'   'saltandpepper': \code{c( probability, saltValue, pepperValue) }, 'shot':
 #'    scale, 'speckle': standardDeviation.  Note that the standard deviation,
 #'    scale, and probability values are *max* values and are randomly selected
 #'    in the range [0, noise_parameter].  Also, the "mean", "saltValue" and
 #'    pepperValue" are assumed to be in the intensity normalized range of [0, 1].
 #' @param sdSimulatedBiasField Characterize the standard deviation of the amplitude.
-#' @param sdHistogramWarping Determines the strength of the bias field.
+#' @param sdHistogramWarping Determines the strength of the histogram transformation.
 #' @param sdAffine Determines the amount of transformation based change.
 #' @param outputNumpyFilePrefix Filename of output numpy array containing all the
 #'    simulated images and segmentations.
@@ -189,29 +192,44 @@ dataAugmentation <- function( inputImageList,
 
       if( ! is.null( noiseModel ) )
         {
+        if( length( noiseModel ) > 1 )
+          {
+          noiseModel <- sample( noiseModel, 1 )
+
+          if( noiseModel == "additivegaussian" )
+            {
+            noiseParameters <- c( runif(1, 0.0, 1.0 ), runif( 1, 0.01, 0.25 ) )
+            } else if( noiseModel == "saltandpepper" ) {
+            noiseParameters <- c( runif(1, 0.0, 0.25 ), runif( 1, 0.0, 0.25 ), runif( 1, 0.75, 1.0 ) )
+            } else if( noiseModel == "shot") {
+            noiseParameters <- c( runif( 1, 10, 1000 ) )
+            } else if( noiseModel == "shot") {
+            noiseParameters <- c( runif( 1, 0.1, 1 ) )
+            } else {
+            stop( "Unrecognized noise model." )
+            }
+          }
+
         if( verbose )
           {
           cat( "        Adding noise (",  noiseModel,  ").\n" )
           }
 
-        if( any( noiseParameters > 0 ) )
+        if( tolower( noiseModel ) == "additivegaussian" )
           {
-          if( tolower( noiseModel ) == "additivegaussian" )
-            {
-            parameters <- c( noiseParameters[1], runif( 1, min = 0.0, max = noiseParameters[2] ) )
-            image <- addNoiseToImage( image, noiseModel = "additivegaussian", noiseParameters = parameters )
-            } else if( tolower( noiseModel ) == "saltandpepper" ) {
-            parameters <- c( runif( 1, min = 0.0, max = noiseParameters[1] ), noiseParameters[2], noiseParameters[3] )
-            image <- addNoiseToImage( image, noiseModel = "saltandpepper", noiseParameters = parameters )
-            } else if( tolower( noiseModel ) == "shot" ) {
-            parameters <- c( runif(1, min = 0.0, max = noiseParameters[1] ) )
-            image <- addNoiseToImage( image, noiseModel = "shot", noiseParameters = parameters )
-            } else if( tolower( noiseModel ) == "speckle" ) {
-            parameters <- c( runif( 1, min = 0.0, max = noiseParameters[1] ) )
-            image <- addNoiseToImage( image, noiseModel = "speckle", noiseParameters = parameters )
-            } else {
-            stop( "Unrecognized noise model." )
-            }
+          parameters <- c( noiseParameters[1], runif( 1, min = 0.0, max = noiseParameters[2] ) )
+          image <- addNoiseToImage( image, noiseModel = "additivegaussian", noiseParameters = parameters )
+          } else if( tolower( noiseModel ) == "saltandpepper" ) {
+          parameters <- c( runif( 1, min = 0.0, max = noiseParameters[1] ), noiseParameters[2], noiseParameters[3] )
+          image <- addNoiseToImage( image, noiseModel = "saltandpepper", noiseParameters = parameters )
+          } else if( tolower( noiseModel ) == "shot" ) {
+          parameters <- c( runif(1, min = 0.0, max = noiseParameters[1] ) )
+          image <- addNoiseToImage( image, noiseModel = "shot", noiseParameters = parameters )
+          } else if( tolower( noiseModel ) == "speckle" ) {
+          parameters <- c( runif( 1, min = 0.0, max = noiseParameters[1] ) )
+          image <- addNoiseToImage( image, noiseModel = "speckle", noiseParameters = parameters )
+          } else {
+          stop( "Unrecognized noise model." )
           }
         }
 
@@ -225,8 +243,8 @@ dataAugmentation <- function( inputImageList,
           cat( "        Adding simulated bias field.\n" )
           }
 
-        logField <- simulateBiasField(image, numberOfPoints = 10, 
-          sdBiasField = sdSimulatedBiasField, numberOfFittingLevels = 2, meshSize = 10 ) %>% 
+        logField <- simulateBiasField(image, numberOfPoints = 10,
+          sdBiasField = sdSimulatedBiasField, numberOfFittingLevels = 2, meshSize = 10 ) %>%
           iMath( "Normalize" )
         logField <- ( exp( logField ) )^sample( c( 2, 3, 4 ), 1 )
         image <- image * logField

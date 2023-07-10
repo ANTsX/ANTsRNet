@@ -1,7 +1,7 @@
 #' Cerebellum tissue segmentation, Schmahmann parcellation, and thickness.
 #'
 #' Perform cerebellum segmentation using a modification of the set of
-#' MaGET cerebellum atlases --- \url{https://github.com/CoBrALab/MAGeTbrain}.
+#' MaGET cerebellum atlases --- \url{https://www.cobralab.ca/cerebellum-lobules}.
 #'
 #' The tissue labeling is as follows:
 #' \itemize{

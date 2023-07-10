@@ -26,7 +26,7 @@
 #' @param cardinality perform  ResNet (cardinality = 1) or ResNeXt
 #' (cardinality != 1 but powers of 2---try '32' )
 #' @param squeezeAndExcite boolean to add the squeeze-and-excite block variant.
-#' @param mode 'classification' or 'regression'.  Default = 'classification'.
+#' @param mode 'classification', 'sigmoid' or 'regression'.
 #'
 #' @return an ResNet keras model
 #' @author Tustison NJ
@@ -79,7 +79,7 @@ createResNetModel2D <- function( inputImageSize,
                                  lowestResolution = 64,
                                  cardinality = 1,
                                  squeezeAndExcite = FALSE,
-                                 mode = c( 'classification', 'regression' )
+                                 mode = c( 'classification', 'sigmoid', 'regression' )
                                )
 {
 
@@ -224,6 +224,8 @@ createResNetModel2D <- function( inputImageSize,
     layerActivation <- 'softmax'
     } else if( mode == 'regression' ) {
     layerActivation <- 'linear'
+    } else if( mode == 'sigmoid' ) {
+    layerActivation <- 'sigmoid'
     } else {
     stop( 'Error: unrecognized mode.' )
     }
@@ -274,7 +276,7 @@ createResNetModel2D <- function( inputImageSize,
 #' @param cardinality perform  ResNet (cardinality = 1) or ResNeXt
 #' (cardinality != 1 but powers of 2---try '32' )
 #' @param squeezeAndExcite boolean to add the squeeze-and-excite block variant.
-#' @param mode 'classification' or 'regression'.
+#' @param mode 'classification', 'sigmoid' or 'regression'.
 #'
 #' @return an ResNet keras model
 #' @author Tustison NJ
@@ -473,6 +475,8 @@ createResNetModel3D <- function( inputImageSize,
     layerActivation <- 'softmax'
     } else if( mode == 'regression' ) {
     layerActivation <- 'linear'
+    } else if( mode == 'sigmoid' ) {
+    layerActivation <- 'sigmoid'
     } else {
     stop( 'Error: unrecognized mode.' )
     }
