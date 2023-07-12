@@ -44,11 +44,6 @@
 brainAge <- function( image, doPreprocessing = TRUE,
   numberOfSimulations = 0, sdAffine = 0.01, antsxnetCacheDirectory = NULL, verbose = TRUE )
   {
-  if( is.null( antsxnetCacheDirectory ) )
-    {
-    antsxnetCacheDirectory <- "ANTsXNet"
-    }
-
   preprocessedImage <- image
   if( doPreprocessing == TRUE )
     {

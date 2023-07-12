@@ -25,11 +25,6 @@ mriSuperResolution <- function( image, antsxnetCacheDirectory = NULL, verbose = 
     stop( "Input image dimension must be 3." )
     }
 
-  if( is.null( antsxnetCacheDirectory ) )
-    {
-    antsxnetCacheDirectory <- "ANTsXNet"
-    }
-
   modelAndWeightsFileName <- "mindmapsSR_16_ANINN222_0.h5"
   if( verbose == TRUE )
     {

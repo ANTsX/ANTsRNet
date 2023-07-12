@@ -46,11 +46,6 @@ hypothalamusSegmentation <- function( t1,
     stop( "Input image dimension must be 3." )
     }
 
-  if( is.null( antsxnetCacheDirectory ) )
-    {
-    antsxnetCacheDirectory <- "ANTsXNet"
-    }
-
   classes <- c( "background",
                 "left anterior-inferior",
                 "left anterior-superior",

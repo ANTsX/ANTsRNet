@@ -51,11 +51,6 @@ hippMapp3rSegmentation <- function( t1, doPreprocessing = TRUE,
     stop( "Image dimension must be 3." )
     }
 
-  if( is.null( antsxnetCacheDirectory ) )
-    {
-    antsxnetCacheDirectory <- "ANTsXNet"
-    }
-
   #########################################
   #
   # Perform preprocessing

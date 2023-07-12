@@ -62,11 +62,6 @@ brainExtraction <- function( image,
     stop( "Image dimension must be 3." )
     }
 
-  if( is.null( antsxnetCacheDirectory ) )
-    {
-    antsxnetCacheDirectory <- "ANTsXNet"
-    }
-
   if( substr( modality, 1, 10 ) == "t1combined" )
     {
 
