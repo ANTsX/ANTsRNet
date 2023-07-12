@@ -75,11 +75,6 @@ cerebellumMorphology <- function( t1, cerebellumMask = NULL,
     stop( "Input image dimension must be 3." )
     }
 
-  if( is.null( antsxnetCacheDirectory ) )
-    {
-    antsxnetCacheDirectory <- "ANTsXNet"
-    }
-
   transformType <- "antsRegistrationSyNQuick[s]"
   whichtoinvert <- c( TRUE, FALSE, TRUE )
   # transformType <- "antsRegistrationSyNQuick[a]"

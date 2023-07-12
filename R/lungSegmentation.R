@@ -39,11 +39,6 @@ elBicho <- function( ventilationImage, mask,
     stop( "Ventilation image and mask size are not the same size." )
     }
 
-  if( is.null( antsxnetCacheDirectory ) )
-    {
-    antsxnetCacheDirectory <- "ANTsXNet"
-    }
-
   ################################
   #
   # Preprocess image

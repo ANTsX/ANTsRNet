@@ -31,11 +31,6 @@ arterialLesionSegmentation <- function( image,
 
   channelSize <- 1
 
-  if( is.null( antsxnetCacheDirectory ) )
-    {
-    antsxnetCacheDirectory <- "ANTsXNet"
-    }
-
   weightsFileName <- getPretrainedNetwork( "arterialLesionWeibinShi",
     antsxnetCacheDirectory = antsxnetCacheDirectory )
 
@@ -99,7 +94,7 @@ arterialLesionSegmentation <- function( image,
 #' }
 #' @import keras
 #' @export
-allenEx5BrainExtraction <- function( image, view = c( "coronal", "sagittal" ), 
+allenEx5BrainExtraction <- function( image, view = c( "coronal", "sagittal" ),
   whichAxis = 3, antsxnetCacheDirectory = NULL, verbose = FALSE )
   {
 
@@ -129,7 +124,7 @@ allenEx5BrainExtraction <- function( image, view = c( "coronal", "sagittal" ),
   originalSliceShape <- dim( image )
   if( image@dimension > 2 )
     {
-    originalSliceShape <- originalSliceShape[-c( whichAxis )] 
+    originalSliceShape <- originalSliceShape[-c( whichAxis )]
     }
 
   unetModel <- createUnetModel2D( c( resampledImageSize, 1 ),
@@ -169,9 +164,9 @@ allenEx5BrainExtraction <- function( image, view = c( "coronal", "sagittal" ),
     for( j in seq.int( numberOfSlices ) )
       {
       slice <- NULL
-      if( image@dimension > 2 ) 
+      if( image@dimension > 2 )
         {
-        if( whichAxis == 1 ) 
+        if( whichAxis == 1 )
           {
           imageChannelSliceArray <- imageChannelArray[j,,,drop = TRUE]
           } else if( whichAxis == 2 ) {
@@ -179,20 +174,20 @@ allenEx5BrainExtraction <- function( image, view = c( "coronal", "sagittal" ),
           } else {
           imageChannelSliceArray <- imageChannelArray[,,j,drop = TRUE]
           }
-        slice <- as.antsImage( imageChannelSliceArray )  
+        slice <- as.antsImage( imageChannelSliceArray )
         } else {
-        slice <- imageChannels[[i]] 
+        slice <- imageChannels[[i]]
         }
       if( max( slice ) > min( slice ) )
         {
         sliceResampled <- resampleImage( slice, resampledImageSize, useVoxels = TRUE, interpType = 0 )
         sliceArray <- as.array( sliceResampled )
-        sliceArray <- ( sliceArray - min( sliceArray ) ) / ( max( sliceArray ) - min( sliceArray ) ) 
+        sliceArray <- ( sliceArray - min( sliceArray ) ) / ( max( sliceArray ) - min( sliceArray ) )
         batchX[count,,,1] <- sliceArray
         }
       count <- count + 1
       }
-    }  
+    }
 
   if( verbose )
     {
@@ -208,14 +203,14 @@ allenEx5BrainExtraction <- function( image, view = c( "coronal", "sagittal" ),
        cat( "Averaging across channels.\n" )
        }
     predictedDataTmp <- list()
-    for( i in seq.int( numberOfChannels ) ) 
+    for( i in seq.int( numberOfChannels ) )
       {
       startIndex <- ( i - 1 ) * numberOfSlices + 1
       endIndex <- startIndex + numberOfSlices - 1
-      predictedDataTmp[[i]] <- predictedData[startIndex:endIndex,,,] 
-      }  
+      predictedDataTmp[[i]] <- predictedData[startIndex:endIndex,,,]
+      }
     predictedData <- predictedDataTmp[[1]]
-    for( i in seq.int( 2, numberOfChannels ) ) 
+    for( i in seq.int( 2, numberOfChannels ) )
       {
       predictedData <- ( predictedData * ( i - 1 ) + predictedDataTmp[[i]] ) / i
       }
@@ -226,7 +221,7 @@ allenEx5BrainExtraction <- function( image, view = c( "coronal", "sagittal" ),
     cat( "Post-processing:  resampling to original space.\n" )
     }
 
-  foregroundProbabilityArray <- array( data = 0, dim = dim( image ) ) 
+  foregroundProbabilityArray <- array( data = 0, dim = dim( image ) )
   for( j in seq.int( numberOfSlices ) )
     {
     sliceResampled <- as.antsImage( predictedData[j,,,2, drop = TRUE] )
@@ -235,7 +230,7 @@ allenEx5BrainExtraction <- function( image, view = c( "coronal", "sagittal" ),
       {
       foregroundProbabilityArray[,] <- as.array( slice )
       } else {
-      if( whichAxis == 1 ) 
+      if( whichAxis == 1 )
         {
         foregroundProbabilityArray[j,,] <- as.array( slice )
         } else if( whichAxis == 2 ) {
@@ -250,7 +245,7 @@ allenEx5BrainExtraction <- function( image, view = c( "coronal", "sagittal" ),
   spacing <- antsGetSpacing( image )
   direction <- antsGetDirection( image )
 
-  foregroundProbabilityImage <- as.antsImage( foregroundProbabilityArray, 
+  foregroundProbabilityImage <- as.antsImage( foregroundProbabilityArray,
      origin = origin, spacing = spacing, direction = direction )
 
   return( foregroundProbabilityImage )
@@ -277,7 +272,7 @@ allenEx5BrainExtraction <- function( image, view = c( "coronal", "sagittal" ),
 #' }
 #' @import keras
 #' @export
-allenHistologyBrainMask <- function( image, 
+allenHistologyBrainMask <- function( image,
   whichAxis = 3, antsxnetCacheDirectory = NULL, verbose = FALSE )
   {
 
@@ -298,7 +293,7 @@ allenHistologyBrainMask <- function( image,
   originalSliceShape <- dim( image )
   if( image@dimension > 2 )
     {
-    originalSliceShape <- originalSliceShape[-c( whichAxis )] 
+    originalSliceShape <- originalSliceShape[-c( whichAxis )]
     }
 
   unetModel <- createUnetModel2D( c( resampledImageSize, 1 ),
@@ -338,9 +333,9 @@ allenHistologyBrainMask <- function( image,
     for( j in seq.int( numberOfSlices ) )
       {
       slice <- NULL
-      if( image@dimension > 2 ) 
+      if( image@dimension > 2 )
         {
-        if( whichAxis == 1 ) 
+        if( whichAxis == 1 )
           {
           imageChannelSliceArray <- imageChannelArray[j,,,drop = TRUE]
           } else if( whichAxis == 2 ) {
@@ -348,20 +343,20 @@ allenHistologyBrainMask <- function( image,
           } else {
           imageChannelSliceArray <- imageChannelArray[,,j,drop = TRUE]
           }
-        slice <- as.antsImage( imageChannelSliceArray )  
+        slice <- as.antsImage( imageChannelSliceArray )
         } else {
-        slice <- imageChannels[[i]] 
+        slice <- imageChannels[[i]]
         }
       if( max( slice ) > min( slice ) )
         {
         sliceResampled <- resampleImage( slice, resampledImageSize, useVoxels = TRUE, interpType = 0 )
         sliceArray <- as.array( sliceResampled )
-        sliceArray <- ( sliceArray - min( sliceArray ) ) / ( max( sliceArray ) - min( sliceArray ) ) 
+        sliceArray <- ( sliceArray - min( sliceArray ) ) / ( max( sliceArray ) - min( sliceArray ) )
         batchX[count,,,1] <- sliceArray
         }
       count <- count + 1
       }
-    }  
+    }
 
   if( verbose )
     {
@@ -377,14 +372,14 @@ allenHistologyBrainMask <- function( image,
        cat( "Averaging across channels.\n" )
        }
     predictedDataTmp <- list()
-    for( i in seq.int( numberOfChannels ) ) 
+    for( i in seq.int( numberOfChannels ) )
       {
       startIndex <- ( i - 1 ) * numberOfSlices + 1
       endIndex <- startIndex + numberOfSlices - 1
-      predictedDataTmp[[i]] <- predictedData[startIndex:endIndex,,,] 
-      }  
+      predictedDataTmp[[i]] <- predictedData[startIndex:endIndex,,,]
+      }
     predictedData <- predictedDataTmp[[1]]
-    for( i in seq.int( 2, numberOfChannels ) ) 
+    for( i in seq.int( 2, numberOfChannels ) )
       {
       predictedData <- ( predictedData * ( i - 1 ) + predictedDataTmp[[i]] ) / i
       }
@@ -395,7 +390,7 @@ allenHistologyBrainMask <- function( image,
     cat( "Post-processing:  resampling to original space.\n" )
     }
 
-  foregroundProbabilityArray <- array( data = 0, dim = dim( image ) ) 
+  foregroundProbabilityArray <- array( data = 0, dim = dim( image ) )
   for( j in seq.int( numberOfSlices ) )
     {
     sliceResampled <- as.antsImage( predictedData[j,,,2, drop = TRUE] )
@@ -404,7 +399,7 @@ allenHistologyBrainMask <- function( image,
       {
       foregroundProbabilityArray[,] <- as.array( slice )
       } else {
-      if( whichAxis == 1 ) 
+      if( whichAxis == 1 )
         {
         foregroundProbabilityArray[j,,] <- as.array( slice )
         } else if( whichAxis == 2 ) {
@@ -419,7 +414,7 @@ allenHistologyBrainMask <- function( image,
   spacing <- antsGetSpacing( image )
   direction <- antsGetDirection( image )
 
-  foregroundProbabilityImage <- as.antsImage( foregroundProbabilityArray, 
+  foregroundProbabilityImage <- as.antsImage( foregroundProbabilityArray,
      origin = origin, spacing = spacing, direction = direction )
 
   return( foregroundProbabilityImage )

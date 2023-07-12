@@ -36,14 +36,9 @@ lungExtraction <- function( image,
   imageModalities <- c( modality )
   channelSize <- length( imageModalities )
 
-  if( is.null( antsxnetCacheDirectory ) )
-    {
-    antsxnetCacheDirectory <- "ANTsXNet"
-    }
-
   if( modality == "proton" )
     {
-    weightsFileName <- getPretrainedNetwork( "protonLungMri", 
+    weightsFileName <- getPretrainedNetwork( "protonLungMri",
       antsxnetCacheDirectory = antsxnetCacheDirectory )
 
     classes <- c( "Background", "LeftLung", "RightLung" )
@@ -130,19 +125,19 @@ lungExtraction <- function( image,
       numberOfLayers = 4, numberOfFiltersAtBaseLayer = 16, dropoutRate = 0.0,
       convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
       additionalOptions = c( "attentionGating" ) )
-    
+
     if( modality == "protonLobes" )
       {
       penultimateLayer <- unetModel$layers[[length( unetModel$layers ) - 1]]$output
-      outputs2 <- penultimateLayer %>% layer_conv_3d( filters = 1, 
+      outputs2 <- penultimateLayer %>% layer_conv_3d( filters = 1,
         kernel_size = c( 1L, 1L, 1L ), activation = 'sigmoid',
         kernel_regularizer = regularizer_l2( l = 0.0 ) )
-      unetModel = keras_model( inputs = unetModel$input, 
-        outputs = list( unetModel$output, outputs2 ) )  
-      weightsFileName <- getPretrainedNetwork( "protonLobes", 
+      unetModel = keras_model( inputs = unetModel$input,
+        outputs = list( unetModel$output, outputs2 ) )
+      weightsFileName <- getPretrainedNetwork( "protonLobes",
         antsxnetCacheDirectory = antsxnetCacheDirectory )
       } else {
-      weightsFileName <- getPretrainedNetwork( "maskLobes", 
+      weightsFileName <- getPretrainedNetwork( "maskLobes",
         antsxnetCacheDirectory = antsxnetCacheDirectory )
       }
     unetModel$load_weights( weightsFileName )
@@ -173,7 +168,7 @@ lungExtraction <- function( image,
       }
 
     predictedData <- unetModel %>% predict( batchX, verbose = verbose )
-    
+
     if( modality == "protonLobes" )
       {
       probabilityImagesArray <- decodeUnet( predictedData[[1]], reorientTemplate )
@@ -201,7 +196,7 @@ lungExtraction <- function( image,
     if( modality == "protonLobes" )
       {
       wholeLungMask <- decodeUnet( predictedData[[2]], reorientTemplate )[[1]][[1]]
-      wholeLungMask <- applyAntsrTransformToImage( invertAntsrTransform( xfrm ), 
+      wholeLungMask <- applyAntsrTransformToImage( invertAntsrTransform( xfrm ),
         wholeLungMask, image )
       return( list( segmentationImage = segmentationImage,
                     probabilityImages = probabilityImages,
@@ -210,7 +205,7 @@ lungExtraction <- function( image,
       return( list( segmentationImage = segmentationImage,
                     probabilityImages = probabilityImages ) )
 
-      }              
+      }
 
     } else if( modality == "ct" ) {
 
@@ -394,7 +389,7 @@ lungExtraction <- function( image,
             setTxtProgressBar( pb, i )
             }
 
-          ventilationSlice <- padOrCropImageToSize( 
+          ventilationSlice <- padOrCropImageToSize(
              extractSlice( preprocessedImage, i, dimensionsToPredict[d], collapseStrategy = 1 ), templateSize )
           batchX[sliceCount,,,1] <- as.array( ventilationSlice )
 

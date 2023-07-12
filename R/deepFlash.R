@@ -59,11 +59,6 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
     stop( "Input image dimension must be 3." )
     }
 
-  if( is.null( antsxnetCacheDirectory ) )
-    {
-    antsxnetCacheDirectory <- "ANTsXNet"
-    }
-
   ################################
   #
   # Options temporarily taken from the user
@@ -757,11 +752,6 @@ deepFlashDeprecated <- function( t1, doPreprocessing = TRUE, doPerHemisphere = T
   if( t1@dimension != 3 )
     {
     stop( "Input image dimension must be 3." )
-    }
-
-  if( is.null( antsxnetCacheDirectory ) )
-    {
-    antsxnetCacheDirectory <- "ANTsXNet"
     }
 
   ################################

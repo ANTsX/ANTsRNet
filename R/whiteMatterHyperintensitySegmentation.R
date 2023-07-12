@@ -49,11 +49,6 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
     stop( "Input image dimension must be 3." )
     }
 
-  if( is.null( antsxnetCacheDirectory ) )
-    {
-    antsxnetCacheDirectory <- "ANTsXNet"
-    }
-
   imageSize <- c( 200, 200 )
 
   ################################
@@ -282,11 +277,6 @@ hyperMapp3rSegmentation <- function( t1, flair, doPreprocessing = TRUE,
     stop( "Image dimension must be 3." )
     }
 
-  if( is.null( antsxnetCacheDirectory ) )
-    {
-    antsxnetCacheDirectory <- "ANTsXNet"
-    }
-
   #########################################
   #
   # Perform preprocessing
@@ -472,11 +462,6 @@ ewDavid <- function( flair, t1, doPreprocessing = TRUE, whichModel = "sysu",
   if( useT1Segmentation && doPreprocessing == True )
     {
     stop( "Using the t1 segmentation requires doPreprocessing = FALSE.")
-    }
-
-  if( is.null( antsxnetCacheDirectory ) )
-    {
-    antsxnetCacheDirectory <- "ANTsXNet"
     }
 
   doSlicewise <- TRUE

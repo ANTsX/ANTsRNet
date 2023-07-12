@@ -83,11 +83,6 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
       stop( "Please pass valid model" )
       }
 
-    if( is.null( antsxnetCacheDirectory ) )
-      {
-      antsxnetCacheDirectory <- "ANTsXNet"
-      }
-
     if( verbose == TRUE )
       {
       cat( "Neural QA:  retreiving model and weights.\n" )

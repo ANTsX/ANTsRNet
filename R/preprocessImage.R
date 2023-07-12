@@ -54,11 +54,6 @@ preprocessBrainImage <- function( image, truncateIntensity = c( 0.01, 0.99 ),
   verbose = TRUE )
   {
 
-  if( is.null( antsxnetCacheDirectory ) )
-    {
-    antsxnetCacheDirectory <- "ANTsXNet"
-    }
-
   preprocessedImage <- antsImageClone( image )
 
   # Truncate intensity

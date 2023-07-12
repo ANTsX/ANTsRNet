@@ -231,11 +231,6 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
     stop( "Input image dimension must be 3." )
     }
 
-  if( is.null( antsxnetCacheDirectory ) )
-    {
-    antsxnetCacheDirectory <- "ANTsXNet"
-    }
-
   ################################
   #
   # Preprocess image

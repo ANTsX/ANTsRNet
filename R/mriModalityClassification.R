@@ -37,11 +37,6 @@ mriModalityClassification <- function( image,
     stop( "Image dimension must be 3." )
     }
 
-  if( is.null( antsxnetCacheDirectory ) )
-    {
-    antsxnetCacheDirectory <- "ANTsXNet"
-    }
-
   ################################
   #
   # Normalize to template
@@ -64,7 +59,7 @@ mriModalityClassification <- function( image,
   xfrm <- createAntsrTransform( type = "Euler3DTransform",
     center = centerOfMassTemplate,
     translation = centerOfMassImage - centerOfMassTemplate )
-  image <- applyAntsrTransformToImage( xfrm, image, template )  
+  image <- applyAntsrTransformToImage( xfrm, image, template )
 
   image <- ( image - min( image ) ) / ( max( image ) - min( image ) )
 
@@ -74,7 +69,7 @@ mriModalityClassification <- function( image,
   #
   ################################
 
-  weightsFileName <- getPretrainedNetwork( "mriModalityClassification", 
+  weightsFileName <- getPretrainedNetwork( "mriModalityClassification",
                                            antsxnetCacheDirectory = antsxnetCacheDirectory )
 
   modalityTypes <- c( "T1", "T2", "FLAIR", "T2Star", "Mean DWI", "Mean Bold", "ASL Perfusion" )
