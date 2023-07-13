@@ -41,7 +41,7 @@ repeats.}
 
 \item{squeezeAndExcite}{boolean to add the squeeze-and-excite block variant.}
 
-\item{mode}{'classification' or 'regression'.}
+\item{mode}{'classification', 'sigmoid' or 'regression'.}
 }
 \value{
 an ResNet keras model

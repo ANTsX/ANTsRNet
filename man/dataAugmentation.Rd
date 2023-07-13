@@ -47,9 +47,11 @@ testing using \code{antsImagePhysicalSpaceConsistency} then calling
   "affineAndDeformation" )}.}
 
 \item{noiseModel}{one of the following options
-\code{c( "additivegaussian", "saltandpepper", "shot", "speckle" )}}
-
-\item{noiseParameters}{'additivegaussian': \code{c( mean, standardDeviation )},
+\code{c( "additivegaussian", "saltandpepper", "shot", "speckle", or "random" )}.
+Alternatively, one can specify an array or list of one or more of the options and
+one is selected at random with reasonable, randomized parameters.
+Note that the "speckle" model takes much longer than the others.
+#' @param noiseParameters 'additivegaussian': \code{c( mean, standardDeviation )},
 'saltandpepper': \code{c( probability, saltValue, pepperValue) }, 'shot':
 scale, 'speckle': standardDeviation.  Note that the standard deviation,
 scale, and probability values are \emph{max} values and are randomly selected
@@ -58,7 +60,7 @@ pepperValue" are assumed to be in the intensity normalized range of \link{0, 1}.
 
 \item{sdSimulatedBiasField}{Characterize the standard deviation of the amplitude.}
 
-\item{sdHistogramWarping}{Determines the strength of the bias field.}
+\item{sdHistogramWarping}{Determines the strength of the histogram transformation.}
 
 \item{sdAffine}{Determines the amount of transformation based change.}
 

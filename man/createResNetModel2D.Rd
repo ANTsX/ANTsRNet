@@ -13,7 +13,7 @@ createResNetModel2D(
   lowestResolution = 64,
   cardinality = 1,
   squeezeAndExcite = FALSE,
-  mode = c("classification", "regression")
+  mode = c("classification", "sigmoid", "regression")
 )
 }
 \arguments{
@@ -41,7 +41,7 @@ repeats.}
 
 \item{squeezeAndExcite}{boolean to add the squeeze-and-excite block variant.}
 
-\item{mode}{'classification' or 'regression'.  Default = 'classification'.}
+\item{mode}{'classification', 'sigmoid' or 'regression'.}
 }
 \value{
 an ResNet keras model

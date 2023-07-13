@@ -14,7 +14,7 @@ cerebellumMorphology(
 )
 }
 \arguments{
-\item{t1}{raw or preprocessed 3-D T1-weighted brain image.}
+\item{t1}{raw or preprocessed 3-D T1-weighted whole head image.}
 
 \item{cerebellumMask}{Option for initialization.  If not specified, the
 cerebellum ROI is determined using ANTsXNet brain_extraction followed by
@@ -23,7 +23,7 @@ registration to a template.}
 \item{computeThicknessImage}{Compute KellyKapowski thickness image of the gray
 matter.}
 
-\item{doPreprocessing}{perform preprocessing.  See description above.}
+\item{doPreprocessing}{Perform N4 bias correction and spatiall normalize to template space.}
 
 \item{antsxnetCacheDirectory}{destination directory for storing the downloaded
 template and model weights.  Since these can be ressed, if
@@ -38,7 +38,7 @@ images for each label and foreground.  Optional thickness image.
 }
 \description{
 Perform cerebellum segmentation using a modification of the set of
-MaGET cerebellum atlases --- \url{https://github.com/CoBrALab/MAGeTbrain}.
+MaGET cerebellum atlases --- \url{https://www.cobralab.ca/cerebellum-lobules}.
 }
 \details{
 The tissue labeling is as follows:
@@ -74,12 +74,6 @@ The parcellation labeling is as follows:
 \item{Label 110:}{R_VIIIB}
 \item{Label 111:}{R_IX}
 \item{Label 112:}{R_X}
-}
-
-Preprocessing on the training data consisted of:
-\itemize{
-\item n4 bias correction,
-which is performed on the input images if \code{doPreprocessing = TRUE}.
 }
 }
 \examples{

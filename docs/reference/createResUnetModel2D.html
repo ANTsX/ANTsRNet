@@ -249,8 +249,8 @@ implementation:</p><pre>    \url{https://github.com/veugene/fcn_maker/}
   numberOfOutputs <span class='op'>=</span> <span class='va'>numberOfLabels</span> <span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span><span class='op'>(</span><span class='va'>domainImage</span><span class='op'>)</span>; <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span><span class='op'>(</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2584240 138.1    4568937 244.1         NA   4568937  244.1
-#&gt; Vcells 6113211  46.7   33042013 252.1      65536 150728844 1150.0</div><div class='input'>
+#&gt; Ncells 2584224 138.1    4568885 244.1         NA   4568885  244.1
+#&gt; Vcells 6113291  46.7   33042068 252.1      65536 150730205 1150.0</div><div class='input'>
 <span class='va'>metric_multilabel_dice_coefficient</span> <span class='op'>&lt;-</span>
   <span class='fu'><a href='https://rdrr.io/pkg/keras/man/metric_binary_accuracy.html'>custom_metric</a></span><span class='op'>(</span> <span class='st'>"multilabel_dice_coefficient"</span>,
     <span class='va'>multilabel_dice_coefficient</span> <span class='op'>)</span>
@@ -279,18 +279,18 @@ implementation:</p><pre>    \url{https://github.com/veugene/fcn_maker/}
 <span class='co'>#              validation_split = 0.2 )</span>
 <span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span><span class='op'>(</span><span class='va'>X_train</span><span class='op'>)</span>; <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span><span class='op'>(</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2581931 137.9    4568937 244.1         NA   4568937  244.1
-#&gt; Vcells 5716009  43.7   26433611 201.7      65536 150728844 1150.0</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span><span class='op'>(</span><span class='va'>Y_train</span><span class='op'>)</span>; <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span><span class='op'>(</span><span class='op'>)</span>
+#&gt; Ncells 2581915 137.9    4568885 244.1         NA   4568885  244.1
+#&gt; Vcells 5716089  43.7   26433655 201.7      65536 150730205 1150.0</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span><span class='op'>(</span><span class='va'>Y_train</span><span class='op'>)</span>; <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span><span class='op'>(</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2581791 137.9    4568937 244.1         NA   4568937  244.1
-#&gt; Vcells 4536150  34.7   21146889 161.4      65536 150728844 1150.0</div><div class='input'><span class='co'># Save the model and/or save the model weights</span>
+#&gt; Ncells 2581775 137.9    4568885 244.1         NA   4568885  244.1
+#&gt; Vcells 4536230  34.7   21146924 161.4      65536 150730205 1150.0</div><div class='input'><span class='co'># Save the model and/or save the model weights</span>
 
 <span class='co'># save_model_hdf5( model, filepath = 'resUnetModel.h5' )</span>
 <span class='co'># save_model_weights_hdf5( unetModel, filepath = 'resUnetModelWeights.h5' ) )</span>
 <span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span><span class='op'>(</span><span class='va'>model</span><span class='op'>)</span>; <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span><span class='op'>(</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2581739 137.9    4568937 244.1         NA   4568937  244.1
-#&gt; Vcells 4536149  34.7   16917512 129.1      65536 150728844 1150.0</div><div class='input'>
+#&gt; Ncells 2581723 137.9    4568885 244.1         NA   4568885  244.1
+#&gt; Vcells 4536229  34.7   16917540 129.1      65536 150730205 1150.0</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

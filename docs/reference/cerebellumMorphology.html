@@ -41,7 +41,7 @@
 
 <meta property="og:title" content="Cerebellum tissue segmentation, Schmahmann parcellation, and thickness. — cerebellumMorphology" />
 <meta property="og:description" content="Perform cerebellum segmentation using a modification of the set of
-MaGET cerebellum atlases --- https://github.com/CoBrALab/MAGeTbrain." />
+MaGET cerebellum atlases --- https://www.cobralab.ca/cerebellum-lobules." />
 
 
 
@@ -116,7 +116,7 @@ MaGET cerebellum atlases --- https://github.com/CoBrALab/MAGeTbrain." />
 
     <div class="ref-description">
     <p>Perform cerebellum segmentation using a modification of the set of
-MaGET cerebellum atlases --- <a href='https://github.com/CoBrALab/MAGeTbrain'>https://github.com/CoBrALab/MAGeTbrain</a>.</p>
+MaGET cerebellum atlases --- <a href='https://www.cobralab.ca/cerebellum-lobules'>https://www.cobralab.ca/cerebellum-lobules</a>.</p>
     </div>
 
     <pre class="usage"><span class='fu'>cerebellumMorphology</span><span class='op'>(</span>
@@ -133,7 +133,7 @@ MaGET cerebellum atlases --- <a href='https://github.com/CoBrALab/MAGeTbrain'>ht
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>t1</th>
-      <td><p>raw or preprocessed 3-D T1-weighted brain image.</p></td>
+      <td><p>raw or preprocessed 3-D T1-weighted whole head image.</p></td>
     </tr>
     <tr>
       <th>cerebellumMask</th>
@@ -148,7 +148,7 @@ matter.</p></td>
     </tr>
     <tr>
       <th>doPreprocessing</th>
-      <td><p>perform preprocessing.  See description above.</p></td>
+      <td><p>Perform N4 bias correction and spatiall normalize to template space.</p></td>
     </tr>
     <tr>
       <th>antsxnetCacheDirectory</th>
@@ -200,11 +200,6 @@ images for each label and foreground.  Optional thickness image.</p>
 <li><p>Label 110:R_VIIIB</p></li>
 <li><p>Label 111:R_IX</p></li>
 <li><p>Label 112:R_X</p></li>
-</ul>
-
-<p>Preprocessing on the training data consisted of:</p><ul>
-<li><p>n4 bias correction,
-which is performed on the input images if <code>doPreprocessing = TRUE</code>.</p></li>
 </ul>
 
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>

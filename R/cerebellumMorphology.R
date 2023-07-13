@@ -38,17 +38,13 @@
 #'   \item{Label 112:}{R_X}
 #' }
 #'
-#' Preprocessing on the training data consisted of:
-#'    * n4 bias correction,
-#' which is performed on the input images if \code{doPreprocessing = TRUE}.
-#'
-#' @param t1 raw or preprocessed 3-D T1-weighted brain image.
+#' @param t1 raw or preprocessed 3-D T1-weighted whole head image.
 #' @param cerebellumMask Option for initialization.  If not specified, the
 #' cerebellum ROI is determined using ANTsXNet brain_extraction followed by
 #' registration to a template.
 #' @param computeThicknessImage Compute KellyKapowski thickness image of the gray
 #' matter.
-#' @param doPreprocessing perform preprocessing.  See description above.
+#' @param doPreprocessing Perform N4 bias correction and spatiall normalize to template space.
 #' @param antsxnetCacheDirectory destination directory for storing the downloaded
 #' template and model weights.  Since these can be ressed, if
 #' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
@@ -113,7 +109,7 @@ cerebellumMorphology <- function( t1, cerebellumMask = NULL,
   #
   ################################
 
-  t1Preprocessed <- t1
+  t1Preprocessed <- antsImageClone( t1 )
   t1Mask <- NULL
 
   templateTransforms <- NULL
