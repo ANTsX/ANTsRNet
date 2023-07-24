@@ -15,6 +15,7 @@
 #'  \item{Label 11:}{left caudate}
 #'  \item{Label 12:}{left putamen}
 #'  \item{Label 13:}{left pallidium}
+#'  \item{Label 14:}{3rd ventricle}
 #'  \item{Label 15:}{4th ventricle}
 #'  \item{Label 16:}{brain stem}
 #'  \item{Label 17:}{left hippocampus}
