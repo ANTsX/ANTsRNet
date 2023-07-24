@@ -44,10 +44,12 @@ boxes, (centerx, centery, width, height), for subsequent usage.
 }
 \details{
 This particular implementation was heavily influenced by the following
-python and R implementations:\preformatted{    \url{https://github.com/pierluigiferrari/ssd_keras}
+python and R implementations:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{    \url{https://github.com/pierluigiferrari/ssd_keras}
     \url{https://github.com/rykov8/ssd_keras}
     \url{https://github.com/gsimchoni/ssdkeras}
-}
+}\if{html}{\out{</div>}}
 }
 \author{
 Tustison NJ

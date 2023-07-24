@@ -9,9 +9,9 @@ createSsd7Model3D(
   numberOfClassificationLabels,
   minScale = 0.08,
   maxScale = 0.96,
-  aspectRatiosPerLayer = list(c("1:1:1", "2:1:1", "1:2:1", "1:1:2"), c("1:1:1",
-    "2:1:1", "1:2:1", "1:1:2"), c("1:1:1", "2:1:1", "1:2:1", "1:1:2"), c("1:1:1",
-    "2:1:1", "1:2:1", "1:1:2")),
+  aspectRatiosPerLayer = list(c("1:1:1", "2:1:1", "1:2:1", "1:1:2"), c("1:1:1", "2:1:1",
+    "1:2:1", "1:1:2"), c("1:1:1", "2:1:1", "1:2:1", "1:1:2"), c("1:1:1", "2:1:1",
+    "1:2:1", "1:1:2")),
   variances = rep(1, 6)
 )
 }
@@ -53,13 +53,17 @@ object detection based on the paper
 W. Liu, D. Anguelov, D. Erhan, C. Szegedy, S. Reed, C-Y. Fu, A. Berg.
 SSD: Single Shot MultiBox Detector.
 
-available here:\preformatted{    \url{https://arxiv.org/abs/1512.02325}
-}
+available here:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{    \url{https://arxiv.org/abs/1512.02325}
+}\if{html}{\out{</div>}}
 
 This particular implementation was influenced by the following python
-and R implementations:\preformatted{    \url{https://github.com/pierluigiferrari/ssd_keras}
+and R implementations:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{    \url{https://github.com/pierluigiferrari/ssd_keras}
     \url{https://github.com/gsimchoni/ssdkeras}
-}
+}\if{html}{\out{</div>}}
 }
 \examples{
 \dontrun{

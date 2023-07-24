@@ -18,8 +18,8 @@ softmax loss value
 Ported from:
 }
 \details{
-\preformatted{    https://github.com/cpmpercussion/keras-mdn-layer/
-}
+\if{html}{\out{<div class="sourceCode">}}\preformatted{    https://github.com/cpmpercussion/keras-mdn-layer/
+}\if{html}{\out{</div>}}
 }
 \examples{
 
