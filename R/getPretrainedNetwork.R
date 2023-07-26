@@ -217,7 +217,7 @@ getPretrainedNetwork <- function(
     lungCtWithPriorsSegmentationWeights = "https://ndownloader.figshare.com/files/28357818",
     maskLobes = "https://figshare.com/ndownloader/files/30678458",
     mriSuperResolution = "https://figshare.com/ndownloader/files/35290684",
-    mriModalityClassification = "https://figshare.com/ndownloader/files/41510736",
+    mriModalityClassification = "https://figshare.com/ndownloader/files/41691681",
     protonLungMri = "https://ndownloader.figshare.com/files/13606799",
     protonLobes = "https://figshare.com/ndownloader/files/30678455",
     sixTissueOctantBrainSegmentation = "https://ndownloader.figshare.com/files/23776025",
