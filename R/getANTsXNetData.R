@@ -33,6 +33,7 @@ getANTsXNetData <- function(
               "protonLungTemplate",
               "ctLungTemplate",
               "luna16LungPriors",
+              "xrayLungPriors",
               "priorDktLabels",
               "priorDeepFlashLeftLabels",
               "priorDeepFlashRightLabels",
@@ -74,6 +75,7 @@ getANTsXNetData <- function(
     protonLungTemplate = "https://ndownloader.figshare.com/files/22707338",
     ctLungTemplate = "https://ndownloader.figshare.com/files/22707335",
     luna16LungPriors = "https://ndownloader.figshare.com/files/28253796",
+    xrayLungPriors = "https://figshare.com/ndownloader/files/41965815",
     priorDktLabels = "https://ndownloader.figshare.com/files/24139802",
     S_template3 = "https://ndownloader.figshare.com/files/22597175",
     priorDeepFlashLeftLabels = "https://ndownloader.figshare.com/files/25422098",
@@ -114,6 +116,6 @@ getANTsXNetData <- function(
     targetFileNamePath <- tensorflow::tf$keras$utils$get_file(
       targetFileName, url, cache_subdir = antsxnetCacheDirectory )
     }
-
-  return( targetFileNamePath )
+  
+  return( as.character( targetFileNamePath ) )
 }

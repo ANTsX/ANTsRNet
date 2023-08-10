@@ -229,17 +229,15 @@ kernel sizes to X.</p></li>
     <p>a u-net keras model</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    
-<pre>    \url{https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/}
-</pre>
-
-<p>with the paper available here:</p><pre>    \url{https://arxiv.org/abs/1505.04597}
-</pre>
-
+    <p><div class="sourceCode"></p><pre>    \url{https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/}
+</pre><p></div></p>
+<p>with the paper available here:</p>
+<p><div class="sourceCode"></p><pre>    \url{https://arxiv.org/abs/1505.04597}
+</pre><p></div></p>
 <p>This particular implementation was influenced by the following python
-implementation:</p><pre>    \url{https://github.com/joelthelion/ultrasound-nerve-segmentation}
-</pre>
-
+implementation:</p>
+<p><div class="sourceCode"></p><pre>    \url{https://github.com/joelthelion/ultrasound-nerve-segmentation}
+</pre><p></div></p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Tustison NJ</p>
@@ -305,7 +303,7 @@ implementation:</p><pre>    \url{https://github.com/joelthelion/ultrasound-nerve
 <span class='va'>model</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://generics.r-lib.org/reference/compile.html'>compile</a></span><span class='op'>(</span> loss <span class='op'>=</span> <span class='va'>loss_dice</span>,
   optimizer <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/optimizer_adam.html'>optimizer_adam</a></span><span class='op'>(</span> lr <span class='op'>=</span> <span class='fl'>0.0001</span> <span class='op'>)</span>,
   metrics <span class='op'>=</span> <span class='va'>metric_multilabel_dice_coefficient</span> <span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in py_call_impl(callable, dots$args, dots$keywords): TypeError: Failed to convert object of type &lt;class 'function'&gt; to Tensor. Contents: &lt;function make_python_function.&lt;locals&gt;.python_function at 0x7fa6112e91e0&gt;. Consider casting elements to a supported type.</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in py_call_impl(callable, dots$args, dots$keywords): TypeError: Failed to convert object of type &lt;class 'function'&gt; to Tensor. Contents: &lt;function make_python_function.&lt;locals&gt;.python_function at 0x7fa0aa2122f0&gt;. Consider casting elements to a supported type.</span>
 #&gt; <span class='error'></span>
 #&gt; <span class='error'>Detailed traceback:</span>
 #&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/training/tracking/base.py", line 517, in _method_wrapper</span>

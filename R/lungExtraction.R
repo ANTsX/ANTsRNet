@@ -1,6 +1,6 @@
 #' Lung extraction
 #'
-#' Perform proton (H1) or CT lung extraction using a U-net architecture.
+#' Perform lung extraction.
 #'
 #' @param image input 3-D lung image.
 #' @param modality image type.  Options include "proton", "ct", or "ventilation".
@@ -22,14 +22,16 @@
 #' @import keras
 #' @export
 lungExtraction <- function( image,
-  modality = c( "proton", "protonLobes", "maskLobes", "ct", "ventilation" ),
+  modality = c( "proton", "protonLobes", "maskLobes", "ct", "ventilation", "xray" ),
   antsxnetCacheDirectory = NULL, verbose = FALSE )
   {
 
-  if( image@dimension != 3 )
+  if( image@dimension != 3 && modality != "xray" )
     {
     stop( "Image dimension must be 3." )
-    }
+    } else if( image@dimension != 2 && modality == "xray" ) {
+    stop( "Image dimension must be 2." )
+    } 
 
   modality <- match.arg( modality )
 
@@ -45,7 +47,7 @@ lungExtraction <- function( image,
     numberOfClassificationLabels <- length( classes )
 
     reorientTemplateFileName <- "protonLungTemplate.nii.gz"
-    if( verbose == TRUE )
+    if( verbose )
       {
       cat( "Lung extraction:  retrieving template.\n" )
       }
@@ -60,7 +62,7 @@ lungExtraction <- function( image,
       convolutionKernelSize = c( 7, 7, 5 ), deconvolutionKernelSize = c( 7, 7, 5 ) )
     unetModel$load_weights( weightsFileName )
 
-    if( verbose == TRUE )
+    if( verbose )
       {
       cat( "Lung extraction:  normalizing image to the template.\n" )
       }
@@ -77,14 +79,14 @@ lungExtraction <- function( image,
       dim = c( 1, resampledImageSize, channelSize ) )
     batchX <- ( batchX - mean( batchX ) ) / sd( batchX )
 
-    if( verbose == TRUE )
+    if( verbose )
       {
       cat( "Lung extraction:  prediction and decoding.\n" )
       }
     predictedData <- unetModel %>% predict( batchX, verbose = verbose )
     probabilityImagesArray <- decodeUnet( predictedData, reorientTemplate )
 
-    if( verbose == TRUE )
+    if( verbose )
       {
       cat( "Lung extraction:  renormalize probability mask to native space.\n" )
       }
@@ -142,7 +144,7 @@ lungExtraction <- function( image,
       }
     unetModel$load_weights( weightsFileName )
 
-    if( verbose == TRUE )
+    if( verbose )
       {
       cat( "Lung extraction:  normalizing image to the template.\n" )
       }
@@ -176,7 +178,7 @@ lungExtraction <- function( image,
       probabilityImagesArray <- decodeUnet( predictedData, reorientTemplate )
       }
 
-    if( verbose == TRUE )
+    if( verbose )
       {
       cat( "Lung extraction:  renormalize probability mask to native space.\n" )
       }
@@ -215,7 +217,7 @@ lungExtraction <- function( image,
     #
     ################################
 
-    if( verbose == TRUE )
+    if( verbose )
       {
       cat("Preprocess CT image.\n")
       }
@@ -265,7 +267,7 @@ lungExtraction <- function( image,
     #
     ################################
 
-    if( verbose == TRUE )
+    if( verbose )
       {
       cat( "Build model and load weights.\n" )
       }
@@ -296,7 +298,7 @@ lungExtraction <- function( image,
     #
     ################################
 
-    if( verbose == TRUE )
+    if( verbose )
       {
       cat( "Prediction.\n" )
       }
@@ -312,7 +314,7 @@ lungExtraction <- function( image,
     probabilityImages <- list()
     for( i in seq_len( numberOfClassificationLabels ) )
       {
-      if( verbose == TRUE )
+      if( verbose )
         {
         cat( "Reconstructing image", classes[i], "\n" )
         }
@@ -353,7 +355,7 @@ lungExtraction <- function( image,
         convolutionKernelSize = c( 3, 3 ), deconvolutionKernelSize = c( 2, 2 ),
         weightDecay = 0 )
 
-      if( verbose == TRUE )
+      if( verbose )
         {
         cat( "Whole lung mask: retrieving model weights.\n" )
         }
@@ -376,7 +378,7 @@ lungExtraction <- function( image,
         {
         numberOfSlices <- dim( preprocessedImage )[dimensionsToPredict[d]]
 
-        if( verbose == TRUE )
+        if( verbose )
           {
           cat( "Extracting slices for dimension", dimensionsToPredict[d], "\n" )
           pb <- txtProgressBar( min = 1, max = numberOfSlices, style = 3 )
@@ -395,7 +397,7 @@ lungExtraction <- function( image,
 
           sliceCount <- sliceCount + 1
           }
-        if( verbose == TRUE )
+        if( verbose )
           {
           cat( "\n" )
           }
@@ -407,7 +409,7 @@ lungExtraction <- function( image,
       #
       ################################
 
-      if( verbose == TRUE )
+      if( verbose )
         {
         cat( "Prediction.\n" )
         }
@@ -436,6 +438,93 @@ lungExtraction <- function( image,
         }
 
       return( probabilityImage )
+
+    } else if( modality == "xray" ) {
+
+    ################################
+    #
+    # Preprocess image
+    #
+    ################################
+
+    if( verbose )
+      {
+      cat("Preprocess Xray image.\n")
+      }
+    
+    classes <- c( "background", "leftLung", "rightLung" )
+    numberOfClassificationLabels <- length( classes )
+    resampledImageSize <- c( 256, 256 )
+    channelSize <- 3
+
+    resampledImage <- resampleImage( image, resampledImageSize, useVoxels = TRUE, interpType = 0 )
+    xrayLungPriors <- splitNDImageToList( antsImageRead( getANTsXNetData( "xrayLungPriors" ) ) )
+    
+    ################################
+    #
+    # Build models and load weights
+    #
+    ################################
+
+    if( verbose )
+      {
+      cat( "Build model and load weights.\n" )
+      }
+
+    weightsFileName <- getPretrainedNetwork( "xrayLungExtraction",
+      antsxnetCacheDirectory = antsxnetCacheDirectory )
+
+    unetModel <- createUnetModel2D( c( resampledImageSize, channelSize ),
+      numberOfOutputs = numberOfClassificationLabels, mode = 'classification',
+      numberOfLayers = 4, numberOfFiltersAtBaseLayer = 32, dropoutRate = 0.0,
+      convolutionKernelSize = c( 3, 3 ), deconvolutionKernelSize = c( 2, 2 ),
+      weightDecay = 0, additionalOptions = NULL )
+    load_model_weights_hdf5( unetModel, filepath = weightsFileName )
+
+    ################################
+    #
+    # Do prediction and normalize to native space
+    #
+    ################################
+
+    if( verbose )
+      {
+      cat( "Prediction.\n" )
+      }
+
+    batchX <- array( data = 0, dim = c( 1, resampledImageSize, channelSize ) )
+    resampledArray <- as.array( resampledImage )
+    batchX[,,,1] <- ( resampledArray - min( resampledArray ) ) / ( max( resampledArray ) - min( resampledArray ) )
+    batchX[,,,2] <- as.array( xrayLungPriors[[1]] )
+    batchX[,,,3] <- as.array( xrayLungPriors[[2]] )
+
+    predictedData <- unetModel %>% predict( batchX, verbose = verbose )
+
+    origin <- antsGetOrigin( resampledImage )
+    spacing <- antsGetSpacing( resampledImage )
+    direction <- antsGetDirection( resampledImage )
+
+    probabilityImages <- list()
+    for( i in seq_len( numberOfClassificationLabels ) )
+      {
+      if( verbose )
+        {
+        cat( "Reconstructing image", classes[i], "\n" )
+        }
+      probabilityImage <- as.antsImage( drop( predictedData[,,,i] ), reference = resampledImage )
+      probabilityImage <- resampleImage( probabilityImage, resampleParams = dim( image ),
+        useVoxels = TRUE, interpType = 0 )
+      probabilityImage <- antsCopyImageInfo( image, probabilityImage )
+      probabilityImages[[i]] <- probabilityImage
+      }
+
+    imageMatrix <- imageListToMatrix( probabilityImages, image * 0 + 1 )
+    segmentationMatrix <- matrix( apply( imageMatrix, 2, which.max ), nrow = 1 ) - 1
+    segmentationImage <- matrixToImages( segmentationMatrix, image * 0 + 1 )[[1]]
+
+    return( list( segmentationImage = segmentationImage,
+                  probabilityImages = probabilityImages ) )
+
 
     } else {
     stop( "Unknown modality type." )
