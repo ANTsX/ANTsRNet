@@ -47,7 +47,7 @@
 #'           \url{https://pubmed.ncbi.nlm.nih.gov/33288961/}}
 #'    \item{"nnUnetActivationStyle"}{U-net activation explained in
 #'           \url{https://pubmed.ncbi.nlm.nih.gov/33288961/}}
-#'    \item{"initialConvolutionalKernelSize[X]"}{Set the first two convolutional layer
+#'    \item{"initialConvolutionKernelSize[X]"}{Set the first two convolutional layer
 #'           kernel sizes to X.}
 #' }
 #' @param mode 'classification' or 'regression' or 'sigmoid'.
