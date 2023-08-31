@@ -28,13 +28,11 @@ a keras model
 Creates a keras model of the spatial transformer network:
 }
 \details{
-\if{html}{\out{<div class="sourceCode">}}\preformatted{    \url{https://arxiv.org/abs/1506.02025}
-}\if{html}{\out{</div>}}
+\preformatted{    \url{https://arxiv.org/abs/1506.02025}
+}
 
-based on the following python Keras model:
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{    \url{https://github.com/oarriaga/STN.keras/blob/master/src/models/STN.py}
-}\if{html}{\out{</div>}}
+based on the following python Keras model:\preformatted{    \url{https://github.com/oarriaga/STN.keras/blob/master/src/models/STN.py}
+}
 }
 \examples{
 

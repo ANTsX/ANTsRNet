@@ -409,7 +409,7 @@ weighted_categorical_crossentropy <- function( y_true, y_pred, weights )
 #'
 #' model <- createUnetModel2D( c( 64, 64, 1 ), numberOfOutputs = 2 )
 #'
-#' model %>% compile( loss = multilabel_surface_loss,
+#' model %>% compile( loss = binary_surface_loss,
 #'  optimizer = optimizer_adam( lr = 0.0001 ),
 #'    metrics = "accuracy" )
 #'
@@ -430,14 +430,14 @@ weighted_categorical_crossentropy <- function( y_true, y_pred, weights )
 #' r64array <- array( data = as.array( r64seg ), dim = c( 1, dim( r64seg ) ) )
 #' r64tensor <- tensorflow::tf$convert_to_tensor( encodeUnet( r64array, c( 0, 1, 2, 3 ) ) )
 #'
-#' surface_loss <- multilabel_surface_loss( r16tensor, r64tensor, dimensionality = 2L )
+#' surface_loss <- binary_surface_loss( r16tensor, r64tensor, dimensionality = 2L )
 #' loss_value <- surface_loss( r16tensor, r64tensor )$numpy()
 #'
 #' @import keras
 #' @export
-multilabel_surface_loss <- function( y_true, y_pred, dimensionality = 3L )
+binary_surface_loss <- function( y_true, y_pred, dimensionality = 3L )
 {
-  multilabel_surface_loss_fixed <- function( y_true, y_pred )
+  binary_surface_loss_fixed <- function( y_true, y_pred )
     {
     np <- reticulate::import( "numpy", convert = FALSE )
     scipy <- reticulate::import( "scipy" )
@@ -502,7 +502,7 @@ multilabel_surface_loss <- function( y_true, y_pred, dimensionality = 3L )
                                            Tout = tf$float32 )
     return( K$mean( K$cast( y_pred, dtype = tf$float32 ) * y_true_distance_map ) )
     }
-  return( multilabel_surface_loss_fixed )
+  return( binary_surface_loss_fixed )
 }
 
 #' Function for maximum-mean discrepancy

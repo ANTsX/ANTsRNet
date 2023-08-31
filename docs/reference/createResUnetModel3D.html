@@ -187,12 +187,14 @@ kernel weights of the convolution layers.  Default = 0.0.</p></td>
     <p>a res/u-net keras model</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p><div class="sourceCode"></p><pre>    \url{https://arxiv.org/abs/1608.04117}
-</pre><p></div></p>
+    
+<pre>    \url{https://arxiv.org/abs/1608.04117}
+</pre>
+
 <p>This particular implementation was ported from the following python
-implementation:</p>
-<p><div class="sourceCode"></p><pre>    \url{https://github.com/veugene/fcn_maker/}
-</pre><p></div></p>
+implementation:</p><pre>    \url{https://github.com/veugene/fcn_maker/}
+</pre>
+
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Tustison NJ</p>
@@ -220,13 +222,13 @@ implementation:</p>
 
 <span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span> <span class='va'>model</span> <span class='op'>)</span>
 </div><div class='output co'>#&gt; Model
-#&gt; Model: "model_36"
+#&gt; Model: "model_37"
 #&gt; ________________________________________________________________________________
 #&gt; Layer (type)              Output Shape      Param #  Connected to               
 #&gt; ================================================================================
-#&gt; input_33 (InputLayer)     [(None, 64, 64, 6 0                                   
+#&gt; input_34 (InputLayer)     [(None, 64, 64, 6 0                                   
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_144 (Conv3D)       (None, 64, 64, 64 896      input_33[0][0]             
+#&gt; conv3d_144 (Conv3D)       (None, 64, 64, 64 896      input_34[0][0]             
 #&gt; ________________________________________________________________________________
 #&gt; batch_normalization_692 ( (None, 64, 64, 64 128      conv3d_144[0][0]           
 #&gt; ________________________________________________________________________________

@@ -35,13 +35,11 @@ hypothalamic subunit segmentation and probability images
 Described here:
 }
 \details{
-\if{html}{\out{<div class="sourceCode">}}\preformatted{\url{https://pubmed.ncbi.nlm.nih.gov/32853816/}
-}\if{html}{\out{</div>}}
+\preformatted{\url{https://pubmed.ncbi.nlm.nih.gov/32853816/}
+}
 
-with the implementation available at:
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{\url{https://github.com/BBillot/hypothalamus_seg}
-}\if{html}{\out{</div>}}
+with the implementation available at:\preformatted{\url{https://github.com/BBillot/hypothalamus_seg}
+}
 }
 \examples{
 \dontrun{

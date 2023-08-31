@@ -194,12 +194,12 @@ depending on the <code>numberOfOutputs</code>, and if
 
     <p>X. Li, H. Chen, X. Qi, Q. Dou, C.-W. Fu, P.-A. Heng. H-DenseUNet: Hybrid
 Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
-<p>available here:</p>
-<p><div class="sourceCode"></p><pre>    https://arxiv.org/pdf/1709.07330.pdf
-</pre><p></div></p>
-<p>with the author's implementation available at:</p>
-<p><div class="sourceCode"></p><pre>    https://github.com/xmengli999/H-DenseUNet
-</pre><p></div></p>
+<p>available here:</p><pre>    https://arxiv.org/pdf/1709.07330.pdf
+</pre>
+
+<p>with the author's implementation available at:</p><pre>    https://github.com/xmengli999/H-DenseUNet
+</pre>
+
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Tustison NJ</p>
@@ -227,13 +227,13 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 
 <span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span> <span class='va'>model</span> <span class='op'>)</span>
 </div><div class='output co'>#&gt; Model
-#&gt; Model: "model_20"
+#&gt; Model: "model_21"
 #&gt; ________________________________________________________________________________
 #&gt; Layer (type)              Output Shape      Param #  Connected to               
 #&gt; ================================================================================
-#&gt; input_17 (InputLayer)     [(None, 64, 64, 6 0                                   
+#&gt; input_18 (InputLayer)     [(None, 64, 64, 6 0                                   
 #&gt; ________________________________________________________________________________
-#&gt; zero_padding3d (ZeroPaddi (None, 70, 70, 70 0        input_17[0][0]             
+#&gt; zero_padding3d (ZeroPaddi (None, 70, 70, 70 0        input_18[0][0]             
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_43 (Conv3D)        (None, 32, 32, 32 32928    zero_padding3d[0][0]       
 #&gt; ________________________________________________________________________________
@@ -265,10 +265,10 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_45 (Conv3D)        (None, 16, 16, 16 248832   zero_padding3d_2[0][0]     
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_117 (Concaten (None, 16, 16, 16 0        max_pooling3d[0][0]        
+#&gt; concatenate_120 (Concaten (None, 16, 16, 16 0        max_pooling3d[0][0]        
 #&gt;                                                      conv3d_45[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_172 ( (None, 16, 16, 16 576      concatenate_117[0][0]      
+#&gt; batch_normalization_172 ( (None, 16, 16, 16 576      concatenate_120[0][0]      
 #&gt; ________________________________________________________________________________
 #&gt; r_layer_165 (RLayer)      (None, 16, 16, 16 288      batch_normalization_172[0][
 #&gt; ________________________________________________________________________________
@@ -286,11 +286,11 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_47 (Conv3D)        (None, 16, 16, 16 248832   zero_padding3d_3[0][0]     
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_118 (Concaten (None, 16, 16, 16 0        max_pooling3d[0][0]        
+#&gt; concatenate_121 (Concaten (None, 16, 16, 16 0        max_pooling3d[0][0]        
 #&gt;                                                      conv3d_45[0][0]            
 #&gt;                                                      conv3d_47[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_174 ( (None, 16, 16, 16 768      concatenate_118[0][0]      
+#&gt; batch_normalization_174 ( (None, 16, 16, 16 768      concatenate_121[0][0]      
 #&gt; ________________________________________________________________________________
 #&gt; r_layer_167 (RLayer)      (None, 16, 16, 16 384      batch_normalization_174[0][
 #&gt; ________________________________________________________________________________
@@ -308,12 +308,12 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_49 (Conv3D)        (None, 16, 16, 16 248832   zero_padding3d_4[0][0]     
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_119 (Concaten (None, 16, 16, 16 0        max_pooling3d[0][0]        
+#&gt; concatenate_122 (Concaten (None, 16, 16, 16 0        max_pooling3d[0][0]        
 #&gt;                                                      conv3d_45[0][0]            
 #&gt;                                                      conv3d_47[0][0]            
 #&gt;                                                      conv3d_49[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_176 ( (None, 16, 16, 16 960      concatenate_119[0][0]      
+#&gt; batch_normalization_176 ( (None, 16, 16, 16 960      concatenate_122[0][0]      
 #&gt; ________________________________________________________________________________
 #&gt; r_layer_169 (RLayer)      (None, 16, 16, 16 480      batch_normalization_176[0][
 #&gt; ________________________________________________________________________________
@@ -341,10 +341,10 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_52 (Conv3D)        (None, 8, 8, 8, 4 248832   zero_padding3d_5[0][0]     
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_120 (Concaten (None, 8, 8, 8, 2 0        average_pooling3d[0][0]    
+#&gt; concatenate_123 (Concaten (None, 8, 8, 8, 2 0        average_pooling3d[0][0]    
 #&gt;                                                      conv3d_52[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_179 ( (None, 8, 8, 8, 2 1152     concatenate_120[0][0]      
+#&gt; batch_normalization_179 ( (None, 8, 8, 8, 2 1152     concatenate_123[0][0]      
 #&gt; ________________________________________________________________________________
 #&gt; r_layer_172 (RLayer)      (None, 8, 8, 8, 2 576      batch_normalization_179[0][
 #&gt; ________________________________________________________________________________
@@ -362,11 +362,11 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_54 (Conv3D)        (None, 8, 8, 8, 4 248832   zero_padding3d_6[0][0]     
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_121 (Concaten (None, 8, 8, 8, 3 0        average_pooling3d[0][0]    
+#&gt; concatenate_124 (Concaten (None, 8, 8, 8, 3 0        average_pooling3d[0][0]    
 #&gt;                                                      conv3d_52[0][0]            
 #&gt;                                                      conv3d_54[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_181 ( (None, 8, 8, 8, 3 1344     concatenate_121[0][0]      
+#&gt; batch_normalization_181 ( (None, 8, 8, 8, 3 1344     concatenate_124[0][0]      
 #&gt; ________________________________________________________________________________
 #&gt; r_layer_174 (RLayer)      (None, 8, 8, 8, 3 672      batch_normalization_181[0][
 #&gt; ________________________________________________________________________________
@@ -384,12 +384,12 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_56 (Conv3D)        (None, 8, 8, 8, 4 248832   zero_padding3d_7[0][0]     
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_122 (Concaten (None, 8, 8, 8, 3 0        average_pooling3d[0][0]    
+#&gt; concatenate_125 (Concaten (None, 8, 8, 8, 3 0        average_pooling3d[0][0]    
 #&gt;                                                      conv3d_52[0][0]            
 #&gt;                                                      conv3d_54[0][0]            
 #&gt;                                                      conv3d_56[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_183 ( (None, 8, 8, 8, 3 1536     concatenate_122[0][0]      
+#&gt; batch_normalization_183 ( (None, 8, 8, 8, 3 1536     concatenate_125[0][0]      
 #&gt; ________________________________________________________________________________
 #&gt; r_layer_176 (RLayer)      (None, 8, 8, 8, 3 768      batch_normalization_183[0][
 #&gt; ________________________________________________________________________________
@@ -407,13 +407,13 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_58 (Conv3D)        (None, 8, 8, 8, 4 248832   zero_padding3d_8[0][0]     
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_123 (Concaten (None, 8, 8, 8, 4 0        average_pooling3d[0][0]    
+#&gt; concatenate_126 (Concaten (None, 8, 8, 8, 4 0        average_pooling3d[0][0]    
 #&gt;                                                      conv3d_52[0][0]            
 #&gt;                                                      conv3d_54[0][0]            
 #&gt;                                                      conv3d_56[0][0]            
 #&gt;                                                      conv3d_58[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_185 ( (None, 8, 8, 8, 4 1728     concatenate_123[0][0]      
+#&gt; batch_normalization_185 ( (None, 8, 8, 8, 4 1728     concatenate_126[0][0]      
 #&gt; ________________________________________________________________________________
 #&gt; r_layer_178 (RLayer)      (None, 8, 8, 8, 4 864      batch_normalization_185[0][
 #&gt; ________________________________________________________________________________
@@ -441,10 +441,10 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_61 (Conv3D)        (None, 4, 4, 4, 4 248832   zero_padding3d_9[0][0]     
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_124 (Concaten (None, 4, 4, 4, 4 0        average_pooling3d_1[0][0]  
+#&gt; concatenate_127 (Concaten (None, 4, 4, 4, 4 0        average_pooling3d_1[0][0]  
 #&gt;                                                      conv3d_61[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_188 ( (None, 4, 4, 4, 4 1920     concatenate_124[0][0]      
+#&gt; batch_normalization_188 ( (None, 4, 4, 4, 4 1920     concatenate_127[0][0]      
 #&gt; ________________________________________________________________________________
 #&gt; r_layer_181 (RLayer)      (None, 4, 4, 4, 4 960      batch_normalization_188[0][
 #&gt; ________________________________________________________________________________
@@ -462,11 +462,11 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_63 (Conv3D)        (None, 4, 4, 4, 4 248832   zero_padding3d_10[0][0]    
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_125 (Concaten (None, 4, 4, 4, 5 0        average_pooling3d_1[0][0]  
+#&gt; concatenate_128 (Concaten (None, 4, 4, 4, 5 0        average_pooling3d_1[0][0]  
 #&gt;                                                      conv3d_61[0][0]            
 #&gt;                                                      conv3d_63[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_190 ( (None, 4, 4, 4, 5 2112     concatenate_125[0][0]      
+#&gt; batch_normalization_190 ( (None, 4, 4, 4, 5 2112     concatenate_128[0][0]      
 #&gt; ________________________________________________________________________________
 #&gt; r_layer_183 (RLayer)      (None, 4, 4, 4, 5 1056     batch_normalization_190[0][
 #&gt; ________________________________________________________________________________
@@ -484,12 +484,12 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_65 (Conv3D)        (None, 4, 4, 4, 4 248832   zero_padding3d_11[0][0]    
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_126 (Concaten (None, 4, 4, 4, 5 0        average_pooling3d_1[0][0]  
+#&gt; concatenate_129 (Concaten (None, 4, 4, 4, 5 0        average_pooling3d_1[0][0]  
 #&gt;                                                      conv3d_61[0][0]            
 #&gt;                                                      conv3d_63[0][0]            
 #&gt;                                                      conv3d_65[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_192 ( (None, 4, 4, 4, 5 2304     concatenate_126[0][0]      
+#&gt; batch_normalization_192 ( (None, 4, 4, 4, 5 2304     concatenate_129[0][0]      
 #&gt; ________________________________________________________________________________
 #&gt; r_layer_185 (RLayer)      (None, 4, 4, 4, 5 1152     batch_normalization_192[0][
 #&gt; ________________________________________________________________________________
@@ -507,13 +507,13 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_67 (Conv3D)        (None, 4, 4, 4, 4 248832   zero_padding3d_12[0][0]    
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_127 (Concaten (None, 4, 4, 4, 6 0        average_pooling3d_1[0][0]  
+#&gt; concatenate_130 (Concaten (None, 4, 4, 4, 6 0        average_pooling3d_1[0][0]  
 #&gt;                                                      conv3d_61[0][0]            
 #&gt;                                                      conv3d_63[0][0]            
 #&gt;                                                      conv3d_65[0][0]            
 #&gt;                                                      conv3d_67[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_194 ( (None, 4, 4, 4, 6 2496     concatenate_127[0][0]      
+#&gt; batch_normalization_194 ( (None, 4, 4, 4, 6 2496     concatenate_130[0][0]      
 #&gt; ________________________________________________________________________________
 #&gt; r_layer_187 (RLayer)      (None, 4, 4, 4, 6 1248     batch_normalization_194[0][
 #&gt; ________________________________________________________________________________
@@ -531,14 +531,14 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_69 (Conv3D)        (None, 4, 4, 4, 4 248832   zero_padding3d_13[0][0]    
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_128 (Concaten (None, 4, 4, 4, 6 0        average_pooling3d_1[0][0]  
+#&gt; concatenate_131 (Concaten (None, 4, 4, 4, 6 0        average_pooling3d_1[0][0]  
 #&gt;                                                      conv3d_61[0][0]            
 #&gt;                                                      conv3d_63[0][0]            
 #&gt;                                                      conv3d_65[0][0]            
 #&gt;                                                      conv3d_67[0][0]            
 #&gt;                                                      conv3d_69[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_196 ( (None, 4, 4, 4, 6 2688     concatenate_128[0][0]      
+#&gt; batch_normalization_196 ( (None, 4, 4, 4, 6 2688     concatenate_131[0][0]      
 #&gt; ________________________________________________________________________________
 #&gt; r_layer_189 (RLayer)      (None, 4, 4, 4, 6 1344     batch_normalization_196[0][
 #&gt; ________________________________________________________________________________
@@ -556,7 +556,7 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_71 (Conv3D)        (None, 4, 4, 4, 4 248832   zero_padding3d_14[0][0]    
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_129 (Concaten (None, 4, 4, 4, 7 0        average_pooling3d_1[0][0]  
+#&gt; concatenate_132 (Concaten (None, 4, 4, 4, 7 0        average_pooling3d_1[0][0]  
 #&gt;                                                      conv3d_61[0][0]            
 #&gt;                                                      conv3d_63[0][0]            
 #&gt;                                                      conv3d_65[0][0]            
@@ -564,7 +564,7 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt;                                                      conv3d_69[0][0]            
 #&gt;                                                      conv3d_71[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_198 ( (None, 4, 4, 4, 7 2880     concatenate_129[0][0]      
+#&gt; batch_normalization_198 ( (None, 4, 4, 4, 7 2880     concatenate_132[0][0]      
 #&gt; ________________________________________________________________________________
 #&gt; r_layer_191 (RLayer)      (None, 4, 4, 4, 7 1440     batch_normalization_198[0][
 #&gt; ________________________________________________________________________________
@@ -582,7 +582,7 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_73 (Conv3D)        (None, 4, 4, 4, 4 248832   zero_padding3d_15[0][0]    
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_130 (Concaten (None, 4, 4, 4, 7 0        average_pooling3d_1[0][0]  
+#&gt; concatenate_133 (Concaten (None, 4, 4, 4, 7 0        average_pooling3d_1[0][0]  
 #&gt;                                                      conv3d_61[0][0]            
 #&gt;                                                      conv3d_63[0][0]            
 #&gt;                                                      conv3d_65[0][0]            
@@ -591,7 +591,7 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt;                                                      conv3d_71[0][0]            
 #&gt;                                                      conv3d_73[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_200 ( (None, 4, 4, 4, 7 3072     concatenate_130[0][0]      
+#&gt; batch_normalization_200 ( (None, 4, 4, 4, 7 3072     concatenate_133[0][0]      
 #&gt; ________________________________________________________________________________
 #&gt; r_layer_193 (RLayer)      (None, 4, 4, 4, 7 1536     batch_normalization_200[0][
 #&gt; ________________________________________________________________________________
@@ -609,7 +609,7 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_75 (Conv3D)        (None, 4, 4, 4, 4 248832   zero_padding3d_16[0][0]    
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_131 (Concaten (None, 4, 4, 4, 8 0        average_pooling3d_1[0][0]  
+#&gt; concatenate_134 (Concaten (None, 4, 4, 4, 8 0        average_pooling3d_1[0][0]  
 #&gt;                                                      conv3d_61[0][0]            
 #&gt;                                                      conv3d_63[0][0]            
 #&gt;                                                      conv3d_65[0][0]            
@@ -619,7 +619,7 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt;                                                      conv3d_73[0][0]            
 #&gt;                                                      conv3d_75[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_202 ( (None, 4, 4, 4, 8 3264     concatenate_131[0][0]      
+#&gt; batch_normalization_202 ( (None, 4, 4, 4, 8 3264     concatenate_134[0][0]      
 #&gt; ________________________________________________________________________________
 #&gt; r_layer_195 (RLayer)      (None, 4, 4, 4, 8 1632     batch_normalization_202[0][
 #&gt; ________________________________________________________________________________
@@ -637,7 +637,7 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_77 (Conv3D)        (None, 4, 4, 4, 4 248832   zero_padding3d_17[0][0]    
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_132 (Concaten (None, 4, 4, 4, 8 0        average_pooling3d_1[0][0]  
+#&gt; concatenate_135 (Concaten (None, 4, 4, 4, 8 0        average_pooling3d_1[0][0]  
 #&gt;                                                      conv3d_61[0][0]            
 #&gt;                                                      conv3d_63[0][0]            
 #&gt;                                                      conv3d_65[0][0]            
@@ -648,7 +648,7 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt;                                                      conv3d_75[0][0]            
 #&gt;                                                      conv3d_77[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_204 ( (None, 4, 4, 4, 8 3456     concatenate_132[0][0]      
+#&gt; batch_normalization_204 ( (None, 4, 4, 4, 8 3456     concatenate_135[0][0]      
 #&gt; ________________________________________________________________________________
 #&gt; r_layer_197 (RLayer)      (None, 4, 4, 4, 8 1728     batch_normalization_204[0][
 #&gt; ________________________________________________________________________________
@@ -666,7 +666,7 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_79 (Conv3D)        (None, 4, 4, 4, 4 248832   zero_padding3d_18[0][0]    
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_133 (Concaten (None, 4, 4, 4, 9 0        average_pooling3d_1[0][0]  
+#&gt; concatenate_136 (Concaten (None, 4, 4, 4, 9 0        average_pooling3d_1[0][0]  
 #&gt;                                                      conv3d_61[0][0]            
 #&gt;                                                      conv3d_63[0][0]            
 #&gt;                                                      conv3d_65[0][0]            
@@ -678,7 +678,7 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt;                                                      conv3d_77[0][0]            
 #&gt;                                                      conv3d_79[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_206 ( (None, 4, 4, 4, 9 3648     concatenate_133[0][0]      
+#&gt; batch_normalization_206 ( (None, 4, 4, 4, 9 3648     concatenate_136[0][0]      
 #&gt; ________________________________________________________________________________
 #&gt; r_layer_199 (RLayer)      (None, 4, 4, 4, 9 1824     batch_normalization_206[0][
 #&gt; ________________________________________________________________________________
@@ -696,7 +696,7 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_81 (Conv3D)        (None, 4, 4, 4, 4 248832   zero_padding3d_19[0][0]    
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_134 (Concaten (None, 4, 4, 4, 9 0        average_pooling3d_1[0][0]  
+#&gt; concatenate_137 (Concaten (None, 4, 4, 4, 9 0        average_pooling3d_1[0][0]  
 #&gt;                                                      conv3d_61[0][0]            
 #&gt;                                                      conv3d_63[0][0]            
 #&gt;                                                      conv3d_65[0][0]            
@@ -709,7 +709,7 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt;                                                      conv3d_79[0][0]            
 #&gt;                                                      conv3d_81[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_208 ( (None, 4, 4, 4, 9 3840     concatenate_134[0][0]      
+#&gt; batch_normalization_208 ( (None, 4, 4, 4, 9 3840     concatenate_137[0][0]      
 #&gt; ________________________________________________________________________________
 #&gt; r_layer_201 (RLayer)      (None, 4, 4, 4, 9 1920     batch_normalization_208[0][
 #&gt; ________________________________________________________________________________
@@ -727,7 +727,7 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_83 (Conv3D)        (None, 4, 4, 4, 4 248832   zero_padding3d_20[0][0]    
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_135 (Concaten (None, 4, 4, 4, 1 0        average_pooling3d_1[0][0]  
+#&gt; concatenate_138 (Concaten (None, 4, 4, 4, 1 0        average_pooling3d_1[0][0]  
 #&gt;                                                      conv3d_61[0][0]            
 #&gt;                                                      conv3d_63[0][0]            
 #&gt;                                                      conv3d_65[0][0]            
@@ -741,7 +741,7 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt;                                                      conv3d_81[0][0]            
 #&gt;                                                      conv3d_83[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_210 ( (None, 4, 4, 4, 1 4032     concatenate_135[0][0]      
+#&gt; batch_normalization_210 ( (None, 4, 4, 4, 1 4032     concatenate_138[0][0]      
 #&gt; ________________________________________________________________________________
 #&gt; r_layer_203 (RLayer)      (None, 4, 4, 4, 1 2016     batch_normalization_210[0][
 #&gt; ________________________________________________________________________________
@@ -769,10 +769,10 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_86 (Conv3D)        (None, 2, 2, 2, 4 248832   zero_padding3d_21[0][0]    
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_136 (Concaten (None, 2, 2, 2, 1 0        average_pooling3d_2[0][0]  
+#&gt; concatenate_139 (Concaten (None, 2, 2, 2, 1 0        average_pooling3d_2[0][0]  
 #&gt;                                                      conv3d_86[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_213 ( (None, 2, 2, 2, 1 4224     concatenate_136[0][0]      
+#&gt; batch_normalization_213 ( (None, 2, 2, 2, 1 4224     concatenate_139[0][0]      
 #&gt; ________________________________________________________________________________
 #&gt; r_layer_206 (RLayer)      (None, 2, 2, 2, 1 2112     batch_normalization_213[0][
 #&gt; ________________________________________________________________________________
@@ -790,11 +790,11 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_88 (Conv3D)        (None, 2, 2, 2, 4 248832   zero_padding3d_22[0][0]    
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_137 (Concaten (None, 2, 2, 2, 1 0        average_pooling3d_2[0][0]  
+#&gt; concatenate_140 (Concaten (None, 2, 2, 2, 1 0        average_pooling3d_2[0][0]  
 #&gt;                                                      conv3d_86[0][0]            
 #&gt;                                                      conv3d_88[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_215 ( (None, 2, 2, 2, 1 4416     concatenate_137[0][0]      
+#&gt; batch_normalization_215 ( (None, 2, 2, 2, 1 4416     concatenate_140[0][0]      
 #&gt; ________________________________________________________________________________
 #&gt; r_layer_208 (RLayer)      (None, 2, 2, 2, 1 2208     batch_normalization_215[0][
 #&gt; ________________________________________________________________________________
@@ -812,12 +812,12 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_90 (Conv3D)        (None, 2, 2, 2, 4 248832   zero_padding3d_23[0][0]    
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_138 (Concaten (None, 2, 2, 2, 1 0        average_pooling3d_2[0][0]  
+#&gt; concatenate_141 (Concaten (None, 2, 2, 2, 1 0        average_pooling3d_2[0][0]  
 #&gt;                                                      conv3d_86[0][0]            
 #&gt;                                                      conv3d_88[0][0]            
 #&gt;                                                      conv3d_90[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_217 ( (None, 2, 2, 2, 1 4608     concatenate_138[0][0]      
+#&gt; batch_normalization_217 ( (None, 2, 2, 2, 1 4608     concatenate_141[0][0]      
 #&gt; ________________________________________________________________________________
 #&gt; r_layer_210 (RLayer)      (None, 2, 2, 2, 1 2304     batch_normalization_217[0][
 #&gt; ________________________________________________________________________________
@@ -835,13 +835,13 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_92 (Conv3D)        (None, 2, 2, 2, 4 248832   zero_padding3d_24[0][0]    
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_139 (Concaten (None, 2, 2, 2, 1 0        average_pooling3d_2[0][0]  
+#&gt; concatenate_142 (Concaten (None, 2, 2, 2, 1 0        average_pooling3d_2[0][0]  
 #&gt;                                                      conv3d_86[0][0]            
 #&gt;                                                      conv3d_88[0][0]            
 #&gt;                                                      conv3d_90[0][0]            
 #&gt;                                                      conv3d_92[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_219 ( (None, 2, 2, 2, 1 4800     concatenate_139[0][0]      
+#&gt; batch_normalization_219 ( (None, 2, 2, 2, 1 4800     concatenate_142[0][0]      
 #&gt; ________________________________________________________________________________
 #&gt; r_layer_212 (RLayer)      (None, 2, 2, 2, 1 2400     batch_normalization_219[0][
 #&gt; ________________________________________________________________________________
@@ -859,14 +859,14 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_94 (Conv3D)        (None, 2, 2, 2, 4 248832   zero_padding3d_25[0][0]    
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_140 (Concaten (None, 2, 2, 2, 1 0        average_pooling3d_2[0][0]  
+#&gt; concatenate_143 (Concaten (None, 2, 2, 2, 1 0        average_pooling3d_2[0][0]  
 #&gt;                                                      conv3d_86[0][0]            
 #&gt;                                                      conv3d_88[0][0]            
 #&gt;                                                      conv3d_90[0][0]            
 #&gt;                                                      conv3d_92[0][0]            
 #&gt;                                                      conv3d_94[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_221 ( (None, 2, 2, 2, 1 4992     concatenate_140[0][0]      
+#&gt; batch_normalization_221 ( (None, 2, 2, 2, 1 4992     concatenate_143[0][0]      
 #&gt; ________________________________________________________________________________
 #&gt; r_layer_214 (RLayer)      (None, 2, 2, 2, 1 2496     batch_normalization_221[0][
 #&gt; ________________________________________________________________________________
@@ -884,7 +884,7 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_96 (Conv3D)        (None, 2, 2, 2, 4 248832   zero_padding3d_26[0][0]    
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_141 (Concaten (None, 2, 2, 2, 1 0        average_pooling3d_2[0][0]  
+#&gt; concatenate_144 (Concaten (None, 2, 2, 2, 1 0        average_pooling3d_2[0][0]  
 #&gt;                                                      conv3d_86[0][0]            
 #&gt;                                                      conv3d_88[0][0]            
 #&gt;                                                      conv3d_90[0][0]            
@@ -892,7 +892,7 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt;                                                      conv3d_94[0][0]            
 #&gt;                                                      conv3d_96[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_223 ( (None, 2, 2, 2, 1 5184     concatenate_141[0][0]      
+#&gt; batch_normalization_223 ( (None, 2, 2, 2, 1 5184     concatenate_144[0][0]      
 #&gt; ________________________________________________________________________________
 #&gt; r_layer_216 (RLayer)      (None, 2, 2, 2, 1 2592     batch_normalization_223[0][
 #&gt; ________________________________________________________________________________
@@ -910,7 +910,7 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_98 (Conv3D)        (None, 2, 2, 2, 4 248832   zero_padding3d_27[0][0]    
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_142 (Concaten (None, 2, 2, 2, 1 0        average_pooling3d_2[0][0]  
+#&gt; concatenate_145 (Concaten (None, 2, 2, 2, 1 0        average_pooling3d_2[0][0]  
 #&gt;                                                      conv3d_86[0][0]            
 #&gt;                                                      conv3d_88[0][0]            
 #&gt;                                                      conv3d_90[0][0]            
@@ -919,7 +919,7 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt;                                                      conv3d_96[0][0]            
 #&gt;                                                      conv3d_98[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_225 ( (None, 2, 2, 2, 1 5376     concatenate_142[0][0]      
+#&gt; batch_normalization_225 ( (None, 2, 2, 2, 1 5376     concatenate_145[0][0]      
 #&gt; ________________________________________________________________________________
 #&gt; r_layer_218 (RLayer)      (None, 2, 2, 2, 1 2688     batch_normalization_225[0][
 #&gt; ________________________________________________________________________________
@@ -937,7 +937,7 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_100 (Conv3D)       (None, 2, 2, 2, 4 248832   zero_padding3d_28[0][0]    
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_143 (Concaten (None, 2, 2, 2, 1 0        average_pooling3d_2[0][0]  
+#&gt; concatenate_146 (Concaten (None, 2, 2, 2, 1 0        average_pooling3d_2[0][0]  
 #&gt;                                                      conv3d_86[0][0]            
 #&gt;                                                      conv3d_88[0][0]            
 #&gt;                                                      conv3d_90[0][0]            
@@ -947,13 +947,13 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt;                                                      conv3d_98[0][0]            
 #&gt;                                                      conv3d_100[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; batch_normalization_227 ( (None, 2, 2, 2, 1 5568     concatenate_143[0][0]      
+#&gt; batch_normalization_227 ( (None, 2, 2, 2, 1 5568     concatenate_146[0][0]      
 #&gt; ________________________________________________________________________________
 #&gt; r_layer_220 (RLayer)      (None, 2, 2, 2, 1 2784     batch_normalization_227[0][
 #&gt; ________________________________________________________________________________
 #&gt; activation_224 (Activatio (None, 2, 2, 2, 1 0        r_layer_220[0][0]          
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_101 (Conv3D)       (None, 4, 4, 4, 1 1404528  concatenate_135[0][0]      
+#&gt; conv3d_101 (Conv3D)       (None, 4, 4, 4, 1 1404528  concatenate_138[0][0]      
 #&gt; ________________________________________________________________________________
 #&gt; up_sampling3d (UpSampling (None, 4, 4, 4, 1 0        activation_224[0][0]       
 #&gt; ________________________________________________________________________________
@@ -968,7 +968,7 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt; ________________________________________________________________________________
 #&gt; up_sampling3d_1 (UpSampli (None, 8, 8, 8, 4 0        activation_225[0][0]       
 #&gt; ________________________________________________________________________________
-#&gt; add_38 (Add)              (None, 8, 8, 8, 4 0        concatenate_123[0][0]      
+#&gt; add_38 (Add)              (None, 8, 8, 8, 4 0        concatenate_126[0][0]      
 #&gt;                                                      up_sampling3d_1[0][0]      
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_103 (Conv3D)       (None, 8, 8, 8, 2 2799600  add_38[0][0]               
@@ -979,7 +979,7 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt; ________________________________________________________________________________
 #&gt; up_sampling3d_2 (UpSampli (None, 16, 16, 16 0        activation_226[0][0]       
 #&gt; ________________________________________________________________________________
-#&gt; add_39 (Add)              (None, 16, 16, 16 0        concatenate_119[0][0]      
+#&gt; add_39 (Add)              (None, 16, 16, 16 0        concatenate_122[0][0]      
 #&gt;                                                      up_sampling3d_2[0][0]      
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_104 (Conv3D)       (None, 16, 16, 16 622176   add_39[0][0]               
@@ -997,8 +997,8 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 #&gt; 
 #&gt; </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span><span class='op'>(</span><span class='va'>model</span><span class='op'>)</span>; <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span><span class='op'>(</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2574511 137.5    4572334 244.2         NA   4572334  244.2
-#&gt; Vcells 4522755  34.6   20731886 158.2      65536 150734911 1150.1</div><div class='input'>
+#&gt; Ncells 2572445 137.4    4568944 244.1         NA   4568944  244.1
+#&gt; Vcells 4652368  35.5   20809957 158.8      65536 150730234 1150.0</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

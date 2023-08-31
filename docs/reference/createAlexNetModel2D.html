@@ -168,14 +168,14 @@ Default = 0.0.</p></td>
 
     <p>A. Krizhevsky, and I. Sutskever, and G. Hinton. ImageNet Classification
 with Deep Convolutional Neural Networks.</p>
-<p>available here:</p>
-<p><div class="sourceCode"></p><pre>    http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf
-</pre><p></div></p>
+<p>available here:</p><pre>    http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf
+</pre>
+
 <p>This particular implementation was influenced by the following python
-implementation:</p>
-<p><div class="sourceCode"></p><pre>    https://github.com/duggalrahul/AlexNet-Experiments-Keras/
+implementation:</p><pre>    https://github.com/duggalrahul/AlexNet-Experiments-Keras/
     https://github.com/lunardog/convnets-keras/
-</pre><p></div></p>
+</pre>
+
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Tustison NJ</p>
@@ -211,11 +211,11 @@ implementation:</p>
   metrics <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='st'>'categorical_crossentropy'</span>, <span class='st'>'accuracy'</span> <span class='op'>)</span> <span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span><span class='op'>(</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;            used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells  2533845 135.4    4572334 244.2         NA   4572334  244.2
-#&gt; Vcells 31951123 243.8   98086549 748.4      65536 150734911 1150.1</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span><span class='op'>(</span><span class='va'>mnistData</span><span class='op'>)</span>; <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span><span class='op'>(</span><span class='op'>)</span>
+#&gt; Ncells  2534429 135.4    4568944 244.1         NA   4568944  244.1
+#&gt; Vcells 32086951 244.9   98083166 748.4      65536 150730234 1150.0</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span><span class='op'>(</span><span class='va'>mnistData</span><span class='op'>)</span>; <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span><span class='op'>(</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2532683 135.3    4572334 244.2         NA   4572334  244.2
-#&gt; Vcells 4474222  34.2   78469240 598.7      65536 150734911 1150.1</div><div class='input'><span class='co'># Comment out the rest due to travis build constraints</span>
+#&gt; Ncells 2533114 135.3    4568944 244.1         NA   4568944  244.1
+#&gt; Vcells 4609795  35.2   78466533 598.7      65536 150730234 1150.0</div><div class='input'><span class='co'># Comment out the rest due to travis build constraints</span>
 
 <span class='co'># track &lt;- model %&gt;% fit( X_trainSmall, Y_trainSmall, verbose = 1,</span>
 <span class='co'>#   epochs = 1, batch_size = 2, shuffle = TRUE, validation_split = 0.5 )</span>
@@ -226,8 +226,8 @@ implementation:</p>
 <span class='co'># predictedData &lt;- model %&gt;% predict( X_testSmall, verbose = 1 )</span>
 <span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span><span class='op'>(</span><span class='va'>model</span><span class='op'>)</span>; <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span><span class='op'>(</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2532744 135.3    4572334 244.2         NA   4572334  244.2
-#&gt; Vcells 4474289  34.2   62775392 479.0      65536 150734911 1150.1</div></pre>
+#&gt; Ncells 2533175 135.3    4568944 244.1         NA   4568944  244.1
+#&gt; Vcells 4609862  35.2   62773227 479.0      65536 150730234 1150.0</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

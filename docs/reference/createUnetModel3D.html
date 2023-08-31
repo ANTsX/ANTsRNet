@@ -228,15 +228,17 @@ kernel sizes to X.</p></li>
     <p>a u-net keras model</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p><div class="sourceCode"></p><pre>    \url{https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/}
-</pre><p></div></p>
-<p>with the paper available here:</p>
-<p><div class="sourceCode"></p><pre>    \url{https://arxiv.org/abs/1505.04597}
-</pre><p></div></p>
+    
+<pre>    \url{https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/}
+</pre>
+
+<p>with the paper available here:</p><pre>    \url{https://arxiv.org/abs/1505.04597}
+</pre>
+
 <p>This particular implementation was influenced by the following python
-implementation:</p>
-<p><div class="sourceCode"></p><pre>    \url{https://github.com/joelthelion/ultrasound-nerve-segmentation}
-</pre><p></div></p>
+implementation:</p><pre>    \url{https://github.com/joelthelion/ultrasound-nerve-segmentation}
+</pre>
+
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Tustison NJ</p>
@@ -261,7 +263,7 @@ implementation:</p>
 <span class='va'>model</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://generics.r-lib.org/reference/compile.html'>compile</a></span><span class='op'>(</span> loss <span class='op'>=</span> <span class='va'>loss_dice</span>,
   optimizer <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/optimizer_adam.html'>optimizer_adam</a></span><span class='op'>(</span> lr <span class='op'>=</span> <span class='fl'>0.0001</span> <span class='op'>)</span>,
   metrics <span class='op'>=</span> <span class='va'>metric_multilabel_dice_coefficient</span> <span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in py_call_impl(callable, dots$args, dots$keywords): TypeError: Failed to convert object of type &lt;class 'function'&gt; to Tensor. Contents: &lt;function make_python_function.&lt;locals&gt;.python_function at 0x7f9eea0f7d08&gt;. Consider casting elements to a supported type.</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in py_call_impl(callable, dots$args, dots$keywords): TypeError: Failed to convert object of type &lt;class 'function'&gt; to Tensor. Contents: &lt;function make_python_function.&lt;locals&gt;.python_function at 0x7fa2033de2f0&gt;. Consider casting elements to a supported type.</span>
 #&gt; <span class='error'></span>
 #&gt; <span class='error'>Detailed traceback:</span>
 #&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/training/tracking/base.py", line 517, in _method_wrapper</span>
@@ -312,7 +314,7 @@ implementation:</p>
 #&gt; <span class='error'>    "supported type." % (type(values), values))</span></div><div class='input'>
 <span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span> <span class='va'>model</span> <span class='op'>)</span>
 </div><div class='output co'>#&gt; Model
-#&gt; Model: "model_41"
+#&gt; Model: "model_42"
 #&gt; ________________________________________________________________________________
 #&gt; Layer (type)              Output Shape      Param #  Connected to               
 #&gt; ================================================================================
@@ -320,88 +322,88 @@ implementation:</p>
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_207 (Conv3D)       (None, 64, 64, 64 896      input_4[0][0]              
 #&gt; ________________________________________________________________________________
-#&gt; re_lu_76 (ReLU)           (None, 64, 64, 64 0        conv3d_207[0][0]           
+#&gt; re_lu_90 (ReLU)           (None, 64, 64, 64 0        conv3d_207[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_208 (Conv3D)       (None, 64, 64, 64 27680    re_lu_76[0][0]             
+#&gt; conv3d_208 (Conv3D)       (None, 64, 64, 64 27680    re_lu_90[0][0]             
 #&gt; ________________________________________________________________________________
-#&gt; re_lu_77 (ReLU)           (None, 64, 64, 64 0        conv3d_208[0][0]           
+#&gt; re_lu_91 (ReLU)           (None, 64, 64, 64 0        conv3d_208[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; max_pooling3d_10 (MaxPool (None, 32, 32, 32 0        re_lu_77[0][0]             
+#&gt; max_pooling3d_10 (MaxPool (None, 32, 32, 32 0        re_lu_91[0][0]             
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_209 (Conv3D)       (None, 32, 32, 32 55360    max_pooling3d_10[0][0]     
 #&gt; ________________________________________________________________________________
-#&gt; re_lu_78 (ReLU)           (None, 32, 32, 32 0        conv3d_209[0][0]           
+#&gt; re_lu_92 (ReLU)           (None, 32, 32, 32 0        conv3d_209[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_210 (Conv3D)       (None, 32, 32, 32 110656   re_lu_78[0][0]             
+#&gt; conv3d_210 (Conv3D)       (None, 32, 32, 32 110656   re_lu_92[0][0]             
 #&gt; ________________________________________________________________________________
-#&gt; re_lu_79 (ReLU)           (None, 32, 32, 32 0        conv3d_210[0][0]           
+#&gt; re_lu_93 (ReLU)           (None, 32, 32, 32 0        conv3d_210[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; max_pooling3d_11 (MaxPool (None, 16, 16, 16 0        re_lu_79[0][0]             
+#&gt; max_pooling3d_11 (MaxPool (None, 16, 16, 16 0        re_lu_93[0][0]             
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_211 (Conv3D)       (None, 16, 16, 16 221312   max_pooling3d_11[0][0]     
 #&gt; ________________________________________________________________________________
-#&gt; re_lu_80 (ReLU)           (None, 16, 16, 16 0        conv3d_211[0][0]           
+#&gt; re_lu_94 (ReLU)           (None, 16, 16, 16 0        conv3d_211[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_212 (Conv3D)       (None, 16, 16, 16 442496   re_lu_80[0][0]             
+#&gt; conv3d_212 (Conv3D)       (None, 16, 16, 16 442496   re_lu_94[0][0]             
 #&gt; ________________________________________________________________________________
-#&gt; re_lu_81 (ReLU)           (None, 16, 16, 16 0        conv3d_212[0][0]           
+#&gt; re_lu_95 (ReLU)           (None, 16, 16, 16 0        conv3d_212[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; max_pooling3d_12 (MaxPool (None, 8, 8, 8, 1 0        re_lu_81[0][0]             
+#&gt; max_pooling3d_12 (MaxPool (None, 8, 8, 8, 1 0        re_lu_95[0][0]             
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_213 (Conv3D)       (None, 8, 8, 8, 2 884992   max_pooling3d_12[0][0]     
 #&gt; ________________________________________________________________________________
-#&gt; re_lu_82 (ReLU)           (None, 8, 8, 8, 2 0        conv3d_213[0][0]           
+#&gt; re_lu_96 (ReLU)           (None, 8, 8, 8, 2 0        conv3d_213[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_214 (Conv3D)       (None, 8, 8, 8, 2 1769728  re_lu_82[0][0]             
+#&gt; conv3d_214 (Conv3D)       (None, 8, 8, 8, 2 1769728  re_lu_96[0][0]             
 #&gt; ________________________________________________________________________________
-#&gt; re_lu_83 (ReLU)           (None, 8, 8, 8, 2 0        conv3d_214[0][0]           
+#&gt; re_lu_97 (ReLU)           (None, 8, 8, 8, 2 0        conv3d_214[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_transpose_36 (Conv (None, 8, 8, 8, 1 262272   re_lu_83[0][0]             
+#&gt; conv3d_transpose_36 (Conv (None, 8, 8, 8, 1 262272   re_lu_97[0][0]             
 #&gt; ________________________________________________________________________________
 #&gt; up_sampling3d_12 (UpSampl (None, 16, 16, 16 0        conv3d_transpose_36[0][0]  
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_195 (Concaten (None, 16, 16, 16 0        up_sampling3d_12[0][0]     
-#&gt;                                                      re_lu_81[0][0]             
+#&gt; concatenate_198 (Concaten (None, 16, 16, 16 0        up_sampling3d_12[0][0]     
+#&gt;                                                      re_lu_95[0][0]             
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_215 (Conv3D)       (None, 16, 16, 16 884864   concatenate_195[0][0]      
+#&gt; conv3d_215 (Conv3D)       (None, 16, 16, 16 884864   concatenate_198[0][0]      
 #&gt; ________________________________________________________________________________
-#&gt; re_lu_84 (ReLU)           (None, 16, 16, 16 0        conv3d_215[0][0]           
+#&gt; re_lu_98 (ReLU)           (None, 16, 16, 16 0        conv3d_215[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_216 (Conv3D)       (None, 16, 16, 16 442496   re_lu_84[0][0]             
+#&gt; conv3d_216 (Conv3D)       (None, 16, 16, 16 442496   re_lu_98[0][0]             
 #&gt; ________________________________________________________________________________
-#&gt; re_lu_85 (ReLU)           (None, 16, 16, 16 0        conv3d_216[0][0]           
+#&gt; re_lu_99 (ReLU)           (None, 16, 16, 16 0        conv3d_216[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_transpose_37 (Conv (None, 16, 16, 16 65600    re_lu_85[0][0]             
+#&gt; conv3d_transpose_37 (Conv (None, 16, 16, 16 65600    re_lu_99[0][0]             
 #&gt; ________________________________________________________________________________
 #&gt; up_sampling3d_13 (UpSampl (None, 32, 32, 32 0        conv3d_transpose_37[0][0]  
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_196 (Concaten (None, 32, 32, 32 0        up_sampling3d_13[0][0]     
-#&gt;                                                      re_lu_79[0][0]             
+#&gt; concatenate_199 (Concaten (None, 32, 32, 32 0        up_sampling3d_13[0][0]     
+#&gt;                                                      re_lu_93[0][0]             
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_217 (Conv3D)       (None, 32, 32, 32 221248   concatenate_196[0][0]      
+#&gt; conv3d_217 (Conv3D)       (None, 32, 32, 32 221248   concatenate_199[0][0]      
 #&gt; ________________________________________________________________________________
-#&gt; re_lu_86 (ReLU)           (None, 32, 32, 32 0        conv3d_217[0][0]           
+#&gt; re_lu_100 (ReLU)          (None, 32, 32, 32 0        conv3d_217[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_218 (Conv3D)       (None, 32, 32, 32 110656   re_lu_86[0][0]             
+#&gt; conv3d_218 (Conv3D)       (None, 32, 32, 32 110656   re_lu_100[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; re_lu_87 (ReLU)           (None, 32, 32, 32 0        conv3d_218[0][0]           
+#&gt; re_lu_101 (ReLU)          (None, 32, 32, 32 0        conv3d_218[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_transpose_38 (Conv (None, 32, 32, 32 16416    re_lu_87[0][0]             
+#&gt; conv3d_transpose_38 (Conv (None, 32, 32, 32 16416    re_lu_101[0][0]            
 #&gt; ________________________________________________________________________________
 #&gt; up_sampling3d_14 (UpSampl (None, 64, 64, 64 0        conv3d_transpose_38[0][0]  
 #&gt; ________________________________________________________________________________
-#&gt; concatenate_197 (Concaten (None, 64, 64, 64 0        up_sampling3d_14[0][0]     
-#&gt;                                                      re_lu_77[0][0]             
+#&gt; concatenate_200 (Concaten (None, 64, 64, 64 0        up_sampling3d_14[0][0]     
+#&gt;                                                      re_lu_91[0][0]             
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_219 (Conv3D)       (None, 64, 64, 64 55328    concatenate_197[0][0]      
+#&gt; conv3d_219 (Conv3D)       (None, 64, 64, 64 55328    concatenate_200[0][0]      
 #&gt; ________________________________________________________________________________
-#&gt; re_lu_88 (ReLU)           (None, 64, 64, 64 0        conv3d_219[0][0]           
+#&gt; re_lu_102 (ReLU)          (None, 64, 64, 64 0        conv3d_219[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_220 (Conv3D)       (None, 64, 64, 64 27680    re_lu_88[0][0]             
+#&gt; conv3d_220 (Conv3D)       (None, 64, 64, 64 27680    re_lu_102[0][0]            
 #&gt; ________________________________________________________________________________
-#&gt; re_lu_89 (ReLU)           (None, 64, 64, 64 0        conv3d_220[0][0]           
+#&gt; re_lu_103 (ReLU)          (None, 64, 64, 64 0        conv3d_220[0][0]           
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_221 (Conv3D)       (None, 64, 64, 64 66       re_lu_89[0][0]             
+#&gt; conv3d_221 (Conv3D)       (None, 64, 64, 64 66       re_lu_103[0][0]            
 #&gt; ================================================================================
 #&gt; Total params: 5,599,746
 #&gt; Trainable params: 5,599,746

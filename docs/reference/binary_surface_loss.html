@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function for surface loss — multilabel_surface_loss • ANTsRNet</title>
+<title>Function for surface loss — binary_surface_loss • ANTsRNet</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,7 @@
 
 
 
-<meta property="og:title" content="Function for surface loss — multilabel_surface_loss" />
+<meta property="og:title" content="Function for surface loss — binary_surface_loss" />
 <meta property="og:description" content="https://pubmed.ncbi.nlm.nih.gov/33080507/" />
 
 
@@ -110,14 +110,14 @@
     <div class="page-header">
     <h1>Function for surface loss</h1>
     <small class="dont-index">Source: <a href='https://github.com/ANTsX/ANTsRNet/blob/master/R/customMetrics.R'><code>R/customMetrics.R</code></a></small>
-    <div class="hidden name"><code>multilabel_surface_loss.Rd</code></div>
+    <div class="hidden name"><code>binary_surface_loss.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p><a href='https://pubmed.ncbi.nlm.nih.gov/33080507/'>https://pubmed.ncbi.nlm.nih.gov/33080507/</a></p>
     </div>
 
-    <pre class="usage"><span class='fu'>multilabel_surface_loss</span><span class='op'>(</span><span class='va'>y_true</span>, <span class='va'>y_pred</span>, dimensionality <span class='op'>=</span> <span class='fl'>3L</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>binary_surface_loss</span><span class='op'>(</span><span class='va'>y_true</span>, <span class='va'>y_pred</span>, dimensionality <span class='op'>=</span> <span class='fl'>3L</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -153,42 +153,10 @@ be included but is not used in the calculation.</p>
 
 <span class='va'>model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='createUnetModel2D.html'>createUnetModel2D</a></span><span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='fl'>64</span>, <span class='fl'>64</span>, <span class='fl'>1</span> <span class='op'>)</span>, numberOfOutputs <span class='op'>=</span> <span class='fl'>2</span> <span class='op'>)</span>
 
-<span class='va'>model</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://generics.r-lib.org/reference/compile.html'>compile</a></span><span class='op'>(</span> loss <span class='op'>=</span> <span class='va'>multilabel_surface_loss</span>,
+<span class='va'>model</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://generics.r-lib.org/reference/compile.html'>compile</a></span><span class='op'>(</span> loss <span class='op'>=</span> <span class='va'>binary_surface_loss</span>,
  optimizer <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/optimizer_adam.html'>optimizer_adam</a></span><span class='op'>(</span> lr <span class='op'>=</span> <span class='fl'>0.0001</span> <span class='op'>)</span>,
    metrics <span class='op'>=</span> <span class='st'>"accuracy"</span> <span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in py_call_impl(callable, dots$args, dots$keywords): TypeError: Failed to convert object of type &lt;class 'function'&gt; to Tensor. Contents: &lt;function make_python_function.&lt;locals&gt;.python_function at 0x7ff1a96a2b70&gt;. Consider casting elements to a supported type.</span>
-#&gt; <span class='error'></span>
-#&gt; <span class='error'>Detailed traceback:</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/training/tracking/base.py", line 517, in _method_wrapper</span>
-#&gt; <span class='error'>    result = method(self, *args, **kwargs)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/keras/engine/training_v1.py", line 457, in compile</span>
-#&gt; <span class='error'>    self._compile_weights_loss_and_weighted_metrics()</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/training/tracking/base.py", line 517, in _method_wrapper</span>
-#&gt; <span class='error'>    result = method(self, *args, **kwargs)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/keras/engine/training_v1.py", line 1543, in _compile_weights_loss_and_weighted_metrics</span>
-#&gt; <span class='error'>    self.total_loss = self._prepare_total_loss(masks)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/keras/engine/training_v1.py", line 1607, in _prepare_total_loss</span>
-#&gt; <span class='error'>    reduction=losses_utils.ReductionV2.NONE)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/keras/utils/losses_utils.py", line 256, in compute_weighted_loss</span>
-#&gt; <span class='error'>    losses = ops.convert_to_tensor_v2_with_dispatch(losses)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/util/dispatch.py", line 201, in wrapper</span>
-#&gt; <span class='error'>    return target(*args, **kwargs)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/framework/ops.py", line 1405, in convert_to_tensor_v2_with_dispatch</span>
-#&gt; <span class='error'>    value, dtype=dtype, dtype_hint=dtype_hint, name=name)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/framework/ops.py", line 1415, in convert_to_tensor_v2</span>
-#&gt; <span class='error'>    as_ref=False)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/profiler/trace.py", line 163, in wrapped</span>
-#&gt; <span class='error'>    return func(*args, **kwargs)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/framework/ops.py", line 1540, in convert_to_tensor</span>
-#&gt; <span class='error'>    ret = conversion_func(value, dtype=dtype, name=name, as_ref=as_ref)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/framework/constant_op.py", line 339, in _constant_tensor_conversion_function</span>
-#&gt; <span class='error'>    return constant(v, dtype=dtype, name=name)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/framework/constant_op.py", line 265, in constant</span>
-#&gt; <span class='error'>    allow_broadcast=True)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/framework/constant_op.py", line 283, in _constant_impl</span>
-#&gt; <span class='error'>    allow_broadcast=allow_broadcast))</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/framework/tensor_util.py", line 553, in make_tensor_proto</span>
-#&gt; <span class='error'>    "supported type." % (type(values), values))</span></div><div class='input'>
+
 <span class='co'>########################################</span>
 <span class='co'>#</span>
 <span class='co'># Run in isolation</span>
@@ -206,9 +174,9 @@ be included but is not used in the calculation.</p>
 <span class='va'>r64array</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/array.html'>array</a></span><span class='op'>(</span> data <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/as.array.html'>as.array</a></span><span class='op'>(</span> <span class='va'>r64seg</span> <span class='op'>)</span>, dim <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='fl'>1</span>, <span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span><span class='op'>(</span> <span class='va'>r64seg</span> <span class='op'>)</span> <span class='op'>)</span> <span class='op'>)</span>
 <span class='va'>r64tensor</span> <span class='op'>&lt;-</span> <span class='fu'>tensorflow</span><span class='fu'>::</span><span class='va'><a href='https://rdrr.io/pkg/tensorflow/man/tf.html'>tf</a></span><span class='op'>$</span><span class='fu'>convert_to_tensor</span><span class='op'>(</span> <span class='fu'><a href='encodeUnet.html'>encodeUnet</a></span><span class='op'>(</span> <span class='va'>r64array</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span> <span class='op'>)</span> <span class='op'>)</span> <span class='op'>)</span>
 
-<span class='va'>surface_loss</span> <span class='op'>&lt;-</span> <span class='fu'>multilabel_surface_loss</span><span class='op'>(</span> <span class='va'>r16tensor</span>, <span class='va'>r64tensor</span>, dimensionality <span class='op'>=</span> <span class='fl'>2L</span> <span class='op'>)</span>
+<span class='va'>surface_loss</span> <span class='op'>&lt;-</span> <span class='fu'>binary_surface_loss</span><span class='op'>(</span> <span class='va'>r16tensor</span>, <span class='va'>r64tensor</span>, dimensionality <span class='op'>=</span> <span class='fl'>2L</span> <span class='op'>)</span>
 <span class='va'>loss_value</span> <span class='op'>&lt;-</span> <span class='fu'>surface_loss</span><span class='op'>(</span> <span class='va'>r16tensor</span>, <span class='va'>r64tensor</span> <span class='op'>)</span><span class='op'>$</span><span class='fu'>numpy</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in py_get_attr_impl(x, name, silent): AttributeError: 'Tensor' object has no attribute 'numpy'</span></div><div class='input'>
+
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

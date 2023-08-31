@@ -6,7 +6,7 @@
 \usage{
 lungExtraction(
   image,
-  modality = c("proton", "protonLobes", "maskLobes", "ct", "ventilation"),
+  modality = c("proton", "protonLobes", "maskLobes", "ct", "ventilation", "xray"),
   antsxnetCacheDirectory = NULL,
   verbose = FALSE
 )
@@ -27,7 +27,7 @@ subdirectory ~/.keras/ANTsXNet/.}
 segmentation and probability images
 }
 \description{
-Perform proton (H1) or CT lung extraction using a U-net architecture.
+Perform lung extraction.
 }
 \examples{
 \dontrun{

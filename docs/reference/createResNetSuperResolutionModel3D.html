@@ -162,8 +162,10 @@ will double the upsampling amount.</p></td>
     <p>a keras model for ResNet image super resolution</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p><div class="sourceCode"></p><pre>    \url{https://github.com/titu1994/Image-Super-Resolution}
-</pre><p></div></p>
+    
+<pre>    \url{https://github.com/titu1994/Image-Super-Resolution}
+</pre>
+
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Tustison NJ</p>
@@ -172,13 +174,13 @@ will double the upsampling amount.</p></td>
     <pre class="examples"><div class='input'><span class='va'>inputImageSize</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>256</span>, <span class='fl'>256</span>, <span class='fl'>30</span>, <span class='fl'>1</span><span class='op'>)</span>
 <span class='fu'>createResNetSuperResolutionModel3D</span><span class='op'>(</span><span class='va'>inputImageSize</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; Model
-#&gt; Model: "model_34"
+#&gt; Model: "model_35"
 #&gt; ________________________________________________________________________________
 #&gt; Layer (type)              Output Shape      Param #  Connected to               
 #&gt; ================================================================================
-#&gt; input_31 (InputLayer)     [(None, 256, 256, 0                                   
+#&gt; input_32 (InputLayer)     [(None, 256, 256, 0                                   
 #&gt; ________________________________________________________________________________
-#&gt; conv3d_129 (Conv3D)       (None, 256, 256,  1792     input_31[0][0]             
+#&gt; conv3d_129 (Conv3D)       (None, 256, 256,  1792     input_32[0][0]             
 #&gt; ________________________________________________________________________________
 #&gt; conv3d_130 (Conv3D)       (None, 256, 256,  110656   conv3d_129[0][0]           
 #&gt; ________________________________________________________________________________

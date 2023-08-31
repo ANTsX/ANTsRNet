@@ -14,10 +14,8 @@ L2 3-D normalization layer for SSD300/512 architecture described in
 Wei Liu, Andrew Rabinovich, and Alexander C. Berg.  ParseNet: Looking Wider
 to See Better.
 
-available here:
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{    \code{https://arxiv.org/abs/1506.04579}
-}\if{html}{\out{</div>}}
+available here:\preformatted{    \code{https://arxiv.org/abs/1506.04579}
+}
 }
 \section{Usage}{
 
