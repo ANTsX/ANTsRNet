@@ -41,13 +41,17 @@ recognition based on the paper
 A. Krizhevsky, and I. Sutskever, and G. Hinton. ImageNet Classification
 with Deep Convolutional Neural Networks.
 
-available here:\preformatted{    http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf
-}
+available here:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{    http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf
+}\if{html}{\out{</div>}}
 
 This particular implementation was influenced by the following python
-implementation:\preformatted{    https://github.com/duggalrahul/AlexNet-Experiments-Keras/
+implementation:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{    https://github.com/duggalrahul/AlexNet-Experiments-Keras/
     https://github.com/lunardog/convnets-keras/
-}
+}\if{html}{\out{</div>}}
 }
 \examples{
 

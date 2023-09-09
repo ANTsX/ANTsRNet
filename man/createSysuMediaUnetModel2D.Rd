@@ -11,6 +11,8 @@ createSysuMediaUnetModel2D(inputImageSize, anatomy = c("wmh", "claustrum"))
 This will be \code{c(200, 200, 2)} for t1/flair input and
 \code{c(200, 200, 1)} for flair-only input for wmhs.  For the
 claustrum, it is \code{c(180, 180, 1)}.}
+
+\item{anatomy}{"wmh" or "claustrum".}
 }
 \value{
 a u-net keras model
@@ -21,17 +23,23 @@ in the 2017 MICCAI WMH challenge by the sysu_medial team described
 here:
 }
 \details{
-\preformatted{\url{https://pubmed.ncbi.nlm.nih.gov/30125711/}
-}
+\if{html}{\out{<div class="sourceCode">}}\preformatted{\url{https://pubmed.ncbi.nlm.nih.gov/30125711/}
+}\if{html}{\out{</div>}}
 
-or targeting the claustrum:\preformatted{\url{https://arxiv.org/abs/2008.03465}
-}
+or targeting the claustrum:
 
-with the original implementations available at\preformatted{\url{https://github.com/hongweilibran/wmh_ibbmTum}
-}
+\if{html}{\out{<div class="sourceCode">}}\preformatted{\url{https://arxiv.org/abs/2008.03465}
+}\if{html}{\out{</div>}}
 
-and\preformatted{\url{https://github.com/hongweilibran/claustrum_multi_view},
-}
+with the original implementations available at
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{\url{https://github.com/hongweilibran/wmh_ibbmTum}
+}\if{html}{\out{</div>}}
+
+and
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{\url{https://github.com/hongweilibran/claustrum_multi_view},
+}\if{html}{\out{</div>}}
 
 respectively.
 }

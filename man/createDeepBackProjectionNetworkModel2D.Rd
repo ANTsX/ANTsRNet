@@ -55,19 +55,25 @@ Creates a keras model of the deep back-project network for image super
 resolution.  More information is provided at the authors' website:
 }
 \details{
-\preformatted{    \url{https://www.toyota-ti.ac.jp/Lab/Denshi/iim/members/muhammad.haris/projects/DBPN.html}
-}
+\if{html}{\out{<div class="sourceCode">}}\preformatted{    \url{https://www.toyota-ti.ac.jp/Lab/Denshi/iim/members/muhammad.haris/projects/DBPN.html}
+}\if{html}{\out{</div>}}
 
-with the paper available here:\preformatted{    \url{https://arxiv.org/abs/1803.02735}
-}
+with the paper available here:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{    \url{https://arxiv.org/abs/1803.02735}
+}\if{html}{\out{</div>}}
 
 This particular implementation was influenced by the following keras (python)
-implementation:\preformatted{    \url{https://github.com/rajatkb/DBPN-Keras}
-}
+implementation:
 
-with help from the original author's Caffe and Pytorch implementations:\preformatted{    \url{https://github.com/alterzero/DBPN-caffe}
+\if{html}{\out{<div class="sourceCode">}}\preformatted{    \url{https://github.com/rajatkb/DBPN-Keras}
+}\if{html}{\out{</div>}}
+
+with help from the original author's Caffe and Pytorch implementations:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{    \url{https://github.com/alterzero/DBPN-caffe}
     \url{https://github.com/alterzero/DBPN-Pytorch}
-}
+}\if{html}{\out{</div>}}
 }
 \examples{
 model = createDeepBackProjectionNetworkModel2D(c(25, 25, 1))

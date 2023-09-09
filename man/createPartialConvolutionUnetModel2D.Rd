@@ -36,8 +36,8 @@ layers and partial convolution layers.}
 a u-net keras model
 }
 \description{
-\preformatted{    \url{https://arxiv.org/abs/1804.07723}
-}
+\if{html}{\out{<div class="sourceCode">}}\preformatted{    \url{https://arxiv.org/abs/1804.07723}
+}\if{html}{\out{</div>}}
 }
 \author{
 Tustison NJ

@@ -31,8 +31,8 @@ Creates a keras model implementation of the Simple Fully Convolutional
 Network model from the FMRIB group:
 }
 \details{
-\preformatted{    \url{https://github.com/ha-ha-ha-han/UKBiobank_deep_pretrain}
-}
+\if{html}{\out{<div class="sourceCode">}}\preformatted{    \url{https://github.com/ha-ha-ha-han/UKBiobank_deep_pretrain}
+}\if{html}{\out{</div>}}
 }
 \examples{
 

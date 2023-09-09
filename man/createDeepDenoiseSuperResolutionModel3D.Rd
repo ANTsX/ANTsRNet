@@ -39,8 +39,8 @@ Creates a keras model of the expanded image super resolution deep learning
 framework based on the following python implementation:
 }
 \details{
-\preformatted{    \url{https://github.com/titu1994/Image-Super-Resolution}
-}
+\if{html}{\out{<div class="sourceCode">}}\preformatted{    \url{https://github.com/titu1994/Image-Super-Resolution}
+}\if{html}{\out{</div>}}
 }
 \examples{
 \dontrun{

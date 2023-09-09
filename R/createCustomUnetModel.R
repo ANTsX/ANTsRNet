@@ -464,6 +464,7 @@ createHyperMapp3rUnetModel3D <- function( inputImageSize,
 #' This will be \code{c(200, 200, 2)} for t1/flair input and
 #' \code{c(200, 200, 1)} for flair-only input for wmhs.  For the
 #' claustrum, it is \code{c(180, 180, 1)}.
+#' @param anatomy "wmh" or "claustrum".
 #'
 #' @return a u-net keras model
 #' @author Tustison NJ
@@ -560,6 +561,129 @@ createSysuMediaUnetModel2D <- function( inputImageSize, anatomy = c( "wmh", "cla
   cropShape <- getCropShape( inputs, outputs )
   outputs <- outputs %>% layer_zero_padding_2d( padding = cropShape )
   outputs <- outputs %>% layer_conv_2d( 1L, kernel_size = 1L, activation = 'sigmoid', padding = 'same' )
+
+  unetModel <- keras_model( inputs = inputs, outputs = outputs )
+
+  return( unetModel )
+}
+
+#' 3-D variant of the sysu_media U-net architecture
+#'
+#' @param inputImageSize Used for specifying the input tensor shape.
+#' This will be \code{c(200, 200, 2)} for t1/flair input and
+#' \code{c(200, 200, 1)} for flair-only input for wmhs.  For the
+#' claustrum, it is \code{c(180, 180, 1)}.
+#' @param numberOfFilters specifies schedule for the encoding/decoding
+#' layers.
+#' @param anatomy "wmh" or "claustrum". Vestigial option from the original
+#' 2-D version.
+#' @return a u-net keras model
+#' @author Tustison NJ
+#' @examples
+#' \dontrun{
+#'
+#' model <- createSysuMediaUnetModel3D( c( 64, 64, 64, 2 ), numberOfFilters = c( 64, 128, 256, 512 ) )
+#'
+#' }
+#' @import keras
+#' @export
+createSysuMediaUnetModel3D <- function( inputImageSize,
+    numberOfFilters = NULL, anatomy = "wmh" )
+{
+  getCropShape <- function( targetLayer, referenceLayer )
+    {
+    K <- keras::backend()
+
+    cropShape <- list()
+
+    delta <- K$int_shape( targetLayer )[[2]] - K$int_shape( referenceLayer )[[2]]
+    if( delta %% 2 != 0 )
+      {
+      cropShape[[1]] <- c( as.integer( delta / 2 ), as.integer( delta / 2 ) + 1L )
+      } else {
+      cropShape[[1]] <- c( as.integer( delta / 2 ), as.integer( delta / 2 ) )
+      }
+
+    delta <- K$int_shape( targetLayer )[[3]] - K$int_shape( referenceLayer )[[3]]
+    if( delta %% 2 != 0 )
+      {
+      cropShape[[2]] <- c( as.integer( delta / 2 ), as.integer( delta / 2 ) + 1L )
+      } else {
+      cropShape[[2]] <- c( as.integer( delta / 2 ), as.integer( delta / 2 ) )
+      }
+
+    delta <- K$int_shape( targetLayer )[[4]] - K$int_shape( referenceLayer )[[4]]
+    if( delta %% 2 != 0 )
+      {
+      cropShape[[3]] <- c( as.integer( delta / 2 ), as.integer( delta / 2 ) + 1L )
+      } else {
+      cropShape[[3]] <- c( as.integer( delta / 2 ), as.integer( delta / 2 ) )
+      }
+
+    return( cropShape )
+    }
+
+  inputs <- layer_input( shape = inputImageSize )
+
+  if( is.null( numberOfFilters ) )
+    {
+    if( anatomy == "wmh" )
+      {
+      numberOfFilters <- as.integer( c( 64, 96, 128, 256, 512 ) )
+      } else if( anatomy == "claustrum" ) {
+      numberOfFilters <- as.integer( c( 32, 64, 96, 128, 256 ) )
+      } else {
+      stop( "Unrecognized anatomy" )
+      }
+    }
+
+  # encoding layers
+
+  encodingLayers <- list()
+
+  outputs <- inputs
+  for( i in seq.int( length( numberOfFilters ) ) )
+    {
+    kernel1 <- 3L
+    kernel2 <- 3L
+    if( i == 1 && anatomy == "wmh" )
+      {
+      kernel1 <- 5L
+      kernel2 <- 5L
+      } else if( i == 4 ) {
+      kernel1 <- 3L
+      kernel2 <- 4L
+      }
+    outputs <- outputs %>% layer_conv_3d( numberOfFilters[i], kernel_size = kernel1, padding = 'same' )
+    outputs <- outputs %>% layer_activation_relu()
+    outputs <- outputs %>% layer_conv_3d( numberOfFilters[i], kernel_size = kernel2, padding = 'same' )
+    outputs <- outputs %>% layer_activation_relu()
+    encodingLayers[[i]] <- outputs
+    if( i < 5 )
+      {
+      outputs <- outputs %>% layer_max_pooling_3d( pool_size = c( 2L, 2L, 2L ) )
+      }
+    }
+
+  # decoding layers
+
+  for( i in seq.int( from = length( encodingLayers ) - 1, to = 1, by = -1 ) )
+    {
+    upsampleLayer <- outputs %>% layer_upsampling_3d( size = c( 2L, 2L, 2L ) )
+    cropShape <- getCropShape( encodingLayers[[i]], upsampleLayer )
+    croppedLayer <- encodingLayers[[i]] %>% layer_cropping_3d( cropping = cropShape )
+    outputs <- layer_concatenate( list( upsampleLayer, croppedLayer ), axis = -1L )
+    outputs <- outputs %>% layer_conv_3d( numberOfFilters[i], kernel_size = 3L, padding = 'same' )
+    outputs <- outputs %>% layer_activation_relu()
+    outputs <- outputs %>% layer_conv_3d( numberOfFilters[i], kernel_size = 3L, padding = 'same' )
+    outputs <- outputs %>% layer_activation_relu()
+    }
+
+  # final
+
+  cropShape <- getCropShape( inputs, outputs )
+  outputs <- outputs %>% layer_zero_padding_3d( padding = cropShape )
+  outputs <- outputs %>% layer_conv_3d( 1L, kernel_size = 1L, activation = 'sigmoid', padding = 'same' )
 
   unetModel <- keras_model( inputs = inputs, outputs = outputs )
 
