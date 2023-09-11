@@ -33,17 +33,13 @@ A. Rabinovich, Going Deeper with Convolutions
 C. Szegedy, V. Vanhoucke, S. Ioffe, J. Shlens, and Z. Wojna. Rethinking the Inception
 Architecture for Computer Vision
 
-available here:
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{    https://arxiv.org/abs/1409.4842
+available here:\preformatted{    https://arxiv.org/abs/1409.4842
     https://arxiv.org/abs/1512.00567
-}\if{html}{\out{</div>}}
+}
 
 This particular implementation was influenced by the following python
-implementation:
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{    https://github.com/fchollet/deep-learning-models/blob/master/inception_v3.py
-}\if{html}{\out{</div>}}
+implementation:\preformatted{    https://github.com/fchollet/deep-learning-models/blob/master/inception_v3.py
+}
 }
 \examples{
 

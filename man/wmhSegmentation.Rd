@@ -9,6 +9,7 @@ wmhSegmentation(
   t1,
   whiteMatterMask = NULL,
   useCombinedModel = TRUE,
+  predictionBatchSize = 16,
   doPreprocessing = TRUE,
   antsxnetCacheDirectory = NULL,
   verbose = FALSE
@@ -24,6 +25,9 @@ the flair).}
 calculated using deepAtropos (labels 3 and 4).}
 
 \item{useCombinedModel}{Original or combined.}
+
+\item{predictionBatchSize}{Control memory usage for prediction.  More consequential
+for GPU-usage.}
 
 \item{doPreprocessing}{perform n4 bias correction, intensity truncation, brain
 extraction.}

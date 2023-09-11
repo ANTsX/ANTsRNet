@@ -52,16 +52,12 @@ recognition based on the paper
 G. Huang, Z. Liu, K. Weinberger, and L. van der Maaten. Densely Connected
 Convolutional Networks Networks
 
-available here:
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{    https://arxiv.org/abs/1608.06993
-}\if{html}{\out{</div>}}
+available here:\preformatted{    https://arxiv.org/abs/1608.06993
+}
 
 This particular implementation was influenced by the following python
-implementation:
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{    https://github.com/tdeboissiere/DeepLearningImplementations/blob/master/DenseNet/densenet.py
-}\if{html}{\out{</div>}}
+implementation:\preformatted{    https://github.com/tdeboissiere/DeepLearningImplementations/blob/master/DenseNet/densenet.py
+}
 }
 \examples{
 

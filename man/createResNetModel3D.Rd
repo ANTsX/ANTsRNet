@@ -51,14 +51,12 @@ Creates a keras model of the ResNet deep learning architecture for image
 classification.  The paper is available here:
 }
 \details{
-\if{html}{\out{<div class="sourceCode">}}\preformatted{    https://arxiv.org/abs/1512.03385
-}\if{html}{\out{</div>}}
+\preformatted{    https://arxiv.org/abs/1512.03385
+}
 
 This particular implementation was influenced by the following python
-implementation:
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{    https://gist.github.com/mjdietzx/0cb95922aac14d446a6530f87b3a04ce
-}\if{html}{\out{</div>}}
+implementation:\preformatted{    https://gist.github.com/mjdietzx/0cb95922aac14d446a6530f87b3a04ce
+}
 }
 \examples{
 

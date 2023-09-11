@@ -36,8 +36,8 @@ Creates a keras model of the expanded image super resolution deep learning
 framework based on the following python implementation:
 }
 \details{
-\if{html}{\out{<div class="sourceCode">}}\preformatted{    \url{https://github.com/titu1994/Image-Super-Resolution}
-}\if{html}{\out{</div>}}
+\preformatted{    \url{https://github.com/titu1994/Image-Super-Resolution}
+}
 }
 \examples{
 createResNetSuperResolutionModel2D(c(256, 256, 3))

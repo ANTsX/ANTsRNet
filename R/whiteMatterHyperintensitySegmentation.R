@@ -408,6 +408,8 @@ hyperMapp3rSegmentation <- function( t1, flair, doPreprocessing = TRUE,
 #' @param whiteMatterMask input white matter mask for patch extraction.  If None,
 #' calculated using deepAtropos (labels 3 and 4).
 #' @param useCombinedModel Original or combined.
+#' @param predictionBatchSize Control memory usage for prediction.  More consequential 
+#' for GPU-usage.
 #' @param doPreprocessing perform n4 bias correction, intensity truncation, brain
 #' extraction.
 #' @param antsxnetCacheDirectory destination directory for storing the downloaded
@@ -427,7 +429,8 @@ hyperMapp3rSegmentation <- function( t1, flair, doPreprocessing = TRUE,
 #' results <- wmhSegmentation( t1, flair )
 #' }
 #' @export
-wmhSegmentation <- function( flair, t1, whiteMatterMask = NULL, useCombinedModel=TRUE,
+wmhSegmentation <- function( flair, t1, whiteMatterMask = NULL, 
+  useCombinedModel = TRUE, predictionBatchSize = 16,
   doPreprocessing = TRUE, antsxnetCacheDirectory = NULL, verbose = FALSE )
 {
 
@@ -548,7 +551,8 @@ wmhSegmentation <- function( flair, t1, whiteMatterMask = NULL, useCombinedModel
                                        randomSeed = NULL,
                                        returnAsArray = TRUE )
 
-
+  totalNumberOfPatches <- dim( t1Patches )[1]
+ 
 
   ################################
   #
@@ -556,16 +560,36 @@ wmhSegmentation <- function( flair, t1, whiteMatterMask = NULL, useCombinedModel
   #
   ################################
 
-  batchX <- array( data = 0, dim = c( dim( t1Patches ), channelSize ) )
-  batchX[,,,,1] <- flairPatches
-  batchX[,,,,2] <- t1Patches
-
+  numberOfFullBatches <- floor( totalNumberOfPatches / predictionBatchSize )
   if( verbose )
     {
-    message( "Predict patches and reconstruct.\n" )
+    message( "Total number of patches: ", totalNumberOfPatches )
+    message( "Prediction batch size: ", predictionBatchSize )
+    message( "Number of batches: ", numberOfFullBatches + 1 )
     }
+ 
+  prediction <- array( data = 0, dim = c( totalNumberOfPatches, patchSize, 1 ) )
+  for( b in seq.int( numberOfFullBatches + 1 ) )
+    {
+    batchX <- NULL
+    if( b <= numberOfFullBatches )
+      {
+      batchX <- array( data = 0, dim = c( predictionBatchSize, patchSize, channelSize ) ) 
+      } else {
+      residualNumberOfPatches <- totalNumberOfPatches - numberOfFullBatches * predictionBatchSize
+      batchX <- array( data = 0, dim = c( residualNumberOfPatches, patchSize, channelSize ) ) 
+      }
 
-  prediction <- model %>% predict( batchX, verbose = verbose )
+    indices <- ( ( b - 1 ) * predictionBatchSize + 1):( ( b - 1 ) * predictionBatchSize + dim( batchX )[1] )
+    batchX[,,,,1] <- flairPatches[indices,,,]
+    batchX[,,,,2] <- t1Patches[indices,,,]
+
+    if( verbose )
+      {
+      message( "Predicting batch ", b, " of ", numberOfFullBatches + 1 )
+      }
+    prediction[indices,,,,] <- model %>% predict( batchX, verbose = verbose )
+    }  
 
   wmhProbabilityImage <- reconstructImageFromPatches( drop( prediction ),
                                                       strideLength = strideLength,

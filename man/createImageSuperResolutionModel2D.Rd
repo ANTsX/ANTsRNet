@@ -33,14 +33,12 @@ Creates a keras model of the image super resolution deep learning framework.
 based on the paper available here:
 }
 \details{
-\if{html}{\out{<div class="sourceCode">}}\preformatted{    \url{https://arxiv.org/pdf/1501.00092}
-}\if{html}{\out{</div>}}
+\preformatted{    \url{https://arxiv.org/pdf/1501.00092}
+}
 
 This particular implementation is based on the following python
-implementation:
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{    \url{https://github.com/titu1994/Image-Super-Resolution}
-}\if{html}{\out{</div>}}
+implementation:\preformatted{    \url{https://github.com/titu1994/Image-Super-Resolution}
+}
 }
 \examples{
 createImageSuperResolutionModel2D(c( 100, 100, 1 ))

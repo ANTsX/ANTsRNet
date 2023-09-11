@@ -52,17 +52,13 @@ object detection based on the paper
 W. Liu, D. Anguelov, D. Erhan, C. Szegedy, S. Reed, C-Y. Fu, A. Berg.
 SSD: Single Shot MultiBox Detector.
 
-available here:
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{    \url{https://arxiv.org/abs/1512.02325}
-}\if{html}{\out{</div>}}
+available here:\preformatted{    \url{https://arxiv.org/abs/1512.02325}
+}
 
 This particular implementation was influenced by the following python
-and R implementations:
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{    \url{https://github.com/pierluigiferrari/ssd_keras}
+and R implementations:\preformatted{    \url{https://github.com/pierluigiferrari/ssd_keras}
     \url{https://github.com/gsimchoni/ssdkeras}
-}\if{html}{\out{</div>}}
+}
 }
 \examples{
 tensorflow::tf$compat$v1$disable_eager_execution()

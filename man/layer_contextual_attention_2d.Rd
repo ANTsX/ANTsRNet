@@ -52,10 +52,8 @@ Contextual attention layer for generative image inpainting described in
 Jiahui Yu, et al., Generative Image Inpainting with Contextual Attention,
 CVPR 2018.
 
-available here:
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{    \code{https://arxiv.org/abs/1801.07892}
-}\if{html}{\out{</div>}}
+available here:\preformatted{    \code{https://arxiv.org/abs/1801.07892}
+}
 }
 \examples{
 layer_contextual_attention_2d()

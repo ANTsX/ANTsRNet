@@ -53,14 +53,12 @@ Creates a keras model of the U-net + ResNet deep learning architecture for
 image segmentation and regression with the paper available here:
 }
 \details{
-\if{html}{\out{<div class="sourceCode">}}\preformatted{    \url{https://arxiv.org/abs/1608.04117}
-}\if{html}{\out{</div>}}
+\preformatted{    \url{https://arxiv.org/abs/1608.04117}
+}
 
 This particular implementation was ported from the following python
-implementation:
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{    \url{https://github.com/veugene/fcn_maker/}
-}\if{html}{\out{</div>}}
+implementation:\preformatted{    \url{https://github.com/veugene/fcn_maker/}
+}
 }
 \examples{
 

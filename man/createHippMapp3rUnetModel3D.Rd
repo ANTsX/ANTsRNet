@@ -22,13 +22,11 @@ Creates a keras model implementation of the u-net architecture
 described here:
 }
 \details{
-\if{html}{\out{<div class="sourceCode">}}\preformatted{\url{https://onlinelibrary.wiley.com/doi/pdf/10.1002/hbm.24811}
-}\if{html}{\out{</div>}}
+\preformatted{\url{https://onlinelibrary.wiley.com/doi/pdf/10.1002/hbm.24811}
+}
 
-with the implementation available here:
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{\url{https://github.com/mgoubran/HippMapp3r}
-}\if{html}{\out{</div>}}
+with the implementation available here:\preformatted{\url{https://github.com/mgoubran/HippMapp3r}
+}
 }
 \examples{
 \dontrun{

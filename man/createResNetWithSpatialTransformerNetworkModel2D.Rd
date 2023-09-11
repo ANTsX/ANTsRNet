@@ -52,8 +52,8 @@ classification with a spatial transformer network (STN) layer.  The paper
 is available here:
 }
 \details{
-\if{html}{\out{<div class="sourceCode">}}\preformatted{    https://arxiv.org/abs/1512.03385
-}\if{html}{\out{</div>}}
+\preformatted{    https://arxiv.org/abs/1512.03385
+}
 }
 \examples{
 
