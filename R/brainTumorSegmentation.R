@@ -245,10 +245,6 @@ brainTumorSegmentation <- function( flair, t1, t1Contrast, t2,
     }
 
   patchSize <- c( 64L, 64L, 64L )
-  if( is.double( patchStrideLength ) || is.integer( patchStrideLength ) )
-    {
-    patchStrideLength <- rep( as.integer( patchStrideLength ), 3 )
-    }
   numberOfFilters <- c( 64, 96, 128, 256, 512 )
   channelSize <- 5 # [FLAIR, T1, T1GD, T2, MASK]
   numberOfClassificationLabels <- 5
