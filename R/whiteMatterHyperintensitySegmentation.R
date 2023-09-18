@@ -410,6 +410,8 @@ hyperMapp3rSegmentation <- function( t1, flair, doPreprocessing = TRUE,
 #' @param useCombinedModel Original or combined.
 #' @param predictionBatchSize Control memory usage for prediction.  More consequential 
 #' for GPU-usage.
+#' @param patchStrideLength  3-D vector or int.   Dictates the stride length for 
+#' accumulating predicting patches.
 #' @param doPreprocessing perform n4 bias correction, intensity truncation, brain
 #' extraction.
 #' @param antsxnetCacheDirectory destination directory for storing the downloaded
@@ -431,6 +433,7 @@ hyperMapp3rSegmentation <- function( t1, flair, doPreprocessing = TRUE,
 #' @export
 wmhSegmentation <- function( flair, t1, whiteMatterMask = NULL, 
   useCombinedModel = TRUE, predictionBatchSize = 16,
+  patchStrideLength = 32,
   doPreprocessing = TRUE, antsxnetCacheDirectory = NULL, verbose = FALSE )
 {
 
@@ -560,23 +563,29 @@ wmhSegmentation <- function( flair, t1, whiteMatterMask = NULL,
   #
   ################################
 
-  numberOfFullBatches <- floor( totalNumberOfPatches / predictionBatchSize )
+  numberOfBatches <- floor( totalNumberOfPatches / predictionBatchSize )
+  residualNumberOfPatches <- totalNumberOfPatches - numberOfBatches * predictionBatchSize
+  if( residualNumberOfPatches > 0 )
+    {
+    numberOfBatches <- numberOfBatches + 1 
+    }
+
   if( verbose )
     {
     message( "Total number of patches: ", totalNumberOfPatches )
     message( "Prediction batch size: ", predictionBatchSize )
-    message( "Number of batches: ", numberOfFullBatches + 1 )
+    message( "Number of batches: ", numberOfFullBatches )
     }
  
   prediction <- array( data = 0, dim = c( totalNumberOfPatches, patchSize, 1 ) )
-  for( b in seq.int( numberOfFullBatches + 1 ) )
+  for( b in seq.int( numberOfBatches ) )
     {
     batchX <- NULL
-    if( b <= numberOfFullBatches )
+    if( b < numberOfFullBatches || residualNumberOfPatches == 0 )
       {
       batchX <- array( data = 0, dim = c( predictionBatchSize, patchSize, channelSize ) ) 
       } else {
-      residualNumberOfPatches <- totalNumberOfPatches - numberOfFullBatches * predictionBatchSize
+      
       batchX <- array( data = 0, dim = c( residualNumberOfPatches, patchSize, channelSize ) ) 
       }
 
@@ -586,7 +595,7 @@ wmhSegmentation <- function( flair, t1, whiteMatterMask = NULL,
 
     if( verbose )
       {
-      message( "Predicting batch ", b, " of ", numberOfFullBatches + 1 )
+      message( "Predicting batch ", b, " of ", numberOfBatches )
       }
     prediction[indices,,,,] <- model %>% predict( batchX, verbose = verbose )
     }  
