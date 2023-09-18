@@ -304,7 +304,7 @@ brainTumorSegmentation <- function( flair, t1, t1Contrast, t2,
     message( "  Number of batches: ", numberOfBatches )
     }
  
-  prediction <- array( data = 0, dim = c( totalNumberOfPatches, patchSize, 1 ) )
+  prediction <- array( data = 0, dim = c( totalNumberOfPatches, patchSize, channelSize ) )
   for( b in seq.int( numberOfBatches ) )
     {
     batchX <- NULL
