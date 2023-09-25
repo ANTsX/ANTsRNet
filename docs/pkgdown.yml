@@ -1,6 +1,6 @@
 pandoc: '0'
-pkgdown: 2.0.6
+pkgdown: 1.6.1
 pkgdown_sha: ~
 articles: {}
-last_built: 2023-09-09T00:57Z
+last_built: 2023-09-25T22:03Z
 

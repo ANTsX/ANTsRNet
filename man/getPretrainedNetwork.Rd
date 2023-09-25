@@ -34,7 +34,7 @@ getPretrainedNetwork(
     "sysuMediaWmhFlairOnlyModel1", "sysuMediaWmhFlairOnlyModel2",
     "sysuMediaWmhFlairT1Model0",      "sysuMediaWmhFlairT1Model1",
     "sysuMediaWmhFlairT1Model2", "tidsQualityAssessment", "xrayLungOrientation",
-    "xrayLungExtraction", "chexnetClassification", "wholeHeadInpaintingT1",
+    "xrayLungExtraction", "chexnetClassification", "chexnetANTsXNetClassification",
     "wholeHeadInpaintingFLAIR", "wholeHeadInpaintingPatchBasedT1",
     "wholeHeadInpaintingPatchBasedFLAIR", "wholeTumorSegmentationT2Flair",
     "wholeLungMaskFromVentilation"),
