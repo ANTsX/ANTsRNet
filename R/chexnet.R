@@ -132,3 +132,154 @@ checkXrayLungOrientation <- function( image,
     }
 }
 
+
+#' CheXNet: Radiologist-Level Pneumonia Detection on Chest X-Rays with Deep Learning
+#'
+#' ANTsXNet reproduction of https://arxiv.org/pdf/1711.05225.pdf.  This includes
+#' our own network architecture and training (including data augmentation).
+#'    
+#' Includes a network for checking the correctness of image orientation, i.e.,
+#' flipped left-right, up-down, or both.
+#'   
+#' Disease categories: 
+#'        Atelectasis
+#'        Cardiomegaly
+#'        Consolidation
+#'        Edema
+#'        Effusion
+#'        Emphysema
+#'        Fibrosis 
+#'        Hernia
+#'        Infiltration
+#'        Mass
+#'        No Finding
+#'        Nodule
+#'        Pleural Thickening
+#'        Pneumonia
+#'        Pneumothorax
+#'
+#' @param image input 3-D lung image.
+#' @param lungMask ANTsImage.  If None is specified, one is estimated.
+#' @param checkImageOrientation Check the correctness of image orientation, i.e., 
+#' flipped left-right, up-down, or both.  If TRUE, attempts to correct before prediction.
+#' @param antsxnetCacheDirectory destination directory for storing the downloaded
+#' template and model weights.  Since these can be resused, if
+#' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
+#' subdirectory ~/.keras/ANTsXNet/.
+#' @param verbose print progress.
+#' @return classification scores for each of the 14 categories.
+#' @author Tustison NJ
+#' @examples
+#' \dontrun{
+#' library( ANTsRNet )
+#' }
+#' @import keras
+#' @export
+chexnet <- function( image,
+                     lungMask = NULL,
+                     checkImageOrientation = FALSE,
+                     useANTsXNetVariant = TRUE,
+                     antsxnetCacheDirectory = NULL,
+                     verbose = FALSE )
+{
+  if( image@dimension != 2 )
+    {
+    stop( "ImageDimension must be equal to 2.")
+    }
+  
+  if( checkImageOrientation )
+    {
+    image <- checkXrayLungOrientation( image )
+    }
+
+  diseaseCategories <- c( 'Atelectasis',
+                          'Cardiomegaly',
+                          'Effusion',
+                          'Infiltration',
+                          'Mass',
+                          'Nodule',
+                          'Pneumonia',
+                          'Pneumothorax',
+                          'Consolidation',
+                          'Edema',
+                          'Emphysema',
+                          'Fibrosis',
+                          'Pleural_Thickening',
+                          'Hernia' )
+
+  ################################
+  #
+  # Resample to image size
+  #
+  ################################
+
+  imageSize <- c( 224, 224 )
+  if( any( dim( image ) != imageSize ) )
+    {
+    if( verbose )
+      {
+      cat( "Resampling image to ", imageSize, "\n" )
+      }
+    resampledImage <- resampleImage( image, resampledImageSize, useVoxels = TRUE )
+    }
+  else
+    {
+    resampledImage <- antsImageClone( image )
+    }
+
+  input <- tensorflow::tf$keras$layers$Input( shape = c( 224L, 224L, 3L ) )
+
+  model <- tensorflow::tf$keras$applications$DenseNet121( include_top = FALSE, 
+                                                          weights = "imagenet", 
+                                                          input_tensor = NULL, 
+                                                          input_shape = c(224L, 224L, 3L), 
+                                                          pooling='avg' ) 
+  modelLayers <- vector( mode = "list", length = length( model$layers ) )
+  for( i in seq.int( length( model$layers ) ) ) 
+    {
+    modelLayers[[i + 1]] <- model$layers[[i]]
+    cat( i, "\n" )
+    }
+
+  x <- model$get_layer( index = -1L ) %>% tensorflow::tf$keras$layers$Dense( units = length( diseaseCategories ),
+                                          activation = "sigmoid" )
+  output <- input %>% model %>% x
+  y <- tensorflow::tf$keras$Model( inputs = input, outputs = output )
+
+  modelLayers <- vector( mode = "list", length() ) <- 
+  for( i in seq.int( length( model$layers ) ) ) 
+    {
+    modelLayers[[i + 1]] <- model$layers[[i]]
+    cat( i, "\n" )
+    }
+  modelLayers[[length( flattenedLayers ) + 1]] <- tensorflow::tf$keras$layers$Dense( units = length( diseaseCategories ),
+                                                    activation = "sigmoid" )
+  output <- input %>% model %>% outputLayer
+  model <- tensorflow::tf$keras$Model( inputs = input, outputs =  )
+
+  layerCount <- 1
+  for( i in seq.int( length( model$layers ) ) ) 
+    {
+    for( j in seq.int( length( model$layers[[i]]$layers ) ) )
+      {
+      flattenedLayers[[layerCount]] <- 
+      }
+    }
+
+  # use imagenet mean,std for normalization
+  imagenetMean <- c( 0.485, 0.456, 0.406 )
+  imagenetStd <- c( 0.229, 0.224, 0.225 )
+
+  numberOfChannels <- 3
+
+  if( ! useANTsXNetVariant )
+    {
+    weightsFileName <- getPretrainedNetwork( "chexnetClassification",
+                                             antsxnetCacheDirectory = antsxnetCacheDirectory )
+    model$load_weights( weightsFileName )
+
+
+    }
+
+
+}
