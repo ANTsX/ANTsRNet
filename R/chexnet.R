@@ -220,50 +220,11 @@ chexnet <- function( image,
       {
       cat( "Resampling image to ", imageSize, "\n" )
       }
-    resampledImage <- resampleImage( image, resampledImageSize, useVoxels = TRUE )
+    resampledImage <- resampleImage( image, imageSize, useVoxels = TRUE )
     }
   else
     {
     resampledImage <- antsImageClone( image )
-    }
-
-  input <- tensorflow::tf$keras$layers$Input( shape = c( 224L, 224L, 3L ) )
-
-  model <- tensorflow::tf$keras$applications$DenseNet121( include_top = FALSE, 
-                                                          weights = "imagenet", 
-                                                          input_tensor = NULL, 
-                                                          input_shape = c(224L, 224L, 3L), 
-                                                          pooling='avg' ) 
-  modelLayers <- vector( mode = "list", length = length( model$layers ) )
-  for( i in seq.int( length( model$layers ) ) ) 
-    {
-    modelLayers[[i + 1]] <- model$layers[[i]]
-    cat( i, "\n" )
-    }
-
-  x <- model$get_layer( index = -1L ) %>% tensorflow::tf$keras$layers$Dense( units = length( diseaseCategories ),
-                                          activation = "sigmoid" )
-  output <- input %>% model %>% x
-  y <- tensorflow::tf$keras$Model( inputs = input, outputs = output )
-
-  modelLayers <- vector( mode = "list", length() ) <- 
-  for( i in seq.int( length( model$layers ) ) ) 
-    {
-    modelLayers[[i + 1]] <- model$layers[[i]]
-    cat( i, "\n" )
-    }
-  modelLayers[[length( flattenedLayers ) + 1]] <- tensorflow::tf$keras$layers$Dense( units = length( diseaseCategories ),
-                                                    activation = "sigmoid" )
-  output <- input %>% model %>% outputLayer
-  model <- tensorflow::tf$keras$Model( inputs = input, outputs =  )
-
-  layerCount <- 1
-  for( i in seq.int( length( model$layers ) ) ) 
-    {
-    for( j in seq.int( length( model$layers[[i]]$layers ) ) )
-      {
-      flattenedLayers[[layerCount]] <- 
-      }
     }
 
   # use imagenet mean,std for normalization
@@ -274,12 +235,63 @@ chexnet <- function( image,
 
   if( ! useANTsXNetVariant )
     {
-    weightsFileName <- getPretrainedNetwork( "chexnetClassification",
-                                             antsxnetCacheDirectory = antsxnetCacheDirectory )
-    model$load_weights( weightsFileName )
+    modelFileName <- getPretrainedNetwork( "chexnetClassificationModel",
+                                           antsxnetCacheDirectory = antsxnetCacheDirectory )
+    model <- tensorflow::tf$keras$models$load_model( modelFileName )
 
+    batchX <- array( data = 0, dim = c( 1, imageSize, numberOfChannels ) )
+    imageArray <- as.array( resampledImage )
+    imageArray <- ( imageArray - min( imageArray ) ) / ( max( imageArray ) - min( imageArray ) )
+    for( c in seq.int( numberOfChannels ) )
+      {
+      batchX[1,,,c] <- ( imageArray - imagenetMean[c] ) / ( imagenetStd[c] )
+      }
+     
+    batchY <- model %>% predict( batchX, verbose = verbose )
+    diseaseCategoryDf = data.frame( batchY )
+    colnames( diseaseCategoryDf ) <- diseaseCategories
 
+    return( diseaseCategoryDf )
+
+    } else {
+    modelFileName <- getPretrainedNetwork( "chexnetClassificationANTsXNetModel",
+                                           antsxnetCacheDirectory = antsxnetCacheDirectory )
+    model <- tensorflow::tf$keras$models$load_model( modelFileName )
+
+    resampledLungMask <- NULL
+    if( is.null( lungMask ) )
+      {
+      if( verbose )
+        {
+        cat( "No lung mask provided.  Estimating using antsxnet." )
+        }
+      lungExtract <- lungExtraction( image, modality = "xray", 
+                                     antsxnetCacheDirectory = antsxnetCacheDirectory, 
+                                     verbose = verbose )
+      resampledLungMask <- lungExtract$segmentationImage
+      } else {
+      resampledLungMask <- antsImageClone( lungMask ) 
+      }
+
+    if( any( dim( resampledLungMask ) != imageSize ) )
+      {
+      resampledLungMask <- resampleImage( resampledLungMask, imageSize, useVoxels = TRUE, interpType = 1 )
+      }
+
+    batchX <- array( data = 0, dim = c( 1, imageSize, numberOfChannels ) )
+    imageArray <- as.array( resampledImage )
+    imageArray <- ( imageArray - min( imageArray ) ) / ( max( imageArray ) - min( imageArray ) )
+
+    batchX[1,,,1] <- ( imageArray - imagenetMean[1] ) / ( imagenetStd[1] )
+    batchX[1,,,2] <- ( imageArray - imagenetMean[2] ) / ( imagenetStd[2] )
+    batchX[1,,,2] <- batchX[1,,,2] * as.array( thresholdImage( resampledLungMask, 1, 1, 1, 0 ) )
+    batchX[1,,,3] <- ( imageArray - imagenetMean[3] ) / ( imagenetStd[3] )
+    batchX[1,,,3] <- batchX[1,,,3] * as.array( thresholdImage( resampledLungMask, 2, 2, 1, 0 ) )
+
+    batchY <- model %>% predict( batchX, verbose = verbose )
+    diseaseCategoryDf = data.frame( batchY )
+    colnames( diseaseCategoryDf ) <- diseaseCategories    
+
+    return( diseaseCategoryDf)
     }
-
-
 }

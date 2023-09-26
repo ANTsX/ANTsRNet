@@ -33,11 +33,13 @@ claustrum probability image
 Described here:
 }
 \details{
-\preformatted{\url{https://pubmed.ncbi.nlm.nih.gov/34520080/}
-}
+\if{html}{\out{<div class="sourceCode">}}\preformatted{\url{https://pubmed.ncbi.nlm.nih.gov/34520080/}
+}\if{html}{\out{</div>}}
 
-with the implementation available at:\preformatted{\url{https://github.com/hongweilibran/claustrum_multi_view}
-}
+with the implementation available at:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{\url{https://github.com/hongweilibran/claustrum_multi_view}
+}\if{html}{\out{</div>}}
 }
 \examples{
 \dontrun{

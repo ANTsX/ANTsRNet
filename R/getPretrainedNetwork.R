@@ -113,12 +113,12 @@ getPretrainedNetwork <- function(
               "tidsQualityAssessment",
               "xrayLungOrientation",
               "xrayLungExtraction",
-              "chexnetClassification",
-              "chexnetANTsXNetClassification",
+              "chexnetClassificationModel",
+              "chexnetClassificationANTsXNetModel",
               "wholeHeadInpaintingFLAIR",
               "wholeHeadInpaintingPatchBasedT1",
               "wholeHeadInpaintingPatchBasedFLAIR",
-	            "wholeTumorSegmentationT2Flair",
+	             "wholeTumorSegmentationT2Flair",
               "wholeLungMaskFromVentilation" ),
   targetFileName, antsxnetCacheDirectory = NULL )
 {
@@ -127,7 +127,7 @@ getPretrainedNetwork <- function(
   if( fileId[1] == "show" )
     {
     return( fileId )
-   }
+    }
   fileId = match.arg( fileId )
 
   url <- switch(
@@ -223,8 +223,8 @@ getPretrainedNetwork <- function(
     tidsQualityAssessment = "https://figshare.com/ndownloader/files/35295391",
     xrayLungOrientation = "https://figshare.com/ndownloader/files/41965821",
     xrayLungExtraction = "https://figshare.com/ndownloader/files/41965818",
-    chexnetClassification = "https://figshare.com/ndownloader/files/42423522",
-    chexnetANTsXNetClassification = "https://figshare.com/ndownloader/files/42428943",
+    chexnetClassificationModel = "https://figshare.com/ndownloader/files/42460332",
+    chexnetClassificationANTsXNetModel = "https://figshare.com/ndownloader/files/42460335",
     wholeHeadInpaintingT1 = "https://figshare.com/ndownloader/files/39255422",
     wholeHeadInpaintingFLAIR = "https://figshare.com/ndownloader/files/39255419",
     wholeHeadInpaintingPatchBasedT1 = "https://figshare.com/ndownloader/files/39337442",

@@ -42,8 +42,10 @@ with the sysu_media's team entry is discussed in
 
 \url{https://pubmed.ncbi.nlm.nih.gov/30125711/}
 
-with the original implementation available here:\preformatted{\url{https://github.com/hongweilibran/wmh_ibbmTum}
-}
+with the original implementation available here:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{\url{https://github.com/hongweilibran/wmh_ibbmTum}
+}\if{html}{\out{</div>}}
 
 The original implementation used global thresholding as a quick
 brain extraction approach.  Due to possible generalization difficulties,

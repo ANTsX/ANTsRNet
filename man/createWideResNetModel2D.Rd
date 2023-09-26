@@ -50,12 +50,14 @@ Creates a keras model of the Wide ResNet deep learning architecture for image
 classification/regression.  The paper is available here:
 }
 \details{
-\preformatted{    https://arxiv.org/abs/1512.03385
-}
+\if{html}{\out{<div class="sourceCode">}}\preformatted{    https://arxiv.org/abs/1512.03385
+}\if{html}{\out{</div>}}
 
 This particular implementation was influenced by the following python
-implementation:\preformatted{    https://github.com/titu1994/Wide-Residual-Networks
-}
+implementation:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{    https://github.com/titu1994/Wide-Residual-Networks
+}\if{html}{\out{</div>}}
 }
 \examples{
 

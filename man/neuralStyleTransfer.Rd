@@ -83,14 +83,18 @@ ANTs 3-component image.
 The popular neural style transfer described here:
 }
 \details{
-\preformatted{https://arxiv.org/abs/1508.06576 and https://arxiv.org/abs/1605.04603
-}
+\if{html}{\out{<div class="sourceCode">}}\preformatted{https://arxiv.org/abs/1508.06576 and https://arxiv.org/abs/1605.04603
+}\if{html}{\out{</div>}}
 
-and taken from François Chollet's implementation\preformatted{https://keras.io/examples/generative/neural_style_transfer/
-}
+and taken from François Chollet's implementation
 
-and titu1994's modifications:\preformatted{https://github.com/titu1994/Neural-Style-Transfer
-}
+\if{html}{\out{<div class="sourceCode">}}\preformatted{https://keras.io/examples/generative/neural_style_transfer/
+}\if{html}{\out{</div>}}
+
+and titu1994's modifications:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{https://github.com/titu1994/Neural-Style-Transfer
+}\if{html}{\out{</div>}}
 
 in order to possibly modify and experiment with medical images.
 }
