@@ -158,7 +158,7 @@ getPretrainedNetwork <- function(
     brainSegmentation = "https://ndownloader.figshare.com/files/13900010",
     brainSegmentationPatchBased = "https://ndownloader.figshare.com/files/14249717",
     bratsStage1 = "https://figshare.com/ndownloader/files/42384756",
-    bratsStage2 = "https://figshare.com/ndownloader/files/42384750",
+    bratsStage2 = "https://figshare.com/ndownloader/files/42685150", # "https://figshare.com/ndownloader/files/42384750",
     cerebellumWhole = "https://figshare.com/ndownloader/files/41460447",
     cerebellumTissue = "https://figshare.com/ndownloader/files/41107724",
     cerebellumLabels = "https://figshare.com/ndownloader/files/41168678",
