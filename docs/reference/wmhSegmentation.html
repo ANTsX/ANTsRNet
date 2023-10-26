@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Implementation of the "NoBrainer" U-net architecture — createNoBrainerUnetModel3D • ANTsRNet</title>
+<title>White matter hyperintensity probabilistic segmentation — wmhSegmentation • ANTsRNet</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,9 @@
 
 
 
-<meta property="og:title" content="Implementation of the "NoBrainer" U-net architecture — createNoBrainerUnetModel3D" />
-<meta property="og:description" content="Creates a keras model implementation of the u-net architecture
-avaialable here:" />
+<meta property="og:title" content="White matter hyperintensity probabilistic segmentation — wmhSegmentation" />
+<meta property="og:description" content="Perform white matter hyperintensity probabilistic segmentation
+using deep learning" />
 
 
 
@@ -109,48 +109,93 @@ avaialable here:" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Implementation of the "NoBrainer" U-net architecture</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ANTsX/ANTsRNet/blob/master/R/createCustomUnetModel.R'><code>R/createCustomUnetModel.R</code></a></small>
-    <div class="hidden name"><code>createNoBrainerUnetModel3D.Rd</code></div>
+    <h1>White matter hyperintensity probabilistic segmentation</h1>
+    <small class="dont-index">Source: <a href='https://github.com/ANTsX/ANTsRNet/blob/master/R/whiteMatterHyperintensitySegmentation.R'><code>R/whiteMatterHyperintensitySegmentation.R</code></a></small>
+    <div class="hidden name"><code>wmhSegmentation.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Creates a keras model implementation of the u-net architecture
-avaialable here:</p>
+    <p>Perform white matter hyperintensity probabilistic segmentation
+using deep learning</p>
     </div>
 
-    <pre class="usage"><span class='fu'>createNoBrainerUnetModel3D</span><span class='op'>(</span><span class='va'>inputImageSize</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>wmhSegmentation</span><span class='op'>(</span>
+  <span class='va'>flair</span>,
+  <span class='va'>t1</span>,
+  whiteMatterMask <span class='op'>=</span> <span class='cn'>NULL</span>,
+  useCombinedModel <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  predictionBatchSize <span class='op'>=</span> <span class='fl'>16</span>,
+  patchStrideLength <span class='op'>=</span> <span class='fl'>32</span>,
+  doPreprocessing <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  antsxnetCacheDirectory <span class='op'>=</span> <span class='cn'>NULL</span>,
+  verbose <span class='op'>=</span> <span class='cn'>FALSE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>inputImageSize</th>
-      <td><p>Used for specifying the input tensor shape.  The
-shape (or dimension) of that tensor is the image dimensions followed by
-the number of channels (e.g., red, green, and blue).</p></td>
+      <th>flair</th>
+      <td><p>input 3-D FLAIR brain image.</p></td>
+    </tr>
+    <tr>
+      <th>t1</th>
+      <td><p>input 3-D T1-weighted brain image (assumed to be aligned to
+the flair).</p></td>
+    </tr>
+    <tr>
+      <th>whiteMatterMask</th>
+      <td><p>input white matter mask for patch extraction.  If None,
+calculated using deepAtropos (labels 3 and 4).</p></td>
+    </tr>
+    <tr>
+      <th>useCombinedModel</th>
+      <td><p>Original or combined.</p></td>
+    </tr>
+    <tr>
+      <th>predictionBatchSize</th>
+      <td><p>Control memory usage for prediction.  More consequential
+for GPU-usage.</p></td>
+    </tr>
+    <tr>
+      <th>patchStrideLength</th>
+      <td><p>3-D vector or int.   Dictates the stride length for
+accumulating predicting patches.</p></td>
+    </tr>
+    <tr>
+      <th>doPreprocessing</th>
+      <td><p>perform n4 bias correction, intensity truncation, brain
+extraction.</p></td>
+    </tr>
+    <tr>
+      <th>antsxnetCacheDirectory</th>
+      <td><p>destination directory for storing the downloaded
+template and model weights.  Since these can be resused, if
+<code><a href='https://rdrr.io/r/base/NULL.html'>is.null(antsxnetCacheDirectory)</a></code>, these data will be downloaded to the
+inst/extdata/ subfolder of the ANTsRNet package.</p></td>
+    </tr>
+    <tr>
+      <th>verbose</th>
+      <td><p>print progress.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a u-net keras model</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    
-<pre>    \url{https://github.com/neuronets/nobrainer/}
-</pre>
-
+    <p>probabilistic image.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Tustison NJ</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
 <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span> <span class='va'><a href='https://github.com/ANTsX/ANTsRNet'>ANTsRNet</a></span> <span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span> <span class='va'><a href='https://keras.rstudio.com'>keras</a></span> <span class='op'>)</span>
 
-<span class='va'>model</span> <span class='op'>&lt;-</span> <span class='fu'>createNoBrainerUnetModel3D</span><span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span> <span class='cn'>NULL</span>, <span class='cn'>NULL</span>, <span class='cn'>NULL</span>, <span class='fl'>1</span> <span class='op'>)</span> <span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in py_discover_config(required_module, use_environment): Python specified in RETICULATE_PYTHON (/Users/ntustison/anaconda3/envs/antsx/bin/python3) does not exist</span></div><div class='input'>
+<span class='va'>t1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/antsImageRead.html'>antsImageRead</a></span><span class='op'>(</span> <span class='st'>"t1.nii.gz"</span> <span class='op'>)</span>
+<span class='va'>flair</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/antsImageRead.html'>antsImageRead</a></span><span class='op'>(</span> <span class='st'>"flair.nii.gz"</span> <span class='op'>)</span>
+<span class='va'>results</span> <span class='op'>&lt;-</span> <span class='fu'>wmhSegmentation</span><span class='op'>(</span> <span class='va'>t1</span>, <span class='va'>flair</span> <span class='op'>)</span>
+<span class='op'>}</span>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

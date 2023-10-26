@@ -237,7 +237,7 @@ chexnet <- function( image,
     {
     modelFileName <- getPretrainedNetwork( "chexnetClassificationModel",
                                            antsxnetCacheDirectory = antsxnetCacheDirectory )
-    model <- tensorflow::tf$keras$models$load_model( modelFileName )
+    model <- tensorflow::tf$keras$models$load_model( modelFileName, compile = FALSE )
 
     batchX <- array( data = 0, dim = c( 1, imageSize, numberOfChannels ) )
     imageArray <- as.array( resampledImage )
@@ -256,7 +256,7 @@ chexnet <- function( image,
     } else {
     modelFileName <- getPretrainedNetwork( "chexnetClassificationANTsXNetModel",
                                            antsxnetCacheDirectory = antsxnetCacheDirectory )
-    model <- tensorflow::tf$keras$models$load_model( modelFileName )
+    model <- tensorflow::tf$keras$models$load_model( modelFileName, compile = FALSE )
 
     resampledLungMask <- NULL
     if( is.null( lungMask ) )

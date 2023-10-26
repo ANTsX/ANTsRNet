@@ -145,15 +145,16 @@
 <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span> <span class='va'><a href='https://keras.rstudio.com'>keras</a></span> <span class='op'>)</span>
 
 <span class='va'>model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='createUnetModel2D.html'>createUnetModel2D</a></span><span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='fl'>64</span>, <span class='fl'>64</span>, <span class='fl'>1</span> <span class='op'>)</span> <span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='error'>Error in py_discover_config(required_module, use_environment): Python specified in RETICULATE_PYTHON (/Users/ntustison/anaconda3/envs/antsx/bin/python3) does not exist</span></div><div class='input'>
 <span class='va'>metric_peak_signal_to_noise_ratio</span> <span class='op'>&lt;-</span>
   <span class='fu'><a href='https://rdrr.io/pkg/keras/man/metric_binary_accuracy.html'>custom_metric</a></span><span class='op'>(</span> <span class='st'>"peak_signal_to_noise_ratio"</span>,
     <span class='va'>peak_signal_to_noise_ratio</span> <span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='error'>Error in value[[3L]](cond): The R function's signature must not contains esoteric Python-incompatible constructs. Detailed traceback: </span>
+#&gt; <span class='error'>Python specified in RETICULATE_PYTHON (/Users/ntustison/anaconda3/envs/antsx/bin/python3) does not exist</span></div><div class='input'>
 <span class='va'>model</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://generics.r-lib.org/reference/compile.html'>compile</a></span><span class='op'>(</span> loss <span class='op'>=</span> <span class='va'>loss_categorical_crossentropy</span>,
   optimizer <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/optimizer_adam.html'>optimizer_adam</a></span><span class='op'>(</span> lr <span class='op'>=</span> <span class='fl'>0.0001</span> <span class='op'>)</span>,
   metrics <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='va'>metric_peak_signal_to_noise_ratio</span> <span class='op'>)</span> <span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='error'>Error in compile(., loss = loss_categorical_crossentropy, optimizer = optimizer_adam(lr = 1e-04),     metrics = c(metric_peak_signal_to_noise_ratio)): object 'model' not found</span></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

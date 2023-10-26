@@ -251,11 +251,12 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 
 <span class='va'>model</span> <span class='op'>&lt;-</span> <span class='fu'>createDenseUnetModel2D</span><span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span><span class='op'>(</span> <span class='va'>domainImage</span> <span class='op'>)</span>, <span class='fl'>1L</span> <span class='op'>)</span>,
   numberOfOutputs <span class='op'>=</span> <span class='va'>numberOfLabels</span> <span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='error'>Error in py_discover_config(required_module, use_environment): Python specified in RETICULATE_PYTHON (/Users/ntustison/anaconda3/envs/antsx/bin/python3) does not exist</span></div><div class='input'>
 <span class='va'>metric_multilabel_dice_coefficient</span> <span class='op'>&lt;-</span>
   <span class='fu'><a href='https://rdrr.io/pkg/keras/man/metric_binary_accuracy.html'>custom_metric</a></span><span class='op'>(</span> <span class='st'>"multilabel_dice_coefficient"</span>,
     <span class='va'>multilabel_dice_coefficient</span> <span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='error'>Error in value[[3L]](cond): The R function's signature must not contains esoteric Python-incompatible constructs. Detailed traceback: </span>
+#&gt; <span class='error'>Python specified in RETICULATE_PYTHON (/Users/ntustison/anaconda3/envs/antsx/bin/python3) does not exist</span></div><div class='input'>
 <span class='va'>loss_dice</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span> <span class='va'>y_true</span>, <span class='va'>y_pred</span> <span class='op'>)</span> <span class='op'>{</span>
   <span class='op'>-</span><span class='fu'><a href='multilabel_dice_coefficient.html'>multilabel_dice_coefficient</a></span><span class='op'>(</span><span class='va'>y_true</span>, <span class='va'>y_pred</span><span class='op'>)</span>
 <span class='op'>}</span>
@@ -265,7 +266,7 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
   optimizer <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/optimizer_adam.html'>optimizer_adam</a></span><span class='op'>(</span> lr <span class='op'>=</span> <span class='fl'>0.0001</span> <span class='op'>)</span>,
   metrics <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='va'>metric_multilabel_dice_coefficient</span>,
     <span class='va'>metric_categorical_crossentropy</span> <span class='op'>)</span> <span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='error'>Error in compile(., loss = loss_dice, optimizer = optimizer_adam(lr = 1e-04),     metrics = c(metric_multilabel_dice_coefficient, metric_categorical_crossentropy)): object 'model' not found</span></div><div class='input'>
 <span class='co'># Comment out the rest due to travis build constraints</span>
 
 <span class='co'># Fit the model</span>
@@ -286,9 +287,9 @@ Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes</p>
 <span class='co'># save_model_hdf5( model, filepath = 'unetModel.h5' )</span>
 <span class='co'># save_model_weights_hdf5( unetModel, filepath = 'unetModelWeights.h5' ) )</span>
 <span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span><span class='op'>(</span><span class='va'>model</span><span class='op'>)</span>; <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2561904 136.9    4568944 244.1         NA   4568944  244.1
-#&gt; Vcells 6207977  47.4   26012446 198.5      65536 150730234 1150.0</div></pre>
+</div><div class='output co'>#&gt; <span class='warning'>Warning: object 'model' not found</span></div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb) max used  (Mb)
+#&gt; Ncells 2509647 134.1    4570014 244.1         NA  4570014 244.1
+#&gt; Vcells 5995570  45.8   12255594  93.6      65536 10006078  76.4</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

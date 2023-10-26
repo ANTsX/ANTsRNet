@@ -167,15 +167,15 @@ mask used to limit the region of reconstruction from the patches.</p></td>
   <span class='fu'>reconstructImageFromPatches</span><span class='op'>(</span> <span class='va'>patchSet</span>, <span class='va'>image</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='fl'>8</span>, <span class='fl'>8</span> <span class='op'>)</span> <span class='op'>)</span>
 <span class='fu'>testthat</span><span class='fu'>::</span><span class='fu'><a href='https://testthat.r-lib.org/reference/equality-expectations.html'>expect_equal</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/as.array.html'>as.array</a></span><span class='op'>(</span><span class='va'>image</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/as.array.html'>as.array</a></span><span class='op'>(</span><span class='va'>imageReconstructed</span><span class='op'>)</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span><span class='op'>(</span><span class='va'>image</span><span class='op'>)</span>; <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2655045 141.8    4568944 244.1         NA   4568944  244.1
-#&gt; Vcells 9895790  75.5   28709858 219.1      65536 150730234 1150.0</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span><span class='op'>(</span><span class='va'>patchSet</span><span class='op'>)</span>; <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2652060 141.7    4568944 244.1         NA   4568944  244.1
-#&gt; Vcells 7332700  56.0   28709858 219.1      65536 150730234 1150.0</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span><span class='op'>(</span><span class='va'>imageReconstructed</span><span class='op'>)</span>; <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2652054 141.7    4568944 244.1         NA   4568944  244.1
-#&gt; Vcells 7332726  56.0   28709858 219.1      65536 150730234 1150.0</div></pre>
+</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb) max used  (Mb)
+#&gt; Ncells 2594286 138.6    4570014 244.1         NA  4570014 244.1
+#&gt; Vcells 7150046  54.6   14786712 112.9      65536 12254504  93.5</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span><span class='op'>(</span><span class='va'>patchSet</span><span class='op'>)</span>; <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb) max used  (Mb)
+#&gt; Ncells 2592270 138.5    4570014 244.1         NA  4570014 244.1
+#&gt; Vcells 4588571  35.1   14786712 112.9      65536 12254504  93.5</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span><span class='op'>(</span><span class='va'>imageReconstructed</span><span class='op'>)</span>; <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb) max used  (Mb)
+#&gt; Ncells 2592264 138.5    4570014 244.1         NA  4570014 244.1
+#&gt; Vcells 4588597  35.1   14786712 112.9      65536 12254504  93.5</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

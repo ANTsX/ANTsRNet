@@ -172,12 +172,12 @@ random displacements are chosen (random normal:  mean = 0, sd = <code>sdDisplace
 <span class='va'>image</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/antsImageRead.html'>antsImageRead</a></span><span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/pkg/ANTsRCore/man/getANTsRData.html'>getANTsRData</a></span><span class='op'>(</span> <span class='st'>"r16"</span> <span class='op'>)</span> <span class='op'>)</span>
 <span class='va'>transformedImage</span> <span class='op'>&lt;-</span> <span class='fu'>histogramWarpImageIntensities</span><span class='op'>(</span> <span class='va'>image</span>, transformDomainSize <span class='op'>=</span> <span class='fl'>10</span> <span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span><span class='op'>(</span><span class='va'>image</span><span class='op'>)</span>; <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2611223 139.5    4568944 244.1         NA   4568944  244.1
-#&gt; Vcells 7119762  54.4   28709858 219.1      65536 150730234 1150.0</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span><span class='op'>(</span><span class='va'>transformedImage</span><span class='op'>)</span>; <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2610305 139.5    4568944 244.1         NA   4568944  244.1
-#&gt; Vcells 7118268  54.4   28709858 219.1      65536 150730234 1150.0</div></pre>
+</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb) max used  (Mb)
+#&gt; Ncells 2550818 136.3    4570014 244.1         NA  4570014 244.1
+#&gt; Vcells 4504643  34.4   12255594  93.6      65536 12254504  93.5</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span><span class='op'>(</span><span class='va'>transformedImage</span><span class='op'>)</span>; <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb) max used  (Mb)
+#&gt; Ncells 2550203 136.2    4570014 244.1         NA  4570014 244.1
+#&gt; Vcells 4503654  34.4   12255594  93.6      65536 12254504  93.5</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -59,15 +59,11 @@ image segmentation
 X. Li, H. Chen, X. Qi, Q. Dou, C.-W. Fu, P.-A. Heng. H-DenseUNet: Hybrid
 Densely Connected UNet for Liver and Tumor Segmentation from CT Volumes
 
-available here:
+available here:\preformatted{    https://arxiv.org/pdf/1709.07330.pdf
+}
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{    https://arxiv.org/pdf/1709.07330.pdf
-}\if{html}{\out{</div>}}
-
-with the author's implementation available at:
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{    https://github.com/xmengli999/H-DenseUNet
-}\if{html}{\out{</div>}}
+with the author's implementation available at:\preformatted{    https://github.com/xmengli999/H-DenseUNet
+}
 }
 \examples{
 library( ANTsR )

@@ -250,11 +250,12 @@ implementation:</p><pre>    \url{https://github.com/joelthelion/ultrasound-nerve
 <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span> <span class='va'><a href='https://keras.rstudio.com'>keras</a></span> <span class='op'>)</span>
 
 <span class='va'>model</span> <span class='op'>&lt;-</span> <span class='fu'>createUnetModel3D</span><span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='fl'>64</span>, <span class='fl'>64</span>, <span class='fl'>64</span>, <span class='fl'>1</span> <span class='op'>)</span> <span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='error'>Error in py_discover_config(required_module, use_environment): Python specified in RETICULATE_PYTHON (/Users/ntustison/anaconda3/envs/antsx/bin/python3) does not exist</span></div><div class='input'>
 <span class='va'>metric_multilabel_dice_coefficient</span> <span class='op'>&lt;-</span>
   <span class='fu'><a href='https://rdrr.io/pkg/keras/man/metric_binary_accuracy.html'>custom_metric</a></span><span class='op'>(</span> <span class='st'>"multilabel_dice_coefficient"</span>,
     <span class='va'>multilabel_dice_coefficient</span> <span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='error'>Error in value[[3L]](cond): The R function's signature must not contains esoteric Python-incompatible constructs. Detailed traceback: </span>
+#&gt; <span class='error'>Python specified in RETICULATE_PYTHON (/Users/ntustison/anaconda3/envs/antsx/bin/python3) does not exist</span></div><div class='input'>
 <span class='va'>loss_dice</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span> <span class='va'>y_true</span>, <span class='va'>y_pred</span> <span class='op'>)</span> <span class='op'>{</span>
   <span class='op'>-</span><span class='fu'><a href='multilabel_dice_coefficient.html'>multilabel_dice_coefficient</a></span><span class='op'>(</span><span class='va'>y_true</span>, <span class='va'>y_pred</span><span class='op'>)</span>
 <span class='op'>}</span>
@@ -263,154 +264,9 @@ implementation:</p><pre>    \url{https://github.com/joelthelion/ultrasound-nerve
 <span class='va'>model</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://generics.r-lib.org/reference/compile.html'>compile</a></span><span class='op'>(</span> loss <span class='op'>=</span> <span class='va'>loss_dice</span>,
   optimizer <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/keras/man/optimizer_adam.html'>optimizer_adam</a></span><span class='op'>(</span> lr <span class='op'>=</span> <span class='fl'>0.0001</span> <span class='op'>)</span>,
   metrics <span class='op'>=</span> <span class='va'>metric_multilabel_dice_coefficient</span> <span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in py_call_impl(callable, dots$args, dots$keywords): TypeError: Failed to convert object of type &lt;class 'function'&gt; to Tensor. Contents: &lt;function make_python_function.&lt;locals&gt;.python_function at 0x7fa2033de2f0&gt;. Consider casting elements to a supported type.</span>
-#&gt; <span class='error'></span>
-#&gt; <span class='error'>Detailed traceback:</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/training/tracking/base.py", line 517, in _method_wrapper</span>
-#&gt; <span class='error'>    result = method(self, *args, **kwargs)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/keras/engine/training_v1.py", line 450, in compile</span>
-#&gt; <span class='error'>    masks=self._prepare_output_masks())</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/keras/engine/training_v1.py", line 1957, in _handle_metrics</span>
-#&gt; <span class='error'>    target, output, output_mask))</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/keras/engine/training_v1.py", line 1908, in _handle_per_output_metrics</span>
-#&gt; <span class='error'>    metric_fn, y_true, y_pred, weights=weights, mask=mask)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/keras/engine/training_utils_v1.py", line 1064, in call_metric_function</span>
-#&gt; <span class='error'>    return metric_fn(y_true, y_pred, sample_weight=weights)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/keras/metrics.py", line 237, in __call__</span>
-#&gt; <span class='error'>    replica_local_fn, *args, **kwargs)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/keras/distribute/distributed_training_utils.py", line 66, in call_replica_local_fn</span>
-#&gt; <span class='error'>    return fn(*args, **kwargs)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/keras/metrics.py", line 217, in replica_local_fn</span>
-#&gt; <span class='error'>    update_op = self.update_state(*args, **kwargs)  # pylint: disable=not-callable</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/keras/utils/metrics_utils.py", line 90, in decorated</span>
-#&gt; <span class='error'>    update_op = update_state_fn(*args, **kwargs)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/keras/metrics.py", line 177, in update_state_fn</span>
-#&gt; <span class='error'>    return ag_update_state(*args, **kwargs)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/autograph/impl/api.py", line 667, in wrapper</span>
-#&gt; <span class='error'>    return converted_call(f, args, kwargs, options=options)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/autograph/impl/api.py", line 350, in converted_call</span>
-#&gt; <span class='error'>    return _call_unconverted(f, args, kwargs, options, False)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/autograph/impl/api.py", line 478, in _call_unconverted</span>
-#&gt; <span class='error'>    return f(*args, **kwargs)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/keras/metrics.py", line 620, in update_state</span>
-#&gt; <span class='error'>    matches, sample_weight=sample_weight)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/keras/metrics.py", line 355, in update_state</span>
-#&gt; <span class='error'>    values = math_ops.cast(values, self._dtype)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/util/dispatch.py", line 201, in wrapper</span>
-#&gt; <span class='error'>    return target(*args, **kwargs)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/ops/math_ops.py", line 964, in cast</span>
-#&gt; <span class='error'>    x = ops.convert_to_tensor(x, name="x")</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/profiler/trace.py", line 163, in wrapped</span>
-#&gt; <span class='error'>    return func(*args, **kwargs)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/framework/ops.py", line 1540, in convert_to_tensor</span>
-#&gt; <span class='error'>    ret = conversion_func(value, dtype=dtype, name=name, as_ref=as_ref)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/framework/constant_op.py", line 339, in _constant_tensor_conversion_function</span>
-#&gt; <span class='error'>    return constant(v, dtype=dtype, name=name)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/framework/constant_op.py", line 265, in constant</span>
-#&gt; <span class='error'>    allow_broadcast=True)</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/framework/constant_op.py", line 283, in _constant_impl</span>
-#&gt; <span class='error'>    allow_broadcast=allow_broadcast))</span>
-#&gt; <span class='error'>  File "/Users/ntustison/anaconda3/envs/r-reticulate/lib/python3.6/site-packages/tensorflow/python/framework/tensor_util.py", line 553, in make_tensor_proto</span>
-#&gt; <span class='error'>    "supported type." % (type(values), values))</span></div><div class='input'>
+</div><div class='output co'>#&gt; <span class='error'>Error in compile(., loss = loss_dice, optimizer = optimizer_adam(lr = 1e-04),     metrics = metric_multilabel_dice_coefficient): object 'model' not found</span></div><div class='input'>
 <span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span> <span class='va'>model</span> <span class='op'>)</span>
-</div><div class='output co'>#&gt; Model
-#&gt; Model: "model_42"
-#&gt; ________________________________________________________________________________
-#&gt; Layer (type)              Output Shape      Param #  Connected to               
-#&gt; ================================================================================
-#&gt; input_4 (InputLayer)      [(None, 64, 64, 6 0                                   
-#&gt; ________________________________________________________________________________
-#&gt; conv3d_207 (Conv3D)       (None, 64, 64, 64 896      input_4[0][0]              
-#&gt; ________________________________________________________________________________
-#&gt; re_lu_90 (ReLU)           (None, 64, 64, 64 0        conv3d_207[0][0]           
-#&gt; ________________________________________________________________________________
-#&gt; conv3d_208 (Conv3D)       (None, 64, 64, 64 27680    re_lu_90[0][0]             
-#&gt; ________________________________________________________________________________
-#&gt; re_lu_91 (ReLU)           (None, 64, 64, 64 0        conv3d_208[0][0]           
-#&gt; ________________________________________________________________________________
-#&gt; max_pooling3d_10 (MaxPool (None, 32, 32, 32 0        re_lu_91[0][0]             
-#&gt; ________________________________________________________________________________
-#&gt; conv3d_209 (Conv3D)       (None, 32, 32, 32 55360    max_pooling3d_10[0][0]     
-#&gt; ________________________________________________________________________________
-#&gt; re_lu_92 (ReLU)           (None, 32, 32, 32 0        conv3d_209[0][0]           
-#&gt; ________________________________________________________________________________
-#&gt; conv3d_210 (Conv3D)       (None, 32, 32, 32 110656   re_lu_92[0][0]             
-#&gt; ________________________________________________________________________________
-#&gt; re_lu_93 (ReLU)           (None, 32, 32, 32 0        conv3d_210[0][0]           
-#&gt; ________________________________________________________________________________
-#&gt; max_pooling3d_11 (MaxPool (None, 16, 16, 16 0        re_lu_93[0][0]             
-#&gt; ________________________________________________________________________________
-#&gt; conv3d_211 (Conv3D)       (None, 16, 16, 16 221312   max_pooling3d_11[0][0]     
-#&gt; ________________________________________________________________________________
-#&gt; re_lu_94 (ReLU)           (None, 16, 16, 16 0        conv3d_211[0][0]           
-#&gt; ________________________________________________________________________________
-#&gt; conv3d_212 (Conv3D)       (None, 16, 16, 16 442496   re_lu_94[0][0]             
-#&gt; ________________________________________________________________________________
-#&gt; re_lu_95 (ReLU)           (None, 16, 16, 16 0        conv3d_212[0][0]           
-#&gt; ________________________________________________________________________________
-#&gt; max_pooling3d_12 (MaxPool (None, 8, 8, 8, 1 0        re_lu_95[0][0]             
-#&gt; ________________________________________________________________________________
-#&gt; conv3d_213 (Conv3D)       (None, 8, 8, 8, 2 884992   max_pooling3d_12[0][0]     
-#&gt; ________________________________________________________________________________
-#&gt; re_lu_96 (ReLU)           (None, 8, 8, 8, 2 0        conv3d_213[0][0]           
-#&gt; ________________________________________________________________________________
-#&gt; conv3d_214 (Conv3D)       (None, 8, 8, 8, 2 1769728  re_lu_96[0][0]             
-#&gt; ________________________________________________________________________________
-#&gt; re_lu_97 (ReLU)           (None, 8, 8, 8, 2 0        conv3d_214[0][0]           
-#&gt; ________________________________________________________________________________
-#&gt; conv3d_transpose_36 (Conv (None, 8, 8, 8, 1 262272   re_lu_97[0][0]             
-#&gt; ________________________________________________________________________________
-#&gt; up_sampling3d_12 (UpSampl (None, 16, 16, 16 0        conv3d_transpose_36[0][0]  
-#&gt; ________________________________________________________________________________
-#&gt; concatenate_198 (Concaten (None, 16, 16, 16 0        up_sampling3d_12[0][0]     
-#&gt;                                                      re_lu_95[0][0]             
-#&gt; ________________________________________________________________________________
-#&gt; conv3d_215 (Conv3D)       (None, 16, 16, 16 884864   concatenate_198[0][0]      
-#&gt; ________________________________________________________________________________
-#&gt; re_lu_98 (ReLU)           (None, 16, 16, 16 0        conv3d_215[0][0]           
-#&gt; ________________________________________________________________________________
-#&gt; conv3d_216 (Conv3D)       (None, 16, 16, 16 442496   re_lu_98[0][0]             
-#&gt; ________________________________________________________________________________
-#&gt; re_lu_99 (ReLU)           (None, 16, 16, 16 0        conv3d_216[0][0]           
-#&gt; ________________________________________________________________________________
-#&gt; conv3d_transpose_37 (Conv (None, 16, 16, 16 65600    re_lu_99[0][0]             
-#&gt; ________________________________________________________________________________
-#&gt; up_sampling3d_13 (UpSampl (None, 32, 32, 32 0        conv3d_transpose_37[0][0]  
-#&gt; ________________________________________________________________________________
-#&gt; concatenate_199 (Concaten (None, 32, 32, 32 0        up_sampling3d_13[0][0]     
-#&gt;                                                      re_lu_93[0][0]             
-#&gt; ________________________________________________________________________________
-#&gt; conv3d_217 (Conv3D)       (None, 32, 32, 32 221248   concatenate_199[0][0]      
-#&gt; ________________________________________________________________________________
-#&gt; re_lu_100 (ReLU)          (None, 32, 32, 32 0        conv3d_217[0][0]           
-#&gt; ________________________________________________________________________________
-#&gt; conv3d_218 (Conv3D)       (None, 32, 32, 32 110656   re_lu_100[0][0]            
-#&gt; ________________________________________________________________________________
-#&gt; re_lu_101 (ReLU)          (None, 32, 32, 32 0        conv3d_218[0][0]           
-#&gt; ________________________________________________________________________________
-#&gt; conv3d_transpose_38 (Conv (None, 32, 32, 32 16416    re_lu_101[0][0]            
-#&gt; ________________________________________________________________________________
-#&gt; up_sampling3d_14 (UpSampl (None, 64, 64, 64 0        conv3d_transpose_38[0][0]  
-#&gt; ________________________________________________________________________________
-#&gt; concatenate_200 (Concaten (None, 64, 64, 64 0        up_sampling3d_14[0][0]     
-#&gt;                                                      re_lu_91[0][0]             
-#&gt; ________________________________________________________________________________
-#&gt; conv3d_219 (Conv3D)       (None, 64, 64, 64 55328    concatenate_200[0][0]      
-#&gt; ________________________________________________________________________________
-#&gt; re_lu_102 (ReLU)          (None, 64, 64, 64 0        conv3d_219[0][0]           
-#&gt; ________________________________________________________________________________
-#&gt; conv3d_220 (Conv3D)       (None, 64, 64, 64 27680    re_lu_102[0][0]            
-#&gt; ________________________________________________________________________________
-#&gt; re_lu_103 (ReLU)          (None, 64, 64, 64 0        conv3d_220[0][0]           
-#&gt; ________________________________________________________________________________
-#&gt; conv3d_221 (Conv3D)       (None, 64, 64, 64 66       re_lu_103[0][0]            
-#&gt; ================================================================================
-#&gt; Total params: 5,599,746
-#&gt; Trainable params: 5,599,746
-#&gt; Non-trainable params: 0
-#&gt; ________________________________________________________________________________
-#&gt; 
-#&gt; </div><div class='input'>
+</div><div class='output co'>#&gt; <span class='error'>Error in print(model): object 'model' not found</span></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

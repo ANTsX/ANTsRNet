@@ -152,77 +152,10 @@ generator and discriminator.
 <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span> <span class='va'><a href='https://github.com/ANTsX/ANTsRNet'>ANTsRNet</a></span> <span class='op'>)</span>
 
 <span class='fu'>keras</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/keras/man/backend.html'>backend</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>clear_session</span><span class='op'>(</span><span class='op'>)</span>
-<span class='va'>ganModel</span> <span class='op'>&lt;-</span> <span class='va'>CycleGanModel</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in py_discover_config(required_module, use_environment): Python specified in RETICULATE_PYTHON (/Users/ntustison/anaconda3/envs/antsx/bin/python3) does not exist</span></div><div class='input'><span class='va'>ganModel</span> <span class='op'>&lt;-</span> <span class='va'>CycleGanModel</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span>
    inputImageSize <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='fl'>128</span>, <span class='fl'>128</span>, <span class='fl'>3</span> <span class='op'>)</span> <span class='op'>)</span>
-<span class='va'>ganModel</span><span class='op'>$</span><span class='fu'>buildGenerator</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; Model
-#&gt; Model: "model_5"
-#&gt; ________________________________________________________________________________
-#&gt; Layer (type)              Output Shape      Param #  Connected to               
-#&gt; ================================================================================
-#&gt; input_7 (InputLayer)      [(None, 128, 128, 0                                   
-#&gt; ________________________________________________________________________________
-#&gt; conv2d_26 (Conv2D)        (None, 64, 64, 32 1568     input_7[0][0]              
-#&gt; ________________________________________________________________________________
-#&gt; leaky_re_lu_16 (LeakyReLU (None, 64, 64, 32 0        conv2d_26[0][0]            
-#&gt; ________________________________________________________________________________
-#&gt; r_layer_20 (RLayer)       (None, 64, 64, 32 2        leaky_re_lu_16[0][0]       
-#&gt; ________________________________________________________________________________
-#&gt; conv2d_27 (Conv2D)        (None, 32, 32, 64 32832    r_layer_20[0][0]           
-#&gt; ________________________________________________________________________________
-#&gt; leaky_re_lu_17 (LeakyReLU (None, 32, 32, 64 0        conv2d_27[0][0]            
-#&gt; ________________________________________________________________________________
-#&gt; r_layer_21 (RLayer)       (None, 32, 32, 64 2        leaky_re_lu_17[0][0]       
-#&gt; ________________________________________________________________________________
-#&gt; conv2d_28 (Conv2D)        (None, 16, 16, 12 131200   r_layer_21[0][0]           
-#&gt; ________________________________________________________________________________
-#&gt; leaky_re_lu_18 (LeakyReLU (None, 16, 16, 12 0        conv2d_28[0][0]            
-#&gt; ________________________________________________________________________________
-#&gt; r_layer_22 (RLayer)       (None, 16, 16, 12 2        leaky_re_lu_18[0][0]       
-#&gt; ________________________________________________________________________________
-#&gt; conv2d_29 (Conv2D)        (None, 8, 8, 256) 524544   r_layer_22[0][0]           
-#&gt; ________________________________________________________________________________
-#&gt; leaky_re_lu_19 (LeakyReLU (None, 8, 8, 256) 0        conv2d_29[0][0]            
-#&gt; ________________________________________________________________________________
-#&gt; r_layer_23 (RLayer)       (None, 8, 8, 256) 2        leaky_re_lu_19[0][0]       
-#&gt; ________________________________________________________________________________
-#&gt; up_sampling2d_8 (UpSampli (None, 16, 16, 25 0        r_layer_23[0][0]           
-#&gt; ________________________________________________________________________________
-#&gt; conv2d_30 (Conv2D)        (None, 16, 16, 12 524416   up_sampling2d_8[0][0]      
-#&gt; ________________________________________________________________________________
-#&gt; r_layer_24 (RLayer)       (None, 16, 16, 12 2        conv2d_30[0][0]            
-#&gt; ________________________________________________________________________________
-#&gt; concatenate_6 (Concatenat (None, 16, 16, 25 0        r_layer_24[0][0]           
-#&gt;                                                      r_layer_22[0][0]           
-#&gt; ________________________________________________________________________________
-#&gt; up_sampling2d_9 (UpSampli (None, 32, 32, 25 0        concatenate_6[0][0]        
-#&gt; ________________________________________________________________________________
-#&gt; conv2d_31 (Conv2D)        (None, 32, 32, 64 262208   up_sampling2d_9[0][0]      
-#&gt; ________________________________________________________________________________
-#&gt; r_layer_25 (RLayer)       (None, 32, 32, 64 2        conv2d_31[0][0]            
-#&gt; ________________________________________________________________________________
-#&gt; concatenate_7 (Concatenat (None, 32, 32, 12 0        r_layer_25[0][0]           
-#&gt;                                                      r_layer_21[0][0]           
-#&gt; ________________________________________________________________________________
-#&gt; up_sampling2d_10 (UpSampl (None, 64, 64, 12 0        concatenate_7[0][0]        
-#&gt; ________________________________________________________________________________
-#&gt; conv2d_32 (Conv2D)        (None, 64, 64, 32 65568    up_sampling2d_10[0][0]     
-#&gt; ________________________________________________________________________________
-#&gt; r_layer_26 (RLayer)       (None, 64, 64, 32 2        conv2d_32[0][0]            
-#&gt; ________________________________________________________________________________
-#&gt; concatenate_8 (Concatenat (None, 64, 64, 64 0        r_layer_26[0][0]           
-#&gt;                                                      r_layer_20[0][0]           
-#&gt; ________________________________________________________________________________
-#&gt; up_sampling2d_11 (UpSampl (None, 128, 128,  0        concatenate_8[0][0]        
-#&gt; ________________________________________________________________________________
-#&gt; conv2d_33 (Conv2D)        (None, 128, 128,  3075     up_sampling2d_11[0][0]     
-#&gt; ================================================================================
-#&gt; Total params: 1,545,425
-#&gt; Trainable params: 1,545,425
-#&gt; Non-trainable params: 0
-#&gt; ________________________________________________________________________________
-#&gt; 
-#&gt; </div><div class='input'>
+</div><div class='output co'>#&gt; <span class='error'>Error in py_discover_config(required_module, use_environment): Python specified in RETICULATE_PYTHON (/Users/ntustison/anaconda3/envs/antsx/bin/python3) does not exist</span></div><div class='input'><span class='va'>ganModel</span><span class='op'>$</span><span class='fu'>buildGenerator</span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in eval(expr, envir, enclos): object 'ganModel' not found</span></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

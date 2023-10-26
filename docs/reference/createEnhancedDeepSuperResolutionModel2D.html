@@ -185,23 +185,23 @@ convolution.</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='va'>model</span> <span class='op'>=</span> <span class='fu'>createEnhancedDeepSuperResolutionModel2D</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='fl'>28</span>, <span class='fl'>28</span>, <span class='fl'>1</span> <span class='op'>)</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span><span class='op'>(</span><span class='va'>model</span><span class='op'>)</span>; <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2573572 137.5    4568944 244.1         NA   4568944  244.1
-#&gt; Vcells 4646628  35.5   20809957 158.8      65536 150730234 1150.0</div><div class='input'><span class='va'>model</span> <span class='op'>=</span> <span class='fu'>createEnhancedDeepSuperResolutionModel2D</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='fl'>28</span>, <span class='fl'>28</span>, <span class='fl'>1</span> <span class='op'>)</span>,
+</div><div class='output co'>#&gt; <span class='error'>Error in py_discover_config(required_module, use_environment): Python specified in RETICULATE_PYTHON (/Users/ntustison/anaconda3/envs/antsx/bin/python3) does not exist</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span><span class='op'>(</span><span class='va'>model</span><span class='op'>)</span>; <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='warning'>Warning: object 'model' not found</span></div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb) max used  (Mb)
+#&gt; Ncells 2512607 134.2    4570014 244.1         NA  4570014 244.1
+#&gt; Vcells 4426014  33.8   12255594  93.6      65536 10006078  76.4</div><div class='input'><span class='va'>model</span> <span class='op'>=</span> <span class='fu'>createEnhancedDeepSuperResolutionModel2D</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='fl'>28</span>, <span class='fl'>28</span>, <span class='fl'>1</span> <span class='op'>)</span>,
 doBatchNormalization <span class='op'>=</span> <span class='cn'>TRUE</span>,
 interpolation <span class='op'>=</span> <span class='st'>"conv"</span>, scale <span class='op'>=</span> <span class='fl'>4</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span><span class='op'>(</span><span class='va'>model</span><span class='op'>)</span>; <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2573807 137.5    4568944 244.1         NA   4568944  244.1
-#&gt; Vcells 4647033  35.5   20809957 158.8      65536 150730234 1150.0</div><div class='input'><span class='va'>model</span> <span class='op'>=</span> <span class='fu'>createEnhancedDeepSuperResolutionModel2D</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='fl'>28</span>, <span class='fl'>28</span>, <span class='fl'>1</span> <span class='op'>)</span>,
+</div><div class='output co'>#&gt; <span class='error'>Error in py_discover_config(required_module, use_environment): Python specified in RETICULATE_PYTHON (/Users/ntustison/anaconda3/envs/antsx/bin/python3) does not exist</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span><span class='op'>(</span><span class='va'>model</span><span class='op'>)</span>; <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='warning'>Warning: object 'model' not found</span></div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb) max used  (Mb)
+#&gt; Ncells 2511962 134.2    4570014 244.1         NA  4570014 244.1
+#&gt; Vcells 4424947  33.8   12255594  93.6      65536 10006078  76.4</div><div class='input'><span class='va'>model</span> <span class='op'>=</span> <span class='fu'>createEnhancedDeepSuperResolutionModel2D</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='fl'>28</span>, <span class='fl'>28</span>, <span class='fl'>1</span> <span class='op'>)</span>,
 doBatchNormalization <span class='op'>=</span> <span class='cn'>TRUE</span>,
 numberOfLossFunctions <span class='op'>=</span> <span class='fl'>2</span>,
 interpolation <span class='op'>=</span> <span class='st'>"conv"</span>, scale <span class='op'>=</span> <span class='fl'>8</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span><span class='op'>(</span><span class='va'>model</span><span class='op'>)</span>; <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2573557 137.5    4568944 244.1         NA   4568944  244.1
-#&gt; Vcells 4646628  35.5   20809957 158.8      65536 150730234 1150.0</div></pre>
+</div><div class='output co'>#&gt; <span class='error'>Error in py_discover_config(required_module, use_environment): Python specified in RETICULATE_PYTHON (/Users/ntustison/anaconda3/envs/antsx/bin/python3) does not exist</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span><span class='op'>(</span><span class='va'>model</span><span class='op'>)</span>; <span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='warning'>Warning: object 'model' not found</span></div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb) max used  (Mb)
+#&gt; Ncells 2511986 134.2    4570014 244.1         NA  4570014 244.1
+#&gt; Vcells 4424995  33.8   12255594  93.6      65536 10006078  76.4</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

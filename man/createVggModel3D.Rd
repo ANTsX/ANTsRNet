@@ -57,16 +57,12 @@ recognition based on the paper
 K. Simonyan and A. Zisserman, Very Deep Convolutional Networks for
 Large-Scale Image Recognition
 
-available here:
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{    \url{https://arxiv.org/abs/1409.1556}
-}\if{html}{\out{</div>}}
+available here:\preformatted{    \url{https://arxiv.org/abs/1409.1556}
+}
 
 This particular implementation was influenced by the following python
-implementation:
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{    \url{https://gist.github.com/baraldilorenzo/8d096f48a1be4a2d660d}
-}\if{html}{\out{</div>}}
+implementation:\preformatted{    \url{https://gist.github.com/baraldilorenzo/8d096f48a1be4a2d660d}
+}
 }
 \examples{
 # Simple examples, must run successfully and quickly. These will be tested.

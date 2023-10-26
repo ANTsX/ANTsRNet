@@ -160,38 +160,10 @@ convolution layer.</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>createDenoisingAutoEncoderSuperResolutionModel3D</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span> <span class='fl'>28</span>, <span class='fl'>28</span>, <span class='fl'>28</span>, <span class='fl'>1</span> <span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; Model
-#&gt; Model: "model_17"
-#&gt; ________________________________________________________________________________
-#&gt; Layer (type)              Output Shape      Param #  Connected to               
-#&gt; ================================================================================
-#&gt; input_14 (InputLayer)     [(None, 28, 28, 2 0                                   
-#&gt; ________________________________________________________________________________
-#&gt; conv3d_40 (Conv3D)        (None, 28, 28, 28 1792     input_14[0][0]             
-#&gt; ________________________________________________________________________________
-#&gt; conv3d_41 (Conv3D)        (None, 28, 28, 28 110656   conv3d_40[0][0]            
-#&gt; ________________________________________________________________________________
-#&gt; conv3d_transpose_23 (Conv (None, 28, 28, 28 110656   conv3d_41[0][0]            
-#&gt; ________________________________________________________________________________
-#&gt; add_32 (Add)              (None, 28, 28, 28 0        conv3d_41[0][0]            
-#&gt;                                                      conv3d_transpose_23[0][0]  
-#&gt; ________________________________________________________________________________
-#&gt; conv3d_transpose_24 (Conv (None, 28, 28, 28 110656   add_32[0][0]               
-#&gt; ________________________________________________________________________________
-#&gt; add_33 (Add)              (None, 28, 28, 28 0        conv3d_40[0][0]            
-#&gt;                                                      conv3d_transpose_24[0][0]  
-#&gt; ________________________________________________________________________________
-#&gt; conv3d_42 (Conv3D)        (None, 28, 28, 28 8001     add_33[0][0]               
-#&gt; ================================================================================
-#&gt; Total params: 341,761
-#&gt; Trainable params: 341,761
-#&gt; Non-trainable params: 0
-#&gt; ________________________________________________________________________________
-#&gt; 
-#&gt; </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-#&gt; Ncells 2538587 135.6    4568944 244.1         NA   4568944  244.1
-#&gt; Vcells 4610525  35.2   32139893 245.3      65536 150730234 1150.0</div></pre>
+</div><div class='output co'>#&gt; <span class='error'>Error in py_discover_config(required_module, use_environment): Python specified in RETICULATE_PYTHON (/Users/ntustison/anaconda3/envs/antsx/bin/python3) does not exist</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/gc.html'>gc</a></span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;           used  (Mb) gc trigger  (Mb) limit (Mb) max used  (Mb)
+#&gt; Ncells 2504613 133.8    4570014 244.1         NA  4570014 244.1
+#&gt; Vcells 4409936  33.7   10146329  77.5      65536  6714963  51.3</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Implementation of the "NoBrainer" U-net architecture — createNoBrainerUnetModel3D • ANTsRNet</title>
+<title>CheXNet: Radiologist-Level Pneumonia Detection on Chest X-Rays with Deep Learning — chexnet • ANTsRNet</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,27 @@
 
 
 
-<meta property="og:title" content="Implementation of the "NoBrainer" U-net architecture — createNoBrainerUnetModel3D" />
-<meta property="og:description" content="Creates a keras model implementation of the u-net architecture
-avaialable here:" />
+<meta property="og:title" content="CheXNet: Radiologist-Level Pneumonia Detection on Chest X-Rays with Deep Learning — chexnet" />
+<meta property="og:description" content="ANTsXNet reproduction of https://arxiv.org/pdf/1711.05225.pdf.  This includes
+our own network architecture and training (including data augmentation).
+Includes a network for checking the correctness of image orientation, i.e.,
+flipped left-right, up-down, or both.
+Disease categories:
+Atelectasis
+Cardiomegaly
+Consolidation
+Edema
+Effusion
+Emphysema
+Fibrosis
+Hernia
+Infiltration
+Mass
+No Finding
+Nodule
+Pleural Thickening
+Pneumonia
+Pneumothorax" />
 
 
 
@@ -109,48 +127,83 @@ avaialable here:" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Implementation of the "NoBrainer" U-net architecture</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ANTsX/ANTsRNet/blob/master/R/createCustomUnetModel.R'><code>R/createCustomUnetModel.R</code></a></small>
-    <div class="hidden name"><code>createNoBrainerUnetModel3D.Rd</code></div>
+    <h1>CheXNet: Radiologist-Level Pneumonia Detection on Chest X-Rays with Deep Learning</h1>
+    <small class="dont-index">Source: <a href='https://github.com/ANTsX/ANTsRNet/blob/master/R/chexnet.R'><code>R/chexnet.R</code></a></small>
+    <div class="hidden name"><code>chexnet.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Creates a keras model implementation of the u-net architecture
-avaialable here:</p>
+    <p>ANTsXNet reproduction of https://arxiv.org/pdf/1711.05225.pdf.  This includes
+our own network architecture and training (including data augmentation).</p>
+<p>Includes a network for checking the correctness of image orientation, i.e.,
+flipped left-right, up-down, or both.</p>
+<p>Disease categories:
+Atelectasis
+Cardiomegaly
+Consolidation
+Edema
+Effusion
+Emphysema
+Fibrosis
+Hernia
+Infiltration
+Mass
+No Finding
+Nodule
+Pleural Thickening
+Pneumonia
+Pneumothorax</p>
     </div>
 
-    <pre class="usage"><span class='fu'>createNoBrainerUnetModel3D</span><span class='op'>(</span><span class='va'>inputImageSize</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>chexnet</span><span class='op'>(</span>
+  <span class='va'>image</span>,
+  lungMask <span class='op'>=</span> <span class='cn'>NULL</span>,
+  checkImageOrientation <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  useANTsXNetVariant <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  antsxnetCacheDirectory <span class='op'>=</span> <span class='cn'>NULL</span>,
+  verbose <span class='op'>=</span> <span class='cn'>FALSE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>inputImageSize</th>
-      <td><p>Used for specifying the input tensor shape.  The
-shape (or dimension) of that tensor is the image dimensions followed by
-the number of channels (e.g., red, green, and blue).</p></td>
+      <th>image</th>
+      <td><p>input 3-D lung image.</p></td>
+    </tr>
+    <tr>
+      <th>lungMask</th>
+      <td><p>ANTsImage.  If None is specified, one is estimated.</p></td>
+    </tr>
+    <tr>
+      <th>checkImageOrientation</th>
+      <td><p>Check the correctness of image orientation, i.e.,
+flipped left-right, up-down, or both.  If TRUE, attempts to correct before prediction.</p></td>
+    </tr>
+    <tr>
+      <th>antsxnetCacheDirectory</th>
+      <td><p>destination directory for storing the downloaded
+template and model weights.  Since these can be resused, if
+<code><a href='https://rdrr.io/r/base/NULL.html'>is.null(antsxnetCacheDirectory)</a></code>, these data will be downloaded to the
+subdirectory ~/.keras/ANTsXNet/.</p></td>
+    </tr>
+    <tr>
+      <th>verbose</th>
+      <td><p>print progress.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a u-net keras model</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    
-<pre>    \url{https://github.com/neuronets/nobrainer/}
-</pre>
-
+    <p>classification scores for each of the 14 categories.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Tustison NJ</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
 <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span> <span class='va'><a href='https://github.com/ANTsX/ANTsRNet'>ANTsRNet</a></span> <span class='op'>)</span>
-
-<span class='va'>model</span> <span class='op'>&lt;-</span> <span class='fu'>createNoBrainerUnetModel3D</span><span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span> <span class='cn'>NULL</span>, <span class='cn'>NULL</span>, <span class='cn'>NULL</span>, <span class='fl'>1</span> <span class='op'>)</span> <span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in py_discover_config(required_module, use_environment): Python specified in RETICULATE_PYTHON (/Users/ntustison/anaconda3/envs/antsx/bin/python3) does not exist</span></div><div class='input'>
+<span class='op'>}</span>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

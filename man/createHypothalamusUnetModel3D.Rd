@@ -21,10 +21,8 @@ described in
 \details{
 https://pubmed.ncbi.nlm.nih.gov/32853816/
 
-and ported from the original implementation:
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{   https://github.com/BBillot/hypothalamus_seg
-}\if{html}{\out{</div>}}
+and ported from the original implementation:\preformatted{   https://github.com/BBillot/hypothalamus_seg
+}
 
 The network has is characterized by the following parameters:
 \itemize{

@@ -10,11 +10,11 @@ createSsdModel3D(
   l2Regularization = 0.0005,
   minScale = 0.1,
   maxScale = 0.9,
-  aspectRatiosPerLayer = list(c("1:1:1", "2:1:1", "1:2:1", "1:1:2"), c("1:1:1", "2:1:1",
-    "1:2:1", "1:1:2", "3:1:1", "1:3:1", "1:1:3"), c("1:1:1", "2:1:1", "1:2:1", "1:1:2",
-    "3:1:1", "1:3:1", "1:1:3"), c("1:1:1", "2:1:1", "1:2:1", "1:1:2", "3:1:1", "1:3:1",
-    "1:1:3"), c("1:1:1", "2:1:1", "1:2:1", "1:1:2"), c("1:1:1", "2:1:1", "1:2:1",
-    "1:1:2")),
+  aspectRatiosPerLayer = list(c("1:1:1", "2:1:1", "1:2:1", "1:1:2"), c("1:1:1",
+    "2:1:1", "1:2:1", "1:1:2", "3:1:1", "1:3:1", "1:1:3"), c("1:1:1", "2:1:1", "1:2:1",
+    "1:1:2", "3:1:1", "1:3:1", "1:1:3"), c("1:1:1", "2:1:1", "1:2:1", "1:1:2", "3:1:1",
+    "1:3:1", "1:1:3"), c("1:1:1", "2:1:1", "1:2:1", "1:1:2"), c("1:1:1", "2:1:1",
+    "1:2:1", "1:1:2")),
   variances = rep(1, 6),
   style = 300
 )
@@ -61,18 +61,14 @@ object detection based on the paper
 W. Liu, D. Anguelov, D. Erhan, C. Szegedy, S. Reed, C-Y. Fu, A. Berg.
 SSD: Single Shot MultiBox Detector.
 
-available here:
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{    \url{https://arxiv.org/abs/1512.02325}
-}\if{html}{\out{</div>}}
+available here:\preformatted{    \url{https://arxiv.org/abs/1512.02325}
+}
 
 This particular implementation was influenced by the following python
-and R implementations:
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{    https://github.com/pierluigiferrari/ssd_keras     
+and R implementations:\preformatted{    https://github.com/pierluigiferrari/ssd_keras     
     https://github.com/rykov8/ssd_keras
     https://github.com/gsimchoni/ssdkeras
-}\if{html}{\out{</div>}}
+}
 }
 \author{
 Tustison NJ

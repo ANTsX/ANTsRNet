@@ -17,8 +17,8 @@ a single sample
 Ported from:
 }
 \details{
-\if{html}{\out{<div class="sourceCode">}}\preformatted{    https://github.com/cpmpercussion/keras-mdn-layer/
-}\if{html}{\out{</div>}}
+\preformatted{    https://github.com/cpmpercussion/keras-mdn-layer/
+}
 }
 \examples{
 
