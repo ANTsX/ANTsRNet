@@ -319,7 +319,8 @@ lungPulmonaryArterySegmentation <- function( ct, lungMask = NULL,
       {
       message( "  Predicting batch ", b, " of ", numberOfBatches )
       }
-    prediction[indices,,,,] <- model %>% predict( batchX, verbose = verbose )
+    p <- model %>% predict( batchX, verbose = verbose )
+    prediction[indices,,,,] <- p[,,,,2, drop=FALSE]
     }  
 
   if( verbose )
