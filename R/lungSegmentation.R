@@ -313,7 +313,7 @@ lungPulmonaryArterySegmentation <- function( ct, lungMask = NULL,
       }
 
     indices <- ( ( b - 1 ) * predictionBatchSize + 1):( ( b - 1 ) * predictionBatchSize + dim( batchX )[1] )
-    batchX[,,,,i] <- ctPatches[indices,,,]
+    batchX[,,,,1] <- ctPatches[indices,,,]
 
     if( verbose )
       {
