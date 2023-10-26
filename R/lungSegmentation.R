@@ -275,7 +275,7 @@ lungPulmonaryArterySegmentation <- function( ct, lungMask = NULL,
                                     patchSize = patchSize,
                                     maxNumberOfPatches = "all",
                                     strideLength = patchStrideLength,
-                                    maskImage = brainMask,
+                                    maskImage = lungMask,
                                     randomSeed = NULL,
                                     returnAsArray = TRUE )
   totalNumberOfPatches <- dim( ctPatches )[1]
@@ -329,7 +329,7 @@ lungPulmonaryArterySegmentation <- function( ct, lungMask = NULL,
     }
   probabilityImage <- reconstructImageFromPatches( drop( prediction[,,,,2] ),
                                                    strideLength = patchStrideLength,
-                                                   domainImage = brainMask,
+                                                   domainImage = lungMask,
                                                    domainImageIsMask = TRUE )
  
   return( probabilityImage )
