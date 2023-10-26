@@ -327,7 +327,7 @@ lungPulmonaryArterySegmentation <- function( ct, lungMask = NULL,
     {
     message( "Predict patches and reconstruct." )
     }
-  probabilityImage <- reconstructImageFromPatches( drop( prediction[,,,,2] ),
+  probabilityImage <- reconstructImageFromPatches( drop( prediction[,,,,] ),
                                                    strideLength = patchStrideLength,
                                                    domainImage = lungMask,
                                                    domainImageIsMask = TRUE )
