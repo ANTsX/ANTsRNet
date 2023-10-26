@@ -271,7 +271,7 @@ lungPulmonaryArterySegmentation <- function( ct, lungMask = NULL,
     message( "Extract patches." )
     }
 
-  ctPatches <- extractImagePatches( images[[i]],
+  ctPatches <- extractImagePatches( ct,
                                     patchSize = patchSize,
                                     maxNumberOfPatches = "all",
                                     strideLength = patchStrideLength,
