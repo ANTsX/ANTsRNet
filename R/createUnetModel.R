@@ -162,11 +162,11 @@ createUnetModel2D <- function( inputImageSize,
       strides = c( 1L, 1L ) )
     gPhi <- g %>% layer_conv_2d( filters = interShape, kernel_size = c( 1L, 1L ),
       strides = c( 1L, 1L ) )
-    f <- layer_add( list( xTheta, gPhi ) ) %>% layer_activation_relu()
+    f <- layer_add( list( xTheta, gPhi ), trainable = TRUE ) %>% layer_activation_relu()
     fPsi <- f %>% layer_conv_2d( filters = 1L, kernel_size = c( 1L, 1L ),
       strides = c( 1L, 1L ) )
     alpha <- fPsi %>% layer_activation( activation = "sigmoid" )
-    attention <- layer_multiply( list( x, alpha ) )
+    attention <- layer_multiply( list( x, alpha ), trainable = TRUE  )
     return( attention )
     }
 
@@ -471,11 +471,11 @@ createUnetModel3D <- function( inputImageSize,
       strides = c( 1L, 1L, 1L ) )
     gPhi <- g %>% layer_conv_3d( filters = interShape, kernel_size = c( 1L, 1L, 1L ),
       strides = c( 1L, 1L, 1L ) )
-    f <- layer_add( list( xTheta, gPhi ) ) %>% layer_activation_relu()
+    f <- layer_add( list( xTheta, gPhi ), trainable = TRUE ) %>% layer_activation_relu()
     fPsi <- f %>% layer_conv_3d( filters = 1L, kernel_size = c( 1L, 1L, 1L ),
       strides = c( 1L, 1L, 1L ) )
     alpha <- fPsi %>% layer_activation( activation = "sigmoid" )
-    attention <- layer_multiply( list( x, alpha ) )
+    attention <- layer_multiply( list( x, alpha ), trainable = TRUE  )
     return( attention )
     }
 

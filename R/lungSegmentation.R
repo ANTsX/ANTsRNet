@@ -108,10 +108,10 @@ elBicho <- function( ventilationImage, mask,
         setTxtProgressBar( pb, i )
         }
 
-      ventilationSlice <- padOrCropImageToSize( extractSlice( preprocessedImage, i, dimensionsToPredict[d] ), templateSize )
+      ventilationSlice <- padOrCropImageToSize( extractSlice( preprocessedImage, i, dimensionsToPredict[d], collapseStrategy = 1 ), templateSize )
       batchX[sliceCount,,,1] <- as.array( ventilationSlice )
 
-      maskSlice <- padOrCropImageToSize( extractSlice( mask, i, dimensionsToPredict[d] ), templateSize )
+      maskSlice <- padOrCropImageToSize( extractSlice( mask, i, dimensionsToPredict[d], collapseStrategy = 1 ), templateSize )
       batchX[sliceCount,,,2] <- as.array( maskSlice )
 
       sliceCount <- sliceCount + 1
@@ -227,7 +227,8 @@ lungPulmonaryArterySegmentation <- function( ct, lungMask = NULL,
 
   if( is.null( lungMask ) )
     {
-    lungMask <- thresholdImage( lungExtraction( ct, modality = "ct", verbose = verbose ), 1, 3, 1, 0 )
+    lungEx <- lungExtraction( ct, modality = "ct", verbose = verbose )
+    lungMask <- thresholdImage( lungEx$segmentationImage, 0, 0, 0, 1 )
     }
   ctPreprocessed <- antsImageClone( ct )
   ctPreprocessed <- ( ctPreprocessed + 800 ) / ( 500 + 800 )
