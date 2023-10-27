@@ -209,7 +209,7 @@ elBicho <- function( ventilationImage, mask,
 #' @export
 lungPulmonaryArterySegmentation <- function( ct, lungMask = NULL, 
   predictionBatchSize = 16, patchStrideLength = 32,
-  doPreprocessing = TRUE, antsxnetCacheDirectory = NULL, verbose = FALSE )
+  antsxnetCacheDirectory = NULL, verbose = FALSE )
 {
 
   patchSize <- c( 160, 160, 160 )
@@ -271,7 +271,7 @@ lungPulmonaryArterySegmentation <- function( ct, lungMask = NULL,
     message( "Extract patches." )
     }
 
-  ctPatches <- extractImagePatches( ct,
+  ctPatches <- extractImagePatches( ctPreprocessed,
                                     patchSize = patchSize,
                                     maxNumberOfPatches = "all",
                                     strideLength = patchStrideLength,
@@ -300,7 +300,7 @@ lungPulmonaryArterySegmentation <- function( ct, lungMask = NULL,
     message( "  Number of batches: ", numberOfBatches )
     }
  
-  prediction <- array( data = 0, dim = c( totalNumberOfPatches, patchSize, 1 ) )
+  prediction <- array( data = 0, dim = c( totalNumberOfPatches, patchSize, 2 ) )
   for( b in seq.int( numberOfBatches ) )
     {
     batchX <- NULL
@@ -319,15 +319,14 @@ lungPulmonaryArterySegmentation <- function( ct, lungMask = NULL,
       {
       message( "  Predicting batch ", b, " of ", numberOfBatches )
       }
-    p <- model %>% predict( batchX, verbose = verbose )
-    prediction[indices,,,,] <- p[,,,,2, drop=FALSE]
+    prediction[indices,,,,] <- model %>% predict( batchX, verbose = verbose )
     }  
 
   if( verbose )
     {
     message( "Predict patches and reconstruct." )
     }
-  probabilityImage <- reconstructImageFromPatches( drop( prediction[,,,,] ),
+  probabilityImage <- reconstructImageFromPatches( drop( prediction[,,,,2] ),
                                                    strideLength = patchStrideLength,
                                                    domainImage = lungMask,
                                                    domainImageIsMask = TRUE )

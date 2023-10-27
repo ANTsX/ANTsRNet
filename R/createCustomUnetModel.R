@@ -234,7 +234,7 @@ createHippMapp3rUnetModel3D <- function( inputImageSize,
     {
     # 256, 128
     outputs <- list( encodingConvolutionLayers[[5]], outputs ) %>%
-      layer_concatenate( trainable = TRUE)
+      layer_concatenate( trainable = TRUE )
     outputs <- featureBlock3D( outputs, numberOfFilters )
     numberOfFilters <- numberOfFilters / 2
     outputs <- upsampleBlock3D( outputs, numberOfFilters )
@@ -407,7 +407,7 @@ createHyperMapp3rUnetModel3D <- function( inputImageSize,
 
   # 64, 32
   outputs <- list( encodingConvolutionLayers[[3]], outputs ) %>%
-    layer_concatenate( axis = channelsAxis - 1 )
+    layer_concatenate( axis = channelsAxis - 1, trainable = TRUE )
   feature64 <- featureBlock3D( outputs, numberOfFilters )
   numberOfFilters <- numberOfFilters / 2
   outputs <- upsampleBlock3D( feature64, numberOfFilters )
@@ -416,7 +416,7 @@ createHyperMapp3rUnetModel3D <- function( inputImageSize,
 
   # 32, 16
   outputs <- list( encodingConvolutionLayers[[2]], outputs ) %>%
-    layer_concatenate( axis = channelsAxis - 1 )
+    layer_concatenate( axis = channelsAxis - 1, trainable = TRUE )
   feature32 <- featureBlock3D( outputs, numberOfFilters )
   numberOfFilters <- numberOfFilters / 2
   outputs <- upsampleBlock3D( feature32, numberOfFilters )
@@ -426,7 +426,7 @@ createHyperMapp3rUnetModel3D <- function( inputImageSize,
 
   # final
   outputs <- list( encodingConvolutionLayers[[1]], outputs ) %>%
-    layer_concatenate( axis = channelsAxis - 1 )
+    layer_concatenate( axis = channelsAxis - 1, trainable = TRUE )
   outputs <- layer_convB_3d( outputs, numberOfFilters, 3 )
   outputs <- layer_convB_3d( outputs, numberOfFilters, 1 )
   outputs <- outputs %>% layer_conv_3d( filters = 1, kernel_size = 1, data_format = dataFormat )
@@ -549,7 +549,7 @@ createSysuMediaUnetModel2D <- function( inputImageSize, anatomy = c( "wmh", "cla
     upsampleLayer <- outputs %>% layer_upsampling_2d( size = c( 2L, 2L ) )
     cropShape <- getCropShape( encodingLayers[[i]], upsampleLayer )
     croppedLayer <- encodingLayers[[i]] %>% layer_cropping_2d( cropping = cropShape )
-    outputs <- layer_concatenate( list( upsampleLayer, croppedLayer ), axis = -1L )
+    outputs <- layer_concatenate( list( upsampleLayer, croppedLayer ), axis = -1L, trainable = TRUE )
     outputs <- outputs %>% layer_conv_2d( numberOfFilters[i], kernel_size = 3L, padding = 'same' )
     outputs <- outputs %>% layer_activation_relu()
     outputs <- outputs %>% layer_conv_2d( numberOfFilters[i], kernel_size = 3L, padding = 'same' )
@@ -672,7 +672,7 @@ createSysuMediaUnetModel3D <- function( inputImageSize,
     upsampleLayer <- outputs %>% layer_upsampling_3d( size = c( 2L, 2L, 2L ) )
     cropShape <- getCropShape( encodingLayers[[i]], upsampleLayer )
     croppedLayer <- encodingLayers[[i]] %>% layer_cropping_3d( cropping = cropShape )
-    outputs <- layer_concatenate( list( upsampleLayer, croppedLayer ), axis = -1L )
+    outputs <- layer_concatenate( list( upsampleLayer, croppedLayer ), axis = -1L, trainable = TRUE )
     outputs <- outputs %>% layer_conv_3d( numberOfFilters[i], kernel_size = 3L, padding = 'same' )
     outputs <- outputs %>% layer_activation_relu()
     outputs <- outputs %>% layer_conv_3d( numberOfFilters[i], kernel_size = 3L, padding = 'same' )
@@ -780,7 +780,7 @@ createHypothalamusUnetModel3D <- function( inputImageSize )
     {
     deconv <- outputs %>% layer_upsampling_3d( size = poolSize )
     outputs <- layer_concatenate(
-      list( encodingConvolutionLayers[[numberOfLayers - i + 1]], deconv ), axis = 4 )
+      list( encodingConvolutionLayers[[numberOfLayers - i + 1]], deconv ), axis = 4, trainable = TRUE )
     outputs <- outputs %>%
       layer_conv_3d( filters = numberOfFilters[numberOfLayers - i + 1],
         kernel_size = convolutionKernelSize, padding = 'same',
