@@ -205,7 +205,7 @@ createDenseUnetModel2D <- function( inputImageSize,
                                      kernelSize = c( 3L, 3L ), dropoutRate = dropoutRate,
                                      weightDecay = weightDecay )
       denseBlockLayers[[i+1]] <- model
-      model <- layer_concatenate( denseBlockLayers, axis = concatenationAxis )
+      model <- layer_concatenate( denseBlockLayers, axis = concatenationAxis, trainable = TRUE )
       numberOfFilters <- numberOfFilters + growthRate
     }
 
@@ -494,7 +494,7 @@ createDenseUnetModel3D <- function( inputImageSize,
                                      kernelSize = c( 3L, 3L, 3L ), dropoutRate = dropoutRate,
                                      weightDecay = weightDecay )
       denseBlockLayers[[i+1]] <- model
-      model <- layer_concatenate( denseBlockLayers, axis = concatenationAxis )
+      model <- layer_concatenate( denseBlockLayers, axis = concatenationAxis, trainable = TRUE )
       numberOfFilters <- numberOfFilters + growthRate
     }
 

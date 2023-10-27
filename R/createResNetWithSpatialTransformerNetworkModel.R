@@ -138,7 +138,7 @@ createResNetWithSpatialTransformerNetworkModel2D <- function( inputImageSize,
           kernel_size = c( 3, 3 ), strides = strides, padding = 'same' )
       }
 
-    groupedModel <- layer_concatenate( convolutionLayers )
+    groupedModel <- layer_concatenate( convolutionLayers, trainable = TRUE )
     return( groupedModel )
     }
 
@@ -397,7 +397,7 @@ createResNetWithSpatialTransformerNetworkModel3D <- function( inputImageSize,
           kernel_size = c( 3, 3, 3 ), strides = strides, padding = 'same' )
       }
 
-    groupedModel <- layer_concatenate( convolutionLayers )
+    groupedModel <- layer_concatenate( convolutionLayers, trainable = TRUE )
     return( groupedModel )
     }
 

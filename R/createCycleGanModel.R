@@ -167,7 +167,7 @@ CycleGanModel <- R6::R6Class( "CycleGanModel",
           decoder <- decoder %>% layer_dropout( rate = dropoutRate )
           }
         decoder <- decoder %>% layer_instance_normalization()
-        decoder <- list( decoder, skipInput ) %>% layer_concatenate()
+        decoder <- list( decoder, skipInput ) %>% layer_concatenate( trainable = TRUE)
         return( decoder )
         }
 

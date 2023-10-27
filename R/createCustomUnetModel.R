@@ -71,7 +71,7 @@ createNoBrainerUnetModel3D <- function( inputImageSize )
     filters = numberOfFiltersAtBaseLayer * 16,
     kernel_size = deconvolutionKernelSize, strides = 2, padding = 'same' )
 
-  outputs <- list( skip3, outputs ) %>% layer_concatenate()
+  outputs <- list( skip3, outputs ) %>% layer_concatenate( trainable = TRUE )
   outputs <- outputs %>% layer_conv_3d( filters = numberOfFiltersAtBaseLayer * 8,
     kernel_size = convolutionKernelSize, padding = 'same' )
   outputs <- outputs %>% layer_activation_relu()
@@ -83,7 +83,7 @@ createNoBrainerUnetModel3D <- function( inputImageSize )
     filters = numberOfFiltersAtBaseLayer * 8,
     kernel_size = deconvolutionKernelSize, strides = 2, padding = 'same' )
 
-  outputs <- list( skip2, outputs ) %>% layer_concatenate()
+  outputs <- list( skip2, outputs ) %>% layer_concatenate( trainable = TRUE )
   outputs <- outputs %>% layer_conv_3d( filters = numberOfFiltersAtBaseLayer * 4,
     kernel_size = convolutionKernelSize, padding = 'same' )
   outputs <- outputs %>% layer_activation_relu()
@@ -95,7 +95,7 @@ createNoBrainerUnetModel3D <- function( inputImageSize )
     filters = numberOfFiltersAtBaseLayer * 4,
     kernel_size = deconvolutionKernelSize, strides = 2, padding = 'same' )
 
-  outputs <- list( skip1, outputs ) %>% layer_concatenate()
+  outputs <- list( skip1, outputs ) %>% layer_concatenate( trainable = TRUE)
   outputs <- outputs %>% layer_conv_3d( filters = numberOfFiltersAtBaseLayer * 2,
     kernel_size = convolutionKernelSize, padding = 'same' )
   outputs <- outputs %>% layer_activation_relu()
@@ -234,7 +234,7 @@ createHippMapp3rUnetModel3D <- function( inputImageSize,
     {
     # 256, 128
     outputs <- list( encodingConvolutionLayers[[5]], outputs ) %>%
-      layer_concatenate()
+      layer_concatenate( trainable = TRUE)
     outputs <- featureBlock3D( outputs, numberOfFilters )
     numberOfFilters <- numberOfFilters / 2
     outputs <- upsampleBlock3D( outputs, numberOfFilters )
@@ -242,14 +242,14 @@ createHippMapp3rUnetModel3D <- function( inputImageSize,
 
   # 128, 64
   outputs <- list( encodingConvolutionLayers[[4]], outputs ) %>%
-    layer_concatenate()
+    layer_concatenate( trainable = TRUE )
   outputs <- featureBlock3D( outputs, numberOfFilters )
   numberOfFilters <- numberOfFilters / 2
   outputs <- upsampleBlock3D( outputs, numberOfFilters )
 
   # 64, 32
   outputs <- list( encodingConvolutionLayers[[3]], outputs ) %>%
-    layer_concatenate()
+    layer_concatenate( trainable = TRUE )
   feature64 <- featureBlock3D( outputs, numberOfFilters )
   numberOfFilters <- numberOfFilters / 2
   outputs <- upsampleBlock3D( feature64, numberOfFilters )
@@ -264,7 +264,7 @@ createHippMapp3rUnetModel3D <- function( inputImageSize,
 
   # 32, 16
   outputs <- list( encodingConvolutionLayers[[2]], outputs ) %>%
-    layer_concatenate()
+    layer_concatenate( trainable = TRUE )
   feature32 <- featureBlock3D( outputs, numberOfFilters )
   numberOfFilters <- numberOfFilters / 2
   outputs <- upsampleBlock3D( feature32, numberOfFilters )
@@ -280,7 +280,7 @@ createHippMapp3rUnetModel3D <- function( inputImageSize,
 
   # final
   outputs <- list( encodingConvolutionLayers[[1]], outputs ) %>%
-    layer_concatenate()
+    layer_concatenate( trainable = TRUE )
   outputs <- layer_convB_3d( outputs, numberOfFilters, 3 )
   outputs <- layer_convB_3d( outputs, numberOfFilters, 1 )
   if( doFirstNetwork == TRUE )

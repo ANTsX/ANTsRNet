@@ -193,17 +193,17 @@ createSsd7Model2D <- function( inputImageSize,
   # Concatenate the predictions from the different layers
 
   outputClasses <- layer_concatenate( boxClassesReshaped, axis = 1,
-    name = 'classes_concat' )
+    name = 'classes_concat', trainable = TRUE )
   outputLocations <- layer_concatenate( boxLocationsReshaped, axis = 1,
-    name = 'boxes_concat' )
+    name = 'boxes_concat', trainable = TRUE )
   outputAnchorBoxes <- layer_concatenate( anchorBoxLayersReshaped, axis = 1,
-    name = 'anchors_concat' )
+    name = 'anchors_concat', trainable = TRUE )
 
   confidenceActivation <- outputClasses %>%
     layer_activation( activation = "softmax", name = "classes_softmax" )
 
   predictions <- layer_concatenate( list( confidenceActivation,
-    outputLocations, outputAnchorBoxes ), axis = 2, name = 'predictions' )
+    outputLocations, outputAnchorBoxes ), axis = 2, name = 'predictions', trainable = TRUE )
 
   ssdModel <- keras_model( inputs = inputs, outputs = predictions )
 
@@ -405,17 +405,17 @@ createSsd7Model3D <- function( inputImageSize,
   # Concatenate the predictions from the different layers
 
   outputClasses <- layer_concatenate( boxClassesReshaped, axis = 1,
-    name = 'classes_concat' )
+    name = 'classes_concat', trainable = TRUE )
   outputLocations <- layer_concatenate( boxLocationsReshaped, axis = 1,
-    name = 'boxes_concat' )
+    name = 'boxes_concat', trainable = TRUE )
   outputAnchorBoxes <- layer_concatenate( anchorBoxLayersReshaped, axis = 1,
-    name = 'anchors_concat' )
+    name = 'anchors_concat', trainable = TRUE )
 
   confidenceActivation <- outputClasses %>%
     layer_activation( activation = "softmax", name = "classes_softmax" )
 
   predictions <- layer_concatenate( list( confidenceActivation,
-    outputLocations, outputAnchorBoxes ), axis = 2, name = 'predictions' )
+    outputLocations, outputAnchorBoxes ), axis = 2, name = 'predictions', trainable = TRUE )
 
   ssdModel <- keras_model( inputs = inputs, outputs = predictions )
 

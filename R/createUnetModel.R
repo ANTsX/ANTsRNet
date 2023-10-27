@@ -272,7 +272,7 @@ createUnetModel2D <- function( inputImageSize,
       scalarLayers[[i]] <- encodingConvolutionLayers[[i]] %>%
           layer_global_average_pooling_2d()
       }
-    scalarOutput <- layer_concatenate( scalarLayers ) %>%
+    scalarOutput <- layer_concatenate( scalarLayers, trainable = TRUE ) %>%
       layer_dense( units = scalarOutputSize, activation = scalarOutputActivation )
     }
 
@@ -297,11 +297,11 @@ createUnetModel2D <- function( inputImageSize,
       outputs <- attentionGate2D( deconv,
         encodingConvolutionLayers[[numberOfLayers - i + 1]],
         as.integer( numberOfFilters[numberOfLayers - i + 1] / 4 ) )
-      outputs <- layer_concatenate( list( deconv, outputs ), axis = 3 )
+      outputs <- layer_concatenate( list( deconv, outputs ), axis = 3, trainable = TRUE )
       } else {
       outputs <- layer_concatenate( list( deconv,
         encodingConvolutionLayers[[numberOfLayers - i + 1]] ),
-        axis = 3 )
+        axis = 3, trainable = TRUE )
       }
 
     outputs <- outputs %>%
@@ -581,7 +581,7 @@ createUnetModel3D <- function( inputImageSize,
       scalarLayers[[i]] <- encodingConvolutionLayers[[i]] %>%
           layer_global_average_pooling_3d()
       }
-    scalarOutput <- layer_concatenate( scalarLayers ) %>%
+    scalarOutput <- layer_concatenate( scalarLayers, trainable = TRUE ) %>%
       layer_dense( units = scalarSize, activation = scalarOutputActivation )
     }
 
@@ -606,11 +606,11 @@ createUnetModel3D <- function( inputImageSize,
       outputs <- attentionGate3D( deconv,
         encodingConvolutionLayers[[numberOfLayers - i + 1]],
         as.integer( numberOfFilters[numberOfLayers - i + 1] / 4 ) )
-      outputs <- layer_concatenate( list( deconv, outputs ), axis = 4 )
+      outputs <- layer_concatenate( list( deconv, outputs ), axis = 4, trainable = TRUE )
       } else {
       outputs <- layer_concatenate( list( deconv,
         encodingConvolutionLayers[[numberOfLayers - i + 1]] ),
-        axis = 4 )
+        axis = 4, trainable = TRUE )
       }
 
     outputs <- outputs %>%

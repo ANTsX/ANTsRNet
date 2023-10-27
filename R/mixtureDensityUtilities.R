@@ -132,7 +132,7 @@ MixtureDensityNetworkLayer <- R6::R6Class( "MixtureDensityNetworkLayer",
         data_format = 'channels_last' )
 
       output <- layer_concatenate( list( muOutput, sigmaOutput, piOutput ),
-        name = "mdn_ouputs" )
+        name = "mdn_ouputs", trainable = TRUE )
 
       return( output )
       },

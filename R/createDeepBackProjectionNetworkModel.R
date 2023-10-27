@@ -179,19 +179,19 @@ createDeepBackProjectionNetworkModel2D <-
         model <- upBlock2D( model, numberOfFilters = numberOfBaseFilters,
                             kernelSize = convolutionKernelSize, strides = strides )
         upProjectionBlocks[[i+1]] <- model
-        model <- layer_concatenate( upProjectionBlocks )
+        model <- layer_concatenate( upProjectionBlocks, trainable = TRUE )
       } else {
         model <- downBlock2D( model, numberOfFilters = numberOfBaseFilters,
                               kernelSize = convolutionKernelSize, strides = strides,
                               includeDenseConvolutionLayer = TRUE )
         downProjectionBlocks[[i]] <- model
-        model <- layer_concatenate( downProjectionBlocks )
+        model <- layer_concatenate( downProjectionBlocks, trainable = TRUE )
 
         model <- upBlock2D( model, numberOfFilters = numberOfBaseFilters,
                             kernelSize = convolutionKernelSize, strides = strides,
                             includeDenseConvolutionLayer = TRUE )
         upProjectionBlocks[[i+1]] <- model
-        model <- layer_concatenate( upProjectionBlocks )
+        model <- layer_concatenate( upProjectionBlocks, trainable = TRUE )
       }
     }
 
@@ -395,19 +395,19 @@ createDeepBackProjectionNetworkModel3D <-
         model <- upBlock3D( model, numberOfFilters = numberOfBaseFilters,
                             kernelSize = convolutionKernelSize, strides = strides )
         upProjectionBlocks[[i+1]] <- model
-        model <- layer_concatenate( upProjectionBlocks )
+        model <- layer_concatenate( upProjectionBlocks, trainable = TRUE )
       } else {
         model <- downBlock3D( model, numberOfFilters = numberOfBaseFilters,
                               kernelSize = convolutionKernelSize, strides = strides,
                               includeDenseConvolutionLayer = TRUE )
         downProjectionBlocks[[i]] <- model
-        model <- layer_concatenate( downProjectionBlocks )
+        model <- layer_concatenate( downProjectionBlocks, trainable = TRUE )
 
         model <- upBlock3D( model, numberOfFilters = numberOfBaseFilters,
                             kernelSize = convolutionKernelSize, strides = strides,
                             includeDenseConvolutionLayer = TRUE )
         upProjectionBlocks[[i+1]] <- model
-        model <- layer_concatenate( upProjectionBlocks )
+        model <- layer_concatenate( upProjectionBlocks, trainable = TRUE )
       }
     }
 

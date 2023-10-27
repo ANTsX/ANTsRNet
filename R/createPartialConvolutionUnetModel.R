@@ -118,7 +118,7 @@ createPartialConvolutionUnetModel2D <- function( inputImageSize, numberOfPriors 
       {
       mask <- mask %>% layer_upsampling_2d( size = c( 2, 2 ), interpolation = "nearest" )
       }
-    outputs <- layer_concatenate( list( deconv, encodingConvolutionLayers[[numberOfLayers - i + 1]] ), axis = 3 )
+    outputs <- layer_concatenate( list( deconv, encodingConvolutionLayers[[numberOfLayers - i + 1]] ), axis = 3, trainable = TRUE )
     if( usePartialConv )
       {
       # mask <- list( mask, outputs ) %>% layer_lambda(
@@ -133,11 +133,11 @@ createPartialConvolutionUnetModel2D <- function( inputImageSize, numberOfPriors 
       {
       resampledPriors <- inputPriors %>%
         layer_resample_tensor_2d( shape = c( dim( outputs )[2], dim( outputs )[3] ), interpolationType = "linear" )
-      outputs <- list( outputs, resampledPriors ) %>% layer_concatenate( axis = 3 )
+      outputs <- list( outputs, resampledPriors ) %>% layer_concatenate( axis = 3, trainable = TRUE )
       if( usePartialConv )
         {
         resampledPriorsMask <- resampledPriors %>% layer_lambda( f = function( x ) {tensorflow::tf$ones_like( x ) } )
-        mask = list( mask, resampledPriorsMask ) %>% layer_concatenate( axis = 3 )
+        mask = list( mask, resampledPriorsMask ) %>% layer_concatenate( axis = 3, trainable = TRUE )
         }
       }
     if( usePartialConv )
@@ -296,7 +296,7 @@ createPartialConvolutionUnetModel3D <- function( inputImageSize, numberOfPriors 
       {
       mask <- mask %>% layer_upsampling_3d( size = c( 2, 2, 2 ) )
       }
-    outputs <- layer_concatenate( list( deconv, encodingConvolutionLayers[[numberOfLayers - i + 1]] ), axis = 4 )
+    outputs <- layer_concatenate( list( deconv, encodingConvolutionLayers[[numberOfLayers - i + 1]] ), axis = 4, trainable = TRUE )
     if( usePartialConv )
       {
       # mask <- list( mask, outputs ) %>% layer_lambda(
@@ -311,11 +311,11 @@ createPartialConvolutionUnetModel3D <- function( inputImageSize, numberOfPriors 
       {
       resampledPriors <- inputPriors %>%
         layer_resample_tensor_3d( shape = c( dim( outputs )[2], dim( outputs )[3], dim( outputs )[4] ), interpolationType = "linear" )
-      outputs <- list( outputs, resampledPriors ) %>% layer_concatenate( axis = 4 )
+      outputs <- list( outputs, resampledPriors ) %>% layer_concatenate( axis = 4, trainable = TRUE )
       if( usePartialConv )
         {
         resampledPriorsMask <- resampledPriors %>% layer_lambda( f = function( x ) { tensorflow::tf$ones_like( x ) } )
-        mask = list( mask, resampledPriorsMask ) %>% layer_concatenate( axis = 4 )
+        mask = list( mask, resampledPriorsMask ) %>% layer_concatenate( axis = 4, trainable = TRUE )
         }
       }
     if( usePartialConv )

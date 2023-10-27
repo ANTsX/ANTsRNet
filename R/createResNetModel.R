@@ -123,7 +123,7 @@ createResNetModel2D <- function( inputImageSize,
           kernel_size = c( 3, 3 ), strides = strides, padding = 'same' )
       }
 
-    groupedModel <- layer_concatenate( convolutionLayers )
+    groupedModel <- layer_concatenate( convolutionLayers, trainable = TRUE )
     return( groupedModel )
     }
 
@@ -234,7 +234,7 @@ createResNetModel2D <- function( inputImageSize,
   if( inputScalarsSize > 0 )
     {
     inputScalars <- layer_input( shape = c( inputScalarsSize ) )
-    concatenatedLayer <- layer_concatenate( list( outputs, inputScalars ) )
+    concatenatedLayer <- layer_concatenate( list( outputs, inputScalars ), trainable = TRUE )
     outputs <- concatenatedLayer %>%
       layer_dense( units = numberOfClassificationLabels, activation = layerActivation )
     resNetModel <- keras_model( inputs = list( inputImage, inputScalars ),
@@ -374,7 +374,7 @@ createResNetModel3D <- function( inputImageSize,
           kernel_size = c( 3, 3, 3 ), strides = strides, padding = 'same' )
       }
 
-    groupedModel <- layer_concatenate( convolutionLayers )
+    groupedModel <- layer_concatenate( convolutionLayers, trainable = TRUE )
     return( groupedModel )
     }
 
@@ -485,7 +485,7 @@ createResNetModel3D <- function( inputImageSize,
   if( inputScalarsSize > 0 )
     {
     inputScalars <- layer_input( shape = c( inputScalarsSize ) )
-    concatenatedLayer <- layer_concatenate( list( outputs, inputScalars ) )
+    concatenatedLayer <- layer_concatenate( list( outputs, inputScalars ), trainable = TRUE )
     outputs <- concatenatedLayer %>%
       layer_dense( units = numberOfClassificationLabels, activation = layerActivation )
     resNetModel <- keras_model( inputs = list( inputImage, inputScalars ),

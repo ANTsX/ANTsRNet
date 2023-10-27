@@ -1235,7 +1235,7 @@ layer_attention_augmented_convolution_block_2d <- function( inputLayer,
     use_bias = TRUE, kernel_initializer = 'he_normal' )
 
   output <- layer_concatenate( list( convolutionLayer, attentionOutLayer ),
-    axis = channelAxis )
+    axis = channelAxis, trainable = TRUE )
   output <- output %>% layer_batch_normalization()
 
   return( output )

@@ -164,7 +164,7 @@ InpaintingDeepFillModel <- R6::R6Class(
         f = function( inputs )
         { return( inputs[[1]] * inputs[[2]] ) } )
       output <- layer_concatenate( list( output, ones, maskedOnes ),
-                                   axis = as.integer( self$dimensionality + 1 ) )
+                                   axis = as.integer( self$dimensionality + 1 ), trainable = TRUE )
 
       # Stage 1
 
@@ -250,7 +250,7 @@ InpaintingDeepFillModel <- R6::R6Class(
 
       outputNow <- layer_concatenate(
         list( output, ones, maskedOnes ),
-        axis = as.integer( self$dimensionality + 1 ) )
+        axis = as.integer( self$dimensionality + 1 ), trainable = TRUE )
       output <- self$generativeConvolutionLayer( outputNow,
                                                  self$numberOfFiltersBaseLayer, 5, 1L, 1L )
       output <- self$generativeConvolutionLayer( output,
@@ -309,7 +309,7 @@ InpaintingDeepFillModel <- R6::R6Class(
         4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
 
       output <- layer_concatenate( list( outputHallu, output ),
-                                   axis = as.integer( self$dimensionality + 1 ) )
+                                   axis = as.integer( self$dimensionality + 1 ), trainable = TRUE )
 
       output <- self$generativeConvolutionLayer(
         output, 4 * self$numberOfFiltersBaseLayer, 3L, 1L, 1L )
@@ -587,7 +587,7 @@ InpaintingDeepFillModel <- R6::R6Class(
         modelBatch <- layer_input( batch_shape = dim( X_batch ) )
         modelComplete <- layer_input( batch_shape = dim( X_complete ) )
         modelPositiveNegative <- list( modelBatch, modelComplete ) %>%
-          layer_concatenate( axis = 0 )
+          layer_concatenate( axis = 0, trainable = TRUE )
         mask <- layer_input( shape = dim( X_mask ) )
 
         modelBatchLocalPatch <-
@@ -596,7 +596,7 @@ InpaintingDeepFillModel <- R6::R6Class(
           layer_input( batch_shape = dim( X_completeLocalPatch ) )
         modelPositiveNegativeLocalPatch <-
           list( modelBatchLocalPatch, modelCompleteLocalPatch ) %>%
-          layer_concatenate( axis = 0 )
+          layer_concatenate( axis = 0, trainable = TRUE )
 
         wganGpModel <- self$buildCombinedWganGpDiscriminator(
           modelPositiveNegativeLocalPatch, modelPositiveNegative )

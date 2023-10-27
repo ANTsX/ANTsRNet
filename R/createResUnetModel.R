@@ -266,7 +266,7 @@ createResUnetModel2D <- function( inputImageSize,
         {
         channelAxis <- -1
         }
-      output <- layer_concatenate( layerList, axis = channelAxis )
+      output <- layer_concatenate( layerList, axis = channelAxis, trainable = TRUE )
       }
 
     return( output )
@@ -628,7 +628,7 @@ createResUnetModel3D <- function( inputImageSize,
         {
         channelAxis <- -1
         }
-      output <- layer_concatenate( layerList, axis = channelAxis )
+      output <- layer_concatenate( layerList, axis = channelAxis, trainable = TRUE )
       }
 
     return( output )

@@ -171,7 +171,7 @@ createGoogLeNetModel2D <- function( inputImageSize,
   branchLayers[[4]] <- convolutionAndBatchNormalization2D(
     branchLayers[[4]],
     numberOfFilters = 32, kernelSize = c( 1, 1 ) )
-  outputs <- layer_concatenate( branchLayers, axis = channelAxis )
+  outputs <- layer_concatenate( branchLayers, axis = channelAxis, trainable = TRUE )
 
   # mixed 1: 35x35x256
   branchLayers <- list()
@@ -199,7 +199,7 @@ createGoogLeNetModel2D <- function( inputImageSize,
   branchLayers[[4]] <- convolutionAndBatchNormalization2D(
     branchLayers[[4]],
     numberOfFilters = 32, kernelSize = c( 1, 1 ) )
-  outputs <- layer_concatenate( branchLayers, axis = channelAxis )
+  outputs <- layer_concatenate( branchLayers, axis = channelAxis, trainable = TRUE )
 
   # mixed 2: 35x35x256
   branchLayers <- list()
@@ -227,7 +227,7 @@ createGoogLeNetModel2D <- function( inputImageSize,
   branchLayers[[4]] <- convolutionAndBatchNormalization2D(
     branchLayers[[4]],
     numberOfFilters = 32, kernelSize = c( 1, 1 ) )
-  outputs <- layer_concatenate( branchLayers, axis = channelAxis )
+  outputs <- layer_concatenate( branchLayers, axis = channelAxis, trainable = TRUE )
 
   # mixed 3: 17x17x768
   branchLayers <- list()
@@ -241,7 +241,7 @@ createGoogLeNetModel2D <- function( inputImageSize,
                                                            numberOfFilters = 96, kernelSize = c( 3, 3 ), strides = c( 2, 2 ), padding = 'valid' )
   branchLayers[[3]] <- outputs %>% layer_max_pooling_2d( pool_size = c( 3, 3 ),
                                                          strides = c( 2, 2 ) )
-  outputs <- layer_concatenate( branchLayers, axis = channelAxis )
+  outputs <- layer_concatenate( branchLayers, axis = channelAxis, trainable = TRUE )
 
   # mixed 4: 17x17x768
   branchLayers <- list()
@@ -267,7 +267,7 @@ createGoogLeNetModel2D <- function( inputImageSize,
                                                              strides = c( 1, 1 ), padding = 'same' )
   branchLayers[[4]] <- convolutionAndBatchNormalization2D( branchLayers[[4]],
                                                            numberOfFilters = 192, kernelSize = c( 1, 1 ) )
-  outputs <- layer_concatenate( branchLayers, axis = channelAxis )
+  outputs <- layer_concatenate( branchLayers, axis = channelAxis, trainable = TRUE )
 
   # mixed 4: 17x17x768
   for( i in 1:2 )
@@ -295,7 +295,7 @@ createGoogLeNetModel2D <- function( inputImageSize,
                                                                strides = c( 1, 1 ), padding = 'same' )
     branchLayers[[4]] <- convolutionAndBatchNormalization2D( branchLayers[[4]],
                                                              numberOfFilters = 192, kernelSize = c( 1, 1 ) )
-    outputs <- layer_concatenate( branchLayers, axis = channelAxis )
+    outputs <- layer_concatenate( branchLayers, axis = channelAxis, trainable = TRUE )
   }
 
   # mixed 7: 17x17x768
@@ -322,7 +322,7 @@ createGoogLeNetModel2D <- function( inputImageSize,
                                                              strides = c( 1, 1 ), padding = 'same' )
   branchLayers[[4]] <- convolutionAndBatchNormalization2D( branchLayers[[4]],
                                                            numberOfFilters = 192, kernelSize = c( 1, 1 ) )
-  outputs <- layer_concatenate( branchLayers, axis = channelAxis )
+  outputs <- layer_concatenate( branchLayers, axis = channelAxis, trainable = TRUE)
 
   # mixed 8: 8x8x1280
   branchLayers <- list()
@@ -342,7 +342,7 @@ createGoogLeNetModel2D <- function( inputImageSize,
                                                            padding = 'valid' )
   branchLayers[[3]] <- outputs %>% layer_max_pooling_2d( pool_size = c( 3, 3 ),
                                                          strides = c( 2, 2 ) )
-  outputs <- layer_concatenate( branchLayers, axis = channelAxis )
+  outputs <- layer_concatenate( branchLayers, axis = channelAxis, trainable = TRUE)
 
   # mixed 9: 8x8x2048
   for( i in 1:2 )
@@ -360,7 +360,7 @@ createGoogLeNetModel2D <- function( inputImageSize,
     branchLayer2 <- convolutionAndBatchNormalization2D( branchLayer,
                                                         numberOfFilters = 384, kernelSize = c( 3, 1 ) )
     branchLayers[[2]] <- layer_concatenate( list( branchLayer1, branchLayer2 ),
-                                            axis = channelAxis )
+                                            axis = channelAxis, trainable = TRUE )
 
     branchLayer <- convolutionAndBatchNormalization2D( outputs, numberOfFilters = 448,
                                                        kernelSize = c( 1, 1 ) )
@@ -371,14 +371,14 @@ createGoogLeNetModel2D <- function( inputImageSize,
     branchLayer2 <- convolutionAndBatchNormalization2D( branchLayer,
                                                         numberOfFilters = 384, kernelSize = c( 3, 1 ) )
     branchLayers[[3]] <- layer_concatenate( list( branchLayer1, branchLayer2 ),
-                                            axis = channelAxis )
+                                            axis = channelAxis, trainable = TRUE )
 
     branchLayers[[4]] <- outputs %>% layer_average_pooling_2d( pool_size = c( 3, 3 ),
                                                                strides = c( 1, 1 ), padding = 'same' )
     branchLayers[[4]] <- convolutionAndBatchNormalization2D( branchLayers[[4]],
                                                              numberOfFilters = 192, kernelSize = c( 1, 1 ) )
 
-    outputs <- layer_concatenate( branchLayers, axis = channelAxis )
+    outputs <- layer_concatenate( branchLayers, axis = channelAxis, trainable = TRUE )
   }
   outputs <- outputs %>% layer_global_average_pooling_2d()
 

@@ -166,7 +166,7 @@ uvaSegTrain <- function( patches,
     z_mean + k_exp(z_log_var) * epsilon
   }
 
-  z <- layer_concatenate(list(z_mean, z_log_var)) %>% layer_lambda(sampling)
+  z <- layer_concatenate(list(z_mean, z_log_var), trainable = TRUE) %>% layer_lambda(sampling)
 
   decoder_hidden <- layer_dense(units = intermediate_dim, activation = act1)
   decoder_upsample <- layer_dense(units = prod(output_shape[-1]), activation = act1)

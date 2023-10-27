@@ -166,7 +166,7 @@ createAlexNetModel2D <- function( inputImageSize,
     splitLayer <- splitTensor2D( axis = 4, ratioSplit = 2, idSplit = i )
     lambdaLayersConv2[[i+1]] <- outputs %>% splitLayer
   }
-  outputs <- layer_concatenate( lambdaLayersConv2 )
+  outputs <- layer_concatenate( lambdaLayersConv2, trainable = TRUE )
 
   # Conv3
   outputs <- outputs %>% layer_max_pooling_2d( pool_size = c( 3, 3 ),
@@ -188,7 +188,7 @@ createAlexNetModel2D <- function( inputImageSize,
     splitLayer <- splitTensor2D( axis = 4, ratioSplit = 2, idSplit = i )
     lambdaLayersConv4[[i+1]] <- outputs %>% splitLayer
   }
-  outputs <- layer_concatenate( lambdaLayersConv4 )
+  outputs <- layer_concatenate( lambdaLayersConv4, trainable = TRUE )
 
   # Conv5
   outputs <- outputs %>% layer_zero_padding_2d( padding = c( 2, 2 ) )
@@ -203,7 +203,7 @@ createAlexNetModel2D <- function( inputImageSize,
     splitLayer <- splitTensor2D( axis = 4, ratioSplit = 2, idSplit = i )
     lambdaLayersConv5[[i+1]] <- outputs %>% splitLayer
   }
-  outputs <- layer_concatenate( lambdaLayersConv5 )
+  outputs <- layer_concatenate( lambdaLayersConv5, trainable = TRUE )
 
   outputs <- outputs %>%
     layer_max_pooling_2d( pool_size = c( 3, 3 ), strides = c( 2, 2 ) )
@@ -413,7 +413,7 @@ createAlexNetModel3D <- function( inputImageSize,
     splitLayer <- splitTensor3D( axis = 5, ratioSplit = 2, idSplit = i )
     lambdaLayersConv2[[i+1]] <- outputs %>% splitLayer
   }
-  outputs <- layer_concatenate( lambdaLayersConv2 )
+  outputs <- layer_concatenate( lambdaLayersConv2, trainable = TRUE )
 
   # Conv3
   outputs <- outputs %>% layer_max_pooling_3d( pool_size = c( 3, 3, 3 ),
@@ -435,7 +435,7 @@ createAlexNetModel3D <- function( inputImageSize,
     splitLayer <- splitTensor3D( axis = 5, ratioSplit = 2, idSplit = i )
     lambdaLayersConv4[[i+1]] <- outputs %>% splitLayer
   }
-  outputs <- layer_concatenate( lambdaLayersConv4 )
+  outputs <- layer_concatenate( lambdaLayersConv4, trainable = TRUE )
 
   # Conv5
   outputs <- outputs %>% layer_zero_padding_3d( padding = c( 2, 2, 2 ) )
@@ -450,7 +450,7 @@ createAlexNetModel3D <- function( inputImageSize,
     splitLayer <- splitTensor3D( axis = 5, ratioSplit = 2, idSplit = i )
     lambdaLayersConv5[[i+1]] <- outputs %>% splitLayer
   }
-  outputs <- layer_concatenate( lambdaLayersConv5 )
+  outputs <- layer_concatenate( lambdaLayersConv5, trainable = TRUE )
 
   outputs <- outputs %>% layer_max_pooling_3d( pool_size = c( 3, 3, 3 ),
                                                strides = c( 2, 2, 2 ) )
