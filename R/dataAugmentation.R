@@ -37,7 +37,8 @@
 #'    pepperValue" are assumed to be in the intensity normalized range of [0, 1].
 #' @param sdSimulatedBiasField Characterize the standard deviation of the amplitude.
 #' @param sdHistogramWarping Determines the strength of the histogram transformation.
-#' @param sdAffine Determines the amount of transformation based change.
+#' @param sdAffine Determines the amount of affine transformation.
+#' @param sdDeformation Determines the amount of deformable transformation.
 #' @param outputNumpyFilePrefix Filename of output numpy array containing all the
 #'    simulated images and segmentations.
 #' @return list of lists of transformed images and/or outputs to a numpy array.
@@ -72,6 +73,7 @@ dataAugmentation <- function( inputImageList,
   sdSimulatedBiasField = 1.0,
   sdHistogramWarping = 0.05,
   sdAffine = 0.05,
+  sdDeformation = 0.2, 
   outputNumpyFilePrefix = NULL,
   verbose = FALSE )
 {
@@ -120,7 +122,7 @@ dataAugmentation <- function( inputImageList,
       sdAffine = sdAffine,
       deformationTransformType = "bspline",
       numberOfRandomPoints = 1000,
-      sdNoise = 2.0,
+      sdNoise = sdDeformation,
       numberOfFittingLevels = 4,
       meshSize = 1,
       sdSmoothing = 4.0,
