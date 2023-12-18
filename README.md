@@ -1,9 +1,9 @@
 <!--
 [![Build Status](https://travis-ci.org/ANTsX/ANTsRNet.png?branch=master)](https://travis-ci.org/ANTsX/ANTsRNet)
+[![Codecov test coverage](https://codecov.io/gh/muschellij2/ANTsRNet/branch/master/graph/badge.svg)](https://codecov.io/gh/muschellij2/ANTsRNet?branch=master)
 -->
 
  <!-- badges: start -->
-[![Codecov test coverage](https://codecov.io/gh/muschellij2/ANTsRNet/branch/master/graph/badge.svg)](https://codecov.io/gh/muschellij2/ANTsRNet?branch=master)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](code_of_conduct.md)
 [![PubMed](https://img.shields.io/badge/ANTsX_paper-Open_Access-8DABFF?logo=pubmed)](https://pubmed.ncbi.nlm.nih.gov/33907199/)
 
