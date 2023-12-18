@@ -1,9 +1,12 @@
+<!--
 [![Build Status](https://travis-ci.org/ANTsX/ANTsRNet.png?branch=master)](https://travis-ci.org/ANTsX/ANTsRNet)
+-->
 
  <!-- badges: start -->
-[![Build Status](https://travis-ci.com/muschellij2/ANTsRNet.png?branch=master)](https://travis-ci.com/muschellij2/ANTsRNet)
 [![Codecov test coverage](https://codecov.io/gh/muschellij2/ANTsRNet/branch/master/graph/badge.svg)](https://codecov.io/gh/muschellij2/ANTsRNet?branch=master)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](code_of_conduct.md)
+[![PubMed](https://img.shields.io/badge/ANTsX_paper-Open_Access-8DABFF?logo=pubmed)](https://pubmed.ncbi.nlm.nih.gov/33907199/)
+
 <!-- badges: end -->
 
 # ANTsRNet
@@ -12,9 +15,14 @@ A collection of deep learning architectures and applications ported to the R lan
 
 Documentation page [https://antsx.github.io/ANTsRNet/](https://antsx.github.io/ANTsRNet/).
 
-![ANTsXNetTools](docs/figures/coreANTsXNetTools.png)
+[ANTsXNet tutorial](https://gist.github.com/ntustison/12a656a5fc2f6f9c4494c88dc09c5621#antsxnet)
 
-## Architectures
+<p align="middle">
+  <img src="docs/figures/coreANTsXNetTools.png" width="600" />
+</p>
+
+<details>
+<summary>Architectures</summary>
 
 ### Image voxelwise segmentation/regression
 
@@ -32,10 +40,6 @@ Documentation page [https://antsx.github.io/ANTsRNet/](https://antsx.github.io/A
 * [DenseNet (2-D, 3-D)](https://arxiv.org/abs/1608.06993)
 
 ### Object detection
-
-* [Single Shot MultiBox Detector (SSD) (2-D, 3-D)](https://arxiv.org/abs/1512.02325)
-    * SSD7: small 7-layer architecture
-    * SSD300/SSD512: porting of original architectures
 
 ### Image super-resolution
 
@@ -65,7 +69,10 @@ Documentation page [https://antsx.github.io/ANTsRNet/](https://antsx.github.io/A
 * [Deep embedded clustering (DEC)](https://arxiv.org/abs/1511.06335)
 * [Deep convolutional embedded clustering (DCEC)](https://xifengguo.github.io/papers/ICONIP17-DCEC.pdf)
 
-## Applications
+</details>
+
+<details>
+<summary>Applications</summary>
 
 * [MRI super-resolution](https://www.medrxiv.org/content/10.1101/2023.02.02.23285376v1)
 * [Multi-modal brain extraction](https://pubmed.ncbi.nlm.nih.gov/33907199/)
@@ -91,6 +98,7 @@ Documentation page [https://antsx.github.io/ANTsRNet/](https://antsx.github.io/A
 * Lung extraction
     * [Proton](https://pubmed.ncbi.nlm.nih.gov/34227163/)
     * CT
+* Lung pulmonary vessel segmentation
 * [Functional lung segmentation](https://pubmed.ncbi.nlm.nih.gov/34227163/)
 * [Neural style transfer](https://arxiv.org/abs/1508.06576)
 * Image quality assessment
@@ -98,27 +106,12 @@ Documentation page [https://antsx.github.io/ANTsRNet/](https://antsx.github.io/A
     * [KonIQ-10k](https://ieeexplore.ieee.org/document/8968750)
 * [Mixture density networks (MDN)](https://publications.aston.ac.uk/373/1/NCRG_94_004.pdf)
 
-## Related
-
 * [Training scripts](https://github.com/ntustison/ANTsXNetTraining)
 
---------------------------------------
+</details>
 
-## Installation
-
-* ANTsRNet Installation:
-    * Option 1:
-       ```
-       $ R
-       > devtools::install_github( "ANTsX/ANTsRNet" )
-       ```
-    * Option 2:
-       ```
-       $ git clone https://github.com/ANTsX/ANTsRNet.git
-       $ R CMD INSTALL ANTsRNet
-       ```
-
-## Publications
+<details>
+<summary>Publications</summary>
 
 * Nicholas J. Tustison, Michael A. Yassa, Batool Rizvi, Philip A. Cook, Andrew J. Holbrook, Mithra Sathishkumar, Mia G. Tustison, James C. Gee, James R. Stone, and Brian B. Avants. ANTsX neuroimaging-derived structural phenotypes of UK Biobank.  [(medrxiv)](https://www.medrxiv.org/content/10.1101/2023.01.17.23284693v4)
 
@@ -136,9 +129,13 @@ Documentation page [https://antsx.github.io/ANTsRNet/](https://antsx.github.io/A
 
 * Cullen N.C., Avants B.B. (2018) Convolutional Neural Networks for Rapid and Simultaneous Brain Extraction and Tissue Segmentation. In: Spalletta G., Piras F., Gili T. (eds) Brain Morphometry. Neuromethods, vol 136. Humana Press, New York, NY [doi](https://doi.org/10.1007/978-1-4939-7647-8_2)
 
+</details>
 
-## Acknowledgments
+<details>
+<summary>Acknowledgements</summary>
 
 * We gratefully acknowledge the support of the NVIDIA Corporation with the donation of two Titan Xp GPUs used for this research.
 
 * We gratefully acknowledge the grant support of the [Office of Naval Research](https://www.onr.navy.mil) and [Cohen Veterans Bioscience](https://www.cohenveteransbioscience.org).
+
+</details>
