@@ -16,6 +16,7 @@ dataAugmentation(
   sdSimulatedBiasField = 1,
   sdHistogramWarping = 0.05,
   sdAffine = 0.05,
+  sdDeformation = 0.2,
   outputNumpyFilePrefix = NULL,
   verbose = FALSE
 )
@@ -62,7 +63,9 @@ pepperValue" are assumed to be in the intensity normalized range of \link{0, 1}.
 
 \item{sdHistogramWarping}{Determines the strength of the histogram transformation.}
 
-\item{sdAffine}{Determines the amount of transformation based change.}
+\item{sdAffine}{Determines the amount of affine transformation.}
+
+\item{sdDeformation}{Determines the amount of deformable transformation.}
 
 \item{outputNumpyFilePrefix}{Filename of output numpy array containing all the
 simulated images and segmentations.}

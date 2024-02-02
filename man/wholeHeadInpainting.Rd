@@ -8,7 +8,7 @@ wholeHeadInpainting(
   image,
   roiMask,
   modality = "t1",
-  slicewise = TRUE,
+  mode = "axial",
   antsxnetCacheDirectory = NULL,
   verbose = FALSE
 )
@@ -18,12 +18,12 @@ wholeHeadInpainting(
 
 \item{roiMask}{binary mask image}
 
-\item{modality}{Modality image type.  Options include: "t1": T1-weighted MRI.
+\item{modality}{Modality image type.  Options include: "t1": T1-weighted MRI,
 "flair": FLAIR MRI.}
 
-\item{slicewise}{Two models per modality are available for processing the data.  One model
-is based on training/prediction using 2-D axial slice data whereas the
-other uses 64x64x64 patches.}
+\item{mode}{Options include:  "sagittal": sagittal view network, "coronal":
+coronal view network, "axial": axial view network, "average": average of all
+canonical views, "meg": morphological erosion, greedy, iterative.}
 
 \item{antsxnetCacheDirectory}{destination directory for storing the downloaded
 template and model weights.  Since these can be resused, if

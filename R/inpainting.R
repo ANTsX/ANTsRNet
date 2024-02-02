@@ -4,11 +4,11 @@
 #'
 #' @param image input 3-D MR image.
 #' @param roiMask binary mask image
-#' @param modality Modality image type.  Options include: "t1": T1-weighted MRI.
+#' @param modality Modality image type.  Options include: "t1": T1-weighted MRI,
 #' "flair": FLAIR MRI.
-#' @param slicewise Two models per modality are available for processing the data.  One model
-#' is based on training/prediction using 2-D axial slice data whereas the
-#' other uses 64x64x64 patches.
+#' @param mode Options include:  "sagittal": sagittal view network, "coronal": 
+#' coronal view network, "axial": axial view network, "average": average of all 
+#' canonical views, "meg": morphological erosion, greedy, iterative.
 #' @param antsxnetCacheDirectory destination directory for storing the downloaded
 #' template and model weights.  Since these can be resused, if
 #' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
@@ -17,7 +17,7 @@
 #' @return inpainted image
 #' @author Tustison NJ
 #' @export
-wholeHeadInpainting <- function( image, roiMask, modality = "t1", slicewise = TRUE,
+wholeHeadInpainting <- function( image, roiMask, modality = "t1", mode="axial",
   antsxnetCacheDirectory = NULL, verbose = FALSE )
   {
 
@@ -26,22 +26,10 @@ wholeHeadInpainting <- function( image, roiMask, modality = "t1", slicewise = TR
     stop( "Image dimension must be 3." )
     }
 
-  if( is.null( antsxnetCacheDirectory ) )
+  if( mode == "sagittal" || mode == "coronal" || mode == "axial" )  
     {
-    antsxnetCacheDirectory <- "ANTsXNet"
-    }
-
-  if( slicewise )
-    {
-    imageSize <- c( 256, 256 )
-    channelSize <- 1
-
-    if( verbose )
-      {
-      cat( "Preprocessing:  Reorientation.\n" )
-      }
-
-    reorientTemplate <- antsImageRead( getANTsXNetData( "oasis" ) )
+    reorientTemplate <- antsImageRead( getANTsXNetData( "nki" ) )
+    reorientTemplate <- padOrCropImageToSize( reorientTemplate, c( 256, 256, 256 ) )
 
     centerOfMassTemplate <- getCenterOfMass( reorientTemplate )
     centerOfMassImage <- getCenterOfMass( image )
@@ -51,201 +39,123 @@ wholeHeadInpainting <- function( image, roiMask, modality = "t1", slicewise = TR
     imageReoriented <- applyAntsrTransformToImage( xfrm, image, reorientTemplate, interpolation = "linear" )
     roiMaskReoriented <- applyAntsrTransformToImage( xfrm, roiMask, reorientTemplate, interpolation = "nearestNeighbor" )
     roiMaskReoriented <- thresholdImage( roiMaskReoriented, 0, 0, 0, 1 )
-    roiInvertedMaskReoriented <- thresholdImage( roiMaskReoriented, 0, 0, 1, 0 )
 
-    inpaintingUnet <- createPartialConvolutionUnetModel2D( c( imageSize, channelSize ),
-                   numberOfPriors = 0, numberOfFilters = c( 32, 64, 128, 256, 512, 512 ),
-                   kernelSize = 3 )
-
-    weightsName <- ''
-    if( modality == "T1" || modality == "t1" )
-      {
-      weightsName <- "wholeHeadInpaintingT1"
-      } else if( modality == "FLAIR" || modality == "FLAIR" ) {
-      weightsName <- "wholeHeadInpaintingFLAIR"
-      } else {
-      stop( paste0( "Unavailable modality given: ", modality ) )
-      }
-
-    weightsFileName <- getPretrainedNetwork( weightsName,
-      antsxnetCacheDirectory = antsxnetCacheDirectory )
-    inpaintingUnet$load_weights( weightsFileName )
-
-    geoms <- labelGeometryMeasures( roiMaskReoriented )
+    geoms = labelGeometryMeasures( roiMaskReoriented )    
     if( dim( geoms )[1] != 1 )
       {
       stop( "ROI is not specified correctly." )
       }
-    lowerSlice <- floor( geoms$BoundingBoxLower_y )
-    upperSlice <- floor( geoms$BoundingBoxUpper_y )
+ 
+    lowerSlice <- NULL
+    upperSlice <- NULL
+    weightsFile <- NULL
+    direction <- -1
+    if( mode == "sagittal" )
+      {
+      lowerSlice <- floor( geoms$BoundingBoxLower_x )
+      upperSlice <- floor( geoms$BoundingBoxUpper_x )
+      weightsFile <- getPretrainedNetwork( "inpainting_sagittal_rmnet_weights",
+                                           antsxnetCacheDirectory = antsxnetCacheDirectory )
+      direction <- 1
+      } else if( mode == "coronal" ) {
+      lowerSlice <- floor( geoms$BoundingBoxLower_y )
+      upperSlice <- floor( geoms$BoundingBoxUpper_y )
+      weightsFile <- getPretrainedNetwork( "inpainting_coronal_rmnet_weights",
+                                           antsxnetCacheDirectory = antsxnetCacheDirectory )
+      direction <- 2
+      } else if( mode == "axial" ) {
+      lowerSlice <- floor( geoms$BoundingBoxLower_z )
+      upperSlice <- floor( geoms$BoundingBoxUpper_z )
+      weightsFile <- getPretrainedNetwork( "inpainting_axial_rmnet_weights",
+                                           antsxnetCacheDirectory = antsxnetCacheDirectory )
+      direction <- 3
+      }
+
+    model <- createRmnetGenerator()
+    model$load_weights( weightsFile )
+    
     numberOfSlices <- upperSlice - lowerSlice + 1
 
-    if( verbose )
-      {
-      cat( "Preprocessing:  Slicing data.\n" )
-      }
-
+    imageSize <- c( 256, 256 )      
+    channelSize <- 3
     batchX <- array( data = 0, dim = c( numberOfSlices, imageSize, channelSize ) )
-    batchXMask <- array( data = 0, dim = c( numberOfSlices, imageSize, channelSize ) )
-
+    batchXMask <- array( data = 0, dim = c( numberOfSlices, imageSize, 1 ) )
+    batchXMaxValues <- rep( 0, numberOfSlices )
+    
     for( i in seq_len( numberOfSlices ) )
       {
-      index <- lowerSlice + i
-
-      maskSlice <- extractSlice( roiInvertedMaskReoriented, index, 2, collapseStrategy = 1 )
-      maskSlice <- padOrCropImageToSize( maskSlice, imageSize )
-      maskSliceArray <- as.array( maskSlice )
-
-      slice <- extractSlice( imageReoriented, index, 2, collapseStrategy = 1 )
-      slice <- padOrCropImageToSize( slice, imageSize )
-      slice <- maskSlice * ( slice - min( slice ) ) / ( max( slice ) - min( slice ) )
-
-      slice[maskSlice == 0] <- 1
-      sliceArray <- as.array( slice )
-
-      for( j in seq_len( channelSize ) )
+      sliceIndex <- i + lowerSlice
+      slice <- extractSlice( imageReoriented, slice = sliceIndex, 
+                             direction = direction, collapseStrategy = 1 )
+      batchX[i,,,1] <- as.array( slice )
+      batchXMaxValues[i] <- max( batchX[i,,,1] )
+      batchX[i,,,1] <- batchX[i,,,1] / ( 0.5 * batchXMaxValues[i] ) - 1.
+      for( j in seq.int( 2, channelSize ) )
         {
-        batchX[i,,,j] <- sliceArray
-        batchXMask[i,,,j] <- maskSliceArray
+        batchX[i,,,j] <- batchX[i,,,1]
         }
+      maskSlice <- extractSlice( roiMaskReoriented, slice = sliceIndex, 
+                             direction = direction, collapseStrategy = 1 )
+      batchXMask[i,,,1] <- as.array( maskSlice )
       }
+   
+    batchY <- model$predict( list( batchX, batchXMask ), verbose = verbose )[,,,1:3]
 
-    if( verbose )
-      {
-      cat( "Prediction.\n" )
-      }
-
-    predictedData <- inpaintingUnet$predict( list( batchX, batchXMask ), verbose = verbose )
-    predictedData[batchXMask == 1] <- batchX[batchXMask == 1]
-
-    if( verbose )
-      {
-      cat( "Post-processing:  Slicing data.\n" )
-      }
-
-    imageReorientedArray <- as.array( imageReoriented )
+    inpaintedImageReorientedArray <- as.array( imageReoriented )   
     for( i in seq_len( numberOfSlices ) )
       {
-      index <- lowerSlice + i
-
-      slice <- extractSlice( imageReoriented, index, 2, collapseStrategy = 1 )
-      maskSlice <- extractSlice( roiInvertedMaskReoriented, index, 2, collapseStrategy = 1 )
-      predictedSlice <- as.antsImage( predictedData[i,,,1], reference = slice )
-      predictedSlice <- padOrCropImageToSize( predictedSlice, dim( slice ) )
-      predictedSlice <- regressionMatchImage( predictedSlice, slice, mask = maskSlice )
-
-      imageReorientedArray[,index,] <- as.array( predictedSlice )
-      }
-
-    inpaintedImage <- as.antsImage( imageReorientedArray, reference = imageReoriented )
-
-    if( verbose )
-      {
-      cat( "Post-processing:  reorienting to original space.\n" )
-      }
+      sliceIndex <- i + lowerSlice
+      inpaintedValues = ( apply( batchY[i,,,], c( 1, 2 ), mean ) + 1 ) * ( 0.5 * batchXMaxValues[i] )
+      if( direction == 1 )
+        {
+        inpaintedImageReorientedArray[sliceIndex,,] <- inpaintedValues
+        } else if( direction == 2 ) {
+        inpaintedImageReorientedArray[,sliceIndex,] <- inpaintedValues
+        } else if( direction == 3 ) {
+        inpaintedImageReorientedArray[,,sliceIndex] <- inpaintedValues
+        }
+      } 
+    inpaintedImageReoriented <- as.antsImage( inpaintedImageReorientedArray ) 
+    inpaintedImageReoriented <- antsCopyImageInfo( imageReoriented, inpaintedImageReoriented ) 
 
     xfrmInv <- invertAntsrTransform( xfrm )
-    inpaintedImage <- applyAntsrTransformToImage( xfrmInv, inpaintedImage, image, interpolation = "linear" )
+    inpaintedImage <- applyAntsrTransformToImage( xfrmInv, inpaintedImageReoriented, image, interpolation = "linear" )
     inpaintedImage <- antsCopyImageInfo( image, inpaintedImage )
     inpaintedImage[roiMask == 0] <- image[roiMask == 0]
 
     return( inpaintedImage )
+    
+    } else if( mode == "average" ) {
+    
+    sagittal <- wholeHeadInpainting( image, roiMask = roiMask, modality = modality, 
+                                     mode = "sagittal", verbose = verbose )
+    coronal <- wholeHeadInpainting( image, roiMask = roiMask, modality = modality, 
+                                    mode = "coronal", verbose = verbose )
+    axial <- wholeHeadInpainting( image, roiMask = roiMask, modality = modality, 
+                                  mode = "axial", verbose = verbose )
 
-    } else {
+    return( ( sagittal + coronal + axial ) / 3 )
+  
+    } else if( mode == "meg" ) {
 
-    imageSize <- c( 256, 256, 256 )
-    patchSize <- c( 64, 64, 64 )
-    strideLength <- c( 32, 32, 32 )
-    channelSize <- 1
+    currentImage <- antsImageClone( image )
+    currentRoiMask <- thresholdImage( roiMask, 0, 0, 0, 1 )
+    roiMaskVolume <- sum( currentRoiMask )
 
-    reorientTemplate <- antsImageRead( getANTsXNetData( "oasis" ) )
-    reorientTemplate <- padOrCropImageToSize( reorientTemplate, imageSize )
-
-    centerOfMassTemplate <- getCenterOfMass( reorientTemplate )
-    centerOfMassImage <- getCenterOfMass( image )
-    xfrm <- createAntsrTransform( type = "Euler3DTransform", center = centerOfMassTemplate,
-      translation = centerOfMassImage - centerOfMassTemplate )
-
-    imageReoriented <- applyAntsrTransformToImage( xfrm, image, reorientTemplate, interpolation = "linear" )
-    roiMaskReoriented <- applyAntsrTransformToImage( xfrm, roiMask, reorientTemplate, interpolation = "nearestNeighbor" )
-    roiMaskReoriented <- thresholdImage( roiMaskReoriented, 0, 0, 0, 1 )
-    roiInvertedMaskReoriented <- thresholdImage( roiMaskReoriented, 0, 0, 1, 0 )
-
-    inpaintingUnet <- createPartialConvolutionUnetModel3D( c( patchSize, channelSize ),
-                   numberOfPriors = 0, numberOfFilters = c( 32, 64, 128, 256, 256 ),
-                   kernelSize = 3 )
-
-    weightsName <- ''
-    if( modality == "T1" || modality == "t1" )
+    iteration <- 0
+    while( roiMaskVolume > 0 )
       {
-      weightsName <- "wholeHeadInpaintingPatchBasedT1"
-      } else if( modality == "FLAIR" || modality == "FLAIR" ) {
-      weightsName <- "wholeHeadInpaintingPatchBasedFLAIR"
-      } else {
-      stop( paste0( "Unavailable modality given: ", modality ) )
-      }
-
-    weightsFileName <- getPretrainedNetwork( weightsName,
-      antsxnetCacheDirectory = antsxnetCacheDirectory )
-    inpaintingUnet$load_weights( weightsFileName )
-
-    if( verbose )
-      {
-      cat( "Preprocessing:  Extracting patches.\n" )
-      }
-
-    imagePatches <- extractImagePatches( imageReoriented, patchSize, maxNumberOfPatches = "all",
-        strideLength = strideLength, randomSeed = NULL, returnAsArray = TRUE )
-
-    minImageVal <- min( imageReoriented[roiInvertedMaskReoriented == 1] )
-    maxImageVal <- max( imageReoriented[roiInvertedMaskReoriented == 1] )
-    imageReoriented <- ( imageReoriented - minImageVal ) / ( maxImageVal - minImageVal )
-
-    imagePatchesRescaled <- extractImagePatches( imageReoriented, patchSize, maxNumberOfPatches = "all",
-        strideLength = strideLength, randomSeed = NULL, returnAsArray = TRUE )
-    maskPatches <- extractImagePatches( roiInvertedMaskReoriented, patchSize, maxNumberOfPatches = "all",
-        strideLength = strideLength, randomSeed = NULL, returnAsArray = TRUE )
-
-    batchX <- array( data = imagePatchesRescaled, dim = c( dim( imagePatchesRescaled ), 1 ) )
-    batchXMask <- array( data = maskPatches, dim = c( dim( imagePatchesRescaled ), 1 ) )
-
-    batchX[batchXMask == 0] <- 1
-
-    predictedData <- array( data = 0, dim = dim( batchX ) )
-
-    for( i in seq_len( dim( batchX )[1] ) )
-      {
-      if( any( batchXMask[i,,,,] == 0 ) )
+      if( verbose )
         {
-        if( verbose )
-          {
-          cat( "  Predicting patch ", i, " (of", dim( batchX )[1], ")\n", sep = '' )
-          }
-        predictedPatch <- inpaintingUnet$predict( list( batchX[i,,,,, drop = FALSE],
-                                                        batchXMask[i,,,,, drop = FALSE] ),
-                                                  verbose = verbose )
-        predictedPatchImage <- regressionMatchImage( as.antsImage( drop( predictedPatch ) ),
-                                                     as.antsImage( drop( imagePatches[i,,,] ) ),
-                                                     mask = as.antsImage( drop( batchXMask[i,,,,] ) ) )
-        predictedData[i,,,,1] <- as.array( predictedPatchImage )
-        } else {
-        predictedData[i,,,,1] <- batchX[i,,,,]
+        cat( "roiMaskVolume (", iteration, "): ", roiMaskVolume, "\n" )
         }
+      currentImage <- wholeHeadInpainting( currentImage, roiMask = roiMask, modality = modality,
+                                           mode = "average", verbose = verbose )
+      currentRoiMask <- iMath( currentRoiMask, "ME", 1 )
+      iteration <- iteration + 1
+      roiMaskVolume <- sum( currentRoiMask )
       }
 
-    inpaintedImage <- reconstructImageFromPatches( drop( predictedData ),
-        imageReoriented, strideLength = strideLength )
-
-    if( verbose )
-      {
-      cat( "Post-processing:  reorienting to original space.\n" )
-      }
-
-    xfrmInv <- invertAntsrTransform( xfrm )
-    inpaintedImage <- applyAntsrTransformToImage( xfrmInv, inpaintedImage, image, interpolation = "linear" )
-    inpaintedImage <- antsCopyImageInfo( image, inpaintedImage )
-    inpaintedImage[roiMask == 0] <- image[roiMask == 0]
-
-    return( inpaintedImage )
+    return( currentImage )
     }
   }

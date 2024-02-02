@@ -6,10 +6,9 @@
 \usage{
 lungPulmonaryArterySegmentation(
   ct,
-  lungMask = NA,
+  lungMask = NULL,
   predictionBatchSize = 16,
   patchStrideLength = 32,
-  doPreprocessing = TRUE,
   antsxnetCacheDirectory = NULL,
   verbose = FALSE
 )
