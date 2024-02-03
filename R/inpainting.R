@@ -17,7 +17,7 @@
 #' @return inpainted image
 #' @author Tustison NJ
 #' @export
-wholeHeadInpainting <- function( image, roiMask, modality = "t1", mode="axial",
+wholeHeadInpainting <- function( image, roiMask, modality = "t1", mode = "axial",
   antsxnetCacheDirectory = NULL, verbose = FALSE )
   {
 
@@ -95,11 +95,11 @@ wholeHeadInpainting <- function( image, roiMask, modality = "t1", mode="axial",
         batchX[i,,,j] <- batchX[i,,,1]
         }
       maskSlice <- extractSlice( roiMaskReoriented, slice = sliceIndex, 
-                             direction = direction, collapseStrategy = 1 )
+                                 direction = direction, collapseStrategy = 1 )
       batchXMask[i,,,1] <- as.array( maskSlice )
       }
    
-    batchY <- model$predict( list( batchX, batchXMask ), verbose = verbose )[,,,1:3]
+    batchY <- model$predict( list( batchX, batchXMask ), verbose = verbose )[,,,1:3, drop = FALSE]
 
     inpaintedImageReorientedArray <- as.array( imageReoriented )   
     for( i in seq_len( numberOfSlices ) )
