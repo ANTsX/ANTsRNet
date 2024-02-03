@@ -13,8 +13,8 @@ a keras model
 Creates a keras model implementation of the model:
 }
 \details{
-\preformatted{    \url{https://github.com/Jireh-Jam/R-MNet-Inpainting-keras}
-}
+\if{html}{\out{<div class="sourceCode">}}\preformatted{    \url{https://github.com/Jireh-Jam/R-MNet-Inpainting-keras}
+}\if{html}{\out{</div>}}
 }
 \examples{
 

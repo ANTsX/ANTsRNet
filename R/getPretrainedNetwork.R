@@ -98,6 +98,7 @@ getPretrainedNetwork <- function(
               "koniqMS",
               "koniqMS2",
               "koniqMS3",
+              "lesion_whole_brain",
               "lungCtWithPriorsSegmentationWeights",
               "maskLobes",
               "mriSuperResolution",
@@ -213,6 +214,7 @@ getPretrainedNetwork <- function(
     koniqMS = "https://figshare.com/ndownloader/files/35295403",
     koniqMS2 = "https://figshare.com/ndownloader/files/35295397",
     koniqMS3 = "https://figshare.com/ndownloader/files/35295400",
+    lesion_whole_brain = "https://figshare.com/ndownloader/files/44032017",  # 44162156
     lungCtWithPriorsSegmentationWeights = "https://ndownloader.figshare.com/files/28357818",
     maskLobes = "https://figshare.com/ndownloader/files/30678458",
     mriSuperResolution = "https://figshare.com/ndownloader/files/35290684",
