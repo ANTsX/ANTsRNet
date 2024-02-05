@@ -54,20 +54,44 @@ wholeHeadInpainting <- function( image, roiMask, modality = "t1", mode = "axial"
       {
       lowerSlice <- floor( geoms$BoundingBoxLower_x )
       upperSlice <- floor( geoms$BoundingBoxUpper_x )
-      weightsFile <- getPretrainedNetwork( "inpainting_sagittal_rmnet_weights",
-                                           antsxnetCacheDirectory = antsxnetCacheDirectory )
+      if( modality == "t1" )
+        { 
+        weightsFile <- getPretrainedNetwork( "inpainting_sagittal_rmnet_weights",
+                                            antsxnetCacheDirectory = antsxnetCacheDirectory )
+        # } else if( modality == "flair" ) {
+        # weightsFile <- getPretrainedNetwork( "inpainting_sagittal_rmnet_flair_weights",
+        #                                     antsxnetCacheDirectory = antsxnetCacheDirectory )
+        } else {
+        stop( "Unrecognized modality." )
+        }
       direction <- 1
       } else if( mode == "coronal" ) {
       lowerSlice <- floor( geoms$BoundingBoxLower_y )
       upperSlice <- floor( geoms$BoundingBoxUpper_y )
-      weightsFile <- getPretrainedNetwork( "inpainting_coronal_rmnet_weights",
-                                           antsxnetCacheDirectory = antsxnetCacheDirectory )
+      if( modality == "t1" )
+        { 
+        weightsFile <- getPretrainedNetwork( "inpainting_coronal_rmnet_weights",
+                                            antsxnetCacheDirectory = antsxnetCacheDirectory )
+        # } else if( modality == "flair" ) {
+        # weightsFile <- getPretrainedNetwork( "inpainting_coronal_rmnet_flair_weights",
+        #                                     antsxnetCacheDirectory = antsxnetCacheDirectory )
+        } else {
+        stop( "Unrecognized modality." )
+        }
       direction <- 2
       } else if( mode == "axial" ) {
       lowerSlice <- floor( geoms$BoundingBoxLower_z )
       upperSlice <- floor( geoms$BoundingBoxUpper_z )
-      weightsFile <- getPretrainedNetwork( "inpainting_axial_rmnet_weights",
-                                           antsxnetCacheDirectory = antsxnetCacheDirectory )
+      if( modality == "t1" )
+        { 
+        weightsFile <- getPretrainedNetwork( "inpainting_axial_rmnet_weights",
+                                            antsxnetCacheDirectory = antsxnetCacheDirectory )
+        } else if( modality == "flair" ) {
+        weightsFile <- getPretrainedNetwork( "inpainting_axial_rmnet_flair_weights",
+                                            antsxnetCacheDirectory = antsxnetCacheDirectory )
+        } else {
+        stop( "Unrecognized modality." )
+        }
       direction <- 3
       }
 
