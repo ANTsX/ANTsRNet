@@ -72,9 +72,9 @@ wholeHeadInpainting <- function( image, roiMask, modality = "t1", mode = "axial"
         { 
         weightsFile <- getPretrainedNetwork( "inpainting_coronal_rmnet_weights",
                                             antsxnetCacheDirectory = antsxnetCacheDirectory )
-        # } else if( modality == "flair" ) {
-        # weightsFile <- getPretrainedNetwork( "inpainting_coronal_rmnet_flair_weights",
-        #                                     antsxnetCacheDirectory = antsxnetCacheDirectory )
+        } else if( modality == "flair" ) {
+        weightsFile <- getPretrainedNetwork( "inpainting_coronal_rmnet_flair_weights",
+                                            antsxnetCacheDirectory = antsxnetCacheDirectory )
         } else {
         stop( "Unrecognized modality." )
         }
