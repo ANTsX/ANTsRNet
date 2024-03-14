@@ -45,7 +45,7 @@ brainAge <- function( image, doPreprocessing = TRUE,
   numberOfSimulations = 0, sdAffine = 0.01, antsxnetCacheDirectory = NULL, verbose = TRUE )
   {
   preprocessedImage <- image
-  if( doPreprocessing == TRUE )
+  if( doPreprocessing )
     {
     # Perform preprocessing
     preprocessing <- preprocessBrainImage( image,
@@ -57,9 +57,7 @@ brainAge <- function( image, doPreprocessing = TRUE,
       antsxnetCacheDirectory = antsxnetCacheDirectory, verbose = verbose )
     preprocessedImage <- preprocessing$preprocessedImage * preprocessing$brainMask
     }
-
-  preprocessedImage <- ( preprocessedImage - min( preprocessedImage ) ) /
-    ( max( preprocessedImage ) - min( preprocessedImage ) )
+  preprocessedImage <- iMath( preprocessedImage, "Normalize" )
 
   # Load the model and weights
 
