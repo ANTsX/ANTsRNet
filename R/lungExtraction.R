@@ -254,12 +254,10 @@ lungExtraction <- function( image,
     translation <- centerOfMassImage - centerOfMassReference
     xfrm <- createAntsrTransform( type = "Euler3DTransform",
         center = centerOfMassReference, translation = translation )
-    ctPreprocessed <- ( ( ctPreprocessed - min( ctPreprocessed ) ) /
-        ( max( ctPreprocessed ) - min( ctPreprocessed ) ) )
+    ctPreprocessed <- iMath( ctPreprocessed, "Normalize" )
     ctPreprocessedWarped = applyAntsrTransformToImage(
         xfrm, ctPreprocessed, referenceImage, interpolation = "nearestneighbor" )
-    ctPreprocessedWarped <- ( ( ctPreprocessedWarped - min( ctPreprocessedWarped ) ) /
-        ( max( ctPreprocessedWarped ) - min( ctPreprocessedWarped ) ) ) - 0.5
+    ctPreprocessedWarped <- iMath( ctPreprocessedWarped, "Normalize" ) - 0.5
 
     ################################
     #
