@@ -20,7 +20,7 @@
 #' shape (or dimension) of that tensor is the image dimensions followed by
 #' the number of channels (e.g., red, green, and blue).  The batch size
 #' (i.e., number of training images) is not specified a priori.
-#' @param numberOfClassificationLabels Number of segmentation labels.
+#' @param numberOfOutputs Number of segmentation labels.
 #' @param numberOfDenseUnits number of dense units.
 #' @param dropoutRate optional regularization parameter between \verb{[0, 1]}.
 #' Default = 0.0.
@@ -52,7 +52,7 @@
 #' inputImageSize <- c( dim( X_trainSmall )[2:3], 1 )
 #'
 #' model <- createAlexNetModel2D( inputImageSize = inputImageSize,
-#'   numberOfClassificationLabels = numberOfLabels )
+#'   numberOfOutputs = numberOfLabels )
 #'
 #' model %>% compile( loss = 'categorical_crossentropy',
 #'   optimizer = optimizer_adam( lr = 0.0001 ),
@@ -72,7 +72,7 @@
 #' @import keras
 #' @export
 createAlexNetModel2D <- function( inputImageSize,
-                                  numberOfClassificationLabels = 1000,
+                                  numberOfOutputs = 1000,
                                   numberOfDenseUnits = 4096,
                                   dropoutRate = 0.0,
                                   mode = c( "classification", "regression" ),
@@ -222,7 +222,7 @@ createAlexNetModel2D <- function( inputImageSize,
   layerActivation <- ''
   if( mode == 'classification' )
   {
-    if( numberOfClassificationLabels == 2 )
+    if( numberOfOutputs == 2 )
     {
       layerActivation <- 'sigmoid'
     } else {
@@ -235,7 +235,7 @@ createAlexNetModel2D <- function( inputImageSize,
   }
 
   outputs <- outputs %>%
-    layer_dense( units = numberOfClassificationLabels, activation = layerActivation )
+    layer_dense( units = numberOfOutputs, activation = layerActivation )
 
   alexNetModel <- keras_model( inputs = inputs, outputs = outputs )
 
@@ -264,7 +264,7 @@ createAlexNetModel2D <- function( inputImageSize,
 #' shape (or dimension) of that tensor is the image dimensions followed by
 #' the number of channels (e.g., red, green, and blue).  The batch size
 #' (i.e., number of training images) is not specified a priori.
-#' @param numberOfClassificationLabels Number of segmentation labels.
+#' @param numberOfOutputs Number of segmentation labels.
 #' @param numberOfDenseUnits number of dense units.
 #' @param dropoutRate optional regularization parameter between \verb{[0, 1]}.
 #' Default = 0.0.
@@ -297,7 +297,7 @@ createAlexNetModel2D <- function( inputImageSize,
 #' inputImageSize <- c( dim( X_trainSmall )[2:3], 1 )
 #'
 #' model <- createAlexNetModel2D( inputImageSize = inputImageSize,
-#'   numberOfClassificationLabels = numberOfLabels )
+#'   numberOfOutputs = numberOfLabels )
 #'
 #' model %>% compile( loss = 'categorical_crossentropy',
 #'   optimizer = optimizer_adam( lr = 0.0001 ),
@@ -316,7 +316,7 @@ createAlexNetModel2D <- function( inputImageSize,
 #' @import keras
 #' @export
 createAlexNetModel3D <- function( inputImageSize,
-                                  numberOfClassificationLabels = 1000,
+                                  numberOfOutputs = 1000,
                                   numberOfDenseUnits = 4096,
                                   dropoutRate = 0.0,
                                   mode = c( "classification", "regression" ),
@@ -478,7 +478,7 @@ createAlexNetModel3D <- function( inputImageSize,
     }
 
   outputs <- outputs %>%
-    layer_dense( units = numberOfClassificationLabels, activation = layerActivation )
+    layer_dense( units = numberOfOutputs, activation = layerActivation )
 
   alexNetModel <- keras_model( inputs = inputs, outputs = outputs )
 

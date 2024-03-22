@@ -5,7 +5,7 @@
 #' This number is halved for each subsequent layer.
 #' @param numberOfLayers Number of dense layers defining the model.
 #' @param mode 'classification' or 'regression'.
-#' @param numberOfClassificationLabels Specifies output for "classification" networks.
+#' @param numberOfOutputs Specifies number of units in final layer
 #' @return a keras model
 #' @author Tustison NJ
 #' @examples
@@ -20,7 +20,7 @@ createDenseModel <- function( inputVectorSize,
                               numberOfFiltersAtBaseLayer = 512,
                               numberOfLayers = 2,
                               mode = 'classification',
-                              numberOfClassificationLabels = 1000
+                              numberOfOutputs = 1000
                             )
 {
   input <- layer_input( shape = c( inputVectorSize ) )
@@ -37,7 +37,7 @@ createDenseModel <- function( inputVectorSize,
 
   if( mode == "classification" )
     {
-    output <- output %>% layer_dense( units = numberOfClassificationLabels,
+    output <- output %>% layer_dense( units = numberOfOutputs,
                                      activation = "softmax" )
     } else if( mode == "regression" ) {
     output <- output %>% layer_dense( units = 1, activation = "linear" )

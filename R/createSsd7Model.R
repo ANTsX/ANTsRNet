@@ -20,7 +20,7 @@
 #' shape (or dimension) of that tensor is the image dimensions followed by
 #' the number of channels (e.g., red, green, and blue).  The batch size
 #' (i.e., number of training images) is not specified a priori.
-#' @param numberOfClassificationLabels Number of classification labels.
+#' @param numberOfOutputs Number of classification labels.
 #' Needs to include the background as one of the labels.
 #' @param minScale The smallest scaling factor for the size of the anchor
 #' boxes as a fraction of the shorter side of the input images.
@@ -46,7 +46,7 @@
 #' createSsd7Model2D(c(250, 250, 3), 2)
 #' createSsd7Model3D(c(250, 250, 250, 3), 2)
 createSsd7Model2D <- function( inputImageSize,
-                              numberOfClassificationLabels,
+                              numberOfOutputs,
                               minScale = 0.08,
                               maxScale = 0.96,
                               aspectRatiosPerLayer =
@@ -80,9 +80,9 @@ createSsd7Model2D <- function( inputImageSize,
   imageDimension <- 2
   numberOfCoordinates <- 2 * imageDimension
 
-  # For each of the \code{numberOfClassificationLabels}, we predict confidence
+  # For each of the \code{numberOfOutputs}, we predict confidence
   # values for each box.  This translates into each confidence predictor
-  # having a depth of  \code{numberOfBoxesPerLayer * numberOfClassificationLabels}.
+  # having a depth of  \code{numberOfBoxesPerLayer * numberOfOutputs}.
   boxClasses <- list()
 
   # For each box we need to predict the 2 * imageDimension coordinates.  The
@@ -125,7 +125,7 @@ createSsd7Model2D <- function( inputImageSize,
       {
       index <- i - 3
       boxClasses[[index]] <- convolutionLayer %>% layer_conv_2d(
-        filters = numberOfBoxesPerLayer[index] * numberOfClassificationLabels,
+        filters = numberOfBoxesPerLayer[index] * numberOfOutputs,
         kernel_size = c( 3, 3 ), strides = c( 1, 1 ),
         padding = 'valid', name = paste0( 'classes', i ) )
 
@@ -172,10 +172,10 @@ createSsd7Model2D <- function( inputImageSize,
     #   to \code{(batch, height * width * numberOfBoxes, numberOfClasses )}
     inputShape <- K$int_shape( boxClasses[[i]] )
     numberOfBoxes <-
-      as.integer( inputShape[[4]] / numberOfClassificationLabels )
+      as.integer( inputShape[[4]] / numberOfOutputs )
 
     boxClassesReshaped[[i]] <- boxClasses[[i]] %>% layer_reshape(
-      target_shape = c( -1, numberOfClassificationLabels ),
+      target_shape = c( -1, numberOfOutputs ),
       name = paste0( 'classes', i + 3, '_reshape' ) )
 
     # reshape \code{( batch, height, width, numberOfBoxes * 4 )}
@@ -232,7 +232,7 @@ createSsd7Model2D <- function( inputImageSize,
 #' shape (or dimension) of that tensor is the image dimensions followed by
 #' the number of channels (e.g., red, green, and blue).  The batch size
 #' (i.e., number of training images) is not specified a priori.
-#' @param numberOfClassificationLabels Number of classification labels.
+#' @param numberOfOutputs Number of classification labels.
 #' Needs to include the background as one of the labels.
 #' @param minScale The smallest scaling factor for the size of the anchor
 #' boxes as a fraction of the shorter side of the input images.
@@ -258,7 +258,7 @@ createSsd7Model2D <- function( inputImageSize,
 #' createSsd7Model3D(c(256, 256, 100, 3), 2)
 #' }
 createSsd7Model3D <- function( inputImageSize,
-                              numberOfClassificationLabels,
+                              numberOfOutputs,
                               minScale = 0.08,
                               maxScale = 0.96,
                               aspectRatiosPerLayer =
@@ -292,9 +292,9 @@ createSsd7Model3D <- function( inputImageSize,
   imageDimension <- 3
   numberOfCoordinates <- 2 * imageDimension
 
-  # For each of the \code{numberOfClassificationLabels}, we predict confidence
+  # For each of the \code{numberOfOutputs}, we predict confidence
   # values for each box.  This translates into each confidence predictor
-  # having a depth of  \code{numberOfBoxesPerLayer * numberOfClassificationLabels}.
+  # having a depth of  \code{numberOfBoxesPerLayer * numberOfOutputs}.
   boxClasses <- list()
 
   # For each box we need to predict the 2 * imageDimension coordinates.  The
@@ -337,7 +337,7 @@ createSsd7Model3D <- function( inputImageSize,
       {
       index <- i - 3
       boxClasses[[index]] <- convolutionLayer %>% layer_conv_3d(
-        filters = numberOfBoxesPerLayer[index] * numberOfClassificationLabels,
+        filters = numberOfBoxesPerLayer[index] * numberOfOutputs,
         kernel_size = c( 3, 3, 3 ), strides = c( 1, 1, 1 ),
         padding = 'valid', name = paste0( 'classes', i ) )
 
@@ -384,10 +384,10 @@ createSsd7Model3D <- function( inputImageSize,
     #   to \code{(batch, height * width * depth * numberOfBoxes, numberOfClasses )}
     inputShape <- K$int_shape( boxClasses[[i]] )
     numberOfBoxes <-
-      as.integer( inputShape[[4]] / numberOfClassificationLabels )
+      as.integer( inputShape[[4]] / numberOfOutputs )
 
     boxClassesReshaped[[i]] <- boxClasses[[i]] %>% layer_reshape(
-      target_shape = c( -1, numberOfClassificationLabels ),
+      target_shape = c( -1, numberOfOutputs ),
       name = paste0( 'classes', i + 3, '_reshape' ) )
 
     # reshape \code{( batch, height, width, depth, numberOfBoxes * 6L )}

@@ -42,7 +42,7 @@ checkXrayLungOrientation <- function( image,
     }
 
   model <- createResNetModel2D( c( resampledImageSize, 1 ),
-                                numberOfClassificationLabels = 3, 
+                                numberOfOutputs = 3, 
                                 mode = "classification",
                                 layers = c( 1, 2, 3, 4 ), 
                                 residualBlockSchedule = c( 2, 2, 2, 2 ),

@@ -22,7 +22,7 @@
 #' shape (or dimension) of that tensor is the image dimensions followed by
 #' the number of channels (e.g., red, green, and blue).  The batch size
 #' (i.e., number of training images) is not specified a priori.
-#' @param numberOfClassificationLabels Number of segmentation labels.
+#' @param numberOfOutputs Specifies number of units in final layer
 #' @param mode 'classification' or 'regression'. 
 #'
 #' @return a GoogLeNet keras model
@@ -61,7 +61,7 @@
 #' inputImageSize <- c( dim( X_trainSmall )[2:3], 1 )
 #'
 #' model <- createGoogLeNetModel2D( inputImageSize = c( resampledImageSize, 1 ),
-#'   numberOfClassificationLabels = numberOfLabels )
+#'   numberOfOutputs = numberOfLabels )
 #'
 #'
 #' model %>% compile( loss = 'categorical_crossentropy',
@@ -79,7 +79,7 @@
 #' # predictedData <- model %>% predict( X_testSmall, verbose = 1 )
 #' rm(model); gc()
 #' model <- createGoogLeNetModel2D( inputImageSize = c( resampledImageSize, 1 ),
-#'   numberOfClassificationLabels = 2 )
+#'   numberOfOutputs = 2 )
 #' rm(model); gc()
 #'
 #' model <- createGoogLeNetModel2D( inputImageSize = c( resampledImageSize, 1 ),
@@ -88,7 +88,7 @@
 #' @import keras
 #' @export
 createGoogLeNetModel2D <- function( inputImageSize,
-                                    numberOfClassificationLabels = 1000,
+                                    numberOfOutputs = 1000,
                                     mode = c( "classification", "regression" )
 ){
   K <- keras::backend()
@@ -393,7 +393,7 @@ createGoogLeNetModel2D <- function( inputImageSize,
     }
 
   outputs <- outputs %>%
-    layer_dense( units = numberOfClassificationLabels, activation = layerActivation )
+    layer_dense( units = numberOfOutputs, activation = layerActivation )
 
   googLeNetModel <- keras_model( inputs = inputs, outputs = outputs )
 

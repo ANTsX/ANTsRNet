@@ -17,7 +17,7 @@
 #' @param inputScalarsSize Optional integer specifying the size of the input
 #' vector for scalars that get concatenated to the fully connected layer at
 #' the end of the network.
-#' @param numberOfClassificationLabels Number of segmentation labels.
+#' @param numberOfOutputs Specifies number of units in final layer
 #' @param layers a vector determining the number of 'filters' defined at
 #' for each layer.
 #' @param residualBlockSchedule vector defining the how many residual blocks
@@ -53,7 +53,7 @@
 #' inputImageSize <- c( dim( X_trainSmall )[2:3], 1 )
 #'
 #' model <- createResNetModel2D( inputImageSize = inputImageSize,
-#'   numberOfClassificationLabels = numberOfLabels )
+#'   numberOfOutputs = numberOfLabels )
 #'
 #' model %>% compile( loss = 'categorical_crossentropy',
 #'   optimizer = optimizer_adam( lr = 0.0001 ),
@@ -73,7 +73,7 @@
 #' @export
 createResNetModel2D <- function( inputImageSize,
                                  inputScalarsSize = 0,
-                                 numberOfClassificationLabels = 1000,
+                                 numberOfOutputs = 1000,
                                  layers = 1:4,
                                  residualBlockSchedule = c( 3, 4, 6, 3 ),
                                  lowestResolution = 64,
@@ -236,12 +236,12 @@ createResNetModel2D <- function( inputImageSize,
     inputScalars <- layer_input( shape = c( inputScalarsSize ) )
     concatenatedLayer <- layer_concatenate( list( outputs, inputScalars ), trainable = TRUE )
     outputs <- concatenatedLayer %>%
-      layer_dense( units = numberOfClassificationLabels, activation = layerActivation )
+      layer_dense( units = numberOfOutputs, activation = layerActivation )
     resNetModel <- keras_model( inputs = list( inputImage, inputScalars ),
                                 outputs = outputs )
     } else {
     outputs <- outputs %>%
-      layer_dense( units = numberOfClassificationLabels, activation = layerActivation )
+      layer_dense( units = numberOfOutputs, activation = layerActivation )
     resNetModel <- keras_model( inputs = inputImage, outputs = outputs )
     }
 
@@ -267,7 +267,7 @@ createResNetModel2D <- function( inputImageSize,
 #' @param inputScalarsSize Optional integer specifying the size of the input
 #' vector for scalars that get concatenated to the fully connected layer at
 #' the end of the network.
-#' @param numberOfClassificationLabels Number of segmentation labels.
+#' @param numberOfOutputs Number of segmentation labels.
 #' @param layers a vector determining the number of 'filters' defined at
 #' for each layer.
 #' @param residualBlockSchedule vector defining the how many residual blocks
@@ -305,7 +305,7 @@ createResNetModel2D <- function( inputImageSize,
 #' inputImageSize <- c( dim( X_trainSmall )[2:3], 1 )
 #'
 #' model <- createResNetModel2D( inputImageSize = inputImageSize,
-#'   numberOfClassificationLabels = numberOfLabels )
+#'   numberOfOutputs = numberOfLabels )
 #'
 #' model %>% compile( loss = 'categorical_crossentropy',
 #'   optimizer = optimizer_adam( lr = 0.0001 ),
@@ -324,7 +324,7 @@ createResNetModel2D <- function( inputImageSize,
 #' @export
 createResNetModel3D <- function( inputImageSize,
                                  inputScalarsSize = 0,
-                                 numberOfClassificationLabels = 1000,
+                                 numberOfOutputs = 1000,
                                  layers = 1:4,
                                  residualBlockSchedule = c( 3, 4, 6, 3 ),
                                  lowestResolution = 64,
@@ -487,12 +487,12 @@ createResNetModel3D <- function( inputImageSize,
     inputScalars <- layer_input( shape = c( inputScalarsSize ) )
     concatenatedLayer <- layer_concatenate( list( outputs, inputScalars ), trainable = TRUE )
     outputs <- concatenatedLayer %>%
-      layer_dense( units = numberOfClassificationLabels, activation = layerActivation )
+      layer_dense( units = numberOfOutputs, activation = layerActivation )
     resNetModel <- keras_model( inputs = list( inputImage, inputScalars ),
                                 outputs = outputs )
     } else {
     outputs <- outputs %>%
-      layer_dense( units = numberOfClassificationLabels, activation = layerActivation )
+      layer_dense( units = numberOfOutputs, activation = layerActivation )
     resNetModel <- keras_model( inputs = inputImage, outputs = outputs )
     }
 

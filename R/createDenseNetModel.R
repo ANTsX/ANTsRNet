@@ -19,7 +19,7 @@
 #' shape (or dimension) of that tensor is the image dimensions followed by
 #' the number of channels (e.g., red, green, and blue).  The batch size
 #' (i.e., number of training images) is not specified a priori.
-#' @param numberOfClassificationLabels Number of segmentation labels.
+#' @param numberOfOutputs Specifies number of units in final layer
 #' @param numberOfFilters number of filters
 #' @param depth number of layers---must be equal to 3 * N + 4 where
 #' N is an integer (default = 7).
@@ -55,7 +55,7 @@
 #' inputImageSize <- c( dim( X_trainSmall )[2:3], 1 )
 #'
 #' model <- createDenseNetModel2D( inputImageSize = inputImageSize,
-#'   numberOfClassificationLabels = numberOfLabels )
+#'   numberOfOutputs = numberOfLabels )
 #'
 #' model %>% compile( loss = 'categorical_crossentropy',
 #'   optimizer = optimizer_adam( lr = 0.0001 ),
@@ -74,7 +74,7 @@
 #' @import keras
 #' @export
 createDenseNetModel2D <- function( inputImageSize,
-                                   numberOfClassificationLabels = 1000,
+                                   numberOfOutputs = 1000,
                                    numberOfFilters = 16,
                                    depth = 7,
                                    numberOfDenseBlocks = 1,
@@ -179,7 +179,7 @@ createDenseNetModel2D <- function( inputImageSize,
   layerActivation <- ''
   if( mode == 'classification' )
     {
-    if( numberOfClassificationLabels == 2 )
+    if( numberOfOutputs == 2 )
       {
       layerActivation <- 'sigmoid'
       } else {
@@ -191,7 +191,7 @@ createDenseNetModel2D <- function( inputImageSize,
     stop( 'Error: unrecognized mode.' )
     }
 
-  outputs <- outputs %>% layer_dense( units = numberOfClassificationLabels,
+  outputs <- outputs %>% layer_dense( units = numberOfOutputs,
     activation = layerActivation,
     kernel_regularizer = regularizer_l2( weightDecay ),
     bias_regularizer = regularizer_l2( weightDecay ) )
@@ -222,7 +222,7 @@ createDenseNetModel2D <- function( inputImageSize,
 #' shape (or dimension) of that tensor is the image dimensions followed by
 #' the number of channels (e.g., red, green, and blue).  The batch size
 #' (i.e., number of training images) is not specified a priori.
-#' @param numberOfClassificationLabels Number of segmentation labels.
+#' @param numberOfOutputs Number of segmentation labels.
 #' @param numberOfFilters number of filters
 #' @param depth number of layers---must be equal to 3 * N + 4 where
 #' N is an integer (default = 7).
@@ -260,7 +260,7 @@ createDenseNetModel2D <- function( inputImageSize,
 #' inputImageSize <- c( dim( X_trainSmall )[2:3], 1 )
 #'
 #' model <- createDenseNetModel2D( inputImageSize = inputImageSize,
-#'   numberOfClassificationLabels = numberOfLabels )
+#'   numberOfOutputs = numberOfLabels )
 #'
 #' model %>% compile( loss = 'categorical_crossentropy',
 #'   optimizer = optimizer_adam( lr = 0.0001 ),
@@ -278,7 +278,7 @@ createDenseNetModel2D <- function( inputImageSize,
 #' @import keras
 #' @export
 createDenseNetModel3D <- function( inputImageSize,
-                                   numberOfClassificationLabels = 1000,
+                                   numberOfOutputs = 1000,
                                    numberOfFilters = 16,
                                    depth = 7,
                                    numberOfDenseBlocks = 1,
@@ -384,7 +384,7 @@ createDenseNetModel3D <- function( inputImageSize,
   layerActivation <- ''
   if( mode == 'classification' )
     {
-    if( numberOfClassificationLabels == 2 )
+    if( numberOfOutputs == 2 )
       {
       layerActivation <- 'sigmoid'
       } else {
@@ -396,7 +396,7 @@ createDenseNetModel3D <- function( inputImageSize,
     stop( 'Error: unrecognized mode.' )
     }
 
-  outputs <- outputs %>% layer_dense( units = numberOfClassificationLabels,
+  outputs <- outputs %>% layer_dense( units = numberOfOutputs,
     activation = layerActivation,
     kernel_regularizer = regularizer_l2( weightDecay ),
     bias_regularizer = regularizer_l2( weightDecay ) )

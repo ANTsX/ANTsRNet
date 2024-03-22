@@ -19,7 +19,7 @@
 #' shape (or dimension) of that tensor is the image dimensions followed by
 #' the number of channels (e.g., red, green, and blue).  The batch size
 #' (i.e., number of training images) is not specified a priori.
-#' @param numberOfClassificationLabels Number of segmentation labels.
+#' @param numberOfOutputs Number of outputs in the final layer
 #' @param layers a vector determining the number of filters defined at
 #' for each layer.
 #' @param lowestResolution number of filters at the beginning.
@@ -68,7 +68,7 @@
 #' inputImageSize <- c( dim( X_trainSmall )[2:3], 1 )
 #'
 #' model <- createVggModel2D( inputImageSize = c( resampledImageSize, 1 ),
-#'   numberOfClassificationLabels = numberOfLabels )
+#'   numberOfOutputs = numberOfLabels )
 #'
 #' model %>% compile( loss = 'categorical_crossentropy',
 #'   optimizer = optimizer_adam( lr = 0.0001 ),
@@ -87,7 +87,7 @@
 #' @import keras
 #' @export
 createVggModel2D <- function( inputImageSize,
-                               numberOfClassificationLabels = 1000,
+                               numberOfOutputs = 1000,
                                layers = c( 1, 2, 3, 4, 4 ),
                                lowestResolution = 64,
                                convolutionKernelSize = c( 3, 3 ),
@@ -165,7 +165,7 @@ createVggModel2D <- function( inputImageSize,
     stop( 'Error: unrecognized mode.' )
     }
 
-  vggModel %>% layer_dense( units = numberOfClassificationLabels,
+  vggModel %>% layer_dense( units = numberOfOutputs,
     activation = layerActivation )
 
   return( vggModel )
@@ -192,7 +192,7 @@ createVggModel2D <- function( inputImageSize,
 #' shape (or dimension) of that tensor is the image dimensions followed by
 #' the number of channels (e.g., red, green, and blue).  The batch size
 #' (i.e., number of training images) is not specified a priori.
-#' @param numberOfClassificationLabels Number of segmentation labels.
+#' @param numberOfOutputs Number of segmentation labels.
 #' @param layers a vector determining the number of 'filters' defined at
 #' for each layer.
 #' @param lowestResolution number of filters at the beginning.
@@ -232,7 +232,7 @@ createVggModel2D <- function( inputImageSize,
 #' inputImageSize <- c( dim( X_trainSmall )[2:3], 1 )
 #'
 #' model <- createVggModel2D( inputImageSize = inputImageSize,
-#'   numberOfClassificationLabels = numberOfLabels )
+#'   numberOfOutputs = numberOfLabels )
 #'
 #' model %>% compile( loss = 'categorical_crossentropy',
 #'   optimizer = optimizer_adam( lr = 0.0001 ),
@@ -250,7 +250,7 @@ createVggModel2D <- function( inputImageSize,
 #' @import keras
 #' @export
 createVggModel3D <- function( inputImageSize,
-                               numberOfClassificationLabels = 1000,
+                               numberOfOutputs = 1000,
                                layers = c( 1, 2, 3, 4, 4 ),
                                lowestResolution = 64,
                                convolutionKernelSize = c( 3, 3, 3 ),
@@ -329,7 +329,7 @@ createVggModel3D <- function( inputImageSize,
     stop( 'Error: unrecognized mode.' )
     }
 
-  vggModel %>% layer_dense( units = numberOfClassificationLabels,
+  vggModel %>% layer_dense( units = numberOfOutputs,
     activation = layerActivation )
 
   return( vggModel )
