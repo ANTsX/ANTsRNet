@@ -11,7 +11,7 @@
 #' shape (or dimension) of that tensor is the image dimensions followed by
 #' the number of channels (e.g., red, green, and blue).  The batch size
 #' (i.e., number of training images) is not specified a priori.
-#' @param numberOfClassificationLabels Number of segmentation labels.
+#' @param numberOfOutputs Specifies number of units in final layer
 #' @param layers a vector determining the number of 'filters' defined at
 #' for each layer.
 #' @param residualBlockSchedule vector defining the how many residual blocks
@@ -50,7 +50,7 @@
 #'
 #' model <- createResNetWithSpatialTransformerNetworkModel2D(
 #'   inputImageSize = inputImageSize,
-#'   numberOfClassificationLabels = numberOfLabels )
+#'   numberOfOutputs = numberOfLabels )
 #'
 #' model %>% compile( loss = 'categorical_crossentropy',
 #'   optimizer = optimizer_adam( lr = 0.0001 ),
@@ -70,7 +70,7 @@
 #' @import keras
 #' @export
 createResNetWithSpatialTransformerNetworkModel2D <- function( inputImageSize,
-                                                              numberOfClassificationLabels = 1000,
+                                                              numberOfOutputs = 1000,
                                                               layers = 1:4,
                                                               residualBlockSchedule = c( 3, 4, 6, 3 ),
                                                               lowestResolution = 64,
@@ -179,7 +179,7 @@ createResNetWithSpatialTransformerNetworkModel2D <- function( inputImageSize,
   # The spatial transformer network part
 
   localizationModel <- createResNetModel2D( inputImageSize = inputImageSize,
-     numberOfClassificationLabels = numberOfSpatialTransformerUnits,
+     numberOfOutputs = numberOfSpatialTransformerUnits,
      mode = "regression" )
   localization <- localizationModel$output %>% layer_activation( 'relu' )
 
@@ -250,7 +250,7 @@ createResNetWithSpatialTransformerNetworkModel2D <- function( inputImageSize,
     }
 
   outputs <- outputs %>%
-    layer_dense( units = numberOfClassificationLabels, activation = layerActivation )
+    layer_dense( units = numberOfOutputs, activation = layerActivation )
 
   resNetModel <- keras_model( inputs = localizationModel$inputs, outputs = outputs )
 
@@ -270,7 +270,7 @@ createResNetWithSpatialTransformerNetworkModel2D <- function( inputImageSize,
 #' shape (or dimension) of that tensor is the image dimensions followed by
 #' the number of channels (e.g., red, green, and blue).  The batch size
 #' (i.e., number of training images) is not specified a priori.
-#' @param numberOfClassificationLabels Number of segmentation labels.
+#' @param numberOfOutputs Number of segmentation labels.
 #' @param layers a vector determining the number of 'filters' defined at
 #' for each layer.
 #' @param residualBlockSchedule vector defining the how many residual blocks
@@ -310,7 +310,7 @@ createResNetWithSpatialTransformerNetworkModel2D <- function( inputImageSize,
 #'
 #' model <- createResNetWithSpatialTransformerNetworkModel2D(
 #'   inputImageSize = inputImageSize,
-#'   numberOfClassificationLabels = numberOfLabels )
+#'   numberOfOutputs = numberOfLabels )
 #'
 #' model %>% compile( loss = 'categorical_crossentropy',
 #'   optimizer = optimizer_adam( lr = 0.0001 ),
@@ -328,7 +328,7 @@ createResNetWithSpatialTransformerNetworkModel2D <- function( inputImageSize,
 #' @import keras
 #' @export
 createResNetWithSpatialTransformerNetworkModel3D <- function( inputImageSize,
-                                                              numberOfClassificationLabels = 1000,
+                                                              numberOfOutputs = 1000,
                                                               layers = 1:4,
                                                               residualBlockSchedule = c( 3, 4, 6, 3 ),
                                                               lowestResolution = 64,
@@ -440,7 +440,7 @@ createResNetWithSpatialTransformerNetworkModel3D <- function( inputImageSize,
   # The spatial transformer network part
 
   localizationModel <- createResNetModel3D( inputImageSize = inputImageSize,
-     numberOfClassificationLabels = numberOfSpatialTransformerUnits,
+     numberOfOutputs = numberOfSpatialTransformerUnits,
      mode = "regression" )
   localization <- localizationModel$output %>% layer_activation( 'relu' )
 
@@ -511,7 +511,7 @@ createResNetWithSpatialTransformerNetworkModel3D <- function( inputImageSize,
     }
 
   outputs <- outputs %>%
-    layer_dense( units = numberOfClassificationLabels, activation = layerActivation )
+    layer_dense( units = numberOfOutputs, activation = layerActivation )
 
   resNetModel <- keras_model( inputs = localizationModel$inputs, outputs = outputs )
 

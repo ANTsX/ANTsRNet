@@ -21,7 +21,7 @@
 #' shape (or dimension) of that tensor is the image dimensions followed by
 #' the number of channels (e.g., red, green, and blue).  The batch size
 #' (i.e., number of training images) is not specified a priori. 
-#' @param numberOfClassificationLabels Number of classification labels. 
+#' @param numberOfOutputs Number of classification labels. 
 #' Needs to include the background as one of the labels. 
 #' @param l2Regularization The L2-regularization rate.  Default = 0.0005.
 #' @param minScale The smallest scaling factor for the size of the anchor 
@@ -46,7 +46,7 @@
 #' @import keras
 #' @export
 createSsdModel2D <- function( inputImageSize, 
-                              numberOfClassificationLabels,
+                              numberOfOutputs,
                               l2Regularization = 0.0005,
                               minScale = 0.1,
                               maxScale = 0.9,
@@ -97,9 +97,9 @@ createSsdModel2D <- function( inputImageSize,
   scales <- seq( from = minScale, to = maxScale, 
     length.out = numberOfPredictorLayers + 1 )
 
-  # For each of the \code{numberOfClassificationLabels}, we predict confidence 
+  # For each of the \code{numberOfOutputs}, we predict confidence 
   # values for each box.  This translates into each confidence predictor 
-  # having a depth of  \code{numberOfBoxesPerLayer * numberOfClassificationLabels}.
+  # having a depth of  \code{numberOfBoxesPerLayer * numberOfOutputs}.
   boxClasses <- list()
 
   # For each box we need to predict the 2 * imageDimension coordinates.  The 
@@ -148,14 +148,14 @@ createSsdModel2D <- function( inputImageSize,
           layer_l2_normalization_2d( scale = 20, name = "conv4_3_norm" )
 
         boxClasses[[1]] <- l2NormalizedOutputs %>% layer_conv_2d( 
-          filters = numberOfBoxesPerLayer[1] * numberOfClassificationLabels, 
+          filters = numberOfBoxesPerLayer[1] * numberOfOutputs, 
           kernel_size = c( 3, 3 ), dilation_rate = c( 1L, 1L ),
           padding = 'same', kernel_initializer = initializer_he_normal(),
           kernel_regularizer = regularizer_l2( l2Regularization ), 
           name = "conv4_3_norm_mbox_conf" )
 
         boxLocations[[1]] <- l2NormalizedOutputs %>% layer_conv_2d( 
-          filters = numberOfBoxesPerLayer[1] * numberOfClassificationLabels,
+          filters = numberOfBoxesPerLayer[1] * numberOfOutputs,
           kernel_size = c( 3, 3 ), dilation_rate = c( 1L, 1L ),
           padding = 'same', kernel_initializer = initializer_he_normal(),
           kernel_regularizer = regularizer_l2( l2Regularization ), 
@@ -211,7 +211,7 @@ createSsdModel2D <- function( inputImageSize,
     kernel_regularizer = regularizer_l2( l2Regularization ), name = "fc7" ) 
 
   boxClasses[[2]] <- outputs %>% layer_conv_2d( 
-    filters = numberOfBoxesPerLayer[2] * numberOfClassificationLabels, 
+    filters = numberOfBoxesPerLayer[2] * numberOfOutputs, 
     kernel_size = c( 3, 3 ), dilation_rate = c( 1L, 1L ),
     padding = 'same', kernel_initializer = initializer_he_normal(),
     kernel_regularizer = regularizer_l2( l2Regularization ), 
@@ -244,7 +244,7 @@ createSsdModel2D <- function( inputImageSize,
     name = "conv6_2" ) 
 
   boxClasses[[3]] <- outputs %>% layer_conv_2d( 
-    filters = numberOfBoxesPerLayer[3] * numberOfClassificationLabels, 
+    filters = numberOfBoxesPerLayer[3] * numberOfOutputs, 
     kernel_size = c( 3, 3 ), dilation_rate = c( 1L, 1L ),
     padding = 'same', kernel_initializer = initializer_he_normal(),
     kernel_regularizer = regularizer_l2( l2Regularization ), 
@@ -278,7 +278,7 @@ createSsdModel2D <- function( inputImageSize,
     name = "conv7_2" ) 
 
   boxClasses[[4]] <- outputs %>% layer_conv_2d( 
-    filters = numberOfBoxesPerLayer[4] * numberOfClassificationLabels, 
+    filters = numberOfBoxesPerLayer[4] * numberOfOutputs, 
     kernel_size = c( 3, 3 ), dilation_rate = c( 1L, 1L ),
     padding = 'same', kernel_initializer = initializer_he_normal(),
     kernel_regularizer = regularizer_l2( l2Regularization ), 
@@ -314,7 +314,7 @@ createSsdModel2D <- function( inputImageSize,
     name = "conv8_2" ) 
 
   boxClasses[[5]] <- outputs %>% layer_conv_2d( 
-    filters = numberOfBoxesPerLayer[5] * numberOfClassificationLabels, 
+    filters = numberOfBoxesPerLayer[5] * numberOfOutputs, 
     kernel_size = c( 3, 3 ), dilation_rate = c( 1L, 1L ),
     padding = 'same', kernel_initializer = initializer_he_normal(),
     kernel_regularizer = regularizer_l2( l2Regularization ), 
@@ -350,7 +350,7 @@ createSsdModel2D <- function( inputImageSize,
     name = "conv9_2" ) 
 
   boxClasses[[6]] <- outputs %>% layer_conv_2d( 
-    filters = numberOfBoxesPerLayer[6] * numberOfClassificationLabels, 
+    filters = numberOfBoxesPerLayer[6] * numberOfOutputs, 
     kernel_size = c( 3, 3 ), dilation_rate = c( 1L, 1L ), padding = 'same', 
     kernel_initializer = initializer_he_normal(),
     kernel_regularizer = regularizer_l2( l2Regularization ), 
@@ -385,7 +385,7 @@ createSsdModel2D <- function( inputImageSize,
       name = "conv10_2" ) 
 
     boxClasses[[7]] <- outputs %>% layer_conv_2d( 
-      filters = numberOfBoxesPerLayer[7] * numberOfClassificationLabels, 
+      filters = numberOfBoxesPerLayer[7] * numberOfOutputs, 
       kernel_size = c( 3, 3 ), dilation_rate = c( 1L, 1L ), padding = 'same', 
       kernel_initializer = initializer_he_normal(),
       kernel_regularizer = regularizer_l2( l2Regularization ), 
@@ -442,10 +442,10 @@ createSsdModel2D <- function( inputImageSize,
     #   to \code{(batch, height * width * numberOfBoxes, numberOfClasses )}
     inputShape <- K$int_shape( boxClasses[[i]] )
     numberOfBoxes <- 
-      as.integer( inputShape[[4]] / numberOfClassificationLabels )
+      as.integer( inputShape[[4]] / numberOfOutputs )
 
     boxClassesReshaped[[i]] <- boxClasses[[i]] %>% layer_reshape( 
-      target_shape = c( -1, numberOfClassificationLabels ), 
+      target_shape = c( -1, numberOfOutputs ), 
       name = paste0( layerNames[i], "_conf_reshape" ) )
 
     # reshape \code{( batch, height, width, numberOfBoxes * 4 )}
@@ -505,7 +505,7 @@ createSsdModel2D <- function( inputImageSize,
 #' shape (or dimension) of that tensor is the image dimensions followed by
 #' the number of channels (e.g., red, green, and blue).  The batch size
 #' (i.e., number of training images) is not specified a priori. 
-#' @param numberOfClassificationLabels Number of classification labels. 
+#' @param numberOfOutputs Number of classification labels. 
 #' Needs to include the background as one of the labels. 
 #' @param l2Regularization The L2-regularization rate.  Default = 0.0005.
 #' @param minScale The smallest scaling factor for the size of the anchor 
@@ -530,7 +530,7 @@ createSsdModel2D <- function( inputImageSize,
 #' @import keras
 #' @export
 createSsdModel3D <- function( inputImageSize, 
-                              numberOfClassificationLabels,
+                              numberOfOutputs,
                               l2Regularization = 0.0005,
                               minScale = 0.1,
                               maxScale = 0.9,
@@ -581,9 +581,9 @@ createSsdModel3D <- function( inputImageSize,
   scales <- seq( from = minScale, to = maxScale, 
     length.out = numberOfPredictorLayers + 1 )
 
-  # For each of the \code{numberOfClassificationLabels}, we predict confidence 
+  # For each of the \code{numberOfOutputs}, we predict confidence 
   # values for each box.  This translates into each confidence predictor 
-  # having a depth of  \code{numberOfBoxesPerLayer * numberOfClassificationLabels}.
+  # having a depth of  \code{numberOfBoxesPerLayer * numberOfOutputs}.
   boxClasses <- list()
 
   # For each box we need to predict the 2 * imageDimension coordinates.  The 
@@ -632,14 +632,14 @@ createSsdModel3D <- function( inputImageSize,
           layer_l2_normalization_3d( scale = 20, name = "conv4_3_norm" )
 
         boxClasses[[1]] <- l2NormalizedOutputs %>% layer_conv_3d( 
-          filters = numberOfBoxesPerLayer[1] * numberOfClassificationLabels, 
+          filters = numberOfBoxesPerLayer[1] * numberOfOutputs, 
           kernel_size = c( 3, 3, 3 ), dilation_rate = c( 1L, 1L, 1L ),
           padding = 'same', kernel_initializer = initializer_he_normal(),
           kernel_regularizer = regularizer_l2( l2Regularization ), 
           name = "conv4_3_norm_mbox_conf" )
 
         boxLocations[[1]] <- l2NormalizedOutputs %>% layer_conv_3d( 
-          filters = numberOfBoxesPerLayer[1] * numberOfClassificationLabels,
+          filters = numberOfBoxesPerLayer[1] * numberOfOutputs,
           kernel_size = c( 3, 3, 3 ), dilation_rate = c( 1L, 1L, 1L ),
           padding = 'same', kernel_initializer = initializer_he_normal(),
           kernel_regularizer = regularizer_l2( l2Regularization ), 
@@ -695,7 +695,7 @@ createSsdModel3D <- function( inputImageSize,
     kernel_regularizer = regularizer_l2( l2Regularization ), name = "fc7" ) 
 
   boxClasses[[2]] <- outputs %>% layer_conv_3d( 
-    filters = numberOfBoxesPerLayer[2] * numberOfClassificationLabels, 
+    filters = numberOfBoxesPerLayer[2] * numberOfOutputs, 
     kernel_size = c( 3, 3, 3 ), dilation_rate = c( 1L, 1L, 1L ),
     padding = 'same', kernel_initializer = initializer_he_normal(),
     kernel_regularizer = regularizer_l2( l2Regularization ), 
@@ -728,7 +728,7 @@ createSsdModel3D <- function( inputImageSize,
     name = "conv6_2" ) 
 
   boxClasses[[3]] <- outputs %>% layer_conv_3d( 
-    filters = numberOfBoxesPerLayer[3] * numberOfClassificationLabels, 
+    filters = numberOfBoxesPerLayer[3] * numberOfOutputs, 
     kernel_size = c( 3, 3, 3 ), dilation_rate = c( 1L, 1L, 1L ),
     padding = 'same', kernel_initializer = initializer_he_normal(),
     kernel_regularizer = regularizer_l2( l2Regularization ), 
@@ -762,7 +762,7 @@ createSsdModel3D <- function( inputImageSize,
     name = "conv7_2" ) 
 
   boxClasses[[4]] <- outputs %>% layer_conv_3d( 
-    filters = numberOfBoxesPerLayer[4] * numberOfClassificationLabels, 
+    filters = numberOfBoxesPerLayer[4] * numberOfOutputs, 
     kernel_size = c( 3, 3, 3 ), dilation_rate = c( 1L, 1L, 1L ),
     padding = 'same', kernel_initializer = initializer_he_normal(),
     kernel_regularizer = regularizer_l2( l2Regularization ), 
@@ -799,7 +799,7 @@ createSsdModel3D <- function( inputImageSize,
     name = "conv8_2" ) 
 
   boxClasses[[5]] <- outputs %>% layer_conv_3d( 
-    filters = numberOfBoxesPerLayer[5] * numberOfClassificationLabels, 
+    filters = numberOfBoxesPerLayer[5] * numberOfOutputs, 
     kernel_size = c( 3, 3, 3 ), dilation_rate = c( 1L, 1L, 1L ),
     padding = 'same', kernel_initializer = initializer_he_normal(),
     kernel_regularizer = regularizer_l2( l2Regularization ), 
@@ -836,7 +836,7 @@ createSsdModel3D <- function( inputImageSize,
     name = "conv9_2" ) 
 
   boxClasses[[6]] <- outputs %>% layer_conv_3d( 
-    filters = numberOfBoxesPerLayer[6] * numberOfClassificationLabels, 
+    filters = numberOfBoxesPerLayer[6] * numberOfOutputs, 
     kernel_size = c( 3, 3, 3 ), dilation_rate = c( 1L, 1L, 1L ), 
     padding = 'same', kernel_initializer = initializer_he_normal(),
     kernel_regularizer = regularizer_l2( l2Regularization ), 
@@ -872,7 +872,7 @@ createSsdModel3D <- function( inputImageSize,
       name = "conv10_2" ) 
 
     boxClasses[[7]] <- outputs %>% layer_conv_3d( 
-      filters = numberOfBoxesPerLayer[7] * numberOfClassificationLabels, 
+      filters = numberOfBoxesPerLayer[7] * numberOfOutputs, 
       kernel_size = c( 3, 3, 3 ), dilation_rate = c( 1L, 1L, 1L ), 
       padding = 'same', kernel_initializer = initializer_he_normal(),
       kernel_regularizer = regularizer_l2( l2Regularization ), 
@@ -929,10 +929,10 @@ createSsdModel3D <- function( inputImageSize,
     #   to \code{(batch, height * width * depth * numberOfBoxes, numberOfClasses )}
     inputShape <- K$int_shape( boxClasses[[i]] )
     numberOfBoxes <- 
-      as.integer( inputShape[[4]] / numberOfClassificationLabels )
+      as.integer( inputShape[[4]] / numberOfOutputs )
 
     boxClassesReshaped[[i]] <- boxClasses[[i]] %>% layer_reshape( 
-      target_shape = c( -1, numberOfClassificationLabels ), 
+      target_shape = c( -1, numberOfOutputs ), 
       name = paste0( layerNames[i], "_conf_reshape" ) )
 
     # reshape \code{( batch, height, width, depth, numberOfBoxes * 6L )}

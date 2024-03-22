@@ -78,7 +78,7 @@ mriModalityClassification <- function( image,
   channelSize <- 1
 
   model <- createResNetModel3D( c( imageSize, channelSize ),
-                                numberOfClassificationLabels = numberOfClassificationLabels,
+                                numberOfOutputs = numberOfClassificationLabels,
                                 mode = "classification",
                                 layers = c( 1, 2, 3, 4 ),
                                 residualBlockSchedule = c( 3, 4, 6, 3 ),

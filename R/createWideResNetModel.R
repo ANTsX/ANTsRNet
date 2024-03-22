@@ -14,7 +14,7 @@
 #' shape (or dimension) of that tensor is the image dimensions followed by
 #' the number of channels (e.g., red, green, and blue).  The batch size
 #' (i.e., number of training images) is not specified a priori.
-#' @param numberOfClassificationLabels Number of classification labels.
+#' @param numberOfOutputs Number of outputs in the final layer
 #' @param depth integer determining the depth of the network.  Related to the
 #' actual number of layers by the \code{numberOfLayers = depth * 6 + 4}.
 #' Default = 2 (such that \code{numberOfLayers = 16}.)
@@ -52,7 +52,7 @@
 #' inputImageSize <- c( dim( X_trainSmall )[2:3], 1 )
 #'
 #' model <- createWideResNetModel2D( inputImageSize = inputImageSize,
-#'   numberOfClassificationLabels = numberOfLabels )
+#'   numberOfOutputs = numberOfLabels )
 #'
 #' model %>% compile( loss = 'categorical_crossentropy',
 #'   optimizer = optimizer_adam( lr = 0.0001 ),
@@ -71,7 +71,7 @@
 #' @import keras
 #' @export
 createWideResNetModel2D <- function( inputImageSize,
-                                     numberOfClassificationLabels = 1000,
+                                     numberOfOutputs = 1000,
                                      depth = 2,
                                      width = 1,
                                      residualBlockSchedule = c( 16, 32, 64 ),
@@ -190,7 +190,7 @@ createWideResNetModel2D <- function( inputImageSize,
     stop( 'Error: unrecognized mode.' )
     }
 
-  outputs <- outputs %>% layer_dense( units = numberOfClassificationLabels,
+  outputs <- outputs %>% layer_dense( units = numberOfOutputs,
     kernel_regularizer = regularizer_l2( weightDecay ), activation = layerActivation )
 
   wideResNetModel <- keras_model( inputs = inputs, outputs = outputs )
@@ -214,7 +214,7 @@ createWideResNetModel2D <- function( inputImageSize,
 #' shape (or dimension) of that tensor is the image dimensions followed by
 #' the number of channels (e.g., red, green, and blue).  The batch size
 #' (i.e., number of training images) is not specified a priori.
-#' @param numberOfClassificationLabels Number of classification labels.
+#' @param numberOfOutputs Number of classification labels.
 #' @param depth integer determining the depth of the ntwork.  Related to the
 #' actual number of layers by the \code{numberOfLayers = depth * 6 + 4}.
 #' Default = 2 (such that \code{numberOfLayers = 16}.)
@@ -254,7 +254,7 @@ createWideResNetModel2D <- function( inputImageSize,
 #' inputImageSize <- c( dim( X_trainSmall )[2:3], 1 )
 #'
 #' model <- createWideResNetModel2D( inputImageSize = inputImageSize,
-#'   numberOfClassificationLabels = numberOfLabels )
+#'   numberOfOutputs = numberOfLabels )
 #'
 #' model %>% compile( loss = 'categorical_crossentropy',
 #'   optimizer = optimizer_adam( lr = 0.0001 ),
@@ -274,7 +274,7 @@ createWideResNetModel2D <- function( inputImageSize,
 #' @import keras
 #' @export
 createWideResNetModel3D <- function( inputImageSize,
-                                     numberOfClassificationLabels = 1000,
+                                     numberOfOutputs = 1000,
                                      depth = 2,
                                      width = 1,
                                      residualBlockSchedule = c( 16, 32, 64 ),
@@ -394,7 +394,7 @@ createWideResNetModel3D <- function( inputImageSize,
     stop( 'Error: unrecognized mode.' )
     }
 
-  outputs <- outputs %>% layer_dense( units = numberOfClassificationLabels,
+  outputs <- outputs %>% layer_dense( units = numberOfOutputs,
     kernel_regularizer = regularizer_l2( weightDecay ), activation = layerActivation )
 
   wideResNetModel <- keras_model( inputs = inputs, outputs = outputs )
