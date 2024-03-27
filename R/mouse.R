@@ -88,3 +88,227 @@ mouseBrainExtraction <- function( image,
     return( probabilityMask )
     }
   }
+
+
+#' Mouse brain parcellation
+#'
+#' Perform brain extraction of mouse T2 MRI
+#'
+#' @param image input 3-D brain image (or list of images for multi-modal scenarios).
+#' @param mask Brain mask.  If not specified, one is estimated using ANTsXNet mouse 
+#' brain extraction.
+#' @param returnIsotropicOutput The network actually learns an interpolating 
+#' function specific to the mouse brain.  Setting this to true, the output 
+#' images are returned isotropically resampled.
+#' @param whichParcellation Brain parcellation type:
+#' \itemize{
+#'   \item{"nick":
+#'     \itemize{
+#'       \item{Label 0:}{background}
+#'       \item{Label 1:}{CSF}
+#'       \item{Label 2:}{gray matter}
+#'       \item{Label 3:}{white matter}
+#'       \item{Label 4:}{deep gray matter}
+#'       \item{Label 5:}{brain stem}
+#'       \item{Label 6:}{cerebellum}
+#'     }}
+#'   }
+#' @param antsxnetCacheDirectory destination directory for storing the downloaded
+#' template and model weights.  Since these can be resused, if
+#' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
+#' subdirectory ~/.keras/ANTsXNet/.
+#' @param verbose print progress.
+#' @return brain probability mask 
+#' @author Tustison NJ
+#' @examples
+#' \dontrun{
+#' library( ANTsRNet )
+#' library( keras )
+#'
+#' image <- antsImageRead( "brain.nii.gz" )
+#' parcellation <- mouseBrainParcellation( image, modality = "t2" )
+#' }
+#' @export
+mouseBrainParcellation <- function( image,
+  mask = NULL, returnIsotropicOutput = FALSE,
+  whichParcellation = c( "nick" ),
+  antsxnetCacheDirectory = NULL, verbose = FALSE )
+  {
+
+  if( whichParcellation == "nick" )
+    {
+    templateSpacing <- c( 0.075, 0.075, 0.075 ) 
+    templateCropSize <- c( 176, 176, 176 ) 
+
+    template <- antsImageRead( getANTsXNetData( "DevCCF_P56_MRI_T2_50um" ) )
+    antsSetSpacing( template, c( 0.05, 0.05, 0.05 ) )
+    template <- resampleImage( template, templateSpacing, useVoxels = FALSE, interpType = 4 )
+    template <- padOrCropImageToSize( template, templateCropSize )
+    templateRi <- rankIntensity( template )
+
+    templateMask <- antsImageRead( getANTsXNetData( "DevCCF_P56_MRI_T2_50um_BrainParcellationNickMask" ) )
+    antsSetSpacing( templateMask, c( 0.05, 0.05, 0.05 ) )
+    templateMask <- resampleImage( templateMask, templateSpacing, useVoxels = FALSE, interpType = 1 )
+    templateMask <- padOrCropImageToSize( templateMask, templateCropSize )
+
+    numberOfNonzeroLabels <- length( sort( unique( as.vector( as.array( templateMask ) ) ) ) ) - 1
+
+    templatePriors <- list()
+    for( i in seq.int( numberOfNonzeroLabels ) )
+      {
+      singleLabel <- thresholdImage( templateMask, i, i, 1, 0 )
+      prior <- smoothImage( singleLabel, sigma = 0.003, sigmaInPhysicalCoordinates = TRUE )
+      templatePriors[[i]] <- prior
+      }  
+
+    if( is.null( mask ) )
+      {
+      if( verbose )
+        {
+        message( "Preprocessing:  Brain extraction." )
+        }
+      mask <- mouseBrainExtraction( image, modality = "t2", 
+                                    antsxnetCacheDirectory = antsxnetCacheDirectory, 
+                                    verbose = verbose )
+      mask <- thresholdImage( mask, 0.5, 1.1, 1, 0 )
+      mask <- labelClusters( mask, fullyConnected = TRUE )
+      mask <- thresholdImage( mask, 1, 1, 1, 0 )
+      }
+
+    imageBrain <- image * mask
+
+    if ( verbose )
+      {
+      message( "Preprocessing:  Warping to DevCCF P56 T2w mouse template." ) 
+      }
+
+    reg <- antsRegistration( template, imageBrain, typeofTransform = "antsRegistrationSyNQuick[a]", verbose = verbose )
+    
+    imageWarped <- rankIntensity( reg$warpedmovout )
+    imageWarped <- histogramMatchImage( imageWarped, templateRi )
+    imageWarped <- iMath( imageWarped, "Normalize" )
+
+    numberOfFilters <- c( 16, 32, 64, 128, 256 )
+    numberOfClassificationLabels <- numberOfNonzeroLabels + 1
+    channelSize = 1 + numberOfNonzeroLabels
+
+    unetModel <- createUnetModel3D( c( dim( template ), channelSize ),
+      numberOfOutputs = numberOfClassificationLabels, mode = "classification",
+      numberOfFilters = numberOfFilters, 
+      convolutionKernelSize = 3, deconvolutionKernelSize = 2 )
+    weightsFileName <- getPretrainedNetwork( "mouseT2wBrainParcellation3DNick" )
+    unetModel$load_weights( weightsFileName )
+
+    batchX <- array( data = 0, dim = c( 1, dim( template ), channelSize ) )
+    batchX[1,,,,1] = as.array( imageWarped )
+    for( i in seq.int( length( templatePriors ) ) )
+      {
+      batchX[1,,,,i+1] <- as.array( templatePriors[[i]] )
+      }
+
+    if( verbose )
+      {
+      message( "Prediction." )
+      }
+    predictedData <- drop( unetModel$predict( batchX, verbose = verbose ) )
+
+    referenceImage <- image
+    if( returnIsotropicOutput )
+      {
+      newSpacing <- rep( min( antsGetSpacing( image ) ), 3 )
+      referenceImage <- resampleImage( image, newSpacing, useVoxels = FALSE, interpType = 0 )
+      }
+
+    probabilityImages <- list()
+    for( i in seq.int( numberOfClassificationLabels ) )
+      {
+      if( verbose )
+        {
+        message( "Reconstructing image ", i, "\n" )
+        }
+      probabilityImage <- as.antsImage( predictedData[,,,i], reference = template )
+      probabilityImages[[i]] <- antsApplyTransforms( fixed = referenceImage, 
+                            moving = probabilityImage, transformlist = reg$invtransforms,
+                            whichtoinvert = c( TRUE ), interpolator = "linear", verbose = verbose )                                 
+      }
+
+    imageMatrix <- imageListToMatrix( probabilityImages, referenceImage * 0 + 1 )
+    segmentationMatrix <- matrix( apply( imageMatrix, 2, which.max ), nrow = 1 )
+    segmentationImage <- matrixToImages( segmentationMatrix, referenceImage * 0 + 1 )[[1]] - 1
+
+    results <- list( segmentationImage = segmentationImage,
+                     probabilityImages = probabilityImages )
+    return( results )
+    } else {
+    stop( "Unrecognized parcellation." ) 
+    }
+  }
+
+
+#' Mouse brain cortical thickness using deep learning
+#'
+#' Perform KellyKapowski cortical thickness
+#'
+#' @param t2 input 3-D unprocessed T2-weighted mouse brain image
+#' @param mask  Brain mask.  If not specified, one is estimated using ANTsXNet mouse brain 
+#' extraction.
+#' @param returnIsotropicOutput The network actually learns an interpolating 
+#' function specific to the mouse brain.  Setting this to true, the output 
+#' images are returned isotropically resampled.
+#' @param antsxnetCacheDirectory destination directory for storing the downloaded
+#' template and model weights.  Since these can be resused, if
+#' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
+#' subdirectory ~/.keras/ANTsXNet/.
+#' @param verbose print progress.
+#' @return Cortical thickness image and segmentation probability images.
+#' @author Tustison NJ
+#' @examples
+#' \dontrun{
+#' library( ANTsRNet )
+#' library( keras )
+#'
+#' image <- antsImageRead( "t1w_image.nii.gz" )
+#' kk <- corticalThickness( image )
+#' }
+#' @export
+mouseCorticalThickness <- function( t2, mask = NULL, 
+  returnIsotropicOutput = FALSE, antsxnetCacheDirectory = NULL, 
+  verbose = FALSE )
+{
+
+  parcellation <- mouseBrainParcellation( t2, mask = mask, whichParcellation = "nick",
+                                          returnIsotropicOutput = TRUE, 
+                                          antsxnetCacheDirectory = antsxnetCacheDirectory,
+                                          verbose = verbose )
+
+  # Kelly Kapowski cortical thickness
+
+  kkSegmentation <- antsImageClone(parcellation$segmentationImage)
+  kkSegmentation[kkSegmentation == 2] <- 3
+  kkSegmentation[kkSegmentation == 1] <- 2
+  kkSegmentation[kkSegmentation == 6] <- 2
+  corticalMatter <- parcellation$probabilityImages[[2]] + parcellation$probabilityImages[[7]]
+  otherMatter <- parcellation$probabilityImages[[3]] + parcellation$probabilityImages[[4]]
+
+  kk <- kellyKapowski( s = kkSegmentation, g = corticalMatter, w = otherMatter,
+                      its = 45, r = 0.0025, m = 1.5, x = 0, t = 10, verbose = verbose )
+
+  if( ! returnIsotropicOutput )
+    {
+    kk <- resampleImage( kk, antsGetSpacing( t2 ), useVoxels = FALSE, interpType = 0 ) 
+    parcellation$segmentationImage <- resampleImage( parcellation$segmentationImage, 
+                                                     antsGetSpacing( t2 ), useVoxels = FALSE, 
+                                                     interpType = 1 )
+    for( i in seq.int( length( parcellation$probabilityImages ) ) )
+      {
+      parcellation$probabilityImages[i] <- resampleImage( parcellation$probabilityImages[i], 
+                                                          antsGetSpacing( t2 ), useVoxels = FALSE, 
+                                                          interpType = 0 )
+      }                                                                                                        
+    }
+
+  return( list(
+          thicknessImage = kk,
+          parcellation = parcellation
+        ) )
+}

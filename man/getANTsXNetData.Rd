@@ -13,7 +13,9 @@ getANTsXNetData(
     "protonLobePriors", "S_template3", "adni", "ixi", "kirby", "mni152", "nki", "nki10",
     "oasis", "magetTemplate", "magetTemplateBrainMask", 
      "magetCerebellumTemplate",
-    "magetCerebellumTemplatePriors", "magetCerebellumxTemplate0GenericAffine"),
+    "magetCerebellumTemplatePriors", "magetCerebellumxTemplate0GenericAffine",
+    "bsplineT2MouseTemplate", "bsplineT2MouseTemplateBrainMask",
+    "DevCCF_P56_MRI_T2_50um", "DevCCF_P56_MRI_T2_50um_BrainParcellationNickMask"),
   targetFileName,
   antsxnetCacheDirectory = NULL
 )

@@ -61,7 +61,7 @@ deepAtropos <- function( t1, doPreprocessing = TRUE, useSpatialPriors = 1,
   ################################
 
   t1Preprocessed <- t1
-  if( doPreprocessing == TRUE )
+  if( doPreprocessing )
     {
     t1Preprocessing <- preprocessBrainImage( t1,
         truncateIntensity = c( 0.01, 0.99 ),
@@ -105,7 +105,7 @@ deepAtropos <- function( t1, doPreprocessing = TRUE, useSpatialPriors = 1,
     convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
     weightDecay = 1e-5, additionalOptions = c( "attentionGating" ) )
 
-  if( verbose == TRUE )
+  if( verbose )
     {
     cat( "DeepAtropos:  retrieving model weights.\n" )
     }
@@ -126,7 +126,7 @@ deepAtropos <- function( t1, doPreprocessing = TRUE, useSpatialPriors = 1,
   #
   ################################
 
-  if( verbose == TRUE )
+  if( verbose )
     {
     message( "Prediction.\n" )
     }
@@ -147,13 +147,13 @@ deepAtropos <- function( t1, doPreprocessing = TRUE, useSpatialPriors = 1,
   probabilityImages <- list()
   for( i in seq.int( dim( predictedData )[5] ) )
     {
-    if( verbose == TRUE )
+    if( verbose )
       {
       cat( "Reconstructing image ", classes[i], "\n" )
       }
     reconstructedImage <- reconstructImageFromPatches( predictedData[,,,,i],
         domainImage = t1Preprocessed, strideLength = strideLength )
-    if( doPreprocessing == TRUE )
+    if( doPreprocessing )
       {
       probabilityImages[[i]] <- antsApplyTransforms( fixed = t1, moving = reconstructedImage,
           transformlist = t1Preprocessing$templateTransforms$invtransforms,
@@ -172,7 +172,7 @@ deepAtropos <- function( t1, doPreprocessing = TRUE, useSpatialPriors = 1,
 
   # debugging
 
-  if( debug == TRUE )
+  if( debug )
     {
     inputImage <- unetModel$input
     featureLayer <- unetModel$layers[[length( unetModel$layers ) - 1]]
@@ -185,7 +185,7 @@ deepAtropos <- function( t1, doPreprocessing = TRUE, useSpatialPriors = 1,
     for( i in seq.int( length( featureImagesList[[1]] ) ) )
       {
       decroppedImage <- decropImage( featureImagesList[[1]][[i]], t1Preprocessed * 0 )
-      if( doPreprocessing == TRUE )
+      if( doPreprocessing )
         {
         featureImages[[i]] <- antsApplyTransforms( fixed = t1, moving = decroppedImage,
             transformlist = t1Preprocessing$templateTransforms$invtransforms,
