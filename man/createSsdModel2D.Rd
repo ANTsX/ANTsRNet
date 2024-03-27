@@ -6,7 +6,7 @@
 \usage{
 createSsdModel2D(
   inputImageSize,
-  numberOfClassificationLabels,
+  numberOfOutputs,
   l2Regularization = 0.0005,
   minScale = 0.1,
   maxScale = 0.9,
@@ -23,7 +23,7 @@ shape (or dimension) of that tensor is the image dimensions followed by
 the number of channels (e.g., red, green, and blue).  The batch size
 (i.e., number of training images) is not specified a priori.}
 
-\item{numberOfClassificationLabels}{Number of classification labels.
+\item{numberOfOutputs}{Number of classification labels.
 Needs to include the background as one of the labels.}
 
 \item{l2Regularization}{The L2-regularization rate.  Default = 0.0005.}

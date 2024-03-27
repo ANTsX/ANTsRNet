@@ -6,7 +6,7 @@
 \usage{
 createDenseNetModel3D(
   inputImageSize,
-  numberOfClassificationLabels = 1000,
+  numberOfOutputs = 1000,
   numberOfFilters = 16,
   depth = 7,
   numberOfDenseBlocks = 1,
@@ -22,7 +22,7 @@ shape (or dimension) of that tensor is the image dimensions followed by
 the number of channels (e.g., red, green, and blue).  The batch size
 (i.e., number of training images) is not specified a priori.}
 
-\item{numberOfClassificationLabels}{Number of segmentation labels.}
+\item{numberOfOutputs}{Number of segmentation labels.}
 
 \item{numberOfFilters}{number of filters}
 
@@ -88,7 +88,7 @@ Y_testSmall <- to_categorical( mnistData$test$y[1:10], numberOfLabels )
 inputImageSize <- c( dim( X_trainSmall )[2:3], 1 )
 
 model <- createDenseNetModel2D( inputImageSize = inputImageSize,
-  numberOfClassificationLabels = numberOfLabels )
+  numberOfOutputs = numberOfLabels )
 
 model \%>\% compile( loss = 'categorical_crossentropy',
   optimizer = optimizer_adam( lr = 0.0001 ),

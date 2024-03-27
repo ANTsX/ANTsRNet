@@ -9,7 +9,7 @@ createDenseModel(
   numberOfFiltersAtBaseLayer = 512,
   numberOfLayers = 2,
   mode = "classification",
-  numberOfClassificationLabels = 1000
+  numberOfOutputs = 1000
 )
 }
 \arguments{
@@ -22,7 +22,7 @@ This number is halved for each subsequent layer.}
 
 \item{mode}{'classification' or 'regression'.}
 
-\item{numberOfClassificationLabels}{Specifies output for "classification" networks.}
+\item{numberOfOutputs}{Specifies number of units in final layer}
 }
 \value{
 a keras model

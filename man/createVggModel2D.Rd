@@ -6,7 +6,7 @@
 \usage{
 createVggModel2D(
   inputImageSize,
-  numberOfClassificationLabels = 1000,
+  numberOfOutputs = 1000,
   layers = c(1, 2, 3, 4, 4),
   lowestResolution = 64,
   convolutionKernelSize = c(3, 3),
@@ -24,7 +24,7 @@ shape (or dimension) of that tensor is the image dimensions followed by
 the number of channels (e.g., red, green, and blue).  The batch size
 (i.e., number of training images) is not specified a priori.}
 
-\item{numberOfClassificationLabels}{Number of segmentation labels.}
+\item{numberOfOutputs}{Number of outputs in the final layer}
 
 \item{layers}{a vector determining the number of filters defined at
 for each layer.}
@@ -102,7 +102,7 @@ Y_testSmall <- to_categorical( mnistData$test$y[1:numberOfTestingData], numberOf
 inputImageSize <- c( dim( X_trainSmall )[2:3], 1 )
 
 model <- createVggModel2D( inputImageSize = c( resampledImageSize, 1 ),
-  numberOfClassificationLabels = numberOfLabels )
+  numberOfOutputs = numberOfLabels )
 
 model \%>\% compile( loss = 'categorical_crossentropy',
   optimizer = optimizer_adam( lr = 0.0001 ),

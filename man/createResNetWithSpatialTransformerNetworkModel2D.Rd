@@ -8,7 +8,7 @@ preceding spatial transformer network layer.}
 \usage{
 createResNetWithSpatialTransformerNetworkModel2D(
   inputImageSize,
-  numberOfClassificationLabels = 1000,
+  numberOfOutputs = 1000,
   layers = 1:4,
   residualBlockSchedule = c(3, 4, 6, 3),
   lowestResolution = 64,
@@ -24,7 +24,7 @@ shape (or dimension) of that tensor is the image dimensions followed by
 the number of channels (e.g., red, green, and blue).  The batch size
 (i.e., number of training images) is not specified a priori.}
 
-\item{numberOfClassificationLabels}{Number of segmentation labels.}
+\item{numberOfOutputs}{Specifies number of units in final layer}
 
 \item{layers}{a vector determining the number of 'filters' defined at
 for each layer.}
@@ -80,7 +80,7 @@ inputImageSize <- c( dim( X_trainSmall )[2:3], 1 )
 
 model <- createResNetWithSpatialTransformerNetworkModel2D(
   inputImageSize = inputImageSize,
-  numberOfClassificationLabels = numberOfLabels )
+  numberOfOutputs = numberOfLabels )
 
 model \%>\% compile( loss = 'categorical_crossentropy',
   optimizer = optimizer_adam( lr = 0.0001 ),

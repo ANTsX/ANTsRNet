@@ -6,7 +6,7 @@
 \usage{
 createWideResNetModel3D(
   inputImageSize,
-  numberOfClassificationLabels = 1000,
+  numberOfOutputs = 1000,
   depth = 2,
   width = 1,
   residualBlockSchedule = c(16, 32, 64),
@@ -22,7 +22,7 @@ shape (or dimension) of that tensor is the image dimensions followed by
 the number of channels (e.g., red, green, and blue).  The batch size
 (i.e., number of training images) is not specified a priori.}
 
-\item{numberOfClassificationLabels}{Number of classification labels.}
+\item{numberOfOutputs}{Number of classification labels.}
 
 \item{depth}{integer determining the depth of the ntwork.  Related to the
 actual number of layers by the \code{numberOfLayers = depth * 6 + 4}.
@@ -84,7 +84,7 @@ Y_testSmall <- to_categorical( mnistData$test$y[1:10], numberOfLabels )
 inputImageSize <- c( dim( X_trainSmall )[2:3], 1 )
 
 model <- createWideResNetModel2D( inputImageSize = inputImageSize,
-  numberOfClassificationLabels = numberOfLabels )
+  numberOfOutputs = numberOfLabels )
 
 model \%>\% compile( loss = 'categorical_crossentropy',
   optimizer = optimizer_adam( lr = 0.0001 ),

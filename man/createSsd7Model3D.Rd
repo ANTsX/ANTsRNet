@@ -6,7 +6,7 @@
 \usage{
 createSsd7Model3D(
   inputImageSize,
-  numberOfClassificationLabels,
+  numberOfOutputs,
   minScale = 0.08,
   maxScale = 0.96,
   aspectRatiosPerLayer = list(c("1:1:1", "2:1:1", "1:2:1", "1:1:2"), c("1:1:1", "2:1:1",
@@ -21,7 +21,7 @@ shape (or dimension) of that tensor is the image dimensions followed by
 the number of channels (e.g., red, green, and blue).  The batch size
 (i.e., number of training images) is not specified a priori.}
 
-\item{numberOfClassificationLabels}{Number of classification labels.
+\item{numberOfOutputs}{Number of classification labels.
 Needs to include the background as one of the labels.}
 
 \item{minScale}{The smallest scaling factor for the size of the anchor

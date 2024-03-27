@@ -7,7 +7,7 @@
 createResNetModel3D(
   inputImageSize,
   inputScalarsSize = 0,
-  numberOfClassificationLabels = 1000,
+  numberOfOutputs = 1000,
   layers = 1:4,
   residualBlockSchedule = c(3, 4, 6, 3),
   lowestResolution = 64,
@@ -26,7 +26,7 @@ the number of channels (e.g., red, green, and blue).  The batch size
 vector for scalars that get concatenated to the fully connected layer at
 the end of the network.}
 
-\item{numberOfClassificationLabels}{Number of segmentation labels.}
+\item{numberOfOutputs}{Number of segmentation labels.}
 
 \item{layers}{a vector determining the number of 'filters' defined at
 for each layer.}
@@ -85,7 +85,7 @@ Y_testSmall <- to_categorical( mnistData$test$y[1:10], numberOfLabels )
 inputImageSize <- c( dim( X_trainSmall )[2:3], 1 )
 
 model <- createResNetModel2D( inputImageSize = inputImageSize,
-  numberOfClassificationLabels = numberOfLabels )
+  numberOfOutputs = numberOfLabels )
 
 model \%>\% compile( loss = 'categorical_crossentropy',
   optimizer = optimizer_adam( lr = 0.0001 ),

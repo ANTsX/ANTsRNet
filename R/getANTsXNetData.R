@@ -50,7 +50,11 @@ getANTsXNetData <- function(
               "magetTemplateBrainMask",
               "magetCerebellumTemplate",
               "magetCerebellumTemplatePriors",
-              "magetCerebellumxTemplate0GenericAffine"
+              "magetCerebellumxTemplate0GenericAffine",
+              "bsplineT2MouseTemplate",
+              "bsplineT2MouseTemplateBrainMask",
+              "DevCCF_P56_MRI_T2_50um",
+              "DevCCF_P56_MRI_T2_50um_BrainParcellationNickMask"              
             ),
   targetFileName, antsxnetCacheDirectory = NULL )
 {
@@ -92,7 +96,11 @@ getANTsXNetData <- function(
     magetTemplateBrainMask = "https://figshare.com/ndownloader/files/41052569",
     magetCerebellumTemplate = "https://figshare.com/ndownloader/files/41052581",
     magetCerebellumTemplatePriors = "https://figshare.com/ndownloader/files/41052578",
-    magetCerebellumxTemplate0GenericAffine = "https://figshare.com/ndownloader/files/41052575"
+    magetCerebellumxTemplate0GenericAffine = "https://figshare.com/ndownloader/files/41052575",
+    bsplineT2MouseTemplate = "https://figshare.com/ndownloader/files/44706247",
+    bsplineT2MouseTemplateBrainMask = "https://figshare.com/ndownloader/files/44869285",
+    DevCCF_P56_MRI_T2_50um = "https://figshare.com/ndownloader/files/44706244",
+    DevCCF_P56_MRI_T2_50um_BrainParcellationNickMask = "https://figshare.com/ndownloader/files/44706238"
   )
 
   if( missing( targetFileName ) )
