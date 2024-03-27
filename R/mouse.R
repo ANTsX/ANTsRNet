@@ -301,7 +301,7 @@ mouseCorticalThickness <- function( t2, mask = NULL,
                                                      interpType = 1 )
     for( i in seq.int( length( parcellation$probabilityImages ) ) )
       {
-      parcellation$probabilityImages[i] <- resampleImage( parcellation$probabilityImages[i], 
+      parcellation$probabilityImages[[i]] <- resampleImage( parcellation$probabilityImages[[i]], 
                                                           antsGetSpacing( t2 ), useVoxels = FALSE, 
                                                           interpType = 0 )
       }                                                                                                        
