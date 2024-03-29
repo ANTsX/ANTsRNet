@@ -60,8 +60,7 @@ mriModalityClassification <- function( image,
     center = centerOfMassTemplate,
     translation = centerOfMassImage - centerOfMassTemplate )
   image <- applyAntsrTransformToImage( xfrm, image, template )
-
-  image <- ( image - min( image ) ) / ( max( image ) - min( image ) )
+  image <- iMath( image, "Normalize" )
 
   ################################
   #

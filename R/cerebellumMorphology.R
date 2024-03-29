@@ -89,8 +89,7 @@ cerebellumMorphology <- function( t1, cerebellumMask = NULL,
   t1TemplateBrainMask <- antsImageRead( getANTsXNetData( "magetTemplateBrainMask" ) )
   t1TemplateBrain <- t1Template * t1TemplateBrainMask
   t1CerebellumTemplate <- antsImageRead( getANTsXNetData( "magetCerebellumTemplate" ) )
-  t1CerebellumTemplate <- ( ( t1CerebellumTemplate - min( t1CerebellumTemplate ) ) /
-                            ( max( t1CerebellumTemplate ) - min( t1CerebellumTemplate ) ) )
+  t1CerebellumTemplate <- iMath( t1CerebellumTemplate, "Normalize" )
   cerebellumxTemplateXfrm <- getANTsXNetData( "magetCerebellumxTemplate0GenericAffine" )
 
   # spatial priors are in the space of the cerebellar template.  First three are
@@ -262,9 +261,7 @@ cerebellumMorphology <- function( t1, cerebellumMask = NULL,
       t1PreprocessedInCerebellumSpace <- t1PreprocessedInCerebellumSpace * t1PreprocessedMaskInCerebellumSpace
       }
 
-    t1PreprocessedInCerebellumSpace <-
-       ( t1PreprocessedInCerebellumSpace - min( t1PreprocessedInCerebellumSpace ) ) /
-       ( max( t1PreprocessedInCerebellumSpace ) - min( t1PreprocessedInCerebellumSpace ) )
+    t1PreprocessedInCerebellumSpace <- iMath( t1PreprocessedInCerebellumSpace, "Normalize" )
 
     batchX <- array( data = 0, dim = c( 2, imageSize, channelSize ) )
     batchX[1,,,,1] <- as.array( padOrCropImageToSize( t1PreprocessedInCerebellumSpace, imageSize ) )

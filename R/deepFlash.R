@@ -191,12 +191,12 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
   direction <- antsGetDirection( tmpCropped )
 
   t1TemplateRoiLeft <- cropIndices( t1Template, lowerBoundLeft, upperBoundLeft )
-  t1TemplateRoiLeft <- ( t1TemplateRoiLeft - min( t1TemplateRoiLeft ) ) / ( max( t1TemplateRoiLeft ) - min( t1TemplateRoiLeft ) ) * 2.0 - 1.0
+  t1TemplateRoiLeft <- iMath( t1TemplateRoiLeft, "Normalize" ) * 2.0 - 1.0
   t2TemplateRoiLeft <- NULL
   if( ! is.null( t2Template ) )
     {
     t2TemplateRoiLeft <- cropIndices( t2Template, lowerBoundLeft, upperBoundLeft )
-    t1TemplateRoiLeft <- ( t2TemplateRoiLeft - min( t2TemplateRoiLeft ) ) / ( max( t2TemplateRoiLeft ) - min( t2TemplateRoiLeft ) ) * 2.0 - 1.0
+    t2TemplateRoiLeft <- iMath( t2TemplateRoiLeft, "Normalize" ) * 2.0 - 1.0
     }
 
   labelsRight <- labels[seq.int( 3, length( labels ), by = 2)]
@@ -209,12 +209,12 @@ deepFlash <- function( t1, t2 = NULL, doPreprocessing = TRUE,
   originRight <- antsGetOrigin( tmpCropped )
 
   t1TemplateRoiRight <- cropIndices( t1Template, lowerBoundRight, upperBoundRight )
-  t1TemplateRoiRight <- ( t1TemplateRoiRight - min( t1TemplateRoiRight ) ) / ( max( t1TemplateRoiRight ) - min( t1TemplateRoiRight ) ) * 2.0 - 1.0
+  t1TemplateRoiRight <- iMath( t1TemplateRoiRight, "Normalize" ) * 2.0 - 1.0
   t2TemplateRoiRight <- NULL
   if( ! is.null( t2Template ) )
     {
     t2TemplateRoiRight <- cropIndices( t2Template, lowerBoundRight, upperBoundRight )
-    t2TemplateRoiRight <- ( t2TemplateRoiRight - min( t2TemplateRoiRight ) ) / ( max( t2TemplateRoiRight ) - min( t2TemplateRoiRight ) ) * 2.0 - 1.0
+    t2TemplateRoiRight <- iMath( t2TemplateRoiRight, "Normalize" ) * 2.0 - 1.0
     }
 
   ################################

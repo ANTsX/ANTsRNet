@@ -89,7 +89,7 @@ hypothalamusSegmentation <- function( t1,
   #
   ################################
 
-  t1Warped <- ( t1Warped - min( t1Warped ) ) / ( max( t1Warped ) - min( t1Warped ) )
+  t1Warped <- iMath( t1Warped, "Normalize" )
 
   ################################
   #

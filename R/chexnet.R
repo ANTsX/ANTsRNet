@@ -54,8 +54,8 @@ checkXrayLungOrientation <- function( image,
                                            antsxnetCacheDirectory = antsxnetCacheDirectory )
   model$load_weights( weightsFileName )
 
-  imageMin <- min( resampledImage )
-  imageMax <- max( resampledImage )
+  imageMin <- ANTsRCore::min( resampledImage )
+  imageMax <- ANTsRCore::max( resampledImage )
   normalizedImage <- antsImageClone( resampledImage )
   normalizedImage <- ( normalizedImage - imageMin ) / ( imageMax - imageMin )
 

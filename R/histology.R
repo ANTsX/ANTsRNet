@@ -178,7 +178,7 @@ allenEx5BrainExtraction <- function( image, view = c( "coronal", "sagittal" ),
         } else {
         slice <- imageChannels[[i]]
         }
-      if( max( slice ) > min( slice ) )
+      if( ANTsRCore::max( slice ) > ANTsRCore::min( slice ) )
         {
         sliceResampled <- resampleImage( slice, resampledImageSize, useVoxels = TRUE, interpType = 0 )
         sliceArray <- as.array( sliceResampled )
@@ -347,7 +347,7 @@ allenHistologyBrainMask <- function( image,
         } else {
         slice <- imageChannels[[i]]
         }
-      if( max( slice ) > min( slice ) )
+      if( ANTsRCore::max( slice ) > ANTsRCore::min( slice ) )
         {
         sliceResampled <- resampleImage( slice, resampledImageSize, useVoxels = TRUE, interpType = 0 )
         sliceArray <- as.array( sliceResampled )
