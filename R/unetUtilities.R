@@ -65,7 +65,6 @@ encodeUnet <- function( segmentationsArray, segmentationLabels = NULL )
 #' @importFrom stats predict
 #' @importFrom stats kmeans
 #' @importFrom magrittr %>%
-#' @importFrom ANTsRCore as.antsImage
 #' @export
 decodeUnet <- function( yPredicted, domainImage )
 {

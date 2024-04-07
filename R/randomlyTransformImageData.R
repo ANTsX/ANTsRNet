@@ -41,8 +41,6 @@
 #' \"nearestNeighbor\".
 #' @return list (if no directory set) or boolean for success, failure
 #' @author Avants BB, Tustison NJ
-#' @importFrom ANTsRCore getAntsrTransformFixedParameters iMath resampleImageToTarget applyAntsrTransform antsImagePhysicalSpaceConsistency antsrTransformFromDisplacementField makeImage smoothImage setAntsrTransformFixedParameters getAntsrTransformParameters setAntsrTransformParameters readAntsrTransform createAntsrTransform randomMask mergeChannels
-#' @importFrom ANTsR composeTransformsToField simulateDisplacementField
 #' @importFrom stats rnorm
 #' @examples
 #'

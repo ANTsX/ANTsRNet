@@ -34,9 +34,6 @@
 #' @seealso \code{\link{randomImageTransformBatchGenerator}}
 #' @importFrom mvtnorm rmvnorm
 #' @importFrom stats sd
-#' @importFrom ANTsR getCenterOfMass
-#' @importFrom ANTsRCore getAntsrTransformFixedParameters iMath resampleImageToTarget composeAntsrTransforms applyAntsrTransform antsGetSpacing antsImagePhysicalSpaceConsistency antsrTransformFromDisplacementField makeImage smoothImage setAntsrTransformFixedParameters getAntsrTransformParameters setAntsrTransformParameters readAntsrTransform createAntsrTransform randomMask mergeChannels
-#' @importFrom ANTsR composeTransformsToField
 #' @importFrom stats rnorm
 #' @examples
 #'
