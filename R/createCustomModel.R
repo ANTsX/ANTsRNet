@@ -107,7 +107,7 @@ createRmnetGenerator <- function()
                                                 {
                                                 return( 1-x )
                                                 } )
-  maskedImage <- list( inputImg, reversedMask ) %>% layer_multiply( trainable = TRUE )
+  maskedImage <- list( inputImg, reversedMask ) %>% layer_multiply()
 
   # encoder 
   x <- maskedImage %>% layer_conv_2d( gf, c( 5, 5 ), dilation_rate = 2, input_shape = imgShape, padding = "same", name = "enc_conv_1" )
@@ -179,9 +179,9 @@ createRmnetGenerator <- function()
   x <- x %>% layer_activation( 'tanh' )
 
   decodedOutput <- x
-  reversedMaskImage <- list( decodedOutput, inputMask ) %>% layer_multiply( trainable = TRUE )
-  outputImg <- list( maskedImage, reversedMaskImage ) %>% layer_add( trainable = TRUE )
-  concatOutputImg <- list( outputImg, inputMask ) %>% layer_concatenate( trainable = TRUE )
+  reversedMaskImage <- list( decodedOutput, inputMask ) %>% layer_multiply()
+  outputImg <- list( maskedImage, reversedMaskImage ) %>% layer_add()
+  concatOutputImg <- list( outputImg, inputMask ) %>% layer_concatenate()
   model <- keras_model( inputs = list( inputImg, inputMask ), outputs = concatOutputImg )
 
   return( model )
