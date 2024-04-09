@@ -24,7 +24,6 @@
 #' rm(image); gc()
 #' rm(patchSet); gc()
 #' rm(imageReconstructed); gc()
-#' @importFrom ANTsRCore as.antsImage
 #' @export
 reconstructImageFromPatches <- function( patches, domainImage,
   strideLength = 1, domainImageIsMask = FALSE )

@@ -73,10 +73,6 @@ linMatchIntensity <- function( fromImg, toImg, polyOrder = 1, truncate = TRUE, m
 #' plot(img)
 #' plot(simg)
 #' }
-#' @importFrom ANTsRCore antsCopyImageInfo antsSetSpacing
-#' @importFrom ANTsRCore splitChannels antsAverageImages
-#' @importFrom ANTsRCore antsTransformIndexToPhysicalPoint
-#' @importFrom ANTsRCore antsTransformIndexToPhysicalPoint
 #' @export applySuperResolutionModel
 applySuperResolutionModel <- function(
   image,
