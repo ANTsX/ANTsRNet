@@ -239,7 +239,7 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
   ################################
 
   t1Preprocessed <- t1
-  if( doPreprocessing == TRUE )
+  if( doPreprocessing )
     {
     t1Preprocessing <- preprocessBrainImage( t1,
         truncateIntensity = c( 0.01, 0.99 ),
@@ -322,7 +322,7 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
   for( i in seq.int( length( probabilityImagesList[[1]] ) ) )
     {
     resampledImage <- resampleImage( probabilityImagesList[[1]][[i]], dim( t1Preprocessed ), useVoxels = TRUE, interpType = 0 )
-    if( doPreprocessing == TRUE )
+    if( doPreprocessing )
       {
       outerProbabilityImages[[i]] <- antsApplyTransforms( fixed = t1, moving = resampledImage,
           transformlist = t1Preprocessing$templateTransforms$invtransforms,
@@ -395,7 +395,7 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
       } else {
       decroppedImage <- decropImage( probabilityImagesList[[1]][[i]], t1Preprocessed * 0 + 1 )
       }
-    if( doPreprocessing == TRUE )
+    if( doPreprocessing )
       {
       innerProbabilityImages[[i]] <- antsApplyTransforms( fixed = t1, moving = decroppedImage,
           transformlist = t1Preprocessing$templateTransforms$invtransforms,
@@ -470,7 +470,7 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
     sixTissue <- deepAtropos( t1Preprocessed, doPreprocessing = FALSE,
       antsxnetCacheDirectory = antsxnetCacheDirectory, verbose = verbose )
     atroposSeg <- sixTissue$segmentationImage
-    if( doPreprocessing == TRUE )
+    if( doPreprocessing )
       {
       atroposSeg <- antsApplyTransforms( fixed = t1, moving = atroposSeg,
           transformlist = t1Preprocessing$templateTransforms$invtransforms,
@@ -518,7 +518,7 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
       }
     }
 
-  if( returnProbabilityImages == TRUE && doLobarParcellation == TRUE )
+  if( returnProbabilityImages && doLobarParcellation )
     {
     return( list(
             segmentationImage = dktLabelImage,
@@ -527,14 +527,14 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
             outerProbabilityImages = outerProbabilityImages
             )
           )
-    } else if( returnProbabilityImages == TRUE && doLobarParcellation == FALSE ) {
+    } else if( returnProbabilityImages && ! doLobarParcellation ) {
     return( list(
             segmentationImage = dktLabelImage,
             innerProbabilityImages = innerProbabilityImages,
             outerProbabilityImages = outerProbabilityImages
             )
           )
-    } else if( returnProbabilityImages == FALSE && doLobarParcellation == TRUE ) {
+    } else if( ! returnProbabilityImages && doLobarParcellation ) {
     return( list(
             segmentationImage = dktLabelImage,
             lobarParcellation = lobarParcellation
