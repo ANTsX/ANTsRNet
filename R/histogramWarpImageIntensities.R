@@ -93,7 +93,8 @@ histogramWarpImageIntensities <- function( image,
 
   bsplineHistogramTransform <- fitBsplineObjectToScatteredData( scatteredData, parametricData,
     c( transformDomainOrigin ), c( transformDomainSpacing ), c( transformDomainSize ),
-    dataWeights = weights )
+    dataWeights = weights, isParametricDimensionClosed = NULL, numberOfFittingLevels = 4,
+    meshSize = 1, splineOrder = 3 )
 
   transformDomain <- seq( 0, 1, length.out = transformDomainSize )
 
