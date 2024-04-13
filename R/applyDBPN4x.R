@@ -358,7 +358,7 @@ applySuperResolutionModelPatch <- function(
     if ( channelSizeOut != bigImg@components ) {
       if ( bigImg@components > 1 )
         bigImgSplit = splitChannels( bigImg ) else bigImgSplit=list( bigImg )
-        bigavg = antsAverageImages( bigImgSplit )
+        bigavg = ANTsR::antsAverageImages( bigImgSplit )
         blist = list()
         for ( k in 1:channelSizeOut ) {
           blist[[k]] = bigavg
