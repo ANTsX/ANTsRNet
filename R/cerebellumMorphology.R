@@ -3,8 +3,7 @@
 #' Perform cerebellum segmentation using a modification of the set of
 #' MaGET cerebellum atlases --- \url{https://www.cobralab.ca/cerebellum-lobules}.
 #'
-#' Current citation:
-#' \url{https://www.medrxiv.org/content/10.1101/2023.01.17.23284693v4}
+#' \url{https://www.nature.com/articles/s41598-024-59440-6}
 #'
 #' The tissue labeling is as follows:
 #' \itemize{
