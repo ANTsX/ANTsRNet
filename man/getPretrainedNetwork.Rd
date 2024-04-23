@@ -46,9 +46,10 @@ getPretrainedNetwork(
     "sysuMediaWmhFlairT1Model2", "tidsQualityAssessment", "xrayLungOrientation",
     "xrayLungExtraction", 
      "chexnetClassificationModel",
-    "chexnetClassificationANTsXNetModel", "wholeHeadInpaintingFLAIR",
-    "wholeHeadInpaintingPatchBasedT1", "wholeHeadInpaintingPatchBasedFLAIR",
-    "wholeTumorSegmentationT2Flair", "wholeLungMaskFromVentilation"),
+    "chexnetClassificationANTsXNetModel", "tb_antsxnet_model",
+    "wholeHeadInpaintingFLAIR", "wholeHeadInpaintingPatchBasedT1",
+    "wholeHeadInpaintingPatchBasedFLAIR", "wholeTumorSegmentationT2Flair",
+    "wholeLungMaskFromVentilation"),
   targetFileName,
   antsxnetCacheDirectory = NULL
 )

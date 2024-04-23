@@ -9,6 +9,7 @@ chexnet(
   lungMask = NULL,
   checkImageOrientation = FALSE,
   useANTsXNetVariant = TRUE,
+  includeTuberculosisDiagnosis = FALSE,
   antsxnetCacheDirectory = NULL,
   verbose = FALSE
 )
@@ -21,6 +22,14 @@ chexnet(
 \item{checkImageOrientation}{Check the correctness of image orientation, i.e.,
 flipped left-right, up-down, or both.  If TRUE, attempts to correct before prediction.}
 
+\item{useANTsXNetVariant}{Use an extension of the original chexnet approach
+by adding a left/right lung masking and including those two masked regions
+in the red and green channels, respectively.}
+
+\item{includeTuberculosisDiagnosis}{Include the output of an additional network
+trained on TB data but using the ANTsXNet variant chexnet data as the initial
+weights.}
+
 \item{antsxnetCacheDirectory}{destination directory for storing the downloaded
 template and model weights.  Since these can be resused, if
 \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
@@ -29,7 +38,7 @@ subdirectory ~/.keras/ANTsXNet/.}
 \item{verbose}{print progress.}
 }
 \value{
-classification scores for each of the 14 categories.
+classification scores for each of the 14 or 15 categories.
 }
 \description{
 ANTsXNet reproduction of https://arxiv.org/pdf/1711.05225.pdf.  This includes

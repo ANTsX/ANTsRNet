@@ -166,8 +166,14 @@ checkXrayLungOrientation <- function( image,
 #' template and model weights.  Since these can be resused, if
 #' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
 #' subdirectory ~/.keras/ANTsXNet/.
+#' @param useANTsXNetVariant Use an extension of the original chexnet approach 
+#' by adding a left/right lung masking and including those two masked regions 
+#' in the red and green channels, respectively. 
+#' @param includeTuberculosisDiagnosis Include the output of an additional network 
+#' trained on TB data but using the ANTsXNet variant chexnet data as the initial 
+#' weights.
 #' @param verbose print progress.
-#' @return classification scores for each of the 14 categories.
+#' @return classification scores for each of the 14 or 15 categories.
 #' @author Tustison NJ
 #' @examples
 #' \dontrun{
@@ -179,6 +185,7 @@ chexnet <- function( image,
                      lungMask = NULL,
                      checkImageOrientation = FALSE,
                      useANTsXNetVariant = TRUE,
+                     includeTuberculosisDiagnosis = FALSE,
                      antsxnetCacheDirectory = NULL,
                      verbose = FALSE )
 {
@@ -227,11 +234,51 @@ chexnet <- function( image,
     resampledImage <- antsImageClone( image )
     }
 
+  if( is.null( lungMask ) )
+    {
+    if( verbose )
+      {
+      cat( "No lung mask provided.  Estimating using antsxnet." )
+      }
+    lungExtract <- lungExtraction( image, modality = "xray", 
+                                   antsxnetCacheDirectory = antsxnetCacheDirectory, 
+                                   verbose = verbose )
+    lungMask <- lungExtract$segmentationImage
+    }
+
+  if( any( dim( lungMask ) != imageSize ) )
+    {
+    resampledLungMask <- resampleImage( lungMask, imageSize, useVoxels = TRUE, interpType = 1 )
+    } else {
+    resampledLungMask <- antsImageClone( lungMask )
+    }
+  
   # use imagenet mean,std for normalization
   imagenetMean <- c( 0.485, 0.456, 0.406 )
   imagenetStd <- c( 0.229, 0.224, 0.225 )
 
   numberOfChannels <- 3
+
+  tbPrediction <- NULL
+  if( includeTuberculosisDiagnosis ) 
+    {
+    modelFileName <- getPretrainedNetwork( "tb_antsxnet_model",
+                                           antsxnetCacheDirectory = antsxnetCacheDirectory )
+    model <- tensorflow::tf$keras$models$load_model( modelFileName, compile = FALSE )
+
+    batchX <- array( data = 0, dim = c( 1, imageSize, numberOfChannels ) )
+    imageArray <- as.array( resampledImage )
+    imageArray <- ( imageArray - min( imageArray ) ) / ( max( imageArray ) - min( imageArray ) )
+
+    batchX[1,,,1] <- ( imageArray - imagenetMean[1] ) / ( imagenetStd[1] )
+    batchX[1,,,2] <- ( imageArray - imagenetMean[2] ) / ( imagenetStd[2] )
+    batchX[1,,,2] <- batchX[1,,,2] * as.array( thresholdImage( resampledLungMask, 1, 1, 1, 0 ) )
+    batchX[1,,,3] <- ( imageArray - imagenetMean[3] ) / ( imagenetStd[3] )
+    batchX[1,,,3] <- batchX[1,,,3] * as.array( thresholdImage( resampledLungMask, 2, 2, 1, 0 ) )
+
+    batchY <- model %>% predict( batchX, verbose = verbose )
+    tbPrediction <- batchY[1]
+    }
 
   if( ! useANTsXNetVariant )
     {
@@ -250,33 +297,16 @@ chexnet <- function( image,
     batchY <- model %>% predict( batchX, verbose = verbose )
     diseaseCategoryDf = data.frame( batchY )
     colnames( diseaseCategoryDf ) <- diseaseCategories
-
+    if( includeTuberculosisDiagnosis )
+      {
+      diseaseCategoryDf$Tuberculosis <- c( tbPrediction )
+      }
     return( diseaseCategoryDf )
 
     } else {
     modelFileName <- getPretrainedNetwork( "chexnetClassificationANTsXNetModel",
                                            antsxnetCacheDirectory = antsxnetCacheDirectory )
     model <- tensorflow::tf$keras$models$load_model( modelFileName, compile = FALSE )
-
-    resampledLungMask <- NULL
-    if( is.null( lungMask ) )
-      {
-      if( verbose )
-        {
-        cat( "No lung mask provided.  Estimating using antsxnet." )
-        }
-      lungExtract <- lungExtraction( image, modality = "xray", 
-                                     antsxnetCacheDirectory = antsxnetCacheDirectory, 
-                                     verbose = verbose )
-      resampledLungMask <- lungExtract$segmentationImage
-      } else {
-      resampledLungMask <- antsImageClone( lungMask ) 
-      }
-
-    if( any( dim( resampledLungMask ) != imageSize ) )
-      {
-      resampledLungMask <- resampleImage( resampledLungMask, imageSize, useVoxels = TRUE, interpType = 1 )
-      }
 
     batchX <- array( data = 0, dim = c( 1, imageSize, numberOfChannels ) )
     imageArray <- as.array( resampledImage )
@@ -291,7 +321,10 @@ chexnet <- function( image,
     batchY <- model %>% predict( batchX, verbose = verbose )
     diseaseCategoryDf = data.frame( batchY )
     colnames( diseaseCategoryDf ) <- diseaseCategories    
-
+    if( includeTuberculosisDiagnosis )
+      {
+      diseaseCategoryDf$Tuberculosis <- c( tbPrediction )
+      }
     return( diseaseCategoryDf)
     }
 }
