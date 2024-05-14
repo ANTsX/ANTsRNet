@@ -40,7 +40,7 @@
 #' @export
 brainExtraction <- function( image,
   modality = c( "t1", "t1.v0", "t1.v1", "t1nobrainer", "t1combined", "t2", "t2.v0",
-                "t2star", "flair", "flair.v0", "bold", "bold.v0", "fa", "fa.v0",
+                "t2star", "flair", "flair.v0", "bold", "bold.v0", "fa", "fa.v0", "mra",
                 "t1t2infant", "t1infant", "t2infant" ),
   antsxnetCacheDirectory = NULL, verbose = FALSE )
   {
@@ -131,6 +131,9 @@ brainExtraction <- function( image,
       } else if( modality == "fa" ) {
       weightsFilePrefix <- "brainExtractionRobustFA"
       isStandardNetwork <- TRUE
+      } else if( modality == "mra" ) {
+      weightsFilePrefix <- "brainExtractionMra"
+      isStandardNetwork <- TRUE
       } else if( modality == "t1t2infant" ) {
       weightsFilePrefix <- "brainExtractionInfantT1T2"
       } else if( modality == "t1infant" ) {
@@ -141,21 +144,21 @@ brainExtraction <- function( image,
       stop( "Unknown modality type." )
       }
 
-    if( verbose == TRUE )
+    if( verbose )
       {
       cat( "Brain extraction:  retrieving model weights.\n" )
       }
     weightsFileName <- getPretrainedNetwork( weightsFilePrefix,
       antsxnetCacheDirectory = antsxnetCacheDirectory )
 
-    if( verbose == TRUE )
+    if( verbose )
       {
       cat( "Brain extraction:  retrieving template.\n" )
       }
     reorientTemplateFileNamePath <- getANTsXNetData( "S_template3",
       antsxnetCacheDirectory = antsxnetCacheDirectory )
     reorientTemplate <- antsImageRead( reorientTemplateFileNamePath )
-    if( isStandardNetwork && modality != "t1.v1" )
+    if( isStandardNetwork && ( modality != "t1.v1" && modality != "mra" ) )
       {
       antsSetSpacing( reorientTemplate, c( 1.5, 1.5, 1.5 ) )
       }
@@ -178,7 +181,7 @@ brainExtraction <- function( image,
 
     unetModel$load_weights( weightsFileName )
 
-    if( verbose == TRUE )
+    if( verbose )
       {
       cat( "Brain extraction:  normalizing image to the template.\n" )
       }
@@ -203,14 +206,14 @@ brainExtraction <- function( image,
         }
       }
 
-    if( verbose == TRUE )
+    if( verbose )
       {
       cat( "Brain extraction:  prediction and decoding.\n" )
       }
     predictedData <- unetModel %>% predict( batchX, verbose = verbose )
     probabilityImagesArray <- decodeUnet( predictedData, reorientTemplate )
 
-    if( verbose == TRUE )
+    if( verbose )
       {
       cat( "Brain extraction:  renormalize probability mask to native space.\n" )
       }
@@ -226,13 +229,13 @@ brainExtraction <- function( image,
     #
     #####################
 
-    if( verbose == TRUE )
+    if( verbose )
       {
       cat( "NoBrainer:  generating network.\n")
       }
     model <- createNoBrainerUnetModel3D( list( NULL, NULL, NULL, 1 ) )
 
-    if( verbose == TRUE )
+    if( verbose )
       {
       cat( "NoBrainer:  retrieving model weights.\n" )
       }
@@ -240,7 +243,7 @@ brainExtraction <- function( image,
       antsxnetCacheDirectory = antsxnetCacheDirectory )
     model$load_weights( weightsFileName )
 
-    if( verbose == TRUE )
+    if( verbose )
       {
       cat( "NoBrainer:  preprocessing (intensity truncation and resampling).\n" )
       }
@@ -253,7 +256,7 @@ brainExtraction <- function( image,
     imageResampled <- resampleImage( image, rep( 256, 3 ), useVoxels = TRUE )
     imageArray <- array( as.array( imageResampled ), dim = c( 1, dim( imageResampled ), 1 ) )
 
-    if( verbose == TRUE )
+    if( verbose )
       {
       cat( "NoBrainer:  predicting mask.\n" )
       }
