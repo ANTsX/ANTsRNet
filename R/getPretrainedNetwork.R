@@ -106,6 +106,7 @@ getPretrainedNetwork <- function(
               "maskLobes",
               "mriSuperResolution",
               "mriModalityClassification",
+              "mraVesselWeights_160",
               "mouseMriBrainExtraction",
               "mouseT2wBrainExtraction3D",
               "mouseT2wBrainParcellation3DNick",
@@ -135,7 +136,6 @@ getPretrainedNetwork <- function(
               "wholeLungMaskFromVentilation" ),
   targetFileName, antsxnetCacheDirectory = NULL )
 {
-
 
   if( fileId[1] == "show" )
     {
@@ -231,13 +231,14 @@ getPretrainedNetwork <- function(
     maskLobes = "https://figshare.com/ndownloader/files/30678458",
     mriSuperResolution = "https://figshare.com/ndownloader/files/35290684",
     mriModalityClassification = "https://figshare.com/ndownloader/files/41691681",
+    mraVesselWeights_160 = "https://figshare.com/ndownloader/files/46406029",
     mouseMriBrainExtraction = "https://figshare.com/ndownloader/files/44714947",
     mouseT2wBrainExtraction3D = "https://figshare.com/ndownloader/files/44943715",
-    mouseT2wBrainParcellation3DNick = "https://figshare.com/ndownloader/files/44714944",              "elBicho",
+    mouseT2wBrainParcellation3DNick = "https://figshare.com/ndownloader/files/44714944",            
     protonLungMri = "https://ndownloader.figshare.com/files/13606799",
     protonLobes = "https://figshare.com/ndownloader/files/30678455",
     pulmonaryAirwayWeights = "https://figshare.com/ndownloader/files/45187168",
-    pulmonaryArteryWeights = "https://figshare.com/ndownloader/files/42918565",
+    pulmonaryArteryWeights = "https://figshare.com/ndownloader/files/46400752",
     sixTissueOctantBrainSegmentation = "https://ndownloader.figshare.com/files/23776025",
     sixTissueOctantBrainSegmentationWithPriors1 = "https://ndownloader.figshare.com/files/28159869",
     sysuMediaWmhFlairOnlyModel0 = "https://ndownloader.figshare.com/files/22898441",

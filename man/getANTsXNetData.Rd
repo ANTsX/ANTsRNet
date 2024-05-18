@@ -14,8 +14,9 @@ getANTsXNetData(
     "oasis", "magetTemplate", "magetTemplateBrainMask", 
      "magetCerebellumTemplate",
     "magetCerebellumTemplatePriors", "magetCerebellumxTemplate0GenericAffine",
-    "bsplineT2MouseTemplate", "bsplineT2MouseTemplateBrainMask",
-    "DevCCF_P56_MRI_T2_50um", "DevCCF_P56_MRI_T2_50um_BrainParcellationNickMask"),
+    "mraTemplate", "mraTemplateVesselPrior", "bsplineT2MouseTemplate",
+    "bsplineT2MouseTemplateBrainMask", "DevCCF_P56_MRI_T2_50um",
+    "DevCCF_P56_MRI_T2_50um_BrainParcellationNickMask"),
   targetFileName,
   antsxnetCacheDirectory = NULL
 )

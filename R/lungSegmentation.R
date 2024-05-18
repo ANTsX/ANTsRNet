@@ -227,7 +227,8 @@ lungPulmonaryArterySegmentation <- function( ct, lungMask = NULL,
 
   if( is.null( lungMask ) )
     {
-    lungEx <- lungExtraction( ct, modality = "ct", verbose = verbose )
+    lungEx <- lungExtraction( ct, modality = "ct", verbose = verbose,
+                              antsxnetCacheDirectory = antsxnetCacheDirectory )
     lungMask <- thresholdImage( lungEx$segmentationImage, 0, 0, 0, 1 )
     }
   ctPreprocessed <- antsImageClone( ct )
@@ -250,7 +251,7 @@ lungPulmonaryArterySegmentation <- function( ct, lungMask = NULL,
     {
     patchStrideLength <- rep( as.integer( patchStrideLength ), 3 )
     }
-  numberOfClassificationLabels <- 2
+  numberOfClassificationLabels <- 1
   channelSize <- 1
 
   model <- createUnetModel3D( c( patchSize, channelSize ),
@@ -258,7 +259,8 @@ lungPulmonaryArterySegmentation <- function( ct, lungMask = NULL,
                numberOfFilters = c( 32, 64, 128, 256, 512 ),
                convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
                dropoutRate = 0.0, weightDecay = 0.0 )
-  weightsFileName <- getPretrainedNetwork( "pulmonaryArteryWeights", antsxnetCacheDirectory = antsxnetCacheDirectory )
+  weightsFileName <- getPretrainedNetwork( "pulmonaryArteryWeights", 
+                                           antsxnetCacheDirectory = antsxnetCacheDirectory )
   load_model_weights_hdf5( model, filepath = weightsFileName )
 
   ################################
@@ -301,7 +303,7 @@ lungPulmonaryArterySegmentation <- function( ct, lungMask = NULL,
     message( "  Number of batches: ", numberOfBatches )
     }
  
-  prediction <- array( data = 0, dim = c( totalNumberOfPatches, patchSize, 2 ) )
+  prediction <- array( data = 0, dim = c( totalNumberOfPatches, patchSize, 1 ) )
   for( b in seq.int( numberOfBatches ) )
     {
     batchX <- NULL
@@ -327,7 +329,7 @@ lungPulmonaryArterySegmentation <- function( ct, lungMask = NULL,
     {
     message( "Predict patches and reconstruct." )
     }
-  probabilityImage <- reconstructImageFromPatches( drop( prediction[,,,,2] ),
+  probabilityImage <- reconstructImageFromPatches( drop( prediction[,,,,1] ),
                                                    strideLength = patchStrideLength,
                                                    domainImage = lungMask,
                                                    domainImageIsMask = TRUE )
