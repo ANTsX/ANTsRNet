@@ -131,22 +131,35 @@ mouseBrainExtraction <- function( image,
 #' @export
 mouseBrainParcellation <- function( image,
   mask = NULL, returnIsotropicOutput = FALSE,
-  whichParcellation = c( "nick" ),
+  whichParcellation = c( "nick", "jay" ),
   antsxnetCacheDirectory = NULL, verbose = FALSE )
   {
-
-  if( whichParcellation == "nick" )
+  if( whichParcellation == "nick" || whichParcellation == "jay" )
     {
     templateSpacing <- c( 0.075, 0.075, 0.075 ) 
     templateCropSize <- c( 176, 176, 176 ) 
 
-    template <- antsImageRead( getANTsXNetData( "DevCCF_P56_MRI_T2_50um" ) )
+    if( whichParcellation == "nick" )
+      {
+      templateString <- "DevCCF P56 T2w"
+      template <- antsImageRead( getANTsXNetData( "DevCCF_P56_MRI_T2_50um" ) )
+      templateMatch <- rankIntensity( template )
+      templateMask <- antsImageRead( getANTsXNetData( "DevCCF_P56_MRI_T2_50um_BrainParcellationNickMask" ) )
+      weightsFileName <- getPretrainedNetwork( "mouseT2wBrainParcellation3DNick" )
+      } else if( whichParcellation == "jay" ) {
+      templateString <- "DevCCF P04 STPT"
+      template <- antsImageRead( getANTsXNetData( "DevCCF_P04_STPT_50um" ) )
+      templateMatch <- histogramEqualizeImage( template )
+      templateMask <- antsImageRead( getANTsXNetData( "DevCCF_P04_STPT_50um_BrainParcellationJayMask" ) )
+      weightsFileName <- getPretrainedNetwork( "mouseSTPTBrainParcellation3DJay" )
+      }
+    templateMatch <- (( templateMatch - ANTsR::min( templateMatch ) ) / 
+                      ( ANTsR::max( templateMatch ) - ANTsR::min( templateMatch ) ))
+
     antsSetSpacing( template, c( 0.05, 0.05, 0.05 ) )
     template <- resampleImage( template, templateSpacing, useVoxels = FALSE, interpType = 4 )
     template <- padOrCropImageToSize( template, templateCropSize )
-    templateRi <- rankIntensity( template )
 
-    templateMask <- antsImageRead( getANTsXNetData( "DevCCF_P56_MRI_T2_50um_BrainParcellationNickMask" ) )
     antsSetSpacing( templateMask, c( 0.05, 0.05, 0.05 ) )
     templateMask <- resampleImage( templateMask, templateSpacing, useVoxels = FALSE, interpType = 1 )
     templateMask <- padOrCropImageToSize( templateMask, templateCropSize )
@@ -159,7 +172,7 @@ mouseBrainParcellation <- function( image,
       singleLabel <- thresholdImage( templateMask, i, i, 1, 0 )
       prior <- smoothImage( singleLabel, sigma = 0.003, sigmaInPhysicalCoordinates = TRUE )
       templatePriors[[i]] <- prior
-      }  
+      }
 
     if( is.null( mask ) )
       {
@@ -179,13 +192,21 @@ mouseBrainParcellation <- function( image,
 
     if ( verbose )
       {
-      message( "Preprocessing:  Warping to DevCCF P56 T2w mouse template." ) 
+      message( paste0( "Preprocessing:  Warping to ", templateString, " mouse template." ) )
       }
 
-    reg <- antsRegistration( template, imageBrain, typeofTransform = "antsRegistrationSyNQuick[a]", verbose = verbose )
+    reg <- antsRegistration( template, imageBrain, 
+                            typeofTransform = "antsRegistrationSyNQuick[a]", 
+                            verbose = verbose )
     
-    imageWarped <- rankIntensity( reg$warpedmovout )
-    imageWarped <- histogramMatchImage( imageWarped, templateRi )
+    imageWarped <- NULL
+    if ( whichParcellation == "nick" ) 
+      {
+      imageWarped <- rankIntensity( reg$warpedmovout )
+      } else {
+      imageWarped <- antsImageClone( reg$warpedmovout )
+      }
+    imageWarped <- histogramMatchImage( imageWarped, templateMatch )
     imageWarped <- iMath( imageWarped, "Normalize" )
 
     numberOfFilters <- c( 16, 32, 64, 128, 256 )
@@ -196,7 +217,6 @@ mouseBrainParcellation <- function( image,
       numberOfOutputs = numberOfClassificationLabels, mode = "classification",
       numberOfFilters = numberOfFilters, 
       convolutionKernelSize = 3, deconvolutionKernelSize = 2 )
-    weightsFileName <- getPretrainedNetwork( "mouseT2wBrainParcellation3DNick" )
     unetModel$load_weights( weightsFileName )
 
     batchX <- array( data = 0, dim = c( 1, dim( template ), channelSize ) )
@@ -237,7 +257,7 @@ mouseBrainParcellation <- function( image,
     segmentationImage <- matrixToImages( segmentationMatrix, referenceImage * 0 + 1 )[[1]] - 1
 
     results <- list( segmentationImage = segmentationImage,
-                     probabilityImages = probabilityImages )
+                      probabilityImages = probabilityImages )
     return( results )
     } else {
     stop( "Unrecognized parcellation." ) 
