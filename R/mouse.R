@@ -105,12 +105,35 @@ mouseBrainExtraction <- function( image,
 #'   \item{"nick":
 #'     \itemize{
 #'       \item{Label 0:}{background}
-#'       \item{Label 1:}{CSF}
-#'       \item{Label 2:}{gray matter}
-#'       \item{Label 3:}{white matter}
-#'       \item{Label 4:}{deep gray matter}
-#'       \item{Label 5:}{brain stem}
-#'       \item{Label 6:}{cerebellum}
+#'       \item{Label 1:}{cerebral cortex}
+#'       \item{Label 2:}{cerebral nuclei}
+#'       \item{Label 3:}{brain stem}
+#'       \item{Label 4:}{cerebellum}
+#'       \item{Label 5:}{main olfactory bulb}
+#'       \item{Label 6:}{hippocampal formation}
+#'     }}
+#'   }
+#' \itemize{
+#'   \item{"tct":
+#'     \itemize{
+#'       \item{Label 0:}{background}
+#'       \item{Label 1:}{}
+#'       \item{Label 2:}{}
+#'       \item{Label 3:}{}
+#'       \item{Label 4:}{}
+#'       \item{Label 5:}{}
+#'       \item{Label 6:}{}
+#'       \item{Label 7:}{}
+#'     }}
+#'   }
+#' \itemize{
+#'   \item{"jay":
+#'     \itemize{
+#'       \item{Label 0:}{background}
+#'       \item{Label 1:}{}
+#'       \item{Label 2:}{}
+#'       \item{Label 3:}{}
+#'       \item{Label 4:}{}
 #'     }}
 #'   }
 #' @param antsxnetCacheDirectory destination directory for storing the downloaded
@@ -131,10 +154,10 @@ mouseBrainExtraction <- function( image,
 #' @export
 mouseBrainParcellation <- function( image,
   mask = NULL, returnIsotropicOutput = FALSE,
-  whichParcellation = c( "nick", "jay" ),
+  whichParcellation = c( "nick", "jay", "tct" ),
   antsxnetCacheDirectory = NULL, verbose = FALSE )
   {
-  if( whichParcellation == "nick" || whichParcellation == "jay" )
+  if( whichParcellation == "nick" || whichParcellation == "tct" || whichParcellation == "jay" )
     {
     templateSpacing <- c( 0.075, 0.075, 0.075 ) 
     templateCropSize <- c( 176, 176, 176 ) 
@@ -146,6 +169,12 @@ mouseBrainParcellation <- function( image,
       templateMatch <- rankIntensity( template )
       templateMask <- antsImageRead( getANTsXNetData( "DevCCF_P56_MRI_T2_50um_BrainParcellationNickMask" ) )
       weightsFileName <- getPretrainedNetwork( "mouseT2wBrainParcellation3DNick" )
+      } else if( whichParcellation == "tct" ) {
+      templateString <- "DevCCF P56 T2w"
+      template <- antsImageRead( getANTsXNetData( "DevCCF_P56_MRI_T2_50um" ) )
+      templateMatch <- rankIntensity( template )
+      templateMask <- antsImageRead( getANTsXNetData( "DevCCF_P56_MRI_T2_50um_BrainParcellationTctMask" ) )
+      weightsFileName <- getPretrainedNetwork( "mouseT2wBrainParcellation3DTct" )
       } else if( whichParcellation == "jay" ) {
       templateString <- "DevCCF P04 STPT"
       template <- antsImageRead( getANTsXNetData( "DevCCF_P04_STPT_50um" ) )
@@ -196,11 +225,11 @@ mouseBrainParcellation <- function( image,
       }
 
     reg <- antsRegistration( template, imageBrain, 
-                            typeofTransform = "antsRegistrationSyNQuick[a]", 
-                            verbose = verbose )
+                             typeofTransform = "antsRegistrationSyNQuickRepro[a]", 
+                             verbose = verbose )
     
     imageWarped <- NULL
-    if ( whichParcellation == "nick" ) 
+    if ( whichParcellation == "nick" || whichParcellation == "tct" ) 
       {
       imageWarped <- rankIntensity( reg$warpedmovout )
       } else {

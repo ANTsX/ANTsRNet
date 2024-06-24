@@ -58,6 +58,7 @@ getANTsXNetData <- function(
               "bsplineT2MouseTemplateBrainMask",
               "DevCCF_P56_MRI_T2_50um",
               "DevCCF_P56_MRI_T2_50um_BrainParcellationNickMask",
+              "DevCCF_P56_MRI_T2_50um_BrainParcellationTctMask",
               "DevCCF_P04_STPT_50um",
               "DevCCF_P04_STPT_50um_BrainParcellationJayMask"              
             ),
@@ -109,6 +110,7 @@ getANTsXNetData <- function(
     bsplineT2MouseTemplateBrainMask = "https://figshare.com/ndownloader/files/44869285",
     DevCCF_P56_MRI_T2_50um = "https://figshare.com/ndownloader/files/44706244",
     DevCCF_P56_MRI_T2_50um_BrainParcellationNickMask = "https://figshare.com/ndownloader/files/44706238",
+    DevCCF_P56_MRI_T2_50um_BrainParcellationTctMask = "https://figshare.com/ndownloader/files/47214532",
     DevCCF_P04_STPT_50um = "https://figshare.com/ndownloader/files/46711546",
     DevCCF_P04_STPT_50um_BrainParcellationJayMask = "https://figshare.com/ndownloader/files/46712656"
   )
