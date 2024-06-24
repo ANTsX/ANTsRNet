@@ -116,14 +116,14 @@ mouseBrainExtraction <- function( image,
 #' \itemize{
 #'   \item{"tct":
 #'     \itemize{
-#'       \item{Label 0:}{background}
-#'       \item{Label 1:}{}
-#'       \item{Label 2:}{}
-#'       \item{Label 3:}{}
-#'       \item{Label 4:}{}
-#'       \item{Label 5:}{}
-#'       \item{Label 6:}{}
-#'       \item{Label 7:}{}
+#'       \item{Label 0:}{}
+#'       \item{Label 1:}{background}
+#'       \item{Label 2:}{Infralimbic area}
+#'       \item{Label 3:}{Prelimbic area}
+#'       \item{Label 4:}{Medial group of the dorsal thalamus}
+#'       \item{Label 5:}{Reticular nucleus of the thalamus}
+#'       \item{Label 6:}{Hippocampal formation}
+#'       \item{Label 7:}{Cerebellum}
 #'     }}
 #'   }
 #' \itemize{
