@@ -8,7 +8,7 @@ mouseBrainParcellation(
   image,
   mask = NULL,
   returnIsotropicOutput = FALSE,
-  whichParcellation = c("nick"),
+  whichParcellation = c("nick", "jay", "tct"),
   antsxnetCacheDirectory = NULL,
   verbose = FALSE
 )
@@ -28,12 +28,35 @@ images are returned isotropically resampled.}
 \item{"nick":
 \itemize{
 \item{Label 0:}{background}
-\item{Label 1:}{CSF}
-\item{Label 2:}{gray matter}
-\item{Label 3:}{white matter}
-\item{Label 4:}{deep gray matter}
-\item{Label 5:}{brain stem}
-\item{Label 6:}{cerebellum}
+\item{Label 1:}{cerebral cortex}
+\item{Label 2:}{cerebral nuclei}
+\item{Label 3:}{brain stem}
+\item{Label 4:}{cerebellum}
+\item{Label 5:}{main olfactory bulb}
+\item{Label 6:}{hippocampal formation}
+}}
+}
+\itemize{
+\item{"tct":
+\itemize{
+\item{Label 0:}{}
+\item{Label 1:}{background}
+\item{Label 2:}{Infralimbic area}
+\item{Label 3:}{Prelimbic area}
+\item{Label 4:}{Medial group of the dorsal thalamus}
+\item{Label 5:}{Reticular nucleus of the thalamus}
+\item{Label 6:}{Hippocampal formation}
+\item{Label 7:}{Cerebellum}
+}}
+}
+\itemize{
+\item{"jay":
+\itemize{
+\item{Label 0:}{background}
+\item{Label 1:}{}
+\item{Label 2:}{}
+\item{Label 3:}{}
+\item{Label 4:}{}
 }}
 }}
 
