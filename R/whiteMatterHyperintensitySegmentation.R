@@ -754,7 +754,7 @@ shivaPvsSegmentation <- function( t1, flair = NULL,
     modelIds <- c( whichModel )
     if( whichModel == "all" )
       {
-      modelIds <- c( 0, 1, 2, 3, 4, 5 )
+      modelIds <- c( 0, 1, 2, 3, 4 )
       }
 
     for( i in seq.int( length( modelIds ) ) )
