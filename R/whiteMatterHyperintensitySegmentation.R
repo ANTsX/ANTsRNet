@@ -778,7 +778,7 @@ shivaPvsSegmentation <- function( t1, flair = NULL,
 
   pvs <- as.antsImage( drop( batchY ), origin = antsGetOrigin( t1 ),
                        spacing = antsGetSpacing( t1 ),
-                       direction = antsGetDirection( direction ) )
+                       direction = antsGetDirection( t1 ) )
   pvs <- applyAntsrTransformToImage( invertAntsrTransform( xfrm ), pvs, t1 )     
   return( pvs )
 }
