@@ -472,7 +472,6 @@ wmhSegmentation <- function( flair, t1, whiteMatterMask = NULL,
         brainExtractionModality = "t1",
         doBiasCorrection = TRUE,
         doDenoising = FALSE,
-        intensityNormalizationType = "01",
         antsxnetCacheDirectory = antsxnetCacheDirectory,
         verbose = verbose )
     brainMask <- thresholdImage( t1Preprocessing$brainMask, 0.5, 1, 1, 0 )
@@ -483,7 +482,6 @@ wmhSegmentation <- function( flair, t1, whiteMatterMask = NULL,
         brainExtractionModality = NULL,
         doBiasCorrection = TRUE,
         doDenoising = FALSE,
-        intensityNormalizationType = "01",
         antsxnetCacheDirectory = antsxnetCacheDirectory,
         verbose = verbose )
     flairPreprocessed <- flairPreprocessing$preprocessedImage * brainMask
@@ -666,6 +664,7 @@ shivaPvsSegmentation <- function( t1, flair = NULL,
         brainExtractionModality = "t1",
         doBiasCorrection = TRUE,
         doDenoising = FALSE,
+        intensityNormalizationType = "01",
         antsxnetCacheDirectory = antsxnetCacheDirectory,
         verbose = verbose )
     brainMask <- thresholdImage( t1Preprocessing$brainMask, 0.5, 1, 1, 0 )
@@ -678,6 +677,7 @@ shivaPvsSegmentation <- function( t1, flair = NULL,
           brainExtractionModality = NULL,
           doBiasCorrection = TRUE,
           doDenoising = FALSE,
+          intensityNormalizationType = "01",
           antsxnetCacheDirectory = antsxnetCacheDirectory,
           verbose = verbose )
       flairPreprocessed <- flairPreprocessing$preprocessedImage * brainMask
