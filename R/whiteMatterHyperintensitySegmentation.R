@@ -657,7 +657,7 @@ shivaPvsSegmentation <- function( t1, flair = NULL,
     {
     if( verbose )
       {
-      message( "Preprocess T1 and FLAIR images.\n" )
+      message( "Preprocess image(s).\n" )
       }
     t1Preprocessing <- preprocessBrainImage( t1,
         truncateIntensity = c( 0.0, 0.99 ),
@@ -689,7 +689,7 @@ shivaPvsSegmentation <- function( t1, flair = NULL,
     }
 
   imageShape <- c( 160, 214, 176 )  
-  onesArray <- data( data = 1, dim = imageShape )
+  onesArray <- array( data = 1, dim = imageShape )
   reorientTemplate <- as.antsImage( onesArray, origin = c( 0, 0, 0 ),
                                     spacing = c( 1, 1, 1 ),
                                     direction = diag( 3 ) )
