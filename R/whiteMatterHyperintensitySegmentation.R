@@ -652,6 +652,7 @@ shivaPvsSegmentation <- function( t1, flair = NULL,
 
   t1Preprocessed <- NULL
   flairPreprocessed <- NULL
+  brainMask <- NULL
 
   if( doPreprocessing )
     {
@@ -673,7 +674,7 @@ shivaPvsSegmentation <- function( t1, flair = NULL,
     if( ! is.null( flair ) )
       { 
       flairPreprocessing <- preprocessBrainImage( flair,
-          truncateIntensity = NULL,
+          truncateIntensity = c( 0.0, 0.99 ),
           brainExtractionModality = NULL,
           doBiasCorrection = TRUE,
           doDenoising = FALSE,
@@ -697,10 +698,10 @@ shivaPvsSegmentation <- function( t1, flair = NULL,
                                     direction = diag( 3 ) )
 
   centerOfMassTemplate <- getCenterOfMass( reorientTemplate )
-  centerOfMassImage <- getCenterOfMass( t1Preprocessed * 0 + 1 )
+  centerOfMassImage <- getCenterOfMass( brainMask )
   xfrm <- createAntsrTransform( type = "Euler3DTransform",
-    center = centerOfMassTemplate,
-    translation = centerOfMassImage - centerOfMassTemplate )
+    center = round( centerOfMassTemplate ),
+    translation = round( centerOfMassImage - centerOfMassTemplate ) )
 
   t1Preprocessed <- applyAntsrTransformToImage( xfrm, t1Preprocessed, 
                                                 reorientTemplate ) 
