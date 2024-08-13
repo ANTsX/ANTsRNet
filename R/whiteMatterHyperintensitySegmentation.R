@@ -606,3 +606,179 @@ wmhSegmentation <- function( flair, t1, whiteMatterMask = NULL,
                                                       domainImageIsMask = TRUE )
   }
 
+#' PVS/VRS segmentation.
+#'
+#' Perform segmentation of perivascular (PVS) or Vircho-Robin spaces (VRS).
+#'    \url{https://pubmed.ncbi.nlm.nih.gov/34262443/}
+#' with the original implementation available here:
+#'    https://github.com/pboutinaud/SHIVA_PVS
+#'
+#' @param t1 input 3-D T1-weighted brain image.
+#' @param flair (Optional) input 3-D FLAIR brain image (aligned to T1 image).
+#' @param whichModel integer or string. Several models were trained for the 
+#' case of T1-only or T1/FLAIR image pairs.  One can use a specific single 
+#' trained model or the average of the entire ensemble.  I.e., options are:
+#'            * For T1-only:  0, 1, 2, 3, 4, 5.
+#'            * For T1/FLAIR: 0, 1, 2, 3, 4.
+#'            * Or "all" for using the entire ensemble.
+#' @param doPreprocessing perform n4 bias correction, intensity truncation, brain
+#' extraction.
+#' @param antsxnetCacheDirectory destination directory for storing the downloaded
+#' template and model weights.  Since these can be resused, if
+#' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
+#' inst/extdata/ subfolder of the ANTsRNet package.
+#' @param verbose print progress.
+#' @return probabilistic image.
+#' @author Tustison NJ
+#' @examples
+#' \dontrun{
+#' library( ANTsRNet )
+#' library( keras )
+#'
+#' t1 <- antsImageRead( "t1.nii.gz" )
+#' flair <- antsImageRead( "flair.nii.gz" )
+#' results <- wmhSegmentation( t1, flair )
+#' }
+#' @export
+shivaPvsSegmentation <- function( t1, flair = NULL,
+  whichModel = "all", doPreprocessing = TRUE, 
+  antsxnetCacheDirectory = NULL, verbose = FALSE )
+{
+  ################################
+  #
+  # Preprocess images
+  #
+  ################################
+
+  t1Preprocessed <- NULL
+  flairPreprocessed <- NULL
+
+  if( doPreprocessing )
+    {
+    if( verbose )
+      {
+      message( "Preprocess image(s).\n" )
+      }
+    t1Preprocessing <- preprocessBrainImage( t1,
+        truncateIntensity = c( 0.0, 0.99 ),
+        brainExtractionModality = "t1",
+        doBiasCorrection = TRUE,
+        doDenoising = FALSE,
+        intensityNormalizationType = "01",
+        antsxnetCacheDirectory = antsxnetCacheDirectory,
+        verbose = verbose )
+    brainMask <- thresholdImage( t1Preprocessing$brainMask, 0.5, 1, 1, 0 )
+    t1Preprocessed <- t1Preprocessing$preprocessedImage * brainMask
+    
+    if( ! is.null( flair ) )
+      { 
+      flairPreprocessing <- preprocessBrainImage( flair,
+          truncateIntensity = NULL,
+          brainExtractionModality = NULL,
+          doBiasCorrection = TRUE,
+          doDenoising = FALSE,
+          intensityNormalizationType = "01",
+          antsxnetCacheDirectory = antsxnetCacheDirectory,
+          verbose = verbose )
+      flairPreprocessed <- flairPreprocessing$preprocessedImage * brainMask
+      }
+    } else {
+    t1Preprocessed <- antsImageClone( t1 )
+    if( ! is.null( flair ) )
+      {
+      flairPreprocessed <- antsImageClone( flair )
+      }
+    }
+
+  imageShape <- c( 160, 214, 176 )  
+  onesArray <- array( data = 1, dim = imageShape )
+  reorientTemplate <- as.antsImage( onesArray, origin = c( 0, 0, 0 ),
+                                    spacing = c( 1, 1, 1 ),
+                                    direction = diag( 3 ) )
+
+  centerOfMassTemplate <- getCenterOfMass( reorientTemplate )
+  centerOfMassImage <- getCenterOfMass( t1Preprocessed * 0 + 1 )
+  xfrm <- createAntsrTransform( type = "Euler3DTransform",
+    center = centerOfMassTemplate,
+    translation = centerOfMassImage - centerOfMassTemplate )
+
+  t1Preprocessed <- applyAntsrTransformToImage( xfrm, t1Preprocessed, 
+                                                reorientTemplate ) 
+  if( ! is.null( flair ) )
+    {
+    flairPreprocessed <- applyAntsrTransformToImage( xfrm, flairPreprocessed, 
+                                                     reorientTemplate ) 
+    }
+
+  ################################
+  #
+  # Load models and predict
+  #
+  ################################
+
+  batchY <- NULL
+
+  if( is.null( flair ) )
+    {
+    batchX <- array( data = 0, dim = c( 1, imageShape, 1 ) )
+    batchX[1,,,,1] <- as.array( t1Preprocessed )
+    
+    modelIds <- c( whichModel )
+    if( whichModel == "all" )
+      {
+      modelIds <- c( 0, 1, 2, 3, 4, 5 )
+      }
+
+    for( i in seq.int( length( modelIds ) ) )
+      {
+      modelFile <- getPretrainedNetwork( paste0( "pvs_shiva_t1_", modelIds[i] ),
+                                         antsxnetCacheDirectory = antsxnetCacheDirectory ) 
+      if( verbose )
+        {
+        cat( "Loading", modelFile, "\n" )
+        }
+      model <- tensorflow::tf$keras$models$load_model( modelFile, compile = FALSE )
+      if( i == 1 )
+        {
+        batchY <- model$predict( batchX, verbose = verbose )
+        } else {
+        batchY <- batchY + model$predict( batchX, verbose = verbose )
+        }
+      }
+    batchY <- batchY / length( modelIds )
+    } else {
+    batchX <- array( data = 0, dim = c( 1, imageShape, 2 ) )
+    batchX[1,,,,1] <- as.array( t1Preprocessed )
+    batchX[1,,,,2] <- as.array( flairPreprocessed )
+    
+    modelIds <- c( whichModel )
+    if( whichModel == "all" )
+      {
+      modelIds <- c( 0, 1, 2, 3, 4 )
+      }
+
+    for( i in seq.int( length( modelIds ) ) )
+      {
+      modelFile <- getPretrainedNetwork( paste0( "pvs_shiva_t1_flair_", modelIds[i] ),
+                                         antsxnetCacheDirectory = antsxnetCacheDirectory ) 
+      if( verbose )
+        {
+        cat( "Loading", modelFile, "\n" )
+        }
+      model <- tensorflow::tf$keras$models$load_model( modelFile, compile = FALSE )
+      if( i == 1 )
+        {
+        batchY <- model$predict( batchX, verbose = verbose )
+        } else {
+        batchY <- batchY + model$predict( batchX, verbose = verbose )
+        }
+      }
+    batchY <- batchY / length( modelIds )
+    }
+
+  pvs <- as.antsImage( drop( batchY ), origin = antsGetOrigin( reorientTemplate ),
+                       spacing = antsGetSpacing( reorientTemplate ),
+                       direction = antsGetDirection( reorientTemplate ) )
+  pvs <- applyAntsrTransformToImage( invertAntsrTransform( xfrm ), pvs, t1 )     
+  return( pvs )
+}
