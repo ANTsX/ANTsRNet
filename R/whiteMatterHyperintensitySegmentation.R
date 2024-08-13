@@ -737,7 +737,7 @@ shivaPvsSegmentation <- function( t1, flair = NULL,
         {
         cat( "Loading", modelFile, "\n" )
         }
-      model <- tensorflow::tf$keras$models$load_model( modelFile )
+      model <- tensorflow::tf$keras$models$load_model( modelFile, compile = FALSE )
       if( i == 1 )
         {
         batchY <- model$predict( batchX, verbose = verbose )
@@ -765,7 +765,7 @@ shivaPvsSegmentation <- function( t1, flair = NULL,
         {
         cat( "Loading", modelFile, "\n" )
         }
-      model <- tensorflow::tf$keras$models$load_model( modelFile )
+      model <- tensorflow::tf$keras$models$load_model( modelFile, compile = FALSE )
       if( i == 1 )
         {
         batchY <- model$predict( batchX, verbose = verbose )
