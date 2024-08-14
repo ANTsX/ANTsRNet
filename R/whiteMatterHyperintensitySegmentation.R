@@ -689,6 +689,7 @@ shivaPvsSegmentation <- function( t1, flair = NULL,
       {
       flairPreprocessed <- antsImageClone( flair )
       }
+    brainMask <- thresholdImage( t1, 0, 0, 0, 1 )
     }
 
   imageShape <- c( 160, 214, 176 )  
