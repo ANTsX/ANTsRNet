@@ -297,6 +297,140 @@ createHippMapp3rUnetModel3D <- function( inputImageSize,
   return( unetModel )
 }
 
+#' Implementation of the "shiva" u-net architecture for PVS and WMH
+#' segmentation
+#'
+#' Publications:
+#'    
+#'     * PVS:  https://pubmed.ncbi.nlm.nih.gov/34262443/
+#'     * WMH:  https://pubmed.ncbi.nlm.nih.gov/38050769/
+#' 
+#' with respective GitHub repositories:
+#'     
+#'     * PVS:  https://github.com/pboutinaud/SHIVA_PVS
+#'     * WMH:  https://github.com/pboutinaud/SHIVA_WMH
+#'
+#' @param numberOfModalities Specifies number of channels in the 
+#' architecture.
+#' @return a u-net keras model
+#' @author Tustison NJ
+#' @examples
+#' \dontrun{
+#'
+#' model <- createShivaUnetModel3D()
+#'
+#' }
+#' @import keras
+#' @export
+createShivaUnetModel3D <- function( numberOfModalities = 1 )
+{
+  K <- tensorflow::tf$keras$backend
+
+  getPadShape <- function( targetLayer, referenceLayer )
+    {
+    padShape <- list()
+
+    delta <- K$int_shape( targetLayer )[[2]] - K$int_shape( referenceLayer )[[2]]
+    if( delta %% 2 != 0 )
+      {
+      padShape[[1]] <- c( as.integer( delta / 2 ), as.integer( delta / 2 ) + 1L )
+      } else {
+      padShape[[1]] <- c( as.integer( delta / 2 ), as.integer( delta / 2 ) )
+      }
+
+    delta <- K$int_shape( targetLayer )[[3]] - K$int_shape( referenceLayer )[[3]]
+    if( delta %% 2 != 0 )
+      {
+      padShape[[2]] <- c( as.integer( delta / 2 ), as.integer( delta / 2 ) + 1L )
+      } else {
+      padShape[[2]] <- c( as.integer( delta / 2 ), as.integer( delta / 2 ) )
+      }
+
+    delta <- K$int_shape( targetLayer )[[4]] - K$int_shape( referenceLayer )[[4]]
+    if( delta %% 2 != 0 )
+      {
+      padShape[[3]] <- c( as.integer( delta / 2 ), as.integer( delta / 2 ) + 1L )
+      } else {
+      padShape[[3]] <- c( as.integer( delta / 2 ), as.integer( delta / 2 ) )
+      }
+    if( all( padShape[[1]] == c( 0, 0 ) ) && all( padShape[[2]] == c( 0, 0 ) ) && all( padShape[[3]] == c( 0, 0 ) ) )
+      {
+      return( NULL )
+      } else {
+      return( padShape )
+     }
+    }
+  inputImageSize <- c( 160, 214, 176, numberOfModalities )
+  numberOfFilters <- c( 10, 18, 32, 58, 104, 187, 337 ) 
+
+  inputs <- layer_input( shape = inputImageSize )
+
+  # encoding layers
+
+  encodingLayers <- list()
+
+  outputs <- inputs
+  for( i in seq.int( length( numberOfFilters ) ) )
+    {
+    outputs <- outputs %>% layer_conv_3d( numberOfFilters[i], kernel_size = 3L, padding = 'same', use_bias = FALSE )
+    outputs <- outputs %>% layer_batch_normalization()
+    outputs <- outputs %>% layer_activation( "swish" )
+
+    outputs <- outputs %>% layer_conv_3d( numberOfFilters[i], kernel_size = 3L, padding = 'same', use_bias = FALSE )
+    outputs <- outputs %>% layer_batch_normalization()
+    outputs <- outputs %>% layer_activation( "swish" )
+
+    encodingLayers[[i]] <- outputs
+    outputs <- outputs %>% layer_max_pooling_3d( pool_size = 2L )
+    dropoutRate <- 0.05
+    if( i > 1 )
+      {
+      dropoutRate <- 0.5
+      }
+    outputs <- outputs %>% layer_spatial_dropout_3d( rate = dropoutRate )
+    }
+
+  # decoding layers
+
+  for( i in seq.int( from = length( encodingLayers ), to = 1, by = -1 ) )
+    {
+    upsampleLayer <- outputs %>% layer_upsampling_3d( size = 2L )
+    padShape <- getPadShape( encodingLayers[[i]], upsampleLayer )
+    if( i > 1 && ! is.null( padShape ) )
+      {
+      zeroLayer <- upsampleLayer %>% layer_zero_padding_3d( padding = padShape )
+      outputs <- layer_concatenate( list( zeroLayer, encodingLayers[[i]] ), axis = -1L, trainable = TRUE )
+      } else {
+      outputs <- layer_concatenate( list( upsampleLayer, encodingLayers[[i]] ), axis = -1L, trainable = TRUE )
+      }
+
+    outputs <- outputs %>% layer_conv_3d( K$int_shape( outputs )[[5]], kernel_size = 3L, padding = 'same', use_bias = FALSE )
+    outputs <- outputs %>% layer_batch_normalization()
+    outputs <- outputs %>% layer_activation( "swish" )
+
+    outputs <- outputs %>% layer_conv_3d( numberOfFilters[i], kernel_size = 3L, padding = 'same', use_bias = FALSE )
+    outputs <- outputs %>% layer_batch_normalization()
+    outputs <- outputs %>% layer_activation( "swish" )
+    outputs <- outputs %>% layer_spatial_dropout_3d( rate = 0.5 )
+    }
+
+  # final
+
+  outputs <- outputs %>% layer_conv_3d( 10, kernel_size = 3L, padding = 'same', use_bias = FALSE )
+  outputs <- outputs %>% layer_batch_normalization()
+  outputs <- outputs %>% layer_activation( "swish" )
+
+  outputs <- outputs %>% layer_conv_3d( 10, kernel_size = 3L, padding = 'same', use_bias = FALSE )
+  outputs <- outputs %>% layer_batch_normalization()
+  outputs <- outputs %>% layer_activation( "swish" )
+
+  outputs <- outputs %>% layer_conv_3d( 1, kernel_size = 1L, activation = "sigmoid", padding = 'same' )
+
+  unetModel <- keras_model( inputs = inputs, outputs = outputs )
+
+  return( unetModel )
+}
+
 #' Implementation of the "HyperMapp3r" U-net architecture
 #'
 #' Creates a keras model implementation of the u-net architecture
@@ -480,7 +614,7 @@ createSysuMediaUnetModel2D <- function( inputImageSize, anatomy = c( "wmh", "cla
 {
   getCropShape <- function( targetLayer, referenceLayer )
     {
-    K <- keras::backend()
+    K <- tensorflow::tf$keras$backend
 
     cropShape <- list()
 
@@ -592,7 +726,7 @@ createSysuMediaUnetModel3D <- function( inputImageSize,
 {
   getCropShape <- function( targetLayer, referenceLayer )
     {
-    K <- keras::backend()
+    K <- tensorflow::tf$keras$backend
 
     cropShape <- list()
 
