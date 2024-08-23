@@ -7,6 +7,7 @@
 deepFlash(
   t1,
   t2 = NULL,
+  whichParcellation = "yassa",
   doPreprocessing = TRUE,
   antsxnetCacheDirectory = NULL,
   useRankIntensity = TRUE,
@@ -18,6 +19,8 @@ deepFlash(
 
 \item{t2}{optional raw or preprocessed 3-D T2-weighted brain image.}
 
+\item{whichParcellation}{string --- "yassa".  See above label descriptions.}
+
 \item{doPreprocessing}{perform preprocessing.  See description above.}
 
 \item{antsxnetCacheDirectory}{destination directory for storing the downloaded
@@ -26,7 +29,8 @@ template and model weights.  Since these can be resused, if
 inst/extdata/ subfolder of the ANTsRNet package.}
 
 \item{useRankIntensity}{If false, use histogram matching with cropped template
-ROI.  Otherwise, use a rank intensity transform on the cropped ROI.}
+ROI.  Otherwise, use a rank intensity transform on the cropped ROI.  Only for
+'yassa' parcellation.}
 
 \item{verbose}{print progress.}
 }
