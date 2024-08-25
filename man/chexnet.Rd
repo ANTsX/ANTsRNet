@@ -10,7 +10,6 @@ chexnet(
   checkImageOrientation = FALSE,
   useANTsXNetVariant = TRUE,
   includeTuberculosisDiagnosis = FALSE,
-  antsxnetCacheDirectory = NULL,
   verbose = FALSE
 )
 }
@@ -30,11 +29,6 @@ in the red and green channels, respectively.}
 trained on TB data but using the ANTsXNet variant chexnet data as the initial
 weights.}
 
-\item{antsxnetCacheDirectory}{destination directory for storing the downloaded
-template and model weights.  Since these can be resused, if
-\code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-subdirectory ~/.keras/ANTsXNet/.}
-
 \item{verbose}{print progress.}
 }
 \value{
@@ -43,7 +37,8 @@ classification scores for each of the 14 or 15 categories.
 \description{
 ANTsXNet reproduction of https://arxiv.org/pdf/1711.05225.pdf.  This includes
 our own network architecture and training (including data augmentation).
-
+}
+\details{
 Includes a network for checking the correctness of image orientation, i.e.,
 flipped left-right, up-down, or both.
 

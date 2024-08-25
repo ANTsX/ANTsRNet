@@ -36,10 +36,6 @@
 #' @param useRankIntensity If false, use histogram matching with cropped template
 #' ROI.  Otherwise, use a rank intensity transform on the cropped ROI.  Only for
 #' 'yassa' parcellation.
-#' @param antsxnetCacheDirectory destination directory for storing the downloaded
-#' template and model weights.  Since these can be resused, if
-#' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-#' inst/extdata/ subfolder of the ANTsRNet package.
 #' @param verbose print progress.
 #' @return list consisting of the segmentation image and probability images for
 #' each label.
@@ -54,8 +50,7 @@
 #' }
 #' @export
 deepFlash <- function( t1, t2 = NULL, whichParcellation = "yassa",
-  doPreprocessing = TRUE, antsxnetCacheDirectory = NULL, 
-  useRankIntensity = TRUE, verbose = FALSE )
+  doPreprocessing = TRUE, useRankIntensity = TRUE, verbose = FALSE )
 {
   if( t1@dimension != 3 )
     {
@@ -100,8 +95,7 @@ deepFlash <- function( t1, t2 = NULL, whichParcellation = "yassa",
         }
 
       # Brain extraction
-      probabilityMask <- brainExtraction( t1Preprocessed, modality = "t1",
-        antsxnetCacheDirectory = antsxnetCacheDirectory, verbose = verbose )
+      probabilityMask <- brainExtraction( t1Preprocessed, modality = "t1", verbose = verbose )
       t1Mask <- thresholdImage( probabilityMask, 0.5, 1, 1, 0)
       t1Preprocessed <- t1Preprocessed * t1Mask
 
@@ -173,8 +167,7 @@ deepFlash <- function( t1, t2 = NULL, whichParcellation = "yassa",
     #
     ################################
 
-    spatialPriorsFileNamePath <- getANTsXNetData( "deepFlashPriors",
-      antsxnetCacheDirectory = antsxnetCacheDirectory )
+    spatialPriorsFileNamePath <- getANTsXNetData( "deepFlashPriors" )
     spatialPriors <- antsImageRead( spatialPriorsFileNamePath )
     priorsImageList <- splitNDImageToList( spatialPriors )
     for( i in seq.int( length( priorsImageList ) ) )
@@ -287,7 +280,7 @@ deepFlash <- function( t1, t2 = NULL, whichParcellation = "yassa",
       {
       cat( "DeepFlash: retrieving model weights (left).\n" )
       }
-    weightsFileName <- getPretrainedNetwork( networkName, antsxnetCacheDirectory = antsxnetCacheDirectory )
+    weightsFileName <- getPretrainedNetwork( networkName )
     load_model_weights_hdf5( unetModel, filepath = weightsFileName )
 
     ################################
@@ -463,7 +456,7 @@ deepFlash <- function( t1, t2 = NULL, whichParcellation = "yassa",
       {
       cat( "DeepFlash: retrieving model weights (Right).\n" )
       }
-    weightsFileName <- getPretrainedNetwork( networkName, antsxnetCacheDirectory = antsxnetCacheDirectory )
+    weightsFileName <- getPretrainedNetwork( networkName )
     load_model_weights_hdf5( unetModel, filepath = weightsFileName )
 
     ################################
@@ -716,8 +709,7 @@ deepFlash <- function( t1, t2 = NULL, whichParcellation = "yassa",
         }
 
       # Brain extraction
-      probabilityMask <- brainExtraction( t1Preprocessed, modality = "t1",
-        antsxnetCacheDirectory = antsxnetCacheDirectory, verbose = verbose )
+      probabilityMask <- brainExtraction( t1Preprocessed, modality = "t1", verbose = verbose )
       t1Mask <- thresholdImage( probabilityMask, 0.5, 1, 1, 0)
       t1Preprocessed <- t1Preprocessed * t1Mask
 
@@ -761,8 +753,7 @@ deepFlash <- function( t1, t2 = NULL, whichParcellation = "yassa",
     #
     ################################
 
-    priorsLabelsFileNamePath <- getANTsXNetData( "deepFlashTemplate2Labels",
-      antsxnetCacheDirectory = antsxnetCacheDirectory )
+    priorsLabelsFileNamePath <- getANTsXNetData( "deepFlashTemplate2Labels" )
     priorLabels <- antsImageRead( priorsLabelsFileNamePath )
 
     priorsImageLeftList <- list()
@@ -837,7 +828,7 @@ deepFlash <- function( t1, t2 = NULL, whichParcellation = "yassa",
     output3 <- penultimateLayer %>% keras::layer_conv_3d( filters = 1, kernel_size = 1L,
       activation = 'sigmoid', kernel_regularizer = keras::regularizer_l2( 0.0 ) )
 
-    unetModel <- keras::keras_model( inputs = unetModel$input, 
+    unetModel <- keras::keras_model( inputs = unetModel$input,
                                      outputs = list( unetModel$output, output1, output2, output3 ) )
 
     ################################
@@ -852,7 +843,7 @@ deepFlash <- function( t1, t2 = NULL, whichParcellation = "yassa",
       {
       cat( "DeepFlash: retrieving model weights (left).\n" )
       }
-    weightsFileName <- getPretrainedNetwork( networkName, antsxnetCacheDirectory = antsxnetCacheDirectory )
+    weightsFileName <- getPretrainedNetwork( networkName )
     load_model_weights_hdf5( unetModel, filepath = weightsFileName )
 
     ################################
@@ -983,7 +974,7 @@ deepFlash <- function( t1, t2 = NULL, whichParcellation = "yassa",
       {
       cat( "DeepFlash: retrieving model weights (Right).\n" )
       }
-    weightsFileName <- getPretrainedNetwork( networkName, antsxnetCacheDirectory = antsxnetCacheDirectory )
+    weightsFileName <- getPretrainedNetwork( networkName )
     load_model_weights_hdf5( unetModel, filepath = weightsFileName )
 
     ################################
@@ -1170,7 +1161,7 @@ deepFlash <- function( t1, t2 = NULL, whichParcellation = "yassa",
                      amygdalaProbabilityImage = foregroundProbabilityImages[[3]]
                   )
     return( results )
-    } else {  
+    } else {
     stop("Uncrecognized parcellation.")
     }
 }

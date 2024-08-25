@@ -11,7 +11,6 @@ tidNeuralImageAssessment(
   strideLength,
   paddingSize = 0L,
   dimensionsToPredict = 1L,
-  antsxnetCacheDirectory = NULL,
   whichModel = "tidsQualityAssessment",
   imageScaling,
   doPatchScaling = FALSE,
@@ -35,11 +34,6 @@ length) for (de)padding to remove edge effects.}
 \item{dimensionsToPredict}{if image dimension is 3, this parameter specifies
 which dimension(s) should be used for prediction.  If more than one dimension
 is specified, the results are averaged.}
-
-\item{antsxnetCacheDirectory}{destination directory for storing the downloaded
-template and model weights.  Since these can be reused, if
-\code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to
-~/.keras/ANTsXNet/.}
 
 \item{whichModel}{model type e.g. string tidsQualityAssessment, koniqMS, koniqMS2 or koniqMS3 where
 the former predicts mean opinion score (MOS) and MOS standard deviation and

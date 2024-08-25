@@ -4,20 +4,10 @@
 \alias{hippMapp3rSegmentation}
 \title{hippMapp3rSegmentation}
 \usage{
-hippMapp3rSegmentation(
-  t1,
-  doPreprocessing = TRUE,
-  antsxnetCacheDirectory = NULL,
-  verbose = FALSE
-)
+hippMapp3rSegmentation(t1, doPreprocessing = TRUE, verbose = FALSE)
 }
 \arguments{
 \item{doPreprocessing}{perform preprocessing.  See description above.}
-
-\item{antsxnetCacheDirectory}{destination directory for storing the downloaded
-template and model weights.  Since these can be resused, if
-\code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-subdirectory ~/.keras/ANTsXNet/.}
 
 \item{verbose}{print progress.}
 

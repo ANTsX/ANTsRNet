@@ -47,10 +47,6 @@
 #' @param computeThicknessImage Compute KellyKapowski thickness image of the gray
 #' matter.
 #' @param doPreprocessing Perform N4 bias correction and spatiall normalize to template space.
-#' @param antsxnetCacheDirectory destination directory for storing the downloaded
-#' template and model weights.  Since these can be ressed, if
-#' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-#' inst/extdata/ subfolder of the ANTsRNet package.
 #' @param verbose print progress.
 #' @return List consisting of the multiple segmentation images and probability
 #' images for each label and foreground.  Optional thickness image.
@@ -66,7 +62,7 @@
 #' @export
 cerebellumMorphology <- function( t1, cerebellumMask = NULL,
   computeThicknessImage = FALSE, doPreprocessing = TRUE,
-  antsxnetCacheDirectory = NULL, verbose = FALSE )
+  verbose = FALSE )
 {
   if( t1@dimension != 3 )
     {
@@ -93,8 +89,7 @@ cerebellumMorphology <- function( t1, cerebellumMask = NULL,
 
   # spatial priors are in the space of the cerebellar template.  First three are
   # csf, gm, and wm followed by the regions.
-  spatialPriorsFileNamePath <- getANTsXNetData( "magetCerebellumTemplatePriors",
-      antsxnetCacheDirectory = antsxnetCacheDirectory )
+  spatialPriorsFileNamePath <- getANTsXNetData( "magetCerebellumTemplatePriors" )
   spatialPriors <- antsImageRead( spatialPriorsFileNamePath )
   # priorsImageList <- splitNDImageToList( spatialPriors )
   spatialPriorsArray <- as.array( spatialPriors )
@@ -127,8 +122,7 @@ cerebellumMorphology <- function( t1, cerebellumMask = NULL,
   if( is.null( cerebellumMask ) )
     {
     # Brain extraction
-    probabilityMask <- brainExtraction( t1Preprocessed, modality = "t1",
-        antsxnetCacheDirectory = antsxnetCacheDirectory, verbose = verbose )
+    probabilityMask <- brainExtraction( t1Preprocessed, modality = "t1" )
     t1Mask <- thresholdImage( probabilityMask, 0.5, 1, 1, 0 )
     t1BrainPreprocessed <- t1Preprocessed * t1Mask
 
@@ -241,7 +235,7 @@ cerebellumMorphology <- function( t1, cerebellumMask = NULL,
       cat( "Retrieving model weights.\n" )
       }
 
-    weightsFileName <- getPretrainedNetwork( networkName, antsxnetCacheDirectory = antsxnetCacheDirectory )
+    weightsFileName <- getPretrainedNetwork( networkName )
     load_model_weights_hdf5( unetModel, filepath = weightsFileName )
 
     ################################

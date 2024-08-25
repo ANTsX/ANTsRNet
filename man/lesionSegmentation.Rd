@@ -4,23 +4,13 @@
 \alias{lesionSegmentation}
 \title{wholeHeadInpainting}
 \usage{
-lesionSegmentation(
-  t1,
-  doPreprocessing = TRUE,
-  antsxnetCacheDirectory = NULL,
-  verbose = FALSE
-)
+lesionSegmentation(t1, doPreprocessing = TRUE, verbose = FALSE)
 }
 \arguments{
 \item{t1}{input 3-D T1 brain image (not skull-stripped).}
 
 \item{doPreprocessing}{Perform n4 bias correction, intensity truncation, brain
 extraction.}
-
-\item{antsxnetCacheDirectory}{destination directory for storing the downloaded
-template and model weights.  Since these can be resused, if
-\code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-subdirectory ~/.keras/ANTsXNet/.}
 
 \item{verbose}{print progress.}
 }

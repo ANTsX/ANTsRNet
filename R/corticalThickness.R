@@ -6,10 +6,6 @@
 #'  \url{https://www.medrxiv.org/content/10.1101/2020.10.19.20215392v1}
 #'
 #' @param t1 input 3-D unprocessed T1-weighted brain image
-#' @param antsxnetCacheDirectory destination directory for storing the downloaded
-#' template and model weights.  Since these can be resused, if
-#' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-#' subdirectory ~/.keras/ANTsXNet/.
 #' @param verbose print progress.
 #' @return Cortical thickness image and segmentation probability images.
 #' @author Tustison NJ
@@ -22,7 +18,7 @@
 #' kk <- corticalThickness( image )
 #' }
 #' @export
-corticalThickness <- function( t1, antsxnetCacheDirectory = NULL, verbose = FALSE )
+corticalThickness <- function( t1, verbose = FALSE )
 {
 
   if( t1@dimension != 3 )
@@ -31,7 +27,7 @@ corticalThickness <- function( t1, antsxnetCacheDirectory = NULL, verbose = FALS
     }
 
   atropos <- deepAtropos( t1, doPreprocessing = TRUE,
-    antsxnetCacheDirectory = antsxnetCacheDirectory, verbose = verbose )
+    verbose = verbose )
 
   # Kelly Kapowski cortical thickness
 
@@ -70,10 +66,6 @@ corticalThickness <- function( t1, antsxnetCacheDirectory = NULL, verbose = FALS
 #' @param numberOfIterations Defines the number of iterations for refining the SST.
 #' @param refinementTransform Transform for defining the refinement registration transform.
 #' See options in \code{antsRegistration}.
-#' @param antsxnetCacheDirectory destination directory for storing the downloaded
-#' template and model weights.  Since these can be resused, if
-#' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-#' subdirectory ~/.keras/ANTsXNet/.
 #' @param verbose print progress.
 #' @return List consisting of the SST, and a (sub-)list for each subject consisting of
 #' the preprocessed image, cortical thickness image, segmentation probability images,
@@ -89,7 +81,7 @@ corticalThickness <- function( t1, antsxnetCacheDirectory = NULL, verbose = FALS
 #' }
 #' @export
 longitudinalCorticalThickness <- function( t1s, initialTemplate = "oasis", numberOfIterations = 1,
-  refinementTransform = "antsRegistrationSyNQuick[a]", antsxnetCacheDirectory = NULL,
+  refinementTransform = "antsRegistrationSyNQuick[a]",
   verbose = FALSE )
 {
 
@@ -102,7 +94,7 @@ longitudinalCorticalThickness <- function( t1s, initialTemplate = "oasis", numbe
   sst <- NULL
   if( is.character( initialTemplate ) )
     {
-    templateFileNamePath <- getANTsXNetData( initialTemplate, antsxnetCacheDirectory = antsxnetCacheDirectory )
+    templateFileNamePath <- getANTsXNetData( initialTemplate )
     sst <- antsImageRead( templateFileNamePath )
     } else {
     sst <- initialTemplate
@@ -133,7 +125,7 @@ longitudinalCorticalThickness <- function( t1s, initialTemplate = "oasis", numbe
         brainExtractionModality = NULL, templateTransformType = transformType,
         template = sst, doBiasCorrection = FALSE, returnBiasField = FALSE,
         doDenoising = FALSE, intensityNormalizationType = "01",
-        antsxnetCacheDirectory = antsxnetCacheDirectory, verbose = verbose )
+        verbose = verbose )
       sstTmp <- sstTmp + t1Preprocessed$preprocessedImage
       }
     sst <- sstTmp / length( t1s )
@@ -158,7 +150,7 @@ longitudinalCorticalThickness <- function( t1s, initialTemplate = "oasis", numbe
       brainExtractionModality = "t1", templateTransformType = "antsRegistrationSyNQuick[a]",
       template = sst, doBiasCorrection = TRUE, returnBiasField = FALSE,
       doDenoising = TRUE, intensityNormalizationType = "01",
-      antsxnetCacheDirectory = antsxnetCacheDirectory, verbose = verbose )
+      verbose = verbose )
     }
 
   ###################
@@ -167,8 +159,7 @@ longitudinalCorticalThickness <- function( t1s, initialTemplate = "oasis", numbe
   #
   ##################
 
-  sstAtropos <- deepAtropos( sst, doPreprocessing = TRUE,
-    antsxnetCacheDirectory = antsxnetCacheDirectory, verbose = verbose )
+  sstAtropos <- deepAtropos( sst, doPreprocessing = TRUE, verbose = verbose )
 
   ###################
   #

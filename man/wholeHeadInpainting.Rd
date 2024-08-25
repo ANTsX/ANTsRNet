@@ -9,7 +9,6 @@ wholeHeadInpainting(
   roiMask,
   modality = "t1",
   mode = "axial",
-  antsxnetCacheDirectory = NULL,
   verbose = FALSE
 )
 }
@@ -24,11 +23,6 @@ wholeHeadInpainting(
 \item{mode}{Options include:  "sagittal": sagittal view network, "coronal":
 coronal view network, "axial": axial view network, "average": average of all
 canonical views, "meg": morphological erosion, greedy, iterative.}
-
-\item{antsxnetCacheDirectory}{destination directory for storing the downloaded
-template and model weights.  Since these can be resused, if
-\code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-subdirectory ~/.keras/ANTsXNet/.}
 
 \item{verbose}{print progress.}
 }

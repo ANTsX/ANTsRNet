@@ -24,10 +24,6 @@
 #' @param t1 input 3-D T1-weighted brain image (assumed to be aligned to
 #' the flair, if specified).
 #' @param useEnsemble boolean to check whether to use all 3 sets of weights.
-#' @param antsxnetCacheDirectory destination directory for storing the downloaded
-#' template and model weights.  Since these can be resused, if
-#' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-#' inst/extdata/ subfolder of the ANTsRNet package.
 #' @param verbose print progress.
 #' @return WMH segmentation probability image
 #' @author Tustison NJ
@@ -41,7 +37,7 @@
 #' }
 #' @export
 sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
-  useEnsemble = TRUE, antsxnetCacheDirectory = NULL, verbose = FALSE )
+  useEnsemble = TRUE, verbose = FALSE )
 {
 
   if( flair@dimension != 3 )
@@ -120,11 +116,9 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
     weightsFileName <- ''
     if( numberOfChannels == 1 )
       {
-      weightsFileName <- getPretrainedNetwork( paste0( "sysuMediaWmhFlairOnlyModel", i - 1 ),
-        antsxnetCacheDirectory = antsxnetCacheDirectory )
+      weightsFileName <- getPretrainedNetwork( paste0( "sysuMediaWmhFlairOnlyModel", i - 1 ) )
       } else {
-      weightsFileName <- getPretrainedNetwork( paste0( "sysuMediaWmhFlairT1Model", i - 1 ),
-        antsxnetCacheDirectory = antsxnetCacheDirectory )
+      weightsFileName <- getPretrainedNetwork( paste0( "sysuMediaWmhFlairT1Model", i - 1 ) )
       }
 
     unetModels[[i]] <- createSysuMediaUnetModel2D( c( imageSize, numberOfChannels ), anatomy = "wmh" )
@@ -253,10 +247,6 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
 #' @param t1 input 3-D t1-weighted MR image.  Assumed to be aligned with the flair.
 #' @param flair input 3-D flair MR image.  Assumed to be aligned with the t1.
 #' @param doPreprocessing perform preprocessing.  See description above.
-#' @param antsxnetCacheDirectory destination directory for storing the downloaded
-#' template and model weights.  Since these can be resused, if
-#' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-#' subdirectory ~/.keras/ANTsXNet/.
 #' @param verbose print progress.
 #' @return white matter hyperintensity probability mask
 #' @author Tustison NJ
@@ -269,7 +259,7 @@ sysuMediaWmhSegmentation <- function( flair, t1 = NULL,
 #' }
 #' @export
 hyperMapp3rSegmentation <- function( t1, flair, doPreprocessing = TRUE,
-  numberOfMonteCarloIterations = 30, antsxnetCacheDirectory = NULL, verbose = FALSE )
+  numberOfMonteCarloIterations = 30, verbose = FALSE )
   {
 
   if( t1@dimension != 3 )
@@ -298,7 +288,6 @@ hyperMapp3rSegmentation <- function( t1, flair, doPreprocessing = TRUE,
         template = NULL,
         doBiasCorrection = TRUE,
         doDenoising = FALSE,
-        antsxnetCacheDirectory = antsxnetCacheDirectory,
         verbose = verbose )
     brainMask <- t1Preprocessing$brainMask
     t1Preprocessed <- t1Preprocessing$preprocessedImage * brainMask
@@ -321,7 +310,6 @@ hyperMapp3rSegmentation <- function( t1, flair, doPreprocessing = TRUE,
         template = NULL,
         doBiasCorrection = TRUE,
         doDenoising = FALSE,
-        antsxnetCacheDirectory = antsxnetCacheDirectory,
         verbose = verbose )
     flairPreprocessed <- flairPreprocessing$preprocessedImage * brainMask
     }
@@ -362,8 +350,7 @@ hyperMapp3rSegmentation <- function( t1, flair, doPreprocessing = TRUE,
     cat( "    HyperMapp3r: generate network and load weights.\n" )
     }
   model <- createHyperMapp3rUnetModel3D( c( inputImageSize, 2 ) )
-  weightsFileName <- getPretrainedNetwork( "hyperMapp3r",
-    antsxnetCacheDirectory = antsxnetCacheDirectory )
+  weightsFileName <- getPretrainedNetwork( "hyperMapp3r" )
   model$load_weights( weightsFileName )
 
   if( verbose )
@@ -408,16 +395,12 @@ hyperMapp3rSegmentation <- function( t1, flair, doPreprocessing = TRUE,
 #' @param whiteMatterMask input white matter mask for patch extraction.  If None,
 #' calculated using deepAtropos (labels 3 and 4).
 #' @param useCombinedModel Original or combined.
-#' @param predictionBatchSize Control memory usage for prediction.  More consequential 
+#' @param predictionBatchSize Control memory usage for prediction.  More consequential
 #' for GPU-usage.
-#' @param patchStrideLength  3-D vector or int.   Dictates the stride length for 
+#' @param patchStrideLength  3-D vector or int.   Dictates the stride length for
 #' accumulating predicting patches.
 #' @param doPreprocessing perform n4 bias correction, intensity truncation, brain
 #' extraction.
-#' @param antsxnetCacheDirectory destination directory for storing the downloaded
-#' template and model weights.  Since these can be resused, if
-#' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-#' inst/extdata/ subfolder of the ANTsRNet package.
 #' @param verbose print progress.
 #' @return probabilistic image.
 #' @author Tustison NJ
@@ -431,10 +414,10 @@ hyperMapp3rSegmentation <- function( t1, flair, doPreprocessing = TRUE,
 #' results <- wmhSegmentation( t1, flair )
 #' }
 #' @export
-wmhSegmentation <- function( flair, t1, whiteMatterMask = NULL, 
+wmhSegmentation <- function( flair, t1, whiteMatterMask = NULL,
   useCombinedModel = TRUE, predictionBatchSize = 16,
   patchStrideLength = 32,
-  doPreprocessing = TRUE, antsxnetCacheDirectory = NULL, verbose = FALSE )
+  doPreprocessing = TRUE, verbose = FALSE )
 {
 
   if( any( dim( t1 ) < c( 64, 64, 64 ) ) )
@@ -472,7 +455,6 @@ wmhSegmentation <- function( flair, t1, whiteMatterMask = NULL,
         brainExtractionModality = "t1",
         doBiasCorrection = TRUE,
         doDenoising = FALSE,
-        antsxnetCacheDirectory = antsxnetCacheDirectory,
         verbose = verbose )
     brainMask <- thresholdImage( t1Preprocessing$brainMask, 0.5, 1, 1, 0 )
     t1Preprocessed <- t1Preprocessing$preprocessedImage * brainMask
@@ -482,7 +464,6 @@ wmhSegmentation <- function( flair, t1, whiteMatterMask = NULL,
         brainExtractionModality = NULL,
         doBiasCorrection = TRUE,
         doDenoising = FALSE,
-        antsxnetCacheDirectory = antsxnetCacheDirectory,
         verbose = verbose )
     flairPreprocessed <- flairPreprocessing$preprocessedImage * brainMask
     } else {
@@ -520,11 +501,9 @@ wmhSegmentation <- function( flair, t1, whiteMatterMask = NULL,
   weightsFileName <- ""
   if( useCombinedModel )
     {
-    weightsFileName <- getPretrainedNetwork( "antsxnetWmhOr",
-      antsxnetCacheDirectory = antsxnetCacheDirectory )
+    weightsFileName <- getPretrainedNetwork( "antsxnetWmhOr" )
     } else {
-    weightsFileName <- getPretrainedNetwork( "antsxnetWmh",
-      antsxnetCacheDirectory = antsxnetCacheDirectory )
+    weightsFileName <- getPretrainedNetwork( "antsxnetWmh" )
     }
   load_model_weights_hdf5( model, filepath = weightsFileName )
 
@@ -555,7 +534,7 @@ wmhSegmentation <- function( flair, t1, whiteMatterMask = NULL,
                                        returnAsArray = TRUE )
 
   totalNumberOfPatches <- dim( t1Patches )[1]
- 
+
 
   ################################
   #
@@ -567,7 +546,7 @@ wmhSegmentation <- function( flair, t1, whiteMatterMask = NULL,
   residualNumberOfPatches <- totalNumberOfPatches - numberOfBatches * predictionBatchSize
   if( residualNumberOfPatches > 0 )
     {
-    numberOfBatches <- numberOfBatches + 1 
+    numberOfBatches <- numberOfBatches + 1
     }
 
   if( verbose )
@@ -576,17 +555,17 @@ wmhSegmentation <- function( flair, t1, whiteMatterMask = NULL,
     message( "Prediction batch size: ", predictionBatchSize )
     message( "Number of batches: ", numberOfFullBatches )
     }
- 
+
   prediction <- array( data = 0, dim = c( totalNumberOfPatches, patchSize, 1 ) )
   for( b in seq.int( numberOfBatches ) )
     {
     batchX <- NULL
     if( b < numberOfFullBatches || residualNumberOfPatches == 0 )
       {
-      batchX <- array( data = 0, dim = c( predictionBatchSize, patchSize, channelSize ) ) 
+      batchX <- array( data = 0, dim = c( predictionBatchSize, patchSize, channelSize ) )
       } else {
-      
-      batchX <- array( data = 0, dim = c( residualNumberOfPatches, patchSize, channelSize ) ) 
+
+      batchX <- array( data = 0, dim = c( residualNumberOfPatches, patchSize, channelSize ) )
       }
 
     indices <- ( ( b - 1 ) * predictionBatchSize + 1):( ( b - 1 ) * predictionBatchSize + dim( batchX )[1] )
@@ -598,7 +577,7 @@ wmhSegmentation <- function( flair, t1, whiteMatterMask = NULL,
       message( "Predicting batch ", b, " of ", numberOfBatches )
       }
     prediction[indices,,,,] <- model %>% predict( batchX, verbose = verbose )
-    }  
+    }
 
   wmhProbabilityImage <- reconstructImageFromPatches( drop( prediction ),
                                                       strideLength = strideLength,
@@ -615,18 +594,14 @@ wmhSegmentation <- function( flair, t1, whiteMatterMask = NULL,
 #'
 #' @param t1 input 3-D T1-weighted brain image.
 #' @param flair (Optional) input 3-D FLAIR brain image (aligned to T1 image).
-#' @param whichModel integer or string. Several models were trained for the 
-#' case of T1-only or T1/FLAIR image pairs.  One can use a specific single 
+#' @param whichModel integer or string. Several models were trained for the
+#' case of T1-only or T1/FLAIR image pairs.  One can use a specific single
 #' trained model or the average of the entire ensemble.  I.e., options are:
 #'            * For T1-only:  0, 1, 2, 3, 4, 5.
 #'            * For T1/FLAIR: 0, 1, 2, 3, 4.
 #'            * Or "all" for using the entire ensemble.
 #' @param doPreprocessing perform n4 bias correction, intensity truncation, brain
 #' extraction.
-#' @param antsxnetCacheDirectory destination directory for storing the downloaded
-#' template and model weights.  Since these can be resused, if
-#' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-#' inst/extdata/ subfolder of the ANTsRNet package.
 #' @param verbose print progress.
 #' @return probabilistic image.
 #' @author Tustison NJ
@@ -641,8 +616,7 @@ wmhSegmentation <- function( flair, t1, whiteMatterMask = NULL,
 #' }
 #' @export
 shivaPvsSegmentation <- function( t1, flair = NULL,
-  whichModel = "all", doPreprocessing = TRUE, 
-  antsxnetCacheDirectory = NULL, verbose = FALSE )
+  whichModel = "all", doPreprocessing = TRUE, verbose = FALSE )
 {
   ################################
   #
@@ -666,20 +640,18 @@ shivaPvsSegmentation <- function( t1, flair = NULL,
         doBiasCorrection = TRUE,
         doDenoising = FALSE,
         intensityNormalizationType = "01",
-        antsxnetCacheDirectory = antsxnetCacheDirectory,
         verbose = verbose )
     brainMask <- thresholdImage( t1Preprocessing$brainMask, 0.5, 1, 1, 0 )
     t1Preprocessed <- t1Preprocessing$preprocessedImage * brainMask
-    
+
     if( ! is.null( flair ) )
-      { 
+      {
       flairPreprocessing <- preprocessBrainImage( flair,
           truncateIntensity = c( 0.0, 0.99 ),
           brainExtractionModality = NULL,
           doBiasCorrection = TRUE,
           doDenoising = FALSE,
           intensityNormalizationType = "01",
-          antsxnetCacheDirectory = antsxnetCacheDirectory,
           verbose = verbose )
       flairPreprocessed <- flairPreprocessing$preprocessedImage * brainMask
       }
@@ -692,7 +664,7 @@ shivaPvsSegmentation <- function( t1, flair = NULL,
     brainMask <- thresholdImage( t1, 0, 0, 0, 1 )
     }
 
-  imageShape <- c( 160, 214, 176 )  
+  imageShape <- c( 160, 214, 176 )
   onesArray <- array( data = 1, dim = imageShape )
   reorientTemplate <- as.antsImage( onesArray, origin = c( 0, 0, 0 ),
                                     spacing = c( 1, 1, 1 ),
@@ -704,12 +676,12 @@ shivaPvsSegmentation <- function( t1, flair = NULL,
     center = round( centerOfMassTemplate ),
     translation = round( centerOfMassImage - centerOfMassTemplate ) )
 
-  t1Preprocessed <- applyAntsrTransformToImage( xfrm, t1Preprocessed, 
-                                                reorientTemplate ) 
+  t1Preprocessed <- applyAntsrTransformToImage( xfrm, t1Preprocessed,
+                                                reorientTemplate )
   if( ! is.null( flair ) )
     {
-    flairPreprocessed <- applyAntsrTransformToImage( xfrm, flairPreprocessed, 
-                                                     reorientTemplate ) 
+    flairPreprocessed <- applyAntsrTransformToImage( xfrm, flairPreprocessed,
+                                                     reorientTemplate )
     }
 
   ################################
@@ -724,7 +696,7 @@ shivaPvsSegmentation <- function( t1, flair = NULL,
     {
     batchX <- array( data = 0, dim = c( 1, imageShape, 1 ) )
     batchX[1,,,,1] <- as.array( t1Preprocessed )
-    
+
     modelIds <- c( whichModel )
     if( whichModel == "all" )
       {
@@ -733,8 +705,7 @@ shivaPvsSegmentation <- function( t1, flair = NULL,
 
     for( i in seq.int( length( modelIds ) ) )
       {
-      modelWeightsFile <- getPretrainedNetwork( paste0( "pvs_shiva_t1_", modelIds[i] ),
-                                                antsxnetCacheDirectory = antsxnetCacheDirectory ) 
+      modelWeightsFile <- getPretrainedNetwork( paste0( "pvs_shiva_t1_", modelIds[i] ) )
       if( verbose )
         {
         cat( "Loading", modelWeightsFile, "\n" )
@@ -753,7 +724,7 @@ shivaPvsSegmentation <- function( t1, flair = NULL,
     batchX <- array( data = 0, dim = c( 1, imageShape, 2 ) )
     batchX[1,,,,1] <- as.array( t1Preprocessed )
     batchX[1,,,,2] <- as.array( flairPreprocessed )
-    
+
     modelIds <- c( whichModel )
     if( whichModel == "all" )
       {
@@ -762,8 +733,7 @@ shivaPvsSegmentation <- function( t1, flair = NULL,
 
     for( i in seq.int( length( modelIds ) ) )
       {
-      modelWeightsFile <- getPretrainedNetwork( paste0( "pvs_shiva_t1_flair_", modelIds[i] ),
-                                                antsxnetCacheDirectory = antsxnetCacheDirectory ) 
+      modelWeightsFile <- getPretrainedNetwork( paste0( "pvs_shiva_t1_flair_", modelIds[i] ) )
       if( verbose )
         {
         cat( "Loading", modelWeightsFile, "\n" )
@@ -783,7 +753,7 @@ shivaPvsSegmentation <- function( t1, flair = NULL,
   pvs <- as.antsImage( drop( batchY ), origin = antsGetOrigin( reorientTemplate ),
                        spacing = antsGetSpacing( reorientTemplate ),
                        direction = antsGetDirection( reorientTemplate ) )
-  pvs <- applyAntsrTransformToImage( invertAntsrTransform( xfrm ), pvs, t1 )     
+  pvs <- applyAntsrTransformToImage( invertAntsrTransform( xfrm ), pvs, t1 )
   return( pvs )
 }
 
@@ -796,18 +766,14 @@ shivaPvsSegmentation <- function( t1, flair = NULL,
 #'
 #' @param flair input 3-D FLAIR brain image.
 #' @param t1 (Optional) input 3-D T1-weighted brain image (aligned to FLAIR image).
-#' @param whichModel integer or string. Several models were trained for the 
-#' case of T1-only or T1/FLAIR image pairs.  One can use a specific single 
+#' @param whichModel integer or string. Several models were trained for the
+#' case of T1-only or T1/FLAIR image pairs.  One can use a specific single
 #' trained model or the average of the entire ensemble.  I.e., options are:
 #'            * For T1-only:  0, 1, 2, 3, 4, 5.
 #'            * For T1/FLAIR: 0, 1, 2, 3, 4.
 #'            * Or "all" for using the entire ensemble.
 #' @param doPreprocessing perform n4 bias correction, intensity truncation, brain
 #' extraction.
-#' @param antsxnetCacheDirectory destination directory for storing the downloaded
-#' template and model weights.  Since these can be resused, if
-#' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-#' inst/extdata/ subfolder of the ANTsRNet package.
 #' @param verbose print progress.
 #' @return probabilistic image.
 #' @author Tustison NJ
@@ -822,8 +788,8 @@ shivaPvsSegmentation <- function( t1, flair = NULL,
 #' }
 #' @export
 shivaWmhSegmentation <- function( flair, t1 = NULL,
-  whichModel = "all", doPreprocessing = TRUE, 
-  antsxnetCacheDirectory = NULL, verbose = FALSE )
+  whichModel = "all", doPreprocessing = TRUE,
+  verbose = FALSE )
 {
   ################################
   #
@@ -847,22 +813,20 @@ shivaWmhSegmentation <- function( flair, t1 = NULL,
         doBiasCorrection = TRUE,
         doDenoising = FALSE,
         intensityNormalizationType = "01",
-        antsxnetCacheDirectory = antsxnetCacheDirectory,
         verbose = verbose )
     brainMask <- thresholdImage( flairPreprocessing$brainMask, 0.5, 1, 1, 0 )
     flairPreprocessed <- flairPreprocessing$preprocessedImage * brainMask
 
     if( ! is.null( t1 ) )
-      { 
+      {
       t1Preprocessing <- preprocessBrainImage( t1,
           truncateIntensity = c( 0.0, 0.99 ),
           brainExtractionModality = NULL,
           doBiasCorrection = TRUE,
           doDenoising = FALSE,
           intensityNormalizationType = "01",
-          antsxnetCacheDirectory = antsxnetCacheDirectory,
           verbose = verbose )
-      t1Preprocessed <- t1Preprocessing$preprocessedImage * brainMask      
+      t1Preprocessed <- t1Preprocessing$preprocessedImage * brainMask
       }
     } else {
     flairPreprocessed <- antsImageClone( flair )
@@ -873,7 +837,7 @@ shivaWmhSegmentation <- function( flair, t1 = NULL,
     brainMask <- thresholdImage( flair, 0, 0, 0, 1 )
     }
 
-  imageShape <- c( 160, 214, 176 )  
+  imageShape <- c( 160, 214, 176 )
   onesArray <- array( data = 1, dim = imageShape )
   reorientTemplate <- as.antsImage( onesArray, origin = c( 0, 0, 0 ),
                                     spacing = c( 1, 1, 1 ),
@@ -885,12 +849,12 @@ shivaWmhSegmentation <- function( flair, t1 = NULL,
     center = round( centerOfMassTemplate ),
     translation = round( centerOfMassImage - centerOfMassTemplate ) )
 
-  flairPreprocessed <- applyAntsrTransformToImage( xfrm, flairPreprocessed, 
-                                                   reorientTemplate ) 
+  flairPreprocessed <- applyAntsrTransformToImage( xfrm, flairPreprocessed,
+                                                   reorientTemplate )
   if( ! is.null( t1 ) )
     {
-    t1Preprocessed <- applyAntsrTransformToImage( xfrm, t1Preprocessed, 
-                                                  reorientTemplate ) 
+    t1Preprocessed <- applyAntsrTransformToImage( xfrm, t1Preprocessed,
+                                                  reorientTemplate )
     }
 
   ################################
@@ -905,7 +869,7 @@ shivaWmhSegmentation <- function( flair, t1 = NULL,
     {
     batchX <- array( data = 0, dim = c( 1, imageShape, 1 ) )
     batchX[1,,,,1] <- as.array( flairPreprocessed )
-    
+
     modelIds <- c( whichModel )
     if( whichModel == "all" )
       {
@@ -914,8 +878,7 @@ shivaWmhSegmentation <- function( flair, t1 = NULL,
 
     for( i in seq.int( length( modelIds ) ) )
       {
-      modelWeightsFile <- getPretrainedNetwork( paste0( "wmh_shiva_flair_", modelIds[i] ),
-                                                antsxnetCacheDirectory = antsxnetCacheDirectory ) 
+      modelWeightsFile <- getPretrainedNetwork( paste0( "wmh_shiva_flair_", modelIds[i] ) )
       if( verbose )
         {
         cat( "Loading", modelWeightsFile, "\n" )
@@ -934,7 +897,7 @@ shivaWmhSegmentation <- function( flair, t1 = NULL,
     batchX <- array( data = 0, dim = c( 1, imageShape, 2 ) )
     batchX[1,,,,1] <- as.array( t1Preprocessed )
     batchX[1,,,,2] <- as.array( flairPreprocessed )
-    
+
     modelIds <- c( whichModel )
     if( whichModel == "all" )
       {
@@ -943,8 +906,7 @@ shivaWmhSegmentation <- function( flair, t1 = NULL,
 
     for( i in seq.int( length( modelIds ) ) )
       {
-      modelWeightsFile <- getPretrainedNetwork( paste0( "wmh_shiva_t1_flair_", modelIds[i] ),
-                                                antsxnetCacheDirectory = antsxnetCacheDirectory ) 
+      modelWeightsFile <- getPretrainedNetwork( paste0( "wmh_shiva_t1_flair_", modelIds[i] ) )
       if( verbose )
         {
         cat( "Loading", modelWeightsFile, "\n" )
@@ -964,6 +926,6 @@ shivaWmhSegmentation <- function( flair, t1 = NULL,
   wmh <- as.antsImage( drop( batchY ), origin = antsGetOrigin( reorientTemplate ),
                        spacing = antsGetSpacing( reorientTemplate ),
                        direction = antsGetDirection( reorientTemplate ) )
-  wmh <- applyAntsrTransformToImage( invertAntsrTransform( xfrm ), wmh, flair ) 
+  wmh <- applyAntsrTransformToImage( invertAntsrTransform( xfrm ), wmh, flair )
   return( wmh )
 }

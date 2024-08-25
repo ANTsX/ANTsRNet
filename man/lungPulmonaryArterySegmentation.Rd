@@ -9,7 +9,6 @@ lungPulmonaryArterySegmentation(
   lungMask = NULL,
   predictionBatchSize = 16,
   patchStrideLength = 32,
-  antsxnetCacheDirectory = NULL,
   verbose = FALSE
 )
 }
@@ -24,11 +23,6 @@ for GPU-usage.}
 
 \item{patchStrideLength}{3-D vector or int.   Dictates the stride length for
 accumulating predicting patches.}
-
-\item{antsxnetCacheDirectory}{destination directory for storing the downloaded
-template and model weights.  Since these can be resused, if
-\code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-inst/extdata/ subfolder of the ANTsRNet package.}
 
 \item{verbose}{print progress.}
 }

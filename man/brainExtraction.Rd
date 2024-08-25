@@ -9,7 +9,6 @@ brainExtraction(
   modality = c("t1", "t1.v0", "t1.v1", "t1nobrainer", "t1combined", "t2", "t2.v0",
     "t2star", "flair", "flair.v0", "bold", "bold.v0", "fa", "fa.v0", "mra", "t1t2infant",
     "t1infant", "t2infant"),
-  antsxnetCacheDirectory = NULL,
   verbose = FALSE
 )
 }
@@ -30,11 +29,6 @@ brainExtraction(
 \item{"t1infant": }{T1-w infant MRI h/t Martin Styner.}
 \item{"t2infant": }{T2-w infant MRI h/t Martin Styner.}
 }}
-
-\item{antsxnetCacheDirectory}{destination directory for storing the downloaded
-template and model weights.  Since these can be resused, if
-\code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-subdirectory ~/.keras/ANTsXNet/.}
 
 \item{verbose}{print progress.}
 }

@@ -16,7 +16,6 @@ preprocessBrainImage(
   intensityMatchingType = NULL,
   referenceImage = NULL,
   intensityNormalizationType = NULL,
-  antsxnetCacheDirectory = NULL,
   verbose = TRUE
 )
 }
@@ -51,11 +50,6 @@ performed if \code{!is.null(referenceImage)}.}
 \item{intensityNormalizationType}{Either rescale the intensities to \link{0,1}
 (i.e., "01") or zero-mean, unit variance (i.e., "0mean").  If \code{NULL}
 normalization is not performed.}
-
-\item{antsxnetCacheDirectory}{destination directory for storing the downloaded
-template and model weights.  Since these can be resused, if
-\code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-subdirectory ~/.keras/ANTsXNet/.}
 
 \item{verbose}{print progress to the screen.}
 }

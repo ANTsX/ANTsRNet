@@ -205,10 +205,6 @@
 #' @param returnProbabilityImages whether to return the two sets of probability images
 #' for the inner and outer labels.
 #' @param doLobarParcellation perform lobar parcellation (also divided by hemisphere).
-#' @param antsxnetCacheDirectory destination directory for storing the downloaded
-#' template and model weights.  Since these can be resused, if
-#' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-#' subdirectory ~/.keras/ANTsXNet/.
 #' @param verbose print progress.
 #' @return list consisting of the segmentation image and probability images for
 #' each label.
@@ -224,7 +220,7 @@
 #' @export
 desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
   returnProbabilityImages = FALSE, doLobarParcellation = FALSE,
-  antsxnetCacheDirectory = NULL, verbose = FALSE )
+  verbose = FALSE )
 {
 
   if( t1@dimension != 3 )
@@ -248,7 +244,6 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
         templateTransformType = "antsRegistrationSyNQuickRepro[a]",
         doBiasCorrection = TRUE,
         doDenoising = TRUE,
-        antsxnetCacheDirectory = antsxnetCacheDirectory,
         verbose = verbose )
     t1Preprocessed <- t1Preprocessing$preprocessedImage * t1Preprocessing$brainMask
     }
@@ -263,8 +258,7 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
     {
     cat( "DesikanKillianyTourville:  retrieving label spatial priors.\n" )
     }
-  priorsFileNamePath <- getANTsXNetData( "priorDktLabels",
-    antsxnetCacheDirectory = antsxnetCacheDirectory )
+  priorsFileNamePath <- getANTsXNetData( "priorDktLabels" )
   priorsImageList <- splitNDImageToList( antsImageRead( priorsFileNamePath ) )
 
   ################################
@@ -287,8 +281,7 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
     {
     cat( "DesikanKillianyTourville:  retrieving model weights.\n" )
     }
-  weightsFileNamePath <- getPretrainedNetwork( "dktOuterWithSpatialPriors",
-    antsxnetCacheDirectory = antsxnetCacheDirectory )
+  weightsFileNamePath <- getPretrainedNetwork( "dktOuterWithSpatialPriors" )
   load_model_weights_hdf5( unetModel, filepath = weightsFileNamePath )
 
   ################################
@@ -362,8 +355,7 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
     {
     cat( "DesikanKillianyTourville:  retrieving inner model weights.\n" )
     }
-  weightsFileName <- getPretrainedNetwork( "dktInner",
-    antsxnetCacheDirectory = antsxnetCacheDirectory )
+  weightsFileName <- getPretrainedNetwork( "dktInner" )
   load_model_weights_hdf5( unetModel, filepath = weightsFileName )
 
   ################################
@@ -467,8 +459,7 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
       }
     dktLobes[dktLobes > length( lobarLabels )] <- 0
 
-    sixTissue <- deepAtropos( t1Preprocessed, doPreprocessing = FALSE,
-      antsxnetCacheDirectory = antsxnetCacheDirectory, verbose = verbose )
+    sixTissue <- deepAtropos( t1Preprocessed, doPreprocessing = FALSE, verbose = verbose )
     atroposSeg <- sixTissue$segmentationImage
     if( doPreprocessing )
       {

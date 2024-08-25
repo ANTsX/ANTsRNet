@@ -4,13 +4,7 @@
 \alias{sysuMediaWmhSegmentation}
 \title{White matter hyperintensity segmentation}
 \usage{
-sysuMediaWmhSegmentation(
-  flair,
-  t1 = NULL,
-  useEnsemble = TRUE,
-  antsxnetCacheDirectory = NULL,
-  verbose = FALSE
-)
+sysuMediaWmhSegmentation(flair, t1 = NULL, useEnsemble = TRUE, verbose = FALSE)
 }
 \arguments{
 \item{flair}{input 3-D FLAIR brain image.}
@@ -19,11 +13,6 @@ sysuMediaWmhSegmentation(
 the flair, if specified).}
 
 \item{useEnsemble}{boolean to check whether to use all 3 sets of weights.}
-
-\item{antsxnetCacheDirectory}{destination directory for storing the downloaded
-template and model weights.  Since these can be resused, if
-\code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-inst/extdata/ subfolder of the ANTsRNet package.}
 
 \item{verbose}{print progress.}
 }

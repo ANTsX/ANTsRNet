@@ -8,7 +8,6 @@ deepAtropos(
   t1,
   doPreprocessing = TRUE,
   useSpatialPriors = 1,
-  antsxnetCacheDirectory = NULL,
   verbose = FALSE,
   debug = FALSE
 )
@@ -21,11 +20,6 @@ deepAtropos(
 \item{useSpatialPriors}{Use MNI spatial tissue priors (0 or 1).  Currently,
 only '0' (no priors) and '1' (cerebellar prior only) are the only two options.
 Default is 1.}
-
-\item{antsxnetCacheDirectory}{destination directory for storing the downloaded
-template and model weights.  Since these can be resused, if
-\code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-inst/extdata/ subfolder of the ANTsRNet package.}
 
 \item{verbose}{print progress.}
 

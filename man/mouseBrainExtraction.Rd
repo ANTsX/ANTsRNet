@@ -9,7 +9,6 @@ mouseBrainExtraction(
   modality = c("t2", "ex5coronal", "ex5sagittal"),
   returnIsotropicOutput = FALSE,
   whichAxis = 2,
-  antsxnetCacheDirectory = NULL,
   verbose = FALSE
 )
 }
@@ -28,11 +27,6 @@ function specific to the mouse brain.  Setting this to true, the output
 images are returned isotropically resampled.}
 
 \item{whichAxis}{Specify direction for ex5 modalities..}
-
-\item{antsxnetCacheDirectory}{destination directory for storing the downloaded
-template and model weights.  Since these can be resused, if
-\code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-subdirectory ~/.keras/ANTsXNet/.}
 
 \item{verbose}{print progress.}
 }

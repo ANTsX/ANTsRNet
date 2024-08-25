@@ -4,13 +4,7 @@
 \alias{elBicho}
 \title{Functional lung segmentation.}
 \usage{
-elBicho(
-  ventilationImage,
-  mask,
-  useCoarseSlicesOnly = TRUE,
-  antsxnetCacheDirectory = NULL,
-  verbose = FALSE
-)
+elBicho(ventilationImage, mask, useCoarseSlicesOnly = TRUE, verbose = FALSE)
 }
 \arguments{
 \item{ventilationImage}{input ventilation image}
@@ -20,11 +14,6 @@ elBicho(
 \item{useCoarseSlicesOnly}{if \code{TRUE}, apply network only in the
 dimension of greatest slice thickness.  If \code{FALSE}, apply to all
 dimensions and average the results.}
-
-\item{antsxnetCacheDirectory}{destination directory for storing the downloaded
-template and model weights.  Since these can be resused, if
-\code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-inst/extdata/ subfolder of the ANTsRNet package.}
 
 \item{verbose}{print progress.}
 }

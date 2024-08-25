@@ -1,6 +1,6 @@
 #' Brain tumor probabilistic segmentation
 #'
-#' Perform brain tumor probabilistic segmentation given pre-aligned 
+#' Perform brain tumor probabilistic segmentation given pre-aligned
 #' FLAIR, T1, T1 contrast, and T2 images.  Note that the underlying
 #' model is 3-D and requires images to be of > 64 voxels in each
 #' dimension.
@@ -9,16 +9,12 @@
 #' @param t1 input 3-D T1-weighted brain image (not skull-stripped).
 #' @param t1Contrast input 3-D T1-weighted contrast brain image (not skull-stripped).
 #' @param t2 input 3-D T2-weighted brain image (not skull-stripped).
-#' @param predictionBatchSize Control memory usage for prediction.  More consequential 
+#' @param predictionBatchSize Control memory usage for prediction.  More consequential
 #' for GPU-usage.
-#' @param patchStrideLength  3-D vector or int.   Dictates the stride length for 
+#' @param patchStrideLength  3-D vector or int.   Dictates the stride length for
 #' accumulating predicting patches.
 #' @param doPreprocessing perform n4 bias correction, intensity truncation, brain
 #' extraction.
-#' @param antsxnetCacheDirectory destination directory for storing the downloaded
-#' template and model weights.  Since these can be resused, if
-#' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-#' inst/extdata/ subfolder of the ANTsRNet package.
 #' @param verbose print progress.
 #' @return Brain tumor segmentation probability images (4 tumor tissue types).
 #' @author Tustison NJ
@@ -31,9 +27,9 @@
 #' flair <- antsImageRead( "flair.nii.gz" )
 #' }
 #' @export
-brainTumorSegmentation <- function( flair, t1, t1Contrast, t2, 
+brainTumorSegmentation <- function( flair, t1, t1Contrast, t2,
   predictionBatchSize = 16, patchStrideLength = 32,
-  doPreprocessing = TRUE, antsxnetCacheDirectory = NULL, verbose = FALSE )
+  doPreprocessing = TRUE, verbose = FALSE )
 {
 
   if( any( dim( t1 ) < c( 64, 64, 64 ) ) )
@@ -59,14 +55,13 @@ brainTumorSegmentation <- function( flair, t1, t1Contrast, t2,
       message( "Preprocess FLAIR, T1, T1 contrast, and T2 images.\n" )
       }
 
-    doBiasCorrection <- FALSE 
+    doBiasCorrection <- FALSE
 
     t1Preprocessing <- preprocessBrainImage( t1,
         truncateIntensity = NULL,
         brainExtractionModality = "t1",
         doBiasCorrection = doBiasCorrection,
         doDenoising = FALSE,
-        antsxnetCacheDirectory = antsxnetCacheDirectory,
         verbose = verbose )
     brainMask <- thresholdImage( t1Preprocessing$brainMask, 0.5, 1, 1, 0 )
     t1Preprocessed <- t1Preprocessing$preprocessedImage * brainMask
@@ -76,7 +71,6 @@ brainTumorSegmentation <- function( flair, t1, t1Contrast, t2,
         brainExtractionModality = NULL,
         doBiasCorrection = doBiasCorrection,
         doDenoising = FALSE,
-        antsxnetCacheDirectory = antsxnetCacheDirectory,
         verbose = verbose )
     flairPreprocessed <- flairPreprocessing$preprocessedImage * brainMask
 
@@ -85,7 +79,6 @@ brainTumorSegmentation <- function( flair, t1, t1Contrast, t2,
         brainExtractionModality = NULL,
         doBiasCorrection = doBiasCorrection,
         doDenoising = FALSE,
-        antsxnetCacheDirectory = antsxnetCacheDirectory,
         verbose = verbose )
     t1ContrastPreprocessed <- t1ContrastPreprocessing$preprocessedImage * brainMask
 
@@ -94,7 +87,6 @@ brainTumorSegmentation <- function( flair, t1, t1Contrast, t2,
         brainExtractionModality = NULL,
         doBiasCorrection = doBiasCorrection,
         doDenoising = FALSE,
-        antsxnetCacheDirectory = antsxnetCacheDirectory,
         verbose = verbose )
     t2Preprocessed <- t2Preprocessing$preprocessedImage * brainMask
 
@@ -115,7 +107,7 @@ brainTumorSegmentation <- function( flair, t1, t1Contrast, t2,
     {
     images[[i]] <- ( ( images[[i]] - min( images[[i]][brainMask > 0] ) ) /
                      ( max( images[[i]][brainMask > 0] ) - min( images[[i]][brainMask > 0] ) ) )
-    }            
+    }
 
     ################################################################################################
     #
@@ -144,7 +136,7 @@ brainTumorSegmentation <- function( flair, t1, t1Contrast, t2,
 
   model <- createSysuMediaUnetModel3D( c( patchSize, channelSize ),
                                        numberOfFilters = numberOfFilters )
-  weightsFileName <- getPretrainedNetwork( "bratsStage1", antsxnetCacheDirectory = antsxnetCacheDirectory )
+  weightsFileName <- getPretrainedNetwork( "bratsStage1" )
   load_model_weights_hdf5( model, filepath = weightsFileName )
 
   ################################
@@ -170,7 +162,7 @@ brainTumorSegmentation <- function( flair, t1, t1Contrast, t2,
                                               returnAsArray = TRUE )
     }
   totalNumberOfPatches <- dim( imagePatches[[1]] )[1]
- 
+
   ################################
   #
   # Do prediction and then restock into the image
@@ -181,7 +173,7 @@ brainTumorSegmentation <- function( flair, t1, t1Contrast, t2,
   residualNumberOfPatches <- totalNumberOfPatches - numberOfBatches * predictionBatchSize
   if( residualNumberOfPatches > 0 )
     {
-    numberOfBatches <- numberOfBatches + 1 
+    numberOfBatches <- numberOfBatches + 1
     }
 
   if( verbose )
@@ -190,17 +182,17 @@ brainTumorSegmentation <- function( flair, t1, t1Contrast, t2,
     message( "  Prediction batch size: ", predictionBatchSize )
     message( "  Number of batches: ", numberOfBatches )
     }
- 
+
   prediction <- array( data = 0, dim = c( totalNumberOfPatches, patchSize, 1 ) )
   for( b in seq.int( numberOfBatches ) )
     {
     batchX <- NULL
     if( b < numberOfBatches || residualNumberOfPatches == 0 )
       {
-      batchX <- array( data = 0, dim = c( predictionBatchSize, patchSize, channelSize ) ) 
+      batchX <- array( data = 0, dim = c( predictionBatchSize, patchSize, channelSize ) )
       } else {
-      
-      batchX <- array( data = 0, dim = c( residualNumberOfPatches, patchSize, channelSize ) ) 
+
+      batchX <- array( data = 0, dim = c( residualNumberOfPatches, patchSize, channelSize ) )
       }
 
     indices <- ( ( b - 1 ) * predictionBatchSize + 1):( ( b - 1 ) * predictionBatchSize + dim( batchX )[1] )
@@ -214,7 +206,7 @@ brainTumorSegmentation <- function( flair, t1, t1Contrast, t2,
       message( "  Predicting batch ", b, " of ", numberOfBatches )
       }
     prediction[indices,,,,] <- model %>% predict( batchX, verbose = verbose )
-    }  
+    }
 
   if( verbose )
     {
@@ -255,7 +247,7 @@ brainTumorSegmentation <- function( flair, t1, t1Contrast, t2,
       convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
       dropoutRate = 0.0, weightDecay = 0 )
 
-  weightsFileName <- getPretrainedNetwork( "bratsStage2", antsxnetCacheDirectory = antsxnetCacheDirectory )
+  weightsFileName <- getPretrainedNetwork( "bratsStage2" )
   load_model_weights_hdf5( model, filepath = weightsFileName )
 
   ################################
@@ -269,7 +261,7 @@ brainTumorSegmentation <- function( flair, t1, t1Contrast, t2,
     message( "Stage 2:  Extract patches." )
     }
 
-  images[[5]] <- tumorMask 
+  images[[5]] <- tumorMask
 
   imagePatches <- list()
   for( i in seq.int( length( images ) ) )
@@ -283,7 +275,7 @@ brainTumorSegmentation <- function( flair, t1, t1Contrast, t2,
                                               returnAsArray = TRUE )
     }
   totalNumberOfPatches <- dim( imagePatches[[1]] )[1]
- 
+
   ################################
   #
   # Do prediction and then restock into the image
@@ -294,7 +286,7 @@ brainTumorSegmentation <- function( flair, t1, t1Contrast, t2,
   residualNumberOfPatches <- totalNumberOfPatches - numberOfBatches * predictionBatchSize
   if( residualNumberOfPatches > 0 )
     {
-    numberOfBatches <- numberOfBatches + 1 
+    numberOfBatches <- numberOfBatches + 1
     }
 
   if( verbose )
@@ -303,17 +295,17 @@ brainTumorSegmentation <- function( flair, t1, t1Contrast, t2,
     message( "  Prediction batch size: ", predictionBatchSize )
     message( "  Number of batches: ", numberOfBatches )
     }
- 
+
   prediction <- array( data = 0, dim = c( totalNumberOfPatches, patchSize, channelSize ) )
   for( b in seq.int( numberOfBatches ) )
     {
     batchX <- NULL
     if( b < numberOfBatches || residualNumberOfPatches == 0 )
       {
-      batchX <- array( data = 0, dim = c( predictionBatchSize, patchSize, channelSize ) ) 
+      batchX <- array( data = 0, dim = c( predictionBatchSize, patchSize, channelSize ) )
       } else {
-      
-      batchX <- array( data = 0, dim = c( residualNumberOfPatches, patchSize, channelSize ) ) 
+
+      batchX <- array( data = 0, dim = c( residualNumberOfPatches, patchSize, channelSize ) )
       }
 
     indices <- ( ( b - 1 ) * predictionBatchSize + 1):( ( b - 1 ) * predictionBatchSize + dim( batchX )[1] )
@@ -327,14 +319,14 @@ brainTumorSegmentation <- function( flair, t1, t1Contrast, t2,
       message( "Predicting batch ", b, " of ", numberOfBatches )
       }
     prediction[indices,,,,] <- model %>% predict( batchX, verbose = verbose )
-    }  
+    }
 
   if( verbose )
     {
     message( "Stage 2:  Predict patches and reconstruct." )
     }
   probabilityImages <- list()
-  for( c in seq.int( numberOfClassificationLabels ) ) 
+  for( c in seq.int( numberOfClassificationLabels ) )
     {
     probabilityImages[[c]] <- reconstructImageFromPatches( drop( prediction[,,,,c] ),
                                                             strideLength = patchStrideLength,

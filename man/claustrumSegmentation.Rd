@@ -8,7 +8,6 @@ claustrumSegmentation(
   t1,
   doPreprocessing = TRUE,
   useEnsemble = TRUE,
-  antsxnetCacheDirectory = NULL,
   verbose = FALSE
 )
 }
@@ -18,11 +17,6 @@ claustrumSegmentation(
 \item{doPreprocessing}{perform n4 bias correction, denoising?}
 
 \item{useEnsemble}{boolean to check whether to use all 3 sets of weights.}
-
-\item{antsxnetCacheDirectory}{destination directory for storing the downloaded
-template and model weights.  Since these can be resused, if
-\code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-inst/extdata/ subfolder of the ANTsRNet package.}
 
 \item{verbose}{print progress.}
 }

@@ -25,10 +25,6 @@
 #' transform the input.
 #' @param sdAffine define the standard deviation of the affine transformation
 #' parameter for the simulations.
-#' @param antsxnetCacheDirectory destination directory for storing the downloaded
-#' template and model weights.  Since these can be resused, if
-#' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-#' inst/extdata/ subfolder of the ANTsRNet package.
 #' @param verbose print progress.
 #' @return predicted age and binned confidence values
 #' @author Tustison NJ
@@ -42,7 +38,7 @@
 #' }
 #' @export
 brainAge <- function( image, doPreprocessing = TRUE,
-  numberOfSimulations = 0, sdAffine = 0.01, antsxnetCacheDirectory = NULL, verbose = TRUE )
+  numberOfSimulations = 0, sdAffine = 0.01, verbose = TRUE )
   {
   preprocessedImage <- image
   if( doPreprocessing )
@@ -54,7 +50,7 @@ brainAge <- function( image, doPreprocessing = TRUE,
       returnBiasField = FALSE, doDenoising = TRUE,
       templateTransformType = "antsRegistrationSyNQuickRepro[a]",
       template = "croppedMni152",
-      antsxnetCacheDirectory = antsxnetCacheDirectory, verbose = verbose )
+      verbose = verbose )
     preprocessedImage <- preprocessing$preprocessedImage * preprocessing$brainMask
     }
   preprocessedImage <- iMath( preprocessedImage, "Normalize" )

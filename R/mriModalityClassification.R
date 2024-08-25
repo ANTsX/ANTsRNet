@@ -13,10 +13,6 @@
 #' }
 #'
 #' @param image raw 3-D MRI whole head image.
-#' @param antsxnetCacheDirectory destination directory for storing the downloaded
-#' template and model weights.  Since these can be resused, if
-#' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-#' subdirectory ~/.keras/ANTsXNet/.
 #' @param verbose print progress.
 #' @return classification data frame
 #' @author Tustison NJ
@@ -29,7 +25,7 @@
 #' }
 #' @export
 mriModalityClassification <- function( image,
-  antsxnetCacheDirectory = NULL, verbose = FALSE )
+  verbose = FALSE )
   {
 
   if( image@dimension != 3 )
@@ -68,8 +64,7 @@ mriModalityClassification <- function( image,
   #
   ################################
 
-  weightsFileName <- getPretrainedNetwork( "mriModalityClassification",
-                                           antsxnetCacheDirectory = antsxnetCacheDirectory )
+  weightsFileName <- getPretrainedNetwork( "mriModalityClassification" )
 
   modalityTypes <- c( "T1", "T2", "FLAIR", "T2Star", "Mean DWI", "Mean Bold", "ASL Perfusion" )
 

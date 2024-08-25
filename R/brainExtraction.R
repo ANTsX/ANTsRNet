@@ -22,10 +22,6 @@
 #'   \item{"t1infant": }{T1-w infant MRI h/t Martin Styner.}
 #'   \item{"t2infant": }{T2-w infant MRI h/t Martin Styner.}
 #' }
-#' @param antsxnetCacheDirectory destination directory for storing the downloaded
-#' template and model weights.  Since these can be resused, if
-#' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-#' subdirectory ~/.keras/ANTsXNet/.
 #' @param verbose print progress.
 #' @return brain probability mask (ANTsR image)
 #' @author Tustison NJ
@@ -41,8 +37,7 @@
 brainExtraction <- function( image,
   modality = c( "t1", "t1.v0", "t1.v1", "t1nobrainer", "t1combined", "t2", "t2.v0",
                 "t2star", "flair", "flair.v0", "bold", "bold.v0", "fa", "fa.v0", "mra",
-                "t1t2infant", "t1infant", "t2infant" ),
-  antsxnetCacheDirectory = NULL, verbose = FALSE )
+                "t1t2infant", "t1infant", "t2infant" ), verbose = FALSE )
   {
 
   classes <- c( "background", "brain" )
@@ -72,15 +67,14 @@ brainExtraction <- function( image,
       morphologicalRadius <- as.numeric( strsplit( strsplit( modality, "\\[" )[[1]][2], "\\]" )[[1]][1] )
       }
 
-    brainExtraction_t1 <- brainExtraction( image, modality = "t1",
-      antsxnetCacheDirectory = antsxnetCacheDirectory, verbose = verbose )
+    brainExtraction_t1 <- brainExtraction( image, modality = "t1", verbose = verbose )
     brainMask <- thresholdImage( brainExtraction_t1, 0.5, Inf ) %>%
       morphology("close",morphologicalRadius) %>%
       iMath("FillHoles") %>%
       iMath( "GetLargestComponent" )
 
     brainExtraction_t1nobrainer <- brainExtraction( image * iMath( brainMask, "MD", morphologicalRadius ),
-      modality = "t1nobrainer", antsxnetCacheDirectory = antsxnetCacheDirectory, verbose = verbose )
+      modality = "t1nobrainer", verbose = verbose )
     brainExtraction_combined <- iMath( brainExtraction_t1nobrainer * brainMask, "GetLargestComponent" ) %>% iMath( "FillHoles" )
 
     brainExtraction_combined <- brainExtraction_combined + iMath( brainMask, "ME", morphologicalRadius ) + brainMask
@@ -148,15 +142,13 @@ brainExtraction <- function( image,
       {
       cat( "Brain extraction:  retrieving model weights.\n" )
       }
-    weightsFileName <- getPretrainedNetwork( weightsFilePrefix,
-      antsxnetCacheDirectory = antsxnetCacheDirectory )
+    weightsFileName <- getPretrainedNetwork( weightsFilePrefix )
 
     if( verbose )
       {
       cat( "Brain extraction:  retrieving template.\n" )
       }
-    reorientTemplateFileNamePath <- getANTsXNetData( "S_template3",
-      antsxnetCacheDirectory = antsxnetCacheDirectory )
+    reorientTemplateFileNamePath <- getANTsXNetData( "S_template3" )
     reorientTemplate <- antsImageRead( reorientTemplateFileNamePath )
     if( isStandardNetwork && ( modality != "t1.v1" && modality != "mra" ) )
       {
@@ -239,8 +231,7 @@ brainExtraction <- function( image,
       {
       cat( "NoBrainer:  retrieving model weights.\n" )
       }
-    weightsFileName <- getPretrainedNetwork( "brainExtractionNoBrainer",
-      antsxnetCacheDirectory = antsxnetCacheDirectory )
+    weightsFileName <- getPretrainedNetwork( "brainExtractionNoBrainer" )
     model$load_weights( weightsFileName )
 
     if( verbose )

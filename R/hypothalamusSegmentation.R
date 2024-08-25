@@ -9,10 +9,6 @@
 #'     \url{https://github.com/BBillot/hypothalamus_seg}
 #'
 #' @param t1 input 3-D T1-weighted brain image.
-#' @param antsxnetCacheDirectory destination directory for storing the downloaded
-#' template and model weights.  Since these can be resused, if
-#' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-#' inst/extdata/ subfolder of the ANTsRNet package.
 #' @param verbose print progress.
 #' @return hypothalamic subunit segmentation and probability images
 #'    \itemize{
@@ -37,8 +33,7 @@
 #' hypo <- hypothalamusSegmentation( image )
 #' }
 #' @export
-hypothalamusSegmentation <- function( t1,
-  antsxnetCacheDirectory = NULL, verbose = FALSE )
+hypothalamusSegmentation <- function( t1, verbose = FALSE )
 {
 
   if( t1@dimension != 3 )
@@ -104,8 +99,7 @@ hypothalamusSegmentation <- function( t1,
 
   unetModel <- createHypothalamusUnetModel3D( dim( t1Warped ) )
 
-  weightsFileName <- getPretrainedNetwork( "hypothalamus",
-    antsxnetCacheDirectory = antsxnetCacheDirectory )
+  weightsFileName <- getPretrainedNetwork( "hypothalamus" )
   unetModel$load_weights( weightsFileName )
 
   ################################

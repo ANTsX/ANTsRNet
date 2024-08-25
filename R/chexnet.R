@@ -1,14 +1,10 @@
 #' Check x-ray lung orientation.
 #'
-#' Check the correctness of image orientation, i.e., flipped left-right, up-down, 
+#' Check the correctness of image orientation, i.e., flipped left-right, up-down,
 #' or both.  If True, attempts to correct before returning corrected image.  Otherwise
 #' it returns NULL.
 #'
 #' @param image input 3-D lung image.
-#' @param antsxnetCacheDirectory destination directory for storing the downloaded
-#' template and model weights.  Since these can be resused, if
-#' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-#' subdirectory ~/.keras/ANTsXNet/.
 #' @param verbose print progress.
 #' @return segmentation and probability images
 #' @author Tustison NJ
@@ -18,15 +14,14 @@
 #' }
 #' @import keras
 #' @export
-checkXrayLungOrientation <- function( image, 
-                                      antsxnetCacheDirectory = NULL,
+checkXrayLungOrientation <- function( image,
                                       verbose = FALSE )
 {
   if( image@dimension != 2 )
     {
     stop( "ImageDimension must be equal to 2.")
     }
-  
+
   resampledImageSize <- c( 224, 224 )
   if( any( dim( image ) != resampledImageSize ) )
     {
@@ -42,16 +37,15 @@ checkXrayLungOrientation <- function( image,
     }
 
   model <- createResNetModel2D( c( resampledImageSize, 1 ),
-                                numberOfOutputs = 3, 
+                                numberOfOutputs = 3,
                                 mode = "classification",
-                                layers = c( 1, 2, 3, 4 ), 
+                                layers = c( 1, 2, 3, 4 ),
                                 residualBlockSchedule = c( 2, 2, 2, 2 ),
-                                lowestResolution = 64, 
+                                lowestResolution = 64,
                                 cardinality = 1,
                                 squeezeAndExcite = FALSE )
 
-  weightsFileName <- getPretrainedNetwork( "xrayLungOrientation", 
-                                           antsxnetCacheDirectory = antsxnetCacheDirectory )
+  weightsFileName <- getPretrainedNetwork( "xrayLungOrientation" )
   model$load_weights( weightsFileName )
 
   imageMin <- ANTsRCore::min( resampledImage )
@@ -65,10 +59,10 @@ checkXrayLungOrientation <- function( image,
   # batchY is a 3-element array:
   #   batchY[0] = Pr(image is correctly oriented)
   #   batchY[1] = Pr(image is flipped up/down)
-  #   batchY[2] = Pr(image is flipped left/right)        
- 
+  #   batchY[2] = Pr(image is flipped left/right)
+
   if( batchY[1, 1] > 0.5 )
-    {    
+    {
     return( NULL )
     } else {
     if( verbose )
@@ -76,17 +70,17 @@ checkXrayLungOrientation <- function( image,
       message( "Possible incorrect orientation.  Attempting to correct." )
       }
     normalizedImageArray <- as.array( normalizedImage )
-    imageUpDown <- as.antsImage( normalizedImageArray[,dim( normalizedImageArray )[2]:1], 
-                                 origin = antsGetOrigin( resampledImage ), 
-                                 spacing = antsGetSpacing( resampledImage ), 
+    imageUpDown <- as.antsImage( normalizedImageArray[,dim( normalizedImageArray )[2]:1],
+                                 origin = antsGetOrigin( resampledImage ),
+                                 spacing = antsGetSpacing( resampledImage ),
                                  direction = antsGetDirection( resampledImage ) )
-    imageLeftRight <- as.antsImage( normalizedImageArray[dim( normalizedImageArray )[1]:1,], 
-                                 origin = antsGetOrigin( resampledImage ), 
-                                 spacing = antsGetSpacing( resampledImage ), 
+    imageLeftRight <- as.antsImage( normalizedImageArray[dim( normalizedImageArray )[1]:1,],
+                                 origin = antsGetOrigin( resampledImage ),
+                                 spacing = antsGetSpacing( resampledImage ),
                                  direction = antsGetDirection( resampledImage ) )
-    imageBoth <- as.antsImage( ( normalizedImageArray[,dim( normalizedImageArray )[2]:1] )[dim( normalizedImageArray )[1]:1,], 
-                                 origin = antsGetOrigin( resampledImage ), 
-                                 spacing = antsGetSpacing( resampledImage ), 
+    imageBoth <- as.antsImage( ( normalizedImageArray[,dim( normalizedImageArray )[2]:1] )[dim( normalizedImageArray )[1]:1,],
+                                 origin = antsGetOrigin( resampledImage ),
+                                 spacing = antsGetSpacing( resampledImage ),
                                  direction = antsGetDirection( resampledImage ) )
 
     batchX <- array( data = 0, dim = c( 3, resampledImageSize, 1 ) )
@@ -94,7 +88,7 @@ checkXrayLungOrientation <- function( image,
     batchX[2,,,1] <- as.array( imageLeftRight )
     batchX[3,,,1] <- as.array( imageBoth )
 
-    batchY <- model %>% predict( batchX, verbose = verbose )        
+    batchY <- model %>% predict( batchX, verbose = verbose )
 
     imageArray <- as.array( image )
     orientedImage <- NULL
@@ -103,31 +97,31 @@ checkXrayLungOrientation <- function( image,
       if( verbose )
         {
         message( "Image is flipped up-down." )
-        } 
-      orientedImage <- as.antsImage( imageArray[,dim( imageArray )[2]:1], 
-                                 origin = antsGetOrigin( image ), 
-                                 spacing = antsGetSpacing( image ), 
+        }
+      orientedImage <- as.antsImage( imageArray[,dim( imageArray )[2]:1],
+                                 origin = antsGetOrigin( image ),
+                                 spacing = antsGetSpacing( image ),
                                  direction = antsGetDirection( image ) )
       } else if( batchY[2, 1] > batchY[1, 1] && batchY[2, 1] > batchY[3, 1] ) {
       if( verbose )
         {
         message( "Image is flipped right-left." )
-        } 
-      orientedImage <- as.antsImage( imageArray[dim( imageArray )[1]:1,], 
-                                 origin = antsGetOrigin( image ), 
-                                 spacing = antsGetSpacing( image ), 
+        }
+      orientedImage <- as.antsImage( imageArray[dim( imageArray )[1]:1,],
+                                 origin = antsGetOrigin( image ),
+                                 spacing = antsGetSpacing( image ),
                                  direction = antsGetDirection( image ) )
       } else {
       if( verbose )
         {
         message( "Image is flipped up-down and right-left." )
-        } 
-      orientedImage <- as.antsImage( ( imageArray[,dim( imageArray )[2]:1] )[dim( imageArray )[1]:1,], 
-                                 origin = antsGetOrigin( image ), 
-                                 spacing = antsGetSpacing( image ), 
+        }
+      orientedImage <- as.antsImage( ( imageArray[,dim( imageArray )[2]:1] )[dim( imageArray )[1]:1,],
+                                 origin = antsGetOrigin( image ),
+                                 spacing = antsGetSpacing( image ),
                                  direction = antsGetDirection( image ) )
       }
-    
+
     return( orientedImage )
     }
 }
@@ -137,18 +131,18 @@ checkXrayLungOrientation <- function( image,
 #'
 #' ANTsXNet reproduction of https://arxiv.org/pdf/1711.05225.pdf.  This includes
 #' our own network architecture and training (including data augmentation).
-#'    
+#'
 #' Includes a network for checking the correctness of image orientation, i.e.,
 #' flipped left-right, up-down, or both.
-#'   
-#' Disease categories: 
+#'
+#' Disease categories:
 #'        Atelectasis
 #'        Cardiomegaly
 #'        Consolidation
 #'        Edema
 #'        Effusion
 #'        Emphysema
-#'        Fibrosis 
+#'        Fibrosis
 #'        Hernia
 #'        Infiltration
 #'        Mass
@@ -160,17 +154,13 @@ checkXrayLungOrientation <- function( image,
 #'
 #' @param image input 3-D lung image.
 #' @param lungMask ANTsImage.  If None is specified, one is estimated.
-#' @param checkImageOrientation Check the correctness of image orientation, i.e., 
+#' @param checkImageOrientation Check the correctness of image orientation, i.e.,
 #' flipped left-right, up-down, or both.  If TRUE, attempts to correct before prediction.
-#' @param antsxnetCacheDirectory destination directory for storing the downloaded
-#' template and model weights.  Since these can be resused, if
-#' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-#' subdirectory ~/.keras/ANTsXNet/.
-#' @param useANTsXNetVariant Use an extension of the original chexnet approach 
-#' by adding a left/right lung masking and including those two masked regions 
-#' in the red and green channels, respectively. 
-#' @param includeTuberculosisDiagnosis Include the output of an additional network 
-#' trained on TB data but using the ANTsXNet variant chexnet data as the initial 
+#' @param useANTsXNetVariant Use an extension of the original chexnet approach
+#' by adding a left/right lung masking and including those two masked regions
+#' in the red and green channels, respectively.
+#' @param includeTuberculosisDiagnosis Include the output of an additional network
+#' trained on TB data but using the ANTsXNet variant chexnet data as the initial
 #' weights.
 #' @param verbose print progress.
 #' @return classification scores for each of the 14 or 15 categories.
@@ -186,14 +176,13 @@ chexnet <- function( image,
                      checkImageOrientation = FALSE,
                      useANTsXNetVariant = TRUE,
                      includeTuberculosisDiagnosis = FALSE,
-                     antsxnetCacheDirectory = NULL,
                      verbose = FALSE )
 {
   if( image@dimension != 2 )
     {
     stop( "ImageDimension must be equal to 2.")
     }
-  
+
   if( checkImageOrientation )
     {
     image <- checkXrayLungOrientation( image )
@@ -240,8 +229,7 @@ chexnet <- function( image,
       {
       cat( "No lung mask provided.  Estimating using antsxnet." )
       }
-    lungExtract <- lungExtraction( image, modality = "xray", 
-                                   antsxnetCacheDirectory = antsxnetCacheDirectory, 
+    lungExtract <- lungExtraction( image, modality = "xray",
                                    verbose = verbose )
     lungMask <- lungExtract$segmentationImage
     }
@@ -252,7 +240,7 @@ chexnet <- function( image,
     } else {
     resampledLungMask <- antsImageClone( lungMask )
     }
-  
+
   # use imagenet mean,std for normalization
   imagenetMean <- c( 0.485, 0.456, 0.406 )
   imagenetStd <- c( 0.229, 0.224, 0.225 )
@@ -260,10 +248,9 @@ chexnet <- function( image,
   numberOfChannels <- 3
 
   tbPrediction <- NULL
-  if( includeTuberculosisDiagnosis ) 
+  if( includeTuberculosisDiagnosis )
     {
-    modelFileName <- getPretrainedNetwork( "tb_antsxnet_model",
-                                           antsxnetCacheDirectory = antsxnetCacheDirectory )
+    modelFileName <- getPretrainedNetwork( "tb_antsxnet_model" )
     model <- tensorflow::tf$keras$models$load_model( modelFileName, compile = FALSE )
 
     batchX <- array( data = 0, dim = c( 1, imageSize, numberOfChannels ) )
@@ -282,8 +269,7 @@ chexnet <- function( image,
 
   if( ! useANTsXNetVariant )
     {
-    modelFileName <- getPretrainedNetwork( "chexnetClassificationModel",
-                                           antsxnetCacheDirectory = antsxnetCacheDirectory )
+    modelFileName <- getPretrainedNetwork( "chexnetClassificationModel" )
     model <- tensorflow::tf$keras$models$load_model( modelFileName, compile = FALSE )
 
     batchX <- array( data = 0, dim = c( 1, imageSize, numberOfChannels ) )
@@ -293,7 +279,7 @@ chexnet <- function( image,
       {
       batchX[1,,,c] <- ( imageArray - imagenetMean[c] ) / ( imagenetStd[c] )
       }
-     
+
     batchY <- model %>% predict( batchX, verbose = verbose )
     diseaseCategoryDf = data.frame( batchY )
     colnames( diseaseCategoryDf ) <- diseaseCategories
@@ -304,8 +290,7 @@ chexnet <- function( image,
     return( diseaseCategoryDf )
 
     } else {
-    modelFileName <- getPretrainedNetwork( "chexnetClassificationANTsXNetModel",
-                                           antsxnetCacheDirectory = antsxnetCacheDirectory )
+    modelFileName <- getPretrainedNetwork( "chexnetClassificationANTsXNetModel" )
     model <- tensorflow::tf$keras$models$load_model( modelFileName, compile = FALSE )
 
     batchX <- array( data = 0, dim = c( 1, imageSize, numberOfChannels ) )
@@ -320,7 +305,7 @@ chexnet <- function( image,
 
     batchY <- model %>% predict( batchX, verbose = verbose )
     diseaseCategoryDf = data.frame( batchY )
-    colnames( diseaseCategoryDf ) <- diseaseCategories    
+    colnames( diseaseCategoryDf ) <- diseaseCategories
     if( includeTuberculosisDiagnosis )
       {
       diseaseCategoryDf$Tuberculosis <- c( tbPrediction )
