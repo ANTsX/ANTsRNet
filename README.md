@@ -22,6 +22,36 @@ A collection of deep learning architectures and applications ported to the R lan
 </p>
 
 <details>
+<summary>Installation</summary>
+ 
+### Prerequisites
+
+You will need R (>=3.2) and C/C++ development tools including [CMake](https://cmake.org/download/) (>= 3.16.3).
+
+### Installation steps
+
+First, install keras in R
+
+```R
+> install.packages(keras)
+> keras::install_keras()
+```
+
+Then from the command line:
+
+```bash
+git clone https://github.com/stnava/ITKR.git
+git clone https://github.com/ANTsX/ANTsRCore.git
+git clone https://github.com/ANTsX/ANTsR.git
+R CMD INSTALL ITKR 
+R CMD INSTALL ANTsRCore
+R CMD INSTALL ANTsR
+R CMD INSTALL ANTsRNet
+
+```
+</details>
+
+<details>
 <summary>Architectures</summary>
 
 ### Image voxelwise segmentation/regression
