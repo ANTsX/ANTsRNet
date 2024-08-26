@@ -17,7 +17,7 @@
 #' input image list (optional).
 #' @param numberOfSimulations number of output images.  Default = 10.
 #' @param transformType one of the following options
-#' \code{c( "translation", "rigid", "scaleShear", "affine"," deformation" ,
+#' \code{c( "translation", "rotation", "rigid", "scaleShear", "affine"," deformation" ,
 #'   "affineAndDeformation" )}.  Default = \"affine\".
 #' @param sdAffine parameter dictating deviation amount from identity for
 #' random linear transformations.  Default = 0.02.
@@ -100,6 +100,8 @@ randomlyTransformImageData <- function( referenceImage,
     if( transformType == 'translation' )
       {
       randomEpsilon[1:( length( identityParameters ) - image@dimension )] <- 0
+      } else if( transformType == 'rotation' ) {
+      randomEpsilon[( length( identityParameters ) - image@dimension ):length( randomEpsilon )] <- 0
       }
 
     randomParameters <- identityParameters + randomEpsilon
@@ -108,7 +110,7 @@ randomlyTransformImageData <- function( referenceImage,
         ncol = image@dimension )
     decomposition <- polarDecomposition( randomMatrix )
 
-    if( transformType == "rigid" )
+    if( transformType == "rotation" || transformType == "rigid" )
       {
       randomMatrix <- decomposition$Z
       }
@@ -140,12 +142,12 @@ randomlyTransformImageData <- function( referenceImage,
     return( displacementFieldTransform )
     }
 
-  admissibleTransforms <- c( "translation", "rigid", "scaleShear", "affine",
+  admissibleTransforms <- c( "translation", "rotation", "rigid", "scaleShear", "affine",
     "affineAndDeformation", "deformation" )
   if( !( transformType %in% admissibleTransforms ) )
     {
     stop( paste0( "The specified transform, ", transformType,
-      "is not a possible option.  Please see help menu." ) )
+      " is not a possible option.  Please see help menu." ) )
     }
 
   # Get the fixed parameters from the reference image.
