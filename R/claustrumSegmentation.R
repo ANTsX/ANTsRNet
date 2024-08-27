@@ -11,10 +11,6 @@
 #' @param t1 input 3-D T1-weighted brain image.
 #' @param doPreprocessing perform n4 bias correction, denoising?
 #' @param useEnsemble boolean to check whether to use all 3 sets of weights.
-#' @param antsxnetCacheDirectory destination directory for storing the downloaded
-#' template and model weights.  Since these can be resused, if
-#' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-#' inst/extdata/ subfolder of the ANTsRNet package.
 #' @param verbose print progress.
 #' @return claustrum probability image
 #' @author Tustison NJ
@@ -28,7 +24,7 @@
 #' }
 #' @export
 claustrumSegmentation <- function( t1, doPreprocessing = TRUE,
-  useEnsemble = TRUE, antsxnetCacheDirectory = NULL, verbose = FALSE )
+  useEnsemble = TRUE, verbose = FALSE )
 {
 
   if( t1@dimension != 3 )
@@ -55,7 +51,6 @@ claustrumSegmentation <- function( t1, doPreprocessing = TRUE,
         templateTransformType = NULL,
         doBiasCorrection = TRUE,
         doDenoising = TRUE,
-        antsxnetCacheDirectory = antsxnetCacheDirectory,
         verbose = verbose )
     t1Preprocessed <- t1Preprocessing$preprocessedImage
     brainMask <- t1Preprocessing$brainMask
@@ -107,8 +102,7 @@ claustrumSegmentation <- function( t1, doPreprocessing = TRUE,
   unetAxialModels <- list()
   for( i in seq.int( numberOfModels ) )
     {
-    weightsFileName <- getPretrainedNetwork( paste0( "claustrum_axial_", i - 1 ),
-      antsxnetCacheDirectory = antsxnetCacheDirectory )
+    weightsFileName <- getPretrainedNetwork( paste0( "claustrum_axial_", i - 1 ) )
 
     unetAxialModels[[i]] <- createSysuMediaUnetModel2D( c( imageSize, numberOfChannels ), anatomy = "claustrum" )
     unetAxialModels[[i]]$load_weights( weightsFileName )
@@ -122,8 +116,7 @@ claustrumSegmentation <- function( t1, doPreprocessing = TRUE,
   unetCoronalModels <- list()
   for( i in seq.int( numberOfModels ) )
     {
-    weightsFileName <- getPretrainedNetwork( paste0( "claustrum_coronal_", i - 1 ),
-      antsxnetCacheDirectory = antsxnetCacheDirectory )
+    weightsFileName <- getPretrainedNetwork( paste0( "claustrum_coronal_", i - 1 ) )
 
     unetCoronalModels[[i]] <- createSysuMediaUnetModel2D( c( imageSize, numberOfChannels ), anatomy = "claustrum" )
     unetCoronalModels[[i]]$load_weights( weightsFileName )

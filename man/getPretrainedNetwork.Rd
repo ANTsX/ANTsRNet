@@ -24,42 +24,43 @@ getPretrainedNetwork(
     "deepFlashLeftBothHierarchical", "deepFlashRightBothHierarchical",
     "deepFlashLeftT1Hierarchical_ri", "deepFlashRightT1Hierarchical_ri",
     "deepFlashLeftBothHierarchical_ri", "deepFlashRightBothHierarchical_ri",
-    "deepFlashLeft8", "deepFlashRight8", "deepFlashLeft16", "deepFlashRight16",
-    "deepFlashLeft16new", "deepFlashRight16new", "denoising", "dktInner", "dktOuter",
-    "dktOuterWithSpatialPriors", "ex5_coronal_weights", "ex5_sagittal_weights",
-    "allen_brain_mask_weights", 
-     "functionalLungMri", "hippMapp3rInitial",
+    "deepFlash2LeftT1Hierarchical", "deepFlash2RightT1Hierarchical", "deepFlashLeft8",
+    "deepFlashRight8", "deepFlashLeft16", "deepFlashRight16", "deepFlashLeft16new",
+    "deepFlashRight16new", "denoising", "dktInner", "dktOuter",
+    "dktOuterWithSpatialPriors", "ex5_coronal_weights", 
+     "ex5_sagittal_weights",
+    "allen_brain_mask_weights", "functionalLungMri", "hippMapp3rInitial",
     "hippMapp3rRefine", "hyperMapp3r", "hypothalamus",
     "inpainting_sagittal_rmnet_weights", "inpainting_coronal_rmnet_weights",
     "inpainting_axial_rmnet_weights", "inpainting_axial_rmnet_flair_weights",
     "inpainting_coronal_rmnet_flair_weights", "inpainting_sagittal_rmnet_flair_weights",
     "koniqMBCS", "koniqMS", "koniqMS2", "koniqMS3", "lesion_whole_brain",
-    "lungCtWithPriorsSegmentationWeights", "maskLobes", "mriSuperResolution",
-    "mriModalityClassification", 
-     "mraVesselWeights_160", "mouseMriBrainExtraction",
+    "lungCtWithPriorsSegmentationWeights", "maskLobes", 
+     "mriSuperResolution",
+    "mriModalityClassification", "mraVesselWeights_160", "mouseMriBrainExtraction",
     "mouseT2wBrainExtraction3D", "mouseT2wBrainParcellation3DNick",
     "mouseT2wBrainParcellation3DTct", "mouseSTPTBrainParcellation3DJay",
     "pvs_shiva_t1_0", "pvs_shiva_t1_1", "pvs_shiva_t1_2", "pvs_shiva_t1_3",
     "pvs_shiva_t1_4", "pvs_shiva_t1_5", "pvs_shiva_t1_flair_0", "pvs_shiva_t1_flair_1",
     "pvs_shiva_t1_flair_2", "pvs_shiva_t1_flair_3", "pvs_shiva_t1_flair_4",
-    "wmh_shiva_flair_0", "wmh_shiva_flair_1", "wmh_shiva_flair_2", "wmh_shiva_flair_3",
-    "wmh_shiva_flair_4", 
-     "wmh_shiva_t1_flair_0", "wmh_shiva_t1_flair_1",
-    "wmh_shiva_t1_flair_2", "wmh_shiva_t1_flair_3", "wmh_shiva_t1_flair_4",
-    "protonLungMri", "protonLobes", "pulmonaryArteryWeights", "pulmonaryAirwayWeights",
-    "sixTissueOctantBrainSegmentation", "sixTissueOctantBrainSegmentationWithPriors1",
+    "wmh_shiva_flair_0", "wmh_shiva_flair_1", 
+     "wmh_shiva_flair_2",
+    "wmh_shiva_flair_3", "wmh_shiva_flair_4", "wmh_shiva_t1_flair_0",
+    "wmh_shiva_t1_flair_1", "wmh_shiva_t1_flair_2", "wmh_shiva_t1_flair_3",
+    "wmh_shiva_t1_flair_4", "protonLungMri", "protonLobes", "pulmonaryArteryWeights",
+    "pulmonaryAirwayWeights", "sixTissueOctantBrainSegmentation",
+    "sixTissueOctantBrainSegmentationWithPriors1",
     "sixTissueOctantBrainSegmentationWithPriors2", "sysuMediaWmhFlairOnlyModel0",
     "sysuMediaWmhFlairOnlyModel1", "sysuMediaWmhFlairOnlyModel2",
-    "sysuMediaWmhFlairT1Model0", "sysuMediaWmhFlairT1Model1",
-    "sysuMediaWmhFlairT1Model2", 
-     "tidsQualityAssessment", "xrayLungOrientation",
+    "sysuMediaWmhFlairT1Model0", 
+     "sysuMediaWmhFlairT1Model1",
+    "sysuMediaWmhFlairT1Model2", "tidsQualityAssessment", "xrayLungOrientation",
     "xrayLungExtraction", "chexnetClassificationModel",
     "chexnetClassificationANTsXNetModel", "tb_antsxnet_model",
     "wholeHeadInpaintingFLAIR", "wholeHeadInpaintingPatchBasedT1",
     "wholeHeadInpaintingPatchBasedFLAIR", "wholeTumorSegmentationT2Flair",
     "wholeLungMaskFromVentilation"),
-  targetFileName,
-  antsxnetCacheDirectory = NULL
+  targetFileName
 )
 }
 \arguments{
@@ -67,11 +68,6 @@ getPretrainedNetwork(
 valid possibilities. Note that most require internet access to download.}
 
 \item{targetFileName}{optional target filename}
-
-\item{antsxnetCacheDirectory}{destination directory for storing the downloaded
-template and model weights.  Since these can be resused, if
-\code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-subdirectory ~/.keras/ANTsXNet/.}
 }
 \value{
 filename string

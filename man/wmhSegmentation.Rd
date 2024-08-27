@@ -12,7 +12,6 @@ wmhSegmentation(
   predictionBatchSize = 16,
   patchStrideLength = 32,
   doPreprocessing = TRUE,
-  antsxnetCacheDirectory = NULL,
   verbose = FALSE
 )
 }
@@ -35,11 +34,6 @@ accumulating predicting patches.}
 
 \item{doPreprocessing}{perform n4 bias correction, intensity truncation, brain
 extraction.}
-
-\item{antsxnetCacheDirectory}{destination directory for storing the downloaded
-template and model weights.  Since these can be resused, if
-\code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-inst/extdata/ subfolder of the ANTsRNet package.}
 
 \item{verbose}{print progress.}
 }

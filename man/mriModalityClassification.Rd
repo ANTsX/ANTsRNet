@@ -4,19 +4,10 @@
 \alias{mriModalityClassification}
 \title{MRI modality classification}
 \usage{
-mriModalityClassification(
-  image,
-  antsxnetCacheDirectory = NULL,
-  verbose = FALSE
-)
+mriModalityClassification(image, verbose = FALSE)
 }
 \arguments{
 \item{image}{raw 3-D MRI whole head image.}
-
-\item{antsxnetCacheDirectory}{destination directory for storing the downloaded
-template and model weights.  Since these can be resused, if
-\code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-subdirectory ~/.keras/ANTsXNet/.}
 
 \item{verbose}{print progress.}
 }

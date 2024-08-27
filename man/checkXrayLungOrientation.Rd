@@ -4,15 +4,10 @@
 \alias{checkXrayLungOrientation}
 \title{Check x-ray lung orientation.}
 \usage{
-checkXrayLungOrientation(image, antsxnetCacheDirectory = NULL, verbose = FALSE)
+checkXrayLungOrientation(image, verbose = FALSE)
 }
 \arguments{
 \item{image}{input 3-D lung image.}
-
-\item{antsxnetCacheDirectory}{destination directory for storing the downloaded
-template and model weights.  Since these can be resused, if
-\code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-subdirectory ~/.keras/ANTsXNet/.}
 
 \item{verbose}{print progress.}
 }

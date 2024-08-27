@@ -5,10 +5,6 @@
 #' @param fileId one of the permitted file ids or pass "show" to list all
 #'   valid possibilities. Note that most require internet access to download.
 #' @param targetFileName optional target filename
-#' @param antsxnetCacheDirectory destination directory for storing the downloaded
-#' template and model weights.  Since these can be resused, if
-#' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-#' subdirectory ~/.keras/ANTsXNet/.
 #' @return filename string
 #' @author Avants BB
 #' @note See \url{https://figshare.com/authors/Nick_Tustison/441144}
@@ -159,7 +155,7 @@ getPretrainedNetwork <- function(
               "wholeHeadInpaintingPatchBasedFLAIR",
 	            "wholeTumorSegmentationT2Flair",
               "wholeLungMaskFromVentilation" ),
-  targetFileName, antsxnetCacheDirectory = NULL )
+  targetFileName )
 {
 
   if( fileId[1] == "show" )
@@ -261,30 +257,30 @@ getPretrainedNetwork <- function(
     mraVesselWeights_160 = "https://figshare.com/ndownloader/files/46406029",
     mouseMriBrainExtraction = "https://figshare.com/ndownloader/files/44714947",
     mouseT2wBrainExtraction3D = "https://figshare.com/ndownloader/files/44943715",
-    mouseT2wBrainParcellation3DNick = "https://figshare.com/ndownloader/files/44714944",   
-    mouseT2wBrainParcellation3DTct = "https://figshare.com/ndownloader/files/47214538",   
-    mouseSTPTBrainParcellation3DJay = "https://figshare.com/ndownloader/files/46710592",         
-    pvs_shiva_t1_0 = "https://figshare.com/ndownloader/files/48660169", 
-    pvs_shiva_t1_1 = "https://figshare.com/ndownloader/files/48660193", 
-    pvs_shiva_t1_2 = "https://figshare.com/ndownloader/files/48660199", 
-    pvs_shiva_t1_3 = "https://figshare.com/ndownloader/files/48660178", 
-    pvs_shiva_t1_4 = "https://figshare.com/ndownloader/files/48660172", 
-    pvs_shiva_t1_5 = "https://figshare.com/ndownloader/files/48660187", 
-    pvs_shiva_t1_flair_0 = "https://figshare.com/ndownloader/files/48660181", 
-    pvs_shiva_t1_flair_1 = "https://figshare.com/ndownloader/files/48660175", 
-    pvs_shiva_t1_flair_2 = "https://figshare.com/ndownloader/files/48660184", 
-    pvs_shiva_t1_flair_3 = "https://figshare.com/ndownloader/files/48660190", 
-    pvs_shiva_t1_flair_4 = "https://figshare.com/ndownloader/files/48660196", 
-    wmh_shiva_flair_0 = "https://figshare.com/ndownloader/files/48660487", 
-    wmh_shiva_flair_1 = "https://figshare.com/ndownloader/files/48660496", 
-    wmh_shiva_flair_2 = "https://figshare.com/ndownloader/files/48660493", 
-    wmh_shiva_flair_3 = "https://figshare.com/ndownloader/files/48660490", 
-    wmh_shiva_flair_4 = "https://figshare.com/ndownloader/files/48660511", 
-    wmh_shiva_t1_flair_0 = "https://figshare.com/ndownloader/files/48660529", 
-    wmh_shiva_t1_flair_1 = "https://figshare.com/ndownloader/files/48660547", 
-    wmh_shiva_t1_flair_2 = "https://figshare.com/ndownloader/files/48660499", 
-    wmh_shiva_t1_flair_3 = "https://figshare.com/ndownloader/files/48660550", 
-    wmh_shiva_t1_flair_4 = "https://figshare.com/ndownloader/files/48660544", 
+    mouseT2wBrainParcellation3DNick = "https://figshare.com/ndownloader/files/44714944",
+    mouseT2wBrainParcellation3DTct = "https://figshare.com/ndownloader/files/47214538",
+    mouseSTPTBrainParcellation3DJay = "https://figshare.com/ndownloader/files/46710592",
+    pvs_shiva_t1_0 = "https://figshare.com/ndownloader/files/48660169",
+    pvs_shiva_t1_1 = "https://figshare.com/ndownloader/files/48660193",
+    pvs_shiva_t1_2 = "https://figshare.com/ndownloader/files/48660199",
+    pvs_shiva_t1_3 = "https://figshare.com/ndownloader/files/48660178",
+    pvs_shiva_t1_4 = "https://figshare.com/ndownloader/files/48660172",
+    pvs_shiva_t1_5 = "https://figshare.com/ndownloader/files/48660187",
+    pvs_shiva_t1_flair_0 = "https://figshare.com/ndownloader/files/48660181",
+    pvs_shiva_t1_flair_1 = "https://figshare.com/ndownloader/files/48660175",
+    pvs_shiva_t1_flair_2 = "https://figshare.com/ndownloader/files/48660184",
+    pvs_shiva_t1_flair_3 = "https://figshare.com/ndownloader/files/48660190",
+    pvs_shiva_t1_flair_4 = "https://figshare.com/ndownloader/files/48660196",
+    wmh_shiva_flair_0 = "https://figshare.com/ndownloader/files/48660487",
+    wmh_shiva_flair_1 = "https://figshare.com/ndownloader/files/48660496",
+    wmh_shiva_flair_2 = "https://figshare.com/ndownloader/files/48660493",
+    wmh_shiva_flair_3 = "https://figshare.com/ndownloader/files/48660490",
+    wmh_shiva_flair_4 = "https://figshare.com/ndownloader/files/48660511",
+    wmh_shiva_t1_flair_0 = "https://figshare.com/ndownloader/files/48660529",
+    wmh_shiva_t1_flair_1 = "https://figshare.com/ndownloader/files/48660547",
+    wmh_shiva_t1_flair_2 = "https://figshare.com/ndownloader/files/48660499",
+    wmh_shiva_t1_flair_3 = "https://figshare.com/ndownloader/files/48660550",
+    wmh_shiva_t1_flair_4 = "https://figshare.com/ndownloader/files/48660544",
     protonLungMri = "https://ndownloader.figshare.com/files/13606799",
     protonLobes = "https://figshare.com/ndownloader/files/30678455",
     pulmonaryAirwayWeights = "https://figshare.com/ndownloader/files/45187168",
@@ -315,16 +311,15 @@ getPretrainedNetwork <- function(
     {
     targetFileName <- paste0( fileId, ".h5" )
     }
-  if( is.null( antsxnetCacheDirectory ) )
-    {
-    antsxnetCacheDirectory <- fs::path_join( path.expand( c( "~/.keras/ANTsXNet" ) ) )
-    }
-  targetFileNamePath <- fs::path_join( path.expand( c( antsxnetCacheDirectory, targetFileName ) ) )
+
+  cacheDir <- getAntsxnetCacheDirectory()
+
+  targetFileNamePath <- fs::path_join( path.expand( c( cacheDir, targetFileName ) ) )
 
   if( ! fs::file_exists( targetFileNamePath ) )
     {
     targetFileNamePath <- tensorflow::tf$keras$utils$get_file(
-      targetFileName, url, cache_subdir = antsxnetCacheDirectory )
+      targetFileName, url, cache_subdir=cacheDir )
     }
 
   return( targetFileNamePath )

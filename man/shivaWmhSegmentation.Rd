@@ -9,7 +9,6 @@ shivaWmhSegmentation(
   t1 = NULL,
   whichModel = "all",
   doPreprocessing = TRUE,
-  antsxnetCacheDirectory = NULL,
   verbose = FALSE
 )
 }
@@ -27,11 +26,6 @@ trained model or the average of the entire ensemble.  I.e., options are:
 
 \item{doPreprocessing}{perform n4 bias correction, intensity truncation, brain
 extraction.}
-
-\item{antsxnetCacheDirectory}{destination directory for storing the downloaded
-template and model weights.  Since these can be resused, if
-\code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-inst/extdata/ subfolder of the ANTsRNet package.}
 
 \item{verbose}{print progress.}
 }

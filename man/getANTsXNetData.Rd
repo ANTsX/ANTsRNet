@@ -7,20 +7,21 @@
 getANTsXNetData(
   fileId = c("show", "biobank", "croppedMni152", "croppedMni152Priors",
     "deepFlashPriors", "deepFlashTemplateT1", "deepFlashTemplateT1SkullStripped",
-    "deepFlashTemplateT2", "deepFlashTemplateT2SkullStripped", "mprage_hippmapp3r",
+    "deepFlashTemplateT2", "deepFlashTemplateT2SkullStripped",
+    "deepFlashTemplate2T1SkullStripped", "deepFlashTemplate2Labels", "mprage_hippmapp3r",
     "protonLungTemplate", "ctLungTemplate", "luna16LungPriors", "xrayLungPriors",
     "priorDktLabels", "priorDeepFlashLeftLabels", "priorDeepFlashRightLabels",
-    "protonLobePriors", "S_template3", "adni", "ixi", "kirby", "mni152", "nki", "nki10",
-    "oasis", "magetTemplate", "magetTemplateBrainMask", 
-     "magetCerebellumTemplate",
-    "magetCerebellumTemplatePriors", "magetCerebellumxTemplate0GenericAffine",
-    "mraTemplate", "mraTemplateBrainMask", "mraTemplateVesselPrior",
-    "bsplineT2MouseTemplate", "bsplineT2MouseTemplateBrainMask",
-    "DevCCF_P56_MRI_T2_50um", "DevCCF_P56_MRI_T2_50um_BrainParcellationNickMask",
+    "protonLobePriors", "S_template3", "adni", "ixi", "kirby", "mni152", 
+     "nki",
+    "nki10", "oasis", "magetTemplate", "magetTemplateBrainMask",
+    "magetCerebellumTemplate", "magetCerebellumTemplatePriors",
+    "magetCerebellumxTemplate0GenericAffine", "mraTemplate", "mraTemplateBrainMask",
+    "mraTemplateVesselPrior", "bsplineT2MouseTemplate",
+    "bsplineT2MouseTemplateBrainMask", "DevCCF_P56_MRI_T2_50um",
+    "DevCCF_P56_MRI_T2_50um_BrainParcellationNickMask",
     "DevCCF_P56_MRI_T2_50um_BrainParcellationTctMask", "DevCCF_P04_STPT_50um",
     "DevCCF_P04_STPT_50um_BrainParcellationJayMask"),
-  targetFileName,
-  antsxnetCacheDirectory = NULL
+  targetFileName
 )
 }
 \arguments{
@@ -28,11 +29,6 @@ getANTsXNetData(
 valid possibilities. Note that most require internet access to download.}
 
 \item{targetFileName}{optional target filename}
-
-\item{antsxnetCacheDirectory}{destination directory for storing the downloaded
-template and model weights.  Since these can be resused, if
-\code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-subdirectory ~/.keras/ANTsXNet/.}
 }
 \value{
 filename string

@@ -9,7 +9,6 @@ hyperMapp3rSegmentation(
   flair,
   doPreprocessing = TRUE,
   numberOfMonteCarloIterations = 30,
-  antsxnetCacheDirectory = NULL,
   verbose = FALSE
 )
 }
@@ -19,11 +18,6 @@ hyperMapp3rSegmentation(
 \item{flair}{input 3-D flair MR image.  Assumed to be aligned with the t1.}
 
 \item{doPreprocessing}{perform preprocessing.  See description above.}
-
-\item{antsxnetCacheDirectory}{destination directory for storing the downloaded
-template and model weights.  Since these can be resused, if
-\code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-subdirectory ~/.keras/ANTsXNet/.}
 
 \item{verbose}{print progress.}
 }

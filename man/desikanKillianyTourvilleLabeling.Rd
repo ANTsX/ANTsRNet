@@ -9,7 +9,6 @@ desikanKillianyTourvilleLabeling(
   doPreprocessing = TRUE,
   returnProbabilityImages = FALSE,
   doLobarParcellation = FALSE,
-  antsxnetCacheDirectory = NULL,
   verbose = FALSE
 )
 }
@@ -22,11 +21,6 @@ desikanKillianyTourvilleLabeling(
 for the inner and outer labels.}
 
 \item{doLobarParcellation}{perform lobar parcellation (also divided by hemisphere).}
-
-\item{antsxnetCacheDirectory}{destination directory for storing the downloaded
-template and model weights.  Since these can be resused, if
-\code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-subdirectory ~/.keras/ANTsXNet/.}
 
 \item{verbose}{print progress.}
 }

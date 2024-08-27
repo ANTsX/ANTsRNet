@@ -1,19 +1,15 @@
 #' MRA-TOF vessel segmentation.
 #'
-#' Perform MRA-TOF vessel segmentation.  Training data taken from the 
-#' (https://data.kitware.com/#item/58a372e48d777f0721a64dc9). 
+#' Perform MRA-TOF vessel segmentation.  Training data taken from the
+#' (https://data.kitware.com/#item/58a372e48d777f0721a64dc9).
 #'
 #' @param mra input mra image.
-#' @param mask input binary mask which defines the patch extraction.  
+#' @param mask input binary mask which defines the patch extraction.
 #' If not supplied, one is estimated.
-#' @param predictionBatchSize Control memory usage for prediction.  More consequential 
+#' @param predictionBatchSize Control memory usage for prediction.  More consequential
 #' for GPU-usage.
-#' @param patchStrideLength  3-D vector or int.   Dictates the stride length for 
+#' @param patchStrideLength  3-D vector or int.   Dictates the stride length for
 #' accumulating predicting patches.
-#' @param antsxnetCacheDirectory destination directory for storing the downloaded
-#' template and model weights.  Since these can be resused, if
-#' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-#' inst/extdata/ subfolder of the ANTsRNet package.
 #' @param verbose print progress.
 #' @return Probability image.
 #' @author Tustison NJ
@@ -24,9 +20,8 @@
 #'
 #' }
 #' @export
-brainMraVesselSegmentation <- function( mra, mask = NULL, 
-  predictionBatchSize = 16, patchStrideLength = 32,
-  antsxnetCacheDirectory = NULL, verbose = FALSE )
+brainMraVesselSegmentation <- function( mra, mask = NULL,
+  predictionBatchSize = 16, patchStrideLength = 32, verbose = FALSE )
 {
 
   ################################
@@ -37,17 +32,15 @@ brainMraVesselSegmentation <- function( mra, mask = NULL,
 
   if( is.null( mask ) )
     {
-    mask <- brainExtraction( mra, modality = "mra", 
-                              antsxnetCacheDirectory = antsxnetCacheDirectory,
-                              verbose = verbose )
+    mask <- brainExtraction( mra, modality = "mra", verbose = verbose )
     mask <- thresholdImage( mask, 0.5, 1.1, 1, 0 )
     }
-  
+
   template <- antsImageRead( getANTsXNetData( "mraTemplate" ) )
   templateBrainMask <- antsImageRead( getANTsXNetData( "mraTemplateBrainMask" ) )
 
   mraPreprocessed <- antsImageClone( mra )
-  mraPreprocessed[mask == 1] <- ( mraPreprocessed[mask == 1] - min( mraPreprocessed[mask == 1] ) ) / 
+  mraPreprocessed[mask == 1] <- ( mraPreprocessed[mask == 1] - min( mraPreprocessed[mask == 1] ) ) /
                                 ( max( mraPreprocessed[mask == 1] ) - min( mraPreprocessed[mask == 1] ) )
   reg <- antsRegistration( template * templateBrainMask, mraPreprocessed * mask,
                            typeofTransform = "antsRegistrationSyNQuick[a]",
@@ -87,8 +80,7 @@ brainMraVesselSegmentation <- function( mra, mask = NULL,
                numberOfFilters = c( 32, 64, 128, 256, 512 ),
                convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
                dropoutRate = 0.0, weightDecay = 0.0 )
-  weightsFileName <- getPretrainedNetwork( "mraVesselWeights_160", 
-                                           antsxnetCacheDirectory = antsxnetCacheDirectory )
+  weightsFileName <- getPretrainedNetwork( "mraVesselWeights_160" )
   load_model_weights_hdf5( model, filepath = weightsFileName )
 
   ################################
@@ -117,7 +109,7 @@ brainMraVesselSegmentation <- function( mra, mask = NULL,
                                      randomSeed = NULL,
                                      returnAsArray = TRUE )
   totalNumberOfPatches <- dim( mraPatches )[1]
- 
+
   ################################
   #
   # Do prediction and then restock into the image
@@ -128,7 +120,7 @@ brainMraVesselSegmentation <- function( mra, mask = NULL,
   residualNumberOfPatches <- totalNumberOfPatches - numberOfBatches * predictionBatchSize
   if( residualNumberOfPatches > 0 )
     {
-    numberOfBatches <- numberOfBatches + 1 
+    numberOfBatches <- numberOfBatches + 1
     }
 
   if( verbose )
@@ -137,16 +129,16 @@ brainMraVesselSegmentation <- function( mra, mask = NULL,
     message( "  Prediction batch size: ", predictionBatchSize )
     message( "  Number of batches: ", numberOfBatches )
     }
- 
+
   prediction <- array( data = 0, dim = c( totalNumberOfPatches, patchSize, 1 ) )
   for( b in seq.int( numberOfBatches ) )
     {
     batchX <- NULL
     if( b < numberOfBatches || residualNumberOfPatches == 0 )
       {
-      batchX <- array( data = 0, dim = c( predictionBatchSize, patchSize, channelSize ) ) 
+      batchX <- array( data = 0, dim = c( predictionBatchSize, patchSize, channelSize ) )
       } else {
-      batchX <- array( data = 0, dim = c( residualNumberOfPatches, patchSize, channelSize ) ) 
+      batchX <- array( data = 0, dim = c( residualNumberOfPatches, patchSize, channelSize ) )
       }
 
     indices <- ( ( b - 1 ) * predictionBatchSize + 1):( ( b - 1 ) * predictionBatchSize + dim( batchX )[1] )
@@ -158,7 +150,7 @@ brainMraVesselSegmentation <- function( mra, mask = NULL,
       message( "  Predicting batch ", b, " of ", numberOfBatches )
       }
     prediction[indices,,,,] <- model %>% predict( batchX, verbose = verbose )
-    }  
+    }
 
   if( verbose )
     {
@@ -172,7 +164,7 @@ brainMraVesselSegmentation <- function( mra, mask = NULL,
                                            transformlist = reg$invtransforms,
                                            whichtoinvert = c( TRUE ),
                                            verbose = verbose )
- 
+
   return( probabilityImage )
   }
 

@@ -4,10 +4,6 @@
 #'
 #' @param image input 3-D lung image.
 #' @param modality image type.  Options include "proton", "ct", or "ventilation".
-#' @param antsxnetCacheDirectory destination directory for storing the downloaded
-#' template and model weights.  Since these can be resused, if
-#' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-#' subdirectory ~/.keras/ANTsXNet/.
 #' @param verbose print progress.
 #' @return segmentation and probability images
 #' @author Tustison NJ
@@ -23,7 +19,7 @@
 #' @export
 lungExtraction <- function( image,
   modality = c( "proton", "protonLobes", "maskLobes", "ct", "ventilation", "xray" ),
-  antsxnetCacheDirectory = NULL, verbose = FALSE )
+  verbose = FALSE )
   {
 
   if( image@dimension != 3 && modality != "xray" )
@@ -31,7 +27,7 @@ lungExtraction <- function( image,
     stop( "Image dimension must be 3." )
     } else if( image@dimension != 2 && modality == "xray" ) {
     stop( "Image dimension must be 2." )
-    } 
+    }
 
   modality <- match.arg( modality )
 
@@ -40,8 +36,7 @@ lungExtraction <- function( image,
 
   if( modality == "proton" )
     {
-    weightsFileName <- getPretrainedNetwork( "protonLungMri",
-      antsxnetCacheDirectory = antsxnetCacheDirectory )
+    weightsFileName <- getPretrainedNetwork( "protonLungMri" )
 
     classes <- c( "Background", "LeftLung", "RightLung" )
     numberOfClassificationLabels <- length( classes )
@@ -51,8 +46,7 @@ lungExtraction <- function( image,
       {
       cat( "Lung extraction:  retrieving template.\n" )
       }
-    reorientTemplateFileNamePath <- getANTsXNetData( "protonLungTemplate",
-      antsxnetCacheDirectory = antsxnetCacheDirectory )
+    reorientTemplateFileNamePath <- getANTsXNetData( "protonLungTemplate" )
     reorientTemplate <- antsImageRead( reorientTemplateFileNamePath )
     resampledImageSize <- dim( reorientTemplate )
 
@@ -108,14 +102,12 @@ lungExtraction <- function( image,
 
     } else if( modality == "protonLobes" || modality == "maskLobes" ) {
 
-    reorientTemplateFileNamePath <- getANTsXNetData( "protonLungTemplate",
-      antsxnetCacheDirectory = antsxnetCacheDirectory )
+    reorientTemplateFileNamePath <- getANTsXNetData( "protonLungTemplate" )
     reorientTemplate <- antsImageRead( reorientTemplateFileNamePath )
 
     resampledImageSize <- dim( reorientTemplate )
 
-    spatialPriorsFileNamePath <- getANTsXNetData( "protonLobePriors",
-        antsxnetCacheDirectory = antsxnetCacheDirectory )
+    spatialPriorsFileNamePath <- getANTsXNetData( "protonLobePriors" )
     spatialPriors <- antsImageRead( spatialPriorsFileNamePath )
     priorsImageList <- splitNDImageToList( spatialPriors )
 
@@ -136,11 +128,9 @@ lungExtraction <- function( image,
         kernel_regularizer = regularizer_l2( l = 0.0 ) )
       unetModel = keras_model( inputs = unetModel$input,
         outputs = list( unetModel$output, outputs2 ) )
-      weightsFileName <- getPretrainedNetwork( "protonLobes",
-        antsxnetCacheDirectory = antsxnetCacheDirectory )
+      weightsFileName <- getPretrainedNetwork( "protonLobes" )
       } else {
-      weightsFileName <- getPretrainedNetwork( "maskLobes",
-        antsxnetCacheDirectory = antsxnetCacheDirectory )
+      weightsFileName <- getPretrainedNetwork( "maskLobes" )
       }
     unetModel$load_weights( weightsFileName )
 
@@ -270,8 +260,7 @@ lungExtraction <- function( image,
       cat( "Build model and load weights.\n" )
       }
 
-    weightsFileName <- getPretrainedNetwork( "lungCtWithPriorsSegmentationWeights",
-      antsxnetCacheDirectory = antsxnetCacheDirectory )
+    weightsFileName <- getPretrainedNetwork( "lungCtWithPriorsSegmentationWeights" )
 
     classes <- c( "background", "left lung", "right lung", "airways" )
     numberOfClassificationLabels <- length( classes )
@@ -357,7 +346,7 @@ lungExtraction <- function( image,
         {
         cat( "Whole lung mask: retrieving model weights.\n" )
         }
-      weightsFileName <- getPretrainedNetwork( "wholeLungMaskFromVentilation", antsxnetCacheDirectory = antsxnetCacheDirectory )
+      weightsFileName <- getPretrainedNetwork( "wholeLungMaskFromVentilation" )
       unetModel$load_weights( weightsFileName )
 
       ################################
@@ -449,7 +438,7 @@ lungExtraction <- function( image,
       {
       cat("Preprocess Xray image.\n")
       }
-    
+
     classes <- c( "background", "leftLung", "rightLung" )
     numberOfClassificationLabels <- length( classes )
     resampledImageSize <- c( 256, 256 )
@@ -457,7 +446,7 @@ lungExtraction <- function( image,
 
     resampledImage <- resampleImage( image, resampledImageSize, useVoxels = TRUE, interpType = 0 )
     xrayLungPriors <- splitNDImageToList( antsImageRead( getANTsXNetData( "xrayLungPriors" ) ) )
-    
+
     ################################
     #
     # Build models and load weights
@@ -469,8 +458,7 @@ lungExtraction <- function( image,
       cat( "Build model and load weights.\n" )
       }
 
-    weightsFileName <- getPretrainedNetwork( "xrayLungExtraction",
-      antsxnetCacheDirectory = antsxnetCacheDirectory )
+    weightsFileName <- getPretrainedNetwork( "xrayLungExtraction" )
 
     unetModel <- createUnetModel2D( c( resampledImageSize, channelSize ),
       numberOfOutputs = numberOfClassificationLabels, mode = 'classification',

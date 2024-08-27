@@ -4,19 +4,10 @@
 \alias{arterialLesionSegmentation}
 \title{Arterial lesion segmentation}
 \usage{
-arterialLesionSegmentation(
-  image,
-  antsxnetCacheDirectory = NULL,
-  verbose = FALSE
-)
+arterialLesionSegmentation(image, verbose = FALSE)
 }
 \arguments{
 \item{image}{input histology image.}
-
-\item{antsxnetCacheDirectory}{destination directory for storing the downloaded
-template and model weights.  Since these can be resused, if
-\code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-subdirectory ~/.keras/ANTsXNet/.}
 
 \item{verbose}{print progress.}
 }

@@ -6,19 +6,15 @@
 #' @param roiMask binary mask image
 #' @param modality Modality image type.  Options include: "t1": T1-weighted MRI,
 #' "flair": FLAIR MRI.
-#' @param mode Options include:  "sagittal": sagittal view network, "coronal": 
-#' coronal view network, "axial": axial view network, "average": average of all 
+#' @param mode Options include:  "sagittal": sagittal view network, "coronal":
+#' coronal view network, "axial": axial view network, "average": average of all
 #' canonical views, "meg": morphological erosion, greedy, iterative.
-#' @param antsxnetCacheDirectory destination directory for storing the downloaded
-#' template and model weights.  Since these can be resused, if
-#' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-#' subdirectory ~/.keras/ANTsXNet/.
 #' @param verbose print progress.
 #' @return inpainted image
 #' @author Tustison NJ
 #' @export
 wholeHeadInpainting <- function( image, roiMask, modality = "t1", mode = "axial",
-  antsxnetCacheDirectory = NULL, verbose = FALSE )
+                                verbose = FALSE )
   {
 
   if( image@dimension != 3 )
@@ -26,7 +22,7 @@ wholeHeadInpainting <- function( image, roiMask, modality = "t1", mode = "axial"
     stop( "Image dimension must be 3." )
     }
 
-  if( mode == "sagittal" || mode == "coronal" || mode == "axial" )  
+  if( mode == "sagittal" || mode == "coronal" || mode == "axial" )
     {
     reorientTemplate <- antsImageRead( getANTsXNetData( "nki" ) )
     reorientTemplate <- padOrCropImageToSize( reorientTemplate, c( 256, 256, 256 ) )
@@ -40,12 +36,12 @@ wholeHeadInpainting <- function( image, roiMask, modality = "t1", mode = "axial"
     roiMaskReoriented <- applyAntsrTransformToImage( xfrm, roiMask, reorientTemplate, interpolation = "nearestNeighbor" )
     roiMaskReoriented <- thresholdImage( roiMaskReoriented, 0, 0, 0, 1 )
 
-    geoms = labelGeometryMeasures( roiMaskReoriented )    
+    geoms = labelGeometryMeasures( roiMaskReoriented )
     if( dim( geoms )[1] != 1 )
       {
       stop( "ROI is not specified correctly." )
       }
- 
+
     lowerSlice <- NULL
     upperSlice <- NULL
     weightsFile <- NULL
@@ -55,12 +51,10 @@ wholeHeadInpainting <- function( image, roiMask, modality = "t1", mode = "axial"
       lowerSlice <- floor( geoms$BoundingBoxLower_x )
       upperSlice <- floor( geoms$BoundingBoxUpper_x )
       if( modality == "t1" )
-        { 
-        weightsFile <- getPretrainedNetwork( "inpainting_sagittal_rmnet_weights",
-                                            antsxnetCacheDirectory = antsxnetCacheDirectory )
+        {
+        weightsFile <- getPretrainedNetwork( "inpainting_sagittal_rmnet_weights" )
         } else if( modality == "flair" ) {
-        weightsFile <- getPretrainedNetwork( "inpainting_sagittal_rmnet_flair_weights",
-                                            antsxnetCacheDirectory = antsxnetCacheDirectory )
+        weightsFile <- getPretrainedNetwork( "inpainting_sagittal_rmnet_flair_weights")
         } else {
         stop( "Unrecognized modality." )
         }
@@ -69,12 +63,10 @@ wholeHeadInpainting <- function( image, roiMask, modality = "t1", mode = "axial"
       lowerSlice <- floor( geoms$BoundingBoxLower_y )
       upperSlice <- floor( geoms$BoundingBoxUpper_y )
       if( modality == "t1" )
-        { 
-        weightsFile <- getPretrainedNetwork( "inpainting_coronal_rmnet_weights",
-                                            antsxnetCacheDirectory = antsxnetCacheDirectory )
+        {
+        weightsFile <- getPretrainedNetwork( "inpainting_coronal_rmnet_weights" )
         } else if( modality == "flair" ) {
-        weightsFile <- getPretrainedNetwork( "inpainting_coronal_rmnet_flair_weights",
-                                            antsxnetCacheDirectory = antsxnetCacheDirectory )
+        weightsFile <- getPretrainedNetwork( "inpainting_coronal_rmnet_flair_weights" )
         } else {
         stop( "Unrecognized modality." )
         }
@@ -83,12 +75,10 @@ wholeHeadInpainting <- function( image, roiMask, modality = "t1", mode = "axial"
       lowerSlice <- floor( geoms$BoundingBoxLower_z )
       upperSlice <- floor( geoms$BoundingBoxUpper_z )
       if( modality == "t1" )
-        { 
-        weightsFile <- getPretrainedNetwork( "inpainting_axial_rmnet_weights",
-                                            antsxnetCacheDirectory = antsxnetCacheDirectory )
+        {
+        weightsFile <- getPretrainedNetwork( "inpainting_axial_rmnet_weights" )
         } else if( modality == "flair" ) {
-        weightsFile <- getPretrainedNetwork( "inpainting_axial_rmnet_flair_weights",
-                                            antsxnetCacheDirectory = antsxnetCacheDirectory )
+        weightsFile <- getPretrainedNetwork( "inpainting_axial_rmnet_flair_weights" )
         } else {
         stop( "Unrecognized modality." )
         }
@@ -97,19 +87,19 @@ wholeHeadInpainting <- function( image, roiMask, modality = "t1", mode = "axial"
 
     model <- createRmnetGenerator()
     model$load_weights( weightsFile )
-    
+
     numberOfSlices <- upperSlice - lowerSlice + 1
 
-    imageSize <- c( 256, 256 )      
+    imageSize <- c( 256, 256 )
     channelSize <- 3
     batchX <- array( data = 0, dim = c( numberOfSlices, imageSize, channelSize ) )
     batchXMask <- array( data = 0, dim = c( numberOfSlices, imageSize, 1 ) )
     batchXMaxValues <- rep( 0, numberOfSlices )
-    
+
     for( i in seq_len( numberOfSlices ) )
       {
       sliceIndex <- i + lowerSlice
-      slice <- extractSlice( imageReoriented, slice = sliceIndex, 
+      slice <- extractSlice( imageReoriented, slice = sliceIndex,
                              direction = direction, collapseStrategy = 1 )
       batchX[i,,,1] <- as.array( slice )
       batchXMaxValues[i] <- max( batchX[i,,,1] )
@@ -118,14 +108,14 @@ wholeHeadInpainting <- function( image, roiMask, modality = "t1", mode = "axial"
         {
         batchX[i,,,j] <- batchX[i,,,1]
         }
-      maskSlice <- extractSlice( roiMaskReoriented, slice = sliceIndex, 
+      maskSlice <- extractSlice( roiMaskReoriented, slice = sliceIndex,
                                  direction = direction, collapseStrategy = 1 )
       batchXMask[i,,,1] <- as.array( maskSlice )
       }
-   
+
     batchY <- model$predict( list( batchX, batchXMask ), verbose = verbose )[,,,1:3, drop = FALSE]
 
-    inpaintedImageReorientedArray <- as.array( imageReoriented )   
+    inpaintedImageReorientedArray <- as.array( imageReoriented )
     for( i in seq_len( numberOfSlices ) )
       {
       sliceIndex <- i + lowerSlice
@@ -138,9 +128,9 @@ wholeHeadInpainting <- function( image, roiMask, modality = "t1", mode = "axial"
         } else if( direction == 3 ) {
         inpaintedImageReorientedArray[,,sliceIndex] <- inpaintedValues
         }
-      } 
-    inpaintedImageReoriented <- as.antsImage( inpaintedImageReorientedArray ) 
-    inpaintedImageReoriented <- antsCopyImageInfo( imageReoriented, inpaintedImageReoriented ) 
+      }
+    inpaintedImageReoriented <- as.antsImage( inpaintedImageReorientedArray )
+    inpaintedImageReoriented <- antsCopyImageInfo( imageReoriented, inpaintedImageReoriented )
 
     xfrmInv <- invertAntsrTransform( xfrm )
     inpaintedImage <- applyAntsrTransformToImage( xfrmInv, inpaintedImageReoriented, image, interpolation = "linear" )
@@ -148,18 +138,18 @@ wholeHeadInpainting <- function( image, roiMask, modality = "t1", mode = "axial"
     inpaintedImage[roiMask == 0] <- image[roiMask == 0]
 
     return( inpaintedImage )
-    
+
     } else if( mode == "average" ) {
-    
-    sagittal <- wholeHeadInpainting( image, roiMask = roiMask, modality = modality, 
+
+    sagittal <- wholeHeadInpainting( image, roiMask = roiMask, modality = modality,
                                      mode = "sagittal", verbose = verbose )
-    coronal <- wholeHeadInpainting( image, roiMask = roiMask, modality = modality, 
+    coronal <- wholeHeadInpainting( image, roiMask = roiMask, modality = modality,
                                     mode = "coronal", verbose = verbose )
-    axial <- wholeHeadInpainting( image, roiMask = roiMask, modality = modality, 
+    axial <- wholeHeadInpainting( image, roiMask = roiMask, modality = modality,
                                   mode = "axial", verbose = verbose )
 
     return( ( sagittal + coronal + axial ) / 3 )
-  
+
     } else if( mode == "meg" ) {
 
     currentImage <- antsImageClone( image )

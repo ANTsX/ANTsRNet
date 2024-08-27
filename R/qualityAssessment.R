@@ -27,10 +27,6 @@
 #' @param dimensionsToPredict if image dimension is 3, this parameter specifies
 #' which dimension(s) should be used for prediction.  If more than one dimension
 #' is specified, the results are averaged.
-#' @param antsxnetCacheDirectory destination directory for storing the downloaded
-#' template and model weights.  Since these can be reused, if
-#' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to
-#' ~/.keras/ANTsXNet/.
 #' @param whichModel model type e.g. string tidsQualityAssessment, koniqMS, koniqMS2 or koniqMS3 where
 #' the former predicts mean opinion score (MOS) and MOS standard deviation and
 #' the latter koniq models predict mean opinion score (MOS) and sharpness.  One
@@ -60,7 +56,7 @@
 #' @export
 tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
   strideLength, paddingSize = 0L, dimensionsToPredict = 1L,
-  antsxnetCacheDirectory = NULL, whichModel="tidsQualityAssessment",
+  whichModel="tidsQualityAssessment",
   imageScaling,
   doPatchScaling = FALSE,
   verbose = FALSE )
@@ -88,7 +84,7 @@ tidNeuralImageAssessment <- function( image, mask, patchSize = 101L,
       cat( "Neural QA:  retreiving model and weights.\n" )
       }
 
-    modelAndWeightsFileName <- getPretrainedNetwork( whichModel, antsxnetCacheDirectory = antsxnetCacheDirectory )
+    modelAndWeightsFileName <- getPretrainedNetwork( whichModel )
     tidModel <- load_model_hdf5( filepath = modelAndWeightsFileName, compile = FALSE )
     }
 

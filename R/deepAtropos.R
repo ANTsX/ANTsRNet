@@ -27,10 +27,6 @@
 #' @param useSpatialPriors Use MNI spatial tissue priors (0 or 1).  Currently,
 #' only '0' (no priors) and '1' (cerebellar prior only) are the only two options.
 #' Default is 1.
-#' @param antsxnetCacheDirectory destination directory for storing the downloaded
-#' template and model weights.  Since these can be resused, if
-#' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-#' inst/extdata/ subfolder of the ANTsRNet package.
 #' @param verbose print progress.
 #' @param debug return feature images in the last layer of the u-net model.
 #' @return list consisting of the segmentation image and probability images for
@@ -46,7 +42,7 @@
 #' }
 #' @export
 deepAtropos <- function( t1, doPreprocessing = TRUE, useSpatialPriors = 1,
-  antsxnetCacheDirectory = NULL, verbose = FALSE, debug = FALSE )
+  verbose = FALSE, debug = FALSE )
 {
 
   if( t1@dimension != 3 )
@@ -70,7 +66,6 @@ deepAtropos <- function( t1, doPreprocessing = TRUE, useSpatialPriors = 1,
         templateTransformType = "antsRegistrationSyNQuickRepro[a]",
         doBiasCorrection = TRUE,
         doDenoising = TRUE,
-        antsxnetCacheDirectory = antsxnetCacheDirectory,
         verbose = verbose )
     t1Preprocessed <- t1Preprocessing$preprocessedImage * t1Preprocessing$brainMask
     }
@@ -91,7 +86,7 @@ deepAtropos <- function( t1, doPreprocessing = TRUE, useSpatialPriors = 1,
   channelSize <- 1
   if( useSpatialPriors != 0 )
     {
-    mniPriors <- splitNDImageToList( antsImageRead( getANTsXNetData( "croppedMni152Priors", antsxnetCacheDirectory = antsxnetCacheDirectory ) ) )
+    mniPriors <- splitNDImageToList( antsImageRead( getANTsXNetData( "croppedMni152Priors" ) ) )
     for( i in seq.int( length( mniPriors ) ) )
       {
       mniPriors[[i]] <- antsCopyImageInfo( t1Preprocessed, mniPriors[[i]] )
@@ -112,9 +107,9 @@ deepAtropos <- function( t1, doPreprocessing = TRUE, useSpatialPriors = 1,
   weightsFileName <- ''
   if( useSpatialPriors == 0 )
     {
-    weightsFileName <- getPretrainedNetwork( "sixTissueOctantBrainSegmentation", antsxnetCacheDirectory = antsxnetCacheDirectory )
+    weightsFileName <- getPretrainedNetwork( "sixTissueOctantBrainSegmentation" )
     } else if( useSpatialPriors == 1 ) {
-    weightsFileName <- getPretrainedNetwork( "sixTissueOctantBrainSegmentationWithPriors1", antsxnetCacheDirectory = antsxnetCacheDirectory )
+    weightsFileName <- getPretrainedNetwork( "sixTissueOctantBrainSegmentationWithPriors1" )
     } else {
     stop( "useSpatialPriors must be a 0 or 1" )
     }

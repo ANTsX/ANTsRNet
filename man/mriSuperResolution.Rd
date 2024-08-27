@@ -4,15 +4,10 @@
 \alias{mriSuperResolution}
 \title{Super-resolution for MRI}
 \usage{
-mriSuperResolution(image, antsxnetCacheDirectory = NULL, verbose = FALSE)
+mriSuperResolution(image, verbose = FALSE)
 }
 \arguments{
 \item{image}{magnetic resonance image}
-
-\item{antsxnetCacheDirectory}{destination directory for storing the downloaded
-template and model weights.  Since these can be resused, if
-\code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-inst/extdata/ subfolder of the ANTsRNet package.}
 
 \item{verbose}{print progress.}
 }

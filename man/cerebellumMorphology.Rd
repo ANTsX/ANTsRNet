@@ -9,7 +9,6 @@ cerebellumMorphology(
   cerebellumMask = NULL,
   computeThicknessImage = FALSE,
   doPreprocessing = TRUE,
-  antsxnetCacheDirectory = NULL,
   verbose = FALSE
 )
 }
@@ -24,11 +23,6 @@ registration to a template.}
 matter.}
 
 \item{doPreprocessing}{Perform N4 bias correction and spatiall normalize to template space.}
-
-\item{antsxnetCacheDirectory}{destination directory for storing the downloaded
-template and model weights.  Since these can be ressed, if
-\code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-inst/extdata/ subfolder of the ANTsRNet package.}
 
 \item{verbose}{print progress.}
 }

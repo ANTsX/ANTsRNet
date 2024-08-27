@@ -25,10 +25,6 @@
 #' @param intensityNormalizationType Either rescale the intensities to [0,1]
 #' (i.e., "01") or zero-mean, unit variance (i.e., "0mean").  If \code{NULL}
 #' normalization is not performed.
-#' @param antsxnetCacheDirectory destination directory for storing the downloaded
-#' template and model weights.  Since these can be resused, if
-#' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-#' subdirectory ~/.keras/ANTsXNet/.
 #' @param verbose print progress to the screen.
 #' @return preprocessed image and, optionally, the brain mask, bias field, and
 #' template transforms.
@@ -50,8 +46,7 @@ preprocessBrainImage <- function( image, truncateIntensity = c( 0.01, 0.99 ),
   brainExtractionModality = NULL, templateTransformType = NULL, template = "biobank",
   doBiasCorrection = TRUE, returnBiasField = FALSE, doDenoising = TRUE,
   intensityMatchingType = NULL, referenceImage = NULL,
-  intensityNormalizationType = NULL, antsxnetCacheDirectory = NULL,
-  verbose = TRUE )
+  intensityNormalizationType = NULL, verbose = TRUE )
   {
 
   preprocessedImage <- antsImageClone( image )
@@ -77,7 +72,7 @@ preprocessBrainImage <- function( image, truncateIntensity = c( 0.01, 0.99 ),
       message( "Preprocessing:  brain extraction.\n" )
       }
     probabilityMask <- brainExtraction( preprocessedImage, modality = brainExtractionModality,
-      antsxnetCacheDirectory = antsxnetCacheDirectory, verbose = verbose )
+      verbose = verbose )
     mask <- thresholdImage( probabilityMask, 0.5, 1, 1, 0 )
     mask <- morphology( mask, "close", 6 ) %>% iMath("FillHoles")
     }
@@ -89,7 +84,7 @@ preprocessBrainImage <- function( image, truncateIntensity = c( 0.01, 0.99 ),
     templateImage <- NULL
     if( is.character( template ) )
       {
-      templateFileNamePath <- getANTsXNetData(template, antsxnetCacheDirectory = antsxnetCacheDirectory )
+      templateFileNamePath <- getANTsXNetData( template )
       templateImage <- antsImageRead( templateFileNamePath )
       } else {
       templateImage <- template
@@ -103,7 +98,7 @@ preprocessBrainImage <- function( image, truncateIntensity = c( 0.01, 0.99 ),
                           invtransforms = registration$invtransforms )
       } else {
       templateProbabilityMask <- brainExtraction( templateImage, modality = "t1",
-        antsxnetCacheDirectory = antsxnetCacheDirectory, verbose = verbose )
+        verbose = verbose )
       templateMask <- thresholdImage( templateProbabilityMask, 0.5, 1, 1, 0 )
       templateBrainImage <- templateMask * templateImage
 

@@ -21,10 +21,6 @@
 #'
 #' @param image input 3-D T1-weighted brain image.
 #' @param doPreprocessing perform preprocessing.  See description above.
-#' @param antsxnetCacheDirectory destination directory for storing the downloaded
-#' template and model weights.  Since these can be resused, if
-#' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-#' subdirectory ~/.keras/ANTsXNet/.
 #' @param verbose print progress.
 #' @return labeled hippocampal mask (ANTsR image)
 #' @author Tustison NJ
@@ -42,8 +38,7 @@
 #' segmentation <- hippMapp3rSegmentation( imageN4, verbose = TRUE )
 #' }
 #' @export
-hippMapp3rSegmentation <- function( t1, doPreprocessing = TRUE,
-  antsxnetCacheDirectory = NULL, verbose = FALSE )
+hippMapp3rSegmentation <- function( t1, doPreprocessing = TRUE, verbose = FALSE )
   {
 
   if( t1@dimension != 3 )
@@ -71,7 +66,6 @@ hippMapp3rSegmentation <- function( t1, doPreprocessing = TRUE,
         template = NULL,
         doBiasCorrection = TRUE,
         doDenoising = FALSE,
-        antsxnetCacheDirectory = antsxnetCacheDirectory,
         verbose = verbose )
     t1Preprocessed <- t1Preprocessing$preprocessedImage * t1Preprocessing$brainMask
     }
@@ -97,8 +91,7 @@ hippMapp3rSegmentation <- function( t1, doPreprocessing = TRUE,
     {
     cat( "    HippMapp3r: retrieving template.\n" )
     }
-  templateFileNamePath <- getANTsXNetData( "mprage_hippmapp3r",
-    antsxnetCacheDirectory = antsxnetCacheDirectory )
+  templateFileNamePath <- getANTsXNetData( "mprage_hippmapp3r" )
   templateImage <- antsImageRead( templateFileNamePath )
 
   registration <- antsRegistration( fixed = templateImage, moving = t1Preprocessed,
@@ -148,8 +141,7 @@ hippMapp3rSegmentation <- function( t1, doPreprocessing = TRUE,
     {
     cat( "    HippMapp3r: retrieving model weights.\n" )
     }
-  initialStageWeightsFileName <- getPretrainedNetwork( "hippMapp3rInitial",
-    antsxnetCacheDirectory = antsxnetCacheDirectory )
+  initialStageWeightsFileName <- getPretrainedNetwork( "hippMapp3rInitial" )
   modelInitialStage$load_weights( initialStageWeightsFileName )
 
   if( verbose == TRUE )
@@ -199,8 +191,7 @@ hippMapp3rSegmentation <- function( t1, doPreprocessing = TRUE,
     {
     cat( "    HippMapp3r: retrieving model weights.\n" )
     }
-  refineStageWeightsFileName <- getPretrainedNetwork( "hippMapp3rRefine",
-    antsxnetCacheDirectory = antsxnetCacheDirectory )
+  refineStageWeightsFileName <- getPretrainedNetwork( "hippMapp3rRefine" )
   modelRefineStage$load_weights( refineStageWeightsFileName )
 
   dataRefineStage <- array( data = as.array( imageTrimmed ), dim = c( 1, shapeRefineStage, 1 ) )

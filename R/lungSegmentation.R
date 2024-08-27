@@ -9,10 +9,6 @@
 #' @param useCoarseSlicesOnly if \code{TRUE}, apply network only in the
 #' dimension of greatest slice thickness.  If \code{FALSE}, apply to all
 #' dimensions and average the results.
-#' @param antsxnetCacheDirectory destination directory for storing the downloaded
-#' template and model weights.  Since these can be resused, if
-#' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-#' inst/extdata/ subfolder of the ANTsRNet package.
 #' @param verbose print progress.
 #' @return ventilation segmentation and corresponding probability images
 #' @author Tustison NJ
@@ -26,7 +22,7 @@
 #' }
 #' @export
 elBicho <- function( ventilationImage, mask,
-   useCoarseSlicesOnly = TRUE, antsxnetCacheDirectory = NULL, verbose = FALSE )
+   useCoarseSlicesOnly = TRUE, verbose = FALSE )
 {
 
   if( ventilationImage@dimension != 3 )
@@ -71,7 +67,7 @@ elBicho <- function( ventilationImage, mask,
     {
     cat( "El Bicho:  retrieving model weights.\n" )
     }
-  weightsFileName <- getPretrainedNetwork( "elBicho", antsxnetCacheDirectory = antsxnetCacheDirectory )
+  weightsFileName <- getPretrainedNetwork( "elBicho" )
   unetModel$load_weights( weightsFileName )
 
   ################################
@@ -181,22 +177,18 @@ elBicho <- function( ventilationImage, mask,
 
 #' Pulmonary artery segmentation.
 #'
-#' Perform pulmonary artery segmentation.  Training data taken from the 
-#' PARSE2022 challenge (Luo, Gongning, et al. "Efficient automatic segmentation 
-#' for multi-level pulmonary arteries: The PARSE challenge." 
+#' Perform pulmonary artery segmentation.  Training data taken from the
+#' PARSE2022 challenge (Luo, Gongning, et al. "Efficient automatic segmentation
+#' for multi-level pulmonary arteries: The PARSE challenge."
 #' https://arxiv.org/abs/2304.03708).
 #'
 #' @param ct input 3-D ct image.
-#' @param lungMask input binary lung mask which defines the patch extraction.  
+#' @param lungMask input binary lung mask which defines the patch extraction.
 #' If not supplied, one is estimated.
-#' @param predictionBatchSize Control memory usage for prediction.  More consequential 
+#' @param predictionBatchSize Control memory usage for prediction.  More consequential
 #' for GPU-usage.
-#' @param patchStrideLength  3-D vector or int.   Dictates the stride length for 
+#' @param patchStrideLength  3-D vector or int.   Dictates the stride length for
 #' accumulating predicting patches.
-#' @param antsxnetCacheDirectory destination directory for storing the downloaded
-#' template and model weights.  Since these can be resused, if
-#' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-#' inst/extdata/ subfolder of the ANTsRNet package.
 #' @param verbose print progress.
 #' @return Probability image.
 #' @author Tustison NJ
@@ -207,9 +199,8 @@ elBicho <- function( ventilationImage, mask,
 #'
 #' }
 #' @export
-lungPulmonaryArterySegmentation <- function( ct, lungMask = NULL, 
-  predictionBatchSize = 16, patchStrideLength = 32,
-  antsxnetCacheDirectory = NULL, verbose = FALSE )
+lungPulmonaryArterySegmentation <- function( ct, lungMask = NULL,
+  predictionBatchSize = 16, patchStrideLength = 32, verbose = FALSE )
 {
 
   patchSize <- c( 160, 160, 160 )
@@ -227,8 +218,7 @@ lungPulmonaryArterySegmentation <- function( ct, lungMask = NULL,
 
   if( is.null( lungMask ) )
     {
-    lungEx <- lungExtraction( ct, modality = "ct", verbose = verbose,
-                              antsxnetCacheDirectory = antsxnetCacheDirectory )
+    lungEx <- lungExtraction( ct, modality = "ct", verbose = verbose )
     lungMask <- thresholdImage( lungEx$segmentationImage, 0, 0, 0, 1 )
     }
   ctPreprocessed <- antsImageClone( ct )
@@ -259,8 +249,7 @@ lungPulmonaryArterySegmentation <- function( ct, lungMask = NULL,
                numberOfFilters = c( 32, 64, 128, 256, 512 ),
                convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
                dropoutRate = 0.0, weightDecay = 0.0 )
-  weightsFileName <- getPretrainedNetwork( "pulmonaryArteryWeights", 
-                                           antsxnetCacheDirectory = antsxnetCacheDirectory )
+  weightsFileName <- getPretrainedNetwork( "pulmonaryArteryWeights" )
   load_model_weights_hdf5( model, filepath = weightsFileName )
 
   ################################
@@ -282,7 +271,7 @@ lungPulmonaryArterySegmentation <- function( ct, lungMask = NULL,
                                     randomSeed = NULL,
                                     returnAsArray = TRUE )
   totalNumberOfPatches <- dim( ctPatches )[1]
- 
+
   ################################
   #
   # Do prediction and then restock into the image
@@ -293,7 +282,7 @@ lungPulmonaryArterySegmentation <- function( ct, lungMask = NULL,
   residualNumberOfPatches <- totalNumberOfPatches - numberOfBatches * predictionBatchSize
   if( residualNumberOfPatches > 0 )
     {
-    numberOfBatches <- numberOfBatches + 1 
+    numberOfBatches <- numberOfBatches + 1
     }
 
   if( verbose )
@@ -302,17 +291,17 @@ lungPulmonaryArterySegmentation <- function( ct, lungMask = NULL,
     message( "  Prediction batch size: ", predictionBatchSize )
     message( "  Number of batches: ", numberOfBatches )
     }
- 
+
   prediction <- array( data = 0, dim = c( totalNumberOfPatches, patchSize, 1 ) )
   for( b in seq.int( numberOfBatches ) )
     {
     batchX <- NULL
     if( b < numberOfBatches || residualNumberOfPatches == 0 )
       {
-      batchX <- array( data = 0, dim = c( predictionBatchSize, patchSize, channelSize ) ) 
+      batchX <- array( data = 0, dim = c( predictionBatchSize, patchSize, channelSize ) )
       } else {
-      
-      batchX <- array( data = 0, dim = c( residualNumberOfPatches, patchSize, channelSize ) ) 
+
+      batchX <- array( data = 0, dim = c( residualNumberOfPatches, patchSize, channelSize ) )
       }
 
     indices <- ( ( b - 1 ) * predictionBatchSize + 1):( ( b - 1 ) * predictionBatchSize + dim( batchX )[1] )
@@ -323,7 +312,7 @@ lungPulmonaryArterySegmentation <- function( ct, lungMask = NULL,
       message( "  Predicting batch ", b, " of ", numberOfBatches )
       }
     prediction[indices,,,,] <- model %>% predict( batchX, verbose = verbose )
-    }  
+    }
 
   if( verbose )
     {
@@ -333,29 +322,25 @@ lungPulmonaryArterySegmentation <- function( ct, lungMask = NULL,
                                                    strideLength = patchStrideLength,
                                                    domainImage = lungMask,
                                                    domainImageIsMask = TRUE )
- 
+
   return( probabilityImage )
   }
 
 
 #' Lung airway segmentation.
 #'
-#' Perform pulmonary artery segmentation.  Training data taken from the 
-#' EXACT09 challenge (Lo, Pechin, et al. "Extraction of airways from CT 
+#' Perform pulmonary artery segmentation.  Training data taken from the
+#' EXACT09 challenge (Lo, Pechin, et al. "Extraction of airways from CT
 #' (EXACT'09)." https://pubmed.ncbi.nlm.nih.gov/22855226/)
 #'
 #' @param ct input 3-D ct image.
-#' @param lungMask input binary lung mask which defines the patch extraction 
-#' (label 1 = left lung, label 2 = right lung, label 3 = main airway).  
+#' @param lungMask input binary lung mask which defines the patch extraction
+#' (label 1 = left lung, label 2 = right lung, label 3 = main airway).
 #' If not supplied, one is estimated.
-#' @param predictionBatchSize Control memory usage for prediction.  More consequential 
+#' @param predictionBatchSize Control memory usage for prediction.  More consequential
 #' for GPU-usage.
-#' @param patchStrideLength  3-D vector or int.   Dictates the stride length for 
+#' @param patchStrideLength  3-D vector or int.   Dictates the stride length for
 #' accumulating predicting patches.
-#' @param antsxnetCacheDirectory destination directory for storing the downloaded
-#' template and model weights.  Since these can be resused, if
-#' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-#' inst/extdata/ subfolder of the ANTsRNet package.
 #' @param verbose print progress.
 #' @return Probability image.
 #' @author Tustison NJ
@@ -366,9 +351,9 @@ lungPulmonaryArterySegmentation <- function( ct, lungMask = NULL,
 #'
 #' }
 #' @export
-lungAirwaySegmentation <- function( ct, lungMask = NULL, 
+lungAirwaySegmentation <- function( ct, lungMask = NULL,
   predictionBatchSize = 16, patchStrideLength = 32,
-  antsxnetCacheDirectory = NULL, verbose = FALSE )
+  verbose = FALSE )
 {
 
   patchSize <- c( 160, 160, 160 )
@@ -418,7 +403,7 @@ lungAirwaySegmentation <- function( ct, lungMask = NULL,
                numberOfFilters = c( 32, 64, 128, 256, 512 ),
                convolutionKernelSize = c( 3, 3, 3 ), deconvolutionKernelSize = c( 2, 2, 2 ),
                dropoutRate = 0.0, weightDecay = 0.0 )
-  weightsFileName <- getPretrainedNetwork( "pulmonaryArteryWeights", antsxnetCacheDirectory = antsxnetCacheDirectory )
+  weightsFileName <- getPretrainedNetwork( "pulmonaryArteryWeights" )
   load_model_weights_hdf5( model, filepath = weightsFileName )
 
   ################################
@@ -440,7 +425,7 @@ lungAirwaySegmentation <- function( ct, lungMask = NULL,
                                     randomSeed = NULL,
                                     returnAsArray = TRUE )
   totalNumberOfPatches <- dim( ctPatches )[1]
- 
+
   ################################
   #
   # Do prediction and then restock into the image
@@ -451,7 +436,7 @@ lungAirwaySegmentation <- function( ct, lungMask = NULL,
   residualNumberOfPatches <- totalNumberOfPatches - numberOfBatches * predictionBatchSize
   if( residualNumberOfPatches > 0 )
     {
-    numberOfBatches <- numberOfBatches + 1 
+    numberOfBatches <- numberOfBatches + 1
     }
 
   if( verbose )
@@ -460,17 +445,17 @@ lungAirwaySegmentation <- function( ct, lungMask = NULL,
     message( "  Prediction batch size: ", predictionBatchSize )
     message( "  Number of batches: ", numberOfBatches )
     }
- 
+
   prediction <- array( data = 0, dim = c( totalNumberOfPatches, patchSize, 2 ) )
   for( b in seq.int( numberOfBatches ) )
     {
     batchX <- NULL
     if( b < numberOfBatches || residualNumberOfPatches == 0 )
       {
-      batchX <- array( data = 0, dim = c( predictionBatchSize, patchSize, channelSize ) ) 
+      batchX <- array( data = 0, dim = c( predictionBatchSize, patchSize, channelSize ) )
       } else {
-      
-      batchX <- array( data = 0, dim = c( residualNumberOfPatches, patchSize, channelSize ) ) 
+
+      batchX <- array( data = 0, dim = c( residualNumberOfPatches, patchSize, channelSize ) )
       }
 
     indices <- ( ( b - 1 ) * predictionBatchSize + 1):( ( b - 1 ) * predictionBatchSize + dim( batchX )[1] )
@@ -481,7 +466,7 @@ lungAirwaySegmentation <- function( ct, lungMask = NULL,
       message( "  Predicting batch ", b, " of ", numberOfBatches )
       }
     prediction[indices,,,,] <- model %>% predict( batchX, verbose = verbose )
-    }  
+    }
 
   if( verbose )
     {
@@ -491,7 +476,7 @@ lungAirwaySegmentation <- function( ct, lungMask = NULL,
                                                    strideLength = patchStrideLength,
                                                    domainImage = lungMask,
                                                    domainImageIsMask = TRUE )
- 
+
   return( probabilityImage )
   }
 

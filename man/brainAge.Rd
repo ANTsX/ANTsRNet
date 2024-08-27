@@ -9,7 +9,6 @@ brainAge(
   doPreprocessing = TRUE,
   numberOfSimulations = 0,
   sdAffine = 0.01,
-  antsxnetCacheDirectory = NULL,
   verbose = TRUE
 )
 }
@@ -25,11 +24,6 @@ transform the input.}
 
 \item{sdAffine}{define the standard deviation of the affine transformation
 parameter for the simulations.}
-
-\item{antsxnetCacheDirectory}{destination directory for storing the downloaded
-template and model weights.  Since these can be resused, if
-\code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-inst/extdata/ subfolder of the ANTsRNet package.}
 
 \item{verbose}{print progress.}
 }

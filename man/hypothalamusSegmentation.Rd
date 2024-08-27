@@ -4,15 +4,10 @@
 \alias{hypothalamusSegmentation}
 \title{Hypothalamus segmentation}
 \usage{
-hypothalamusSegmentation(t1, antsxnetCacheDirectory = NULL, verbose = FALSE)
+hypothalamusSegmentation(t1, verbose = FALSE)
 }
 \arguments{
 \item{t1}{input 3-D T1-weighted brain image.}
-
-\item{antsxnetCacheDirectory}{destination directory for storing the downloaded
-template and model weights.  Since these can be resused, if
-\code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-inst/extdata/ subfolder of the ANTsRNet package.}
 
 \item{verbose}{print progress.}
 }

@@ -9,7 +9,6 @@ mouseBrainParcellation(
   mask = NULL,
   returnIsotropicOutput = FALSE,
   whichParcellation = c("nick", "jay", "tct"),
-  antsxnetCacheDirectory = NULL,
   verbose = FALSE
 )
 }
@@ -59,11 +58,6 @@ images are returned isotropically resampled.}
 \item{Label 4:}{}
 }}
 }}
-
-\item{antsxnetCacheDirectory}{destination directory for storing the downloaded
-template and model weights.  Since these can be resused, if
-\code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-subdirectory ~/.keras/ANTsXNet/.}
 
 \item{verbose}{print progress.}
 }

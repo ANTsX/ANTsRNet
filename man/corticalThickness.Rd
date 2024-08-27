@@ -4,15 +4,10 @@
 \alias{corticalThickness}
 \title{Cortical thickness using deep learning}
 \usage{
-corticalThickness(t1, antsxnetCacheDirectory = NULL, verbose = FALSE)
+corticalThickness(t1, verbose = FALSE)
 }
 \arguments{
 \item{t1}{input 3-D unprocessed T1-weighted brain image}
-
-\item{antsxnetCacheDirectory}{destination directory for storing the downloaded
-template and model weights.  Since these can be resused, if
-\code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-subdirectory ~/.keras/ANTsXNet/.}
 
 \item{verbose}{print progress.}
 }

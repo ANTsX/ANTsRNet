@@ -9,7 +9,6 @@ longitudinalCorticalThickness(
   initialTemplate = "oasis",
   numberOfIterations = 1,
   refinementTransform = "antsRegistrationSyNQuick[a]",
-  antsxnetCacheDirectory = NULL,
   verbose = FALSE
 )
 }
@@ -24,11 +23,6 @@ SST outside of this routine.}
 
 \item{refinementTransform}{Transform for defining the refinement registration transform.
 See options in \code{antsRegistration}.}
-
-\item{antsxnetCacheDirectory}{destination directory for storing the downloaded
-template and model weights.  Since these can be resused, if
-\code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-subdirectory ~/.keras/ANTsXNet/.}
 
 \item{verbose}{print progress.}
 }

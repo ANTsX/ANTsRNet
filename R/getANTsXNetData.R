@@ -1,3 +1,43 @@
+#' Set the ANTsXNet Cache Directory
+#'
+#' This function sets the cache directory used by ANTsXNet to store downloaded
+#' templates and model weights. If the specified directory does not exist,
+#' it will be created.
+#'
+#' @param path A character string specifying the path to the cache directory.
+#' @return NULL
+#' @export
+setAntsxnetCacheDirectory <- function(path) {
+  normalizedPath <- normalizePath(path, winslash = "/", mustWork = FALSE)
+
+  if (!dir.exists(normalizedPath)) {
+    dir.create(normalizedPath, recursive = TRUE)
+  }
+
+  options(antsxnetCacheDirectory = normalizedPath)
+}
+
+
+#' Get the ANTsXNet Cache Directory
+#'
+#' This function returns the current cache directory used by ANTsXNet to store
+#' downloaded templates and model weights. If no directory has been set, it
+#' initializes it to the default path "~/.keras/ANTsXNet".
+#'
+#' @return A character string specifying the path to the cache directory.
+#' @export
+getAntsxnetCacheDirectory <- function() {
+  cacheDir <- getOption("antsxnetCacheDirectory", default = NULL)
+
+  if (is.null(cacheDir)) {
+    cacheDir <- normalizePath("~/.keras/ANTsXNet", winslash = "/", mustWork = FALSE)
+    options(antsxnetCacheDirectory = cacheDir)
+  }
+
+  return(cacheDir)
+}
+
+
 #' getANTsXNetData
 #'
 #' Download data such as prefabricated templates and spatial priors.
@@ -5,10 +45,6 @@
 #' @param fileId one of the permitted file ids or pass "show" to list all
 #'   valid possibilities. Note that most require internet access to download.
 #' @param targetFileName optional target filename
-#' @param antsxnetCacheDirectory destination directory for storing the downloaded
-#' template and model weights.  Since these can be resused, if
-#' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-#' subdirectory ~/.keras/ANTsXNet/.
 #' @return filename string
 #' @author Avants BB
 #' @note See \url{https://figshare.com/authors/Nick_Tustison/441144}
@@ -55,16 +91,16 @@ getANTsXNetData <- function(
               "magetCerebellumxTemplate0GenericAffine",
               "mraTemplate",
               "mraTemplateBrainMask",
-              "mraTemplateVesselPrior",            
+              "mraTemplateVesselPrior",
               "bsplineT2MouseTemplate",
               "bsplineT2MouseTemplateBrainMask",
               "DevCCF_P56_MRI_T2_50um",
               "DevCCF_P56_MRI_T2_50um_BrainParcellationNickMask",
               "DevCCF_P56_MRI_T2_50um_BrainParcellationTctMask",
               "DevCCF_P04_STPT_50um",
-              "DevCCF_P04_STPT_50um_BrainParcellationJayMask"              
+              "DevCCF_P04_STPT_50um_BrainParcellationJayMask"
             ),
-  targetFileName, antsxnetCacheDirectory = NULL )
+  targetFileName)
 {
 
   if( fileId[1] == "show" )
@@ -129,17 +165,13 @@ getANTsXNetData <- function(
       }
     }
 
-  if( is.null( antsxnetCacheDirectory ) )
-    {
-    antsxnetCacheDirectory <- fs::path_join( path.expand( c( "~/.keras/ANTsXNet" ) ) )
-    }
-  targetFileNamePath <- fs::path_join( path.expand( c( antsxnetCacheDirectory, targetFileName ) ) )
+  targetFileNamePath <- fs::path_join( path.expand( c( getAntsxnetCacheDirectory(), targetFileName ) ) )
 
   if( ! fs::file_exists( targetFileNamePath ) )
     {
     targetFileNamePath <- tensorflow::tf$keras$utils$get_file(
-      targetFileName, url, cache_subdir = antsxnetCacheDirectory )
+      targetFileName, url, cache_subdir = getAntsxnetCacheDirectory() )
     }
-  
+
   return( as.character( targetFileNamePath ) )
 }

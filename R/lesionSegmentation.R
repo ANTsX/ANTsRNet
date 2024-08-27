@@ -3,18 +3,14 @@
 #' Perform in-painting for whole-head MRI
 #'
 #' @param t1 input 3-D T1 brain image (not skull-stripped).
-#' @param doPreprocessing  Perform n4 bias correction, intensity truncation, brain 
+#' @param doPreprocessing  Perform n4 bias correction, intensity truncation, brain
 #' extraction.
-#' @param antsxnetCacheDirectory destination directory for storing the downloaded
-#' template and model weights.  Since these can be resused, if
-#' \code{is.null(antsxnetCacheDirectory)}, these data will be downloaded to the
-#' subdirectory ~/.keras/ANTsXNet/.
 #' @param verbose print progress.
 #' @return inpainted image
 #' @author Tustison NJ
 #' @export
 lesionSegmentation <- function( t1, doPreprocessing = TRUE,
-  antsxnetCacheDirectory = NULL, verbose = FALSE )
+                                verbose = FALSE )
   {
 
   ################################
@@ -37,7 +33,6 @@ lesionSegmentation <- function( t1, doPreprocessing = TRUE,
         brainExtractionModality = "t1",
         doBiasCorrection = TRUE,
         doDenoising = FALSE,
-        antsxnetCacheDirectory = antsxnetCacheDirectory,
         verbose = verbose )
     brainMask <- t1Preprocessing$brainMask
     t1Preprocessed <- t1Preprocessing$preprocessedImage * brainMask
@@ -45,13 +40,13 @@ lesionSegmentation <- function( t1, doPreprocessing = TRUE,
     t1Preprocessed <- antsImageClone( t1 )
     brainMask <- thresholdImage( t1Preprocessed, 0, 0, 0, 1 )
     }
-   
-  templateSize <- c( 192, 208, 192 ) 
+
+  templateSize <- c( 192, 208, 192 )
   template <- antsImageRead( getANTsXNetData( "mni152" ) )
   template <- padOrCropImageToSize( template, templateSize )
   templateMask <- brainExtraction( template, modality = "t1", verbose = verbose )
-  template <- template * templateMask 
-   
+  template <- template * templateMask
+
   if( verbose )
     {
     cat( "Load u-net models and weights." )
@@ -59,8 +54,7 @@ lesionSegmentation <- function( t1, doPreprocessing = TRUE,
 
    numberOfClassificationLabels = 1
    channelSize = 1
-   unetWeightsFileName <- getPretrainedNetwork( "lesion_whole_brain", 
-                                                antsxnetCacheDirectory = antsxnetCacheDirectory )
+   unetWeightsFileName <- getPretrainedNetwork( "lesion_whole_brain" )
    unetModel <- createUnetModel3D( c( templateSize, channelSize ),
        numberOfOutputs = numberOfClassificationLabels,
        mode = 'sigmoid',
@@ -77,7 +71,7 @@ lesionSegmentation <- function( t1, doPreprocessing = TRUE,
   imageMin <- min( t1Preprocessed[brainMask != 0] )
   imageMax <- max( t1Preprocessed[brainMask != 0] )
 
-  registration <- antsRegistration( template, t1Preprocessed, typeofTransform = "antsRegistrationSyNQuick[a]", 
+  registration <- antsRegistration( template, t1Preprocessed, typeofTransform = "antsRegistrationSyNQuick[a]",
                                     verbose = verbose )
   image <- registration$warpedmovout
   image <- ( image - imageMin ) / ( imageMax - imageMin )
@@ -88,8 +82,8 @@ lesionSegmentation <- function( t1, doPreprocessing = TRUE,
   lesionMaskArray <- drop( unetModel$predict( batchX, verbose = verbose ) )
   lesionMask <- antsCopyImageInfo( template, as.antsImage( lesionMaskArray ) )
 
-  probabilityImage <- antsApplyTransforms( t1Preprocessed, lesionMask, registration$invtransforms, 
+  probabilityImage <- antsApplyTransforms( t1Preprocessed, lesionMask, registration$invtransforms,
                                            whichtoinvert = c( TRUE ), verbose = verbose )
-  
+
   return( probabilityImage )
   }
