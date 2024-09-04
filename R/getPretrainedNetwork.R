@@ -257,7 +257,7 @@ getPretrainedNetwork <- function(
     mraVesselWeights_160 = "https://figshare.com/ndownloader/files/46406029",
     mouseMriBrainExtraction = "https://figshare.com/ndownloader/files/44714947",
     mouseT2wBrainExtraction3D = "https://figshare.com/ndownloader/files/44943715",
-    mouseT2wBrainParcellation3DNick = "https://figshare.com/ndownloader/files/44714944",
+    mouseT2wBrainParcellation3DNick = "https://figshare.com/ndownloader/files/49014331",
     mouseT2wBrainParcellation3DTct = "https://figshare.com/ndownloader/files/47214538",
     mouseSTPTBrainParcellation3DJay = "https://figshare.com/ndownloader/files/46710592",
     pvs_shiva_t1_0 = "https://figshare.com/ndownloader/files/48660169",
