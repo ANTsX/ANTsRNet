@@ -13,13 +13,15 @@
 
 A collection of deep learning architectures and applications ported to the R language and tools for basic medical image processing. Based on `keras` and `tensorflow` with cross-compatibility with our python analog [ANTsPyNet](https://github.com/ntustison/ANTsPyNet/).
 
-[Documentation page](https://antsx.github.io/ANTsRNet/)
-
-[ANTsXNet tutorial](https://gist.github.com/ntustison/12a656a5fc2f6f9c4494c88dc09c5621#antsxnet)
+- A large collection of common deep learning architectures for medical imaging that can be initialized
+- Various pre-trained deep learning models to perform key medical imaging tasks
+- Utility functions to improve training and evaluating of deep learning models on medical images
 
 <p align="middle">
   <img src="docs/figures/coreANTsXNetTools.png" width="600" />
 </p>
+
+## Overview
 
 <details>
 <summary>Installation</summary>
@@ -187,3 +189,11 @@ R CMD INSTALL ANTsRNet
 * We gratefully acknowledge the grant support of the [Office of Naval Research](https://www.onr.navy.mil) and [Cohen Veterans Bioscience](https://www.cohenveteransbioscience.org).
 
 </details>
+
+## Other resources
+
+[Documentation page](https://antsx.github.io/ANTsRNet/)
+
+[ANTsXNet tutorial](https://gist.github.com/ntustison/12a656a5fc2f6f9c4494c88dc09c5621#antsxnet)
+
+
