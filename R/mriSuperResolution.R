@@ -16,6 +16,9 @@
 #' @export
 mriSuperResolution <- function( image, verbose = FALSE )
 {
+
+  message( 'Warning:  this method is deprecated.  Please see https://github.com/stnava/siq' )
+
   if( image@dimension != 3 )
     {
     stop( "Input image dimension must be 3." )
