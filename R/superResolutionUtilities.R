@@ -190,6 +190,8 @@ applySuperResolutionModelToImage <- function( image, model,
   targetRange = c( -127.5, 127.5 ), batchSize = 32, regressionOrder = NA,
   verbose = FALSE )
 {
+  message( 'Warning:  this method is deprecated.  Please see https://github.com/stnava/siq' )
+
   channelAxis <- 1L
   if( keras::backend()$image_data_format() == "channels_last" )
     {
