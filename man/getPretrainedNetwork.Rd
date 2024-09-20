@@ -59,7 +59,9 @@ getPretrainedNetwork(
     "chexnetClassificationANTsXNetModel", "tb_antsxnet_model",
     "wholeHeadInpaintingFLAIR", "wholeHeadInpaintingPatchBasedT1",
     "wholeHeadInpaintingPatchBasedFLAIR", "wholeTumorSegmentationT2Flair",
-    "wholeLungMaskFromVentilation"),
+    "wholeLungMaskFromVentilation", "DeepAtroposHcpT1Weights",
+    "DeepAtroposHcpT1T2Weights", "DeepAtroposHcpT1FAWeights",
+    "DeepAtroposHcpT1T2FAWeights"),
   targetFileName
 )
 }
