@@ -194,6 +194,6 @@ R CMD INSTALL ANTsRNet
 
 [Documentation page](https://antsx.github.io/ANTsRNet/)
 
-[ANTsXNet tutorial](https://gist.github.com/ntustison/12a656a5fc2f6f9c4494c88dc09c5621#antsxnet)
+[ANTsXNet self-contained examples](https://gist.github.com/ntustison/12a656a5fc2f6f9c4494c88dc09c5621#antsxnet) 
 
 
