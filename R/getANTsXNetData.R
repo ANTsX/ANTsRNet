@@ -98,7 +98,12 @@ getANTsXNetData <- function(
               "DevCCF_P56_MRI_T2_50um_BrainParcellationNickMask",
               "DevCCF_P56_MRI_T2_50um_BrainParcellationTctMask",
               "DevCCF_P04_STPT_50um",
-              "DevCCF_P04_STPT_50um_BrainParcellationJayMask"
+              "DevCCF_P04_STPT_50um_BrainParcellationJayMask",
+              "hcpyaT1Template",
+              "hcpyaT2Template",
+              "hcpyaFATemplate",
+              "hcpyaTemplateBrainMask",
+              "hcpyaTemplateBrainSegmentation"
             ),
   targetFileName)
 {
@@ -146,6 +151,11 @@ getANTsXNetData <- function(
     mraTemplate = "https://figshare.com/ndownloader/files/46406695",
     mraTemplateBrainMask = "https://figshare.com/ndownloader/files/46406698",
     mraTemplateVesselPrior = "https://figshare.com/ndownloader/files/46406713",
+    hcpyaT1Template = "https://figshare.com/ndownloader/files/46746142",
+    hcpyaT2Template = "https://figshare.com/ndownloader/files/46746334",
+    hcpyaFATemplate = "https://figshare.com/ndownloader/files/46746349",
+    hcpyaTemplateBrainMask = "https://figshare.com/ndownloader/files/46746388",
+    hcpyaTemplateBrainSegmentation = "https://figshare.com/ndownloader/files/46746367",
     bsplineT2MouseTemplate = "https://figshare.com/ndownloader/files/44706247",
     bsplineT2MouseTemplateBrainMask = "https://figshare.com/ndownloader/files/44869285",
     DevCCF_P56_MRI_T2_50um = "https://figshare.com/ndownloader/files/44706244",
