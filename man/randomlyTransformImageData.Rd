@@ -40,7 +40,7 @@ input image list (optional).}
 \item{numberOfSimulations}{number of output images.  Default = 10.}
 
 \item{transformType}{one of the following options
-\code{c( "translation", "rigid", "scaleShear", "affine"," deformation" ,
+\code{c( "translation", "rotation", "rigid", "scaleShear", "affine"," deformation" ,
   "affineAndDeformation" )}.  Default = \"affine\".}
 
 \item{sdAffine}{parameter dictating deviation amount from identity for
