@@ -103,7 +103,12 @@ getANTsXNetData <- function(
               "hcpyaT2Template",
               "hcpyaFATemplate",
               "hcpyaTemplateBrainMask",
-              "hcpyaTemplateBrainSegmentation"
+              "hcpyaTemplateBrainSegmentation",
+              "hcpinterT1Template",
+              "hcpinterT2Template",
+              "hcpinterFATemplate",
+              "hcpinterTemplateBrainMask",
+              "hcpinterTemplateBrainSegmentation"
             ),
   targetFileName)
 {
@@ -156,6 +161,11 @@ getANTsXNetData <- function(
     hcpyaFATemplate = "https://figshare.com/ndownloader/files/46746349",
     hcpyaTemplateBrainMask = "https://figshare.com/ndownloader/files/46746388",
     hcpyaTemplateBrainSegmentation = "https://figshare.com/ndownloader/files/46746367",
+    hcpinterT1Template = "https://figshare.com/ndownloader/files/49372855",
+    hcpinterT2Template = "https://figshare.com/ndownloader/files/49372849",
+    hcpinterFATemplate = "https://figshare.com/ndownloader/files/49372858",
+    hcpinterTemplateBrainMask = "https://figshare.com/ndownloader/files/49372861",
+    hcpinterTemplateBrainSegmentation = "https://figshare.com/ndownloader/files/49372852",
     bsplineT2MouseTemplate = "https://figshare.com/ndownloader/files/44706247",
     bsplineT2MouseTemplateBrainMask = "https://figshare.com/ndownloader/files/44869285",
     DevCCF_P56_MRI_T2_50um = "https://figshare.com/ndownloader/files/44706244",

@@ -237,11 +237,11 @@ deepAtropos <- function( t1, doPreprocessing = TRUE, useSpatialPriors = 1,
     #
     ################################
 
-    hcpT1Template <- antsImageRead( getANTsXNetData( "hcpyaT1Template" ) )
-    hcpT2Template <- antsImageRead( getANTsXNetData( "hcpyaT2Template" ) )
-    hcpFaTemplate <- antsImageRead( getANTsXNetData( "hcpyaFATemplate" ) )
-    hcpTemplateBrainMask <- antsImageRead( getANTsXNetData( "hcpyaTemplateBrainMask" ) )
-    hcpTemplateBrainSegmentation <- antsImageRead( getANTsXNetData( "hcpyaTemplateBrainSegmentation" ) )
+    hcpT1Template <- antsImageRead( getANTsXNetData( "hcpinterT1Template" ) )
+    hcpT2Template <- antsImageRead( getANTsXNetData( "hcpinterT2Template" ) )
+    hcpFaTemplate <- antsImageRead( getANTsXNetData( "hcpinterFATemplate" ) )
+    hcpTemplateBrainMask <- antsImageRead( getANTsXNetData( "hcpinterTemplateBrainMask" ) )
+    hcpTemplateBrainSegmentation <- antsImageRead( getANTsXNetData( "hcpinterTemplateBrainSegmentation" ) )
 
     hcpTemplates <- list()
     hcpTemplates[[1]] <- hcpT1Template * hcpTemplateBrainMask
