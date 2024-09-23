@@ -7,8 +7,8 @@
 #' @param path A character string specifying the path to the cache directory.
 #' @return NULL
 #' @export
-setAntsxnetCacheDirectory <- function(path) {
-  normalizedPath <- normalizePath(path, winslash = "/", mustWork = FALSE)
+setANTsXNetCacheDirectory <- function(path) {
+  normalizedPath <- normalizePath( path, winslash = "/", mustWork = FALSE )
 
   if (!dir.exists(normalizedPath)) {
     dir.create(normalizedPath, recursive = TRUE)
@@ -26,7 +26,7 @@ setAntsxnetCacheDirectory <- function(path) {
 #'
 #' @return A character string specifying the path to the cache directory.
 #' @export
-getAntsxnetCacheDirectory <- function() {
+getANTsXNetCacheDirectory <- function() {
   cacheDir <- getOption("antsxnetCacheDirectory", default = NULL)
 
   if (is.null(cacheDir)) {
@@ -185,12 +185,12 @@ getANTsXNetData <- function(
       }
     }
 
-  targetFileNamePath <- fs::path_join( path.expand( c( getAntsxnetCacheDirectory(), targetFileName ) ) )
+  targetFileNamePath <- fs::path_join( path.expand( c( getANTsXNetCacheDirectory(), targetFileName ) ) )
 
   if( ! fs::file_exists( targetFileNamePath ) )
     {
     targetFileNamePath <- tensorflow::tf$keras$utils$get_file(
-      targetFileName, url, cache_subdir = getAntsxnetCacheDirectory() )
+      targetFileName, url, cache_subdir = getANTsXNetCacheDirectory() )
     }
 
   return( as.character( targetFileNamePath ) )

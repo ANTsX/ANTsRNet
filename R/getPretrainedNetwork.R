@@ -322,7 +322,7 @@ getPretrainedNetwork <- function(
     targetFileName <- paste0( fileId, ".h5" )
     }
 
-  cacheDir <- getAntsxnetCacheDirectory()
+  cacheDir <- getANTsXNetCacheDirectory()
 
   targetFileNamePath <- fs::path_join( path.expand( c( cacheDir, targetFileName ) ) )
 
