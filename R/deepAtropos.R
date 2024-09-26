@@ -333,44 +333,36 @@ deepAtropos <- function( t1, doPreprocessing = TRUE, useSpatialPriors = 1,
       message( "Prediction.\n" )
       }
 
-    batchX <- array( data = 0, dim = c( 8, patchSize, channelSize ) )
+    predictedData <- array( data = 0, dim = c( 8, patchSize, numberOfClassificationLabels ) )
+ 
+    batchX <- array( data = 0, dim = c( 1, patchSize, channelSize ) )
 
-    imagePatchesList <- list()
-    for( i in seq.int( length( preprocessedImages ) ) )
+    for( h in seq.int( 8 ) )
       {
-      imagePatches <- extractImagePatches( preprocessedImages[[i]],
-                                           patchSize = patchSize,
-                                           maxNumberOfPatches = "all", 
-                                           strideLength = strideLength,
-                                           returnAsArray = TRUE )
-      imagePatchesList[[i]] <- imagePatches                                           
-      }
-    for( i in seq.int( length( preprocessedImages ) ) )
-      {
-      for( j in seq.int( 8 ) ) 
+      index <- 1
+      for( i in seq.int( length( preprocessedImages ) ) )
         {
-        batchX[j,,,,i] <- imagePatchesList[[i]][j,,,]
+        patches <- extractImagePatches( preprocessedImages[[i]],
+                                        patchSize = patchSize,
+                                        maxNumberOfPatches = "all", 
+                                        strideLength = strideLength,
+                                        returnAsArray = TRUE )
+        batchX[1,,,,index] <- patches[h,,,]
+        index <- index + 1
         }
-      }
+      for( i in seq.int( length( hcpTemplatePriors ) ) )
+        {
+        patches <- extractImagePatches( hcpTemplatePriors[[i]],
+                                        patchSize = patchSize,
+                                        maxNumberOfPatches = "all", 
+                                        strideLength = strideLength,
+                                        returnAsArray = TRUE )
+        batchX[1,,,,index] <- patches[h,,,]
+        index <- index + 1
+        }
 
-    priorsPatchesList <- list()    
-    for( i in seq.int( length( hcpTemplatePriors ) ) )
-      {
-      priorPatches <- extractImagePatches( hcpTemplatePriors[[i]],
-                                           patchSize = patchSize,
-                                           maxNumberOfPatches = "all", 
-                                           strideLength = strideLength,
-                                           returnAsArray = TRUE )
-      priorsPatchesList[[i]] <- priorPatches
+      predictedData[h,,,,] <- unetModel %>% predict( batchX, verbose = verbose )
       }
-    for( i in seq.int( length( hcpTemplatePriors ) ) )
-      {
-      for( j in seq.int( 8 ) ) 
-        {
-        batchX[j,,,,length( preprocessedImages ) + i] <- priorsPatchesList[[i]][j,,,]
-        }
-      }
-    predictedData <- unetModel %>% predict( batchX, verbose = verbose )
 
     probabilityImages <- list()
     for( i in seq.int( dim( predictedData )[5] ) )
