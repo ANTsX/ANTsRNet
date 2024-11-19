@@ -92,12 +92,11 @@ createSimpleFullyConvolutionalNeuralNetworkModel3D <- function(
 #'
 #' @import keras
 #' @export
-createRmnetGenerator <- function()
+createRmnetGenerator <- function( numberOfChannels = 3 )
 {
-  imgShape <- c( 256, 256, 3 )
+  imgShape <- c( 256, 256, numberOfChannels )
   imgShapeMask <- c( 256, 256, 1 )
   gf <- 64
-  channels <- 3
 
   # compute inputs 
   inputImg <- layer_input( shape = imgShape, dtype = "float32", name = "image_input" ) 
@@ -175,7 +174,7 @@ createRmnetGenerator <- function()
   x <- x %>% layer_activation_relu()
   x <- x %>% layer_batch_normalization( momentum = 0.8 )
 
-  x <- x %>% layer_conv_2d_transpose( channels, c( 3, 3 ), padding = "same", name = "final_output" )
+  x <- x %>% layer_conv_2d_transpose( numberOfChannels, c( 3, 3 ), padding = "same", name = "final_output" )
   x <- x %>% layer_activation( 'tanh' )
 
   decodedOutput <- x
