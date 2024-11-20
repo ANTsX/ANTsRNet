@@ -55,7 +55,7 @@ preprocessBrainImage <- function( image, truncateIntensity = c( 0.01, 0.99 ),
   if( ! is.null( truncateIntensity ) )
     {
     quantiles <- quantile( image, truncateIntensity )
-    if( verbose == TRUE )
+    if( verbose )
       {
       message( paste0( "Preprocessing:  truncate intensities (low = ", quantiles[1], ", high = ", quantiles[2], ").\n" ) )
       }
@@ -67,14 +67,18 @@ preprocessBrainImage <- function( image, truncateIntensity = c( 0.01, 0.99 ),
   mask <- NULL
   if( ! is.null( brainExtractionModality ) )
     {
-    if( verbose == TRUE )
+    if( verbose )
       {
       message( "Preprocessing:  brain extraction.\n" )
       }
-    probabilityMask <- brainExtraction( preprocessedImage, modality = brainExtractionModality,
-      verbose = verbose )
-    mask <- thresholdImage( probabilityMask, 0.5, 1, 1, 0 )
-    mask <- morphology( mask, "close", 6 ) %>% iMath("FillHoles")
+    bext <- brainExtraction( preprocessedImage, modality = brainExtractionModality, verbose = verbose )
+    if( brainExtractionModality == "t1threetissue" ) 
+      {
+      mask <- thresholdImage( bext$segmentationImage, 1, 1, 1, 0 ) 
+      } else {
+      mask <- thresholdImage( bext, 0.5, 1, 1, 0 )
+      mask <- morphology( mask, "close", 6 ) %>% iMath("FillHoles")
+      }
     }
 
   # Template normalization
@@ -122,7 +126,7 @@ preprocessBrainImage <- function( image, truncateIntensity = c( 0.01, 0.99 ),
   biasField <- NULL
   if( doBiasCorrection == TRUE )
     {
-    if( verbose == TRUE )
+    if( verbose )
       {
       message( "Preprocessing:  bias correction.\n" )
       }
@@ -144,7 +148,7 @@ preprocessBrainImage <- function( image, truncateIntensity = c( 0.01, 0.99 ),
   # Denoising
   if( doDenoising == TRUE )
     {
-    if( verbose == TRUE )
+    if( verbose )
       {
       message( "Preprocessing:  denoising.\n" )
       }
@@ -159,7 +163,7 @@ preprocessBrainImage <- function( image, truncateIntensity = c( 0.01, 0.99 ),
   # Image matching
   if( ! is.null( referenceImage ) && ! is.null( intensityatchingType ) )
     {
-    if( verbose == TRUE )
+    if( verbose )
       {
       message( "Preprocessing:  intensity matching.\n" )
       }
@@ -176,7 +180,7 @@ preprocessBrainImage <- function( image, truncateIntensity = c( 0.01, 0.99 ),
   # Intensity normalization
   if( ! is.null( intensityNormalizationType ) )
     {
-    if( verbose == TRUE )
+    if( verbose )
       {
       message( "Preprocessing:  intensity normalization.\n" )
       }
