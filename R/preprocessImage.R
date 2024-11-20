@@ -10,7 +10,7 @@
 #' for intensity truncation.
 #' @param brainExtractionModality string or NULL.  Perform brain extraction
 #' using antsxnet tools.  One of "t1", "t1v0", "t1nobrainer", "t1combined",
-#' "flair", "t2", "bold", "fa", "t1infant", "t2infant", or NULL.
+#' "flair", "t2", "bold", "fa", "t1infant", "t2infant", "t1threetissue", or NULL.
 #' @param templateTransformType see Details in help for \code{antsRegistration}.
 #' Typically "Rigid" or "Affine".
 #' @param template an ANTs image (not skull-stripped). Other premade templates
