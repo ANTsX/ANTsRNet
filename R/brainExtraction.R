@@ -14,6 +14,8 @@
 #'   \item{"t1nobrainer": }{T1-weighted MRI---FreeSurfer-trained: h/t Satra Ghosh and Jakub Kaczmarzyk.}
 #'   \item{"t1combined": }{Brian's combination of "t1" and "t1nobrainer".  One can also specify
 #'                         "t1combined[X]" where X is the morphological radius.  X = 12 by default.}
+#'   \item{"t1threetissue": }{T1-weighted MRI---originally developed from BrainWeb20 (and later expanded). 
+#'                        Label 1:  parenchyma, label 2: meninges/csf, label 3: misc. head.
 #'   \item{"flair": }{FLAIR MRI.}
 #'   \item{"t2": }{T2-w MRI.}
 #'   \item{"bold": }{3-D mean BOLD MRI.}
@@ -35,9 +37,9 @@
 #' }
 #' @export
 brainExtraction <- function( image,
-  modality = c( "t1", "t1.v0", "t1.v1", "t1nobrainer", "t1combined", "t2", "t2.v0",
-                "t2star", "flair", "flair.v0", "bold", "bold.v0", "fa", "fa.v0", "mra",
-                "t1t2infant", "t1infant", "t2infant" ), verbose = FALSE )
+  modality = c( "t1", "t1.v0", "t1.v1", "t1nobrainer", "t1combined", "t1threetissue", "t2", 
+                "t2.v0", "t2star", "flair", "flair.v0", "bold", "bold.v0", "fa", "fa.v0", 
+                "mra", "t1t2infant", "t1infant", "t2infant" ), verbose = FALSE )
   {
 
   classes <- c( "background", "brain" )
@@ -134,6 +136,9 @@ brainExtraction <- function( image,
       weightsFilePrefix <- "brainExtractionInfantT1"
       } else if( modality == "t2infant" ) {
       weightsFilePrefix <- "brainExtractionInfantT2"
+      } else if( modality == "t1threetissue" ) {
+      weightsFilePrefix <- "brainExtractionBrainWeb20"
+      isStandardNetwork <- TRUE
       } else {
       stop( "Unknown modality type." )
       }
@@ -148,12 +153,17 @@ brainExtraction <- function( image,
       {
       cat( "Brain extraction:  retrieving template.\n" )
       }
-    reorientTemplateFileNamePath <- getANTsXNetData( "S_template3" )
-    reorientTemplate <- antsImageRead( reorientTemplateFileNamePath )
-    if( isStandardNetwork && ( modality != "t1.v1" && modality != "mra" ) )
+     
+    if( modality == "t1threetissue" ) 
       {
-      antsSetSpacing( reorientTemplate, c( 1.5, 1.5, 1.5 ) )
-      }
+      reorientTemplate <- antsImageRead( getANTsXNetData( "nki" ) )
+      } else {
+      reorientTemplate <- antsImageRead( getANTsXNetData( "S_template3" ) )
+      if( isStandardNetwork && ( modality != "t1.v1" && modality != "mra" ) )
+        {
+        antsSetSpacing( reorientTemplate, c( 1.5, 1.5, 1.5 ) )
+        }
+      } 
     resampledImageSize <- dim( reorientTemplate )
 
     numberOfFilters <- c( 8, 16, 32, 64 )
@@ -165,11 +175,23 @@ brainExtraction <- function( image,
       mode <- "sigmoid"
       }
 
-    unetModel <- createUnetModel3D( c( resampledImageSize, channelSize ),
-      numberOfOutputs = numberOfClassificationLabels, mode = mode,
-      numberOfFilters = numberOfFilters, dropoutRate = 0.0,
-      convolutionKernelSize = 3, deconvolutionKernelSize = 2,
-      weightDecay = 1e-5 )
+    unetModel <- NULL
+    if( modality == "t1threetissue" )
+      {
+      mode <- "classification"
+      numberOfClassificationLabels <- 4 # background, brain, meninges/csf, misc. head
+      unetModel <- createUnetModel3D( c( resampledImageSize, channelSize ),
+        numberOfOutputs = numberOfClassificationLabels, mode = mode,
+        numberOfFilters = numberOfFilters, dropoutRate = 0.0,
+        convolutionKernelSize = 3, deconvolutionKernelSize = 2,
+        weightDecay = 0 )
+      } else {
+      unetModel <- createUnetModel3D( c( resampledImageSize, channelSize ),
+        numberOfOutputs = numberOfClassificationLabels, mode = mode,
+        numberOfFilters = numberOfFilters, dropoutRate = 0.0,
+        convolutionKernelSize = 3, deconvolutionKernelSize = 2,
+        weightDecay = 1e-5 )
+      }
 
     unetModel$load_weights( weightsFileName )
 
@@ -186,7 +208,7 @@ brainExtraction <- function( image,
 
     batchX <- array( data = 0, dim = c( 1, resampledImageSize, channelSize ) )
 
-    for( i in seq.int( channelSize ) )
+    for( i in seq.int( length( inputImages ) ) )
       {
       warpedImage <- applyAntsrTransformToImage( xfrm, inputImages[[i]], reorientTemplate )
       if( isStandardNetwork && modality != "t1.v1" )
@@ -209,10 +231,32 @@ brainExtraction <- function( image,
       {
       cat( "Brain extraction:  renormalize probability mask to native space.\n" )
       }
-    probabilityImage <- applyAntsrTransformToImage( invertAntsrTransform( xfrm ),
-      probabilityImagesArray[[1]][[numberOfClassificationLabels]], inputImages[[1]] )
 
-    return( probabilityImage )
+    xfrmInv <- invertAntsrTransform( xfrm )
+
+    if( modality == "t1threetissue" )
+      {
+      probabilityImagesWarped <- list()
+      for( i in seq.int( numberOfClassificationLabels ) )
+        {
+        probabilityImagesWarped[[i]] <- applyAntsrTransformToImage( xfrmInv,
+                     probabilityImagesArray[[1]][[i]], inputImages[[1]] )               
+        }
+      imageMatrix <- imageListToMatrix( probabilityImagesWarped, inputImages[[1]] * 0 + 1 )
+      segmentationMatrix <- matrix( apply( imageMatrix, 2, which.max ), nrow = 1 )
+      segmentationImage <- matrixToImages( segmentationMatrix, inputImages[[1]] * 0 + 1 )[[1]] - 1
+      
+      results <- list( segmentationImage = segmentationImage,
+                       probabilityImages = probabilityImagesWarped )
+
+      return( results )
+      } else {
+      probabilityImage <- applyAntsrTransformToImage( xfrmInv,
+        probabilityImagesArray[[1]][[numberOfClassificationLabels]], inputImages[[1]] )
+
+      return( probabilityImage )
+      }
+
     } else {
 
     #####################
