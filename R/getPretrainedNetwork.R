@@ -196,7 +196,7 @@ getPretrainedNetwork <- function(
     brainExtractionInfantT1T2 = "https://ndownloader.figshare.com/files/22968833",
     brainExtractionInfantT1 = "https://ndownloader.figshare.com/files/22968836",
     brainExtractionInfantT2 = "https://ndownloader.figshare.com/files/22968830",
-    brainExtractionBrainWeb20 = "https://figshare.com/ndownloader/files/50487981",
+    brainExtractionBrainWeb20 = "https://figshare.com/ndownloader/files/50685390",
     brainSegmentation = "https://ndownloader.figshare.com/files/13900010",
     brainSegmentationPatchBased = "https://ndownloader.figshare.com/files/14249717",
     bratsStage1 = "https://figshare.com/ndownloader/files/42384756",
