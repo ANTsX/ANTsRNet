@@ -310,6 +310,6 @@ chexnet <- function( image,
       {
       diseaseCategoryDf$Tuberculosis <- c( tbPrediction )
       }
-    return( diseaseCategoryDf)
+    return( diseaseCategoryDf )
     }
 }
