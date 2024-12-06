@@ -234,7 +234,7 @@ desikanKillianyTourvilleLabeling <- function( t1, doPreprocessing = TRUE,
   #
   ################################
 
-  t1Preprocessed <- t1
+  t1Preprocessed <- antsImageClone( t1 )
   if( doPreprocessing )
     {
     t1Preprocessing <- preprocessBrainImage( t1,

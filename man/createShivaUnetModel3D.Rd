@@ -5,11 +5,14 @@
 \title{Implementation of the "shiva" u-net architecture for PVS and WMH
 segmentation}
 \usage{
-createShivaUnetModel3D(numberOfModalities = 1)
+createShivaUnetModel3D(numberOfModalities = 1, numberOfOutputs = 1)
 }
 \arguments{
 \item{numberOfModalities}{Specifies number of channels in the
 architecture.}
+
+\item{numberOfOutputs}{Specifies the number of outputs per voxel.
+Determines final activation function (1 = sigmoid, >1 = softmax).}
 }
 \value{
 a u-net keras model

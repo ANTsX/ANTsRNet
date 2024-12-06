@@ -6,9 +6,9 @@
 \usage{
 brainExtraction(
   image,
-  modality = c("t1", "t1.v0", "t1.v1", "t1nobrainer", "t1combined", "t2", "t2.v0",
-    "t2star", "flair", "flair.v0", "bold", "bold.v0", "fa", "fa.v0", "mra", "t1t2infant",
-    "t1infant", "t2infant"),
+  modality = c("t1", "t1.v0", "t1.v1", "t1nobrainer", "t1combined", "t1threetissue",
+    "t2", "t2.v0", "t2star", "flair", "flair.v0", "bold", "bold.v0", "fa", "fa.v0",
+    "mra", "t1t2infant", "t1infant", "t2infant"),
   verbose = FALSE
 )
 }
@@ -21,6 +21,8 @@ brainExtraction(
 \item{"t1nobrainer": }{T1-weighted MRI---FreeSurfer-trained: h/t Satra Ghosh and Jakub Kaczmarzyk.}
 \item{"t1combined": }{Brian's combination of "t1" and "t1nobrainer".  One can also specify
 "t1combined\link{X}" where X is the morphological radius.  X = 12 by default.}
+\item{"t1threetissue": }{T1-weighted MRI---originally developed from BrainWeb20 (and later expanded).
+Label 1:  parenchyma, label 2: meninges/csf, label 3: misc. head.}
 \item{"flair": }{FLAIR MRI.}
 \item{"t2": }{T2-w MRI.}
 \item{"bold": }{3-D mean BOLD MRI.}
