@@ -4,7 +4,7 @@
 \alias{createRmnetGenerator}
 \title{Implementation of the "RMNet" generator architecture for inpainting}
 \usage{
-createRmnetGenerator()
+createRmnetGenerator(numberOfChannels = 3)
 }
 \value{
 a keras model

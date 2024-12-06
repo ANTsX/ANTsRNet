@@ -23,7 +23,9 @@ getANTsXNetData(
     "DevCCF_P04_STPT_50um_BrainParcellationJayMask", 
      "hcpyaT1Template",
     "hcpyaT2Template", "hcpyaFATemplate", "hcpyaTemplateBrainMask",
-    "hcpyaTemplateBrainSegmentation"),
+    "hcpyaTemplateBrainSegmentation", "hcpinterT1Template", "hcpinterT2Template",
+    "hcpinterFATemplate", "hcpinterTemplateBrainMask",
+    "hcpinterTemplateBrainSegmentation"),
   targetFileName
 )
 }

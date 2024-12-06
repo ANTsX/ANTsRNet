@@ -7,7 +7,7 @@
 createSsdModel2D(
   inputImageSize,
   numberOfOutputs,
-  l2Regularization = 5e-04,
+  l2Regularization = 0.0005,
   minScale = 0.1,
   maxScale = 0.9,
   aspectRatiosPerLayer = list(c("1:1", "2:1", "1:2"), c("1:1", "2:1", "1:2", "3:1",
