@@ -22,7 +22,7 @@ brainExtraction(
 \item{"t1combined": }{Brian's combination of "t1" and "t1nobrainer".  One can also specify
 "t1combined\link{X}" where X is the morphological radius.  X = 12 by default.}
 \item{"t1threetissue": }{T1-weighted MRI---originally developed from BrainWeb20 (and later expanded).
-Label 1:  parenchyma, label 2: meninges/csf, label 3: misc. head.}
+Label 1: brain + subdural CSF, label 2: sinuses + skull, label 3: other head, face, neck tissue.}
 \item{"flair": }{FLAIR MRI.}
 \item{"t2": }{T2-w MRI.}
 \item{"bold": }{3-D mean BOLD MRI.}
