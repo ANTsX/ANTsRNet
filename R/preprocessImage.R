@@ -75,6 +75,8 @@ preprocessBrainImage <- function( image, truncateIntensity = c( 0.01, 0.99 ),
     if( brainExtractionModality == "t1threetissue" ) 
       {
       mask <- thresholdImage( bext$segmentationImage, 1, 1, 1, 0 ) 
+      } else if( brainExtractionModality == "t1combined" ) { 
+      mask <- thresholdImage( bext$segmentationImage, 2, 3, 1, 0 ) 
       } else {
       mask <- thresholdImage( bext, 0.5, 1, 1, 0 )
       mask <- morphology( mask, "close", 6 ) %>% iMath("FillHoles")
