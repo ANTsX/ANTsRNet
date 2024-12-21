@@ -15,7 +15,9 @@
 #'   \item{"t1combined": }{Brian's combination of "t1" and "t1nobrainer".  One can also specify
 #'                         "t1combined[X]" where X is the morphological radius.  X = 12 by default.}
 #'   \item{"t1threetissue": }{T1-weighted MRI---originally developed from BrainWeb20 (and later expanded). 
-#'                        Label 1: brain + subdural CSF, label 2: sinuses + skull, label 3: other head, face, neck tissue.}
+#'                            Label 1: brain + subdural CSF, label 2: sinuses + skull, 
+#'                            label 3: other head, face, neck tissue.}
+#'   \item{"t1hemi": }{Label 1 of "t1threetissue" subdivided into left and right hemispheres.}
 #'   \item{"flair": }{FLAIR MRI.}
 #'   \item{"t2": }{T2-w MRI.}
 #'   \item{"bold": }{3-D mean BOLD MRI.}
@@ -37,19 +39,26 @@
 #' }
 #' @export
 brainExtraction <- function( image,
-  modality = c( "t1", "t1.v0", "t1.v1", "t1nobrainer", "t1combined", "t1threetissue", "t2", 
-                "t2.v0", "t2star", "flair", "flair.v0", "bold", "bold.v0", "fa", "fa.v0", 
-                "mra", "t1t2infant", "t1infant", "t2infant" ), verbose = FALSE )
+  modality = c( "t1", "t1.v0", "t1.v1", "t1nobrainer", "t1combined", "t1threetissue", 
+                "t1hemi", "t1lobes", "t2", "t2.v0", "t2star", "flair", "flair.v0", 
+                "bold", "bold.v0", "fa", "fa.v0", "mra", "t1t2infant", "t1infant", 
+                "t2infant" ), 
+  verbose = FALSE )
   {
 
-  classes <- c( "background", "brain" )
-  numberOfClassificationLabels <- length( classes )
   channelSize <- length( image )
 
   inputImages <- list()
   if( channelSize == 1 )
     {
-    inputImages[[1]] <- image
+    if( modality == "t1hemi" || modality == "t1lobes" ) 
+      {
+      bext <- brainExtraction( image, modality = "t1threetissue", verbose=verbose)
+      mask <- thresholdImage( bext$segmentationImage, 1, 1, 1, 0 ) 
+      inputImages[[1]] <- image * mask
+      } else {
+      inputImages[[1]] <- image
+      }
     } else {
     inputImages <- image
     }
@@ -139,6 +148,12 @@ brainExtraction <- function( image,
       } else if( modality == "t1threetissue" ) {
       weightsFilePrefix <- "brainExtractionBrainWeb20"
       isStandardNetwork <- TRUE
+      } else if( modality == "t1hemi" ) {
+      weightsFilePrefix <- "brainExtractionT1Hemi"
+      isStandardNetwork <- TRUE
+      } else if( modality == "t1lobes" ) {
+      weightsFilePrefix <- "brainExtractionT1Lobes"
+      isStandardNetwork <- TRUE
       } else {
       stop( "Unknown modality type." )
       }
@@ -157,6 +172,12 @@ brainExtraction <- function( image,
     if( modality == "t1threetissue" ) 
       {
       reorientTemplate <- antsImageRead( getANTsXNetData( "nki" ) )
+      } else if( modality == "t1hemi" || modality == "t1lobes" ) {
+      reorientTemplate <- antsImageRead( getANTsXNetData( "hcpyaT1Template" ) )
+      reorientTemplateMask <- antsImageRead( getANTsXNetData( "hcpyaTemplateBrainMask" ) )
+      reorientTemplate <- reorientTemplate * reorientTemplateMask
+      reorientTemplate <- resampleImage( reorientTemplate, c( 1, 1, 1 ), useVoxels = FALSE, interpType = 0 )
+      reorientTemplate <- padOrCropImageToSize( reorientTemplate, c( 160, 176, 160 ) )
       } else {
       reorientTemplate <- antsImageRead( getANTsXNetData( "S_template3" ) )
       if( isStandardNetwork && ( modality != "t1.v1" && modality != "mra" ) )
@@ -168,6 +189,7 @@ brainExtraction <- function( image,
 
     numberOfFilters <- c( 8, 16, 32, 64 )
     mode <- "classification"
+    numberOfClassificationLabels <- 2
     if( isStandardNetwork )
       {
       numberOfFilters <- c( 16, 32, 64, 128 )
@@ -176,10 +198,17 @@ brainExtraction <- function( image,
       }
 
     unetModel <- NULL
-    if( modality == "t1threetissue" )
+    if( modality == "t1threetissue" || modality == "t1hemi" || modality == "t1lobes" )
       {
       mode <- "classification"
-      numberOfClassificationLabels <- 4 # background, brain, meninges/csf, misc. head
+      if( modality == "t1threetissue" )
+        {
+        numberOfClassificationLabels <- 4 # background, brain, meninges/csf, misc. head
+        } else if( modality == "t1hemi" ) {
+        numberOfClassificationLabels <- 3 # background, left, right
+        } else if( modality == "t1lobes" ) {
+        numberOfClassificationLabels <- 6 # background, frontal, parietal, temporal, occipital, misc
+        }
       unetModel <- createUnetModel3D( c( resampledImageSize, channelSize ),
         numberOfOutputs = numberOfClassificationLabels, mode = mode,
         numberOfFilters = numberOfFilters, dropoutRate = 0.0,
@@ -234,7 +263,7 @@ brainExtraction <- function( image,
 
     xfrmInv <- invertAntsrTransform( xfrm )
 
-    if( modality == "t1threetissue" )
+    if( modality == "t1threetissue" || modality == "t1hemi" || modality == "t1lobes" )
       {
       probabilityImagesWarped <- list()
       for( i in seq.int( numberOfClassificationLabels ) )
