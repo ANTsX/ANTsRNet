@@ -242,7 +242,7 @@ getPretrainedNetwork <- function(
     dktInner = "https://ndownloader.figshare.com/files/23266943",
     dktOuter = "https://ndownloader.figshare.com/files/23765132",
     dktOuterWithSpatialPriors = "https://ndownloader.figshare.com/files/24230768",
-    HarvardOxfordAtlasSubcortical = "https://figshare.com/ndownloader/files/51200813",
+    HarvardOxfordAtlasSubcortical = "https://figshare.com/ndownloader/files/51371483",
     e13x5_coronal_weights = "https://figshare.com/ndownloader/files/38035968",
     e13x5_sagittal_weights = "https://figshare.com/ndownloader/files/38035965",
     allen_brain_mask_weights = "https://figshare.com/ndownloader/files/36999880",
