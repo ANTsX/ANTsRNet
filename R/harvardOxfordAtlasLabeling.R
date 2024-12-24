@@ -119,7 +119,13 @@ harvardOxfordAtlasLabeling <- function( t1, doPreprocessing = TRUE,
   #
   ################################
 
-  labels <- 0:35
+  hoaLateralLabels <- c( 0, 3, 4, 5, 6, 15, 24 )
+  hoaLateralLeftLabels <- c( 1, 7, 9, 11, 13, 16, 18, 20, 22, 25, 27, 29, 31 )
+  hoaLateralRightLabels <- c( 2, 8, 10, 12, 14, 17, 19, 21, 23, 26, 28, 30, 32 )
+  hoaExtraLabels <- c( 33, 34, 35 )
+
+  labels <- sort( c( hoaLateralLabels, hoaLateralLeftLabels, hoaExtraLabels ) )
+
   channelSize <- 1
   numberOfClassificationLabels <- length( labels )
 
@@ -161,14 +167,10 @@ harvardOxfordAtlasLabeling <- function( t1, doPreprocessing = TRUE,
 
   probabilityImages <- list()
 
-  hoaLateralLabels <- c( 0, 3, 4, 5, 6, 15, 24 )
-  hoaLateralLeftLabels <- c( 1, 7, 9, 11, 13, 16, 18, 20, 22, 25, 27, 29, 31 )
-  hoaLateralRightLabels <- c( 2, 8, 10, 12, 14, 17, 19, 21, 23, 26, 28, 30, 32 )
-
   hoaLabels <- list()
   hoaLabels[[1]] <- hoaLateralLabels
   hoaLabels[[2]] <- hoaLateralLeftLabels
-  hoaLabels[[3]] <- hoaLateralRightLabels
+  # hoaLabels[[3]] <- hoaLateralRightLabels
 
   for( b in seq.int( 2 ) )
     {
@@ -177,20 +179,15 @@ harvardOxfordAtlasLabeling <- function( t1, doPreprocessing = TRUE,
       for( j in seq.int( length( hoaLabels[[i]] ) ) )
         {
         label <- hoaLabels[[i]][j]   
-        probabilityArray <- drop( predictedData[[1]][b,,,,label+1] )
+        labelIndex <- which( labels == label )
+        probabilityArray <- drop( predictedData[[1]][b,,,,labelIndex] )
         if( label == 0 )
           {
-          probabilityArray <- probabilityArray + drop( rowSums( predictedData[[1]][b,,,,34:36, drop=FALSE] , dims = 4 ) )
+          probabilityArray <- probabilityArray + drop( rowSums( predictedData[[1]][b,,,,21:length(labels), drop=FALSE] , dims = 4 ) )
           }
         if( b == 2 )
           {
           probabilityArray <- probabilityArray[dim( probabilityArray )[1]:1,,]
-          if( i == 2 )
-            {
-            label <- hoaLateralRightLabels[j]
-            } else if( i == 3 ) {
-            label <- hoaLateralLeftLabels[j]
-            }
           }
         probabilityImage <- as.antsImage( probabilityArray, reference = t1Preprocessed )
         if( doPreprocessing )
@@ -202,21 +199,85 @@ harvardOxfordAtlasLabeling <- function( t1, doPreprocessing = TRUE,
           }
         if( b == 1 )  
           {
-          probabilityImages[[label + 1]] <- probabilityImage
+          probabilityImages[[labelIndex]] <- probabilityImage
           } else {
-          probabilityImages[[label + 1]] <- 0.5 * ( probabilityImages[[label + 1]] + probabilityImage )
+          probabilityImages[[labelIndex]] <- 0.5 * ( probabilityImages[[labelIndex]] + probabilityImage )
           }
         }
       }
     }
 
-  imageMatrix <- imageListToMatrix( probabilityImages, t1 * 0 + 1 )
+  if( verbose )
+    {
+    cat( "Constructing foreground probability image.\n" )
+    }
+
+  flippedPredictedData <- drop( predictedData[[2]][2,dim( predictedData[[2]] )[2]:1,,,] )
+  foregroundProbabilityArray <- 0.5 * ( drop( predictedData[[2]][1,,,,] ) + flippedPredictedData )
+  foregroundProbabilityImage <- as.antsImage( drop( foregroundProbabilityArray ), reference = t1Preprocessed )
+  if( doPreprocessing )
+    {
+    foregroundProbabilityImage <- padOrCropImageToSize( foregroundProbabilityImage, dim( template ) )
+    foregroundProbabilityImage <- antsApplyTransforms( fixed = t1, moving = foregroundProbabilityImage,
+            transformlist = t1Preprocessing$templateTransforms$invtransforms,
+              whichtoinvert = c( TRUE ), interpolator = "linear", verbose = verbose )
+    }
+
+  for( i in seq.int( length( hoaLabels ) ) ) 
+    {
+    for( j in seq.int( length( hoaLabels[[i]] ) ) )
+      {
+      label <- hoaLabels[[i]][j]
+      labelIndex <- which( labels == label ) 
+      if( label == 0 )
+        {
+        probabilityImages[[labelIndex]] <- probabilityImages[[labelIndex]] * ( foregroundProbabilityImage * -1 + 1 )
+        } else {
+        probabilityImages[[labelIndex]] <- probabilityImages[[labelIndex]] * foregroundProbabilityImage
+        }
+      }  
+    }
+
+  labels <- sort( c( hoaLateralLabels, hoaLateralLeftLabels ) )
+
+  bext <- brainExtraction( t1, modality = "t1hemi", verbose = verbose )
+
+  probabilityAllImages <- list()
+  count <- 1 
+  for( i in seq.int( length( labels )  ) )
+    {
+    probabilityImage <- antsImageClone( probabilityImages[[i]] )
+    if( labels[i] %in% hoaLateralLeftLabels )
+      {
+      probabilityLeftImage <- probabilityImage * bext$probabilityImages[[2]]
+      probabilityRightImage <- probabilityImage * bext$probabilityImages[[3]]
+      probabilityAllImages[[count]] <- probabilityLeftImage
+      count <- count + 1
+      probabilityAllImages[[count]] <- probabilityRightImage
+      count <- count + 1
+      } else {
+      probabilityAllImages[[count]] <- probabilityImage
+      count <- count + 1
+      }
+    } 
+
+  imageMatrix <- imageListToMatrix( probabilityAllImages, t1 * 0 + 1 )
   segmentationMatrix <- matrix( apply( imageMatrix, 2, which.max ), nrow = 1 )
   segmentationImage <- matrixToImages( segmentationMatrix, t1 * 0 + 1 )[[1]] - 1
 
+  hoaAllLabels <- sort( c( hoaLateralLabels, hoaLateralLeftLabels, hoaLateralRightLabels ) )   
+
+  hoaLabelImage <- segmentationImage * 0
+  for( i in seq.int( hoaAllLabels ) )
+    {
+    label <- hoaAllLabels[i] 
+    labelIndex <- which( hoaAllLabels == label )
+    hoaLabelImage[segmentationImage == labelIndex] <- label + 1
+    }  
+
   return( list(
-          segmentationImage = segmentationImage,
-          probabilityImages = probabilityImages
+          segmentationImage = hoaLabelImage,
+          probabilityImages = probabilityAllImages
           )
         )
 }
