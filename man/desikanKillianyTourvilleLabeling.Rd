@@ -9,6 +9,7 @@ desikanKillianyTourvilleLabeling(
   doPreprocessing = TRUE,
   returnProbabilityImages = FALSE,
   doLobarParcellation = FALSE,
+  version = 0,
   verbose = FALSE
 )
 }
@@ -22,6 +23,8 @@ for the inner and outer labels.}
 
 \item{doLobarParcellation}{perform lobar parcellation (also divided by hemisphere).}
 
+\item{version}{which version.}
+
 \item{verbose}{print progress.}
 }
 \value{
@@ -29,54 +32,13 @@ list consisting of the segmentation image and probability images for
 each label.
 }
 \description{
-Perform DKT labeling using deep learning
+Desikan-Killiany-Tourville labeling. https://pubmed.ncbi.nlm.nih.gov/23227001/
 }
 \details{
+Perform DKT labeling using deep learning.  Description available here:
+https://mindboggle.readthedocs.io/en/latest/labels.html
 The labeling is as follows:
 \itemize{
-\item{Label 0:}{background}
-
-Inner labels:
-\item{Label 4:}{left lateral ventricle}
-\item{Label 5:}{left inferior lateral ventricle}
-\item{Label 6:}{left cerebellem exterior}
-\item{Label 7:}{left cerebellum white matter}
-\item{Label 10:}{left thalamus proper}
-\item{Label 11:}{left caudate}
-\item{Label 12:}{left putamen}
-\item{Label 13:}{left pallidium}
-\item{Label 14:}{3rd ventricle}
-\item{Label 15:}{4th ventricle}
-\item{Label 16:}{brain stem}
-\item{Label 17:}{left hippocampus}
-\item{Label 18:}{left amygdala}
-\item{Label 24:}{CSF}
-\item{Label 25:}{left lesion}
-\item{Label 26:}{left accumbens area}
-\item{Label 28:}{left ventral DC}
-\item{Label 30:}{left vessel}
-\item{Label 43:}{right lateral ventricle}
-\item{Label 44:}{right inferior lateral ventricle}
-\item{Label 45:}{right cerebellum exterior}
-\item{Label 46:}{right cerebellum white matter}
-\item{Label 49:}{right thalamus proper}
-\item{Label 50:}{right caudate}
-\item{Label 51:}{right putamen}
-\item{Label 52:}{right palladium}
-\item{Label 53:}{right hippocampus}
-\item{Label 54:}{right amygdala}
-\item{Label 57:}{right lesion}
-\item{Label 58:}{right accumbens area}
-\item{Label 60:}{right ventral DC}
-\item{Label 62:}{right vessel}
-\item{Label 72:}{5th ventricle}
-\item{Label 85:}{optic chasm}
-\item{Label 91:}{left basal forebrain}
-\item{Label 92:}{right basal forebrain}
-\item{Label 630:}{cerebellar vermal lobules I-V}
-\item{Label 631:}{cerebellar vermal lobules VI-VII}
-\item{Label 632:}{cerebellar vermal lobules VIII-X}
-
 Outer labels:
 \item{Label 1002:}{left caudal anterior cingulate}
 \item{Label 1003:}{left caudal middle frontal}
@@ -219,6 +181,53 @@ Occipital:
 Other outer labels:
 \item{Label 1035:}{left insula}
 \item{Label 2035:}{right insula}
+}
+
+For the original DKT version (version 0), the set of inner
+labels are also included.
+
+\itemize{
+Inner labels:
+\item{Label 4:}{left lateral ventricle}
+\item{Label 5:}{left inferior lateral ventricle}
+\item{Label 6:}{left cerebellem exterior}
+\item{Label 7:}{left cerebellum white matter}
+\item{Label 10:}{left thalamus proper}
+\item{Label 11:}{left caudate}
+\item{Label 12:}{left putamen}
+\item{Label 13:}{left pallidium}
+\item{Label 14:}{3rd ventricle}
+\item{Label 15:}{4th ventricle}
+\item{Label 16:}{brain stem}
+\item{Label 17:}{left hippocampus}
+\item{Label 18:}{left amygdala}
+\item{Label 24:}{CSF}
+\item{Label 25:}{left lesion}
+\item{Label 26:}{left accumbens area}
+\item{Label 28:}{left ventral DC}
+\item{Label 30:}{left vessel}
+\item{Label 43:}{right lateral ventricle}
+\item{Label 44:}{right inferior lateral ventricle}
+\item{Label 45:}{right cerebellum exterior}
+\item{Label 46:}{right cerebellum white matter}
+\item{Label 49:}{right thalamus proper}
+\item{Label 50:}{right caudate}
+\item{Label 51:}{right putamen}
+\item{Label 52:}{right palladium}
+\item{Label 53:}{right hippocampus}
+\item{Label 54:}{right amygdala}
+\item{Label 57:}{right lesion}
+\item{Label 58:}{right accumbens area}
+\item{Label 60:}{right ventral DC}
+\item{Label 62:}{right vessel}
+\item{Label 72:}{5th ventricle}
+\item{Label 85:}{optic chasm}
+\item{Label 91:}{left basal forebrain}
+\item{Label 92:}{right basal forebrain}
+\item{Label 630:}{cerebellar vermal lobules I-V}
+\item{Label 631:}{cerebellar vermal lobules VI-VII}
+\item{Label 632:}{cerebellar vermal lobules VIII-X}
+
 }
 
 Preprocessing on the training data consisted of:
