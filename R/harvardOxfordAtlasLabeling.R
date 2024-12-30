@@ -137,7 +137,7 @@ harvardOxfordAtlasLabeling <- function( t1, doPreprocessing = TRUE,
 
   penultimateLayer <- unetModelPre$layers[[length( unetModelPre$layers ) - 1]]$output
 
-  output2 <-  penultimateLayer %>%
+  output2 <- penultimateLayer %>%
              keras::layer_conv_3d( filters = 1, 
                                    kernel_size = c( 1, 1, 1 ),
                                    activation = 'sigmoid',
@@ -165,6 +165,7 @@ harvardOxfordAtlasLabeling <- function( t1, doPreprocessing = TRUE,
 
   predictedData <- unetModel %>% predict( batchX, verbose = verbose )
 
+  labels <- sort( c( hoaLateralLabels, hoaLateralLeftLabels ) )
   probabilityImages <- list()
 
   hoaLabels <- list()
@@ -183,7 +184,8 @@ harvardOxfordAtlasLabeling <- function( t1, doPreprocessing = TRUE,
         probabilityArray <- drop( predictedData[[1]][b,,,,labelIndex] )
         if( label == 0 )
           {
-          probabilityArray <- probabilityArray + drop( rowSums( predictedData[[1]][b,,,,21:length(labels), drop=FALSE] , dims = 4 ) )
+          label0_indices <- 21:dim(predictedData[[1]])[5]
+          probabilityArray <- probabilityArray + drop( rowSums( predictedData[[1]][b,,,,label0_indices, drop=FALSE] , dims = 4 ) )
           }
         if( b == 2 )
           {
