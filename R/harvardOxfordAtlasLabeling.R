@@ -185,7 +185,7 @@ harvardOxfordAtlasLabeling <- function( t1, doPreprocessing = TRUE,
         if( label == 0 )
           {
           label0_indices <- 21:dim(predictedData[[1]])[5]
-          probabilityArray <- probabilityArray + drop( rowSums( predictedData[[1]][b,,,,label0_indices, drop=FALSE] , dims = 4 ) )
+          probabilityArray <- probabilityArray + drop( rowSums( predictedData[[1]][b,,,,label0_indices, drop=FALSE], dims = 4 ) )
           }
         if( b == 2 )
           {
