@@ -77,6 +77,7 @@ hypothalamusSegmentation <- function( t1, verbose = FALSE )
   croppedImage <- cropImage( croppedImage, labelImage = croppedImage, label = 1 )
 
   t1Warped <- applyAntsrTransformToImage( xfrm, t1, croppedImage )
+  t1Warped <- padOrCropImageToSize( t1Warped, c( 204, 256, 256 ) )
 
   ################################
   #
