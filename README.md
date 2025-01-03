@@ -106,8 +106,6 @@ R CMD INSTALL ANTsRNet
 <details>
 <summary>Applications</summary>
 
-* [Installation](https://gist.github.com/ntustison/12a656a5fc2f6f9c4494c88dc09c5621#installation)
-
 * [Brain applications](https://gist.github.com/ntustison/12a656a5fc2f6f9c4494c88dc09c5621#brain-applications)
 
     * [Multi-modal brain extraction](https://gist.github.com/ntustison/12a656a5fc2f6f9c4494c88dc09c5621#brain-extraction)
