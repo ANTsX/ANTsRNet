@@ -68,6 +68,8 @@ brainExtraction <- function( image,
     stop( "Image dimension must be 3." )
     }
 
+  inputImages <- antsImageTypeCast( inputImages, pixeltype = "float" )
+
   if( substr( modality, 1, 10 ) == "t1combined" )
     {
 

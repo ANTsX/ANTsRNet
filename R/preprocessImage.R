@@ -49,7 +49,7 @@ preprocessBrainImage <- function( image, truncateIntensity = c( 0.01, 0.99 ),
   intensityNormalizationType = NULL, verbose = TRUE )
   {
 
-  preprocessedImage <- antsImageClone( image )
+  preprocessedImage <- antsImageClone( image, out_pixeltype = "float" )
 
   # Truncate intensity
   if( ! is.null( truncateIntensity ) )

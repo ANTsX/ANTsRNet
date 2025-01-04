@@ -264,7 +264,7 @@ desikanKillianyTourvilleLabelingVersion0 <- function( t1,
   #
   ################################
 
-  t1Preprocessed <- antsImageClone( t1 )
+  t1Preprocessed <- antsImageClone( t1, out_pixeltype = "float" )
   if( doPreprocessing )
     {
     t1Preprocessing <- preprocessBrainImage( t1,
@@ -359,7 +359,7 @@ desikanKillianyTourvilleLabelingVersion0 <- function( t1,
   segmentationMatrix <- matrix( apply( imageMatrix, 2, which.max ), nrow = 1 )
   segmentationImage <- matrixToImages( segmentationMatrix, t1 * 0 + 1 )[[1]]
 
-  dktLabelImage <- antsImageClone( segmentationImage )
+  dktLabelImage <- antsImageClone( segmentationImage, 'unsigned int' )
 
   for( i in seq.int( length( labels ) ) )
     {
@@ -477,7 +477,7 @@ desikanKillianyTourvilleLabelingVersion0 <- function( t1,
 
     lobarLabels <- list( frontalLabels, parietalLabels, temporalLabels, occipitalLabels )
 
-    dktLobes <- antsImageClone( dktLabelImage )
+    dktLobes <- antsImageClone( dktLabelImage, out_pixeltype = "unsigned int" )
     dktLobes[dktLobes < 1000] <- 0
 
     for( i in seq.int( length( lobarLabels ) ) )
@@ -498,7 +498,7 @@ desikanKillianyTourvilleLabelingVersion0 <- function( t1,
           whichtoinvert = c( TRUE ), interpolator = "genericLabel", verbose = verbose )
       }
 
-    brainMask <- antsImageClone( atroposSeg )
+    brainMask <- antsImageClone( atroposSeg, out_pixeltype = "unsigned int" )
     brainMask[brainMask == 1 | brainMask == 5 | brainMask == 6] <- 0
     brainMask <- thresholdImage( brainMask, 0, 0, 0, 1 )
 
@@ -519,7 +519,7 @@ desikanKillianyTourvilleLabelingVersion0 <- function( t1,
 
     hemisphereLabels <- list( leftLabels, rightLabels )
 
-    dktHemispheres <- antsImageClone( dktLabelImage )
+    dktHemispheres <- antsImageClone( dktLabelImage, out_pixeltype = "unsigned int" )
 
     for( i in seq.int( length( hemisphereLabels ) ) )
       {
@@ -600,7 +600,7 @@ desikanKillianyTourvilleLabelingVersion1 <- function( t1,
   #
   ################################
 
-  t1Preprocessed <- antsImageClone( t1 )
+  t1Preprocessed <- antsImageClone( t1, out_pixeltype = "float" )
   if( doPreprocessing )
     {
     t1Preprocessing <- preprocessBrainImage( t1,
@@ -752,14 +752,14 @@ desikanKillianyTourvilleLabelingVersion1 <- function( t1,
   count <- 2
   for( i in seq.int( length( dktLeftLabels ) ) )
     {
-    probabilityImage <- antsImageClone( probabilityImages[[i+1]] )
+    probabilityImage <- antsImageClone( probabilityImages[[i+1]], out_pixeltype = "float" )
     probabilityLeftImage <- probabilityImage * bext$probabilityImages[[2]]  
     probabilityAllImages[[count]] <- probabilityLeftImage 
     count <- count + 1
     }
   for( i in seq.int( length( dktRightLabels ) ) )
     {
-    probabilityImage <- antsImageClone( probabilityImages[[i+1]] )
+    probabilityImage <- antsImageClone( probabilityImages[[i+1]], out_pixeltype = "float" )
     probabilityRightImage <- probabilityImage * bext$probabilityImages[[3]]  
     probabilityAllImages[[count]] <- probabilityRightImage 
     count <- count + 1
@@ -810,7 +810,7 @@ desikanKillianyTourvilleLabelingVersion1 <- function( t1,
 
     lobarLabels <- list( frontalLabels, parietalLabels, temporalLabels, occipitalLabels )
 
-    dktLobes <- antsImageClone( dktLabelImage )
+    dktLobes <- antsImageClone( dktLabelImage, out_pixeltype = "unsigned int" )
 
     for( i in seq.int( length( lobarLabels ) ) )
       {
@@ -827,7 +827,7 @@ desikanKillianyTourvilleLabelingVersion1 <- function( t1,
     atroposSeg[atroposSeg == 5] <- 0
     atroposSeg[atroposSeg == 6] <- 0
 
-    brainMask <- antsImageClone( atroposSeg )
+    brainMask <- antsImageClone( atroposSeg, out_pixeltype = "unsigned int" )
     brainMask <- thresholdImage( brainMask, 0, 0, 0, 1 )
 
     lobarParcellation <- iMath( brainMask, "PropagateLabelsThroughMask", brainMask * dktLobes )
@@ -841,7 +841,7 @@ desikanKillianyTourvilleLabelingVersion1 <- function( t1,
 
     hemisphereLabels <- list( dktLeftLabels, dktRightLabels )
 
-    dktHemispheres <- antsImageClone( dktLabelImage )
+    dktHemispheres <- antsImageClone( dktLabelImage, out_pixeltype = "unsigned int" )
 
     for( i in seq.int( length( hemisphereLabels ) ) )
       {
