@@ -98,7 +98,7 @@ harvardOxfordAtlasLabeling <- function( t1, doPreprocessing = TRUE,
   #
   ################################
 
-  t1Preprocessed <- antsImageClone( t1 )
+  t1Preprocessed <- antsImageClone( t1, out_pixeltype = "float" )
   if( doPreprocessing )
     {
     t1Preprocessing <- preprocessBrainImage( t1,
@@ -248,7 +248,7 @@ harvardOxfordAtlasLabeling <- function( t1, doPreprocessing = TRUE,
   count <- 1 
   for( i in seq.int( length( labels )  ) )
     {
-    probabilityImage <- antsImageClone( probabilityImages[[i]] )
+    probabilityImage <- antsImageClone( probabilityImages[[i]], out_pixeltype = "float" )
     if( labels[i] %in% hoaLateralLeftLabels )
       {
       probabilityLeftImage <- probabilityImage * bext$probabilityImages[[2]]
