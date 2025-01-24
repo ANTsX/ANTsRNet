@@ -320,7 +320,7 @@ getPretrainedNetwork <- function(
     wholeHeadInpaintingPatchBasedFLAIR = "https://figshare.com/ndownloader/files/39337439",
     wholeTumorSegmentationT2Flair = "https://ndownloader.figshare.com/files/14087045",
     wholeLungMaskFromVentilation = "https://ndownloader.figshare.com/files/28914441",
-    DeepAtroposHcpT1Weights = "https://figshare.com/ndownloader/files/49132504",
+    DeepAtroposHcpT1Weights = "https://figshare.com/ndownloader/files/51906071",
     DeepAtroposHcpT1T2Weights =  "https://figshare.com/ndownloader/files/49132498",
     DeepAtroposHcpT1FAWeights = "https://figshare.com/ndownloader/files/49132507",
     DeepAtroposHcpT1T2FAWeights = "https://figshare.com/ndownloader/files/49132501"
