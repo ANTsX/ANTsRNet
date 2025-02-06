@@ -179,9 +179,9 @@ brainExtraction <- function( image,
       reorientTemplateMask <- antsImageRead( getANTsXNetData( "hcpyaTemplateBrainMask" ) )
       reorientTemplate <- reorientTemplate * reorientTemplateMask
       reorientTemplate <- resampleImage( reorientTemplate, c( 1, 1, 1 ), useVoxels = FALSE, interpType = 0 )
-      reorientTemplate <- padOrCropImageToSize( reorientTemplate, c( 160, 176, 160 ) )
+      reorientTemplate <- padOrCropImageToSize( reorientTemplate, c( 160, 192, 160 ) )
       xfrm <- createAntsrTransform( type = "Euler3DTransform",
-        center = getCenterOfMass( reorientTemplate ), translation = c( 0, -10, -15 ) )
+        center = getCenterOfMass( reorientTemplate ), translation = c( 0, 0, 0 ) )
       reorientTemplate <- applyAntsrTransformToImage( xfrm, reorientTemplate, reorientTemplate )
       } else {
       reorientTemplate <- antsImageRead( getANTsXNetData( "S_template3" ) )
