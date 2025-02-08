@@ -63,7 +63,19 @@ getPretrainedNetwork(
     "wholeLungMaskFromVentilation", 
      "DeepAtroposHcpT1Weights",
     "DeepAtroposHcpT1T2Weights", "DeepAtroposHcpT1FAWeights",
-    "DeepAtroposHcpT1T2FAWeights"),
+    "DeepAtroposHcpT1T2FAWeights",
+    "sig_smallshort_train_1x1x2_1chan_featgraderL6_best_mdl",
+    "sig_smallshort_train_1x1x2_1chan_featvggL6_best_mdl",
+    "sig_smallshort_train_1x1x3_1chan_featgraderL6_best_mdl",
+    "sig_smallshort_train_1x1x3_1chan_featvggL6_best_mdl",
+    "sig_smallshort_train_1x1x4_1chan_featgraderL6_best_mdl",
+    "sig_smallshort_train_1x1x4_1chan_featvggL6_best_mdl",
+    "sig_smallshort_train_1x1x6_1chan_featvggL6_best_mdl", 
+    
+    "sig_smallshort_train_2x2x2_1chan_featgraderL6_best_mdl",
+    "sig_smallshort_train_2x2x2_1chan_featvggL6_best_mdl",
+    "sig_smallshort_train_2x2x4_1chan_featgraderL6_best_mdl",
+    "sig_smallshort_train_2x2x4_1chan_featvggL6_best_mdl"),
   targetFileName
 )
 }

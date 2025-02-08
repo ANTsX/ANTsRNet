@@ -19,7 +19,6 @@
 #' @param polyOrder int or the string 'hist'.  Parameter for regression 
 #' matching or specification of histogram matching.
 #' @param verbose print progress.
-#' @param
 #' @return super-resolution image.
 #' @author Avants BB
 #' @examples

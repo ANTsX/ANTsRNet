@@ -4,10 +4,28 @@
 \alias{mriSuperResolution}
 \title{Super-resolution for MRI}
 \usage{
-mriSuperResolution(image, verbose = FALSE)
+mriSuperResolution(
+  image,
+  expansionFactor = c(1, 1, 2),
+  feature = "vgg",
+  targetRange = c(1, 0),
+  polyOrder = "hist",
+  verbose = FALSE
+)
 }
 \arguments{
 \item{image}{magnetic resonance image}
+
+\item{expansionFactor}{Specifies the increase in resolution per
+dimension.  Possibilities include: \code{c(1,1,2)}, \code{c(1,1,3)},
+\code{c(1,1,4)}, \code{c(1,1,6)}, \code{c(2,2,2)}, and \code{c(2,2,4)}.}
+
+\item{feature}{"grader" or "vgg"}
+
+\item{targetRange}{Range for applySuperResolutionModel.}
+
+\item{polyOrder}{int or the string 'hist'.  Parameter for regression
+matching or specification of histogram matching.}
 
 \item{verbose}{print progress.}
 }
@@ -15,7 +33,17 @@ mriSuperResolution(image, verbose = FALSE)
 super-resolution image.
 }
 \description{
-Perform super-resolution (2x) of MRI data using deep back projection network.
+Perform super-resolution of MRI data using deep back projection
+network.  Work described in
+
+https://www.medrxiv.org/content/10.1101/2023.02.02.23285376v1
+
+with the GitHub repo located at https://github.com/stnava/siq
+
+Note that some preprocessing possibilities for the input includes:
+\itemize{
+\item Truncate intensity (see ants.iMath(..., 'TruncateIntensity', ...)
+}
 }
 \examples{
 \dontrun{
