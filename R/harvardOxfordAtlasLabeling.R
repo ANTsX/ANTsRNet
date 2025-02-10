@@ -274,7 +274,7 @@ harvardOxfordAtlasLabeling <- function( t1, doPreprocessing = TRUE,
     {
     label <- hoaAllLabels[i] 
     labelIndex <- which( hoaAllLabels == label )
-    hoaLabelImage[segmentationImage == labelIndex] <- label + 1
+    hoaLabelImage[segmentationImage == labelIndex - 1] <- label
     }  
 
   return( list(

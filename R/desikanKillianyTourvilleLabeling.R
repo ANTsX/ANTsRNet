@@ -772,11 +772,11 @@ desikanKillianyTourvilleLabelingVersion1 <- function( t1,
   dktAllLabels <- sort( c( dktLateralLabels, dktLeftLabels, dktRightLabels ) )   
 
   dktLabelImage <- segmentationImage * 0
-  for( i in seq.int( dktAllLabels ) )
+  for( i in seq.int( length( dktAllLabels ) ) )
     {
     label <- dktAllLabels[i] 
     labelIndex <- which( dktAllLabels == label )
-    dktLabelImage[segmentationImage == labelIndex] <- label + 1
+    dktLabelImage[segmentationImage == labelIndex-1] <- label
     }  
 
   if( doLobarParcellation )
