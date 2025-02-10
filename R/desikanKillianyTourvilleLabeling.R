@@ -592,7 +592,7 @@ desikanKillianyTourvilleLabelingVersion1 <- function( t1,
   templateTransformType <- "antsRegistrationSyNQuick[a]"
   template <- antsImageRead( getANTsXNetData( whichTemplate ) )
 
-  croppedTemplateSize <- c( 160, 176, 160 )
+  croppedTemplateSize <- c( 160, 192, 160 )
 
   ################################
   #

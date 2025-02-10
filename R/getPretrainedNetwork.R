@@ -254,7 +254,7 @@ getPretrainedNetwork <- function(
     dktInner = "https://ndownloader.figshare.com/files/23266943",
     dktOuter = "https://ndownloader.figshare.com/files/23765132",
     dktOuterWithSpatialPriors = "https://ndownloader.figshare.com/files/24230768",
-    DesikanKillianyTourvilleOuter = "https://figshare.com/ndownloader/files/51408209",
+    DesikanKillianyTourvilleOuter = "https://figshare.com/ndownloader/files/52243655",
     HarvardOxfordAtlasSubcortical = "https://figshare.com/ndownloader/files/51755546",
     e13x5_coronal_weights = "https://figshare.com/ndownloader/files/38035968",
     e13x5_sagittal_weights = "https://figshare.com/ndownloader/files/38035965",
