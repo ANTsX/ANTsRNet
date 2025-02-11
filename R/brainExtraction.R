@@ -181,7 +181,7 @@ brainExtraction <- function( image,
       reorientTemplate <- resampleImage( reorientTemplate, c( 1, 1, 1 ), useVoxels = FALSE, interpType = 0 )
       reorientTemplate <- padOrCropImageToSize( reorientTemplate, c( 160, 192, 160 ) )
       xfrm <- createAntsrTransform( type = "Euler3DTransform",
-        center = getCenterOfMass( reorientTemplate ), translation = c( 0, 0, 0 ) )
+        center = getCenterOfMass( reorientTemplate * 0 + 1 ), translation = c( 0, 0, -10 ) )
       reorientTemplate <- applyAntsrTransformToImage( xfrm, reorientTemplate, reorientTemplate )
       } else {
       reorientTemplate <- antsImageRead( getANTsXNetData( "S_template3" ) )
