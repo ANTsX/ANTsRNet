@@ -216,10 +216,10 @@ deepAtropos <- function( t1, doPreprocessing = TRUE, useSpatialPriors = 1,
       whichNetwork = "t1_t2_fa" 
       inputImages[[2]] <- t1[[2]]
       inputImages[[3]] <- t1[[3]]
-      } else if( ! is.null( t1[[2]] ) && is.null( t1[[3]] ) ) {
+      } else if( ! is.null( t1[[2]] ) ) {
       whichNetwork = "t1_t2" 
       inputImages[[2]] <- t1[[2]]
-      } else if( ! is.null( t1[[2]] ) && is.null( t1[[3]] ) ) {
+      } else if( ! is.null( t1[[3]] ) ) {
       whichNetwork = "t1_fa" 
       inputImages[[2]] <- t1[[3]]
       } else {
