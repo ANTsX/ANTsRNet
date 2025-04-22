@@ -241,8 +241,8 @@ deepAtropos <- function( t1, doPreprocessing = TRUE, useSpatialPriors = 1,
       {
       truncatedImage <- antsImageClone( image )
       quantiles <- quantile( truncatedImage, truncatedValues )
-      truncatedImage[inputImages[[i]] < quantiles[1]] <- quantiles[1]
-      truncatedImage[inputImages[[i]] > quantiles[2]] <- quantiles[2]
+      truncatedImage[image < quantiles[1]] <- quantiles[1]
+      truncatedImage[image > quantiles[2]] <- quantiles[2]
       return( truncatedImage )
       }
 
@@ -279,7 +279,6 @@ deepAtropos <- function( t1, doPreprocessing = TRUE, useSpatialPriors = 1,
         preprocessedImages[[i]] <- n4
         }
       preprocessedImages[[i]] <- iMath( preprocessedImages[[i]], "Normalize" ) 
-      antsImageWrite( preprocessedImages[[i]], paste0( "~/Desktop/pre", i, ".nii.gz" ) )
       }
      
     ################################
