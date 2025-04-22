@@ -237,42 +237,49 @@ deepAtropos <- function( t1, doPreprocessing = TRUE, useSpatialPriors = 1,
     #
     ################################
 
+    truncateImageIntensity <- function( image, truncatedValues = c( 0.01, 0.99 ) )
+      {
+      truncatedImage <- antsImageClone( image )
+      quantiles <- quantile( truncatedImage, truncatedValues )
+      truncatedImage[inputImages[[i]] < quantiles[1]] <- quantiles[1]
+      truncatedImage[inputImages[[i]] > quantiles[2]] <- quantiles[2]
+      return( truncatedImage )
+      }
+
     hcpT1Template <- antsImageRead( getANTsXNetData( "hcpinterT1Template" ) )
-    hcpT2Template <- antsImageRead( getANTsXNetData( "hcpinterT2Template" ) )
-    hcpFaTemplate <- antsImageRead( getANTsXNetData( "hcpinterFATemplate" ) )
     hcpTemplateBrainMask <- antsImageRead( getANTsXNetData( "hcpinterTemplateBrainMask" ) )
     hcpTemplateBrainSegmentation <- antsImageRead( getANTsXNetData( "hcpinterTemplateBrainSegmentation" ) )
 
-    hcpTemplates <- list()
-    hcpTemplates[[1]] <- hcpT1Template * hcpTemplateBrainMask
-    hcpTemplates[[2]] <- hcpT2Template * hcpTemplateBrainMask
-    hcpTemplates[[3]] <- hcpFaTemplate * hcpTemplateBrainMask
+    hcpT1Template <- hcpT1Template * hcpTemplateBrainMask
 
     reg <- NULL
     t1Mask <- NULL
     preprocessedImages <- list()
     for( i in seq.int( length( inputImages ) ) )
       {
-      n4 <- n4BiasFieldCorrection( inputImages[[i]], mask = inputImages[[i]] * 0 + 1, 
+      n4 <- n4BiasFieldCorrection( truncateImageIntensity( inputImages[[i]] ), 
+                                   mask = inputImages[[i]] * 0 + 1, 
                                    convergence = list( iters = c( 50, 50, 50, 50 ), tol = 0.0 ),
                                    rescaleIntensities = TRUE,
                                    verbose = verbose )
       if( i == 1 )
         {
-        t1Mask <- brainExtraction( inputImages[[1]], modality = "t1", verbose = verbose )
+        t1Bext <- brainExtraction( inputImages[[1]], modality = "t1threetissue", verbose = verbose )
+        t1Mask <- thresholdImage(t1Bext$segmentationImage, 1, 1, 1, 0 )
         n4 <- n4 * t1Mask 
-        reg <- antsRegistration( hcpTemplates[[i]], n4, 
+        reg <- antsRegistration( hcpT1Template, n4, 
                                  typeofTransform = "antsRegistrationSyNQuick[a]",
                                  verbose = verbose )
         preprocessedImages[[i]] <- antsImageClone( reg$warpedmovout )                         
         } else {
         n4 <- n4 * t1Mask 
-        n4 <- antsApplyTransforms( hcpTemplates[[i]], n4, 
-                                    transformlist = reg$fwdtransforms,
-                                    verbose = verbose )
+        n4 <- antsApplyTransforms( hcpT1Template, n4, 
+                                   transformlist = reg$fwdtransforms,
+                                   verbose = verbose )
         preprocessedImages[[i]] <- n4
         }
       preprocessedImages[[i]] <- iMath( preprocessedImages[[i]], "Normalize" ) 
+      antsImageWrite( preprocessedImages[[i]], paste0( "~/Desktop/pre", i, ".nii.gz" ) )
       }
      
     ################################
@@ -282,9 +289,9 @@ deepAtropos <- function( t1, doPreprocessing = TRUE, useSpatialPriors = 1,
     ################################
 
     patchSize <- c( 192L, 224L, 192L )
-    strideLength <- c( dim( hcpTemplates[[1]] )[1] - patchSize[1],
-                       dim( hcpTemplates[[1]] )[2] - patchSize[2],  
-                       dim( hcpTemplates[[1]] )[3] - patchSize[3] )
+    strideLength <- c( dim( hcpT1Template )[1] - patchSize[1],
+                       dim( hcpT1Template )[2] - patchSize[2],  
+                       dim( hcpT1Template )[3] - patchSize[3] )
 
     hcpTemplatePriors <- list()
     for( i in seq.int( 6 ) )
@@ -372,7 +379,7 @@ deepAtropos <- function( t1, doPreprocessing = TRUE, useSpatialPriors = 1,
         cat( "Reconstructing image ", classes[i], "\n" )
         }
       reconstructedImage <- reconstructImageFromPatches( predictedData[,,,,i],
-          domainImage = hcpTemplates[[1]], strideLength = strideLength )
+          domainImage = hcpT1Template, strideLength = strideLength )
       if( doPreprocessing )
         {
         probabilityImages[[i]] <- antsApplyTransforms( fixed = inputImages[[1]], 
