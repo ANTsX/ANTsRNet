@@ -237,10 +237,10 @@ deepAtropos <- function( t1, doPreprocessing = TRUE, useSpatialPriors = 1,
     #
     ################################
 
-    truncateImageIntensity <- function( image, truncatedValues = c( 0.01, 0.99 ) )
+    truncateImageIntensity <- function( image, truncateValues = c( 0.01, 0.99 ) )
       {
       truncatedImage <- antsImageClone( image )
-      quantiles <- quantile( truncatedImage, truncatedValues )
+      quantiles <- quantile( truncatedImage, truncateValues )
       truncatedImage[image < quantiles[1]] <- quantiles[1]
       truncatedImage[image > quantiles[2]] <- quantiles[2]
       return( truncatedImage )
