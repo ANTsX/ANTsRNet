@@ -259,7 +259,8 @@ brainExtraction <- function( image,
       cat( "Brain extraction:  prediction and decoding.\n" )
       }
     predictedData <- unetModel %>% predict( batchX, verbose = verbose )
-    probabilityImagesArray <- decodeUnet( predictedData, reorientTemplate )
+    predictedData <- array( predictedData[1,,,,], dim = c( dim( reorientTemplate ), numberOfClassificationLabels ) )
+    probabilityImagesList <- oneHotToSegmentation( predictedData, reorientTemplate )
 
     if( verbose )
       {
@@ -274,7 +275,7 @@ brainExtraction <- function( image,
       for( i in seq.int( numberOfClassificationLabels ) )
         {
         probabilityImagesWarped[[i]] <- applyAntsrTransformToImage( xfrmInv,
-                     probabilityImagesArray[[1]][[i]], inputImages[[1]] )               
+                     probabilityImagesList[[i]], inputImages[[1]] )               
         }
       imageMatrix <- imageListToMatrix( probabilityImagesWarped, inputImages[[1]] * 0 + 1 )
       segmentationMatrix <- matrix( apply( imageMatrix, 2, which.max ), nrow = 1 )
@@ -286,7 +287,7 @@ brainExtraction <- function( image,
       return( results )
       } else {
       probabilityImage <- applyAntsrTransformToImage( xfrmInv,
-        probabilityImagesArray[[1]][[numberOfClassificationLabels]], inputImages[[1]] )
+        probabilityImagesList[[numberOfClassificationLabels]], inputImages[[1]] )
 
       return( probabilityImage )
       }
