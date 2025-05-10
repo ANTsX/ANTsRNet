@@ -21,11 +21,11 @@ getANTsXNetData(
     "DevCCF_P56_MRI_T2_50um_BrainParcellationNickMask",
     "DevCCF_P56_MRI_T2_50um_BrainParcellationTctMask", "DevCCF_P04_STPT_50um",
     "DevCCF_P04_STPT_50um_BrainParcellationJayMask", 
-     "hcpyaT1Template",
-    "hcpyaT2Template", "hcpyaFATemplate", "hcpyaTemplateBrainMask",
-    "hcpyaTemplateBrainSegmentation", "hcpinterT1Template", "hcpinterT2Template",
-    "hcpinterFATemplate", "hcpinterTemplateBrainMask",
-    "hcpinterTemplateBrainSegmentation"),
+     "hcpaT1Template",
+    "hcpaT2Template", "hcpaFATemplate", "hcpyaT1Template", "hcpyaT2Template",
+    "hcpyaFATemplate", "hcpyaTemplateBrainMask", "hcpyaTemplateBrainSegmentation",
+    "hcpinterT1Template", "hcpinterT2Template", "hcpinterFATemplate",
+    "hcpinterTemplateBrainMask", "hcpinterTemplateBrainSegmentation"),
   targetFileName
 )
 }

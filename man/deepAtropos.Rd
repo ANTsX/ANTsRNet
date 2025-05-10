@@ -4,13 +4,7 @@
 \alias{deepAtropos}
 \title{Six tissue segmentation}
 \usage{
-deepAtropos(
-  t1,
-  doPreprocessing = TRUE,
-  useSpatialPriors = 1,
-  verbose = FALSE,
-  debug = FALSE
-)
+deepAtropos(t1, doPreprocessing = TRUE, useSpatialPriors = 1, verbose = FALSE)
 }
 \arguments{
 \item{t1}{raw or preprocessed 3-D T1-weighted brain image.}
@@ -22,8 +16,6 @@ only '0' (no priors) and '1' (cerebellar prior only) are the only two options.
 Default is 1.}
 
 \item{verbose}{print progress.}
-
-\item{debug}{return feature images in the last layer of the u-net model.}
 }
 \value{
 list consisting of the segmentation image and probability images for
