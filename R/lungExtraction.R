@@ -78,7 +78,8 @@ lungExtraction <- function( image,
       cat( "Lung extraction:  prediction and decoding.\n" )
       }
     predictedData <- unetModel %>% predict( batchX, verbose = verbose )
-    probabilityImagesArray <- decodeUnet( predictedData, reorientTemplate )
+    predictedData <- array( predictedData[1,,,,], dim = c( dim( reorientTemplate ), numberOfClassificationLabels ) )
+    probabilityImagesList <- oneHotToSegmentation( predictedData, reorientTemplate )
 
     if( verbose )
       {
@@ -88,7 +89,7 @@ lungExtraction <- function( image,
     probabilityImages <- list()
     for( i in seq_len( numberOfClassificationLabels ) )
       {
-      probabilityImageTmp <- probabilityImagesArray[[1]][[i]]
+      probabilityImageTmp <- probabilityImagesList[[i]]
       probabilityImages[[i]] <- applyAntsrTransformToImage( invertAntsrTransform( xfrm ),
         probabilityImageTmp, image )
       }
@@ -163,9 +164,11 @@ lungExtraction <- function( image,
 
     if( modality == "protonLobes" )
       {
-      probabilityImagesArray <- decodeUnet( predictedData[[1]], reorientTemplate )
+      predictedDataBatch <- array( predictedData[[1]][1,,,,], dim = c( dim( reorientTemplate ), numberOfClassificationLabels ) )
+      probabilityImagesList <- oneHotToSegmentation( predictedDataBatch, reorientTemplate )
       } else {
-      probabilityImagesArray <- decodeUnet( predictedData, reorientTemplate )
+      predictedDataBatch <- array( predictedData[1,,,,], dim = c( dim( reorientTemplate ), numberOfClassificationLabels ) )
+      probabilityImagesList <- oneHotToSegmentation( predictedDataBatch, reorientTemplate )
       }
 
     if( verbose )
@@ -176,7 +179,7 @@ lungExtraction <- function( image,
     probabilityImages <- list()
     for( i in seq_len( numberOfClassificationLabels ) )
       {
-      probabilityImageTmp <- probabilityImagesArray[[1]][[i]]
+      probabilityImageTmp <- probabilityImagesList[[i]]
       probabilityImages[[i]] <- applyAntsrTransformToImage( invertAntsrTransform( xfrm ),
         probabilityImageTmp, image )
       }
@@ -187,7 +190,9 @@ lungExtraction <- function( image,
 
     if( modality == "protonLobes" )
       {
-      wholeLungMask <- decodeUnet( predictedData[[2]], reorientTemplate )[[1]][[1]]
+      predictedDataBatch <- array( predictedData[[2]][1,,,,], dim = c( dim( reorientTemplate ), numberOfClassificationLabels ) )
+      wholeLungMask <- oneHotToSegmentation( predictedDataBatch, reorientTemplate )[[1]]
+
       wholeLungMask <- applyAntsrTransformToImage( invertAntsrTransform( xfrm ),
         wholeLungMask, image )
       return( list( segmentationImage = segmentationImage,

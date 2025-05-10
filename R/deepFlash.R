@@ -354,8 +354,14 @@ deepFlash <- function( t1, t2 = NULL, whichParcellation = "yassa",
       }
 
     predictedData <- unetModel %>% predict( batchX, verbose = verbose )
-    probabilityImagesList <- decodeUnet( predictedData[[1]], t1Cropped )
 
+    probabilityImagesList <- list()
+    for( j in seq.int( dim( predictedData[[1]] )[1] ) )
+      {
+      predictedDataBatch <- array( predictedData[[1]][j,,,,], dim = c( dim( t1Cropped ), tail( dim( predictedData[[1]] ), 1 ) ) )
+      probabilityImagesList[[j]] <- oneHotToSegmentation( predictedDataBatch, t1Cropped )
+      } 
+ 
     for( i in seq.int( 1 + length( labelsLeft ) ) )
       {
       for( j in seq.int( dim( predictedData[[1]] )[1] ) )
@@ -400,7 +406,13 @@ deepFlash <- function( t1, t2 = NULL, whichParcellation = "yassa",
 
     for( i in seq.int( 2, length( predictedData ) ) )
       {
-      probabilityImagesList <- decodeUnet( predictedData[[i]], t1Cropped )
+      probabilityImagesList <- list()
+      for( j in seq.int( dim( predictedData[[1]] )[1] ) )
+        {
+        predictedDataBatch <- array( predictedData[[i]][j,,,,], dim = c( dim( t1Cropped ), tail( dim( predictedData[[i]] ), 1 ) ) )
+        probabilityImagesList[[j]] <- oneHotToSegmentation( predictedDataBatch, t1Cropped )
+        } 
+
       for( j in seq.int( dim( predictedData[[i]] )[1] ) )
         {
         probabilityImage <- probabilityImagesList[[j]][[1]]
@@ -530,7 +542,13 @@ deepFlash <- function( t1, t2 = NULL, whichParcellation = "yassa",
       }
 
     predictedData <- unetModel %>% predict( batchX, verbose = verbose )
-    probabilityImagesList <- decodeUnet( predictedData[[1]], t1Cropped )
+
+    probabilityImagesList <- list()
+    for( j in seq.int( dim( predictedData[[1]] )[1] ) )
+      {
+      predictedDataBatch <- array( predictedData[[1]][j,,,,], dim = c( dim( t1Cropped ), tail( dim( predictedData[[1]] ), 1 ) ) )
+      probabilityImagesList[[j]] <- oneHotToSegmentation( predictedDataBatch, t1Cropped )
+      } 
 
     for( i in seq.int( 1 + length( labelsRight ) ) )
       {
@@ -581,7 +599,13 @@ deepFlash <- function( t1, t2 = NULL, whichParcellation = "yassa",
 
     for( i in seq.int( 2, length( predictedData ) ) )
       {
-      probabilityImagesList <- decodeUnet( predictedData[[i]], t1Cropped )
+      probabilityImagesList <- list()
+      for( j in seq.int( dim( predictedData[[1]] )[1] ) )
+        {
+        predictedDataBatch <- array( predictedData[[i]][j,,,,], dim = c( dim( t1Cropped ), tail( dim( predictedData[[i]] ), 1 ) ) )
+        probabilityImagesList[[j]] <- oneHotToSegmentation( predictedDataBatch, t1Cropped )
+        } 
+
       for( j in seq.int( dim( predictedData[[i]] )[1] ) )
         {
         probabilityImage <- probabilityImagesList[[j]][[1]]
@@ -886,7 +910,13 @@ deepFlash <- function( t1, t2 = NULL, whichParcellation = "yassa",
       }
 
     predictedData <- unetModel %>% predict( batchX, verbose = verbose )
-    probabilityImagesList <- decodeUnet( predictedData[[1]], t1Cropped )
+
+    probabilityImagesList <- list()
+    for( j in seq.int( dim( predictedData[[1]] )[1] ) )
+      {
+      predictedDataBatch <- array( predictedData[[1]][j,,,,], dim = c( dim( t1Cropped ), tail( dim( predictedData[[1]] ), 1 ) ) )
+      probabilityImagesList[[j]] <- oneHotToSegmentation( predictedDataBatch, t1Cropped )
+      } 
 
     for( i in seq.int( 1 + length( labelsLeft ) ) )
       {
@@ -932,7 +962,13 @@ deepFlash <- function( t1, t2 = NULL, whichParcellation = "yassa",
 
     for( i in seq.int( 2, length( predictedData ) ) )
       {
-      probabilityImagesList <- decodeUnet( predictedData[[i]], t1Cropped )
+      probabilityImagesList <- list()
+      for( j in seq.int( dim( predictedData[[1]] )[1] ) )
+        {
+        predictedDataBatch <- array( predictedData[[i]][j,,,,], dim = c( dim( t1Cropped ), tail( dim( predictedData[[i]] ), 1 ) ) )
+        probabilityImagesList[[j]] <- oneHotToSegmentation( predictedDataBatch, t1Cropped )
+        } 
+
       for( j in seq.int( dim( predictedData[[i]] )[1] ) )
         {
         probabilityImage <- probabilityImagesList[[j]][[1]]
@@ -1016,7 +1052,13 @@ deepFlash <- function( t1, t2 = NULL, whichParcellation = "yassa",
       }
 
     predictedData <- unetModel %>% predict( batchX, verbose = verbose )
-    probabilityImagesList <- decodeUnet( predictedData[[1]], t1Cropped )
+
+    probabilityImagesList <- list()
+    for( j in seq.int( dim( predictedData[[1]] )[1] ) )
+      {
+      predictedDataBatch <- array( predictedData[[1]][j,,,,], dim = c( dim( t1Cropped ), tail( dim( predictedData[[1]] ), 1 ) ) )
+      probabilityImagesList[[j]] <- oneHotToSegmentation( predictedDataBatch, t1Cropped )
+      } 
 
     for( i in seq.int( 1 + length( labelsRight ) ) )
       {
@@ -1067,7 +1109,13 @@ deepFlash <- function( t1, t2 = NULL, whichParcellation = "yassa",
 
     for( i in seq.int( 2, length( predictedData ) ) )
       {
-      probabilityImagesList <- decodeUnet( predictedData[[i]], t1Cropped )
+      probabilityImagesList <- list()
+      for( j in seq.int( dim( predictedData[[1]] )[1] ) )
+        {
+        predictedDataBatch <- array( predictedData[[i]][j,,,,], dim = c( dim( t1Cropped ), tail( dim( predictedData[[i]] ), 1 ) ) )
+        probabilityImagesList[[j]] <- oneHotToSegmentation( predictedDataBatch, t1Cropped )
+        } 
+
       for( j in seq.int( dim( predictedData[[i]] )[1] ) )
         {
         probabilityImage <- probabilityImagesList[[j]][[1]]

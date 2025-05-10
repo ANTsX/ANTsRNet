@@ -339,12 +339,13 @@ desikanKillianyTourvilleLabelingVersion0 <- function( t1,
     }
 
   predictedData <- unetModel %>% predict( batchX, verbose = verbose )
-  probabilityImagesList <- decodeUnet( predictedData, downsampledImage )
+  predictedData <- array( predictedData[1,,,,], dim = c( dim( downsampledImage ), length( labels ) ) )
+  probabilityImagesList <- oneHotToSegmentation( predictedData, downsampledImage )
 
   outerProbabilityImages <- list()
-  for( i in seq.int( length( probabilityImagesList[[1]] ) ) )
+  for( i in seq.int( length( probabilityImagesList ) ) )
     {
-    resampledImage <- resampleImage( probabilityImagesList[[1]][[i]], dim( t1Preprocessed ), useVoxels = TRUE, interpType = 0 )
+    resampledImage <- resampleImage( probabilityImagesList[[i]], dim( t1Preprocessed ), useVoxels = TRUE, interpType = 0 )
     if( doPreprocessing )
       {
       outerProbabilityImages[[i]] <- antsApplyTransforms( fixed = t1, moving = resampledImage,
@@ -406,16 +407,17 @@ desikanKillianyTourvilleLabelingVersion0 <- function( t1,
   batchX <- ( batchX - mean( batchX ) ) / sd( batchX )
 
   predictedData <- unetModel %>% predict( batchX, verbose = verbose )
-  probabilityImagesList <- decodeUnet( predictedData, croppedImage )
+  predictedData <- array( predictedData[1,,,,], dim = c( dim( croppedImage ), length( labels ) ) )
+  probabilityImagesList <- oneHotToSegmentation( predictedData, croppedImage )
 
   innerProbabilityImages <- list()
   for( i in seq.int( length( probabilityImagesList[[1]] ) ) )
     {
     if( i > 1 )
       {
-      decroppedImage <- decropImage( probabilityImagesList[[1]][[i]], t1Preprocessed * 0 )
+      decroppedImage <- decropImage( probabilityImagesList[[i]], t1Preprocessed * 0 )
       } else {
-      decroppedImage <- decropImage( probabilityImagesList[[1]][[i]], t1Preprocessed * 0 + 1 )
+      decroppedImage <- decropImage( probabilityImagesList[[i]], t1Preprocessed * 0 + 1 )
       }
     if( doPreprocessing )
       {
