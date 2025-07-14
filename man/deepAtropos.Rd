@@ -9,8 +9,7 @@ deepAtropos(
   doPreprocessing = TRUE,
   useSpatialPriors = 1,
   doDenoising = TRUE,
-  verbose = FALSE,
-  debug = FALSE
+  verbose = FALSE
 )
 }
 \arguments{
@@ -25,8 +24,6 @@ Default is 1.}
 \item{doDenoising}{Activate denoising within preprocessing (default TRUE).}
 
 \item{verbose}{print progress.}
-
-\item{debug}{return feature images in the last layer of the u-net model.}
 }
 \value{
 list consisting of the segmentation image and probability images for

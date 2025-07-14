@@ -29,7 +29,6 @@
 #' Default is 1.
 #' @param doDenoising Activate denoising within preprocessing (default TRUE).
 #' @param verbose print progress.
-#' @param debug return feature images in the last layer of the u-net model.
 #' @return list consisting of the segmentation image and probability images for
 #' each label.
 #' @author Tustison NJ
@@ -43,7 +42,7 @@
 #' }
 #' @export
 deepAtropos <- function( t1, doPreprocessing = TRUE, useSpatialPriors = 1,
-  doDenoising = TRUE, verbose = FALSE, debug = FALSE )
+  doDenoising = TRUE, verbose = FALSE )
 {
 
   if( ! is.list( t1 ) )
@@ -167,37 +166,8 @@ deepAtropos <- function( t1, doPreprocessing = TRUE, useSpatialPriors = 1,
 
     results <- list( segmentationImage = segmentationImage,
                      probabilityImages = probabilityImages )
-
-    # debugging
-
-    if( debug )
-      {
-      inputImage <- unetModel$input
-      featureLayer <- unetModel$layers[[length( unetModel$layers ) - 1]]
-      featureFunction <- keras::backend()$`function`( list( inputImage ), list( featureLayer$output ) )
-      featureBatch <- featureFunction( list( batchX[1,,,,,drop = FALSE] ) )
-
-      featureImagesList <- decodeUnet( featureBatch[[1]], croppedImage )
-
-      featureImages <- list()
-      for( i in seq.int( length( featureImagesList[[1]] ) ) )
-        {
-        decroppedImage <- decropImage( featureImagesList[[1]][[i]], t1Preprocessed * 0 )
-        if( doPreprocessing )
-          {
-          featureImages[[i]] <- antsApplyTransforms( fixed = t1, moving = decroppedImage,
-              transformlist = t1Preprocessing$templateTransforms$invtransforms,
-              whichtoinvert = c( TRUE ), interpolator = "linear", verbose = verbose )
-          } else {
-          featureImages[[i]] <- decroppedImage
-          }
-        }
-      results[['featureImagesLastLayer']] <- featureImages
-      }
     return( results )
-
     } else {
-
     if( length( t1 ) != 3 )
       {
       stop( paste0( "Length of input list must be 3.  Input images are (in order): [T1, T2, FA].", 
