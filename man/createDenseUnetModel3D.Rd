@@ -13,7 +13,7 @@ createDenseUnetModel3D(
   reductionRate = 0,
   depth = 7,
   dropoutRate = 0,
-  weightDecay = 0.0001,
+  weightDecay = 1e-04,
   mode = c("classification", "regression")
 )
 }

@@ -8,6 +8,7 @@ deepAtropos(
   t1,
   doPreprocessing = TRUE,
   useSpatialPriors = 1,
+  doDenoising = TRUE,
   verbose = FALSE,
   debug = FALSE
 )
@@ -20,6 +21,8 @@ deepAtropos(
 \item{useSpatialPriors}{Use MNI spatial tissue priors (0 or 1).  Currently,
 only '0' (no priors) and '1' (cerebellar prior only) are the only two options.
 Default is 1.}
+
+\item{doDenoising}{Activate denoising within preprocessing (default TRUE).}
 
 \item{verbose}{print progress.}
 
