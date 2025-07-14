@@ -27,6 +27,7 @@
 #' @param useSpatialPriors Use MNI spatial tissue priors (0 or 1).  Currently,
 #' only '0' (no priors) and '1' (cerebellar prior only) are the only two options.
 #' Default is 1.
+#' @param doDenoising Activate denoising within preprocessing (default TRUE).
 #' @param verbose print progress.
 #' @param debug return feature images in the last layer of the u-net model.
 #' @return list consisting of the segmentation image and probability images for
@@ -42,7 +43,7 @@
 #' }
 #' @export
 deepAtropos <- function( t1, doPreprocessing = TRUE, useSpatialPriors = 1,
-  verbose = FALSE, debug = FALSE )
+  doDenoising = TRUE, verbose = FALSE, debug = FALSE )
 {
 
   if( ! is.list( t1 ) )
@@ -67,7 +68,7 @@ deepAtropos <- function( t1, doPreprocessing = TRUE, useSpatialPriors = 1,
           template = "croppedMni152",
           templateTransformType = "antsRegistrationSyNQuickRepro[a]",
           doBiasCorrection = TRUE,
-          doDenoising = TRUE,
+          doDenoising = doDenoising,
           verbose = verbose )
       t1Preprocessed <- t1Preprocessing$preprocessedImage * t1Preprocessing$brainMask
       }
