@@ -4,7 +4,13 @@
 \alias{deepAtropos}
 \title{Six tissue segmentation}
 \usage{
-deepAtropos(t1, doPreprocessing = TRUE, useSpatialPriors = 1, verbose = FALSE)
+deepAtropos(
+  t1,
+  doPreprocessing = TRUE,
+  useSpatialPriors = 1,
+  doDenoising = TRUE,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{t1}{raw or preprocessed 3-D T1-weighted brain image.}
@@ -14,6 +20,8 @@ deepAtropos(t1, doPreprocessing = TRUE, useSpatialPriors = 1, verbose = FALSE)
 \item{useSpatialPriors}{Use MNI spatial tissue priors (0 or 1).  Currently,
 only '0' (no priors) and '1' (cerebellar prior only) are the only two options.
 Default is 1.}
+
+\item{doDenoising}{Activate denoising within preprocessing (default TRUE).}
 
 \item{verbose}{print progress.}
 }
