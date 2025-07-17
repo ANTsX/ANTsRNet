@@ -26,6 +26,10 @@ jobs:
         run: |
           Rscript -e 'install.packages(c("remotes", "testthat"), repos = "https://cloud.r-project.org")'
 
+      - name: Configure GitHub PAT for remotes
+        run: |
+          echo "GITHUB_PAT=${{ secrets.GH_PAT }}" >> $GITHUB_ENV
+          
       - name: Install ANTsR
         run: |
           Rscript -e 'remotes::install_github("ANTsX/ANTsR", dependencies = TRUE)'
