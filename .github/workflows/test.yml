@@ -10,6 +10,9 @@ jobs:
   test:
     runs-on: ubuntu-22.04
 
+    env:
+      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -22,21 +25,53 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libcurl4-openssl-dev libssl-dev libxml2-dev
 
-      - name: Install remotes and testthat
-        run: |
-          Rscript -e 'install.packages(c("remotes", "testthat"), repos = "https://cloud.r-project.org")'
+      # 🧠 Cache R packages
+      - name: Cache R packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/R
+          key: ${{ runner.os }}-r-pkgs-${{ hashFiles('DESCRIPTION') }}
+          restore-keys: |
+            ${{ runner.os }}-r-pkgs-
 
-      - name: Configure GitHub PAT for remotes
+      # 🧠 Cache ANTsR GitHub install
+      - name: Cache ANTsR build
+        uses: actions/cache@v3
+        with:
+          path: ~/.local/share/R/ANTsR
+          key: ${{ runner.os }}-antsr-build-${{ hashFiles('DESCRIPTION') }}
+          restore-keys: |
+            ${{ runner.os }}-antsr-build-
+
+      # 🧠 Cache TensorFlow installation
+      - name: Cache Python packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.local/share/r-reticulate
+          key: ${{ runner.os }}-tf2-py-${{ hashFiles('DESCRIPTION') }}
+          restore-keys: |
+            ${{ runner.os }}-tf2-py-
+
+      - name: Install R dependencies
         run: |
-          echo "GITHUB_PAT=${{ secrets.GH_PAT }}" >> $GITHUB_ENV
+          Rscript -e 'install.packages(c("remotes", "testthat", "tensorflow"), repos = "https://cloud.r-project.org")'
+
+      - name: Install TensorFlow
+        run: |
+          Rscript -e 'tensorflow::install_tensorflow(version = "2.9.1")'
 
       - name: Install ANTsR
         run: |
+          mkdir -p ~/.local/share/R/ANTsR && cd ~/.local/share/R/ANTsR
           Rscript -e 'remotes::install_github("ANTsX/ANTsR", dependencies = TRUE)'
 
       - name: Install ANTsRNet
         run: |
           Rscript -e 'remotes::install_local(".", dependencies = TRUE)'
+
+      - name: Confirm Python + reticulate config
+        run: |
+          Rscript -e 'reticulate::py_config()'
 
       - name: Run tests
         run: |
