@@ -60,6 +60,11 @@ jobs:
         run: |
           Rscript -e 'tensorflow::install_tensorflow(version = "2.9.1")'
 
+      - name: Configure GitHub PAT
+        run: |
+          echo "GITHUB_PAT=${{ secrets.GH_PAT }}" >> $GITHUB_ENV
+          echo "GITHUB_PAT=${{ secrets.GH_PAT }}" >> ~/.Renviron
+
       - name: Install ANTsR
         run: |
           mkdir -p ~/.local/share/R/ANTsR && cd ~/.local/share/R/ANTsR
