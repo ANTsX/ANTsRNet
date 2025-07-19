@@ -42,9 +42,12 @@ jobs:
       - name: Install R dependencies with pinned reticulate
         run: |
           Rscript -e '
+            cat("Install packages.\n")
             install.packages(c("remotes", "testthat", "tensorflow", "reticulate"), repos = "https://cloud.r-project.org");
             reticulate::use_python(Sys.getenv("RETICULATE_PYTHON"), required = TRUE);
+            cat("Install tensorflow.\n")
             tensorflow::install_tensorflow();
+            cat("tensorflow::tf_config()\n")
             tensorflow::tf_config()  # trigger TF detection'
 
       - name: Configure GitHub PAT
