@@ -37,7 +37,7 @@ jobs:
       - name: Install Python deps
         run: |
           python3 -m pip install --upgrade pip
-          python3 -m pip install tensorflow==2.9.1 numpy h5py
+          python3 -m pip install tensorflow numpy<2 h5py
 
       - name: Install R dependencies with pinned reticulate
         run: |
