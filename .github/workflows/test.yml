@@ -48,8 +48,9 @@ jobs:
 
       - name: Install R dependencies with pinned reticulate
         run: |
-          install.packages(c("remotes", "testthat", "tensorflow"), repos = "https://cloud.r-project.org")
-          remotes::install_version("reticulate", version = "1.34.0", repos = "https://cloud.r-project.org")
+          Rscript -e '
+            install.packages(c("remotes", "testthat", "tensorflow"), repos = "https://cloud.r-project.org");
+            remotes::install_version("reticulate", version = "1.34.0", repos = "https://cloud.r-project.org")'
 
       - name: Point reticulate to system Python
         run: |
