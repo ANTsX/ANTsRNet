@@ -50,7 +50,7 @@ jobs:
       # ✅ Install TensorFlow into that Python environment
       - name: Install TensorFlow
         run: |
-          Rscript -e 'tensorflow::install_tensorflow(version = "default")'
+          Rscript -e 'tensorflow::install_tensorflow()'
 
       # ✅ Configure GitHub PAT (ensure this secret exists!)
       - name: Configure GitHub PAT
