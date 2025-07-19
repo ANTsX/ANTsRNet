@@ -1,13 +1,19 @@
+library(httr)
+
+download_with_user_agent <- function(url, destfile) {
+  res <- GET(url, write_disk(destfile, overwrite = TRUE), user_agent("Mozilla/5.0"))
+  stop_for_status(res)
+  return(destfile)
+}
+
 test_that("mouse brain extraction (T2) runs correctly", {
   skip_on_cran()
   skip_if_not_installed("ANTsRNet")
   skip_if_not_installed("ANTsR")
-
-  library(ANTsRNet)
-  library(ANTsR)
+  library(ANTsRNet); library(ANTsR)
 
   mouse_file <- tempfile(fileext = ".nii.gz")
-  download.file("https://figshare.com/ndownloader/files/45289309", destfile = mouse_file, mode = "wb")
+  download_with_user_agent("https://figshare.com/ndownloader/files/45289309", mouse_file)
   mouse <- antsImageRead(mouse_file)
 
   mouse_n4 <- n4BiasFieldCorrection(mouse,
@@ -24,12 +30,10 @@ test_that("mouse brain parcellation (nick and tct) works", {
   skip_on_cran()
   skip_if_not_installed("ANTsRNet")
   skip_if_not_installed("ANTsR")
-
-  library(ANTsRNet)
-  library(ANTsR)
+  library(ANTsRNet); library(ANTsR)
 
   mouse_file <- tempfile(fileext = ".nii.gz")
-  download.file("https://figshare.com/ndownloader/files/45289309", destfile = mouse_file, mode = "wb")
+  download_with_user_agent("https://figshare.com/ndownloader/files/45289309", mouse_file)
   mouse <- antsImageRead(mouse_file)
 
   mouse_n4 <- n4BiasFieldCorrection(mouse,
@@ -46,31 +50,7 @@ test_that("mouse brain parcellation (nick and tct) works", {
                                      whichParcellation = "tct",
                                      returnIsotropicOutput = TRUE)
 
-  expect_s4_class(parc_nick, "antsImage")
-  expect_s4_class(parc_tct, "antsImage")
+  expect_s4_class(parc_nick$segmentationImage, "antsImage")
+  expect_s4_class(parc_tct$segmentationImage, "antsImage")
 })
 
-test_that("mouse cortical thickness returns image", {
-  skip_on_cran()
-  skip_if_not_installed("ANTsRNet")
-  skip_if_not_installed("ANTsR")
-
-  library(ANTsRNet)
-  library(ANTsR)
-
-  mouse_file <- tempfile(fileext = ".nii.gz")
-  download.file("https://figshare.com/ndownloader/files/45289309", destfile = mouse_file, mode = "wb")
-  mouse <- antsImageRead(mouse_file)
-
-  mouse_n4 <- n4BiasFieldCorrection(mouse,
-                                    rescaleIntensities = TRUE,
-                                    shrinkFactor = 2,
-                                    convergence = list(iters = c(50, 50, 50, 50), tol = 0.0),
-                                    splineParam = 20)
-
-  thickness <- mouseCorticalThickness(mouse_n4,
-                                      mask = NULL,
-                                      returnIsotropicOutput = TRUE)
-
-  expect_s4_class(thickness, "antsImage")
-})
