@@ -12,6 +12,7 @@ jobs:
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+      RETICULATE_PYTHON: /usr/bin/python3
 
     steps:
       - name: Checkout repository
@@ -33,35 +34,23 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-r-pkgs-
 
-      - name: Cache reticulate environment
-        uses: actions/cache@v3
-        with:
-          path: ~/.local/share/r-reticulate
-          key: ${{ runner.os }}-reticulate-${{ hashFiles('DESCRIPTION') }}
-          restore-keys: |
-            ${{ runner.os }}-reticulate-
-
       - name: Install Python deps
         run: |
           python3 -m pip install --upgrade pip
-          pip install tensorflow==2.9.1 numpy h5py
+          python3 -m pip install tensorflow==2.9.1 numpy h5py
 
       - name: Install R dependencies with pinned reticulate
         run: |
           Rscript -e '
-            install.packages(c("remotes", "testthat", "tensorflow"), repos = "https://cloud.r-project.org");
-            remotes::install_version("reticulate", version = "1.34.0", repos = "https://cloud.r-project.org")'
-
-      - name: Point reticulate to system Python
-        run: |
-          Rscript -e 'reticulate::use_python("/usr/bin/python3", required = TRUE)'
-          Rscript -e 'reticulate::py_config()'
+            install.packages(c("remotes", "testthat", "tensorflow", "reticulate"), repos = "https://cloud.r-project.org");
+            reticulate::use_python(Sys.getenv("RETICULATE_PYTHON"), required = TRUE);
+            tensorflow::tf_config()  # trigger TF detection'
 
       - name: Configure GitHub PAT
         run: |
           echo "GITHUB_PAT=${{ secrets.GH_PAT }}" >> $GITHUB_ENV
           echo "GITHUB_PAT=${{ secrets.GH_PAT }}" >> ~/.Renviron
-                    
+
       - name: Install ANTsR
         run: |
           Rscript -e 'remotes::install_github("ANTsX/ANTsR", dependencies = TRUE)'
