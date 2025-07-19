@@ -44,6 +44,7 @@ jobs:
           Rscript -e '
             install.packages(c("remotes", "testthat", "tensorflow", "reticulate"), repos = "https://cloud.r-project.org");
             reticulate::use_python(Sys.getenv("RETICULATE_PYTHON"), required = TRUE);
+            tensorflow::install_tensorflow();
             tensorflow::tf_config()  # trigger TF detection'
 
       - name: Configure GitHub PAT
