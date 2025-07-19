@@ -56,6 +56,15 @@ jobs:
         run: |
           Rscript -e 'install.packages(c("remotes", "testthat", "tensorflow"), repos = "https://cloud.r-project.org")'
 
+      - name: Install Miniconda via reticulate
+        run: |
+          Rscript -e 'reticulate::install_miniconda()'
+
+      - name: Confirm Python configuration
+        run: |
+          Rscript -e 'reticulate::use_miniconda("r-reticulate", required = TRUE)'
+          Rscript -e 'reticulate::py_config()'
+
       - name: Install TensorFlow
         run: |
           Rscript -e 'tensorflow::install_tensorflow(version = "2.9.1")'
