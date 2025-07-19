@@ -57,6 +57,11 @@ jobs:
           Rscript -e 'reticulate::use_python("/usr/bin/python3", required = TRUE)'
           Rscript -e 'reticulate::py_config()'
 
+      - name: Configure GitHub PAT
+        run: |
+          echo "GITHUB_PAT=${{ secrets.GH_PAT }}" >> $GITHUB_ENV
+          echo "GITHUB_PAT=${{ secrets.GH_PAT }}" >> ~/.Renviron
+                    
       - name: Install ANTsR
         run: |
           Rscript -e 'remotes::install_github("ANTsX/ANTsR", dependencies = TRUE)'
