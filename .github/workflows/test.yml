@@ -37,7 +37,7 @@ jobs:
       - name: Install Python deps
         run: |
           python3 -m pip install --upgrade pip
-          python3 -m pip install tensorflow numpy==1.24 h5py
+          python3 -m pip install tensorflow==2.16.0 numpy==1.24 h5py
 
       - name: Install R dependencies with pinned reticulate
         run: |
@@ -47,7 +47,7 @@ jobs:
             cat("✅ Pointing reticulate to system Python...\n");
             reticulate::use_python(Sys.getenv("RETICULATE_PYTHON"), required = TRUE);
             cat("✅ Installing TensorFlow via R package...\n");
-            tensorflow::install_tensorflow(version = "2.9.1");
+            tensorflow::install_tensorflow(version = "2.16.0");
             '
 
       - name: Configure GitHub PAT
