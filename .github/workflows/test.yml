@@ -49,7 +49,7 @@ jobs:
             cat("✅ Installing TensorFlow via R package...\n");
             tensorflow::install_tensorflow(version = "2.9.1");
             cat("✅ TensorFlow config:\n");
-            cat(capture.output(tensorflow::tf_config()), sep = "\n")
+            cat(capture.output(tensorflow::tf_config()), sep = "\n")'
 
       - name: Configure GitHub PAT
         run: |
