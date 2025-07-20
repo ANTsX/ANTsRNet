@@ -1,5 +1,4 @@
 test_that("brainExtraction runs correctly across modalities", {
-  skip_on_cran()  # avoid download on CRAN
   skip_if_not_installed("ANTsRNet")
   skip_if_not_installed("ANTsR")
 

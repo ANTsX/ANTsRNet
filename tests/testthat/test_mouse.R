@@ -7,7 +7,6 @@ download_with_user_agent <- function(url, destfile) {
 }
 
 test_that("mouse brain extraction (T2) runs correctly", {
-  skip_on_cran()
   skip_if_not_installed("ANTsRNet")
   skip_if_not_installed("ANTsR")
   library(ANTsRNet); library(ANTsR)
@@ -27,7 +26,6 @@ test_that("mouse brain extraction (T2) runs correctly", {
 })
 
 test_that("mouse brain parcellation (nick and tct) works", {
-  skip_on_cran()
   skip_if_not_installed("ANTsRNet")
   skip_if_not_installed("ANTsR")
   library(ANTsRNet); library(ANTsR)

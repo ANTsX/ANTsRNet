@@ -1,6 +1,5 @@
 # test_that("deepAtropos runs with default input", {
-#   skip_on_cran()
-#   skip_if_not_installed("ANTsRNet")
+# #   skip_if_not_installed("ANTsRNet")
 #   skip_if_not_installed("ANTsR")
 #   library(ANTsRNet); library(ANTsR)
 
@@ -12,8 +11,7 @@
 # })
 
 # test_that("deepAtropos accepts list input with NULLs", {
-#   skip_on_cran()
-#   skip_if_not_installed("ANTsRNet")
+# #   skip_if_not_installed("ANTsRNet")
 #   skip_if_not_installed("ANTsR")
 #   library(ANTsRNet); library(ANTsR)
 
@@ -25,8 +23,7 @@
 # })
 
 # test_that("DKT labeling versions 0 and 1 work", {
-#   skip_on_cran()
-#   skip_if_not_installed("ANTsRNet")
+# #   skip_if_not_installed("ANTsRNet")
 #   skip_if_not_installed("ANTsR")
 #   library(ANTsRNet); library(ANTsR)
 
@@ -39,8 +36,7 @@
 # })
 
 # test_that("Harvard-Oxford Atlas labeling works", {
-#   skip_on_cran()
-#   skip_if_not_installed("ANTsRNet")
+# #   skip_if_not_installed("ANTsRNet")
 #   skip_if_not_installed("ANTsR")
 #   library(ANTsRNet); library(ANTsR)
 
@@ -49,7 +45,6 @@
 # })
 
 test_that("deepFlash returns expected segmentation", {
-  skip_on_cran()
   skip_if_not_installed("ANTsRNet")
   skip_if_not_installed("ANTsR")
   library(ANTsRNet); library(ANTsR)
@@ -60,7 +55,6 @@ test_that("deepFlash returns expected segmentation", {
 })
 
 test_that("claustrum segmentation runs", {
-  skip_on_cran()
   skip_if_not_installed("ANTsRNet")
   skip_if_not_installed("ANTsR")
   library(ANTsRNet); library(ANTsR)

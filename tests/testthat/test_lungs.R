@@ -7,8 +7,7 @@ download_with_user_agent <- function(url, destfile) {
 }
 
 # test_that("lungExtraction works with CT modality", {
-#   skip_on_cran()
-#   skip_if_not_installed("ANTsRNet")
+# #   skip_if_not_installed("ANTsRNet")
 #   skip_if_not_installed("ANTsR")
 #   library(ANTsRNet); library(ANTsR)
 
@@ -21,7 +20,6 @@ download_with_user_agent <- function(url, destfile) {
 # })
 
 test_that("lungExtraction works with proton and derived masks", {
-  skip_on_cran()
   skip_if_not_installed("ANTsRNet")
   skip_if_not_installed("ANTsR")
   library(ANTsRNet); library(ANTsR)
@@ -41,7 +39,6 @@ test_that("lungExtraction works with proton and derived masks", {
 })
 
 test_that("lungExtraction works with X-ray (CXR) input", {
-  skip_on_cran()
   skip_if_not_installed("ANTsRNet")
   skip_if_not_installed("ANTsR")
   library(ANTsRNet); library(ANTsR)
@@ -55,7 +52,6 @@ test_that("lungExtraction works with X-ray (CXR) input", {
 })
 
 test_that("lungExtraction works with ventilation images", {
-  skip_on_cran()
   skip_if_not_installed("ANTsRNet")
   skip_if_not_installed("ANTsR")
   library(ANTsRNet); library(ANTsR)
@@ -69,7 +65,6 @@ test_that("lungExtraction works with ventilation images", {
 })
 
 test_that("elBicho runs on ventilation + mask", {
-  skip_on_cran()
   skip_if_not_installed("ANTsRNet")
   skip_if_not_installed("ANTsR")
   library(ANTsRNet); library(ANTsR)
@@ -89,7 +84,6 @@ test_that("elBicho runs on ventilation + mask", {
 })
 
 test_that("chexNet returns prediction scores with/without TB", {
-  skip_on_cran()
   skip_if_not_installed("ANTsRNet")
   skip_if_not_installed("ANTsR")
   library(ANTsRNet); library(ANTsR)

@@ -7,7 +7,6 @@ download_with_user_agent <- function(url, destfile) {
 }
 
 test_that("SYSU Media WMH segmentation runs", {
-  skip_on_cran()
   skip_if_not_installed("ANTsRNet")
   skip_if_not_installed("ANTsR")
   library(ANTsR); library(ANTsRNet)
@@ -25,7 +24,6 @@ test_that("SYSU Media WMH segmentation runs", {
 })
 
 test_that("Hypermapp3r WMH segmentation runs", {
-  skip_on_cran()
   skip_if_not_installed("ANTsRNet")
   skip_if_not_installed("ANTsR")
   library(ANTsR); library(ANTsRNet)
@@ -43,7 +41,6 @@ test_that("Hypermapp3r WMH segmentation runs", {
 })
 
 test_that("SHIVA WMH segmentation runs with all models", {
-  skip_on_cran()
   skip_if_not_installed("ANTsRNet")
   skip_if_not_installed("ANTsR")
   library(ANTsR); library(ANTsRNet)
@@ -61,7 +58,6 @@ test_that("SHIVA WMH segmentation runs with all models", {
 })
 
 test_that("SHIVA PVS segmentation runs with all models", {
-  skip_on_cran()
   skip_if_not_installed("ANTsRNet")
   skip_if_not_installed("ANTsR")
   library(ANTsR); library(ANTsRNet)

@@ -1,5 +1,4 @@
 test_that("MRI super-resolution runs and returns antsImage", {
-  skip_on_cran()
   skip_if_not_installed("ANTsRNet")
   skip_if_not_installed("ANTsR")
 
@@ -13,7 +12,6 @@ test_that("MRI super-resolution runs and returns antsImage", {
 })
 
 test_that("T1w neural image QA returns numeric score", {
-  skip_on_cran()
   skip_if_not_installed("ANTsRNet")
   skip_if_not_installed("ANTsR")
 
@@ -26,7 +24,6 @@ test_that("T1w neural image QA returns numeric score", {
 })
 
 test_that("PSNR and SSIM return valid similarity values", {
-  skip_on_cran()
   skip_if_not_installed("ANTsRNet")
   skip_if_not_installed("ANTsR")
 
