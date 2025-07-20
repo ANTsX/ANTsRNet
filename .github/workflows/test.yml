@@ -68,5 +68,5 @@ jobs:
         run: |
           for f in tests/testthat/test_*.R; do
             echo "===== Running $f ====="
-            Rscript -e "testthat::test_file('$f', reporter = testthat::SummaryReporter$new())" || echo "Test $f failed"
+            Rscript -e "testthat::test_file('$f', reporter = 'summary')" || echo "Test $f failed"
           done
