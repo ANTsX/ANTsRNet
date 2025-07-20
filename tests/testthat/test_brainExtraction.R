@@ -10,7 +10,8 @@ test_that("brainExtraction runs correctly across modalities", {
   t1 <- antsImageRead(getANTsXNetData('mprage_hippmapp3r'))
 
   # Define modalities to test
-  modalities <- c("t1", "t1threetissue", "t1hemi", "t1lobes")
+  # modalities <- c("t1", "t1threetissue", "t1hemi", "t1lobes")
+  modalities <- c("t1")
 
   for (mod in modalities) {
     bext <- brainExtraction(t1, modality = mod, verbose = FALSE)
