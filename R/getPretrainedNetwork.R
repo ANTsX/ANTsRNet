@@ -86,6 +86,7 @@ getPretrainedNetwork <- function(
               "dktOuterWithSpatialPriors",
               "DesikanKillianyTourvilleOuter",
               "HarvardOxfordAtlasSubcortical",
+              "elBicho",
               "ex5_coronal_weights",
               "ex5_sagittal_weights",
               "allen_brain_mask_weights",
