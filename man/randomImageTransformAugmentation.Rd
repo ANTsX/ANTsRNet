@@ -39,7 +39,7 @@ be applied to outcome images if imageDomainY is not set.}
 
 \item{typeOfTransform}{one of the following options
 \code{c("Translation","Rigid","ScaleShear","Affine","Deformation",
-  "AffineAndDeformation", "DeformationBasis")}}
+"AffineAndDeformation", "DeformationBasis")}}
 
 \item{interpolator}{nearestNeighbor or linear (string) for predictor and
 outcome images respectively}

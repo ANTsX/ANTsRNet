@@ -25,7 +25,9 @@ getANTsXNetData(
     "hcpaT2Template", "hcpaFATemplate", "hcpyaT1Template", "hcpyaT2Template",
     "hcpyaFATemplate", "hcpyaTemplateBrainMask", "hcpyaTemplateBrainSegmentation",
     "hcpinterT1Template", "hcpinterT2Template", "hcpinterFATemplate",
-    "hcpinterTemplateBrainMask", "hcpinterTemplateBrainSegmentation"),
+    "hcpinterTemplateBrainMask", "hcpinterTemplateBrainSegmentation",
+    "CIT168_T1w_700um_pad_adni", "CIT168_basal_forebrain_adni",
+    "det_atlas_25_pad_LR_adni"),
   targetFileName
 )
 }
