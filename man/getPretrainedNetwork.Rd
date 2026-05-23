@@ -77,7 +77,7 @@ getPretrainedNetwork(
     "sig_smallshort_train_2x2x2_1chan_featvggL6_best_mdl",
     "sig_smallshort_train_2x2x4_1chan_featgraderL6_best_mdl",
     "sig_smallshort_train_2x2x4_1chan_featvggL6_best_mdl", "deep_nbm_rank", "deepCIT168",
-    "deepCIT168_sn"),
+    "deepCIT168_sn", "resnet_grader"),
   targetFileName
 )
 }
