@@ -40,8 +40,8 @@ Suggests:
     jpeg
 StagedInstall: no
 Remotes:
-    rstudio/reticulate,
-    rstudio/keras
+    ANTsX/ANTsRCore,
+    ANTsX/ANTsR
 SystemRequirements: Keras >= 2.0 (https://keras.io)
 Roxygen: list(markdown = TRUE)
 VignetteBuilder: knitr
