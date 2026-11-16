@@ -39,6 +39,7 @@ Suggests:
     covr,
     jpeg
 StagedInstall: no
+Additional_repositories: https://antsx.r-universe.dev
 Remotes:
     ANTsX/ANTsRCore,
     ANTsX/ANTsR

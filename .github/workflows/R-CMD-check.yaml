@@ -51,8 +51,9 @@ jobs:
       - name: Use r-universe binaries instead of GitHub Remotes
         shell: bash
         run: |
-          # Remotes exist so r-universe can resolve deps; in CI we want the
-          # prebuilt r-universe binaries rather than a source build from GitHub.
+          # DESCRIPTION lists Additional_repositories (r-universe) with Remotes as a
+          # fallback. In CI we drop Remotes so the prebuilt r-universe binaries are
+          # used instead of a source build from GitHub.
           awk '/^Remotes:/{skip=1; next} skip && /^[ \t]/{next} {skip=0; print}' DESCRIPTION > DESCRIPTION.new
           mv DESCRIPTION.new DESCRIPTION
           cat DESCRIPTION
