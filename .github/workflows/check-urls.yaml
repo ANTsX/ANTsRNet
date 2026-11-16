@@ -1,0 +1,37 @@
+name: check-model-urls
+
+# Verifies that every figshare model/data URL referenced in the package is still
+# reachable. Runs weekly (and on demand) rather than in R CMD check/unit tests,
+# so regular CI across OSes never hammers the server.
+on:
+  schedule:
+    - cron: '17 6 * * 1'
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'R/getPretrainedNetwork.R'
+      - 'R/getANTsXNetData.R'
+      - '.github/workflows/check-urls.yaml'
+
+permissions:
+  contents: read
+
+jobs:
+  check-urls:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check URLs (one HEAD request each, sequential, with delay)
+        shell: bash
+        run: |
+          grep -ohE 'https://ndownloader\.figshare\.com/files/[0-9]+' \
+            R/getPretrainedNetwork.R R/getANTsXNetData.R | sort -u > urls.txt
+          echo "Checking $(wc -l < urls.txt) URLs"
+          fail=0
+          while read -r u; do
+            code=$(curl -s -o /dev/null -L -I --retry 2 --max-time 30 -w '%{http_code}' "$u")
+            if [ "$code" != "200" ]; then echo "::warning::$u -> $code"; fail=$((fail+1)); fi
+            sleep 0.5
+          done < urls.txt
+          echo "$fail URL(s) failed"
+          [ "$fail" -eq 0 ]
