@@ -163,7 +163,7 @@ preprocessBrainImage <- function( image, truncateIntensity = c( 0.01, 0.99 ),
     }
 
   # Image matching
-  if( ! is.null( referenceImage ) && ! is.null( intensityatchingType ) )
+  if( ! is.null( referenceImage ) && ! is.null( intensityMatchingType ) )
     {
     if( verbose )
       {
@@ -172,7 +172,7 @@ preprocessBrainImage <- function( image, truncateIntensity = c( 0.01, 0.99 ),
     if( intensityMatchingType == "regression" )
       {
       preprocessedImage <- regressionMatchImage( preprocessedImage, referenceImage )
-      } else if( intensityatchingType == "histogram" ) {
+      } else if( intensityMatchingType == "histogram" ) {
       preprocessedImage <- histogramMatchImage( preprocessedImage, referenceImage )
       } else {
       stop( paste0( "Error:  unrecognized match type = ", intensityMatchingType, "\n" ) )
