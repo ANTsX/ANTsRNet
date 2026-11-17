@@ -78,7 +78,7 @@ SpatialTransformerLayer2D <- R6::R6Class(
 
     compute_output_shape = function( input_shape )
     {
-      numberOfChannels <- as.integer( tail( unlist( input_shape[[1]] ), 1 ) )
+      numberOfChannels <- as.integer( utils::tail( unlist( input_shape[[1]] ), 1 ) )
 
       return( list( NULL, as.integer( self$resampledSize[1] ),
                     as.integer( self$resampledSize[2] ), numberOfChannels ) )
@@ -346,7 +346,7 @@ SpatialTransformerLayer3D <- R6::R6Class(
 
     compute_output_shape = function( input_shape )
     {
-      numberOfChannels <- as.integer( tail( unlist( input_shape[[1]] ), 1 ) )
+      numberOfChannels <- as.integer( utils::tail( unlist( input_shape[[1]] ), 1 ) )
 
       return( list( NULL, as.integer( self$resampledSize[1] ),
                     as.integer( self$resampledSize[2] ), as.integer( self$resampledSize[3] ),

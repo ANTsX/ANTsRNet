@@ -172,7 +172,7 @@ applySuperResolutionModel <- function(
     if ( verbose )
       print( paste( "expansionFactor: ", paste( expansionFactor, collapse= 'x' ) ) )
 
-    if ( tail(dim(pred),1) == 1 ) {
+    if ( utils::tail(dim(pred),1) == 1 ) {
       ivec = sliceArrayChannel( pred, 1 )
       predImg = makeImage( dim( image ) * expansionFactor, ivec )
       if ( ! missing( targetRange ) & ! missing( mask )  ) {
@@ -194,7 +194,7 @@ applySuperResolutionModel <- function(
           }
         }
     }
-    if ( tail(dim(pred),1) > 1 ) {
+    if ( utils::tail(dim(pred),1) > 1 ) {
       mcList = list()
       for ( k in 1:tail(dim(pred),1) ) {
         ivec = sliceArrayChannel( pred, k )

@@ -41,7 +41,7 @@ createAutoencoderModel <- function( numberOfUnitsPerLayer,
     }
 
   encoder <- encoder %>%
-    layer_dense( units = tail( numberOfUnitsPerLayer, 1 ) )
+    layer_dense( units = utils::tail( numberOfUnitsPerLayer, 1 ) )
 
   autoencoder <- encoder
 

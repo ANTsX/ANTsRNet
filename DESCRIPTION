@@ -39,9 +39,10 @@ Suggests:
     covr,
     jpeg
 StagedInstall: no
+Additional_repositories: https://antsx.r-universe.dev
 Remotes:
-    rstudio/reticulate,
-    rstudio/keras
+    ANTsX/ANTsRCore,
+    ANTsX/ANTsR
 SystemRequirements: Keras >= 2.0 (https://keras.io)
 Roxygen: list(markdown = TRUE)
 VignetteBuilder: knitr

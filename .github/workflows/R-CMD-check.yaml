@@ -1,0 +1,89 @@
+name: R-CMD-check
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  R-CMD-check:
+    runs-on: ${{ matrix.config.os }}
+    name: ${{ matrix.config.os }} (R ${{ matrix.config.r }})
+    # Only Linux is required to pass for now; macOS/Windows are informational
+    # until TensorFlow setup is proven on those runners.
+    continue-on-error: ${{ matrix.config.experimental }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {os: ubuntu-latest,  r: 'release', experimental: false}
+          - {os: ubuntu-latest,  r: 'oldrel-1', experimental: true}
+          - {os: macos-latest,   r: 'release', experimental: true}
+          - {os: windows-latest, r: 'release', experimental: true}
+
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      R_KEEP_PKG_SOURCE: yes
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: r-lib/actions/setup-pandoc@v2
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: ${{ matrix.config.r }}
+          use-public-rspm: true
+          # ANTsR / ANTsRCore are built as binaries for every OS here, which
+          # avoids compiling ITK/ANTs from source on each run.
+          extra-repositories: https://antsx.r-universe.dev
+
+      - name: Use r-universe binaries instead of GitHub Remotes
+        shell: bash
+        run: |
+          # DESCRIPTION lists Additional_repositories (r-universe) with Remotes as a
+          # fallback. In CI we drop Remotes so the prebuilt r-universe binaries are
+          # used instead of a source build from GitHub.
+          awk '/^Remotes:/{skip=1; next} skip && /^[ \t]/{next} {skip=0; print}' DESCRIPTION > DESCRIPTION.new
+          mv DESCRIPTION.new DESCRIPTION
+          cat DESCRIPTION
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Python dependencies
+        run: python -m pip install --upgrade pip "tensorflow==2.12.*" "numpy<1.24" h5py
+
+      - name: Point reticulate at this Python
+        shell: bash
+        run: echo "RETICULATE_PYTHON=$(python -c 'import sys; print(sys.executable)')" >> "$GITHUB_ENV"
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::rcmdcheck
+          needs: check
+
+      - name: Cache ANTsXNet downloads
+        uses: actions/cache@v4
+        with:
+          path: ~/.keras/ANTsXNet
+          key: antsxnet-data-${{ runner.os }}-${{ hashFiles('R/getPretrainedNetwork.R', 'R/getANTsXNetData.R') }}
+          restore-keys: antsxnet-data-${{ runner.os }}-
+
+      - uses: r-lib/actions/check-r-package@v2
+        with:
+          upload-snapshots: true
+          build_args: 'c("--no-manual", "--no-build-vignettes")'
+          args: 'c("--no-manual", "--as-cran", "--ignore-vignettes")'
+          error-on: '"error"'

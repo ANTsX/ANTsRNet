@@ -94,7 +94,8 @@ ImprovedWassersteinGanModel <- R6::R6Class( "ImprovedWassersteinGanModel",
         stop( "Incorrect size for inputImageSize.\n" )
         }
 
-      optimizer <- optimizer_rmsprop( lr = 0.00005 )
+      # a separate optimizer per compiled model (Keras >= 2.11 optimizers cannot be shared)
+      makeOptimizer <- function() optimizer_rmsprop( lr = 0.00005 )
 
       self$generator <- self$buildGenerator()
       self$critic <- self$buildCritic()
@@ -141,7 +142,7 @@ ImprovedWassersteinGanModel <- R6::R6Class( "ImprovedWassersteinGanModel",
         outputs = list( realValidity, fakeValidity, interpolatedValidity ) )
       self$criticModel$compile( loss = list(
         self$wassersteinLoss, self$wassersteinLoss, partialGradientPenaltyLoss ),
-        optimizer = optimizer, loss_weights = list( 1, 1, 10 ) )
+        optimizer = makeOptimizer(), loss_weights = list( 1, 1, 10 ) )
 
       # Freeze the critic's layers for the generator model
       self$critic$trainable <- FALSE
@@ -153,7 +154,7 @@ ImprovedWassersteinGanModel <- R6::R6Class( "ImprovedWassersteinGanModel",
 
       self$generatorModel <- keras_model( inputs = noise, outputs = validity )
       self$generatorModel$compile( loss = self$wassersteinLoss,
-        optimizer = optimizer )
+        optimizer = makeOptimizer() )
       },
 
     wassersteinLoss = function( y_true, y_pred )
@@ -242,7 +243,7 @@ ImprovedWassersteinGanModel <- R6::R6Class( "ImprovedWassersteinGanModel",
         count <- count + 1
         }
 
-      numberOfChannels <- tail( self$inputImageSize, 1 )
+      numberOfChannels <- utils::tail( self$inputImageSize, 1 )
       if( self$dimensionality == 2 )
         {
         model <- model %>% layer_resample_tensor_2d(

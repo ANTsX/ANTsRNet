@@ -64,7 +64,7 @@ createConvolutionalAutoencoderModel2D <- function( inputImageSize,
 
   encoder <- encoder %>%
     layer_flatten() %>%
-    layer_dense( units = tail( numberOfFiltersPerLayer, 1 ) )
+    layer_dense( units = utils::tail( numberOfFiltersPerLayer, 1 ) )
 
   autoencoder <- encoder
 
@@ -97,7 +97,7 @@ createConvolutionalAutoencoderModel2D <- function( inputImageSize,
     }
 
   autoencoder <- autoencoder %>%
-    layer_conv_2d_transpose( filters = tail( inputImageSize, 1 ),
+    layer_conv_2d_transpose( filters = utils::tail( inputImageSize, 1 ),
       kernel_size = deconvolutionKernelSize, strides = strides,
       padding = 'same' )
 
@@ -175,7 +175,7 @@ createConvolutionalAutoencoderModel3D <- function( inputImageSize,
 
   encoder <- encoder %>%
     layer_flatten() %>%
-    layer_dense( units = tail( numberOfFiltersPerLayer, 1 ) )
+    layer_dense( units = utils::tail( numberOfFiltersPerLayer, 1 ) )
 
   autoencoder <- encoder
 
@@ -208,7 +208,7 @@ createConvolutionalAutoencoderModel3D <- function( inputImageSize,
     }
 
   autoencoder <- autoencoder %>%
-    layer_conv_3d_transpose( filters = tail( inputImageSize, 1 ),
+    layer_conv_3d_transpose( filters = utils::tail( inputImageSize, 1 ),
       kernel_size = deconvolutionKernelSize, strides = strides,
       padding = 'same' )
 
