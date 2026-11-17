@@ -358,7 +358,7 @@ deepFlash <- function( t1, t2 = NULL, whichParcellation = "yassa",
     probabilityImagesList <- list()
     for( j in seq.int( dim( predictedData[[1]] )[1] ) )
       {
-      predictedDataBatch <- array( predictedData[[1]][j,,,,], dim = c( dim( t1Cropped ), tail( dim( predictedData[[1]] ), 1 ) ) )
+      predictedDataBatch <- array( predictedData[[1]][j,,,,], dim = c( dim( t1Cropped ), utils::tail( dim( predictedData[[1]] ), 1 ) ) )
       probabilityImagesList[[j]] <- oneHotToSegmentation( predictedDataBatch, t1Cropped )
       } 
  
@@ -409,7 +409,7 @@ deepFlash <- function( t1, t2 = NULL, whichParcellation = "yassa",
       probabilityImagesList <- list()
       for( j in seq.int( dim( predictedData[[1]] )[1] ) )
         {
-        predictedDataBatch <- array( predictedData[[i]][j,,,,], dim = c( dim( t1Cropped ), tail( dim( predictedData[[i]] ), 1 ) ) )
+        predictedDataBatch <- array( predictedData[[i]][j,,,,], dim = c( dim( t1Cropped ), utils::tail( dim( predictedData[[i]] ), 1 ) ) )
         probabilityImagesList[[j]] <- oneHotToSegmentation( predictedDataBatch, t1Cropped )
         } 
 
@@ -546,7 +546,7 @@ deepFlash <- function( t1, t2 = NULL, whichParcellation = "yassa",
     probabilityImagesList <- list()
     for( j in seq.int( dim( predictedData[[1]] )[1] ) )
       {
-      predictedDataBatch <- array( predictedData[[1]][j,,,,], dim = c( dim( t1Cropped ), tail( dim( predictedData[[1]] ), 1 ) ) )
+      predictedDataBatch <- array( predictedData[[1]][j,,,,], dim = c( dim( t1Cropped ), utils::tail( dim( predictedData[[1]] ), 1 ) ) )
       probabilityImagesList[[j]] <- oneHotToSegmentation( predictedDataBatch, t1Cropped )
       } 
 
@@ -602,7 +602,7 @@ deepFlash <- function( t1, t2 = NULL, whichParcellation = "yassa",
       probabilityImagesList <- list()
       for( j in seq.int( dim( predictedData[[1]] )[1] ) )
         {
-        predictedDataBatch <- array( predictedData[[i]][j,,,,], dim = c( dim( t1Cropped ), tail( dim( predictedData[[i]] ), 1 ) ) )
+        predictedDataBatch <- array( predictedData[[i]][j,,,,], dim = c( dim( t1Cropped ), utils::tail( dim( predictedData[[i]] ), 1 ) ) )
         probabilityImagesList[[j]] <- oneHotToSegmentation( predictedDataBatch, t1Cropped )
         } 
 
@@ -914,7 +914,7 @@ deepFlash <- function( t1, t2 = NULL, whichParcellation = "yassa",
     probabilityImagesList <- list()
     for( j in seq.int( dim( predictedData[[1]] )[1] ) )
       {
-      predictedDataBatch <- array( predictedData[[1]][j,,,,], dim = c( dim( t1Cropped ), tail( dim( predictedData[[1]] ), 1 ) ) )
+      predictedDataBatch <- array( predictedData[[1]][j,,,,], dim = c( dim( t1Cropped ), utils::tail( dim( predictedData[[1]] ), 1 ) ) )
       probabilityImagesList[[j]] <- oneHotToSegmentation( predictedDataBatch, t1Cropped )
       } 
 
@@ -965,7 +965,7 @@ deepFlash <- function( t1, t2 = NULL, whichParcellation = "yassa",
       probabilityImagesList <- list()
       for( j in seq.int( dim( predictedData[[1]] )[1] ) )
         {
-        predictedDataBatch <- array( predictedData[[i]][j,,,,], dim = c( dim( t1Cropped ), tail( dim( predictedData[[i]] ), 1 ) ) )
+        predictedDataBatch <- array( predictedData[[i]][j,,,,], dim = c( dim( t1Cropped ), utils::tail( dim( predictedData[[i]] ), 1 ) ) )
         probabilityImagesList[[j]] <- oneHotToSegmentation( predictedDataBatch, t1Cropped )
         } 
 
@@ -1056,7 +1056,7 @@ deepFlash <- function( t1, t2 = NULL, whichParcellation = "yassa",
     probabilityImagesList <- list()
     for( j in seq.int( dim( predictedData[[1]] )[1] ) )
       {
-      predictedDataBatch <- array( predictedData[[1]][j,,,,], dim = c( dim( t1Cropped ), tail( dim( predictedData[[1]] ), 1 ) ) )
+      predictedDataBatch <- array( predictedData[[1]][j,,,,], dim = c( dim( t1Cropped ), utils::tail( dim( predictedData[[1]] ), 1 ) ) )
       probabilityImagesList[[j]] <- oneHotToSegmentation( predictedDataBatch, t1Cropped )
       } 
 
@@ -1112,7 +1112,7 @@ deepFlash <- function( t1, t2 = NULL, whichParcellation = "yassa",
       probabilityImagesList <- list()
       for( j in seq.int( dim( predictedData[[1]] )[1] ) )
         {
-        predictedDataBatch <- array( predictedData[[i]][j,,,,], dim = c( dim( t1Cropped ), tail( dim( predictedData[[i]] ), 1 ) ) )
+        predictedDataBatch <- array( predictedData[[i]][j,,,,], dim = c( dim( t1Cropped ), utils::tail( dim( predictedData[[i]] ), 1 ) ) )
         probabilityImagesList[[j]] <- oneHotToSegmentation( predictedDataBatch, t1Cropped )
         } 
 

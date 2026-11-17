@@ -64,7 +64,7 @@ CycleGanModel <- R6::R6Class( "CycleGanModel",
       numberOfFiltersAtBaseLayer = c( 32, 64 ) )
       {
       self$inputImageSize <- inputImageSize
-      self$numberOfChannels <- tail( self$inputImageSize, 1 )
+      self$numberOfChannels <- utils::tail( self$inputImageSize, 1 )
 
       self$discriminatorPatchSize <- NULL
 

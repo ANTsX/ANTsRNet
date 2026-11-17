@@ -285,7 +285,7 @@ createDenseUnetModel2D <- function( inputImageSize,
   boxLayers[[boxCount]] <- outputs
   boxCount <- boxCount - 1
 
-  localNumberOfFilters <- tail( unlist(
+  localNumberOfFilters <- utils::tail( unlist(
     K$int_shape( boxLayers[[boxCount+1]] ) ), 1 )
   localLayer <- boxLayers[[boxCount]] %>% layer_conv_2d(
     filters = localNumberOfFilters,
@@ -301,7 +301,7 @@ createDenseUnetModel2D <- function( inputImageSize,
     localLayer <- boxLayers[[boxCount]]
     boxCount <- boxCount - 1
 
-    localNumberOfFilters <- tail( unlist( K$int_shape( boxLayers[[boxCount+1]] ) ), 1 )
+    localNumberOfFilters <- utils::tail( unlist( K$int_shape( boxLayers[[boxCount+1]] ) ), 1 )
     outputs <- outputs %>% layer_conv_2d( filters = localNumberOfFilters,
                                           kernel_size = c( 3L, 3L ), padding = 'same', kernel_initializer = 'normal' )
 
@@ -571,7 +571,7 @@ createDenseUnetModel3D <- function( inputImageSize,
   boxLayers[[boxCount]] <- outputs
   boxCount <- boxCount - 1
 
-  localNumberOfFilters <- tail( unlist( K$int_shape( boxLayers[[boxCount+1]] ) ), 1 )
+  localNumberOfFilters <- utils::tail( unlist( K$int_shape( boxLayers[[boxCount+1]] ) ), 1 )
   localLayer <- boxLayers[[boxCount]] %>% layer_conv_3d( filters = localNumberOfFilters,
                                                          kernel_size = c( 1L, 1L, 1L ),
                                                          padding = 'same',
@@ -586,7 +586,7 @@ createDenseUnetModel3D <- function( inputImageSize,
     localLayer <- boxLayers[[boxCount]]
     boxCount <- boxCount - 1
 
-    localNumberOfFilters <- tail( unlist( K$int_shape( boxLayers[[boxCount+1]] ) ), 1 )
+    localNumberOfFilters <- utils::tail( unlist( K$int_shape( boxLayers[[boxCount+1]] ) ), 1 )
     outputs <- outputs %>% layer_conv_3d( filters = localNumberOfFilters,
                                           kernel_size = c( 3L, 3L, 3L ), padding = 'same',
                                           kernel_initializer = 'normal' )

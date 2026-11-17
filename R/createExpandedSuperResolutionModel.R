@@ -55,10 +55,10 @@ createExpandedSuperResolutionModel2D <- function( inputImageSize,
     }
   outputs <- layer_average( averagingConvolutionLayers )
 
-  numberOfChannels <- tail( inputImageSize, 1 )
+  numberOfChannels <- utils::tail( inputImageSize, 1 )
 
   outputs <- outputs %>% layer_conv_2d( filters = numberOfChannels,
-    kernel_size = unlist( tail( convolutionKernelSizes, 1 ) ), padding = 'same' )
+    kernel_size = unlist( utils::tail( convolutionKernelSizes, 1 ) ), padding = 'same' )
 
   srModel <- keras_model( inputs = inputs, outputs = outputs )
 
@@ -122,10 +122,10 @@ createExpandedSuperResolutionModel3D <- function( inputImageSize,
     }
   outputs <- layer_average( averagingConvolutionLayers )
 
-  numberOfChannels <- tail( inputImageSize, 1 )
+  numberOfChannels <- utils::tail( inputImageSize, 1 )
 
   outputs <- outputs %>% layer_conv_3d( filters = numberOfChannels,
-    kernel_size = unlist( tail( convolutionKernelSizes, 1 ) ), padding = 'same' )
+    kernel_size = unlist( utils::tail( convolutionKernelSizes, 1 ) ), padding = 'same' )
 
   srModel <- keras_model( inputs = inputs, outputs = outputs )
 

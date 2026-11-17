@@ -224,7 +224,7 @@ createHippMapp3rUnetModel3D <- function( inputImageSize,
 
   # Decoding path
 
-  outputs <- unlist( tail( encodingConvolutionLayers, 1 ) )[[1]]
+  outputs <- unlist( utils::tail( encodingConvolutionLayers, 1 ) )[[1]]
 
   # 256
   numberOfFilters <- numberOfFiltersAtBaseLayer * 2 ^ ( numberOfLayers - 2 )
@@ -541,7 +541,7 @@ createHyperMapp3rUnetModel3D <- function( inputImageSize,
 
   # Decoding path
 
-  outputs <- unlist( tail( encodingConvolutionLayers, 1 ) )[[1]]
+  outputs <- unlist( utils::tail( encodingConvolutionLayers, 1 ) )[[1]]
 
   # 64
   numberOfFilters <- numberOfFiltersAtBaseLayer * 2 ^ ( numberOfLayers - 2 )

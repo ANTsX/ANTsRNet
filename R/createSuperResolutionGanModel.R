@@ -74,7 +74,7 @@ SuperResolutionGanModel <- R6::R6Class( "SuperResolutionGanModel",
       numberOfResidualBlocks = 16, numberOfFiltersAtBaseLayer = c( 64, 64 ) )
       {
       self$lowResolutionImageSize <- lowResolutionImageSize
-      self$numberOfChannels <- tail( self$lowResolutionImageSize, 1 )
+      self$numberOfChannels <- utils::tail( self$lowResolutionImageSize, 1 )
       self$numberOfResidualBlocks <- numberOfResidualBlocks
       self$numberOfFiltersAtBaseLayer <- numberOfFiltersAtBaseLayer
       self$useImageNetWeights <- useImageNetWeights

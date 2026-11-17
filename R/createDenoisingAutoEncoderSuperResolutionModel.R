@@ -54,7 +54,7 @@ createDenoisingAutoEncoderSuperResolutionModel2D <- function( inputImageSize,
       list( encodingConvolutionLayers[[index]], deconvolution ) )
     }
 
-  numberOfChannels <- tail( inputImageSize, 1 )
+  numberOfChannels <- utils::tail( inputImageSize, 1 )
 
   outputs <- outputs %>% layer_conv_2d( filters = numberOfChannels,
     kernel_size = convolutionKernelSizes[[2]], activation = "linear",
@@ -122,7 +122,7 @@ createDenoisingAutoEncoderSuperResolutionModel3D <- function( inputImageSize,
       list( encodingConvolutionLayers[[index]], deconvolution ) )
     }
 
-  numberOfChannels <- tail( inputImageSize, 1 )
+  numberOfChannels <- utils::tail( inputImageSize, 1 )
 
   outputs <- outputs %>% layer_conv_3d( filters = numberOfChannels,
     kernel_size = convolutionKernelSizes[[2]], activation = "linear",

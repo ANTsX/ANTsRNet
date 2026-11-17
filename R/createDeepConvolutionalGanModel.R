@@ -169,7 +169,7 @@ DeepConvolutionalGanModel <- R6::R6Class( "DeepConvolutionalGanModel",
         count <- count + 1
         }
 
-      numberOfChannels <- tail( self$inputImageSize, 1 )
+      numberOfChannels <- utils::tail( self$inputImageSize, 1 )
       spatialDimensions <- as.integer( self$inputImageSize[1:self$dimensionality] )
       if( self$dimensionality == 2 )
         {

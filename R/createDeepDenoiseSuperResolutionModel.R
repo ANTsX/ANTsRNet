@@ -93,7 +93,7 @@ createDeepDenoiseSuperResolutionModel2D <- function( inputImageSize,
     outputs <- outputs %>% layer_upsampling_2d()
     }
 
-  numberOfChannels <- tail( inputImageSize, 1 )
+  numberOfChannels <- utils::tail( inputImageSize, 1 )
 
   finalConvolutionKernelSize <- convolutionKernelSize + 2
 
@@ -201,7 +201,7 @@ createDeepDenoiseSuperResolutionModel3D <- function( inputImageSize,
     outputs <- outputs %>% layer_upsampling_3d()
     }
 
-  numberOfChannels <- tail( inputImageSize, 1 )
+  numberOfChannels <- utils::tail( inputImageSize, 1 )
 
   finalConvolutionKernelSize <- convolutionKernelSize + 2
 

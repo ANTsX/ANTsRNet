@@ -88,7 +88,7 @@ createResNetSuperResolutionModel2D <- function( inputImageSize,
       }
     }
 
-  numberOfChannels <- tail( inputImageSize, 1 )
+  numberOfChannels <- utils::tail( inputImageSize, 1 )
 
   outputs <- outputs %>% layer_conv_2d( filters = numberOfChannels,
     kernel_size = convolutionKernelSize, activation = 'linear',
@@ -188,7 +188,7 @@ createResNetSuperResolutionModel3D <- function( inputImageSize,
       }
     }
 
-  numberOfChannels <- tail( inputImageSize, 1 )
+  numberOfChannels <- utils::tail( inputImageSize, 1 )
 
   outputs <- outputs %>% layer_conv_3d( filters = numberOfChannels,
     kernel_size = convolutionKernelSize, activation = 'linear',

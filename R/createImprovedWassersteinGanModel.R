@@ -243,7 +243,7 @@ ImprovedWassersteinGanModel <- R6::R6Class( "ImprovedWassersteinGanModel",
         count <- count + 1
         }
 
-      numberOfChannels <- tail( self$inputImageSize, 1 )
+      numberOfChannels <- utils::tail( self$inputImageSize, 1 )
       if( self$dimensionality == 2 )
         {
         model <- model %>% layer_resample_tensor_2d(
