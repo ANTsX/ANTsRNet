@@ -88,12 +88,13 @@ VanillaGanModel <- R6::R6Class( "VanillaGanModel",
         stop( "Incorrect size for inputImageSize.\n" )
         }
 
-      optimizer <- optimizer_adam( lr = 0.0002, beta_1 = 0.5 )
+      # a separate optimizer per compiled model (Keras >= 2.11 optimizers cannot be shared)
+      makeOptimizer <- function() optimizer_adam( lr = 0.0002, beta_1 = 0.5 )
 
       self$discriminator <- self$buildDiscriminator()
 
       self$discriminator$compile( loss = 'binary_crossentropy',
-        optimizer = optimizer, metrics = list( 'acc' ) )
+        optimizer = makeOptimizer(), metrics = list( 'acc' ) )
       self$discriminator$trainable <- FALSE
 
       self$generator <- self$buildGenerator()
@@ -105,7 +106,7 @@ VanillaGanModel <- R6::R6Class( "VanillaGanModel",
 
       self$combinedModel <- keras_model( inputs = z, outputs = validity )
       self$combinedModel$compile( loss = 'binary_crossentropy',
-        optimizer = optimizer )
+        optimizer = makeOptimizer() )
       },
 
     buildGenerator = function()

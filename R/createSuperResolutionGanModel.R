@@ -100,7 +100,8 @@ SuperResolutionGanModel <- R6::R6Class( "SuperResolutionGanModel",
         stop( "Incorrect size for lowResolutionImageSize.\n" )
         }
 
-      optimizer <- optimizer_adam( lr = 0.0002, beta_1 = 0.5 )
+      # a separate optimizer per compiled model (Keras >= 2.11 optimizers cannot be shared)
+      makeOptimizer <- function() optimizer_adam( lr = 0.0002, beta_1 = 0.5 )
 
       # Images
 
@@ -121,13 +122,13 @@ SuperResolutionGanModel <- R6::R6Class( "SuperResolutionGanModel",
 
       self$discriminator <- self$buildDiscriminator()
       self$discriminator$compile( loss = 'mse',
-        optimizer = optimizer, metrics = list( 'acc' ) )
+        optimizer = makeOptimizer(), metrics = list( 'acc' ) )
 
       # Vgg
 
       self$vggModel <- self$buildTruncatedVggModel()
       self$vggModel$trainable <- FALSE
-      self$vggModel$compile( loss = 'mse', optimizer = optimizer,
+      self$vggModel$compile( loss = 'mse', optimizer = makeOptimizer(),
         metrics = list( 'accuracy') )
 
       if( self$dimensionality == 2 )
@@ -152,12 +153,12 @@ SuperResolutionGanModel <- R6::R6Class( "SuperResolutionGanModel",
         self$combinedModel = keras_model( inputs = list( lowResolutionImage, highResolutionImage ),
                                           outputs = list( validity, fakeFeatures ) )
         self$combinedModel$compile( loss = list( 'binary_crossentropy', 'mse' ),
-          loss_weights = list( 1e-3, 1 ), optimizer = optimizer )
+          loss_weights = list( 1e-3, 1 ), optimizer = makeOptimizer() )
         } else {
         self$combinedModel = keras_model( inputs = list( lowResolutionImage, highResolutionImage ),
                                           outputs = validity )
         self$combinedModel$compile( loss = list( 'binary_crossentropy' ),
-          optimizer = optimizer )
+          optimizer = makeOptimizer() )
         }
       },
 

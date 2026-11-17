@@ -93,11 +93,12 @@ WassersteinGanModel <- R6::R6Class( "WassersteinGanModel",
         stop( "Incorrect size for inputImageSize.\n" )
         }
 
-      optimizer <- optimizer_rmsprop( lr = 0.00005 )
+      # a separate optimizer per compiled model (Keras >= 2.11 optimizers cannot be shared)
+      makeOptimizer <- function() optimizer_rmsprop( lr = 0.00005 )
 
       self$critic <- self$buildCritic()
       self$critic$compile( loss = self$wassersteinLoss,
-        optimizer = optimizer, metrics = list( 'acc' ) )
+        optimizer = makeOptimizer(), metrics = list( 'acc' ) )
       self$critic$trainable <- FALSE
 
       self$generator <- self$buildGenerator()
@@ -109,7 +110,7 @@ WassersteinGanModel <- R6::R6Class( "WassersteinGanModel",
 
       self$combinedModel <- keras_model( inputs = z, outputs = validity )
       self$combinedModel$compile( loss = self$wassersteinLoss,
-        optimizer = optimizer, metrics = list( "acc" ) )
+        optimizer = makeOptimizer(), metrics = list( "acc" ) )
       },
 
     wassersteinLoss = function( y_true, y_pred )

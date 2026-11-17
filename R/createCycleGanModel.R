@@ -78,18 +78,19 @@ CycleGanModel <- R6::R6Class( "CycleGanModel",
         stop( "Incorrect size for inputImageSize.\n" )
         }
 
-      optimizer <- optimizer_adam( lr = 0.0002, beta_1 = 0.5 )
+      # a separate optimizer per compiled model (Keras >= 2.11 optimizers cannot be shared)
+      makeOptimizer <- function() optimizer_adam( lr = 0.0002, beta_1 = 0.5 )
 
       # Build discriminators for domains A and B
 
       self$discriminatorA <- self$buildDiscriminator()
       self$discriminatorA$compile( loss = 'mse',
-        optimizer = optimizer, metrics = list( 'acc' ) )
+        optimizer = makeOptimizer(), metrics = list( 'acc' ) )
       self$discriminatorA$trainable <- FALSE
 
       self$discriminatorB <- self$buildDiscriminator()
       self$discriminatorB$compile( loss = 'mse',
-        optimizer = optimizer, metrics = list( 'acc' ) )
+        optimizer = makeOptimizer(), metrics = list( 'acc' ) )
       self$discriminatorB$trainable <- FALSE
 
       # Build U-net like generators
@@ -125,7 +126,7 @@ CycleGanModel <- R6::R6Class( "CycleGanModel",
         'mae', 'mae' ), loss_weights = c( 1.0, 1.0,
           self$lambdaCycleLossWeight, self$lambdaCycleLossWeight,
           self$lambdaIdentityLossWeight, self$lambdaIdentityLossWeight ),
-        optimizer = optimizer )
+        optimizer = makeOptimizer() )
       },
 
     buildGenerator = function()
